@@ -65,6 +65,11 @@ class Prefs(context: Context) {
     fun filtrosActivos(): Int =
         listOf(filtroKm, filtroHora, filtroRecMax, filtroDurMax).count { it }
 
+    /** Cómo elegir la mejor cuando hay dos ofertas: 0 neta/hora, 1 neta/km, 2 neta total. */
+    var criterio: Int
+        get() = sp.getInt("criterio", 0)
+        set(v) { sp.edit().putInt("criterio", v).apply() }
+
     // ---------- Gasolina ----------
     var mostrarNeta: Boolean
         get() = sp.getBoolean("neta", true)

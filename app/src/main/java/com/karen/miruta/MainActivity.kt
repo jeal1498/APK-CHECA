@@ -756,6 +756,46 @@ class MainActivity : Activity() {
         })
         col.addView(gas, margenTarjeta())
 
+        // --- Comparar ofertas ---
+        col.addView(etiqueta("DOS OFERTAS A LA VEZ"))
+        val cmp = tarjeta()
+        cmp.addView(texto(
+            "Si llegan ofertas de Uber y DiDi al mismo tiempo, la mejor se marca con ⭐. " +
+                "Primero gana la de mejor color; si empatan, decide este criterio:",
+            13f, cTenue, false
+        ).apply { setPadding(0, 0, 0, dp(8)) })
+        val opciones = listOf(
+            Triple(Comparador.NETA_HORA, "Ganancia neta por hora", "Recomendado: tarifa, tiempo y gasolina juntos"),
+            Triple(Comparador.NETA_KM, "Ganancia neta por km", "Cuida más el desgaste del auto"),
+            Triple(Comparador.NETA_TOTAL, "Ganancia neta total", "La que deja más dinero, aunque tarde más")
+        )
+        val filasOpc = ArrayList<Pair<Int, TextView>>()
+        fun pintarOpc() = filasOpc.forEach { (v, marca) ->
+            val sel = prefs.criterio == v
+            marca.text = if (sel) "◉" else "○"
+            marca.setTextColor(if (sel) cVerde else cTenue)
+        }
+        opciones.forEach { (v, t, sub) ->
+            val fila = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                setPadding(dp(4), dp(10), dp(4), dp(10))
+                background = ripple(Color.TRANSPARENT, 12)
+                isClickable = true
+            }
+            val marca = texto("○", 22f, cTenue, true)
+            fila.addView(marca, LinearLayout.LayoutParams(dp(36), -2))
+            val tx = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+            tx.addView(texto(t, 15f, cTexto, true))
+            tx.addView(texto(sub, 12f, cTenue, false))
+            fila.addView(tx, LinearLayout.LayoutParams(0, -2, 1f))
+            fila.setOnClickListener { prefs.criterio = v; pintarOpc() }
+            filasOpc.add(v to marca)
+            cmp.addView(fila)
+        }
+        pintarOpc()
+        col.addView(cmp, margenTarjeta())
+
         // --- Avisos ---
         col.addView(etiqueta("AVISOS"))
         val av = tarjeta()

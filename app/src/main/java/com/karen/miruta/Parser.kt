@@ -83,7 +83,10 @@ object Parser {
     private val multi = Regex("""(?<![.,$])([1-4](?:[.,]\d{1,2})?)\s?[x×X](?![a-zA-Z0-9])""")
 
     private fun buscarMultiplicador(textos: List<String>): Double {
+        val rango = Regex("""\d\s?[xX×]\s?[-–]""")
         for (t in textos) {
+            // "1.8X-2.4X" son zonas del mapa de calor, no la tarifa de la oferta.
+            if (rango.containsMatchIn(t)) continue
             val m = multi.find(t) ?: continue
             val v = m.groupValues[1].replace(",", ".").toDoubleOrNull() ?: continue
             if (v > 1.0 && v <= 4.0) return v

@@ -1,27 +1,32 @@
 package com.karen.miruta
 
 import android.accessibilityservice.AccessibilityService
+import android.graphics.Rect
 import android.os.Handler
 import android.os.Looper
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 
+/** Zona de la pantalla que ocupa una app (Uber o DiDi). */
+data class Zona(val app: String, val rect: Rect, val capa: Int)
+
 class RutaService : AccessibilityService() {
     private lateinit var prefs: Prefs
-    private var popup: Popup? = null
     private var alertas: Alertas? = null
     private var appActual = ""
     private val handler = Handler(Looper.getMainLooper())
     private var pendiente = false
-    private var ultimaFirma = ""
-    private var ultimaVez = 0L
     private var ultimaCaptura = 0
+
+    /** Un pop-up por app, para que dos ofertas simultáneas no se pisen. */
+    private val popups = HashMap<String, Popup>()
+    private val activas = LinkedHashMap<String, Pair<Oferta, Rect?>>()
+    private val ultimaFirma = HashMap<String, Pair<String, Long>>()
 
     override fun onServiceConnected() {
         super.onServiceConnected()
         prefs = Prefs(this)
-        popup = Popup(this, prefs, WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY)
         alertas = Alertas(this, prefs)
         instancia = this
     }
@@ -31,23 +36,77 @@ class RutaService : AccessibilityService() {
         return super.onUnbind(intent)
     }
 
-    /** Muestra la oferta (sin repetir la misma en 60 s). Lo usan ambos modos de lectura. */
-    fun mostrarOferta(oferta: Oferta) {
+    // ------------------------------------------------------------------
+    // Pop-ups y comparación
+    // ------------------------------------------------------------------
+
+    /** Compatibilidad: oferta sin app/zona conocida. */
+    fun mostrarOferta(oferta: Oferta) = mostrarOferta(oferta, appActual, null)
+
+    /** Muestra la oferta de [app] sobre su [zona] (sin repetir la misma en 60 s). */
+    fun mostrarOferta(oferta: Oferta, app: String, zona: Rect?) {
+        val clave = app.ifEmpty { "?" }
         val firma = "${oferta.tarifa}|${oferta.km}|${oferta.min}"
         val ahora = System.currentTimeMillis()
-        if (firma == ultimaFirma && ahora - ultimaVez < 60_000) return
-        ultimaFirma = firma
-        ultimaVez = ahora
+        ultimaFirma[clave]?.let { (f, t) -> if (f == firma && ahora - t < 60_000) return }
+        ultimaFirma[clave] = firma to ahora
+
+        popups.getOrPut(clave) {
+            Popup(this, prefs, WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY).also { p ->
+                p.alCerrar = {
+                    activas.remove(clave)
+                    redibujar(null)
+                }
+            }
+        }
+        activas[clave] = oferta to zona
+        redibujar(clave)
+
         val nivel = oferta.nivel(prefs)
-        popup?.mostrar(oferta)
         alertas?.avisar(nivel)
-        Historial.registrar(this, oferta, appActual, nivel)
+        Historial.registrar(this, oferta, app, nivel)
     }
 
-    companion object {
-        @Volatile
-        var instancia: RutaService? = null
+    /** Vuelve a pintar los pop-ups visibles con su marca (mejor / 2ª opción). */
+    private fun redibujar(nueva: String?) {
+        val marcas = Comparador.marcas(activas.mapValues { it.value.first }, prefs)
+        for ((app, par) in activas) {
+            popups[app]?.mostrar(par.first, app, par.second, marcas[app] ?: Popup.SIN_MARCA, app == nueva)
+        }
     }
+
+    // ------------------------------------------------------------------
+    // Zonas de pantalla por app (pantalla dividida, ventanas flotantes)
+    // ------------------------------------------------------------------
+
+    fun nombreApp(pkg: String): String? {
+        val p = pkg.lowercase()
+        return when {
+            prefs.uber && p.contains("uber") -> "Uber"
+            prefs.didi && p.contains("didi") -> "DiDi"
+            else -> null
+        }
+    }
+
+    /** Ventanas visibles de Uber/DiDi, de la más alta (encima) a la más baja. */
+    fun zonasApps(): List<Zona> {
+        if (!::prefs.isInitialized) return emptyList()
+        val out = ArrayList<Zona>()
+        try {
+            for (w in windows) {
+                val pkg = w.root?.packageName?.toString() ?: continue
+                val app = nombreApp(pkg) ?: continue
+                val r = Rect()
+                w.getBoundsInScreen(r)
+                if (!r.isEmpty) out.add(Zona(app, r, w.layer))
+            }
+        } catch (_: Exception) { }
+        return out.sortedByDescending { it.capa }
+    }
+
+    // ------------------------------------------------------------------
+    // Lectura por accesibilidad (cuando la app deja leer su texto)
+    // ------------------------------------------------------------------
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         if (!::prefs.isInitialized) return
@@ -60,7 +119,7 @@ class RutaService : AccessibilityService() {
                 p != packageName && !p.contains("systemui") -> appActual = "Otra"
             }
         }
-        if (!esApp(pkg)) return
+        if (nombreApp(pkg) == null) return
         if (pendiente) return
         pendiente = true
         handler.postDelayed({
@@ -73,47 +132,35 @@ class RutaService : AccessibilityService() {
 
     override fun onDestroy() {
         instancia = null
-        popup?.ocultar()
+        popups.values.forEach { it.ocultar() }
         super.onDestroy()
     }
 
-    private fun esApp(pkg: String): Boolean {
-        val p = pkg.lowercase()
-        return (prefs.uber && p.contains("uber")) || (prefs.didi && p.contains("didi"))
-    }
-
+    /** Analiza cada ventana de Uber/DiDi POR SEPARADO para no mezclar ofertas. */
     private fun analizar() {
-        val textos = LinkedHashSet<String>()
-        var paquete = ""
         try {
-            val raices = ArrayList<AccessibilityNodeInfo>()
-            val ventanas = windows
-            if (ventanas.isNullOrEmpty()) {
-                rootInActiveWindow?.let { raices.add(it) }
-            } else {
-                for (w in ventanas) w.root?.let { raices.add(it) }
+            val ventanas = windows ?: return
+            for (w in ventanas) {
+                val raiz = w.root ?: continue
+                val pkg = raiz.packageName?.toString() ?: continue
+                if (pkg == packageName) continue
+                val app = nombreApp(pkg) ?: continue
+                val textos = LinkedHashSet<String>()
+                recolectar(raiz, textos, 0)
+                if (textos.isEmpty()) continue
+                if (prefs.diagnostico) {
+                    val firma = textos.hashCode()
+                    if (firma != ultimaCaptura) {
+                        ultimaCaptura = firma
+                        prefs.guardarCaptura("[$app · accesibilidad]\n" + textos.joinToString("\n"))
+                    }
+                }
+                val oferta = Parser.analizar(textos.toList()) ?: continue
+                val r = Rect()
+                w.getBoundsInScreen(r)
+                mostrarOferta(oferta, app, r)
             }
-            for (r in raices) {
-                val p = r.packageName?.toString() ?: continue
-                if (p == packageName || !esApp(p)) continue
-                paquete = p
-                recolectar(r, textos, 0)
-            }
-        } catch (e: Exception) {
-            return
-        }
-        if (textos.isEmpty()) return
-
-        if (prefs.diagnostico) {
-            val firma = textos.hashCode()
-            if (firma != ultimaCaptura) {
-                ultimaCaptura = firma
-                prefs.guardarCaptura(paquete + "\n" + textos.joinToString("\n"))
-            }
-        }
-
-        val oferta = Parser.analizar(textos.toList()) ?: return
-        mostrarOferta(oferta)
+        } catch (_: Exception) { }
     }
 
     private fun recolectar(n: AccessibilityNodeInfo, salida: MutableSet<String>, nivel: Int) {
@@ -123,5 +170,10 @@ class RutaService : AccessibilityService() {
         for (i in 0 until n.childCount) {
             n.getChild(i)?.let { recolectar(it, salida, nivel + 1) }
         }
+    }
+
+    companion object {
+        @Volatile
+        var instancia: RutaService? = null
     }
 }

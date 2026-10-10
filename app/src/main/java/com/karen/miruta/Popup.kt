@@ -3,6 +3,8 @@ package com.karen.miruta
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PixelFormat
+import android.graphics.Rect
+import android.util.DisplayMetrics
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Handler
@@ -24,36 +26,60 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
     private val handler = Handler(Looper.getMainLooper())
     private var vista: View? = null
     private var ultima: Oferta? = null
-    private val cerrar = Runnable { ocultar() }
+    private var temporizador = false
+    private val cerrar = Runnable { temporizador = false; ocultar() }
 
-    fun mostrar(o: Oferta) {
+    /** Se llama cuando el pop-up se cierra (✕ o tiempo agotado). */
+    var alCerrar: (() -> Unit)? = null
+
+    /**
+     * Muestra la oferta. [zona] es la parte de la pantalla de la app (pantalla dividida);
+     * el pop-up se centra sobre ella. [reiniciar] = false conserva el tiempo restante.
+     */
+    fun mostrar(
+        o: Oferta, app: String? = null, zona: Rect? = null,
+        marca: Int = SIN_MARCA, reiniciar: Boolean = true
+    ) {
         ultima = o
         quitarVista()
-        val v = construir(o, true)
-        val ancho = minOf((ctx.resources.displayMetrics.widthPixels * 0.92f).toInt(), dp(440))
+        val v = construir(o, true, app, marca)
+
+        val real = DisplayMetrics()
+        @Suppress("DEPRECATION")
+        wm.defaultDisplay.getRealMetrics(real)
+        val area = zona ?: Rect(0, 0, real.widthPixels, real.heightPixels)
+        val ancho = minOf((area.width() * 0.92f).toInt(), dp(440))
         val lp = WindowManager.LayoutParams(
             ancho,
             WindowManager.LayoutParams.WRAP_CONTENT,
             tipoVentana,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
             PixelFormat.TRANSLUCENT
         )
-        lp.gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
-        lp.y = ctx.resources.displayMetrics.heightPixels * prefs.posicion / 100
+        lp.gravity = Gravity.TOP or Gravity.LEFT
+        lp.x = area.left + (area.width() - ancho) / 2
+        lp.y = area.top + area.height() * prefs.posicion / 100
         try {
             wm.addView(v, lp)
             vista = v
         } catch (e: Exception) {
             vista = null
         }
-        handler.removeCallbacks(cerrar)
-        handler.postDelayed(cerrar, prefs.duracionSeg * 1000L)
+        if (reiniciar || !temporizador) {
+            handler.removeCallbacks(cerrar)
+            handler.postDelayed(cerrar, prefs.duracionSeg * 1000L)
+            temporizador = true
+        }
     }
 
     fun ocultar() {
         handler.removeCallbacks(cerrar)
+        temporizador = false
+        val estaba = vista != null
         quitarVista()
+        if (estaba) alCerrar?.invoke()
     }
 
     private fun quitarVista() {
@@ -62,7 +88,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
     }
 
     /** También se usa para la vista previa en Ajustes (sin acción en la ✕). */
-    fun construir(o: Oferta, interactivo: Boolean): View {
+    fun construir(o: Oferta, interactivo: Boolean, app: String? = null, marca: Int = SIN_MARCA): View {
         val base = prefs.tamanoTexto.toFloat()
         val nivel = o.nivel(prefs)
         val acento = when (nivel) {
@@ -88,7 +114,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
             background = GradientDrawable().apply {
                 setColor(FONDO)
                 cornerRadius = dp(24).toFloat()
-                setStroke(dp(4), acento)
+                setStroke(dp(if (marca == MEJOR) 6 else 4), acento)
             }
             elevation = dp(10).toFloat()
         }
@@ -97,6 +123,38 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL
             setPadding(dp(20), dp(14), dp(20), dp(14))
+        }
+
+        if (marca == SEGUNDA) marco.alpha = 0.72f
+
+        // Línea 0: app y marca (solo si aplica)
+        if (app != null && app.isNotEmpty() || marca != SIN_MARCA) {
+            val fila0 = LinearLayout(ctx).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER
+                setPadding(0, 0, 0, dp(6))
+            }
+            if (!app.isNullOrEmpty()) {
+                fila0.addView(txt(app.uppercase(), 0.6f, Color.WHITE, true).apply {
+                    setPadding(dp(10), dp(3), dp(10), dp(3))
+                    background = GradientDrawable().apply {
+                        cornerRadius = dp(50).toFloat()
+                        setColor(if (app == "DiDi") Color.rgb(255, 112, 40) else Color.rgb(60, 66, 76))
+                    }
+                })
+            }
+            if (marca != SIN_MARCA) {
+                val esMejor = marca == MEJOR
+                fila0.addView(txt(if (esMejor) "⭐ MEJOR OPCIÓN" else "2ª opción", 0.6f,
+                    if (esMejor) Color.BLACK else TENUE, true).apply {
+                    setPadding(dp(10), dp(3), dp(10), dp(3))
+                    background = GradientDrawable().apply {
+                        cornerRadius = dp(50).toFloat()
+                        setColor(if (esMejor) Color.rgb(255, 214, 10) else Color.rgb(45, 50, 58))
+                    }
+                }, LinearLayout.LayoutParams(-2, -2).apply { leftMargin = dp(8) })
+            }
+            col.addView(fila0)
         }
 
         // Línea 1: estado y tarifa
@@ -150,6 +208,9 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
     private fun dp(v: Int): Int = (v * ctx.resources.displayMetrics.density).toInt()
 
     companion object {
+        const val SIN_MARCA = 0
+        const val MEJOR = 1
+        const val SEGUNDA = 2
         private val FONDO = Color.rgb(12, 14, 18)
         private val VERDE = Color.rgb(34, 197, 94)
         private val VERDE_OSCURO = Color.rgb(22, 128, 61)

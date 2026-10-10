@@ -11,6 +11,10 @@ import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.graphics.Bitmap
 import android.graphics.PixelFormat
+import android.graphics.Rect
+import android.util.DisplayMetrics
+import android.view.WindowManager
+import com.google.mlkit.vision.text.Text
 import android.hardware.display.DisplayManager
 import android.hardware.display.VirtualDisplay
 import android.media.ImageReader
@@ -39,6 +43,8 @@ class CapturaService : Service() {
     private lateinit var prefs: Prefs
     @Volatile private var procesando = false
     private var ultimaCaptura = 0
+    private var capAncho = 0
+    private var capAlto = 0
 
     private val ciclo = object : Runnable {
         override fun run() {
@@ -80,13 +86,13 @@ class CapturaService : Service() {
             override fun onStop() { detener() }
         }, handler)
 
-        val dm = resources.displayMetrics
-        val ancho = dm.widthPixels
-        val alto = dm.heightPixels
-        val r = ImageReader.newInstance(ancho, alto, PixelFormat.RGBA_8888, 2)
+        val dm = medidasReales()
+        capAncho = dm.widthPixels
+        capAlto = dm.heightPixels
+        val r = ImageReader.newInstance(capAncho, capAlto, PixelFormat.RGBA_8888, 2)
         lector = r
         display = p.createVirtualDisplay(
-            "miruta", ancho, alto, dm.densityDpi,
+            "miruta", capAncho, capAlto, dm.densityDpi,
             DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
             r.surface, null, handler
         )
@@ -95,8 +101,32 @@ class CapturaService : Service() {
         return START_NOT_STICKY
     }
 
+    private fun medidasReales(): DisplayMetrics {
+        val dm = DisplayMetrics()
+        @Suppress("DEPRECATION")
+        (getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay.getRealMetrics(dm)
+        return dm
+    }
+
+    /** Si la pantalla giró (vertical ↔ horizontal), ajusta la captura al nuevo tamaño. */
+    private fun revisarRotacion() {
+        val dm = medidasReales()
+        if (dm.widthPixels == capAncho && dm.heightPixels == capAlto) return
+        val d = display ?: return
+        try {
+            capAncho = dm.widthPixels
+            capAlto = dm.heightPixels
+            val nuevo = ImageReader.newInstance(capAncho, capAlto, PixelFormat.RGBA_8888, 2)
+            d.resize(capAncho, capAlto, dm.densityDpi)
+            d.surface = nuevo.surface
+            lector?.close()
+            lector = nuevo
+        } catch (_: Exception) { }
+    }
+
     private fun leerPantalla() {
         if (procesando) return
+        revisarRotacion()
         val r = lector ?: return
         val img = try { r.acquireLatestImage() } catch (e: Exception) { null } ?: return
         val bmp: Bitmap
@@ -120,16 +150,25 @@ class CapturaService : Service() {
         val cliente = ocr ?: run { procesando = false; return }
         cliente.process(InputImage.fromBitmap(bmp, 0))
             .addOnSuccessListener { resultado ->
-                val ordenadas = resultado.textBlocks
-                    .flatMap { it.lines }
-                    .sortedWith(compareBy({ it.boundingBox?.top ?: 0 }, { it.boundingBox?.left ?: 0 }))
-                // La tarifa es el monto con letra más grande: se pone primero.
-                val tarifa = ordenadas
-                    .filter { soloMonto.matches(normalizar(it.text)) }
-                    .maxByOrNull { it.boundingBox?.height() ?: 0 }
-                val lineas = (listOfNotNull(tarifa) + ordenadas.filter { it !== tarifa })
-                    .map { normalizar(it.text) }
-                procesarLineas(lineas)
+                val todas = resultado.textBlocks.flatMap { it.lines }
+                val escalaX = capAncho.toFloat() / bmp.width
+                val escalaY = capAlto.toFloat() / bmp.height
+                val zonas = RutaService.instancia?.zonasApps().orEmpty()
+                if (zonas.isEmpty()) {
+                    // No sabemos qué app es (p. ej. probando con una captura en la galería).
+                    procesarGrupo(todas, null, null)
+                } else {
+                    // Pantalla dividida: cada línea pertenece a la app cuya ventana la contiene.
+                    val grupos = LinkedHashMap<Zona, MutableList<Text.Line>>()
+                    for (l in todas) {
+                        val b = l.boundingBox ?: continue
+                        val x = (b.exactCenterX() * escalaX).toInt()
+                        val y = (b.exactCenterY() * escalaY).toInt()
+                        val z = zonas.firstOrNull { it.rect.contains(x, y) } ?: continue
+                        grupos.getOrPut(z) { ArrayList() }.add(l)
+                    }
+                    for ((z, ls) in grupos) procesarGrupo(ls, z.app, z.rect)
+                }
             }
             .addOnCompleteListener {
                 bmp.recycle()
@@ -141,16 +180,24 @@ class CapturaService : Service() {
     private fun normalizar(s: String): String =
         s.trim().replace(Regex("""^[S§]\s?(?=\d)"""), "\\$")
 
-    private fun procesarLineas(lineas: List<String>) {
+    private fun procesarGrupo(grupo: List<Text.Line>, app: String?, zona: Rect?) {
+        val ordenadas = grupo.sortedWith(compareBy({ it.boundingBox?.top ?: 0 }, { it.boundingBox?.left ?: 0 }))
+        // La tarifa es el monto con letra más grande: se pone primero.
+        val tarifa = ordenadas
+            .filter { soloMonto.matches(normalizar(it.text)) }
+            .maxByOrNull { it.boundingBox?.height() ?: 0 }
+        val lineas = (listOfNotNull(tarifa) + ordenadas.filter { it !== tarifa }).map { normalizar(it.text) }
+
         if (prefs.diagnostico && lineas.any { it.contains("min", ignoreCase = true) }) {
             val firma = lineas.hashCode()
             if (firma != ultimaCaptura) {
                 ultimaCaptura = firma
-                prefs.guardarCaptura("[lectura de pantalla]\n" + lineas.joinToString("\n"))
+                prefs.guardarCaptura("[${app ?: "pantalla"} · lectura de pantalla]\n" + lineas.joinToString("\n"))
             }
         }
         val oferta = Parser.analizar(lineas) ?: return
-        RutaService.instancia?.mostrarOferta(oferta)
+        val servicio = RutaService.instancia ?: return
+        if (app != null) servicio.mostrarOferta(oferta, app, zona) else servicio.mostrarOferta(oferta)
     }
 
     private fun iniciarPrimerPlano() {
