@@ -20,6 +20,27 @@ class RutaService : AccessibilityService() {
         super.onServiceConnected()
         prefs = Prefs(this)
         popup = Popup(this, prefs, WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY)
+        instancia = this
+    }
+
+    override fun onUnbind(intent: android.content.Intent?): Boolean {
+        instancia = null
+        return super.onUnbind(intent)
+    }
+
+    /** Muestra la oferta (sin repetir la misma en 60 s). Lo usan ambos modos de lectura. */
+    fun mostrarOferta(oferta: Oferta) {
+        val firma = "${oferta.tarifa}|${oferta.km}|${oferta.min}"
+        val ahora = System.currentTimeMillis()
+        if (firma == ultimaFirma && ahora - ultimaVez < 60_000) return
+        ultimaFirma = firma
+        ultimaVez = ahora
+        popup?.mostrar(oferta)
+    }
+
+    companion object {
+        @Volatile
+        var instancia: RutaService? = null
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
@@ -37,6 +58,7 @@ class RutaService : AccessibilityService() {
     override fun onInterrupt() {}
 
     override fun onDestroy() {
+        instancia = null
         popup?.ocultar()
         super.onDestroy()
     }
@@ -77,12 +99,7 @@ class RutaService : AccessibilityService() {
         }
 
         val oferta = Parser.analizar(textos.toList()) ?: return
-        val firma = "${oferta.tarifa}|${oferta.km}|${oferta.min}"
-        val ahora = System.currentTimeMillis()
-        if (firma == ultimaFirma && ahora - ultimaVez < 60_000) return
-        ultimaFirma = firma
-        ultimaVez = ahora
-        popup?.mostrar(oferta)
+        mostrarOferta(oferta)
     }
 
     private fun recolectar(n: AccessibilityNodeInfo, salida: MutableSet<String>, nivel: Int) {

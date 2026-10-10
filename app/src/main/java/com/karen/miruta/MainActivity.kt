@@ -1,6 +1,11 @@
 package com.karen.miruta
 
+import android.Manifest
 import android.app.Activity
+import android.content.Context
+import android.content.pm.PackageManager
+import android.media.projection.MediaProjectionManager
+import android.os.Build
 import android.app.AlertDialog
 import android.content.ComponentName
 import android.content.Intent
@@ -25,6 +30,7 @@ import android.widget.Toast
 class MainActivity : Activity() {
     private lateinit var prefs: Prefs
     private lateinit var estado: TextView
+    private lateinit var estadoCaptura: TextView
     private var popupPrueba: Popup? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,8 +62,21 @@ class MainActivity : Activity() {
                 Uri.parse("package:$packageName")))
         })
 
+        // --- Lectura de pantalla ---
+        col.addView(seccion("2. Lectura de pantalla"))
+        col.addView(texto(
+            "Necesaria si Uber/DiDi no dejan leer su texto. Al iniciar, elige " +
+            "\"Pantalla completa\" y toca \"Empezar\". Se apaga desde la notificación.", 13f, false))
+        estadoCaptura = texto("", 15f, true)
+        col.addView(estadoCaptura)
+        col.addView(boton("Iniciar lectura de pantalla") { iniciarCaptura() })
+        col.addView(boton("Detener lectura de pantalla") {
+            startService(Intent(this, CapturaService::class.java).setAction(CapturaService.ACCION_DETENER))
+            estadoCaptura.postDelayed({ actualizarEstado() }, 500)
+        })
+
         // --- Umbrales ---
-        col.addView(seccion("2. ¿Cuándo conviene?"))
+        col.addView(seccion("3. ¿Cuándo conviene?"))
         val campoKm = numero("Mínimo $ por km", prefs.minPorKm)
         val campoHora = numero("Mínimo $ por hora", prefs.minPorHora)
         col.addView(texto("Mínimo $ por km", 14f, false)); col.addView(campoKm)
@@ -70,7 +89,7 @@ class MainActivity : Activity() {
         })
 
         // --- Pop-up ---
-        col.addView(seccion("3. Pop-up"))
+        col.addView(seccion("4. Pop-up"))
         col.addView(deslizador("Tamaño del texto", Prefs.TAM_MIN, Prefs.TAM_MAX, prefs.tamanoTexto, "") {
             prefs.tamanoTexto = it
         })
@@ -86,12 +105,12 @@ class MainActivity : Activity() {
         })
 
         // --- Apps ---
-        col.addView(seccion("4. Apps"))
+        col.addView(seccion("5. Apps"))
         col.addView(interruptor("Uber Driver", prefs.uber) { prefs.uber = it })
         col.addView(interruptor("DiDi Conductor", prefs.didi) { prefs.didi = it })
 
         // --- Diagnóstico ---
-        col.addView(seccion("5. Diagnóstico"))
+        col.addView(seccion("6. Diagnóstico"))
         col.addView(texto(
             "Si el pop-up no sale o lee mal los datos, activa esto, recibe una oferta " +
             "y luego comparte las capturas de texto para ajustar la app.", 13f, false))
@@ -106,6 +125,48 @@ class MainActivity : Activity() {
 
     override fun onResume() {
         super.onResume()
+        actualizarEstado()
+    }
+
+    private fun iniciarCaptura() {
+        if (!servicioActivo()) {
+            Toast.makeText(this, "Primero activa el servicio en Accesibilidad (paso 1)", Toast.LENGTH_LONG).show()
+            return
+        }
+        if (Build.VERSION.SDK_INT >= 33 &&
+            checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 7)
+        }
+        val mpm = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
+        @Suppress("DEPRECATION")
+        startActivityForResult(mpm.createScreenCaptureIntent(), REQ_CAPTURA)
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        @Suppress("DEPRECATION")
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode != REQ_CAPTURA) return
+        if (resultCode != RESULT_OK || data == null) {
+            Toast.makeText(this, "No se dio permiso de grabar pantalla", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val i = Intent(this, CapturaService::class.java)
+            .putExtra(CapturaService.EXTRA_CODIGO, resultCode)
+            .putExtra(CapturaService.EXTRA_DATOS, data)
+        startForegroundService(i)
+        estadoCaptura.postDelayed({ actualizarEstado() }, 800)
+        Toast.makeText(this, "Lectura de pantalla iniciada", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun actualizarEstado() {
+        if (CapturaService.corriendo) {
+            estadoCaptura.text = "✅ Leyendo pantalla"
+            estadoCaptura.setTextColor(Color.rgb(27, 142, 62))
+        } else {
+            estadoCaptura.text = "⏸️ Lectura de pantalla apagada"
+            estadoCaptura.setTextColor(Color.rgb(120, 120, 120))
+        }
         if (servicioActivo()) {
             estado.text = "✅ Servicio activado"
             estado.setTextColor(Color.rgb(27, 142, 62))
@@ -210,6 +271,10 @@ class MainActivity : Activity() {
         caja.addView(etiqueta)
         caja.addView(barra)
         return caja
+    }
+
+    companion object {
+        private const val REQ_CAPTURA = 42
     }
 
     private fun dp(v: Int): Int = (v * resources.displayMetrics.density).toInt()

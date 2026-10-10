@@ -38,6 +38,8 @@ object Parser {
         var tramos = 0
         val vistos = HashSet<String>()
         for (t in textos) {
+            // "42 min (14.9 km) total" es un resumen (nuestro pop-up u otra app): no sumar.
+            if (t.contains("total", ignoreCase = true)) continue
             for (m in tramo.findAll(t)) {
                 // Evita contar dos veces el mismo tramo si un contenedor repite el texto.
                 if (!vistos.add(m.value.replace(" ", "").lowercase())) continue
