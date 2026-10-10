@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Mi Ruta</string>
+    <string name="servicio_nombre">Mi Ruta – lector de ofertas</string>
+    <string name="servicio_desc">Lee la tarifa, los kilómetros y los minutos de las ofertas de Uber y DiDi para mostrarte un pop-up con $/km, $/hora y si conviene. No envía datos a ningún lado.</string>
+</resources>
