@@ -155,8 +155,9 @@ class CapturaService : Service() {
                 val escalaY = capAlto.toFloat() / bmp.height
                 val zonas = RutaService.instancia?.zonasApps().orEmpty()
                 if (zonas.isEmpty()) {
-                    // No sabemos qué app es (p. ej. probando con una captura en la galería).
-                    procesarGrupo(todas, null, null)
+                    // No sabemos dónde está cada app. En horizontal con dos ofertas
+                    // (pantalla dividida) se separa por mitades para no mezclarlas.
+                    if (!procesarMitades(todas, escalaX)) procesarGrupo(todas, null, null)
                 } else {
                     // Pantalla dividida: cada línea pertenece a la app cuya ventana la contiene.
                     val grupos = LinkedHashMap<Zona, MutableList<Text.Line>>()
@@ -174,6 +175,35 @@ class CapturaService : Service() {
                 bmp.recycle()
                 procesando = false
             }
+    }
+
+    /**
+     * Pantalla horizontal sin zonas conocidas: si las dos mitades tienen un tramo
+     * "N min (X km)", cada mitad es una oferta distinta. Devuelve false si no aplica.
+     */
+    private fun procesarMitades(todas: List<Text.Line>, escalaX: Float): Boolean {
+        if (capAncho <= capAlto) return false
+        val mitad = capAncho / 2
+        val (izq, der) = todas.filter { it.boundingBox != null }
+            .partition { (it.boundingBox!!.exactCenterX() * escalaX) < mitad }
+        if (!izq.any { tramoTexto.containsMatchIn(it.text) } ||
+            !der.any { tramoTexto.containsMatchIn(it.text) }) return false
+        // Por defecto DiDi a la izquierda y Uber a la derecha; el texto manda si lo dice.
+        val appIzq = detectarApp(izq) ?: "DiDi"
+        var appDer = detectarApp(der) ?: "Uber"
+        if (appDer == appIzq) appDer = if (appIzq == "DiDi") "Uber" else "DiDi"
+        procesarGrupo(izq, appIzq, Rect(0, 0, mitad, capAlto))
+        procesarGrupo(der, appDer, Rect(mitad, 0, capAncho, capAlto))
+        return true
+    }
+
+    private fun detectarApp(ls: List<Text.Line>): String? {
+        val t = ls.joinToString(" ") { it.text }.lowercase()
+        return when {
+            t.contains("uber") || t.contains("me interesa") || t.contains("/km (est") -> "Uber"
+            t.contains("didi") || t.contains("pon tu precio") || t.contains("aceptar $") -> "DiDi"
+            else -> null
+        }
     }
 
     /** Corrige confusiones típicas del OCR: "S151.34" → "$151.34". */
@@ -258,6 +288,7 @@ class CapturaService : Service() {
         const val ACCION_DETENER = "detener"
         private const val CANAL = "lectura"
         private const val INTERVALO_MS = 1000L
+        private val tramoTexto = Regex("""\d\s?min\s*\(""", RegexOption.IGNORE_CASE)
         private val soloMonto = Regex("""^\$\s?[\d,]+(?:\.\d{1,2})?$""")
         @Volatile var corriendo = false
     }

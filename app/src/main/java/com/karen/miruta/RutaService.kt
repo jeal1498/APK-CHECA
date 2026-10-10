@@ -94,7 +94,9 @@ class RutaService : AccessibilityService() {
         val out = ArrayList<Zona>()
         try {
             for (w in windows) {
-                val pkg = w.root?.packageName?.toString() ?: continue
+                // En pantalla dividida algunas tablets no dan el contenido de la
+                // ventana sin foco: entonces se usa su título ("Uber Driver", "DiDi…").
+                val pkg = w.root?.packageName?.toString() ?: w.title?.toString() ?: continue
                 val app = nombreApp(pkg) ?: continue
                 val r = Rect()
                 w.getBoundsInScreen(r)
