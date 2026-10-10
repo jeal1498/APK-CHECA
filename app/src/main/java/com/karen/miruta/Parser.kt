@@ -1,11 +1,36 @@
 package com.karen.miruta
 
-data class Oferta(val tarifa: Double, val km: Double, val min: Double) {
+data class Oferta(
+    val tarifa: Double,
+    val km: Double,
+    val min: Double,
+    val recogidaKm: Double = 0.0,
+    val recogidaMin: Double = 0.0
+) {
     val porKm: Double get() = if (km > 0) tarifa / km else 0.0
     val porHora: Double get() = if (min > 0) tarifa / min * 60.0 else 0.0
+    val viajeKm: Double get() = km - recogidaKm
+    val viajeMin: Double get() = min - recogidaMin
+
+    /** Si la oferta no pasa los filtros de recogida o duración, dice por qué. */
+    fun motivoFiltro(p: Prefs): String? {
+        val f1 = { v: Double -> String.format(java.util.Locale.US, "%.1f", v) }
+        return when {
+            p.recogidaMaxKm > 0 && recogidaKm > p.recogidaMaxKm ->
+                "Recogida lejana: ${f1(recogidaKm)} km (máx ${f1(p.recogidaMaxKm.toDouble())})"
+            p.recogidaMinKm > 0 && recogidaKm < p.recogidaMinKm ->
+                "Recogida muy cerca: ${f1(recogidaKm)} km (mín ${f1(p.recogidaMinKm.toDouble())})"
+            p.duracionMax > 0 && viajeMin > p.duracionMax ->
+                "Viaje largo: ${viajeMin.toInt()} min (máx ${p.duracionMax})"
+            p.duracionMin > 0 && viajeMin < p.duracionMin ->
+                "Viaje corto: ${viajeMin.toInt()} min (mín ${p.duracionMin})"
+            else -> null
+        }
+    }
 
     /** 2 = conviene, 1 = regular, 0 = no conviene. */
     fun nivel(prefs: Prefs): Int {
+        if (motivoFiltro(prefs) != null) return ROJO
         val okKm = porKm >= prefs.minPorKm
         val okHora = porHora >= prefs.minPorHora
         return when {
@@ -53,6 +78,8 @@ object Parser {
         var km = 0.0
         var min = 0.0
         var tramos = 0
+        var recKm = 0.0
+        var recMin = 0.0
         val vistos = HashSet<String>()
         for (t in textos) {
             // "42 min (14.9 km) total" es un resumen (nuestro pop-up u otra app): no sumar.
@@ -62,9 +89,16 @@ object Parser {
                 if (!vistos.add(m.value.replace(" ", "").lowercase())) continue
                 val h = m.groupValues[1].toDoubleOrNull() ?: 0.0
                 val mi = m.groupValues[2].toDoubleOrNull() ?: 0.0
-                val d = m.groupValues[3].replace(",", ".").toDoubleOrNull() ?: 0.0
-                min += h * 60.0 + mi
-                km += if (m.groupValues[4].equals("m", ignoreCase = true)) d / 1000.0 else d
+                val numero = m.groupValues[3]
+                val d = numero.replace(",", ".").toDoubleOrNull() ?: 0.0
+                // Metros reales siempre son enteros ≥ 30 ("720m"). "2.4m" o "1m" son km mal leídos.
+                val esMetros = m.groupValues[4].equals("m", ignoreCase = true) &&
+                    !numero.contains('.') && !numero.contains(',') && d >= 30
+                val tramoKm = if (esMetros) d / 1000.0 else d
+                val tramoMin = h * 60.0 + mi
+                if (tramos == 0) { recKm = tramoKm; recMin = tramoMin }
+                min += tramoMin
+                km += tramoKm
                 tramos++
             }
         }
@@ -72,9 +106,14 @@ object Parser {
         // Una oferta siempre trae 2 tramos (recogida + viaje); con 1 aceptamos también.
         if (tramos == 0) return null
         if (tarifa < 10 || tarifa > 20000) return null
-        if (km < 0.1 || km > 500) return null
+        if (km < 0.3 || km > 500) return null
         if (min < 1 || min > 600) return null
-        return Oferta(tarifa, km, min)
+        // Con un solo tramo no sabemos cuál es la recogida.
+        if (tramos < 2) { recKm = 0.0; recMin = 0.0 }
+        val o = Oferta(tarifa, km, min, recKm, recMin)
+        // Descarta lecturas imposibles.
+        if (o.porKm > 80 || o.porHora > 3000) return null
+        return o
     }
 
     private fun aNumero(s: String): Double? = s.replace(",", "").toDoubleOrNull()

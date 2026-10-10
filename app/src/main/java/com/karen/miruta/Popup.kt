@@ -111,6 +111,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
 
         // Línea 3: total
         col.addView(txt(fmt(o.min, 0) + " min (" + fmt(o.km, 1) + " km) total", 0.8f, TENUE, false))
+        o.motivoFiltro(prefs)?.let { col.addView(txt("⚠ $it", 0.8f, ROJO, true).apply { setPadding(0, dp(6), 0, 0) }) }
 
         marco.addView(col, FrameLayout.LayoutParams(-1, -2))
 

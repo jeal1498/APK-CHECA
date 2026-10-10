@@ -6,7 +6,8 @@ import java.util.Calendar
 
 data class Registro(
     val hora: Long, val app: String, val tarifa: Double,
-    val km: Double, val min: Double, val nivel: Int
+    val km: Double, val min: Double, val nivel: Int,
+    val recogidaKm: Double = 0.0, val recogidaMin: Double = 0.0
 ) {
     val porKm: Double get() = if (km > 0) tarifa / km else 0.0
     val porHora: Double get() = if (min > 0) tarifa / min * 60.0 else 0.0
@@ -23,7 +24,7 @@ object Historial {
         try {
             val linea = listOf(
                 System.currentTimeMillis(), app.replace("|", ""),
-                o.tarifa, o.km, o.min, nivel
+                o.tarifa, o.km, o.min, nivel, o.recogidaKm, o.recogidaMin
             ).joinToString("|")
             archivo(ctx).appendText(linea + "\n")
             podarSiHaceFalta(ctx)
@@ -37,7 +38,10 @@ object Historial {
             f.readLines().mapNotNull { l ->
                 val p = l.split("|")
                 if (p.size < 6) null else try {
-                    Registro(p[0].toLong(), p[1], p[2].toDouble(), p[3].toDouble(), p[4].toDouble(), p[5].toInt())
+                    Registro(
+                        p[0].toLong(), p[1], p[2].toDouble(), p[3].toDouble(), p[4].toDouble(), p[5].toInt(),
+                        p.getOrNull(6)?.toDoubleOrNull() ?: 0.0, p.getOrNull(7)?.toDoubleOrNull() ?: 0.0
+                    )
                 } catch (_: Exception) { null }
             }
         } catch (_: Exception) { emptyList() }
@@ -48,7 +52,8 @@ object Historial {
             set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
         }.timeInMillis
-        return todos(ctx).filter { it.hora >= inicio }
+        // Ignora lecturas imposibles que hayan quedado de versiones anteriores.
+        return todos(ctx).filter { it.hora >= inicio && it.km >= 0.3 && it.porKm <= 80 }
     }
 
     fun borrar(ctx: Context) { archivo(ctx).delete() }
@@ -59,7 +64,7 @@ object Historial {
         val limite = System.currentTimeMillis() - DIAS_GUARDADOS * 86_400_000L
         val quedan = todos(ctx).filter { it.hora >= limite }
         f.writeText(quedan.joinToString("") {
-            "${it.hora}|${it.app}|${it.tarifa}|${it.km}|${it.min}|${it.nivel}\n"
+            "${it.hora}|${it.app}|${it.tarifa}|${it.km}|${it.min}|${it.nivel}|${it.recogidaKm}|${it.recogidaMin}\n"
         })
     }
 }

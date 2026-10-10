@@ -15,6 +15,23 @@ class Prefs(context: Context) {
         get() = sp.getFloat("minHora", 150f)
         set(v) { sp.edit().putFloat("minHora", v).apply() }
 
+    /** Recogida (km) y duración del viaje (min). 0 = sin límite. */
+    var recogidaMinKm: Float
+        get() = sp.getFloat("recMin", 0f)
+        set(v) { sp.edit().putFloat("recMin", v).apply() }
+
+    var recogidaMaxKm: Float
+        get() = sp.getFloat("recMax", 0f)
+        set(v) { sp.edit().putFloat("recMax", v).apply() }
+
+    var duracionMin: Int
+        get() = sp.getInt("durMin", 0)
+        set(v) { sp.edit().putInt("durMin", v).apply() }
+
+    var duracionMax: Int
+        get() = sp.getInt("durMax", 0)
+        set(v) { sp.edit().putInt("durMax", v).apply() }
+
     /** Tamaño base del texto del pop-up, en sp. */
     var tamanoTexto: Int
         get() = sp.getInt("tam", 18)

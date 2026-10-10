@@ -55,24 +55,21 @@ class MainActivity : Activity() {
     private val pestanas = ArrayList<View>()
     private val botonesNav = ArrayList<TextView>()
 
+    // Barra
+    private lateinit var botonCircular: TextView
+    private lateinit var etiquetaCircular: TextView
+
     // Inicio
     private lateinit var estadoTitulo: TextView
     private lateinit var estadoSub: TextView
     private lateinit var estadoPunto: View
-    private lateinit var botonLectura: TextView
     private lateinit var tarjetaPermiso: View
-    private lateinit var statOfertas: TextView
-    private lateinit var statKm: TextView
-    private lateinit var statHora: TextView
-    private lateinit var statMejor: TextView
     private lateinit var statVerde: TextView
     private lateinit var statAmarillo: TextView
     private lateinit var statRojo: TextView
 
     // Ajustes
     private lateinit var vistaPrevia: FrameLayout
-
-    // Ayuda
     private lateinit var ayudaPermiso: TextView
 
     private val refresco = object : Runnable {
@@ -92,14 +89,14 @@ class MainActivity : Activity() {
         contenido = FrameLayout(this)
         pestanas.add(pantallaInicio())
         pestanas.add(pantallaAjustes())
-        pestanas.add(pantallaAyuda())
         pestanas.forEach { contenido.addView(it, FrameLayout.LayoutParams(-1, -1)) }
 
         val raiz = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setBackgroundColor(cFondo)
+            clipChildren = false
             addView(contenido, LinearLayout.LayoutParams(-1, 0, 1f))
-            addView(barraNavegacion(), LinearLayout.LayoutParams(-1, -2))
+            addView(barraNavegacion(), LinearLayout.LayoutParams(-1, dp(96)))
         }
         setContentView(raiz)
         mostrarPestana(savedInstanceState?.getInt("tab") ?: 0)
@@ -124,29 +121,58 @@ class MainActivity : Activity() {
     }
 
     // =====================================================================
-    // Navegación
+    // Barra inferior con botón circular al centro
     // =====================================================================
 
     private fun barraNavegacion(): View {
+        val marco = FrameLayout(this).apply {
+            clipChildren = false
+            clipToPadding = false
+        }
         val barra = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
             setBackgroundColor(cTarjeta)
-            setPadding(0, dp(6), 0, dp(6))
         }
-        listOf("🏠\nInicio", "⚙️\nAjustes", "❔\nAyuda").forEachIndexed { i, s ->
-            val b = TextView(this).apply {
-                text = s
-                gravity = Gravity.CENTER
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
-                setPadding(0, dp(6), 0, dp(6))
-                background = ripple(Color.TRANSPARENT, 14)
-                setOnClickListener { mostrarPestana(i) }
-            }
-            botonesNav.add(b)
-            barra.addView(b, LinearLayout.LayoutParams(0, -2, 1f).apply { setMargins(dp(6), 0, dp(6), 0) })
+        fun pestana(s: String, i: Int) = TextView(this).apply {
+            text = s
+            gravity = Gravity.CENTER
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
+            setPadding(0, dp(8), 0, dp(8))
+            background = ripple(Color.TRANSPARENT, 14)
+            setOnClickListener { mostrarPestana(i) }
+        }.also { botonesNav.add(it) }
+
+        barra.addView(pestana("🏠\nInicio", 0), LinearLayout.LayoutParams(0, -2, 1f))
+        etiquetaCircular = texto("", 12f, cTenue, true).apply {
+            gravity = Gravity.CENTER or Gravity.BOTTOM
+            setPadding(0, 0, 0, dp(8))
         }
-        return barra
+        barra.addView(etiquetaCircular, LinearLayout.LayoutParams(dp(110), -1))
+        barra.addView(pestana("⚙️\nAjustes", 1), LinearLayout.LayoutParams(0, -2, 1f))
+        marco.addView(barra, FrameLayout.LayoutParams(-1, dp(72), Gravity.BOTTOM))
+
+        botonCircular = TextView(this).apply {
+            gravity = Gravity.CENTER
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 26f)
+            setTypeface(typeface, Typeface.BOLD)
+            elevation = dp(8).toFloat()
+            isClickable = true
+            setOnClickListener { alternarLectura() }
+        }
+        marco.addView(botonCircular, FrameLayout.LayoutParams(dp(68), dp(68), Gravity.TOP or Gravity.CENTER_HORIZONTAL))
+        return marco
     }
+
+    private fun circulo(color: Int) = RippleDrawable(
+        ColorStateList.valueOf(Color.argb(70, 255, 255, 255)),
+        GradientDrawable().apply {
+            shape = GradientDrawable.OVAL
+            setColor(color)
+            setStroke(dp(5), cFondo)
+        },
+        null
+    )
 
     private fun mostrarPestana(i: Int) {
         pestanas.forEachIndexed { j, v -> v.visibility = if (j == i) View.VISIBLE else View.GONE }
@@ -159,7 +185,7 @@ class MainActivity : Activity() {
     }
 
     // =====================================================================
-    // Pestaña 1: Inicio
+    // Pestaña Inicio
     // =====================================================================
 
     private fun pantallaInicio(): View {
@@ -184,8 +210,6 @@ class MainActivity : Activity() {
         textosEstado.addView(estadoSub)
         filaEstado.addView(textosEstado, LinearLayout.LayoutParams(0, -2, 1f))
         est.addView(filaEstado)
-        botonLectura = boton("", cVerde, Color.BLACK) { alternarLectura() }
-        est.addView(botonLectura, margenArriba(14))
         col.addView(est, margenTarjeta())
 
         // --- Permiso pendiente (solo si falta) ---
@@ -201,33 +225,70 @@ class MainActivity : Activity() {
         tarjetaPermiso = perm
         col.addView(perm, margenTarjeta())
 
-        // --- Resumen de hoy ---
-        col.addView(etiqueta("HOY"))
-        statOfertas = valorStat()
-        statKm = valorStat()
-        statHora = valorStat()
-        statMejor = valorStat()
-        col.addView(filaStats(statTarjeta("Ofertas", statOfertas), statTarjeta("Promedio $/km", statKm)))
-        col.addView(filaStats(statTarjeta("Promedio $/h", statHora), statTarjeta("Mejor $/km", statMejor)))
-
-        val semaforo = tarjeta()
+        // --- Semáforo del día (toca para ver el detalle) ---
+        col.addView(etiqueta("OFERTAS DE HOY · TOCA PARA VER"))
         val filaSem = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
-        statVerde = valorStat().apply { setTextColor(cVerde) }
-        statAmarillo = valorStat().apply { setTextColor(cAmarillo) }
-        statRojo = valorStat().apply { setTextColor(cRojo) }
-        listOf(statVerde to "Convienen", statAmarillo to "Regulares", statRojo to "No convienen").forEach { (v, l) ->
+        statVerde = texto("0", 30f, cVerde, true)
+        statAmarillo = texto("0", 30f, cAmarillo, true)
+        statRojo = texto("0", 30f, cRojo, true)
+        listOf(
+            Triple(statVerde, "Convienen", Oferta.VERDE),
+            Triple(statAmarillo, "Regulares", Oferta.AMARILLO),
+            Triple(statRojo, "No convienen", Oferta.ROJO)
+        ).forEachIndexed { i, (v, l, n) ->
             val c = LinearLayout(this).apply {
                 orientation = LinearLayout.VERTICAL
                 gravity = Gravity.CENTER_HORIZONTAL
+                setPadding(dp(6), dp(16), dp(6), dp(14))
+                background = ripple(cTarjeta, 18)
+                isClickable = true
+                setOnClickListener { verNivel(n) }
                 addView(v.apply { gravity = Gravity.CENTER })
-                addView(texto(l, 12f, cTenue, false).apply { gravity = Gravity.CENTER })
+                addView(texto(l, 13f, cTenue, false).apply { gravity = Gravity.CENTER })
+                addView(texto("Ver ›", 12f, cTenue, true).apply {
+                    gravity = Gravity.CENTER
+                    setPadding(0, dp(6), 0, 0)
+                })
             }
-            filaSem.addView(c, LinearLayout.LayoutParams(0, -2, 1f))
+            filaSem.addView(c, LinearLayout.LayoutParams(0, -2, 1f).apply {
+                if (i > 0) leftMargin = dp(8)
+            })
         }
-        semaforo.addView(filaSem)
-        col.addView(semaforo, margenTarjeta())
+        col.addView(filaSem, margenTarjeta())
 
-        col.addView(boton("📋  Ver ofertas de hoy", cTarjeta2, cTexto) { verHistorial() })
+        // --- Filtros ---
+        col.addView(etiqueta("¿CUÁNDO CONVIENE?"))
+        val fil = tarjeta()
+        fil.addView(paso("Mínimo por km", null, prefs.minPorKm, 0.5f, { "$" + num(it) }) {
+            prefs.minPorKm = it
+        })
+        fil.addView(separador())
+        fil.addView(paso("Mínimo por hora", null, prefs.minPorHora, 10f, { "$" + num(it) }) {
+            prefs.minPorHora = it
+        })
+        fil.addView(texto("🟢 cumple los dos   🟡 cumple uno   🔴 ninguno", 12f, cTenue, false).apply {
+            setPadding(0, dp(10), 0, 0)
+        })
+        col.addView(fil, margenTarjeta())
+
+        col.addView(etiqueta("RECOGIDA Y DURACIÓN"))
+        val fil2 = tarjeta()
+        fil2.addView(paso("Recogida mínima", "Distancia hasta el pasajero", prefs.recogidaMinKm, 0.5f,
+            { if (it == 0f) "Sin mín." else num(it) + " km" }) { prefs.recogidaMinKm = it })
+        fil2.addView(separador())
+        fil2.addView(paso("Recogida máxima", null, prefs.recogidaMaxKm, 0.5f,
+            { if (it == 0f) "Sin límite" else num(it) + " km" }) { prefs.recogidaMaxKm = it })
+        fil2.addView(separador())
+        fil2.addView(paso("Duración mínima", "Solo el viaje, sin la recogida", prefs.duracionMin.toFloat(), 5f,
+            { if (it == 0f) "Sin mín." else num(it) + " min" }) { prefs.duracionMin = it.toInt() })
+        fil2.addView(separador())
+        fil2.addView(paso("Duración máxima", null, prefs.duracionMax.toFloat(), 5f,
+            { if (it == 0f) "Sin límite" else num(it) + " min" }) { prefs.duracionMax = it.toInt() })
+        fil2.addView(texto("Si una oferta no cumple estos límites sale en 🔴 con el motivo.", 12f, cTenue, false).apply {
+            setPadding(0, dp(10), 0, 0)
+        })
+        col.addView(fil2, margenTarjeta())
+
         return scroll(col)
     }
 
@@ -257,18 +318,22 @@ class MainActivity : Activity() {
             }
             else -> {
                 estadoTitulo.text = "Lectura apagada"
-                estadoSub.text = "Toca Iniciar antes de conectarte"
+                estadoSub.text = "Toca el botón verde de abajo para iniciar"
                 punto(cTenue)
             }
         }
         if (leyendo) {
-            botonLectura.text = "■  Detener lectura"
-            botonLectura.background = ripple(cTarjeta2, 14)
-            botonLectura.setTextColor(cRojo)
+            botonCircular.text = "■"
+            botonCircular.setTextColor(Color.WHITE)
+            botonCircular.background = circulo(cRojo)
+            etiquetaCircular.text = "Detener"
+            etiquetaCircular.setTextColor(cRojo)
         } else {
-            botonLectura.text = "▶  Iniciar lectura"
-            botonLectura.background = ripple(if (acc) cVerde else cTarjeta2, 14)
-            botonLectura.setTextColor(if (acc) Color.BLACK else cTenue)
+            botonCircular.text = "▶"
+            botonCircular.setTextColor(if (acc) Color.BLACK else cTenue)
+            botonCircular.background = circulo(if (acc) cVerde else cTarjeta2)
+            etiquetaCircular.text = "Iniciar"
+            etiquetaCircular.setTextColor(if (acc) cVerde else cTenue)
         }
         if (::ayudaPermiso.isInitialized) {
             ayudaPermiso.text = if (acc) "✅ Servicio de Accesibilidad activado" else "⚠️ Servicio de Accesibilidad desactivado"
@@ -284,97 +349,77 @@ class MainActivity : Activity() {
     }
 
     private fun actualizarResumen() {
-        if (!::statOfertas.isInitialized) return
+        if (!::statVerde.isInitialized) return
         val regs = Historial.deHoy(this)
-        val km = regs.sumOf { it.km }
-        val min = regs.sumOf { it.min }
-        val tarifa = regs.sumOf { it.tarifa }
-        statOfertas.text = regs.size.toString()
-        statKm.text = if (km > 0) dinero(tarifa / km) else "—"
-        statHora.text = if (min > 0) dinero(tarifa / min * 60, 0) else "—"
-        statMejor.text = regs.maxByOrNull { it.porKm }?.let { dinero(it.porKm) } ?: "—"
         statVerde.text = regs.count { it.nivel == Oferta.VERDE }.toString()
         statAmarillo.text = regs.count { it.nivel == Oferta.AMARILLO }.toString()
         statRojo.text = regs.count { it.nivel == Oferta.ROJO }.toString()
     }
 
-    private fun verHistorial() {
-        val regs = Historial.deHoy(this)
+    private fun verNivel(nivel: Int) {
+        val regs = Historial.deHoy(this).filter { it.nivel == nivel }
+        val (color, titulo) = when (nivel) {
+            Oferta.VERDE -> cVerde to "🟢 Convenían"
+            Oferta.AMARILLO -> cAmarillo to "🟡 Regulares"
+            else -> cRojo to "🔴 No convenían"
+        }
         val fmtHora = SimpleDateFormat("HH:mm", Locale.getDefault())
         val lista = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(16), dp(8), dp(16), dp(8))
         }
         if (regs.isEmpty()) {
-            lista.addView(texto("Aún no hay ofertas hoy.", 15f, cTenue, false))
+            lista.addView(texto("No hay ofertas en este grupo hoy.", 15f, cTenue, false))
+        } else {
+            val km = regs.sumOf { it.km }
+            val min = regs.sumOf { it.min }
+            val tarifa = regs.sumOf { it.tarifa }
+            lista.addView(texto(
+                "Promedio: ${dinero(tarifa / km)}/km · ${dinero(tarifa / min * 60, 0)}/h",
+                14f, color, true
+            ).apply { setPadding(dp(4), 0, 0, dp(4)) })
         }
         regs.asReversed().forEach { r ->
-            val color = when (r.nivel) { Oferta.VERDE -> cVerde; Oferta.AMARILLO -> cAmarillo; else -> cRojo }
             val fila = LinearLayout(this).apply {
-                orientation = LinearLayout.HORIZONTAL
-                gravity = Gravity.CENTER_VERTICAL
-                setPadding(dp(12), dp(10), dp(12), dp(10))
+                orientation = LinearLayout.VERTICAL
+                setPadding(dp(14), dp(10), dp(14), dp(10))
                 background = redondo(cTarjeta2, 12)
             }
-            fila.addView(View(this).apply {
-                background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(color) }
-            }, LinearLayout.LayoutParams(dp(10), dp(10)).apply { rightMargin = dp(12) })
-            val info = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-            info.addView(texto(
-                "${dinero(r.tarifa)}   ·   ${dinero(r.porKm)}/km   ·   ${dinero(r.porHora, 0)}/h",
-                15f, cTexto, true
-            ))
-            info.addView(texto(
-                "${fmtHora.format(Date(r.hora))}  ·  ${r.app.ifEmpty { "—" }}  ·  " +
-                    "${String.format(Locale.US, "%.1f", r.km)} km  ·  ${r.min.toInt()} min",
-                12f, cTenue, false
-            ))
-            fila.addView(info, LinearLayout.LayoutParams(0, -2, 1f))
+            val arriba = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+            arriba.addView(texto(dinero(r.tarifa), 17f, cTexto, true), LinearLayout.LayoutParams(0, -2, 1f))
+            arriba.addView(texto("${fmtHora.format(Date(r.hora))} · ${r.app.ifEmpty { "—" }}", 13f, cTenue, false))
+            fila.addView(arriba)
+            fila.addView(texto("${dinero(r.porKm)}/km   ·   ${dinero(r.porHora, 0)}/h", 15f, color, true).apply {
+                setPadding(0, dp(2), 0, dp(2))
+            })
+            val detalle = if (r.recogidaKm > 0)
+                "Recogida ${num1(r.recogidaKm)} km · Viaje ${num1(r.km - r.recogidaKm)} km, ${(r.min - r.recogidaMin).toInt()} min"
+            else
+                "${num1(r.km)} km · ${r.min.toInt()} min en total"
+            fila.addView(texto(detalle, 12f, cTenue, false))
             lista.addView(fila, margenArriba(8))
         }
         AlertDialog.Builder(this)
-            .setTitle("Ofertas de hoy (${regs.size})")
+            .setTitle("$titulo (${regs.size})")
             .setView(ScrollView(this).apply { addView(lista) })
             .setPositiveButton("Cerrar", null)
-            .setNeutralButton("Borrar todo") { _, _ ->
-                AlertDialog.Builder(this)
-                    .setMessage("¿Borrar todo el historial?")
-                    .setPositiveButton("Borrar") { _, _ -> Historial.borrar(this); actualizarResumen() }
-                    .setNegativeButton("Cancelar", null)
-                    .show()
-            }
             .show()
     }
 
     // =====================================================================
-    // Pestaña 2: Ajustes
+    // Pestaña Ajustes (incluye la ayuda)
     // =====================================================================
 
     private fun pantallaAjustes(): View {
         val col = columna()
         col.addView(texto("Ajustes", 30f, cTexto, true).apply { setPadding(0, 0, 0, dp(12)) })
 
-        // --- Mínimos ---
-        col.addView(etiqueta("¿CUÁNDO CONVIENE?"))
-        val min = tarjeta()
-        min.addView(paso("Mínimo por km", prefs.minPorKm, 0.5f, "$", "/km") {
-            prefs.minPorKm = it; refrescarVistaPrevia()
-        })
-        min.addView(separador())
-        min.addView(paso("Mínimo por hora", prefs.minPorHora, 10f, "$", "/h") {
-            prefs.minPorHora = it; refrescarVistaPrevia()
-        })
-        min.addView(texto("🟢 cumple los dos   🟡 cumple uno   🔴 ninguno", 13f, cTenue, false).apply {
-            setPadding(0, dp(10), 0, 0)
-        })
-        col.addView(min, margenTarjeta())
-
         // --- Pop-up ---
         col.addView(etiqueta("POP-UP"))
         val pop = tarjeta()
         vistaPrevia = FrameLayout(this).apply {
             background = redondo(Color.rgb(48, 54, 64), 14)
-            setPadding(dp(12), dp(16), dp(12), dp(16))
+            setPadding(dp(10), dp(16), dp(10), dp(16))
         }
         pop.addView(vistaPrevia)
         pop.addView(deslizador("Tamaño del texto", Prefs.TAM_MIN, Prefs.TAM_MAX, prefs.tamanoTexto, "") {
@@ -413,34 +458,15 @@ class MainActivity : Activity() {
         apps.addView(interruptor("DiDi Conductor", null, prefs.didi) { prefs.didi = it })
         col.addView(apps, margenTarjeta())
 
-        return scroll(col)
-    }
-
-    private fun ofertaEjemplo() = Oferta(85.0, 7.2, 24.0)
-
-    private fun refrescarVistaPrevia() {
-        if (!::vistaPrevia.isInitialized) return
-        vistaPrevia.removeAllViews()
-        val v = Popup(this, prefs, WindowManager.LayoutParams.TYPE_APPLICATION).construir(ofertaEjemplo(), false)
-        vistaPrevia.addView(v, FrameLayout.LayoutParams(-1, -2, Gravity.CENTER))
-    }
-
-    // =====================================================================
-    // Pestaña 3: Ayuda
-    // =====================================================================
-
-    private fun pantallaAyuda(): View {
-        val col = columna()
-        col.addView(texto("Ayuda", 30f, cTexto, true).apply { setPadding(0, 0, 0, dp(12)) })
-
+        // --- Cómo usarla ---
         col.addView(etiqueta("CÓMO USARLA"))
         val pasos = tarjeta()
         listOf(
             "Activa el servicio de Accesibilidad (una sola vez).",
-            "En Inicio toca \"Iniciar lectura\" → elige \"Pantalla completa\" → \"Empezar\".",
+            "Toca el botón verde de abajo → elige \"Pantalla completa\" → \"Empezar\".",
             "Abre Uber o DiDi. Cuando llegue una oferta verás el pop-up con el semáforo.",
-            "Al terminar, toca \"Detener\" aquí o en la notificación.",
-            "Después de reiniciar el teléfono hay que volver a tocar \"Iniciar\"."
+            "Al terminar, toca el botón rojo o \"Detener\" en la notificación.",
+            "Después de reiniciar el teléfono hay que volver a iniciar la lectura."
         ).forEachIndexed { i, s ->
             val fila = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; setPadding(0, dp(6), 0, dp(6)) }
             fila.addView(texto("${i + 1}", 15f, Color.BLACK, true).apply {
@@ -452,6 +478,7 @@ class MainActivity : Activity() {
         }
         col.addView(pasos, margenTarjeta())
 
+        // --- Permisos ---
         col.addView(etiqueta("PERMISOS"))
         val perm = tarjeta()
         ayudaPermiso = texto("", 15f, cVerde, true)
@@ -460,6 +487,7 @@ class MainActivity : Activity() {
         perm.addView(boton("Información de la app", cTarjeta2, cTexto) { abrirInfoApp() }, margenArriba(8))
         col.addView(perm, margenTarjeta())
 
+        // --- Diagnóstico ---
         col.addView(etiqueta("DIAGNÓSTICO"))
         val diag = tarjeta()
         diag.addView(interruptor(
@@ -467,6 +495,13 @@ class MainActivity : Activity() {
             "Si una oferta se lee mal, actívalo y comparte las capturas", prefs.diagnostico
         ) { prefs.diagnostico = it })
         diag.addView(boton("Ver / compartir capturas", cTarjeta2, cTexto) { verCapturas() }, margenArriba(10))
+        diag.addView(boton("Borrar historial de ofertas", cTarjeta2, cRojo) {
+            AlertDialog.Builder(this)
+                .setMessage("¿Borrar todo el historial de ofertas?")
+                .setPositiveButton("Borrar") { _, _ -> Historial.borrar(this); actualizarResumen() }
+                .setNegativeButton("Cancelar", null)
+                .show()
+        }, margenArriba(8))
         col.addView(diag, margenTarjeta())
 
         val version = try { packageManager.getPackageInfo(packageName, 0).versionName } catch (_: Exception) { "" }
@@ -476,6 +511,20 @@ class MainActivity : Activity() {
         })
         return scroll(col)
     }
+
+    private fun ofertaEjemplo() = Oferta(85.0, 7.2, 24.0, 1.5, 5.0)
+
+    private fun refrescarVistaPrevia() {
+        if (!::vistaPrevia.isInitialized) return
+        vistaPrevia.removeAllViews()
+        val v = Popup(this, prefs, WindowManager.LayoutParams.TYPE_APPLICATION).construir(ofertaEjemplo(), false)
+        vistaPrevia.addView(v, FrameLayout.LayoutParams(-1, -2, Gravity.CENTER))
+    }
+
+    private fun num(v: Float): String =
+        if (v % 1f == 0f) v.toInt().toString() else String.format(Locale.US, "%.1f", v)
+
+    private fun num1(v: Double): String = String.format(Locale.US, "%.1f", v)
 
     private fun verCapturas() {
         val caps = prefs.capturas().ifBlank { "Aún no hay capturas." }
@@ -645,20 +694,25 @@ class MainActivity : Activity() {
     }
 
     private fun paso(
-        titulo: String, valor: Float, incremento: Float, pre: String, suf: String, cambio: (Float) -> Unit
+        titulo: String, sub: String?, valor: Float, incremento: Float,
+        formato: (Float) -> String, cambio: (Float) -> Unit
     ): View {
         var actual = valor
         val fila = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
         }
-        fila.addView(texto(titulo, 16f, cTexto, true), LinearLayout.LayoutParams(0, -2, 1f))
-        val muestra = texto("", 18f, cVerde, true).apply { gravity = Gravity.CENTER }
+        val textos = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        textos.addView(texto(titulo, 16f, cTexto, true))
+        if (sub != null) textos.addView(texto(sub, 12f, cTenue, false))
+        fila.addView(textos, LinearLayout.LayoutParams(0, -2, 1f))
+        val muestra = texto("", 16f, cVerde, true).apply { gravity = Gravity.CENTER }
         fun pintar() {
-            muestra.text = pre + (if (actual % 1f == 0f) actual.toInt().toString() else String.format(Locale.US, "%.1f", actual)) + suf
+            muestra.text = formato(actual)
+            muestra.setTextColor(if (formato(actual).startsWith("Sin")) cTenue else cVerde)
         }
         pintar()
-        fun circulo(s: String, delta: Float) = texto(s, 22f, cTexto, true).apply {
+        fun masMenos(s: String, delta: Float) = texto(s, 22f, cTexto, true).apply {
             gravity = Gravity.CENTER
             background = ripple(cTarjeta2, 22)
             isClickable = true
@@ -668,9 +722,9 @@ class MainActivity : Activity() {
                 cambio(actual)
             }
         }
-        fila.addView(circulo("−", -incremento), LinearLayout.LayoutParams(dp(44), dp(44)))
-        fila.addView(muestra, LinearLayout.LayoutParams(dp(96), -2))
-        fila.addView(circulo("+", incremento), LinearLayout.LayoutParams(dp(44), dp(44)))
+        fila.addView(masMenos("−", -incremento), LinearLayout.LayoutParams(dp(42), dp(42)))
+        fila.addView(muestra, LinearLayout.LayoutParams(dp(92), -2))
+        fila.addView(masMenos("+", incremento), LinearLayout.LayoutParams(dp(42), dp(42)))
         return fila
     }
 
