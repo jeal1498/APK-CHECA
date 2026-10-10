@@ -422,7 +422,7 @@ class MainActivity : Activity() {
         if (!::vistaPrevia.isInitialized) return
         vistaPrevia.removeAllViews()
         val v = Popup(this, prefs, WindowManager.LayoutParams.TYPE_APPLICATION).construir(ofertaEjemplo(), false)
-        vistaPrevia.addView(v, FrameLayout.LayoutParams(-2, -2, Gravity.CENTER))
+        vistaPrevia.addView(v, FrameLayout.LayoutParams(-1, -2, Gravity.CENTER))
     }
 
     // =====================================================================
