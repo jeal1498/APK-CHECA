@@ -45,6 +45,7 @@ class CapturaService : Service() {
     private var ultimaCaptura = 0
     private var capAncho = 0
     private var capAlto = 0
+    private var divididaHasta = 0L
 
     private val ciclo = object : Runnable {
         override fun run() {
@@ -186,21 +187,27 @@ class CapturaService : Service() {
 
     /**
      * Pantalla horizontal sin zonas conocidas: si las dos mitades tienen un tramo
-     * "N min (X km)", cada mitad es una oferta distinta. Devuelve false si no aplica.
+     * "N min (X km)", es pantalla dividida y cada mitad es una oferta distinta.
+     * Se recuerda 10 min para seguir separando aunque un pop-up tape una mitad
+     * (si no, se leía la pantalla entera, se mezclaban ofertas y parpadeaba).
+     * Devuelve false si no aplica.
      */
     private fun procesarMitades(todas: List<Text.Line>, escalaX: Float): Boolean {
         if (capAncho <= capAlto) return false
         val mitad = capAncho / 2
         val (izq, der) = todas.filter { it.boundingBox != null }
             .partition { (it.boundingBox!!.exactCenterX() * escalaX) < mitad }
-        if (!izq.any { tramoTexto.containsMatchIn(it.text) } ||
-            !der.any { tramoTexto.containsMatchIn(it.text) }) return false
+        val hayIzq = izq.any { tramoTexto.containsMatchIn(it.text) }
+        val hayDer = der.any { tramoTexto.containsMatchIn(it.text) }
+        val ahora = System.currentTimeMillis()
+        if (hayIzq && hayDer) divididaHasta = ahora + 10 * 60_000L
+        if (ahora > divididaHasta) return false
         // Por defecto DiDi a la izquierda y Uber a la derecha; el texto manda si lo dice.
         val appIzq = detectarApp(izq) ?: "DiDi"
         var appDer = detectarApp(der) ?: "Uber"
         if (appDer == appIzq) appDer = if (appIzq == "DiDi") "Uber" else "DiDi"
-        procesarGrupo(izq, appIzq, Rect(0, 0, mitad, capAlto))
-        procesarGrupo(der, appDer, Rect(mitad, 0, capAncho, capAlto))
+        if (hayIzq) procesarGrupo(izq, appIzq, Rect(0, 0, mitad, capAlto))
+        if (hayDer) procesarGrupo(der, appDer, Rect(mitad, 0, capAncho, capAlto))
         return true
     }
 
