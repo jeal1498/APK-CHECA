@@ -65,6 +65,19 @@ class Prefs(context: Context) {
     fun filtrosActivos(): Int =
         listOf(filtroKm, filtroHora, filtroRecMax, filtroDurMax).count { it }
 
+    // ---------- Gasolina ----------
+    var mostrarNeta: Boolean
+        get() = sp.getBoolean("neta", true)
+        set(v) { sp.edit().putBoolean("neta", v).apply() }
+
+    var kmPorLitro: Float
+        get() = sp.getFloat("kml", 12f)
+        set(v) { sp.edit().putFloat("kml", v).apply() }
+
+    var precioLitro: Float
+        get() = sp.getFloat("precioL", 24f)
+        set(v) { sp.edit().putFloat("precioL", v).apply() }
+
     /** Tamaño base del texto del pop-up, en sp. */
     var tamanoTexto: Int
         get() = sp.getInt("tam", 18)

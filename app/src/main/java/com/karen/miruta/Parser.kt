@@ -5,12 +5,19 @@ data class Oferta(
     val km: Double,
     val min: Double,
     val recogidaKm: Double = 0.0,
-    val recogidaMin: Double = 0.0
+    val recogidaMin: Double = 0.0,
+    val multiplicador: Double = 0.0
 ) {
     val porKm: Double get() = if (km > 0) tarifa / km else 0.0
     val porHora: Double get() = if (min > 0) tarifa / min * 60.0 else 0.0
     val viajeKm: Double get() = km - recogidaKm
     val viajeMin: Double get() = min - recogidaMin
+
+    /** Costo de gasolina de todo el recorrido (recogida + viaje). */
+    fun gasolina(p: Prefs): Double =
+        if (p.kmPorLitro > 0) km / p.kmPorLitro * p.precioLitro else 0.0
+
+    fun neta(p: Prefs): Double = tarifa - gasolina(p)
 
     /** Si la oferta no pasa los filtros de recogida o duración, dice por qué. */
     fun motivoFiltro(p: Prefs): String? {
@@ -72,6 +79,18 @@ object Parser {
         RegexOption.IGNORE_CASE
     )
 
+    // "⚡1.4x", "1.2x", "1,5 x" (tarifa dinámica). No confunde calificaciones como "4.98".
+    private val multi = Regex("""(?<![.,$])([1-4](?:[.,]\d{1,2})?)\s?[x×X](?![a-zA-Z0-9])""")
+
+    private fun buscarMultiplicador(textos: List<String>): Double {
+        for (t in textos) {
+            val m = multi.find(t) ?: continue
+            val v = m.groupValues[1].replace(",", ".").toDoubleOrNull() ?: continue
+            if (v > 1.0 && v <= 4.0) return v
+        }
+        return 0.0
+    }
+
     fun analizar(textos: List<String>): Oferta? {
         val tarifa = buscarTarifa(textos) ?: return null
 
@@ -110,7 +129,7 @@ object Parser {
         if (min < 1 || min > 600) return null
         // Con un solo tramo no sabemos cuál es la recogida.
         if (tramos < 2) { recKm = 0.0; recMin = 0.0 }
-        val o = Oferta(tarifa, km, min, recKm, recMin)
+        val o = Oferta(tarifa, km, min, recKm, recMin, buscarMultiplicador(textos))
         // Descarta lecturas imposibles.
         if (o.porKm > 80 || o.porHora > 3000) return null
         return o

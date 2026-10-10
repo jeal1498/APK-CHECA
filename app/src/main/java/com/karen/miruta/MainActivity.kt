@@ -37,6 +37,7 @@ import android.widget.TextView
 import android.widget.Toast
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Calendar
 import java.util.Locale
 
 class MainActivity : Activity() {
@@ -65,6 +66,7 @@ class MainActivity : Activity() {
 
     // Inicio
     private lateinit var tarjetaPermiso: View
+    private lateinit var mejoresHorasTxt: TextView
     private lateinit var statVerde: TextView
     private lateinit var statAmarillo: TextView
     private lateinit var statRojo: TextView
@@ -240,6 +242,18 @@ class MainActivity : Activity() {
         }
         col.addView(filaSem, margenTarjeta())
 
+        // --- Mejores horas ---
+        col.addView(etiqueta("MEJORES HORAS · ÚLTIMOS 30 DÍAS"))
+        val mh = tarjeta().apply {
+            background = ripple(cTarjeta, 18)
+            isClickable = true
+            setOnClickListener { verMejoresHoras() }
+        }
+        mejoresHorasTxt = texto("", 15f, cTexto, false)
+        mh.addView(mejoresHorasTxt)
+        mh.addView(texto("Ver por hora y por día ›", 13f, cVerde, true).apply { setPadding(0, dp(10), 0, 0) })
+        col.addView(mh, margenTarjeta())
+
         // --- Filtros inteligentes ---
         col.addView(tarjetaFiltros(), margenTarjeta())
 
@@ -280,6 +294,7 @@ class MainActivity : Activity() {
 
     private fun actualizarResumen() {
         if (!::statVerde.isInitialized) return
+        mejoresHorasTxt.text = resumenMejoresHoras()
         val regs = Historial.deHoy(this)
         statVerde.text = regs.count { it.nivel == Oferta.VERDE }.toString()
         statAmarillo.text = regs.count { it.nivel == Oferta.AMARILLO }.toString()
@@ -327,6 +342,16 @@ class MainActivity : Activity() {
             else
                 "${num1(r.km)} km · ${r.min.toInt()} min en total"
             fila.addView(texto(detalle, 12f, cTenue, false))
+            val extra = buildList {
+                if (prefs.mostrarNeta && prefs.kmPorLitro > 0) {
+                    val gas = r.km / prefs.kmPorLitro * prefs.precioLitro
+                    add("⛽ Te quedaban ${dinero(r.tarifa - gas)}")
+                }
+                if (r.multiplicador > 1.0) add("⚡ ${String.format(Locale.US, "%.1f", r.multiplicador)}x")
+            }
+            if (extra.isNotEmpty()) fila.addView(texto(extra.joinToString("   ·   "), 12f, cTexto, false).apply {
+                setPadding(0, dp(2), 0, 0)
+            })
             lista.addView(fila, margenArriba(8))
         }
         AlertDialog.Builder(this)
@@ -561,6 +586,130 @@ class MainActivity : Activity() {
     }
 
     // =====================================================================
+    // Mejores horas
+    // =====================================================================
+
+    private data class Grupo(val etiqueta: String, val regs: List<Registro>) {
+        val porKm: Double get() { val km = regs.sumOf { it.km }; return if (km > 0) regs.sumOf { it.tarifa } / km else 0.0 }
+        val porHora: Double get() { val m = regs.sumOf { it.min }; return if (m > 0) regs.sumOf { it.tarifa } / m * 60 else 0.0 }
+        val pctVerde: Int get() = if (regs.isEmpty()) 0 else regs.count { it.nivel == Oferta.VERDE } * 100 / regs.size
+    }
+
+    private fun porHoraDelDia(regs: List<Registro>): List<Grupo> {
+        val cal = Calendar.getInstance()
+        return regs.groupBy { cal.timeInMillis = it.hora; cal.get(Calendar.HOUR_OF_DAY) }
+            .toSortedMap()
+            .map { (h, l) -> Grupo(String.format(Locale.US, "%02d:00–%02d:00", h, (h + 1) % 24), l) }
+    }
+
+    private fun porDiaSemana(regs: List<Registro>): List<Grupo> {
+        val nombres = mapOf(
+            Calendar.MONDAY to "Lunes", Calendar.TUESDAY to "Martes", Calendar.WEDNESDAY to "Miércoles",
+            Calendar.THURSDAY to "Jueves", Calendar.FRIDAY to "Viernes", Calendar.SATURDAY to "Sábado",
+            Calendar.SUNDAY to "Domingo"
+        )
+        val orden = listOf(Calendar.MONDAY, Calendar.TUESDAY, Calendar.WEDNESDAY, Calendar.THURSDAY,
+            Calendar.FRIDAY, Calendar.SATURDAY, Calendar.SUNDAY)
+        val cal = Calendar.getInstance()
+        val g = regs.groupBy { cal.timeInMillis = it.hora; cal.get(Calendar.DAY_OF_WEEK) }
+        return orden.filter { g.containsKey(it) }.map { Grupo(nombres[it]!!, g[it]!!) }
+    }
+
+    private fun resumenMejoresHoras(): String {
+        val regs = Historial.ultimosDias(this, 30)
+        if (regs.size < 10) return "Necesito al menos 10 ofertas para calcularlas (llevas ${regs.size})."
+        val top = porHoraDelDia(regs).filter { it.regs.size >= 3 }.sortedByDescending { it.porKm }.take(3)
+        if (top.isEmpty()) return "Aún no hay suficientes ofertas por hora."
+        return top.mapIndexed { i, g ->
+            "${listOf("🥇", "🥈", "🥉")[i]}  ${g.etiqueta}   ${dinero(g.porKm)}/km"
+        }.joinToString("\n")
+    }
+
+    private fun verMejoresHoras() {
+        val regs = Historial.ultimosDias(this, 30)
+        val lista = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(16), dp(8), dp(16), dp(8))
+        }
+        if (regs.isEmpty()) {
+            lista.addView(texto("Aún no hay ofertas guardadas.", 15f, cTenue, false))
+        } else {
+            lista.addView(texto("Promedio de $/km de las ofertas que te llegaron, y cuántas convenían.", 13f, cTenue, false))
+            seccionGrupos(lista, "POR HORA", porHoraDelDia(regs))
+            seccionGrupos(lista, "POR DÍA", porDiaSemana(regs))
+        }
+        AlertDialog.Builder(this)
+            .setTitle("Mejores horas (${regs.size} ofertas)")
+            .setView(ScrollView(this).apply { addView(lista) })
+            .setPositiveButton("Cerrar", null)
+            .show()
+    }
+
+    private fun seccionGrupos(lista: LinearLayout, titulo: String, grupos: List<Grupo>) {
+        lista.addView(etiqueta(titulo), margenArriba(14))
+        val max = grupos.maxOfOrNull { it.porKm } ?: 1.0
+        val mejor = grupos.filter { it.regs.size >= 3 }.maxByOrNull { it.porKm }
+        grupos.forEach { g ->
+            val fila = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                setPadding(dp(12), dp(8), dp(12), dp(8))
+                background = redondo(if (g === mejor) Color.rgb(20, 61, 38) else cTarjeta2, 12)
+            }
+            val arriba = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+            arriba.addView(texto(g.etiqueta, 14f, cTexto, true), LinearLayout.LayoutParams(0, -2, 1f))
+            arriba.addView(texto("${dinero(g.porKm)}/km", 14f, cVerde, true))
+            fila.addView(arriba)
+            // Barra proporcional
+            val barra = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+            val peso = (g.porKm / max).toFloat().coerceIn(0.03f, 1f)
+            barra.addView(View(this).apply { background = redondo(cVerde, 4) }, LinearLayout.LayoutParams(0, dp(6), peso))
+            barra.addView(View(this), LinearLayout.LayoutParams(0, dp(6), 1f - peso + 0.0001f))
+            fila.addView(barra, margenArriba(6))
+            fila.addView(texto(
+                "${g.regs.size} ofertas · ${g.pctVerde}% 🟢 · ${dinero(g.porHora, 0)}/h",
+                12f, cTenue, false
+            ).apply { setPadding(0, dp(4), 0, 0) })
+            lista.addView(fila, margenArriba(6))
+        }
+    }
+
+    private fun campoNumero(titulo: String, sub: String, valor: Float, sufijo: String, cambio: (Float) -> Unit): View {
+        val fila = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+        }
+        val textos = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        textos.addView(texto(titulo, 16f, cTexto, true))
+        textos.addView(texto(sub, 12f, cTenue, false))
+        fila.addView(textos, LinearLayout.LayoutParams(0, -2, 1f))
+        val campo = EditText(this).apply {
+            setText(num(valor))
+            setTextColor(cVerde)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 17f)
+            setTypeface(typeface, Typeface.BOLD)
+            gravity = Gravity.CENTER
+            inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+            setPadding(dp(8), dp(10), dp(8), dp(10))
+            background = GradientDrawable().apply {
+                cornerRadius = dp(12).toFloat()
+                setColor(Color.rgb(15, 17, 21))
+                setStroke(dp(1), Color.rgb(60, 66, 76))
+            }
+            addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(a: CharSequence?, b: Int, c: Int, d: Int) {}
+                override fun onTextChanged(a: CharSequence?, b: Int, c: Int, d: Int) {}
+                override fun afterTextChanged(e: Editable?) {
+                    val v = e?.toString()?.replace(",", ".")?.toFloatOrNull() ?: return
+                    if (v > 0) cambio(v)
+                }
+            })
+        }
+        fila.addView(campo, LinearLayout.LayoutParams(dp(84), -2))
+        fila.addView(texto(sufijo, 13f, cTenue, false).apply { setPadding(dp(8), 0, 0, 0) })
+        return fila
+    }
+
+    // =====================================================================
     // Pestaña Ajustes (incluye la ayuda)
     // =====================================================================
 
@@ -587,6 +736,25 @@ class MainActivity : Activity() {
             Alertas(this, prefs).avisar(o.nivel(prefs))
         }, margenArriba(12))
         col.addView(pop, margenTarjeta())
+
+        // --- Gasolina ---
+        col.addView(etiqueta("GASOLINA"))
+        val gas = tarjeta()
+        gas.addView(interruptor("Mostrar ganancia neta", "Descuenta la gasolina de recogida + viaje en el pop-up", prefs.mostrarNeta) {
+            prefs.mostrarNeta = it
+            refrescarVistaPrevia()
+        })
+        gas.addView(separador())
+        gas.addView(campoNumero("Rendimiento", "Kilómetros por litro de tu auto", prefs.kmPorLitro, "km/l") {
+            prefs.kmPorLitro = it
+            refrescarVistaPrevia()
+        })
+        gas.addView(separador())
+        gas.addView(campoNumero("Precio de la gasolina", "Por litro", prefs.precioLitro, "$/l") {
+            prefs.precioLitro = it
+            refrescarVistaPrevia()
+        })
+        col.addView(gas, margenTarjeta())
 
         // --- Avisos ---
         col.addView(etiqueta("AVISOS"))
@@ -666,7 +834,7 @@ class MainActivity : Activity() {
         return scroll(col)
     }
 
-    private fun ofertaEjemplo() = Oferta(85.0, 7.2, 24.0, 1.5, 5.0)
+    private fun ofertaEjemplo() = Oferta(85.0, 7.2, 24.0, 1.5, 5.0, 1.2)
 
     private fun refrescarVistaPrevia() {
         if (!::vistaPrevia.isInitialized) return

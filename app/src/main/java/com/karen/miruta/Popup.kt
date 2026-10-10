@@ -100,7 +100,15 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         }
 
         // Línea 1: estado y tarifa
-        col.addView(txt("$estado: $" + fmt(o.tarifa, 2), 1.15f, acento, true))
+        val l1 = "$estado: $" + fmt(o.tarifa, 2)
+        if (o.multiplicador > 1.0) {
+            val dinamica = "   ⚡" + fmtX(o.multiplicador) + "x"
+            val sp1 = SpannableString(l1 + dinamica)
+            sp1.setSpan(ForegroundColorSpan(AMARILLO), l1.length, sp1.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            col.addView(txt(sp1, 1.15f, acento, true))
+        } else {
+            col.addView(txt(l1, 1.15f, acento, true))
+        }
 
         // Línea 2: $/h | $/km
         val separador = "   |   "
@@ -111,6 +119,12 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
 
         // Línea 3: total
         col.addView(txt(fmt(o.min, 0) + " min (" + fmt(o.km, 1) + " km) total", 0.8f, TENUE, false))
+        if (prefs.mostrarNeta && prefs.kmPorLitro > 0) {
+            col.addView(txt(
+                "⛽ −$" + fmt(o.gasolina(prefs), 2) + "   ·   Te quedan $" + fmt(o.neta(prefs), 2),
+                0.85f, Color.WHITE, true
+            ).apply { setPadding(0, dp(4), 0, 0) })
+        }
         o.motivoFiltro(prefs)?.let { col.addView(txt("⚠ $it", 0.8f, ROJO, true).apply { setPadding(0, dp(6), 0, 0) }) }
 
         marco.addView(col, FrameLayout.LayoutParams(-1, -2))
@@ -127,6 +141,9 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
 
     private fun fmtMin(v: Float): String =
         if (v % 1f == 0f) v.toInt().toString() else String.format(Locale.US, "%.1f", v)
+
+    private fun fmtX(v: Double): String =
+        if (v * 10 % 1.0 == 0.0) String.format(Locale.US, "%.1f", v) else String.format(Locale.US, "%.2f", v)
 
     private fun fmt(v: Double, dec: Int): String = String.format(Locale.US, "%,.${dec}f", v)
 
