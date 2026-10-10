@@ -221,7 +221,8 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         val fichas = LinearLayout(ctx).apply { orientation = LinearLayout.HORIZONTAL }
         fun ficha(v: String, etq: String, cumple: Boolean?) = LinearLayout(ctx).apply {
             orientation = LinearLayout.VERTICAL
-            setPadding(dp(Tema.S1), dp(Tema.S1), dp(4), dp(Tema.S1))
+            gravity = Gravity.CENTER
+            setPadding(dp(4), dp(Tema.S1), dp(4), dp(Tema.S1))
             background = GradientDrawable().apply {
                 cornerRadius = dp(10).toFloat()
                 if (cumple == false) {
@@ -230,10 +231,11 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
                 } else setColor(Tema.TARJETA)
             }
             val color = when (cumple) { true -> Tema.VERDE; false -> Tema.ROJO; null -> Tema.TEXTO }
-            addView(txt(v, 0.9f, color, true).apply { maxLines = 1; encoger(this) },
+            addView(txt(v, 0.9f, color, true).apply { maxLines = 1; gravity = Gravity.CENTER; encoger(this) },
                 LinearLayout.LayoutParams(-1, -2))
             addView(txt(etq, 0.6f, Tema.TENUE, false).apply {
                 maxLines = 1
+                gravity = Gravity.CENTER
                 setPadding(0, dp(4), 0, 0)
             }, LinearLayout.LayoutParams(-1, -2))
         }
