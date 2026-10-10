@@ -91,12 +91,9 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
                 gravity = Gravity.CENTER_HORIZONTAL
             }
 
-        caja.addView(linea(titulo, 1.0f, true))
-        caja.addView(linea("$" + fmt(o.porKm, 2) + " / km", 1.5f, true))
-        caja.addView(linea("$" + fmt(o.porHora, 0) + " / hora", 1.5f, true))
-        caja.addView(
-            linea("$" + fmt(o.tarifa, 2) + "  ·  " + fmt(o.km, 1) + " km  ·  " + fmt(o.min, 0) + " min", 0.8f, false)
-        )
+        caja.addView(linea(titulo + "   $" + fmt(o.tarifa, 2), 1.0f, true))
+        caja.addView(linea("$" + fmt(o.porHora, 2) + " /h   |   $" + fmt(o.porKm, 2) + " /km", 1.3f, true))
+        caja.addView(linea(fmt(o.min, 0) + " min (" + fmt(o.km, 1) + " km) total", 0.75f, false))
 
         val botones = LinearLayout(ctx).apply {
             orientation = LinearLayout.HORIZONTAL
