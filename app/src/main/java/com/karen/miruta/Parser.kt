@@ -16,13 +16,13 @@ data class Oferta(
     fun motivoFiltro(p: Prefs): String? {
         val f1 = { v: Double -> String.format(java.util.Locale.US, "%.1f", v) }
         return when {
-            p.recogidaMaxKm > 0 && recogidaKm > p.recogidaMaxKm ->
+            p.filtroRecMax && recogidaKm > 0 && recogidaKm > p.recogidaMaxKm ->
                 "Recogida lejana: ${f1(recogidaKm)} km (máx ${f1(p.recogidaMaxKm.toDouble())})"
-            p.recogidaMinKm > 0 && recogidaKm < p.recogidaMinKm ->
+            p.filtroRecMin && recogidaKm > 0 && recogidaKm < p.recogidaMinKm ->
                 "Recogida muy cerca: ${f1(recogidaKm)} km (mín ${f1(p.recogidaMinKm.toDouble())})"
-            p.duracionMax > 0 && viajeMin > p.duracionMax ->
+            p.filtroDurMax && viajeMin > p.duracionMax ->
                 "Viaje largo: ${viajeMin.toInt()} min (máx ${p.duracionMax})"
-            p.duracionMin > 0 && viajeMin < p.duracionMin ->
+            p.filtroDurMin && viajeMin < p.duracionMin ->
                 "Viaje corto: ${viajeMin.toInt()} min (mín ${p.duracionMin})"
             else -> null
         }
@@ -31,11 +31,15 @@ data class Oferta(
     /** 2 = conviene, 1 = regular, 0 = no conviene. */
     fun nivel(prefs: Prefs): Int {
         if (motivoFiltro(prefs) != null) return ROJO
-        val okKm = porKm >= prefs.minPorKm
-        val okHora = porHora >= prefs.minPorHora
+        // Solo cuentan los filtros de $/km y $/h que estén encendidos.
+        val activos = listOfNotNull(
+            if (prefs.filtroKm) porKm >= prefs.minPorKm else null,
+            if (prefs.filtroHora) porHora >= prefs.minPorHora else null
+        )
+        val cumplen = activos.count { it }
         return when {
-            okKm && okHora -> VERDE
-            okKm || okHora -> AMARILLO
+            cumplen == activos.size -> VERDE
+            cumplen > 0 -> AMARILLO
             else -> ROJO
         }
     }

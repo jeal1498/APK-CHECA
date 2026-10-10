@@ -15,22 +15,55 @@ class Prefs(context: Context) {
         get() = sp.getFloat("minHora", 150f)
         set(v) { sp.edit().putFloat("minHora", v).apply() }
 
-    /** Recogida (km) y duración del viaje (min). 0 = sin límite. */
-    var recogidaMinKm: Float
-        get() = sp.getFloat("recMin", 0f)
-        set(v) { sp.edit().putFloat("recMin", v).apply() }
+    // ---------- Filtros inteligentes: encendido + valor ----------
+    private fun b(k: String, d: Boolean) = sp.getBoolean(k, d)
+    private fun setB(k: String, v: Boolean) { sp.edit().putBoolean(k, v).apply() }
 
+    var filtroKm: Boolean
+        get() = b("fKm", true)
+        set(v) = setB("fKm", v)
+
+    var filtroHora: Boolean
+        get() = b("fHora", true)
+        set(v) = setB("fHora", v)
+
+    var filtroRecMax: Boolean
+        get() = b("fRecMax", false)
+        set(v) = setB("fRecMax", v)
+
+    var filtroRecMin: Boolean
+        get() = b("fRecMin", false)
+        set(v) = setB("fRecMin", v)
+
+    var filtroDurMax: Boolean
+        get() = b("fDurMax", false)
+        set(v) = setB("fDurMax", v)
+
+    var filtroDurMin: Boolean
+        get() = b("fDurMin", false)
+        set(v) = setB("fDurMin", v)
+
+
+    /** Recogida en km. */
     var recogidaMaxKm: Float
-        get() = sp.getFloat("recMax", 0f)
-        set(v) { sp.edit().putFloat("recMax", v).apply() }
+        get() = sp.getFloat("recMaxV", 2f)
+        set(v) { sp.edit().putFloat("recMaxV", v).apply() }
+
+    var recogidaMinKm: Float
+        get() = sp.getFloat("recMinV", 1f)
+        set(v) { sp.edit().putFloat("recMinV", v).apply() }
+
+    /** Duración del viaje (sin la recogida) en minutos. */
+    var duracionMax: Int
+        get() = sp.getInt("durMaxV", 30)
+        set(v) { sp.edit().putInt("durMaxV", v).apply() }
 
     var duracionMin: Int
-        get() = sp.getInt("durMin", 0)
-        set(v) { sp.edit().putInt("durMin", v).apply() }
+        get() = sp.getInt("durMinV", 10)
+        set(v) { sp.edit().putInt("durMinV", v).apply() }
 
-    var duracionMax: Int
-        get() = sp.getInt("durMax", 0)
-        set(v) { sp.edit().putInt("durMax", v).apply() }
+    fun filtrosActivos(): Int =
+        listOf(filtroKm, filtroHora, filtroRecMax, filtroRecMin, filtroDurMax, filtroDurMin).count { it }
 
     /** Tamaño base del texto del pop-up, en sp. */
     var tamanoTexto: Int
