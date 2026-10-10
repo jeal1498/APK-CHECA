@@ -71,7 +71,7 @@ object Parser {
     private const val NUM = """(\d{1,3}(?:,\d{3})+(?:\.\d{1,2})?|\d+(?:\.\d{1,2})?)"""
     private val montoSolo = Regex("""^\s*(?:MXN?\s?)?\$\s?$NUM\s*(?:[⚡x×\d.\s]*)$""")
     private val monto = Regex("""(?<!\+)\$\s?$NUM(?!\s?/)""")
-    private val noTarifa = Regex("""(adicional|/km|/h|aceptar|por inicio|propina|ganancia|hoy|semana|saldo|quedan|gasolina)""", RegexOption.IGNORE_CASE)
+    private val noTarifa = Regex("""(adicional|/km|/h|aceptar|por inicio|propina|ganancia|hoy|semana|saldo|quedan|gasolina|netos|meta \$)""", RegexOption.IGNORE_CASE)
 
     // "5min (1.7km)", "A 5 min (1.6 km)", "Viaje: 8 min (3.2 km)", "2min (720m)", "1 h 5 min (40 km)"
     private val tramo = Regex(
