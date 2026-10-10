@@ -16,7 +16,9 @@ import android.view.WindowManager
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
-import android.widget.FrameLayout
+import android.text.style.RelativeSizeSpan
+import android.view.animation.DecelerateInterpolator
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import java.util.Locale
@@ -41,6 +43,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         marca: Int = SIN_MARCA, reiniciar: Boolean = true
     ) {
         ultima = o
+        val nuevo = vista == null
         quitarVista()
         val v = construir(o, true, app, marca)
 
@@ -48,7 +51,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         @Suppress("DEPRECATION")
         wm.defaultDisplay.getRealMetrics(real)
         val area = zona ?: Rect(0, 0, real.widthPixels, real.heightPixels)
-        val ancho = minOf((area.width() * 0.92f).toInt(), dp(440))
+        val ancho = minOf((area.width() * 0.94f).toInt(), dp(360))
         val lp = WindowManager.LayoutParams(
             ancho,
             WindowManager.LayoutParams.WRAP_CONTENT,
@@ -64,6 +67,15 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         try {
             wm.addView(v, lp)
             vista = v
+            if (nuevo) {
+                val destino = v.alpha
+                v.alpha = 0f
+                v.scaleX = 0.94f
+                v.scaleY = 0.94f
+                v.translationY = -dp(8).toFloat()
+                v.animate().alpha(destino).scaleX(1f).scaleY(1f).translationY(0f)
+                    .setDuration(180).setInterpolator(DecelerateInterpolator()).start()
+            }
         } catch (e: Exception) {
             vista = null
         }
@@ -91,108 +103,151 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
     fun construir(o: Oferta, interactivo: Boolean, app: String? = null, marca: Int = SIN_MARCA): View {
         val base = prefs.tamanoTexto.toFloat()
         val nivel = o.nivel(prefs)
-        val acento = when (nivel) {
-            Oferta.VERDE -> VERDE
-            Oferta.AMARILLO -> AMARILLO
-            else -> ROJO
-        }
+        val acento = Tema.colorNivel(nivel)
         val estado = when (nivel) {
             Oferta.VERDE -> "CONVIENE"
             Oferta.AMARILLO -> "REGULAR"
             else -> "NO CONVIENE"
         }
 
+        // Ojo: ningún texto del pop-up puede ser "solo un monto", para que el lector
+        // no lo confunda con la tarifa de una oferta cuando queda encima de la app.
         fun txt(s: CharSequence, factor: Float, color: Int, negrita: Boolean) = TextView(ctx).apply {
             text = s
             setTextColor(color)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, base * factor)
             if (negrita) setTypeface(Typeface.DEFAULT_BOLD)
-            gravity = Gravity.CENTER
+            includeFontPadding = false
         }
 
-        val marco = FrameLayout(ctx).apply {
+        fun pastilla(s: String, fondo: Int, color: Int) = txt(s, 0.6f, color, true).apply {
+            gravity = Gravity.CENTER
+            setPadding(dp(8), dp(4), dp(8), dp(4))
+            background = GradientDrawable().apply {
+                cornerRadius = dp(50).toFloat()
+                setColor(fondo)
+            }
+        }
+
+        val marco = LinearLayout(ctx).apply {
+            orientation = LinearLayout.VERTICAL
             background = GradientDrawable().apply {
                 setColor(FONDO)
-                cornerRadius = dp(24).toFloat()
-                setStroke(dp(if (marca == MEJOR) 6 else 4), acento)
+                cornerRadius = dp(Tema.R_TARJETA).toFloat()
+                setStroke(dp(if (marca == MEJOR) 2 else 1), if (marca == MEJOR) acento else Tema.BORDE)
             }
-            elevation = dp(10).toFloat()
+            clipToOutline = true
+            elevation = dp(8).toFloat()
         }
+        if (marca == SEGUNDA) marco.alpha = 0.72f
+
+        // Franja del semáforo
+        marco.addView(View(ctx).apply { setBackgroundColor(acento) }, LinearLayout.LayoutParams(-1, dp(4)))
 
         val col = LinearLayout(ctx).apply {
             orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER_HORIZONTAL
-            setPadding(dp(20), dp(14), dp(20), dp(14))
+            setPadding(dp(Tema.S2), dp(12), dp(Tema.S2), dp(Tema.S2))
         }
+        marco.addView(col, LinearLayout.LayoutParams(-1, -2))
 
-        if (marca == SEGUNDA) marco.alpha = 0.72f
-
-        // Línea 0: app y marca (solo si aplica)
-        if (app != null && app.isNotEmpty() || marca != SIN_MARCA) {
-            val fila0 = LinearLayout(ctx).apply {
-                orientation = LinearLayout.HORIZONTAL
-                gravity = Gravity.CENTER
-                setPadding(0, 0, 0, dp(6))
-            }
-            if (!app.isNullOrEmpty()) {
-                fila0.addView(txt(app.uppercase(), 0.6f, Color.WHITE, true).apply {
-                    setPadding(dp(10), dp(3), dp(10), dp(3))
-                    background = GradientDrawable().apply {
-                        cornerRadius = dp(50).toFloat()
-                        setColor(if (app == "DiDi") Color.rgb(255, 112, 40) else Color.rgb(60, 66, 76))
-                    }
-                })
-            }
-            if (marca != SIN_MARCA) {
-                val esMejor = marca == MEJOR
-                fila0.addView(txt(if (esMejor) "⭐ MEJOR OPCIÓN" else "2ª opción", 0.6f,
-                    if (esMejor) Color.BLACK else TENUE, true).apply {
-                    setPadding(dp(10), dp(3), dp(10), dp(3))
-                    background = GradientDrawable().apply {
-                        cornerRadius = dp(50).toFloat()
-                        setColor(if (esMejor) Color.rgb(255, 214, 10) else Color.rgb(45, 50, 58))
-                    }
-                }, LinearLayout.LayoutParams(-2, -2).apply { leftMargin = dp(8) })
-            }
-            col.addView(fila0)
+        // Fila 1: estado · app · marca · ✕
+        val fila1 = LinearLayout(ctx).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
         }
-
-        // Línea 1: estado y tarifa
-        val l1 = "$estado: $" + fmt(o.tarifa, 2)
-        if (o.multiplicador > 1.0) {
-            val dinamica = "   ⚡" + fmtX(o.multiplicador) + "x"
-            val sp1 = SpannableString(l1 + dinamica)
-            sp1.setSpan(ForegroundColorSpan(AMARILLO), l1.length, sp1.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            col.addView(txt(sp1, 1.15f, acento, true))
-        } else {
-            col.addView(txt(l1, 1.15f, acento, true))
+        val sp = SpannableString("●  $estado")
+        sp.setSpan(ForegroundColorSpan(acento), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        fila1.addView(pastilla("", Tema.suaveNivel(nivel), acento).apply { text = sp })
+        if (!app.isNullOrEmpty()) {
+            fila1.addView(pastilla(app.uppercase(), if (app == "DiDi") Tema.DIDI else Tema.TARJETA2, Color.WHITE),
+                LinearLayout.LayoutParams(-2, -2).apply { leftMargin = dp(Tema.S1) })
         }
-
-        // Línea 2: $/h | $/km
-        val separador = "   |   "
-        val linea2 = SpannableString("$" + fmt(o.porHora, 2) + " /h" + separador + "$" + fmt(o.porKm, 2) + " /km")
-        val ini = linea2.indexOf(separador)
-        linea2.setSpan(ForegroundColorSpan(LINEA), ini, ini + separador.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        col.addView(txt(linea2, 1.45f, acento, true).apply { setPadding(0, dp(8), 0, dp(6)) })
-
-        // Línea 3: total
-        col.addView(txt(fmt(o.min, 0) + " min (" + fmt(o.km, 1) + " km) total", 0.8f, TENUE, false))
-        if (prefs.mostrarNeta && prefs.kmPorLitro > 0) {
-            col.addView(txt(
-                "⛽ −$" + fmt(o.gasolina(prefs), 2) + "   ·   Te quedan $" + fmt(o.neta(prefs), 2),
-                0.85f, Color.WHITE, true
-            ).apply { setPadding(0, dp(4), 0, 0) })
+        if (marca != SIN_MARCA) {
+            val esMejor = marca == MEJOR
+            fila1.addView(pastilla(if (esMejor) "⭐ MEJOR" else "2ª opción",
+                if (esMejor) Color.rgb(255, 214, 10) else Tema.TARJETA2,
+                if (esMejor) Color.BLACK else Tema.TEXTO2),
+                LinearLayout.LayoutParams(-2, -2).apply { leftMargin = dp(Tema.S1) })
         }
-        o.motivoFiltro(prefs)?.let { col.addView(txt("⚠ $it", 0.8f, ROJO, true).apply { setPadding(0, dp(6), 0, 0) }) }
-
-        marco.addView(col, FrameLayout.LayoutParams(-1, -2))
-
-        // ✕ arriba a la derecha
-        val cerrarBtn = txt("✕", 0.8f, TENUE, true).apply {
-            setPadding(dp(14), dp(10), dp(16), dp(10))
+        fila1.addView(View(ctx), LinearLayout.LayoutParams(0, 1, 1f))
+        val cerrarBtn = ImageView(ctx).apply {
+            setImageDrawable(Icono(Icono.CERRAR, Tema.TENUE))
+            setPadding(dp(6), dp(6), dp(6), dp(6))
             if (interactivo) setOnClickListener { ocultar() }
         }
-        marco.addView(cerrarBtn, FrameLayout.LayoutParams(-2, -2, Gravity.TOP or Gravity.END))
+        fila1.addView(cerrarBtn, LinearLayout.LayoutParams(dp(32), dp(32)))
+        col.addView(fila1)
+
+        // Fila 2: monto grande (neta o tarifa) y multiplicador
+        val conNeta = prefs.mostrarNeta && prefs.kmPorLitro > 0
+        val fila2 = LinearLayout(ctx).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(0, dp(12), 0, 0)
+        }
+        val etiqueta = if (conNeta) "Te quedan" else "Tarifa"
+        val valor = "$" + fmt(if (conNeta) o.neta(prefs) else o.tarifa, 2)
+        val grande = SpannableString("$etiqueta  $valor")
+        grande.setSpan(RelativeSizeSpan(0.42f), 0, etiqueta.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        grande.setSpan(ForegroundColorSpan(Tema.TEXTO2), 0, etiqueta.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        fila2.addView(txt(grande, 1.9f, Tema.TEXTO, true), LinearLayout.LayoutParams(0, -2, 1f))
+        if (o.multiplicador > 1.0) {
+            fila2.addView(pastilla("⚡" + fmtX(o.multiplicador) + "x", Tema.AMARILLO_SUAVE, Tema.AMARILLO))
+        }
+        col.addView(fila2)
+        if (conNeta) {
+            col.addView(txt(
+                "Tarifa $" + fmt(o.tarifa, 2) + "  ·  Gasolina −$" + fmt(o.gasolina(prefs), 2),
+                0.7f, Tema.TENUE, false
+            ).apply { setPadding(0, dp(6), 0, 0) })
+        }
+
+        // Fila 3: $/h y $/km
+        val metricas = LinearLayout(ctx).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(0, dp(12), 0, dp(12))
+            background = GradientDrawable().apply {
+                cornerRadius = dp(Tema.R_BOTON).toFloat()
+                setColor(Tema.TARJETA)
+            }
+        }
+        fun metrica(v: String, etq: String) = LinearLayout(ctx).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
+            addView(txt(v, 1.25f, acento, true).apply { gravity = Gravity.CENTER })
+            addView(txt(etq, 0.6f, Tema.TENUE, false).apply {
+                gravity = Gravity.CENTER
+                setPadding(0, dp(4), 0, 0)
+            })
+        }
+        metricas.addView(metrica("$" + fmt(o.porHora, 0) + "/h", "por hora"), LinearLayout.LayoutParams(0, -2, 1f))
+        metricas.addView(View(ctx).apply { setBackgroundColor(Tema.BORDE) }, LinearLayout.LayoutParams(dp(1), dp(32)))
+        metricas.addView(metrica("$" + fmt(o.porKm, 2) + "/km", "por km"), LinearLayout.LayoutParams(0, -2, 1f))
+        col.addView(metricas, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(12) })
+
+        // Fila 4: total del viaje (la palabra "total" evita que el lector sume estos km)
+        col.addView(txt(fmt(o.min, 0) + " min  ·  " + fmt(o.km, 1) + " km total", 0.7f, Tema.TEXTO2, false).apply {
+            gravity = Gravity.CENTER
+            setPadding(0, dp(12), 0, 0)
+        }, LinearLayout.LayoutParams(-1, -2))
+
+        o.motivoFiltro(prefs)?.let { motivo ->
+            val aviso = LinearLayout(ctx).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                setPadding(dp(12), dp(8), dp(12), dp(8))
+                background = GradientDrawable().apply {
+                    cornerRadius = dp(Tema.R_BOTON).toFloat()
+                    setColor(Tema.ROJO_SUAVE)
+                }
+            }
+            val lado = (base * 0.75f * ctx.resources.displayMetrics.scaledDensity).toInt()
+            aviso.addView(ImageView(ctx).apply { setImageDrawable(Icono(Icono.ALERTA, Tema.ROJO)) },
+                LinearLayout.LayoutParams(lado, lado).apply { rightMargin = dp(Tema.S1) })
+            aviso.addView(txt(motivo, 0.7f, Tema.ROJO, true), LinearLayout.LayoutParams(0, -2, 1f))
+            col.addView(aviso, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(12) })
+        }
 
         return marco
     }
@@ -211,12 +266,6 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         const val SIN_MARCA = 0
         const val MEJOR = 1
         const val SEGUNDA = 2
-        private val FONDO = Color.rgb(12, 14, 18)
-        private val VERDE = Color.rgb(34, 197, 94)
-        private val VERDE_OSCURO = Color.rgb(22, 128, 61)
-        private val AMARILLO = Color.rgb(240, 180, 0)
-        private val ROJO = Color.rgb(239, 68, 68)
-        private val TENUE = Color.rgb(154, 163, 175)
-        private val LINEA = Color.rgb(75, 82, 94)
+        private val FONDO = Color.rgb(18, 22, 20)
     }
 }

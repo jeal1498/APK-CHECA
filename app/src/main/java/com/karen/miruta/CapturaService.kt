@@ -213,9 +213,9 @@ class CapturaService : Service() {
             this, 2, Intent(this, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE
         )
         val n = Notification.Builder(this, CANAL)
-            .setContentTitle("Mi Ruta está leyendo la pantalla")
+            .setContentTitle("Neta está leyendo la pantalla")
             .setContentText("Toca \"Detener\" para apagarlo")
-            .setSmallIcon(R.drawable.ic_launcher)
+            .setSmallIcon(R.drawable.ic_notif)
             .setContentIntent(abrirPi)
             .addAction(Notification.Action.Builder(null, "Detener", detenerPi).build())
             .setOngoing(true)
