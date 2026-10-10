@@ -10,6 +10,8 @@ import android.view.accessibility.AccessibilityNodeInfo
 class RutaService : AccessibilityService() {
     private lateinit var prefs: Prefs
     private var popup: Popup? = null
+    private var alertas: Alertas? = null
+    private var appActual = ""
     private val handler = Handler(Looper.getMainLooper())
     private var pendiente = false
     private var ultimaFirma = ""
@@ -20,6 +22,7 @@ class RutaService : AccessibilityService() {
         super.onServiceConnected()
         prefs = Prefs(this)
         popup = Popup(this, prefs, WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY)
+        alertas = Alertas(this, prefs)
         instancia = this
     }
 
@@ -35,7 +38,10 @@ class RutaService : AccessibilityService() {
         if (firma == ultimaFirma && ahora - ultimaVez < 60_000) return
         ultimaFirma = firma
         ultimaVez = ahora
+        val nivel = oferta.nivel(prefs)
         popup?.mostrar(oferta)
+        alertas?.avisar(nivel)
+        Historial.registrar(this, oferta, appActual, nivel)
     }
 
     companion object {
@@ -46,6 +52,14 @@ class RutaService : AccessibilityService() {
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         if (!::prefs.isInitialized) return
         val pkg = event?.packageName?.toString() ?: return
+        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+            val p = pkg.lowercase()
+            when {
+                p.contains("uber") -> appActual = "Uber"
+                p.contains("didi") -> appActual = "DiDi"
+                p != packageName && !p.contains("systemui") -> appActual = "Otra"
+            }
+        }
         if (!esApp(pkg)) return
         if (pendiente) return
         pendiente = true

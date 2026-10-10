@@ -26,11 +26,15 @@ import android.widget.SeekBar
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class MainActivity : Activity() {
     private lateinit var prefs: Prefs
     private lateinit var estado: TextView
     private lateinit var estadoCaptura: TextView
+    private lateinit var resumenHoy: TextView
     private var popupPrueba: Popup? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,16 +105,45 @@ class MainActivity : Activity() {
         })
         col.addView(texto("También puedes usar A− / A+ dentro del pop-up.", 13f, false))
         col.addView(boton("Probar pop-up") {
-            popupPrueba?.mostrar(Oferta(85.0, 7.2, 24.0))
+            val o = Oferta(85.0, 7.2, 24.0)
+            popupPrueba?.mostrar(o)
+            Alertas(this, prefs).avisar(o.nivel(prefs))
+        })
+
+        // --- Avisos ---
+        col.addView(seccion("5. Vibración y sonido"))
+        col.addView(texto("Conviene: 1 vibración corta · Regular: 2 cortas · No conviene: 1 larga", 13f, false))
+        col.addView(interruptor("Vibrar", prefs.vibrar) { prefs.vibrar = it })
+        col.addView(interruptor("Sonido", prefs.sonido) { prefs.sonido = it })
+        col.addView(deslizador("Volumen del sonido", 10, 100, prefs.volumen, " %") { prefs.volumen = it })
+        val filaPrueba = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+        val alertas = Alertas(this, prefs)
+        listOf("🟢" to Oferta.VERDE, "🟡" to Oferta.AMARILLO, "🔴" to Oferta.ROJO).forEach { (e, n) ->
+            filaPrueba.addView(boton("Probar $e") { alertas.avisar(n) },
+                LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+        }
+        col.addView(filaPrueba)
+
+        // --- Historial ---
+        col.addView(seccion("6. Historial de hoy"))
+        resumenHoy = texto("", 15f, false)
+        col.addView(resumenHoy)
+        col.addView(boton("Ver ofertas de hoy") { verHistorial() })
+        col.addView(boton("Borrar historial") {
+            AlertDialog.Builder(this)
+                .setMessage("¿Borrar todo el historial?")
+                .setPositiveButton("Borrar") { _, _ -> Historial.borrar(this); actualizarResumen() }
+                .setNegativeButton("Cancelar", null)
+                .show()
         })
 
         // --- Apps ---
-        col.addView(seccion("5. Apps"))
+        col.addView(seccion("7. Apps"))
         col.addView(interruptor("Uber Driver", prefs.uber) { prefs.uber = it })
         col.addView(interruptor("DiDi Conductor", prefs.didi) { prefs.didi = it })
 
         // --- Diagnóstico ---
-        col.addView(seccion("6. Diagnóstico"))
+        col.addView(seccion("8. Diagnóstico"))
         col.addView(texto(
             "Si el pop-up no sale o lee mal los datos, activa esto, recibe una oferta " +
             "y luego comparte las capturas de texto para ajustar la app.", 13f, false))
@@ -126,6 +159,52 @@ class MainActivity : Activity() {
     override fun onResume() {
         super.onResume()
         actualizarEstado()
+        actualizarResumen()
+    }
+
+    private fun dinero(v: Double, dec: Int = 2) = "$" + String.format(Locale.US, "%,.${dec}f", v)
+
+    private fun resumen(regs: List<Registro>): String {
+        if (regs.isEmpty()) return "Aún no hay ofertas hoy."
+        val verdes = regs.count { it.nivel == Oferta.VERDE }
+        val amarillas = regs.count { it.nivel == Oferta.AMARILLO }
+        val rojas = regs.count { it.nivel == Oferta.ROJO }
+        val km = regs.sumOf { it.km }
+        val min = regs.sumOf { it.min }
+        val tarifa = regs.sumOf { it.tarifa }
+        val porKm = if (km > 0) tarifa / km else 0.0
+        val porHora = if (min > 0) tarifa / min * 60 else 0.0
+        val mejor = regs.maxByOrNull { it.porKm }!!
+        return "Ofertas recibidas: ${regs.size}\n" +
+            "🟢 $verdes   🟡 $amarillas   🔴 $rojas\n" +
+            "Promedio: ${dinero(porKm)}/km · ${dinero(porHora, 0)}/h\n" +
+            "Mejor: ${dinero(mejor.porKm)}/km (${dinero(mejor.tarifa)}, ${mejor.app.ifEmpty { "—" }})"
+    }
+
+    private fun actualizarResumen() {
+        resumenHoy.text = resumen(Historial.deHoy(this))
+    }
+
+    private fun verHistorial() {
+        val regs = Historial.deHoy(this)
+        val fmtHora = SimpleDateFormat("HH:mm", Locale.getDefault())
+        val lista = regs.asReversed().joinToString("\n") { r ->
+            val e = when (r.nivel) { Oferta.VERDE -> "🟢"; Oferta.AMARILLO -> "🟡"; else -> "🔴" }
+            "$e ${fmtHora.format(Date(r.hora))}  ${r.app.ifEmpty { "—" }}  ${dinero(r.tarifa)}\n" +
+                "     ${String.format(Locale.US, "%.1f", r.km)} km · ${r.min.toInt()} min → " +
+                "${dinero(r.porKm)}/km · ${dinero(r.porHora, 0)}/h"
+        }
+        val vista = TextView(this).apply {
+            text = resumen(regs) + if (lista.isNotEmpty()) "\n\n" + lista else ""
+            setTextIsSelectable(true)
+            setPadding(dp(18), dp(12), dp(18), dp(12))
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+        }
+        AlertDialog.Builder(this)
+            .setTitle("Ofertas de hoy")
+            .setView(ScrollView(this).apply { addView(vista) })
+            .setPositiveButton("Cerrar", null)
+            .show()
     }
 
     private fun iniciarCaptura() {

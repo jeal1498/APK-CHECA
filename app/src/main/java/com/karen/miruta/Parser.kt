@@ -3,6 +3,23 @@ package com.karen.miruta
 data class Oferta(val tarifa: Double, val km: Double, val min: Double) {
     val porKm: Double get() = if (km > 0) tarifa / km else 0.0
     val porHora: Double get() = if (min > 0) tarifa / min * 60.0 else 0.0
+
+    /** 2 = conviene, 1 = regular, 0 = no conviene. */
+    fun nivel(prefs: Prefs): Int {
+        val okKm = porKm >= prefs.minPorKm
+        val okHora = porHora >= prefs.minPorHora
+        return when {
+            okKm && okHora -> VERDE
+            okKm || okHora -> AMARILLO
+            else -> ROJO
+        }
+    }
+
+    companion object {
+        const val VERDE = 2
+        const val AMARILLO = 1
+        const val ROJO = 0
+    }
 }
 
 /**

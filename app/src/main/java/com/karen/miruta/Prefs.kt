@@ -37,6 +37,19 @@ class Prefs(context: Context) {
         get() = sp.getBoolean("didi", true)
         set(v) { sp.edit().putBoolean("didi", v).apply() }
 
+    var vibrar: Boolean
+        get() = sp.getBoolean("vib", true)
+        set(v) { sp.edit().putBoolean("vib", v).apply() }
+
+    var sonido: Boolean
+        get() = sp.getBoolean("son", false)
+        set(v) { sp.edit().putBoolean("son", v).apply() }
+
+    /** Volumen del sonido, 10–100. */
+    var volumen: Int
+        get() = sp.getInt("vol", 80)
+        set(v) { sp.edit().putInt("vol", v).apply() }
+
     var diagnostico: Boolean
         get() = sp.getBoolean("diag", false)
         set(v) { sp.edit().putBoolean("diag", v).apply() }

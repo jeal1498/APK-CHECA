@@ -63,12 +63,9 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
 
     private fun construir(o: Oferta): View {
         val base = prefs.tamanoTexto.toFloat()
-        val okKm = o.porKm >= prefs.minPorKm
-        val okHora = o.porHora >= prefs.minPorHora
-
-        val (fondo, texto, titulo) = when {
-            okKm && okHora -> Triple(Color.rgb(27, 142, 62), Color.WHITE, "CONVIENE")
-            okKm || okHora -> Triple(Color.rgb(240, 180, 0), Color.BLACK, "REGULAR")
+        val (fondo, texto, titulo) = when (o.nivel(prefs)) {
+            Oferta.VERDE -> Triple(Color.rgb(27, 142, 62), Color.WHITE, "CONVIENE")
+            Oferta.AMARILLO -> Triple(Color.rgb(240, 180, 0), Color.BLACK, "REGULAR")
             else -> Triple(Color.rgb(198, 40, 40), Color.WHITE, "NO CONVIENE")
         }
 
