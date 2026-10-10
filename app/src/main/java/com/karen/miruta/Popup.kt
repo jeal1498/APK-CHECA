@@ -139,7 +139,10 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         val base = prefs.tamanoTexto.toFloat()
         val nivel = o.nivel(prefs)
         val acento = Tema.colorNivel(nivel)
-        val tinta = when (nivel) {
+        // 2ª opción: sólida, pero con la franja apagada para que la mejor resalte.
+        val segunda = marca == SEGUNDA
+        val franjaColor = if (segunda) mezclar(acento, FONDO, 0.45f) else acento
+        val tinta = if (segunda) Color.WHITE else when (nivel) {
             Oferta.VERDE -> TINTA_VERDE
             Oferta.AMARILLO -> TINTA_AMARILLO
             else -> TINTA_ROJO
@@ -174,19 +177,19 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
             background = GradientDrawable().apply {
                 setColor(FONDO)
                 cornerRadius = dp(Tema.R_TARJETA).toFloat()
-                setStroke(dp(if (marca == MEJOR) 2 else 1), if (marca == MEJOR) acento else Tema.BORDE)
+                // La mejor lleva un borde dorado grueso, como su ⭐.
+                setStroke(dp(if (marca == MEJOR) 3 else 1), if (marca == MEJOR) DORADO else Tema.BORDE)
             }
             clipToOutline = true
             elevation = dp(8).toFloat()
         }
-        if (marca == SEGUNDA) marco.alpha = 0.72f
 
         // Franja del semáforo: [app · marca]  ACCIÓN  [⚡ · ✕]. Los lados pesan igual
         // para que la acción quede centrada.
         val franja = LinearLayout(ctx).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
-            setBackgroundColor(acento)
+            setBackgroundColor(franjaColor)
             setPadding(dp(Tema.S1), dp(4), dp(4), dp(4))
         }
         val izq = LinearLayout(ctx).apply {
@@ -199,7 +202,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         if (marca != SIN_MARCA) {
             val esMejor = marca == MEJOR
             izq.addView(pastilla(if (esMejor) "⭐ MEJOR" else "2ª",
-                if (esMejor) Color.rgb(255, 214, 10) else Tema.TARJETA2,
+                if (esMejor) DORADO else Tema.TARJETA2,
                 if (esMejor) Color.BLACK else Tema.TEXTO2),
                 LinearLayout.LayoutParams(-2, -2).apply { leftMargin = dp(4) })
         }
@@ -328,6 +331,14 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         const val SIN_MARCA = 0
         const val MEJOR = 1
         const val SEGUNDA = 2
+        private val DORADO = Color.rgb(255, 214, 10)
+
+        /** Mezcla [a] con [b]: f = 0 da [a], f = 1 da [b]. */
+        private fun mezclar(a: Int, b: Int, f: Float): Int = Color.rgb(
+            (Color.red(a) * (1 - f) + Color.red(b) * f).toInt(),
+            (Color.green(a) * (1 - f) + Color.green(b) * f).toInt(),
+            (Color.blue(a) * (1 - f) + Color.blue(b) * f).toInt()
+        )
         private val FONDO = Color.rgb(18, 22, 20)
         // Texto oscuro sobre la franja de color
         private val TINTA_VERDE = Color.rgb(6, 33, 15)
