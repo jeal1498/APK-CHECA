@@ -46,6 +46,13 @@ class RutaService : AccessibilityService() {
     /** Muestra la oferta de [app] sobre su [zona] (sin repetir la misma en 60 s). */
     fun mostrarOferta(oferta: Oferta, app: String, zona: Rect?) {
         val clave = app.ifEmpty { "?" }
+        // Con el pop-up encima, el lector ve la oferta tapada y lee otros montos.
+        // Si los tramos son los mismos (o se perdió uno), es la misma oferta: no se toca.
+        activas[clave]?.first?.let { a ->
+            val mismosTramos = Math.abs(a.km - oferta.km) < 0.05 && Math.abs(a.min - oferta.min) < 0.5
+            val tramoTapado = a.recogidaMin > 0 && oferta.recogidaMin == 0.0
+            if (mismosTramos || tramoTapado) return
+        }
         val firma = "${oferta.tarifa}|${oferta.km}|${oferta.min}"
         val ahora = System.currentTimeMillis()
         ultimaFirma[clave]?.let { (f, t) -> if (f == firma && ahora - t < 60_000) return }
@@ -66,6 +73,9 @@ class RutaService : AccessibilityService() {
         alertas?.avisar(nivel)
         Historial.registrar(this, oferta, app, nivel)
     }
+
+    /** Zonas que tapan los pop-ups visibles. */
+    fun rectsPopups(): List<Rect> = popups.values.mapNotNull { it.rect() }
 
     /** Vuelve a pintar los pop-ups visibles con su marca (mejor / 2ª opción). */
     private fun redibujar(nueva: String?) {

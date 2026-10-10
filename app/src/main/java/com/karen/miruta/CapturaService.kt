@@ -150,9 +150,16 @@ class CapturaService : Service() {
         val cliente = ocr ?: run { procesando = false; return }
         cliente.process(InputImage.fromBitmap(bmp, 0))
             .addOnSuccessListener { resultado ->
-                val todas = resultado.textBlocks.flatMap { it.lines }
                 val escalaX = capAncho.toFloat() / bmp.width
                 val escalaY = capAlto.toFloat() / bmp.height
+                // Lo que está debajo de nuestros pop-ups no se lee (son nuestros números).
+                val tapado = RutaService.instancia?.rectsPopups().orEmpty()
+                val todas = resultado.textBlocks.flatMap { it.lines }.filter { l ->
+                    val b = l.boundingBox ?: return@filter true
+                    val x = (b.exactCenterX() * escalaX).toInt()
+                    val y = (b.exactCenterY() * escalaY).toInt()
+                    tapado.none { it.contains(x, y) }
+                }
                 val zonas = RutaService.instancia?.zonasApps().orEmpty()
                 if (zonas.isEmpty()) {
                     // No sabemos dónde está cada app. En horizontal con dos ofertas

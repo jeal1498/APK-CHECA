@@ -19,6 +19,7 @@ import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.view.animation.DecelerateInterpolator
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -29,6 +30,8 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
     private val handler = Handler(Looper.getMainLooper())
     private var vista: View? = null
     private var ultima: Oferta? = null
+    private var firmaVista: String? = null
+    private var lpActual: WindowManager.LayoutParams? = null
     private var temporizador = false
     private val cerrar = Runnable { temporizador = false; ocultar() }
 
@@ -44,8 +47,18 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         marca: Int = SIN_MARCA, reiniciar: Boolean = true
     ) {
         ultima = o
-        val nuevo = vista == null
-        quitarVista()
+        // Misma oferta, misma marca y misma zona: no se vuelve a pintar (evita el parpadeo).
+        val firma = "$o|$app|$marca|$zona|${prefs.posicion}"
+        val actual = vista
+        if (actual != null && firma == firmaVista) {
+            if (reiniciar || !temporizador) {
+                handler.removeCallbacks(cerrar)
+                handler.postDelayed(cerrar, prefs.duracionSeg * 1000L)
+                temporizador = true
+            }
+            return
+        }
+        firmaVista = firma
         val v = construir(o, true, app, marca)
 
         val real = DisplayMetrics()
@@ -65,20 +78,27 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         lp.gravity = Gravity.TOP or Gravity.LEFT
         lp.x = area.left + (area.width() - ancho) / 2
         lp.y = area.top + area.height() * prefs.posicion / 100
-        try {
-            wm.addView(v, lp)
-            vista = v
-            if (nuevo) {
-                val destino = v.alpha
-                v.alpha = 0f
-                v.scaleX = 0.94f
-                v.scaleY = 0.94f
-                v.translationY = -dp(8).toFloat()
-                v.animate().alpha(destino).scaleX(1f).scaleY(1f).translationY(0f)
+        lpActual = lp
+        if (actual is FrameLayout) {
+            // Ya hay ventana: se cambia el contenido sin quitarla (sin parpadeo).
+            actual.removeAllViews()
+            actual.addView(v, ajuste())
+            try { wm.updateViewLayout(actual, lp) } catch (_: Exception) { }
+        } else {
+            val caja = FrameLayout(ctx).apply { addView(v, ajuste()) }
+            try {
+                wm.addView(caja, lp)
+                vista = caja
+                caja.alpha = 0f
+                caja.scaleX = 0.94f
+                caja.scaleY = 0.94f
+                caja.translationY = -dp(8).toFloat()
+                caja.animate().alpha(1f).scaleX(1f).scaleY(1f).translationY(0f)
                     .setDuration(180).setInterpolator(DecelerateInterpolator()).start()
+            } catch (e: Exception) {
+                vista = null
+                firmaVista = null
             }
-        } catch (e: Exception) {
-            vista = null
         }
         if (reiniciar || !temporizador) {
             handler.removeCallbacks(cerrar)
@@ -98,6 +118,20 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
     private fun quitarVista() {
         vista?.let { try { wm.removeView(it) } catch (_: Exception) { } }
         vista = null
+        firmaVista = null
+        lpActual = null
+    }
+
+    private fun ajuste() = FrameLayout.LayoutParams(
+        FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT
+    )
+
+    /** Parte de la pantalla que tapa el pop-up (para que el lector no la lea). */
+    fun rect(): Rect? {
+        val v = vista ?: return null
+        val lp = lpActual ?: return null
+        val alto = if (v.height > 0) v.height else dp(200)
+        return Rect(lp.x, lp.y, lp.x + lp.width, lp.y + alto)
     }
 
     /** También se usa para la vista previa en Ajustes (sin acción en la ✕). */
