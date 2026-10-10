@@ -24,6 +24,10 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.text.Editable
+import android.text.InputType
+import android.text.TextWatcher
+import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.ScrollView
@@ -60,9 +64,6 @@ class MainActivity : Activity() {
     private lateinit var etiquetaCircular: TextView
 
     // Inicio
-    private lateinit var estadoTitulo: TextView
-    private lateinit var estadoSub: TextView
-    private lateinit var estadoPunto: View
     private lateinit var tarjetaPermiso: View
     private lateinit var statVerde: TextView
     private lateinit var statAmarillo: TextView
@@ -195,23 +196,6 @@ class MainActivity : Activity() {
             setPadding(0, 0, 0, dp(16))
         })
 
-        // --- Estado ---
-        val est = tarjeta()
-        val filaEstado = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-        }
-        estadoPunto = View(this)
-        filaEstado.addView(estadoPunto, LinearLayout.LayoutParams(dp(14), dp(14)).apply { rightMargin = dp(12) })
-        val textosEstado = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        estadoTitulo = texto("", 20f, cTexto, true)
-        estadoSub = texto("", 13f, cTenue, false)
-        textosEstado.addView(estadoTitulo)
-        textosEstado.addView(estadoSub)
-        filaEstado.addView(textosEstado, LinearLayout.LayoutParams(0, -2, 1f))
-        est.addView(filaEstado)
-        col.addView(est, margenTarjeta())
-
         // --- Permiso pendiente (solo si falta) ---
         val perm = tarjeta(Color.rgb(58, 42, 12))
         perm.addView(texto("⚠️  Falta un permiso", 17f, cAmarillo, true))
@@ -275,23 +259,6 @@ class MainActivity : Activity() {
         val acc = servicioActivo()
         val leyendo = CapturaService.corriendo
         tarjetaPermiso.visibility = if (acc) View.GONE else View.VISIBLE
-        when {
-            !acc -> {
-                estadoTitulo.text = "Falta activar el servicio"
-                estadoSub.text = "Sigue el paso de abajo"
-                punto(cAmarillo)
-            }
-            leyendo -> {
-                estadoTitulo.text = "Leyendo ofertas"
-                estadoSub.text = "Abre Uber o DiDi y espera una oferta"
-                punto(cVerde)
-            }
-            else -> {
-                estadoTitulo.text = "Lectura apagada"
-                estadoSub.text = "Toca el botón verde de abajo para iniciar"
-                punto(cTenue)
-            }
-        }
         if (leyendo) {
             botonCircular.text = "■"
             botonCircular.setTextColor(Color.WHITE)
@@ -308,13 +275,6 @@ class MainActivity : Activity() {
         if (::ayudaPermiso.isInitialized) {
             ayudaPermiso.text = if (acc) "✅ Servicio de Accesibilidad activado" else "⚠️ Servicio de Accesibilidad desactivado"
             ayudaPermiso.setTextColor(if (acc) cVerde else cAmarillo)
-        }
-    }
-
-    private fun punto(color: Int) {
-        estadoPunto.background = GradientDrawable().apply {
-            shape = GradientDrawable.OVAL
-            setColor(color)
         }
     }
 
@@ -419,40 +379,24 @@ class MainActivity : Activity() {
         actualizarInsignia()
 
         lista.addView(filtro(
-            "⏱️", "Por hora", "Ganancia mínima por hora de trabajo (recogida + viaje)",
-            listOf(150f, 180f, 200f, 250f), "$", "", 10f,
+            "⏱️", "Por hora", "Valor mínimo por hora", null, "$", "", 10f,
             { prefs.filtroHora }, { prefs.filtroHora = it },
             { prefs.minPorHora }, { prefs.minPorHora = it }
         ))
         lista.addView(filtro(
-            "📈", "Por km", "Ganancia mínima por kilómetro recorrido",
-            listOf(7f, 8f, 9f, 10f), "$", "", 0.5f,
+            "📈", "Por km", "Valor mínimo por kilómetro", null, "$", "", 0.5f,
             { prefs.filtroKm }, { prefs.filtroKm = it },
             { prefs.minPorKm }, { prefs.minPorKm = it }
         ))
         lista.addView(filtro(
-            "📍", "Recogida máx.", "Distancia máxima para ir por el pasajero",
-            listOf(2f, 3f, 4f, 5f), "", "km", 0.5f,
+            "📍", "Recogida máx.", "Distancia máxima de recogida", listOf(2f, 3f, 4f, 5f), "", "km", 0.5f,
             { prefs.filtroRecMax }, { prefs.filtroRecMax = it },
             { prefs.recogidaMaxKm }, { prefs.recogidaMaxKm = it }
         ))
         lista.addView(filtro(
-            "🎯", "Recogida mín.", "Rechaza recogidas demasiado cerca",
-            listOf(0.5f, 1f, 1.5f, 2f), "", "km", 0.5f,
-            { prefs.filtroRecMin }, { prefs.filtroRecMin = it },
-            { prefs.recogidaMinKm }, { prefs.recogidaMinKm = it }
-        ))
-        lista.addView(filtro(
-            "⌛", "Duración máx.", "Tiempo máximo del viaje (sin contar la recogida)",
-            listOf(15f, 20f, 30f, 45f), "", "min", 5f,
+            "⌛", "Duración máx.", "Tiempo máximo de viaje", listOf(15f, 20f, 30f), "", "min", 5f,
             { prefs.filtroDurMax }, { prefs.filtroDurMax = it },
             { prefs.duracionMax.toFloat() }, { prefs.duracionMax = it.toInt() }
-        ))
-        lista.addView(filtro(
-            "⏳", "Duración mín.", "Tiempo mínimo del viaje (sin contar la recogida)",
-            listOf(5f, 10f, 15f, 20f), "", "min", 5f,
-            { prefs.filtroDurMin }, { prefs.filtroDurMin = it },
-            { prefs.duracionMin.toFloat() }, { prefs.duracionMin = it.toInt() }
         ))
         return cont
     }
@@ -467,7 +411,7 @@ class MainActivity : Activity() {
 
     private fun filtro(
         emoji: String, titulo: String, descripcion: String,
-        valores: List<Float>, pre: String, unidad: String, incremento: Float,
+        valores: List<Float>?, pre: String, unidad: String, incremento: Float,
         leerOn: () -> Boolean, ponerOn: (Boolean) -> Unit,
         leerV: () -> Float, ponerV: (Float) -> Unit
     ): View {
@@ -501,53 +445,60 @@ class MainActivity : Activity() {
             setPadding(dp(14), dp(12), dp(14), dp(14))
             visibility = View.GONE
         }
-        panel.addView(texto("$descripcion. Toca un valor para elegirlo; tócalo otra vez para apagar el filtro.", 13f, cTenue, false))
         val chips = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
         val chipViews = ArrayList<Pair<Float, LinearLayout>>()
-        panel.addView(chips, margenArriba(12))
-
-        // Ajuste fino − valor +
-        val fino = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-        }
-        fino.addView(texto("Otro valor", 14f, cTenue, false), LinearLayout.LayoutParams(0, -2, 1f))
-        val finoValor = texto("", 16f, cTexto, true).apply { gravity = Gravity.CENTER }
-        panel.addView(fino, margenArriba(12))
-
         lateinit var pintar: () -> Unit
 
-        fun elegir(v: Float) {
-            ponerV(v)
-            ponerOn(true)
-            pintar()
-        }
-
-        valores.forEachIndexed { i, v ->
-            val chip = LinearLayout(this).apply {
-                orientation = LinearLayout.VERTICAL
-                gravity = Gravity.CENTER
-                setPadding(0, dp(10), 0, dp(10))
-                isClickable = true
-                addView(texto(pre + num(v), 20f, cTexto, true).apply { gravity = Gravity.CENTER })
-                if (unidad.isNotEmpty()) addView(texto(unidad, 12f, cTenue, false).apply { gravity = Gravity.CENTER })
-                setOnClickListener {
-                    if (leerOn() && leerV() == v) { ponerOn(false); pintar() } else elegir(v)
+        if (valores != null) {
+            panel.addView(texto("$descripcion — toca para activar/desactivar", 13f, cTenue, false))
+            panel.addView(chips, margenArriba(12))
+            valores.forEachIndexed { i, v ->
+                val chip = LinearLayout(this).apply {
+                    orientation = LinearLayout.VERTICAL
+                    gravity = Gravity.CENTER
+                    setPadding(0, dp(12), 0, dp(12))
+                    isClickable = true
+                    addView(texto(pre + num(v), 20f, cTexto, true).apply { gravity = Gravity.CENTER })
+                    if (unidad.isNotEmpty()) addView(texto(unidad, 12f, cTenue, false).apply { gravity = Gravity.CENTER })
+                    setOnClickListener {
+                        if (leerOn() && leerV() == v) {
+                            ponerOn(false)
+                        } else {
+                            ponerV(v)
+                            ponerOn(true)
+                        }
+                        pintar()
+                    }
                 }
+                chipViews.add(v to chip)
+                chips.addView(chip, LinearLayout.LayoutParams(0, -2, 1f).apply { if (i > 0) leftMargin = dp(8) })
             }
-            chipViews.add(v to chip)
-            chips.addView(chip, LinearLayout.LayoutParams(0, -2, 1f).apply { if (i > 0) leftMargin = dp(8) })
+        } else {
+            panel.addView(texto(descripcion, 14f, cVerde, false))
+            val campo = EditText(this).apply {
+                setText(num(leerV()))
+                setTextColor(cTexto)
+                setHintTextColor(cTenue)
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
+                inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+                setPadding(dp(18), dp(16), dp(18), dp(16))
+                background = GradientDrawable().apply {
+                    cornerRadius = dp(14).toFloat()
+                    setColor(Color.rgb(15, 17, 21))
+                    setStroke(dp(1), Color.rgb(60, 66, 76))
+                }
+                addTextChangedListener(object : TextWatcher {
+                    override fun beforeTextChanged(a: CharSequence?, b: Int, c: Int, d: Int) {}
+                    override fun onTextChanged(a: CharSequence?, b: Int, c: Int, d: Int) {}
+                    override fun afterTextChanged(e: Editable?) {
+                        val v = e?.toString()?.replace(",", ".")?.toFloatOrNull() ?: return
+                        ponerV(v)
+                        pintar()
+                    }
+                })
+            }
+            panel.addView(campo, margenArriba(10))
         }
-
-        fun masMenos(s: String, d: Float) = texto(s, 20f, cTexto, true).apply {
-            gravity = Gravity.CENTER
-            background = ripple(cTarjeta2, 20)
-            isClickable = true
-            setOnClickListener { elegir((leerV() + d).coerceAtLeast(incremento)) }
-        }
-        fino.addView(masMenos("−", -incremento), LinearLayout.LayoutParams(dp(40), dp(40)))
-        fino.addView(finoValor, LinearLayout.LayoutParams(dp(88), -2))
-        fino.addView(masMenos("+", incremento), LinearLayout.LayoutParams(dp(40), dp(40)))
 
         caja.addView(panel)
 
@@ -581,7 +532,6 @@ class MainActivity : Activity() {
                 setColor(Color.rgb(20, 23, 29))
                 setStroke(dp(if (abierto) 2 else 1), borde)
             }
-            finoValor.text = fmt(v)
             chipViews.forEach { (cv, chip) ->
                 val sel = on && cv == v
                 chip.background = GradientDrawable().apply {

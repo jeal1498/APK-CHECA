@@ -63,7 +63,7 @@ class Prefs(context: Context) {
         set(v) { sp.edit().putInt("durMinV", v).apply() }
 
     fun filtrosActivos(): Int =
-        listOf(filtroKm, filtroHora, filtroRecMax, filtroRecMin, filtroDurMax, filtroDurMin).count { it }
+        listOf(filtroKm, filtroHora, filtroRecMax, filtroDurMax).count { it }
 
     /** Tamaño base del texto del pop-up, en sp. */
     var tamanoTexto: Int

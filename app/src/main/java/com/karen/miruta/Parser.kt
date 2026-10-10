@@ -18,12 +18,8 @@ data class Oferta(
         return when {
             p.filtroRecMax && recogidaKm > 0 && recogidaKm > p.recogidaMaxKm ->
                 "Recogida lejana: ${f1(recogidaKm)} km (máx ${f1(p.recogidaMaxKm.toDouble())})"
-            p.filtroRecMin && recogidaKm > 0 && recogidaKm < p.recogidaMinKm ->
-                "Recogida muy cerca: ${f1(recogidaKm)} km (mín ${f1(p.recogidaMinKm.toDouble())})"
             p.filtroDurMax && viajeMin > p.duracionMax ->
                 "Viaje largo: ${viajeMin.toInt()} min (máx ${p.duracionMax})"
-            p.filtroDurMin && viajeMin < p.duracionMin ->
-                "Viaje corto: ${viajeMin.toInt()} min (mín ${p.duracionMin})"
             else -> null
         }
     }
