@@ -11,6 +11,10 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import java.util.Locale
@@ -72,83 +76,52 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
             else -> "NO CONVIENE"
         }
 
-        fun txt(s: String, factor: Float, color: Int, negrita: Boolean) = TextView(ctx).apply {
+        fun txt(s: CharSequence, factor: Float, color: Int, negrita: Boolean) = TextView(ctx).apply {
             text = s
             setTextColor(color)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, base * factor)
             if (negrita) setTypeface(Typeface.DEFAULT_BOLD)
-            includeFontPadding = false
+            gravity = Gravity.CENTER
         }
 
-        val caja = LinearLayout(ctx).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(dp(16), dp(12), dp(10), dp(14))
+        val marco = FrameLayout(ctx).apply {
             background = GradientDrawable().apply {
                 setColor(FONDO)
-                cornerRadius = dp(22).toFloat()
-                setStroke(dp(3), acento)
+                cornerRadius = dp(24).toFloat()
+                setStroke(dp(4), acento)
             }
             elevation = dp(10).toFloat()
         }
 
-        // --- Encabezado: estado · tarifa · ✕ ---
-        val cabecera = LinearLayout(ctx).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
+        val col = LinearLayout(ctx).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
+            setPadding(dp(20), dp(14), dp(20), dp(14))
         }
-        val insignia = txt("● $estado", 0.72f, if (nivel == Oferta.AMARILLO) Color.BLACK else Color.WHITE, true).apply {
-            setPadding(dp(10), dp(5), dp(10), dp(5))
-            background = GradientDrawable().apply {
-                setColor(if (nivel == Oferta.VERDE) VERDE_OSCURO else acento)
-                cornerRadius = dp(50).toFloat()
-            }
-        }
-        cabecera.addView(insignia)
-        cabecera.addView(View(ctx), LinearLayout.LayoutParams(0, 1, 1f))
-        cabecera.addView(txt("$" + fmt(o.tarifa, 2), 1.15f, Color.WHITE, true))
-        val cerrarBtn = txt("✕", 0.95f, TENUE, true).apply {
-            gravity = Gravity.CENTER
-            setPadding(dp(12), dp(4), dp(6), dp(4))
+
+        // Línea 1: estado y tarifa
+        col.addView(txt("$estado: $" + fmt(o.tarifa, 2), 1.15f, acento, true))
+
+        // Línea 2: $/h | $/km
+        val separador = "   |   "
+        val linea2 = SpannableString("$" + fmt(o.porHora, 2) + " /h" + separador + "$" + fmt(o.porKm, 2) + " /km")
+        val ini = linea2.indexOf(separador)
+        linea2.setSpan(ForegroundColorSpan(LINEA), ini, ini + separador.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        col.addView(txt(linea2, 1.45f, acento, true).apply { setPadding(0, dp(8), 0, dp(6)) })
+
+        // Línea 3: total
+        col.addView(txt(fmt(o.min, 0) + " min (" + fmt(o.km, 1) + " km) total", 0.8f, TENUE, false))
+
+        marco.addView(col, FrameLayout.LayoutParams(-1, -2))
+
+        // ✕ arriba a la derecha
+        val cerrarBtn = txt("✕", 0.8f, TENUE, true).apply {
+            setPadding(dp(14), dp(10), dp(16), dp(10))
             if (interactivo) setOnClickListener { ocultar() }
         }
-        cabecera.addView(cerrarBtn)
-        caja.addView(cabecera)
+        marco.addView(cerrarBtn, FrameLayout.LayoutParams(-2, -2, Gravity.TOP or Gravity.END))
 
-        // --- Métricas: cada una en verde o rojo según su mínimo ---
-        val metricas = LinearLayout(ctx).apply {
-            orientation = LinearLayout.HORIZONTAL
-            setPadding(0, dp(12), dp(6), dp(10))
-        }
-        fun metrica(valor: String, etiqueta: String, ok: Boolean): View =
-            LinearLayout(ctx).apply {
-                orientation = LinearLayout.VERTICAL
-                gravity = Gravity.CENTER_HORIZONTAL
-                addView(txt(valor, 1.7f, if (ok) VERDE else ROJO, true))
-                addView(txt(etiqueta, 0.62f, TENUE, false).apply { setPadding(0, dp(4), 0, 0) })
-            }
-        metricas.addView(
-            metrica("$" + fmt(o.porKm, 2), "por km · mín $" + fmtMin(prefs.minPorKm), o.porKm >= prefs.minPorKm),
-            LinearLayout.LayoutParams(0, -2, 1f)
-        )
-        metricas.addView(View(ctx).apply { setBackgroundColor(LINEA) }, LinearLayout.LayoutParams(dp(1), -1))
-        metricas.addView(
-            metrica("$" + fmt(o.porHora, 0), "por hora · mín $" + fmtMin(prefs.minPorHora), o.porHora >= prefs.minPorHora),
-            LinearLayout.LayoutParams(0, -2, 1f)
-        )
-        caja.addView(metricas)
-
-        // --- Pie ---
-        caja.addView(View(ctx).apply { setBackgroundColor(LINEA) },
-            LinearLayout.LayoutParams(-1, dp(1)).apply { rightMargin = dp(6) })
-        caja.addView(txt(
-            fmt(o.min, 0) + " min  ·  " + fmt(o.km, 1) + " km  ·  total del viaje",
-            0.65f, TENUE, false
-        ).apply {
-            gravity = Gravity.CENTER
-            setPadding(0, dp(10), dp(6), 0)
-        }, LinearLayout.LayoutParams(-1, -2))
-
-        return caja
+        return marco
     }
 
     private fun fmtMin(v: Float): String =
@@ -159,12 +132,12 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
     private fun dp(v: Int): Int = (v * ctx.resources.displayMetrics.density).toInt()
 
     companion object {
-        private val FONDO = Color.rgb(20, 23, 28)
+        private val FONDO = Color.rgb(12, 14, 18)
         private val VERDE = Color.rgb(34, 197, 94)
         private val VERDE_OSCURO = Color.rgb(22, 128, 61)
         private val AMARILLO = Color.rgb(240, 180, 0)
         private val ROJO = Color.rgb(239, 68, 68)
         private val TENUE = Color.rgb(154, 163, 175)
-        private val LINEA = Color.rgb(45, 50, 58)
+        private val LINEA = Color.rgb(75, 82, 94)
     }
 }
