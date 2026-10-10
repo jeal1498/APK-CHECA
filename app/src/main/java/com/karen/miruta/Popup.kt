@@ -25,7 +25,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
     fun mostrar(o: Oferta) {
         ultima = o
         quitarVista()
-        val v = construir(o)
+        val v = construir(o, true)
         val lp = WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
@@ -61,7 +61,8 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         ultima?.let { mostrar(it) }
     }
 
-    private fun construir(o: Oferta): View {
+    /** También se usa para la vista previa en Ajustes (sin acciones en los botones). */
+    fun construir(o: Oferta, interactivo: Boolean): View {
         val base = prefs.tamanoTexto.toFloat()
         val (fondo, texto, titulo) = when (o.nivel(prefs)) {
             Oferta.VERDE -> Triple(Color.rgb(27, 142, 62), Color.WHITE, "CONVIENE")
@@ -100,7 +101,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         fun boton(s: String, accion: () -> Unit): TextView =
             linea(s, 0.9f, true).apply {
                 setPadding(dp(16), dp(4), dp(16), dp(4))
-                setOnClickListener { accion() }
+                if (interactivo) setOnClickListener { accion() }
             }
         botones.addView(boton("A−") { cambiarTamano(-2) })
         botones.addView(boton("A+") { cambiarTamano(2) })
