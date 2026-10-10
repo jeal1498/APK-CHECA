@@ -106,7 +106,7 @@ object Parser {
         for (t in textos) {
             // "42 min (14.9 km) total" es un resumen (nuestro pop-up u otra app): no sumar.
             if (t.contains("total", ignoreCase = true)) continue
-            for (m in tramo.findAll(t)) {
+            for (m in tramo.findAll(corregirMinutos(t))) {
                 // Evita contar dos veces el mismo tramo si un contenedor repite el texto.
                 if (!vistos.add(m.value.replace(" ", "").lowercase())) continue
                 val h = m.groupValues[1].toDoubleOrNull() ?: 0.0
@@ -137,6 +137,11 @@ object Parser {
         if (o.porKm > 80 || o.porHora > 3000) return null
         return o
     }
+
+    // El OCR lee "11 min" como "ll min" o "1l min": esas l/I/| junto a "min" son unos.
+    private val minutosOcr = Regex("""(?<![A-Za-z0-9])[0-9lI|]*[lI|][0-9lI|]*(?=\s?min)""")
+    private fun corregirMinutos(t: String): String =
+        minutosOcr.replace(t) { it.value.replace(Regex("[lI|]"), "1") }
 
     private fun aNumero(s: String): Double? = s.replace(",", "").toDoubleOrNull()
 
