@@ -113,6 +113,11 @@ class Prefs(context: Context) {
         get() = sp.getBoolean("son", false)
         set(v) { sp.edit().putBoolean("son", v).apply() }
 
+    /** true = dice "Aceptar / Considerar / Rechazar"; false = tonos. */
+    var voz: Boolean
+        get() = sp.getBoolean("voz", true)
+        set(v) { sp.edit().putBoolean("voz", v).apply() }
+
     /** Volumen del sonido, 10–100. */
     var volumen: Int
         get() = sp.getInt("vol", 80)

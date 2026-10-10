@@ -32,5 +32,5 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ github.run_number }}
-          name: Neta v${{ github.run_number }}
+          name: Luz Verde v${{ github.run_number }}
           files: MiRuta.apk

@@ -244,7 +244,7 @@ class MainActivity : Activity() {
         cab.addView(ImageView(this).apply { setImageResource(R.mipmap.ic_launcher) },
             LinearLayout.LayoutParams(dp(40), dp(40)).apply { rightMargin = dp(12) })
         val tits = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        tits.addView(texto("Neta", Tema.T_TITULO, cTexto, true))
+        tits.addView(texto("Luz Verde", Tema.T_TITULO, cTexto, true))
         tits.addView(texto("Lo que de verdad te deja cada viaje", Tema.T_TEXTO, cTexto2, false))
         cab.addView(tits, LinearLayout.LayoutParams(0, -2, 1f))
         col.addView(cab, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(Tema.S3) })
@@ -261,7 +261,7 @@ class MainActivity : Activity() {
         permCab.addView(texto("Falta un permiso", Tema.T_SUB, cAmarillo, true))
         perm.addView(permCab)
         perm.addView(texto(
-            "Activa \"Neta – lector de ofertas\" en Accesibilidad. Si aparece bloqueado, " +
+            "Activa \"Luz Verde – lector de ofertas\" en Accesibilidad. Si aparece bloqueado, " +
                 "abre la información de la app → menú ⋮ → \"Permitir configuración restringida\".",
             Tema.T_TEXTO, cTexto, false
         ).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
@@ -839,7 +839,9 @@ class MainActivity : Activity() {
         val av = tarjeta()
         av.addView(interruptor("Vibrar", "1 corta 🟢 · 2 cortas 🟡 · 1 larga 🔴", prefs.vibrar) { prefs.vibrar = it })
         av.addView(separador())
-        av.addView(interruptor("Sonido", "Un tono distinto para cada color", prefs.sonido) { prefs.sonido = it })
+        av.addView(interruptor("Sonido", "Avisa con sonido cada oferta", prefs.sonido) { prefs.sonido = it })
+        av.addView(separador())
+        av.addView(interruptor("Decirlo con voz", "«Aceptar» 🟢 · «Considerar» 🟡 · «Rechazar» 🔴 (apagado: tonos)", prefs.voz) { prefs.voz = it })
         av.addView(deslizador("Volumen", 10, 100, prefs.volumen, " %") { prefs.volumen = it })
         val pruebas = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
         val alertas = Alertas(this, prefs)
@@ -919,7 +921,7 @@ class MainActivity : Activity() {
         col.addView(diag, margenTarjeta())
 
         val version = try { packageManager.getPackageInfo(packageName, 0).versionName } catch (_: Exception) { "" }
-        col.addView(texto("Neta $version · uso personal", Tema.T_NOTA, cTenue, false).apply {
+        col.addView(texto("Luz Verde $version · uso personal", Tema.T_NOTA, cTenue, false).apply {
             gravity = Gravity.CENTER
             setPadding(0, dp(Tema.S1), 0, dp(Tema.S1))
         }, LinearLayout.LayoutParams(-1, -2))

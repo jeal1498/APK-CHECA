@@ -3,5 +3,9 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <path android:fillColor="#22C55E" android:pathData="M36,74 L36,34 L46,34 L62,57 L62,34 L72,34 L72,74 L62,74 L46,51 L46,74 Z" />
+    <!-- Semáforo con la luz verde encendida -->
+    <path android:fillColor="#222826" android:pathData="M48,26 L60,26 A10,10 0 0,1 70,36 L70,72 A10,10 0 0,1 60,82 L48,82 A10,10 0 0,1 38,72 L38,36 A10,10 0 0,1 48,26 Z" />
+    <path android:fillColor="#4A2222" android:pathData="M54,38 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0" />
+    <path android:fillColor="#4A3C16" android:pathData="M54,54 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0" />
+    <path android:fillColor="#22C55E" android:pathData="M54,70 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0" />
 </vector>

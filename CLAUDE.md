@@ -1,9 +1,9 @@
-# CLAUDE.md: Neta (antes Mi Ruta)
+# CLAUDE.md: Luz Verde (antes Neta / Mi Ruta)
 
 Contexto para continuar el proyecto en una conversación nueva.
 
 ## Qué es
-**Neta** (antes "Mi Ruta") es una app Android **personal** (sin fines comerciales) para conductores de **Uber y DiDi** en Cancún. Cuando llega una oferta de viaje, la app lee la pantalla y muestra un **pop-up** con **$/hora**, **$/km**, el semáforo (🟢 conviene / 🟡 regular / 🔴 no conviene), la ganancia neta después de gasolina y el multiplicador ⚡.
+**Luz Verde** (antes "Neta" y "Mi Ruta") es una app Android **personal** (sin fines comerciales) para conductores de **Uber y DiDi** en Cancún. Cuando llega una oferta de viaje, la app lee la pantalla y muestra un **pop-up** con **$/hora**, **$/km**, el semáforo (🟢 conviene / 🟡 regular / 🔴 no conviene), la ganancia neta después de gasolina y el multiplicador ⚡.
 
 - Se escribió **desde cero** como alternativa propia a la app comercial "Ruta Rentable".
 - **No** se modificó, descompiló ni copió el APK de Ruta Rentable, y esa regla se mantiene. Ruta Rentable solo sirve como referencia de *qué funciones* tener (formato del pop-up, "filtros inteligentes"). El diseño y el código son propios, con estilo verde y oscuro.
@@ -33,7 +33,7 @@ Contexto para continuar el proyecto en una conversación nueva.
 | `Comparador.kt` | Con 2 ofertas visibles, gana la de mejor nivel y, si empatan, la de mejor puntaje según `prefs.criterio`: 0 neta/hora (default), 1 neta/km, 2 neta total. |
 | `Prefs.kt` | SharedPreferences `cfg`: filtros, gasolina, pop-up, avisos, apps, diagnóstico y criterio. |
 | `Historial.kt` | `filesDir/historial.txt`, una línea `hora|app|tarifa|km|min|nivel|recKm|recMin|multi`. Se conservan ~30 días. `deHoy()` y `ultimosDias()` filtran lecturas imposibles. |
-| `Alertas.kt` | Vibración (1 corta 🟢, 2 cortas 🟡, 1 larga 🔴) y tonos con `ToneGenerator`. |
+| `Alertas.kt` | Vibración (1 corta 🟢, 2 cortas 🟡, 1 larga 🔴). Sonido: voz con `TextToSpeech` (es-MX) que dice «Aceptar» / «Considerar» / «Rechazar» (`prefs.voz`, ON por defecto) o tonos con `ToneGenerator`. Un solo motor TTS compartido (companion). |
 | `Tema.kt` | Paleta (fondo #0E1110, tarjeta #181C1A, verde #22C55E), medidas en múltiplos de 8 dp (márgenes 16, entre tarjetas 12, radios 16/12, toque mín. 48), letra 22/16/14/12 sp (+28 números) y `Icono`: íconos lineales dibujados con Canvas (sin emojis en la UI). |
 | `MainActivity.kt` | UI con tema oscuro. Barra inferior: 🏠 Inicio · **botón circular central** (▶ verde iniciar / ■ rojo detener) · ⚙️ Ajustes. |
 
@@ -57,7 +57,7 @@ Contexto para continuar el proyecto en una conversación nueva.
 
 ## Instalación en el teléfono (problemas que ya salieron)
 - Play Protect bloquea la instalación porque la app usa Accesibilidad. Se resuelve apagando "Analizar apps" un momento o con "Instalar de todos modos".
-- Android 13+: "Controlado por ajustes restringidos". Se resuelve en Info de la app → ⋮ → **Permitir configuración restringida** y luego activando "Neta – lector de ofertas" en Accesibilidad.
+- Android 13+: "Controlado por ajustes restringidos". Se resuelve en Info de la app → ⋮ → **Permitir configuración restringida** y luego activando "Luz Verde – lector de ofertas" en Accesibilidad.
 - Lectura de pantalla: elegir **Pantalla completa** → Empezar. Después de reiniciar el teléfono hay que volver a iniciarla.
 
 ## Ideas propuestas y pendientes
@@ -66,6 +66,6 @@ Contexto para continuar el proyecto en una conversación nueva.
 - Falta probar en la calle la versión v11, con pantalla dividida y ⭐.
 
 ## Historial de versiones
-v1 base (accesibilidad) → v2 OCR → v3 vibración/sonido + historial → v4 rediseño oscuro → v5–v6 pop-up nuevo → v7 botón circular + semáforo con detalle → v8–v9 filtros inteligentes (4) → v10 neta, mejores horas, multiplicador → v11 pantalla dividida, pop-up por app, ⭐ mejor opción (2.0) → **v12 rediseño "Neta"**: sistema de medidas, íconos propios, pop-up con franja de semáforo y neta grande, detalles en hojas propias, animaciones (versionName 3.0).
+v1 base (accesibilidad) → v2 OCR → v3 vibración/sonido + historial → v4 rediseño oscuro → v5–v6 pop-up nuevo → v7 botón circular + semáforo con detalle → v8–v9 filtros inteligentes (4) → v10 neta, mejores horas, multiplicador → v11 pantalla dividida, pop-up por app, ⭐ mejor opción (2.0) → **v12 rediseño "Neta"**: sistema de medidas, íconos propios, pop-up con franja de semáforo y neta grande, detalles en hojas propias, animaciones (versionName 3.0) → **v13 nombre "Luz Verde"** (ícono de semáforo) y aviso por voz (3.1).
 - El paquete sigue siendo `com.karen.miruta` y el APK `MiRuta.apk` para que se actualice encima.
 - Pop-up: ningún texto puede ser *solo un monto* (el OCR lo tomaría como tarifa); por eso "Te quedan $x", "$x/h", "$x/km" y "… km total".
