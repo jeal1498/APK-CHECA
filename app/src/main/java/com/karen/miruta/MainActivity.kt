@@ -1202,11 +1202,7 @@ class MainActivity : Activity() {
             setTextIsSelectable(true)
         }, margenArriba(Tema.S1))
         cuerpo.addView(boton("Enviar mi código", cTarjeta2, cTexto) {
-            val i = Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, "Hola, quiero activar Checa. Código de mi equipo: $codigo")
-            }
-            startActivity(Intent.createChooser(i, "Enviar código"))
+            abrirWhatsApp("Hola, quiero activar Checa. Código de mi equipo: $codigo")
         }, margenArriba(Tema.S1))
         cuerpo.addView(texto("2. Pega aquí el código de activación que te enviaron:", Tema.T_TEXTO, cTexto2, false)
             .apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S3))
@@ -1342,11 +1338,21 @@ class MainActivity : Activity() {
     }
 
     private fun pedirLicenciaCuenta() {
-        val i = Intent(Intent.ACTION_SEND).apply {
-            type = "text/plain"
-            putExtra(Intent.EXTRA_TEXT, "Hola, quiero activar Checa. Mi cuenta: ${Cuenta.correo(this@MainActivity)}")
+        abrirWhatsApp("Hola, quiero activar Checa. Mi cuenta: ${Cuenta.correo(this@MainActivity)}")
+    }
+
+    /** Abre el chat de WhatsApp (Business) de ventas con el mensaje ya escrito. */
+    private fun abrirWhatsApp(mensaje: String) {
+        val uri = Uri.parse("https://wa.me/$WHATSAPP_VENTAS?text=" + Uri.encode(mensaje))
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, uri))
+        } catch (e: Exception) {
+            val i = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_TEXT, "$mensaje\nWhatsApp: +52 998 521 4490")
+            }
+            startActivity(Intent.createChooser(i, "Pedir licencia"))
         }
-        startActivity(Intent.createChooser(i, "Pedir licencia"))
     }
 
     /** Ya hay 2 equipos en la cuenta: elegir cuál quitar para activar este. */
@@ -1744,5 +1750,7 @@ class MainActivity : Activity() {
 
     companion object {
         private const val REQ_CAPTURA = 42
+        /** WhatsApp Business de ventas (52 = México). */
+        private const val WHATSAPP_VENTAS = "529985214490"
     }
 }
