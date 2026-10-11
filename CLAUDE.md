@@ -7,7 +7,7 @@ Contexto para continuar el proyecto en una conversación nueva.
 
 - Se escribió **desde cero** como alternativa propia a la app comercial "Ruta Rentable".
 - **No** se modificó, descompiló ni copió el APK de Ruta Rentable, y esa regla se mantiene. Ruta Rentable solo sirve como referencia de *qué funciones* tener (formato del pop-up, "filtros inteligentes"). El diseño y el código son propios, con estilo verde y oscuro.
-- Desde v21 se **vende** a otros conductores con licencia por equipo (ver *Licencias y venta*).
+- Desde v21 se **vende** a otros conductores; desde v31 la licencia va **ligada a la cuenta Google** (Supabase), y los códigos por equipo siguen valiendo (ver *Licencias y venta*).
 - Usuaria: Karen. Usa la app en su **teléfono** y en una **tablet en horizontal con pantalla dividida** (DiDi a la izquierda, Uber a la derecha).
 
 ## Cómo trabajar con la usuaria
@@ -21,7 +21,7 @@ Contexto para continuar el proyecto en una conversación nueva.
 - `.github/workflows/build.yml` compila en cada push a `main`: Java 17, Gradle 8.9 (`gradle/actions/setup-gradle`, sin wrapper) y `gradle assembleRelease`. Publica `MiRuta.apk` en un **Release `v<run_number>`**.
 - Revisar el estado con `mcp__github__actions_list` (`list_workflow_runs`, `build.yml`) o esperando el tag `vN` con `git ls-remote origin refs/tags/vN`. La API pública ya no sirve (repo privado).
 - Firma: `app/miruta.jks` (pass `miruta123`, alias `miruta`). Está en el repo para que las actualizaciones se instalen encima de la versión anterior. El repo ya es privado.
-- Stack: AGP 8.5.2, Kotlin 1.9.24, compileSdk/targetSdk 34, minSdk 26. **UI 100% programática** (sin XML de layouts, sin AppCompat ni Compose). Única dependencia: `com.google.mlkit:text-recognition:16.0.1` (OCR en el teléfono, sin internet).
+- Stack: AGP 8.5.2, Kotlin 1.9.24, compileSdk/targetSdk 34, minSdk 26. **UI 100% programática** (sin XML de layouts, sin AppCompat ni Compose). Dependencias: `com.google.mlkit:text-recognition:16.0.1` (OCR en el teléfono) y, desde v31, `androidx.credentials` + `googleid` (login con Google). Permiso INTERNET solo para la cuenta/licencia; la lectura de ofertas sigue sin internet.
 - Como no hay compilador local, hay que **revisar el Kotlin con cuidado** antes de hacer push. Las regex se pueden probar con Python (`python3 -I`).
 
 ## Arquitectura (`app/src/main/java/com/karen/miruta/`)
@@ -65,7 +65,7 @@ Contexto para continuar el proyecto en una conversación nueva.
 
 ## Licencias y venta (v21+)
 - `Licencia.kt`: sin internet. Código de equipo = SHA-256 de ANDROID_ID (8 hex, `A1B2-C3D4`). Activación `AAAAMMDD[F]-firma` (ECDSA P-256 de `LV|EQUIPO|AAAAMMDD[|F]`). `99991231` = sin vencimiento, `F` = ⭐ Miembro fundador. 7 días de prueba. Sin licencia, `RutaService.mostrarOferta` no muestra nada.
-- La llave privada solo está en el secreto `LICENCIA_PRIVADA` (no se puede leer). La pública está en `Licencia.kt`.
+- La llave privada está en el secreto `LICENCIA_PRIVADA` (no se puede leer) y **también en `licencia_privada.pem` en la raíz del repo**: se le explicó el riesgo y **ella decidió no borrarlo por ahora** (se le recomendó guardar una copia fuera del repo). La pública está en `Licencia.kt`.
 - **Para generar un código cuando ella lo pida** (nombre, WhatsApp, equipo, Fundador/Normal, días; 0 = sin vencimiento). Ella **autorizó** este método. La app de Claude no puede disparar Actions (403), así que se hace con un push:
   1. Crear `pedidos/pedido.txt` con líneas `nombre=…`, `whatsapp=…`, `correo=cliente@gmail.com` (**preferido desde v31**: licencia por cuenta, el cliente solo toca «Ya pagué: revisar mi licencia» en Ajustes → Cuenta; no hay código que pasarle) **o** `equipo=A1B2-C3D4` (método viejo, código por equipo), `tipo=Fundador|Normal`, `dias=30`. Commit (sin `[skip ci]`) y `git push origin HEAD:main`.
   2. El workflow `licencia.yml` firma, anota en `clientes.md`, borra el pedido y escribe `pedidos/respuesta.txt` (`codigo=…`). Tarda ~30 s.
@@ -81,9 +81,9 @@ Contexto para continuar el proyecto en una conversación nueva.
   - `Cuenta.kt`: Credential Manager (`GetGoogleIdOption` con nonce) → ID token → `POST /auth/v1/token?grant_type=id_token` (sin SDK, `HttpURLConnection`). Guarda sesión y licencia en prefs `cuenta`. `sincronizar()`: upsert de este equipo en `equipos` (trigger `limite_equipos` → `Resultado.Limite` con la lista para quitar uno), lee `licencias` (firma ECDSA de `LV|correo|AAAAMMDD[|F]`, verificada en el teléfono) y guarda `revision`. `revisarSiToca()` 1 vez al día desde `MainActivity.onResume`; la licencia de cuenta deja de valer tras **15 días sin revisión** (`Cuenta.licencia()`). `Licencia.estado()` usa la que dure más entre código de equipo y cuenta (los códigos de equipo siguen funcionando).
   - UI: bienvenida la 1ª vez (solo si no hay sesión ni licencia pagada; «Ahora no»), Ajustes → **Cuenta** (Continuar con Google / correo, equipos con Quitar, Pedir licencia por WhatsApp, Cerrar sesión que libera el equipo), ventanas «¡Listo!», «Bienvenido» (prueba) y «Ya usas Checa en 2 equipos».
   - Esquema en `supabase/esquema.sql` (ella lo pega en SQL Editor). Generador: `pedidos/pedido.txt` con `correo=…` en lugar de `equipo=…` → `licencia.yml` firma por correo y hace upsert en `licencias` con el secreto **`SUPABASE_SERVICE_ROLE`** (ella lo agrega en GitHub → Settings → Secrets → Actions).
-  - Configurado y probado del lado servidor: ella corrió el SQL y agregó el secreto; licencia Fundador sin vencimiento de la propietaria en **lalolopezxd@gmail.com** guardada en Supabase por el generador (pedido con `correo=`). Falta probar el login en el teléfono.
+  - Configurado y probado del lado servidor: ella corrió el SQL y agregó el secreto; licencia Fundador sin vencimiento de la propietaria en **lalolopezxd@gmail.com** guardada en Supabase por el generador (pedido con `correo=`). **Falta que ella confirme el login en el teléfono** con la 5.1 (v36): Ajustes → Cuenta → Continuar con Google → debe salir «¡Listo!» con ⭐ y equipos 1 de 2. Si falla, pedir captura. Posibles fallas a revisar primero: SHA-1/paquete del cliente Android en Google Cloud, app OAuth sin publicar, «Client IDs» en Supabase.
   - Dependencias nuevas: `androidx.credentials:credentials(+play-services-auth):1.3.0`, `googleid:1.1.1`; permiso INTERNET; regla R8 para `androidx.credentials.playservices`.
-- ⚠️ **`licencia_privada.pem` está subido en la raíz del repo** (commit «Add files via upload»): cualquiera con acceso al repo puede firmar licencias. Recomendado: borrarlo del repo (el secreto `LICENCIA_PRIVADA` ya la tiene) y, si se quiere seguridad total, cambiar la llave (invalida los códigos de equipo actuales; las de cuenta se pueden volver a firmar).
+- ⚠️ `licencia_privada.pem` sigue en la raíz del repo por decisión de ella (ver *Licencias y venta*). No borrarlo sin que lo pida.
 - **No** integrar el bloqueo de zonas por palabras de la dirección: se explicó y ella decidió no hacerlo.
 - Aún no se han hecho: arranque automático al abrir Uber/DiDi, meta del día, pop-up arrastrable, respaldo o exportación del historial.
 - Pantalla dividida en tablet probada y correcta en v20 (dos pop-ups sólidos, ⭐ con borde dorado, sin mezclar ofertas). Si vuelve el parpadeo, pedir Diagnóstico.
