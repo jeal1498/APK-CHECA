@@ -218,6 +218,8 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         }
         if (o.multiplicador > 1.0) {
             der.addView(pastilla("⚡" + fmtX(o.multiplicador) + "x", tinta, Tema.AMARILLO))
+        } else if (o.dinamica > 0) {
+            der.addView(pastilla("⚡+$" + String.format(java.util.Locale.US, "%.0f", o.dinamica), tinta, Tema.AMARILLO))
         }
         val cerrarBtn = ImageView(ctx).apply {
             setImageDrawable(Icono(Icono.CERRAR, tinta))

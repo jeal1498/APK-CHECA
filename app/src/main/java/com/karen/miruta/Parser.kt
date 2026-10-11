@@ -6,7 +6,9 @@ data class Oferta(
     val min: Double,
     val recogidaKm: Double = 0.0,
     val recogidaMin: Double = 0.0,
-    val multiplicador: Double = 0.0
+    val multiplicador: Double = 0.0,
+    /** Dinámica de Uber en pesos ("+$62.00 incluido"), ya incluida en la tarifa. */
+    val dinamica: Double = 0.0
 ) {
     val porKm: Double get() = if (km > 0) tarifa / km else 0.0
     val porHora: Double get() = if (min > 0) tarifa / min * 60.0 else 0.0
@@ -62,7 +64,7 @@ data class Oferta(
  *         botones de contraoferta "$163.34" (van DESPUÉS de la tarifa)
  *         "$9.00 adicionales", "Aceptar $151.34"
  *  Uber:  "$48.73" · "$10.15/km est." · "A 5 min (1.6 km)" · "Viaje: 8 min (3.2 km)"
- *         "+$9.75 por inicio de viaje prioritario"
+ *         "+$9.75 por inicio de viaje prioritario" · "+$62.00 incluido" (dinámica, ya va en la tarifa)
  *
  * Tarifa = primer texto que sea SOLO un monto. Km y minutos = suma de
  * los tramos "N min (X km)" (ir por el pasajero + viaje).
@@ -81,6 +83,18 @@ object Parser {
 
     // "⚡1.4x", "1.2x", "1,5 x" (tarifa dinámica). No confunde calificaciones como "4.98".
     private val multi = Regex("""(?<![.,$])([1-4](?:[.,]\d{1,2})?)\s?[x×X](?![a-zA-Z0-9])""")
+
+    // Uber: "+$62.00 incluido" = dinámica ya sumada en la tarifa (solo se muestra).
+    private val incluido = Regex("""\+?\s?\$\s?$NUM\s*incluid""", RegexOption.IGNORE_CASE)
+
+    private fun buscarDinamica(textos: List<String>): Double {
+        for (t in textos) {
+            val m = incluido.find(t) ?: continue
+            val v = aNumero(m.groupValues[1]) ?: continue
+            if (v > 0) return v
+        }
+        return 0.0
+    }
 
     private fun buscarMultiplicador(textos: List<String>): Double {
         val rango = Regex("""\d\s?[xX×]\s?[-–]""")
@@ -132,7 +146,8 @@ object Parser {
         if (min < 1 || min > 600) return null
         // Con un solo tramo no sabemos cuál es la recogida.
         if (tramos < 2) { recKm = 0.0; recMin = 0.0 }
-        val o = Oferta(tarifa, km, min, recKm, recMin, buscarMultiplicador(textos))
+        val dinamica = buscarDinamica(textos).let { if (it < tarifa) it else 0.0 }
+        val o = Oferta(tarifa, km, min, recKm, recMin, buscarMultiplicador(textos), dinamica)
         // Descarta lecturas imposibles.
         if (o.porKm > 80 || o.porHora > 3000) return null
         return o
