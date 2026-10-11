@@ -19,7 +19,7 @@ Contexto para continuar el proyecto en una conversación nueva.
 - En el contenedor no hay acceso a Maven ni a Google, así que **no se puede compilar localmente**.
 - `.github/workflows/build.yml` compila en cada push a `main`: Java 17, Gradle 8.9 (`gradle/actions/setup-gradle`, sin wrapper) y `gradle assembleRelease`. Publica `MiRuta.apk` en un **Release `v<run_number>`**.
 - Revisar el estado con `https://api.github.com/repos/jeal1498/Mi-Ruta/actions/runs?per_page=1`.
-- Firma: `app/miruta.jks` (pass `miruta123`, alias `miruta`). Está en el repo para que las actualizaciones se instalen encima de la versión anterior. ⚠️ **El repo es público**: se le recomendó hacerlo privado.
+- Firma: `app/miruta.jks` (pass `miruta123`, alias `miruta`). Está en el repo para que las actualizaciones se instalen encima de la versión anterior. El repo ya es privado.
 - Stack: AGP 8.5.2, Kotlin 1.9.24, compileSdk/targetSdk 34, minSdk 26. **UI 100% programática** (sin XML de layouts, sin AppCompat ni Compose). Única dependencia: `com.google.mlkit:text-recognition:16.0.1` (OCR en el teléfono, sin internet).
 - Como no hay compilador local, hay que **revisar el Kotlin con cuidado** antes de hacer push. Las regex se pueden probar con Python (`python3 -I`).
 
@@ -63,7 +63,11 @@ Contexto para continuar el proyecto en una conversación nueva.
 ## Licencias y venta (v21+)
 - `Licencia.kt`: sin internet. Código de equipo = SHA-256 de ANDROID_ID (8 hex, `A1B2-C3D4`). Activación `AAAAMMDD[F]-firma` (ECDSA P-256 de `LV|EQUIPO|AAAAMMDD[|F]`). `99991231` = sin vencimiento, `F` = ⭐ Miembro fundador. 7 días de prueba. Sin licencia, `RutaService.mostrarOferta` no muestra nada.
 - La llave privada solo está en el secreto `LICENCIA_PRIVADA` (no se puede leer). La pública está en `Licencia.kt`.
-- **Para generar un código cuando ella lo pida** (nombre, WhatsApp, equipo, Fundador/Normal, días; 0 = sin vencimiento): disparar el workflow `licencia.yml` con `mcp__github__actions_run_trigger` (ref `main`), esperar y leer el log del job: el código sale entre las líneas `=====`. Queda anotado solo en `clientes.md`.
+- **Para generar un código cuando ella lo pida** (nombre, WhatsApp, equipo, Fundador/Normal, días; 0 = sin vencimiento). Ella **autorizó** este método. La app de Claude no puede disparar Actions (403), así que se hace con un push:
+  1. Crear `pedidos/pedido.txt` con líneas `nombre=…`, `whatsapp=…`, `equipo=A1B2-C3D4`, `tipo=Fundador|Normal`, `dias=30`. Commit (sin `[skip ci]`) y `git push origin HEAD:main`.
+  2. El workflow `licencia.yml` firma, anota en `clientes.md`, borra el pedido y escribe `pedidos/respuesta.txt` (`codigo=…`). Tarda ~30 s.
+  3. `git pull origin main` hasta que la respuesta sea la nueva y pasarle el `codigo` completo.
+  - Ese push no compila APK (`build.yml` ignora `pedidos/**`, `clientes.md` y `CLAUDE.md`).
 - Precios: Ruta Rentable cobra $129/mes. Propuesta: $99/mes o $899/año; fundadores (primeros 50) $49/mes de por vida.
 - El repo ya es **privado** (la API pública da 404; usar las herramientas de GitHub MCP para revisar Actions).
 
