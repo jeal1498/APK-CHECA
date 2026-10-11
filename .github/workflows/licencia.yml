@@ -76,3 +76,6 @@ jobs:
             echo "$codigo"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
+          echo "===== CÓDIGO DE ACTIVACIÓN (cópialo completo) ====="
+          echo "$codigo"
+          echo "==================================================="
