@@ -1,5 +1,0 @@
-nombre=Prueba 3
-equipo=4817-F84C
-tipo=Normal
-vence=2026-10-11
-codigo=20261011-MEQCIAbE9Re7n24OyHz_4RHeGv6MAxFEvB6M41ZjtO-YrZ-vAiAYepbE5IuF-CsGitLH7zO28PYilpIYcwhrAKR8OP6Mmg
