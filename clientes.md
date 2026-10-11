@@ -1,4 +1,4 @@
-# Clientes de Luz Verde
+# Clientes de Checa
 
 | Fecha | Nombre | WhatsApp | Equipo | Tipo | Vence |
 |---|---|---|---|---|---|

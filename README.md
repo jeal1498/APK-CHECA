@@ -1,4 +1,4 @@
-# Luz Verde
+# Checa
 
 App Android personal: muestra un pop-up con **$/km**, **$/hora** y semáforo (conviene / regular / no conviene) cuando llega una oferta en Uber Driver o DiDi Conductor.
 

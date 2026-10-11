@@ -250,7 +250,7 @@ class MainActivity : Activity() {
         cab.addView(ImageView(this).apply { setImageResource(R.mipmap.ic_launcher) },
             LinearLayout.LayoutParams(dp(40), dp(40)).apply { rightMargin = dp(12) })
         val tits = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        tits.addView(texto("Luz Verde", Tema.T_TITULO, cTexto, true))
+        tits.addView(texto("Checa", Tema.T_TITULO, cTexto, true))
         tits.addView(texto("Lo que de verdad te deja cada viaje", Tema.T_TEXTO, cTexto2, false))
         tits.addView(insigniaFundador(), LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(Tema.S1) })
         cab.addView(tits, LinearLayout.LayoutParams(0, -2, 1f))
@@ -268,7 +268,7 @@ class MainActivity : Activity() {
         permCab.addView(texto("Falta un permiso", Tema.T_SUB, cAmarillo, true))
         perm.addView(permCab)
         perm.addView(texto(
-            "Activa \"Luz Verde – lector de ofertas\" en Accesibilidad. Si aparece bloqueado, " +
+            "Activa \"Checa – lector de ofertas\" en Accesibilidad. Si aparece bloqueado, " +
                 "abre la información de la app → menú ⋮ → \"Permitir configuración restringida\".",
             Tema.T_TEXTO, cTexto, false
         ).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
@@ -949,7 +949,7 @@ class MainActivity : Activity() {
         col.addView(diag, margenTarjeta())
 
         val version = try { packageManager.getPackageInfo(packageName, 0).versionName } catch (_: Exception) { "" }
-        col.addView(texto("Luz Verde $version", Tema.T_NOTA, cTenue, false).apply {
+        col.addView(texto("Checa $version", Tema.T_NOTA, cTenue, false).apply {
             gravity = Gravity.CENTER
             setPadding(0, dp(Tema.S1), 0, dp(Tema.S1))
         }, LinearLayout.LayoutParams(-1, -2))
@@ -1007,7 +1007,7 @@ class MainActivity : Activity() {
         cuerpo.addView(boton("Enviar mi código", cTarjeta2, cTexto) {
             val i = Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, "Hola, quiero activar Luz Verde. Código de mi equipo: $codigo")
+                putExtra(Intent.EXTRA_TEXT, "Hola, quiero activar Checa. Código de mi equipo: $codigo")
             }
             startActivity(Intent.createChooser(i, "Enviar código"))
         }, margenArriba(Tema.S1))
