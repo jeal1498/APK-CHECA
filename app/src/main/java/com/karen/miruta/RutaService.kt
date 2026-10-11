@@ -93,6 +93,13 @@ class RutaService : AccessibilityService() {
                 }
             }
         }
+        // Plan de 1 mes: un pop-up a la vez (Uber y DiDi juntos es del plan de 6 meses).
+        if (Licencia.basico(this)) {
+            activas.keys.filter { it != clave }.forEach { otra ->
+                activas.remove(otra)
+                popups[otra]?.ocultar()
+            }
+        }
         activas[clave] = oferta to zona
         redibujar(clave)
 
@@ -106,7 +113,8 @@ class RutaService : AccessibilityService() {
 
     /** Vuelve a pintar los pop-ups visibles con su marca (mejor / 2ª opción). */
     private fun redibujar(nueva: String?) {
-        val marcas = Comparador.marcas(activas.mapValues { it.value.first }, prefs)
+        val marcas = if (Licencia.basico(this)) emptyMap<String, Int>()
+            else Comparador.marcas(activas.mapValues { it.value.first }, prefs)
         for ((app, par) in activas) {
             popups[app]?.mostrar(par.first, app, par.second, marcas[app] ?: Popup.SIN_MARCA, app == nueva)
         }

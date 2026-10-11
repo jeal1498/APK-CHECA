@@ -160,6 +160,13 @@ class Icono(private val tipo: Int, color: Int) : Drawable() {
                 p.moveTo(8f, 12.5f); p.lineTo(11f, 15.5f); p.lineTo(16.5f, 9.5f)
                 c.drawPath(p, trazo)
             }
+            CUENTA -> {
+                c.drawCircle(12f, 8f, 4f, trazo)
+                p.moveTo(4f, 20.5f)
+                p.cubicTo(4.5f, 15.5f, 8f, 13.5f, 12f, 13.5f)
+                p.cubicTo(16f, 13.5f, 19.5f, 15.5f, 20f, 20.5f)
+                c.drawPath(p, trazo)
+            }
         }
         c.restore()
     }
@@ -185,5 +192,6 @@ class Icono(private val tipo: Int, color: Int) : Drawable() {
         const val FLECHA = 11
         const val ALERTA = 12
         const val OK = 13
+        const val CUENTA = 14
     }
 }

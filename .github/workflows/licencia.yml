@@ -27,10 +27,15 @@ on:
         type: choice
         options: [Fundador, Normal]
         default: Fundador
+      plan:
+        description: "Paquete (1 mes = 1 equipo; 6 meses y 1 año = 2 equipos)"
+        type: choice
+        options: [Ninguno, 1 mes, 6 meses, 1 año]
+        default: Ninguno
       dias:
-        description: "Días de licencia (30 = 1 mes, 365 = 1 año, 0 = sin vencimiento)"
-        required: true
-        default: "30"
+        description: "Días de licencia (vacío = los del paquete; 0 = sin vencimiento)"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -54,6 +59,7 @@ jobs:
           WHATS: ${{ inputs.whatsapp }}
           TIPO: ${{ inputs.tipo }}
           DIAS: ${{ inputs.dias }}
+          PLAN: ${{ inputs.plan }}
           LLAVE: ${{ secrets.LICENCIA_PRIVADA }}
         run: |
           set -euo pipefail
@@ -62,7 +68,7 @@ jobs:
           if [ "${{ github.event_name }}" = "push" ]; then
             if [ ! -f "$pedido" ]; then echo "No hay pedido"; exit 0; fi
             dato() { grep -i "^$1[[:space:]]*=" "$pedido" | head -1 | cut -d= -f2- | tr -d '\r' | sed 's/^ *//; s/ *$//' || true; }
-            EQUIPO=$(dato equipo); CORREO=$(dato correo); NOMBRE=$(dato nombre); WHATS=$(dato whatsapp); DIAS=$(dato dias)
+            EQUIPO=$(dato equipo); CORREO=$(dato correo); NOMBRE=$(dato nombre); WHATS=$(dato whatsapp); DIAS=$(dato dias); PLAN=$(dato plan)
             if dato tipo | grep -qi fund; then TIPO=Fundador; else TIPO=Normal; fi
           fi
           correo=$(printf '%s' "$CORREO" | tr 'A-Z' 'a-z' | tr -d ' \r\n')
@@ -75,9 +81,24 @@ jobs:
             if [ ${#eq} -ne 8 ]; then echo "Código de equipo inválido: $EQUIPO"; exit 1; fi
             sujeto="$eq"; mostrar="${eq:0:4}-${eq:4:4}"
           fi
+          # Paquete: 1 mes (Básico, 1 equipo), 6 meses (Estratega), 1 año (Pro). Sin paquete = todo, 2 equipos.
+          plan=$(printf '%s' "${PLAN:-}" | tr 'A-Z' 'a-z')
+          basico=no; nplan=""; dplan=""
+          case "$plan" in
+            *6*|*estratega*|*semestral*) nplan="6 meses"; dplan=180 ;;
+            *12*|*año*|*aÑo*|*ano*|*anual*|*pro*) nplan="1 año"; dplan=365 ;;
+            *mes*|*basico*|*básico*|*mensual*) nplan="1 mes"; dplan=30; basico=si ;;
+          esac
+          if [ -z "${DIAS:-}" ]; then DIAS="$dplan"; fi
+          if [ "$basico" = "si" ] && [ -z "$correo" ]; then
+            echo "El paquete de 1 mes por código de equipo queda con todo (el límite de 1 equipo es solo por cuenta)."
+            basico=no
+          fi
+          if [ "$basico" = "si" ]; then maxeq=1; else maxeq=2; fi
           if ! printf '%s' "$DIAS" | grep -Eq '^[0-9]+$'; then echo "Días inválidos: $DIAS"; exit 1; fi
           if [ "$DIAS" = "0" ]; then vence=99991231; else vence=$(TZ=America/Cancun date -d "+$DIAS days" +%Y%m%d); fi
           if [ "$TIPO" = "Fundador" ]; then marca=F; extra='|F'; else marca=''; extra=''; fi
+          if [ "$basico" = "si" ]; then extra="$extra|B"; fi
           printf '%s\n' "$LLAVE" > llave.pem
           firma=$(printf 'LV|%s|%s%s' "$sujeto" "$vence" "$extra" | openssl dgst -sha256 -sign llave.pem | base64 -w0 | tr '+/' '-_' | tr -d '=')
           rm -f llave.pem
@@ -87,7 +108,7 @@ jobs:
           if [ -n "$correo" ]; then
             if [ "$TIPO" = "Fundador" ]; then fund=true; else fund=false; fi
             fila=$(jq -nc --arg c "$correo" --arg n "$NOMBRE" --argjson v "$vence" --argjson f "$fund" --arg s "$firma" \
-              '{correo:$c, nombre:$n, vence:$v, fundador:$f, firma:$s}')
+              --argjson m "$maxeq" '{correo:$c, nombre:$n, vence:$v, fundador:$f, firma:$s, max_equipos:$m}')
             auth=()
             case "$SUPA_KEY" in eyJ*) auth=(-H "Authorization: Bearer $SUPA_KEY");; esac
             curl -sS --fail-with-body -X POST "$SUPA_URL/rest/v1/licencias" \
@@ -104,8 +125,9 @@ jobs:
           if [ ! -f clientes.md ]; then
             printf '# Clientes de Checa\n\n| Fecha | Nombre | WhatsApp | Equipo | Tipo | Vence |\n|---|---|---|---|---|---|\n' > clientes.md
           fi
-          printf '| %s | %s | %s | %s | %s | %s |\n' "$hoy" "$(limpio "$NOMBRE")" "$(limpio "$WHATS")" "$mostrar" "$TIPO" "$fv" >> clientes.md
-          fundadores=$({ grep '| Fundador |' clientes.md || true; } | awk -F'|' '{print $5}' | sort -u | wc -l)
+          tipofila="$TIPO"; if [ -n "$nplan" ]; then tipofila="$TIPO · $nplan"; fi
+          printf '| %s | %s | %s | %s | %s | %s |\n' "$hoy" "$(limpio "$NOMBRE")" "$(limpio "$WHATS")" "$mostrar" "$tipofila" "$fv" >> clientes.md
+          fundadores=$({ grep '| Fundador' clientes.md || true; } | awk -F'|' '{print $5}' | sort -u | wc -l)
           git config user.name "Checa"
           git config user.email "actions@users.noreply.github.com"
           git add clientes.md
@@ -114,6 +136,7 @@ jobs:
               echo "nombre=$(limpio "$NOMBRE")"
               echo "equipo=$mostrar"
               echo "tipo=$TIPO"
+              echo "plan=${nplan:-todo}"
               echo "vence=$fv"
               echo "codigo=$codigo"
             } > pedidos/respuesta.txt

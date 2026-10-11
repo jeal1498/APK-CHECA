@@ -29,7 +29,7 @@ import java.util.concurrent.Executor
 
 /**
  * Cuenta Google + licencia guardada en Supabase (tablas `licencias` y `equipos`).
- * La licencia viene firmada (ECDSA de "LV|<correo>|<fecha>[|F]") y se guarda en el teléfono:
+ * La licencia viene firmada (ECDSA de "LV|<correo>|<fecha>[|F][|B]") y se guarda en el teléfono:
  * funciona sin internet, pero se revisa una vez al día y deja de valer tras 15 días sin revisión.
  */
 object Cuenta {
@@ -40,6 +40,9 @@ object Cuenta {
     private const val DIA = 86_400_000L
     const val DIAS_SIN_RED = 15
     const val MAX_EQUIPOS = 2
+
+    /** Equipos que permite la licencia de la cuenta (1 en el plan de 1 mes). */
+    fun maxEquipos(ctx: Context): Int = sp(ctx).getInt("lic_eq", MAX_EQUIPOS)
 
     data class Equipo(val id: String, val nombre: String, val ultimoUso: String)
 
@@ -86,8 +89,9 @@ object Cuenta {
         if (diasSinRevisar(ctx) > DIAS_SIN_RED) return null
         val vence = s.getInt("lic_vence", 0)
         val f = s.getBoolean("lic_f", false)
-        val texto = "LV|$correo|$vence" + (if (f) "|F" else "")
-        return if (Licencia.verificar(texto, firma)) Licencia.Codigo(vence, f) else null
+        val b = s.getInt("lic_eq", MAX_EQUIPOS) == 1
+        val texto = "LV|$correo|$vence" + (if (f) "|F" else "") + (if (b) "|B" else "")
+        return if (Licencia.verificar(texto, firma)) Licencia.Codigo(vence, f, b) else null
     }
 
     fun equipos(ctx: Context): List<Equipo> = try {
@@ -214,7 +218,7 @@ object Cuenta {
         val s = sp(ctx)
         val e = s.edit()
         if (s.getString("correo", null) != correo) {
-            e.remove("lic_firma").remove("lic_vence").remove("lic_f").remove("equipos").remove("quitado")
+            e.remove("lic_firma").remove("lic_vence").remove("lic_f").remove("lic_eq").remove("equipos").remove("quitado")
         }
         e.putString("correo", correo)
             .putString("acceso", j.getString("access_token"))
@@ -254,7 +258,7 @@ object Cuenta {
             sp(ctx).edit().putBoolean("quitado", true).putString("equipos", equiposJson(lista)).commit()
             return Resultado.Limite(lista)
         }
-        val lic = JSONArray(pedir("GET", "/rest/v1/licencias?select=vence,fundador,firma", t, null))
+        val lic = JSONArray(pedir("GET", "/rest/v1/licencias?select=vence,fundador,firma,max_equipos", t, null))
         val lista = leerEquipos(ctx, t)
         val e = sp(ctx).edit()
             .putBoolean("quitado", false)
@@ -264,9 +268,10 @@ object Cuenta {
             val o = lic.getJSONObject(0)
             e.putInt("lic_vence", o.getInt("vence"))
                 .putBoolean("lic_f", o.optBoolean("fundador", false))
+                .putInt("lic_eq", o.optInt("max_equipos", MAX_EQUIPOS))
                 .putString("lic_firma", o.getString("firma"))
         } else {
-            e.remove("lic_vence").remove("lic_f").remove("lic_firma")
+            e.remove("lic_vence").remove("lic_f").remove("lic_eq").remove("lic_firma")
         }
         e.commit()
         return Resultado.Ok

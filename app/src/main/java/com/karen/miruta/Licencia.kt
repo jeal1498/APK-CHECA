@@ -26,10 +26,12 @@ object Licencia {
     /** pagada: con código válido; si no, está en prueba (o vencida si diasRestantes = 0). */
     data class Estado(
         val activa: Boolean, val pagada: Boolean, val diasRestantes: Int, val vence: Int,
-        val fundador: Boolean = false
+        val fundador: Boolean = false,
+        /** Plan de 1 mes: 1 equipo, sin comparador de 2 ofertas ni pronóstico/semana en Mejores horas. */
+        val basico: Boolean = false
     )
 
-    data class Codigo(val vence: Int, val fundador: Boolean)
+    data class Codigo(val vence: Int, val fundador: Boolean, val basico: Boolean = false)
 
     private var cache: Pair<Long, Estado>? = null
 
@@ -71,7 +73,7 @@ object Licencia {
             .maxByOrNull { it.vence }
         val vence = cod?.vence ?: 0
         val e = if (vence >= hoy) {
-            Estado(true, true, 0, vence, cod?.fundador == true)
+            Estado(true, true, 0, vence, cod?.fundador == true, cod?.basico == true)
         } else {
             var inicio = s.getLong("prueba", 0L)
             if (inicio == 0L) {
@@ -87,6 +89,9 @@ object Licencia {
     }
 
     fun activa(ctx: Context): Boolean = estado(ctx).activa
+
+    /** Licencia pagada del plan de 1 mes (la prueba gratis trae todo). */
+    fun basico(ctx: Context): Boolean = estado(ctx).basico
 
     /** Guarda el código si es válido para este equipo. Devuelve sus datos o null. */
     fun activar(ctx: Context, codigo: String): Codigo? {

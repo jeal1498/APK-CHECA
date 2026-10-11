@@ -93,7 +93,10 @@ class MainActivity : Activity() {
     private lateinit var ayudaPermisoIcono: Icono
     private lateinit var licAjustes: TextView
     private lateinit var cuentaCaja: LinearLayout
+    private lateinit var cuentaScroll: ScrollView
+    private lateinit var paquetesVista: View
     private val insignias = ArrayList<TextView>()
+    private var notaComparador: TextView? = null
 
     private val refresco = object : Runnable {
         override fun run() {
@@ -111,7 +114,9 @@ class MainActivity : Activity() {
 
         contenido = FrameLayout(this)
         pestanas.add(pantallaInicio())
+        pestanas.add(pantallaFiltros())
         pestanas.add(pantallaAjustes())
+        pestanas.add(pantallaCuenta())
         pestanas.forEach { contenido.addView(it, FrameLayout.LayoutParams(-1, -1)) }
 
         val raiz = LinearLayout(this).apply {
@@ -186,12 +191,14 @@ class MainActivity : Activity() {
         }
 
         barra.addView(pestana("Inicio", Icono.INICIO, 0), LinearLayout.LayoutParams(0, -1, 1f))
+        barra.addView(pestana("Filtros", Icono.FILTROS, 1), LinearLayout.LayoutParams(0, -1, 1f))
         etiquetaCircular = texto("", Tema.T_NOTA, cTenue, true).apply {
             gravity = Gravity.CENTER_HORIZONTAL or Gravity.BOTTOM
             setPadding(0, 0, 0, dp(10))
         }
-        barra.addView(etiquetaCircular, LinearLayout.LayoutParams(dp(112), -1))
-        barra.addView(pestana("Ajustes", Icono.AJUSTES, 1), LinearLayout.LayoutParams(0, -1, 1f))
+        barra.addView(etiquetaCircular, LinearLayout.LayoutParams(dp(88), -1))
+        barra.addView(pestana("Ajustes", Icono.AJUSTES, 2), LinearLayout.LayoutParams(0, -1, 1f))
+        barra.addView(pestana("Cuenta", Icono.CUENTA, 3), LinearLayout.LayoutParams(0, -1, 1f))
         marco.addView(barra, FrameLayout.LayoutParams(-1, dp(64), Gravity.BOTTOM))
 
         iconoCircular = Icono(Icono.PLAY, Color.BLACK)
@@ -240,7 +247,7 @@ class MainActivity : Activity() {
             etq.typeface = if (sel) fuenteMedia else Typeface.DEFAULT
         }
         if (i == 0) actualizarResumen()
-        if (i == 1) refrescarVistaPrevia()
+        if (i == 2) refrescarVistaPrevia()
     }
 
     // =====================================================================
@@ -277,7 +284,7 @@ class MainActivity : Activity() {
         lic.addView(licTitulo)
         licTexto = texto("", Tema.T_TEXTO, cTexto, false).apply { setLineSpacing(0f, 1.2f) }
         lic.addView(licTexto, margenArriba(Tema.S1))
-        lic.addView(boton("Activar licencia", cVerde, Color.BLACK) { verLicencia() }, margenArriba(Tema.S2))
+        lic.addView(boton("Ver paquetes", cVerde, Color.BLACK) { irAPaquetes() }, margenArriba(Tema.S2))
         tarjetaLicencia = lic
         col.addView(lic, margenTarjeta())
 
@@ -318,9 +325,24 @@ class MainActivity : Activity() {
         mh.addView(mejoresHorasLista, margenArriba(12))
         col.addView(mh, margenTarjeta())
 
-        // --- Filtros inteligentes ---
-        col.addView(tarjetaFiltros(), margenTarjeta())
+        return scroll(col)
+    }
 
+    // =====================================================================
+    // Pestaña Filtros
+    // =====================================================================
+
+    private fun pantallaFiltros(): View {
+        val col = columna()
+        col.addView(texto("Filtros", Tema.T_TITULO, cTexto, true), LinearLayout.LayoutParams(-1, -2).apply {
+            bottomMargin = dp(Tema.S1)
+        })
+        col.addView(texto(
+            "🟢 si la oferta cumple todas tus metas activas, 🟡 si cumple alguna y 🔴 si no cumple ninguna. " +
+                "Si falla la recogida o la duración, va a 🔴 con el motivo.",
+            Tema.T_NOTA, cTenue, false
+        ).apply { setLineSpacing(0f, 1.2f) }, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(Tema.S2) })
+        col.addView(tarjetaFiltros(), margenTarjeta())
         return scroll(col)
     }
 
@@ -377,11 +399,10 @@ class MainActivity : Activity() {
             etiquetaCircular.text = "Detener"
             etiquetaCircular.setTextColor(cRojo)
         } else {
-            val color = if (acc) Color.BLACK else cTenue
-            botonCircular.setImageDrawable(Icono(Icono.PLAY, color).also { iconoCircular = it })
-            botonCircular.background = circulo(if (acc) cVerde else cTarjeta2)
+            botonCircular.setImageDrawable(Icono(Icono.PLAY, Color.BLACK).also { iconoCircular = it })
+            botonCircular.background = circulo(cVerde)
             etiquetaCircular.text = "Iniciar"
-            etiquetaCircular.setTextColor(if (acc) cVerde else cTenue)
+            etiquetaCircular.setTextColor(cVerde)
         }
         if (::ayudaPermiso.isInitialized) {
             ayudaPermiso.text = if (acc) "Servicio de Accesibilidad activado" else "Servicio de Accesibilidad desactivado"
@@ -704,7 +725,10 @@ class MainActivity : Activity() {
             if (mejor < 0 || v > (f[mejor] ?: 0.0)) mejor = h
         }
         val vm = if (mejor >= 0) f[mejor] else null
-        val caja2 = if (vm == null) cajaResumen("LO MEJOR QUE VIENE", null, "Sin datos", "Aún no hay suficientes ofertas")
+        val basico = Licencia.basico(this)
+        val caja2 = if (basico) cajaResumen("LO MEJOR QUE VIENE", null, "Plan 6 meses", "Pronóstico de las próximas horas")
+            .apply { isClickable = true; setOnClickListener { irAPaquetes() } }
+            else if (vm == null) cajaResumen("LO MEJOR QUE VIENE", null, "Sin datos", "Aún no hay suficientes ofertas")
             else cajaResumen("LO MEJOR QUE VIENE", colorKm(vm), hh(mejor), "${dinero(vm)}/km · en ${mejor - ahora} h")
         cajas.addView(caja2, LinearLayout.LayoutParams(0, -1, 1f).apply { leftMargin = dp(Tema.S1) })
         mejoresHorasLista.addView(cajas)
@@ -750,12 +774,13 @@ class MainActivity : Activity() {
             mejoresHorasLista.addView(texto("Llevas ${mhRegs.size} ofertas guardadas. Los colores se llenan conforme uses la app.",
                 Tema.T_NOTA, cTenue, false), margenArriba(Tema.S1))
         }
-        mejoresHorasLista.addView(texto("Ver toda la semana ›", Tema.T_NOTA, cVerde, true).apply {
+        mejoresHorasLista.addView(texto(if (basico) "Vista de la semana: plan 6 meses ›" else "Ver toda la semana ›",
+            Tema.T_NOTA, cVerde, true).apply {
             gravity = Gravity.END or Gravity.CENTER_VERTICAL
             minHeight = dp(40)
             setPadding(dp(Tema.S1), 0, dp(4), 0)
             isClickable = true
-            setOnClickListener { verSemana() }
+            setOnClickListener { if (basico) irAPaquetes() else verSemana() }
         }, LinearLayout.LayoutParams(-2, -2).apply { gravity = Gravity.END; topMargin = 4 })
     }
 
@@ -953,24 +978,6 @@ class MainActivity : Activity() {
             bottomMargin = dp(Tema.S1)
         })
 
-        // --- Cuenta Google ---
-        col.addView(etiqueta("CUENTA"))
-        val cta = tarjeta()
-        cuentaCaja = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        cta.addView(cuentaCaja)
-        col.addView(cta, margenTarjeta())
-        pintarCuenta()
-
-        // --- Licencia ---
-        col.addView(etiqueta("LICENCIA"))
-        val licA = tarjeta()
-        licAjustes = texto("", Tema.T_TEXTO, cTexto, true)
-        licA.addView(licAjustes)
-        licA.addView(insigniaFundador(), LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(Tema.S1) })
-        licA.addView(texto("Código de este equipo: ${Licencia.codigoEquipo(this)}", Tema.T_NOTA, cTenue, false), margenArriba(4))
-        licA.addView(boton("Activar o renovar", cTarjeta2, cTexto) { verLicencia() }, margenArriba(Tema.S2))
-        col.addView(licA, margenTarjeta())
-
         // --- Pop-up ---
         col.addView(etiqueta("POP-UP"))
         val pop = tarjeta()
@@ -1013,6 +1020,9 @@ class MainActivity : Activity() {
         // --- Comparar ofertas ---
         col.addView(etiqueta("DOS OFERTAS A LA VEZ"))
         val cmp = tarjeta()
+        notaComparador = texto("Disponible en los paquetes de 6 meses y 1 año. Con el de 1 mes se muestra una oferta a la vez.",
+            Tema.T_NOTA, cAmarillo, false).apply { setLineSpacing(0f, 1.2f) }
+        cmp.addView(notaComparador, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(Tema.S1) })
         cmp.addView(texto(
             "Si llegan ofertas de Uber y DiDi al mismo tiempo, la mejor se marca con ⭐. " +
                 "Primero gana la de mejor color; si empatan, decide este criterio:",
@@ -1078,6 +1088,71 @@ class MainActivity : Activity() {
         apps.addView(separador())
         apps.addView(interruptor("DiDi Conductor", null, prefs.didi) { prefs.didi = it })
         col.addView(apps, margenTarjeta())
+
+        return scroll(col)
+    }
+
+    // =====================================================================
+    // Pestaña Cuenta: cuenta, licencia, paquetes, ayuda y soporte
+    // =====================================================================
+
+    private fun pantallaCuenta(): View {
+        val col = columna()
+        col.addView(texto("Cuenta", Tema.T_TITULO, cTexto, true), LinearLayout.LayoutParams(-1, -2).apply {
+            bottomMargin = dp(Tema.S1)
+        })
+
+        // --- Cuenta Google ---
+        col.addView(etiqueta("CUENTA"))
+        val cta = tarjeta()
+        cuentaCaja = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        cta.addView(cuentaCaja)
+        col.addView(cta, margenTarjeta())
+        pintarCuenta()
+
+        // --- Licencia ---
+        col.addView(etiqueta("LICENCIA"))
+        val licA = tarjeta()
+        licAjustes = texto("", Tema.T_TEXTO, cTexto, true)
+        licA.addView(licAjustes)
+        licA.addView(insigniaFundador(), LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(Tema.S1) })
+        licA.addView(texto("Código de este equipo: ${Licencia.codigoEquipo(this)}", Tema.T_NOTA, cTenue, false), margenArriba(4))
+        licA.addView(boton("Tengo un código de activación", cTarjeta2, cTexto) { verLicencia() }, margenArriba(Tema.S2))
+        col.addView(licA, margenTarjeta())
+
+        // --- Paquetes ---
+        val paq = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        paq.addView(etiqueta("PAQUETES"))
+        paq.addView(tarjetaPaquete(
+            "1 MES", "Plan Básico", "$99", "Para probar todo en tu día a día.",
+            listOf(
+                "Pop-up con semáforo, ganancia neta, $/hora, $/km y dinámica ⚡",
+                "Filtros inteligentes y aviso por voz o vibración",
+                "Mejores horas de hoy",
+                "1 equipo",
+                "Soporte por WhatsApp"
+            ), false
+        ), margenTarjeta())
+        paq.addView(tarjetaPaquete(
+            "6 MESES", "Plan Estratega", "$399", "Equivale a $66.50 al mes · Ahorras 33 %",
+            listOf(
+                "Todo lo del Plan Básico, más:",
+                "Uber y DiDi al mismo tiempo: Checa marca cuál conviene más",
+                "Mejores horas completo: «lo mejor que viene» y vista de la semana",
+                "2 equipos (teléfono + tablet)",
+                "Soporte prioritario por WhatsApp"
+            ), true
+        ), margenTarjeta())
+        paq.addView(tarjetaPaquete(
+            "1 AÑO", "Plan Pro", "$899", "Equivale a $74.90 al mes",
+            listOf(
+                "Todo lo del Plan Estratega",
+                "2 equipos (teléfono + tablet)",
+                "Soporte VIP por WhatsApp"
+            ), false
+        ), margenTarjeta())
+        paquetesVista = paq
+        col.addView(paq)
 
         // --- Cómo usarla ---
         col.addView(etiqueta("CÓMO USARLA"))
@@ -1146,7 +1221,62 @@ class MainActivity : Activity() {
             gravity = Gravity.CENTER
             setPadding(0, dp(Tema.S1), 0, dp(Tema.S1))
         }, LinearLayout.LayoutParams(-1, -2))
-        return scroll(col)
+        return scroll(col).also { cuentaScroll = it }
+    }
+
+    /** Lleva a la pestaña Cuenta, a la parte de los paquetes. */
+    private fun irAPaquetes() {
+        dialogoCuenta?.dismiss()
+        mostrarPestana(3)
+        cuentaScroll.post { cuentaScroll.smoothScrollTo(0, paquetesVista.top) }
+    }
+
+    private fun tarjetaPaquete(
+        duracion: String, nombre: String, precio: String, sub: String,
+        beneficios: List<String>, destacado: Boolean
+    ): View {
+        val t = tarjeta()
+        if (destacado) t.background = GradientDrawable().apply {
+            cornerRadius = dp(Tema.R_TARJETA).toFloat()
+            setColor(cTarjeta)
+            setStroke(dp(2), cVerde)
+        }
+        val cab = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+        }
+        cab.addView(texto("$duracion · $nombre", Tema.T_NOTA, if (destacado) cVerde else cTexto2, true).apply {
+            letterSpacing = 0.04f
+        }, LinearLayout.LayoutParams(0, -2, 1f))
+        if (destacado) cab.addView(texto("Más popular", Tema.T_NOTA, Color.BLACK, true).apply {
+            setPadding(dp(10), dp(3), dp(10), dp(3))
+            background = redondo(cVerde, 50)
+        })
+        t.addView(cab)
+        t.addView(texto("$precio MXN", Tema.T_NUMERO, cTexto, true), margenArriba(4))
+        t.addView(texto(sub, Tema.T_NOTA, if (destacado) cVerde else cTenue, destacado), margenArriba(2))
+        beneficios.forEach { b ->
+            val fila = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+            fila.addView(icono(Icono.OK, if (destacado) cVerde else cTexto2, 16), LinearLayout.LayoutParams(dp(16), dp(16)).apply {
+                rightMargin = dp(Tema.S1)
+                topMargin = dp(2)
+            })
+            fila.addView(texto(b, Tema.T_TEXTO, cTexto, false).apply { setLineSpacing(0f, 1.15f) },
+                LinearLayout.LayoutParams(0, -2, 1f))
+            t.addView(fila, margenArriba(Tema.S1))
+        }
+        t.addView(boton("Lo quiero", if (destacado) cVerde else cTarjeta2, if (destacado) Color.BLACK else cTexto) {
+            pedirPaquete("$duracion ($precio)")
+        }, margenArriba(Tema.S2))
+        return t
+    }
+
+    private fun pedirPaquete(paquete: String) {
+        val quien = if (Cuenta.conectada(this)) "Mi cuenta: ${Cuenta.correo(this)}"
+            else "Código de mi equipo: ${Licencia.codigoEquipo(this)}"
+        if (!Cuenta.conectada(this)) Toast.makeText(this,
+            "Tip: entra con Google arriba y tu licencia se activa sola", Toast.LENGTH_LONG).show()
+        abrirWhatsApp("Hola, quiero el paquete de $paquete de Checa. $quien")
     }
 
     // =====================================================================
@@ -1170,9 +1300,10 @@ class MainActivity : Activity() {
             licTexto.text = "Activa o renueva tu licencia para volver a ver los pop-ups."
         }
         insignias.forEach { it.visibility = if (e.fundador) View.VISIBLE else View.GONE }
+        notaComparador?.visibility = if (e.basico) View.VISIBLE else View.GONE
         if (::licAjustes.isInitialized) {
             licAjustes.text = when {
-                e.pagada -> "Activa · ${if (e.vence >= Licencia.PERMANENTE) "sin vencimiento" else "vence el " + Licencia.fechaBonita(e.vence)}"
+                e.pagada -> "Activa${if (e.basico) " · Plan Básico" else ""} · ${if (e.vence >= Licencia.PERMANENTE) "sin vencimiento" else "vence el " + Licencia.fechaBonita(e.vence)}"
                 e.activa -> "Prueba gratis · quedan ${e.diasRestantes} días"
                 else -> "Sin licencia"
             }
@@ -1328,17 +1459,13 @@ class MainActivity : Activity() {
                 Tema.T_SUB, if (e.activa) cVerde else cAmarillo, true
             ), margenArriba(Tema.S1))
             cuerpo.addView(texto(
-                "Pide tu licencia por WhatsApp. Se activa sola en esta cuenta; no tienes que escribir ningún código.",
+                "Elige tu paquete y pídelo por WhatsApp. Se activa solo en esta cuenta; no tienes que escribir ningún código.",
                 Tema.T_NOTA, cTenue, false
             ).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
-            cuerpo.addView(boton("Pedir licencia por WhatsApp", cTarjeta2, cTexto) { pedirLicenciaCuenta() }, margenArriba(Tema.S2))
+            cuerpo.addView(boton("Ver paquetes", cTarjeta2, cTexto) { irAPaquetes() }, margenArriba(Tema.S2))
             cuerpo.addView(boton("Empezar", cVerde, Color.BLACK) { dialogoCuenta?.dismiss() }, margenArriba(Tema.S1))
             dialogoCuenta = hoja(if (nombre.isEmpty()) "Bienvenido" else "Bienvenido, $nombre", null, cuerpo)
         }
-    }
-
-    private fun pedirLicenciaCuenta() {
-        abrirWhatsApp("Hola, quiero activar Checa. Mi cuenta: ${Cuenta.correo(this@MainActivity)}")
     }
 
     /** Abre el chat de WhatsApp (Business) de ventas con el mensaje ya escrito. */
@@ -1359,7 +1486,10 @@ class MainActivity : Activity() {
     private fun dialogoLimite(equipos: List<Cuenta.Equipo>) {
         val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         cuerpo.addView(texto(
-            "Tu licencia permite ${Cuenta.MAX_EQUIPOS} equipos. Quita uno para activar este.",
+            Cuenta.maxEquipos(this).let { n ->
+                if (n == 1) "Tu paquete de 1 mes permite 1 equipo. Quita el otro para activar este, o cambia al de 6 meses para usar 2."
+                else "Tu licencia permite $n equipos. Quita uno para activar este."
+            },
             Tema.T_TEXTO, cTexto2, false
         ).apply { setLineSpacing(0f, 1.2f) })
         equipos.forEach { eq ->
@@ -1375,7 +1505,7 @@ class MainActivity : Activity() {
     private fun listaEquipos(conQuitar: Boolean): View {
         val caja = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         val lista = Cuenta.equipos(this)
-        caja.addView(etiqueta("EQUIPOS · ${lista.size} DE ${Cuenta.MAX_EQUIPOS}"))
+        caja.addView(etiqueta("EQUIPOS · ${lista.size} DE ${Cuenta.maxEquipos(this)}"))
         lista.forEach { eq -> caja.addView(filaEquipo(eq, conQuitar), margenArriba(4)) }
         return caja
     }
@@ -1447,7 +1577,7 @@ class MainActivity : Activity() {
         }
         if (Cuenta.equipos(this).isNotEmpty()) cuentaCaja.addView(listaEquipos(true), margenArriba(Tema.S1))
         if (Cuenta.licencia(this) == null && !Cuenta.equipoQuitado(this)) {
-            cuentaCaja.addView(boton("Pedir licencia por WhatsApp", cTarjeta2, cTexto) { pedirLicenciaCuenta() }, margenArriba(Tema.S2))
+            cuentaCaja.addView(boton("Ver paquetes", cTarjeta2, cTexto) { irAPaquetes() }, margenArriba(Tema.S2))
             cuentaCaja.addView(boton("Ya pagué: revisar mi licencia", cVerde, Color.BLACK) {
                 Toast.makeText(this, "Buscando tu licencia…", Toast.LENGTH_SHORT).show()
                 Cuenta.revisarAhora(this) { r -> mostrarResultadoCuenta(r) }
@@ -1514,11 +1644,13 @@ class MainActivity : Activity() {
 
     private fun iniciarCaptura() {
         if (!Licencia.activa(this)) {
-            verLicencia()
+            Toast.makeText(this, "Elige un paquete para seguir usando Checa", Toast.LENGTH_LONG).show()
+            irAPaquetes()
             return
         }
         if (!servicioActivo()) {
-            Toast.makeText(this, "Primero activa el servicio de Accesibilidad", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Primero activa \"Checa – lector de ofertas\" en Accesibilidad", Toast.LENGTH_LONG).show()
+            abrirAccesibilidad()
             return
         }
         if (Build.VERSION.SDK_INT >= 33 &&
