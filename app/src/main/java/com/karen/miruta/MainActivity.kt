@@ -242,20 +242,6 @@ class MainActivity : Activity() {
     private fun pantallaInicio(): View {
         val col = columna()
 
-        // --- Encabezado ---
-        val cab = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-        }
-        cab.addView(ImageView(this).apply { setImageResource(R.mipmap.ic_launcher) },
-            LinearLayout.LayoutParams(dp(40), dp(40)).apply { rightMargin = dp(12) })
-        val tits = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        tits.addView(texto("Checa", Tema.T_TITULO, cTexto, true))
-        tits.addView(texto("Lo que de verdad te deja cada viaje", Tema.T_TEXTO, cTexto2, false))
-        tits.addView(insigniaFundador(), LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(Tema.S1) })
-        cab.addView(tits, LinearLayout.LayoutParams(0, -2, 1f))
-        col.addView(cab, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(Tema.S3) })
-
         // --- Permiso pendiente (solo si falta) ---
         val perm = tarjeta(Tema.AMARILLO_SUAVE)
         val permCab = LinearLayout(this).apply {
