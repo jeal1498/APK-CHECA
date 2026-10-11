@@ -60,6 +60,13 @@ Contexto para continuar el proyecto en una conversación nueva.
 - Android 13+: "Controlado por ajustes restringidos". Se resuelve en Info de la app → ⋮ → **Permitir configuración restringida** y luego activando "Luz Verde – lector de ofertas" en Accesibilidad.
 - Lectura de pantalla: elegir **Pantalla completa** → Empezar. Después de reiniciar el teléfono hay que volver a iniciarla.
 
+## Licencias y venta (v21+)
+- `Licencia.kt`: sin internet. Código de equipo = SHA-256 de ANDROID_ID (8 hex, `A1B2-C3D4`). Activación `AAAAMMDD[F]-firma` (ECDSA P-256 de `LV|EQUIPO|AAAAMMDD[|F]`). `99991231` = sin vencimiento, `F` = ⭐ Miembro fundador. 7 días de prueba. Sin licencia, `RutaService.mostrarOferta` no muestra nada.
+- La llave privada solo está en el secreto `LICENCIA_PRIVADA` (no se puede leer). La pública está en `Licencia.kt`.
+- **Para generar un código cuando ella lo pida** (nombre, WhatsApp, equipo, Fundador/Normal, días; 0 = sin vencimiento): disparar el workflow `licencia.yml` con `mcp__github__actions_run_trigger` (ref `main`), esperar y leer el log del job: el código sale entre las líneas `=====`. Queda anotado solo en `clientes.md`.
+- Precios: Ruta Rentable cobra $129/mes. Propuesta: $99/mes o $899/año; fundadores (primeros 50) $49/mes de por vida.
+- El repo ya es **privado** (la API pública da 404; usar las herramientas de GitHub MCP para revisar Actions).
+
 ## Ideas propuestas y pendientes
 - **No** integrar el bloqueo de zonas por palabras de la dirección: se explicó y ella decidió no hacerlo.
 - Aún no se han hecho: arranque automático al abrir Uber/DiDi, meta del día, pop-up arrastrable, respaldo o exportación del historial.
