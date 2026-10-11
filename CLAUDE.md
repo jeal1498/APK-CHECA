@@ -76,6 +76,7 @@ Contexto para continuar el proyecto en una conversación nueva.
 - El repo ya es **privado** (la API pública da 404; usar las herramientas de GitHub MCP para revisar Actions).
 
 ## Ideas propuestas y pendientes
+- **EN CURSO: licencia ligada a cuenta Google con Supabase** (ella eligió Supabase porque ya lo conoce). Plan: login con Google (Credential Manager → ID token → `POST /auth/v1/token?grant_type=id_token` de Supabase, sin SDK); tabla `licencias` (user_id/email, vence, fundador, hasta **2 equipos** por cuenta) con RLS de solo lectura para el usuario; la app guarda la activación firmada (ECDSA, igual que hoy) y **sigue funcionando sin internet** después de activar. Ella debe: crear proyecto Supabase (pasar URL + anon key), en Google Cloud crear cliente OAuth **Android** (`com.karen.miruta`, SHA-1 `9D:2C:6B:15:1E:37:DC:88:84:35:CF:9A:6C:D1:5C:7D:0D:7F:C3:FE`) y cliente **Web** (pasar su ID), y activar Google en Supabase → Authentication → Providers.
 - **No** integrar el bloqueo de zonas por palabras de la dirección: se explicó y ella decidió no hacerlo.
 - Aún no se han hecho: arranque automático al abrir Uber/DiDi, meta del día, pop-up arrastrable, respaldo o exportación del historial.
 - Pantalla dividida en tablet probada y correcta en v20 (dos pop-ups sólidos, ⭐ con borde dorado, sin mezclar ofertas). Si vuelve el parpadeo, pedir Diagnóstico.
