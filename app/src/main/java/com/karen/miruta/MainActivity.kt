@@ -1442,6 +1442,10 @@ class MainActivity : Activity() {
         if (Cuenta.equipos(this).isNotEmpty()) cuentaCaja.addView(listaEquipos(true), margenArriba(Tema.S1))
         if (Cuenta.licencia(this) == null && !Cuenta.equipoQuitado(this)) {
             cuentaCaja.addView(boton("Pedir licencia por WhatsApp", cTarjeta2, cTexto) { pedirLicenciaCuenta() }, margenArriba(Tema.S2))
+            cuentaCaja.addView(boton("Ya pagué: revisar mi licencia", cVerde, Color.BLACK) {
+                Toast.makeText(this, "Buscando tu licencia…", Toast.LENGTH_SHORT).show()
+                Cuenta.revisarAhora(this) { r -> mostrarResultadoCuenta(r) }
+            }, margenArriba(Tema.S1))
         }
         cuentaCaja.addView(boton("Cerrar sesión", cTarjeta2, cTexto) {
             Toast.makeText(this, "Cerrando sesión…", Toast.LENGTH_SHORT).show()
