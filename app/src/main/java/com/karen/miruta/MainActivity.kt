@@ -59,6 +59,7 @@ class MainActivity : Activity() {
     private val cVerde = Tema.VERDE
     private val cAmarillo = Tema.AMARILLO
     private val cRojo = Tema.ROJO
+    private val DORADO = Color.rgb(255, 214, 10)
 
     private val fuenteMedia: Typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
 
@@ -90,6 +91,7 @@ class MainActivity : Activity() {
     private lateinit var ayudaPermiso: TextView
     private lateinit var ayudaPermisoIcono: Icono
     private lateinit var licAjustes: TextView
+    private val insignias = ArrayList<TextView>()
 
     private val refresco = object : Runnable {
         override fun run() {
@@ -250,6 +252,7 @@ class MainActivity : Activity() {
         val tits = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         tits.addView(texto("Luz Verde", Tema.T_TITULO, cTexto, true))
         tits.addView(texto("Lo que de verdad te deja cada viaje", Tema.T_TEXTO, cTexto2, false))
+        tits.addView(insigniaFundador(), LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(Tema.S1) })
         cab.addView(tits, LinearLayout.LayoutParams(0, -2, 1f))
         col.addView(cab, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(Tema.S3) })
 
@@ -782,6 +785,7 @@ class MainActivity : Activity() {
         val licA = tarjeta()
         licAjustes = texto("", Tema.T_TEXTO, cTexto, true)
         licA.addView(licAjustes)
+        licA.addView(insigniaFundador(), LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(Tema.S1) })
         licA.addView(texto("Código de este equipo: ${Licencia.codigoEquipo(this)}", Tema.T_NOTA, cTenue, false), margenArriba(4))
         licA.addView(boton("Activar o renovar", cTarjeta2, cTexto) { verLicencia() }, margenArriba(Tema.S2))
         col.addView(licA, margenTarjeta())
@@ -968,6 +972,7 @@ class MainActivity : Activity() {
             licTitulo.setTextColor(cAmarillo)
             licTexto.text = "Activa o renueva tu licencia para volver a ver los pop-ups."
         }
+        insignias.forEach { it.visibility = if (e.fundador) View.VISIBLE else View.GONE }
         if (::licAjustes.isInitialized) {
             licAjustes.text = when {
                 e.pagada -> "Activa · ${if (e.vence >= Licencia.PERMANENTE) "sin vencimiento" else "vence el " + Licencia.fechaBonita(e.vence)}"
@@ -976,6 +981,18 @@ class MainActivity : Activity() {
             }
             licAjustes.setTextColor(if (e.activa) cVerde else cAmarillo)
         }
+    }
+
+    /** Etiqueta dorada "⭐ Miembro fundador" (solo visible con licencia de fundador). */
+    private fun insigniaFundador() = texto("⭐ Miembro fundador", Tema.T_NOTA, DORADO, true).apply {
+        setPadding(dp(10), dp(4), dp(10), dp(4))
+        background = GradientDrawable().apply {
+            cornerRadius = dp(Tema.R_BOTON).toFloat()
+            setColor(Color.argb(30, 255, 214, 10))
+            setStroke(dp(1), DORADO)
+        }
+        visibility = View.GONE
+        insignias.add(this)
     }
 
     private fun verLicencia() {
@@ -1013,14 +1030,15 @@ class MainActivity : Activity() {
         }
         cuerpo.addView(campoCodigo, margenArriba(Tema.S1))
         cuerpo.addView(boton("Activar", cVerde, Color.BLACK) {
-            val vence = Licencia.activar(this, campoCodigo.text.toString())
-            if (vence == null) {
+            val c = Licencia.activar(this, campoCodigo.text.toString())
+            if (c == null) {
                 Toast.makeText(this, "Código no válido para este equipo", Toast.LENGTH_LONG).show()
             } else if (!Licencia.estado(this).pagada) {
                 Toast.makeText(this, "Ese código ya venció", Toast.LENGTH_LONG).show()
             } else {
-                val msg = if (vence >= Licencia.PERMANENTE) "Licencia activada sin vencimiento"
-                    else "Licencia activada hasta el ${Licencia.fechaBonita(vence)}"
+                val msg = (if (c.vence >= Licencia.PERMANENTE) "Licencia activada sin vencimiento"
+                    else "Licencia activada hasta el ${Licencia.fechaBonita(c.vence)}") +
+                    (if (c.fundador) "\n⭐ ¡Gracias por ser miembro fundador!" else "")
                 Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
                 pintarLicencia()
             }

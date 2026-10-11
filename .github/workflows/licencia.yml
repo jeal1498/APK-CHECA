@@ -46,10 +46,11 @@ jobs:
           if [ ${#eq} -ne 8 ]; then echo "Código de equipo inválido: $EQUIPO"; exit 1; fi
           if ! printf '%s' "$DIAS" | grep -Eq '^[0-9]+$'; then echo "Días inválidos: $DIAS"; exit 1; fi
           if [ "$DIAS" = "0" ]; then vence=99991231; else vence=$(TZ=America/Cancun date -d "+$DIAS days" +%Y%m%d); fi
+          if [ "$TIPO" = "Fundador" ]; then marca=F; extra='|F'; else marca=''; extra=''; fi
           printf '%s\n' "$LLAVE" > llave.pem
-          firma=$(printf 'LV|%s|%s' "$eq" "$vence" | openssl dgst -sha256 -sign llave.pem | base64 -w0 | tr '+/' '-_' | tr -d '=')
+          firma=$(printf 'LV|%s|%s%s' "$eq" "$vence" "$extra" | openssl dgst -sha256 -sign llave.pem | base64 -w0 | tr '+/' '-_' | tr -d '=')
           rm -f llave.pem
-          codigo="$vence-$firma"
+          codigo="$vence$marca-$firma"
 
           # --- Tabla de clientes (clientes.md) ---
           limpio() { printf '%s' "$1" | tr -d '|\r\n' | cut -c1-60; }

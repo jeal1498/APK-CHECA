@@ -13,9 +13,9 @@ import java.util.Locale
 
 /**
  * Licencia sin internet. Cada equipo tiene un código (8 letras/números).
- * El código de activación es "AAAAMMDD-firma": la fecha de vencimiento y una firma
- * ECDSA de "LV|<equipo>|<fecha>" hecha con la llave privada (solo la tiene Karen,
- * en el secreto LICENCIA_PRIVADA del workflow "Generar licencia").
+ * El código de activación es "AAAAMMDD[F]-firma": la fecha de vencimiento, "F" si es
+ * miembro fundador, y una firma ECDSA de "LV|<equipo>|<fecha>[|F]" hecha con la llave
+ * privada (solo la tiene Karen, en el secreto LICENCIA_PRIVADA del workflow "Generar licencia").
  */
 object Licencia {
     private const val PUBLICA =
@@ -24,7 +24,12 @@ object Licencia {
     const val PERMANENTE = 99991231
 
     /** pagada: con código válido; si no, está en prueba (o vencida si diasRestantes = 0). */
-    data class Estado(val activa: Boolean, val pagada: Boolean, val diasRestantes: Int, val vence: Int)
+    data class Estado(
+        val activa: Boolean, val pagada: Boolean, val diasRestantes: Int, val vence: Int,
+        val fundador: Boolean = false
+    )
+
+    data class Codigo(val vence: Int, val fundador: Boolean)
 
     private var cache: Pair<Long, Estado>? = null
 
@@ -55,9 +60,10 @@ object Licencia {
         cache?.let { (cuando, e) -> if (t - cuando in 0..60_000) return e }
         val s = sp(ctx)
         val hoy = hoy(ctx)
-        val vence = s.getString("codigo", null)?.let { venceDe(ctx, it) } ?: 0
+        val cod = s.getString("codigo", null)?.let { leer(ctx, it) }
+        val vence = cod?.vence ?: 0
         val e = if (vence >= hoy) {
-            Estado(true, true, 0, vence)
+            Estado(true, true, 0, vence, cod?.fundador == true)
         } else {
             var inicio = s.getLong("prueba", 0L)
             if (inicio == 0L) {
@@ -74,26 +80,27 @@ object Licencia {
 
     fun activa(ctx: Context): Boolean = estado(ctx).activa
 
-    /** Guarda el código si es válido para este equipo. Devuelve la fecha de vencimiento o null. */
-    fun activar(ctx: Context, codigo: String): Int? {
+    /** Guarda el código si es válido para este equipo. Devuelve sus datos o null. */
+    fun activar(ctx: Context, codigo: String): Codigo? {
         val limpio = codigo.replace(Regex("\\s"), "")
-        val vence = venceDe(ctx, limpio) ?: return null
+        val c = leer(ctx, limpio) ?: return null
         sp(ctx).edit().putString("codigo", limpio).apply()
         cache = null
-        return vence
+        return c
     }
 
-    private fun venceDe(ctx: Context, codigo: String): Int? = try {
+    private fun leer(ctx: Context, codigo: String): Codigo? = try {
         val partes = codigo.split("-", limit = 2)
-        val fecha = partes[0]
-        require(fecha.length == 8)
+        val fecha = partes[0].take(8)
+        val marca = partes[0].drop(8)
+        require(fecha.length == 8 && (marca == "" || marca == "F"))
         val firma = Base64.decode(partes[1], Base64.URL_SAFE or Base64.NO_PADDING or Base64.NO_WRAP)
         val llave = KeyFactory.getInstance("EC")
             .generatePublic(X509EncodedKeySpec(Base64.decode(PUBLICA, Base64.DEFAULT)))
         val v = Signature.getInstance("SHA256withECDSA")
         v.initVerify(llave)
-        v.update("LV|${equipo(ctx)}|$fecha".toByteArray())
-        if (v.verify(firma)) fecha.toInt() else null
+        v.update(("LV|${equipo(ctx)}|$fecha" + (if (marca == "F") "|F" else "")).toByteArray())
+        if (v.verify(firma)) Codigo(fecha.toInt(), marca == "F") else null
     } catch (_: Exception) {
         null
     }
