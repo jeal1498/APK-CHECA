@@ -447,7 +447,6 @@ class MainActivity : Activity() {
 
     private fun tarjetaFiltros(): View {
         val cont = tarjeta()
-        animarCambios(cont)
 
         val (cab, _) = cabeceraTarjeta(Icono.FILTROS, "Filtros inteligentes", null, false)
         val insignia = texto("", Tema.T_NOTA, cVerde, true).apply {
@@ -455,101 +454,87 @@ class MainActivity : Activity() {
             background = redondo(Tema.VERDE_SUAVE, 50)
         }
         cab.addView(insignia)
-        val flecha = icono(Icono.FLECHA, cTenue, 20).apply { rotation = 180f }
-        cab.addView(flecha, LinearLayout.LayoutParams(dp(20), dp(20)).apply { leftMargin = dp(12) })
-        cab.minimumHeight = dp(Tema.ALTO_TOQUE)
         cont.addView(cab)
-
-        val lista = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        animarCambios(lista)
-        cont.addView(lista, margenArriba(Tema.S1))
-        cab.setOnClickListener {
-            val abrir = lista.visibility != View.VISIBLE
-            lista.visibility = if (abrir) View.VISIBLE else View.GONE
-            flecha.animate().rotation(if (abrir) 180f else 0f).setDuration(200).start()
-        }
 
         fun actualizarInsignia() { insignia.text = "${prefs.filtrosActivos()} activos" }
         repintarFiltros.add { actualizarInsignia() }
         actualizarInsignia()
 
-        lista.addView(filtro(
-            Icono.RELOJ, "Por hora", "Valor mínimo por hora", null, "$", "",
+        // La meta por hora se calcula sola: $/km × 20 (sigue siendo editable).
+        var campoHora: EditText? = null
+        cont.addView(filtro(
+            Icono.RELOJ, "Por hora", null, "$", "",
             { prefs.filtroHora }, { prefs.filtroHora = it },
             { prefs.minPorHora }, { prefs.minPorHora = it }
-        ))
-        lista.addView(separador())
-        lista.addView(filtro(
-            Icono.TENDENCIA, "Por km", "Valor mínimo por kilómetro", null, "$", "",
+        ) { campoHora = it }, margenArriba(Tema.S1))
+        cont.addView(separador())
+        cont.addView(filtro(
+            Icono.TENDENCIA, "Por km", null, "$", "",
             { prefs.filtroKm }, { prefs.filtroKm = it },
-            { prefs.minPorKm }, { prefs.minPorKm = it }
+            { prefs.minPorKm }, { v ->
+                prefs.minPorKm = v
+                campoHora?.setText(num(v * 20f))
+            }
         ))
-        lista.addView(separador())
-        lista.addView(filtro(
-            Icono.PIN, "Recogida máx.", "Distancia máxima de recogida", listOf(2f, 3f, 4f, 5f), "", "km",
+        cont.addView(separador())
+        cont.addView(filtro(
+            Icono.PIN, "Recogida máx.", listOf(2f, 3f, 4f, 5f), "", "km",
             { prefs.filtroRecMax }, { prefs.filtroRecMax = it },
             { prefs.recogidaMaxKm }, { prefs.recogidaMaxKm = it }
         ))
-        lista.addView(separador())
-        lista.addView(filtro(
-            Icono.DURACION, "Duración máx.", "Tiempo máximo de viaje (sin la recogida)", listOf(15f, 20f, 30f), "", "min",
+        cont.addView(separador())
+        cont.addView(filtro(
+            Icono.DURACION, "Duración máx.", listOf(15f, 20f, 30f), "", "min",
             { prefs.filtroDurMax }, { prefs.filtroDurMax = it },
             { prefs.duracionMax.toFloat() }, { prefs.duracionMax = it.toInt() }
         ))
         return cont
     }
 
+    /** Fila de filtro sin desplegar: monto editable (o fichas de opciones) + interruptor. */
     private fun filtro(
-        tipo: Int, titulo: String, descripcion: String,
+        tipo: Int, titulo: String,
         valores: List<Float>?, pre: String, unidad: String,
         leerOn: () -> Boolean, ponerOn: (Boolean) -> Unit,
-        leerV: () -> Float, ponerV: (Float) -> Unit
+        leerV: () -> Float, ponerV: (Float) -> Unit,
+        alCrearCampo: (EditText) -> Unit = {}
     ): View {
         val caja = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        animarCambios(caja)
-        val fmt = { v: Float -> pre + num(v) + (if (unidad.isEmpty()) "" else " $unidad") }
 
-        val cabecera = LinearLayout(this).apply {
+        val fila = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
-            minimumHeight = dp(56)
-            setPadding(0, dp(Tema.S1), 0, dp(Tema.S1))
-            background = ripple(Color.TRANSPARENT, Tema.R_BOTON)
+            minimumHeight = dp(Tema.ALTO_TOQUE)
         }
         val ico = iconoCirculo(tipo, true)
-        cabecera.addView(ico, LinearLayout.LayoutParams(dp(40), dp(40)).apply { rightMargin = dp(12) })
-        val textos = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        textos.addView(texto(titulo, Tema.T_TEXTO, cTexto2, false))
-        val valorTxt = texto("", Tema.T_SUB, cVerde, true)
-        textos.addView(valorTxt, LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(2) })
-        cabecera.addView(textos, LinearLayout.LayoutParams(0, -2, 1f))
-        val sw = interruptorSolo(leerOn())
-        cabecera.addView(sw)
-        val flecha = icono(Icono.FLECHA, cTenue, 20)
-        cabecera.addView(flecha, LinearLayout.LayoutParams(dp(20), dp(20)).apply { leftMargin = dp(Tema.S1) })
-        caja.addView(cabecera)
+        fila.addView(ico, LinearLayout.LayoutParams(dp(36), dp(36)).apply { rightMargin = dp(12) })
+        fila.addView(texto(titulo, Tema.T_TEXTO, cTexto, false), LinearLayout.LayoutParams(0, -2, 1f))
 
-        // Panel desplegable
-        val panel = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(0, dp(4), 0, dp(Tema.S2))
-            visibility = View.GONE
+        var ed: EditText? = null
+        if (valores == null) {
+            fila.addView(texto(pre, Tema.T_SUB, cTenue, true), LinearLayout.LayoutParams(-2, -2).apply { rightMargin = dp(4) })
+            val e = campo(num(leerV())) { v -> if (v > 0) ponerV(v) }.apply {
+                setPadding(dp(Tema.S1), dp(4), dp(Tema.S1), dp(4))
+                minimumHeight = dp(40)
+                setTextColor(cVerde)
+            }
+            ed = e
+            alCrearCampo(e)
+            fila.addView(e, LinearLayout.LayoutParams(dp(88), dp(40)).apply { rightMargin = dp(Tema.S1) })
         }
-        val chips = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
-        val chipViews = ArrayList<Pair<Float, LinearLayout>>()
-        lateinit var pintar: () -> Unit
+        val sw = interruptorSolo(leerOn())
+        fila.addView(sw)
+        caja.addView(fila)
 
+        val chipViews = ArrayList<Pair<Float, TextView>>()
+        lateinit var pintar: () -> Unit
         if (valores != null) {
-            panel.addView(texto("$descripcion. Toca una opción para activarla o desactivarla.", Tema.T_NOTA, cTenue, false))
-            panel.addView(chips, margenArriba(12))
+            val chips = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
             valores.forEachIndexed { i, v ->
-                val chip = LinearLayout(this).apply {
-                    orientation = LinearLayout.VERTICAL
+                val chip = texto(pre + num(v) + " " + unidad, Tema.T_TEXTO, cTexto, true).apply {
                     gravity = Gravity.CENTER
-                    minimumHeight = dp(56)
+                    minimumHeight = dp(40)
                     isClickable = true
-                    addView(texto(pre + num(v), Tema.T_SUB, cTexto, true).apply { gravity = Gravity.CENTER })
-                    if (unidad.isNotEmpty()) addView(texto(unidad, Tema.T_NOTA, cTenue, false).apply { gravity = Gravity.CENTER })
                     setOnClickListener {
                         if (leerOn() && leerV() == v) {
                             ponerOn(false)
@@ -561,28 +546,19 @@ class MainActivity : Activity() {
                     }
                 }
                 chipViews.add(v to chip)
-                chips.addView(chip, LinearLayout.LayoutParams(0, -2, 1f).apply { if (i > 0) leftMargin = dp(Tema.S1) })
+                chips.addView(chip, LinearLayout.LayoutParams(0, dp(40), 1f).apply { if (i > 0) leftMargin = dp(Tema.S1) })
             }
-        } else {
-            panel.addView(texto(descripcion, Tema.T_NOTA, cTenue, false))
-            val campo = campo(num(leerV())) { v ->
-                ponerV(v)
-                pintar()
-            }
-            panel.addView(campo, margenArriba(Tema.S1))
+            caja.addView(chips, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(4); bottomMargin = dp(4) })
         }
-
-        caja.addView(panel)
 
         var cambiando = false
         pintar = {
             val on = leerOn()
             val v = leerV()
-            valorTxt.text = if (on) fmt(v) else "Desactivado"
-            valorTxt.setTextColor(if (on) cVerde else cTenue)
             if (sw.isChecked != on) { cambiando = true; sw.isChecked = on; cambiando = false }
             ico.background = punto(if (on) Tema.VERDE_SUAVE else cTarjeta2)
             ico.alpha = if (on) 1f else 0.5f
+            ed?.alpha = if (on) 1f else 0.4f
             chipViews.forEach { (cv, chip) ->
                 val sel = on && cv == v
                 chip.background = GradientDrawable().apply {
@@ -590,19 +566,13 @@ class MainActivity : Activity() {
                     setColor(if (sel) Tema.VERDE_SUAVE else cFondo)
                     setStroke(dp(if (sel) 2 else 1), if (sel) cVerde else Tema.BORDE)
                 }
-                (chip.getChildAt(0) as TextView).setTextColor(if (sel) cVerde else cTexto)
+                chip.setTextColor(if (sel) cVerde else cTexto)
             }
             repintarFiltros.forEach { it() }
         }
 
         sw.setOnCheckedChangeListener { _, b ->
             if (!cambiando) { ponerOn(b); pintar() }
-        }
-        cabecera.setOnClickListener {
-            val abrir = panel.visibility != View.VISIBLE
-            panel.visibility = if (abrir) View.VISIBLE else View.GONE
-            flecha.animate().rotation(if (abrir) 180f else 0f).setDuration(200).start()
-            flecha.setImageDrawable(Icono(Icono.FLECHA, if (abrir) cVerde else cTenue))
         }
         pintar()
         return caja
@@ -653,7 +623,7 @@ class MainActivity : Activity() {
             val fila = LinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER_VERTICAL
-                minimumHeight = dp(40)
+                minimumHeight = dp(32)
             }
             fila.addView(texto("${i + 1}", Tema.T_NOTA, if (i == 0) Color.BLACK else cTexto, true).apply {
                 gravity = Gravity.CENTER
@@ -1195,7 +1165,7 @@ class MainActivity : Activity() {
 
     private fun columna() = LinearLayout(this).apply {
         orientation = LinearLayout.VERTICAL
-        setPadding(dp(Tema.S2), dp(Tema.S3), dp(Tema.S2), dp(Tema.S4))
+        setPadding(dp(Tema.S2), dp(Tema.S1), dp(Tema.S2), dp(Tema.S4))
         animarCambios(this)
     }
 
