@@ -1,0 +1,5 @@
+nombre=Karen (reinstalación celular)
+equipo=05E7-8598
+tipo=Fundador
+vence=Sin vencimiento
+codigo=99991231F-MEQCIBj5Tguk-7iFxpCV8XiCQSOSi7NJaP0z4NvMlqfWMaMZAiBMaLwwfVKgxAHWWptEzI-0hCppctguZk-gJmXA9uenmQ
