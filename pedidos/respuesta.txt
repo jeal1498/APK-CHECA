@@ -1,0 +1,5 @@
+nombre=Prueba 2
+equipo=4817-F84C
+tipo=Normal
+vence=2026-10-11
+codigo=20261011-MEYCIQClyMQ3MzrWxPsx64qwojctbFdHFc8EABFE7N_U2KMWWAIhAOgSsAZ3lO4ObRHVg3w-T1bc7sSaamK2ben_c9u_X66V
