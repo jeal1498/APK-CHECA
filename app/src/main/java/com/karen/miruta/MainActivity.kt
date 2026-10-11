@@ -1126,7 +1126,7 @@ class MainActivity : Activity() {
         paq.addView(tarjetaPaquete(
             "1 MES", "Plan Básico", "$99", "Para probar todo en tu día a día.",
             listOf(
-                "Pop-up con semáforo, ganancia neta, $/hora, $/km y dinámica ⚡",
+                "Pop-up con semáforo, ganancia neta, $/\u2060hora, $/\u2060km y dinámica ⚡",
                 "Filtros inteligentes y aviso por voz o vibración",
                 "Mejores horas de hoy",
                 "1 equipo",
@@ -1301,6 +1301,10 @@ class MainActivity : Activity() {
         }
         insignias.forEach { it.visibility = if (e.fundador) View.VISIBLE else View.GONE }
         notaComparador?.visibility = if (e.basico) View.VISIBLE else View.GONE
+        // Con licencia sin vencimiento (fundadores) no hay nada que comprar.
+        if (::paquetesVista.isInitialized) {
+            paquetesVista.visibility = if (e.pagada && e.vence >= Licencia.PERMANENTE) View.GONE else View.VISIBLE
+        }
         if (::licAjustes.isInitialized) {
             licAjustes.text = when {
                 e.pagada -> "Activa${if (e.basico) " · Plan Básico" else ""} · ${if (e.vence >= Licencia.PERMANENTE) "sin vencimiento" else "vence el " + Licencia.fechaBonita(e.vence)}"
