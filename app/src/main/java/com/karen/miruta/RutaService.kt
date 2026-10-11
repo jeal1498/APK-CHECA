@@ -29,6 +29,32 @@ class RutaService : AccessibilityService() {
         prefs = Prefs(this)
         alertas = Alertas(this, prefs)
         instancia = this
+        soloUberYDidi()
+    }
+
+    /**
+     * Limita el lector a las apps de Uber y DiDi instaladas, para no tocar otras apps
+     * (algunos bancos bloquean los lectores que vigilan todas las apps).
+     */
+    private fun soloUberYDidi() {
+        try {
+            val lanzador = android.content.Intent(android.content.Intent.ACTION_MAIN)
+                .addCategory(android.content.Intent.CATEGORY_LAUNCHER)
+            val pkgs = packageManager.queryIntentActivities(lanzador, 0)
+                .map { it.activityInfo.packageName }
+                .filter { val p = it.lowercase(); p.contains("uber") || p.contains("didi") }
+                .toMutableSet()
+            pkgs.addAll(listOf("com.ubercab.driver", "com.didiglobal.driver"))
+            val info = serviceInfo ?: return
+            info.packageNames = pkgs.toTypedArray()
+            serviceInfo = info
+        } catch (_: Exception) { }
+    }
+
+    /** Apaga el lector (para abrir apps de banco). Se vuelve a encender en Accesibilidad. */
+    fun pausar() {
+        popups.values.forEach { it.ocultar() }
+        disableSelf()
     }
 
     override fun onUnbind(intent: android.content.Intent?): Boolean {

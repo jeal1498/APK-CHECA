@@ -336,6 +336,20 @@ class MainActivity : Activity() {
         return cab to flecha
     }
 
+    private fun pausarLector() {
+        val srv = RutaService.instancia
+        if (srv == null) {
+            Toast.makeText(this, "El lector ya está apagado.", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (CapturaService.corriendo) {
+            startService(Intent(this, CapturaService::class.java).setAction(CapturaService.ACCION_DETENER))
+        }
+        srv.pausar()
+        Toast.makeText(this, "Lector pausado. Ya puedes abrir tu banco.", Toast.LENGTH_LONG).show()
+        handler.postDelayed({ actualizarEstado() }, 600)
+    }
+
     private fun alternarLectura() {
         if (CapturaService.corriendo) {
             startService(Intent(this, CapturaService::class.java).setAction(CapturaService.ACCION_DETENER))
@@ -1082,6 +1096,18 @@ class MainActivity : Activity() {
         perm.addView(boton("Abrir Accesibilidad", cTarjeta2, cTexto) { abrirAccesibilidad() }, margenArriba(Tema.S2))
         perm.addView(boton("Información de la app", cTarjeta2, cTexto) { abrirInfoApp() }, margenArriba(Tema.S1))
         col.addView(perm, margenTarjeta())
+
+        // --- Apps de banco ---
+        col.addView(etiqueta("APPS DE BANCO"))
+        val banco = tarjeta()
+        banco.addView(texto(
+            "Algunos bancos (Nu, BBVA…) se bloquean mientras el lector está encendido. " +
+                "Páusalo para usar tu banco y luego vuelve a activarlo en Accesibilidad.",
+            Tema.T_TEXTO, cTexto2, false
+        ).apply { setLineSpacing(0f, 1.2f) })
+        banco.addView(boton("Pausar lector para usar mi banco", cTarjeta2, cTexto) { pausarLector() }, margenArriba(Tema.S2))
+        banco.addView(boton("Volver a activar el lector", cVerde, Color.BLACK) { abrirAccesibilidad() }, margenArriba(Tema.S1))
+        col.addView(banco, margenTarjeta())
 
         // --- Diagnóstico ---
         col.addView(etiqueta("DIAGNÓSTICO"))
