@@ -92,6 +92,7 @@ class MainActivity : Activity() {
     private lateinit var ayudaPermiso: TextView
     private lateinit var ayudaPermisoIcono: Icono
     private lateinit var licAjustes: TextView
+    private lateinit var cuentaCaja: LinearLayout
     private val insignias = ArrayList<TextView>()
 
     private val refresco = object : Runnable {
@@ -122,6 +123,7 @@ class MainActivity : Activity() {
         }
         setContentView(raiz)
         mostrarPestana(savedInstanceState?.getInt("tab") ?: 0, false)
+        if (savedInstanceState == null) bienvenidaSiHaceFalta()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -134,6 +136,11 @@ class MainActivity : Activity() {
         actualizarEstado()
         actualizarResumen()
         handler.post(refresco)
+        Cuenta.revisarSiToca(this) { r ->
+            pintarLicencia()
+            pintarCuenta()
+            if (r is Cuenta.Resultado.Limite) dialogoLimite(r.equipos)
+        }
     }
 
     override fun onPause() {
@@ -946,6 +953,14 @@ class MainActivity : Activity() {
             bottomMargin = dp(Tema.S1)
         })
 
+        // --- Cuenta Google ---
+        col.addView(etiqueta("CUENTA"))
+        val cta = tarjeta()
+        cuentaCaja = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        cta.addView(cuentaCaja)
+        col.addView(cta, margenTarjeta())
+        pintarCuenta()
+
         // --- Licencia ---
         col.addView(etiqueta("LICENCIA"))
         val licA = tarjeta()
@@ -1145,6 +1160,10 @@ class MainActivity : Activity() {
             licTitulo.text = "Prueba gratis: ${e.diasRestantes} ${if (e.diasRestantes == 1) "día" else "días"}"
             licTitulo.setTextColor(cVerde)
             licTexto.text = "Úsala en tu turno. Para seguir después de la prueba, activa tu licencia."
+        } else if (!e.activa && Cuenta.necesitaRevision(this)) {
+            licTitulo.text = "Revisa tu licencia"
+            licTitulo.setTextColor(cAmarillo)
+            licTexto.text = "Llevas más de ${Cuenta.DIAS_SIN_RED} días sin internet. Abre Checa con internet para seguir."
         } else if (!e.activa) {
             licTitulo.text = "Tu licencia terminó"
             licTitulo.setTextColor(cAmarillo)
@@ -1222,6 +1241,212 @@ class MainActivity : Activity() {
             }
         }, margenArriba(Tema.S1))
         hoja("Licencia", cVerde, cuerpo)
+    }
+
+    // =====================================================================
+    // Cuenta Google (licencia ligada a la cuenta, hasta 2 equipos)
+    // =====================================================================
+
+    private var dialogoCuenta: Dialog? = null
+
+    /** Pantalla de bienvenida la primera vez (si no hay licencia ni sesión). */
+    private fun bienvenidaSiHaceFalta() {
+        if (Cuenta.conectada(this) || Cuenta.bienvenidaVista(this) || Licencia.estado(this).pagada) return
+        val cuerpo = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
+        }
+        cuerpo.addView(ImageView(this).apply { setImageResource(R.mipmap.ic_launcher) },
+            LinearLayout.LayoutParams(dp(72), dp(72)).apply { gravity = Gravity.CENTER_HORIZONTAL })
+        cuerpo.addView(texto("Checa", Tema.T_TITULO, cTexto, true).apply { gravity = Gravity.CENTER }, margenArriba(Tema.S1))
+        cuerpo.addView(texto("Lo que de verdad te deja cada viaje.", Tema.T_TEXTO, cTexto2, false).apply {
+            gravity = Gravity.CENTER
+        }, margenArriba(4))
+        cuerpo.addView(boton("Continuar con Google", Color.WHITE, Color.BLACK) {
+            Cuenta.marcarBienvenida(this)
+            dialogoCuenta?.dismiss()
+            entrarConGoogle()
+        }, margenArriba(Tema.S3))
+        cuerpo.addView(texto(
+            "Tu licencia queda guardada en tu cuenta. Si cambias de celular o reinstalas, solo vuelves a entrar.",
+            Tema.T_NOTA, cTenue, false
+        ).apply { gravity = Gravity.CENTER; setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
+        cuerpo.addView(texto("Ahora no", Tema.T_TEXTO, cTenue, true).apply {
+            gravity = Gravity.CENTER
+            minHeight = dp(Tema.ALTO_TOQUE)
+            isClickable = true
+            setOnClickListener {
+                Cuenta.marcarBienvenida(this@MainActivity)
+                dialogoCuenta?.dismiss()
+            }
+        }, margenArriba(4))
+        dialogoCuenta = hoja("Bienvenido", null, cuerpo)
+    }
+
+    private fun entrarConGoogle() {
+        var espera: Dialog? = null
+        Cuenta.iniciarSesion(this, buscando = {
+            val c = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+            c.addView(texto("Buscando tu licencia…", Tema.T_TEXTO, cTexto2, false))
+            espera = hoja("Un momento", null, c)
+        }) { r ->
+            espera?.dismiss()
+            mostrarResultadoCuenta(r)
+        }
+    }
+
+    private fun mostrarResultadoCuenta(r: Cuenta.Resultado) {
+        pintarLicencia()
+        pintarCuenta()
+        dialogoCuenta?.dismiss()
+        when (r) {
+            is Cuenta.Resultado.Error -> if (r.mensaje.isNotEmpty()) Toast.makeText(this, r.mensaje, Toast.LENGTH_LONG).show()
+            is Cuenta.Resultado.Limite -> dialogoLimite(r.equipos)
+            is Cuenta.Resultado.Ok -> dialogoBienvenidaCuenta()
+        }
+    }
+
+    /** Después de entrar: licencia encontrada o cuenta nueva en prueba. */
+    private fun dialogoBienvenidaCuenta() {
+        val e = Licencia.estado(this)
+        val nombre = Cuenta.nombre(this)
+        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        if (Cuenta.licencia(this) != null) {
+            cuerpo.addView(texto("Encontramos tu licencia en ${Cuenta.correo(this)}.", Tema.T_TEXTO, cTexto2, false)
+                .apply { setLineSpacing(0f, 1.2f) })
+            if (e.fundador) cuerpo.addView(insigniaFundador().apply { visibility = View.VISIBLE },
+                LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(Tema.S1) })
+            cuerpo.addView(texto(
+                if (e.vence >= Licencia.PERMANENTE) "Sin vencimiento" else "Vence el ${Licencia.fechaBonita(e.vence)}",
+                Tema.T_SUB, cVerde, true
+            ), margenArriba(Tema.S1))
+            cuerpo.addView(listaEquipos(false), margenArriba(Tema.S2))
+            cuerpo.addView(boton("Empezar", cVerde, Color.BLACK) { dialogoCuenta?.dismiss() }, margenArriba(Tema.S2))
+            dialogoCuenta = hoja(if (nombre.isEmpty()) "¡Listo!" else "¡Listo, $nombre!", cVerde, cuerpo)
+        } else {
+            cuerpo.addView(texto("Tu cuenta ${Cuenta.correo(this)} todavía no tiene licencia.", Tema.T_TEXTO, cTexto2, false)
+                .apply { setLineSpacing(0f, 1.2f) })
+            cuerpo.addView(texto(
+                if (e.activa && !e.pagada) "Prueba gratis: quedan ${e.diasRestantes} días" else
+                    if (e.pagada) "Este equipo ya tiene licencia con código" else "Tu prueba gratis terminó",
+                Tema.T_SUB, if (e.activa) cVerde else cAmarillo, true
+            ), margenArriba(Tema.S1))
+            cuerpo.addView(texto(
+                "Pide tu licencia por WhatsApp. Se activa sola en esta cuenta; no tienes que escribir ningún código.",
+                Tema.T_NOTA, cTenue, false
+            ).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
+            cuerpo.addView(boton("Pedir licencia por WhatsApp", cTarjeta2, cTexto) { pedirLicenciaCuenta() }, margenArriba(Tema.S2))
+            cuerpo.addView(boton("Empezar", cVerde, Color.BLACK) { dialogoCuenta?.dismiss() }, margenArriba(Tema.S1))
+            dialogoCuenta = hoja(if (nombre.isEmpty()) "Bienvenido" else "Bienvenido, $nombre", null, cuerpo)
+        }
+    }
+
+    private fun pedirLicenciaCuenta() {
+        val i = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, "Hola, quiero activar Checa. Mi cuenta: ${Cuenta.correo(this@MainActivity)}")
+        }
+        startActivity(Intent.createChooser(i, "Pedir licencia"))
+    }
+
+    /** Ya hay 2 equipos en la cuenta: elegir cuál quitar para activar este. */
+    private fun dialogoLimite(equipos: List<Cuenta.Equipo>) {
+        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        cuerpo.addView(texto(
+            "Tu licencia permite ${Cuenta.MAX_EQUIPOS} equipos. Quita uno para activar este.",
+            Tema.T_TEXTO, cTexto2, false
+        ).apply { setLineSpacing(0f, 1.2f) })
+        equipos.forEach { eq ->
+            cuerpo.addView(filaEquipo(eq, mostrarQuitar = true), margenArriba(Tema.S1))
+        }
+        cuerpo.addView(texto(
+            "El equipo que quites deja de mostrar pop-ups hasta que vuelvas a entrar con tu cuenta en él.",
+            Tema.T_NOTA, cAmarillo, false
+        ).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S2))
+        dialogoCuenta = hoja("Ya usas Checa en ${equipos.size} equipos", cAmarillo, cuerpo)
+    }
+
+    private fun listaEquipos(conQuitar: Boolean): View {
+        val caja = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        val lista = Cuenta.equipos(this)
+        caja.addView(etiqueta("EQUIPOS · ${lista.size} DE ${Cuenta.MAX_EQUIPOS}"))
+        lista.forEach { eq -> caja.addView(filaEquipo(eq, conQuitar), margenArriba(4)) }
+        return caja
+    }
+
+    private fun filaEquipo(eq: Cuenta.Equipo, mostrarQuitar: Boolean): View {
+        val esEste = eq.id == Licencia.codigoEquipo(this)
+        val fila = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(dp(12), dp(10), dp(12), dp(10))
+            background = redondo(cTarjeta2, Tema.R_BOTON)
+        }
+        val textos = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        textos.addView(texto(if (esEste) "Este equipo" else eq.nombre.ifEmpty { eq.id }, Tema.T_TEXTO, cTexto, true))
+        val uso = Cuenta.haceCuanto(eq.ultimoUso)
+        textos.addView(texto((if (esEste) eq.nombre + " · " else "") + "Último uso: " + uso, Tema.T_NOTA, cTenue, false))
+        fila.addView(textos, LinearLayout.LayoutParams(0, -2, 1f))
+        if (esEste) {
+            fila.addView(texto("AQUÍ", Tema.T_NOTA, cVerde, true).apply {
+                setPadding(dp(8), dp(3), dp(8), dp(3))
+                background = redondo(Tema.VERDE_SUAVE, 50)
+            })
+        } else if (mostrarQuitar) {
+            fila.addView(texto("Quitar", Tema.T_NOTA, cRojo, true).apply {
+                setPadding(dp(12), dp(8), dp(12), dp(8))
+                background = GradientDrawable().apply {
+                    cornerRadius = dp(10).toFloat()
+                    setStroke(dp(1), Tema.BORDE)
+                }
+                isClickable = true
+                setOnClickListener {
+                    Toast.makeText(this@MainActivity, "Quitando ${eq.nombre}…", Toast.LENGTH_SHORT).show()
+                    Cuenta.quitarEquipo(this@MainActivity, eq.id) { r -> mostrarResultadoCuenta(r) }
+                }
+            })
+        }
+        return fila
+    }
+
+    /** Tarjeta "Cuenta" de Ajustes. */
+    private fun pintarCuenta() {
+        if (!::cuentaCaja.isInitialized) return
+        cuentaCaja.removeAllViews()
+        if (!Cuenta.conectada(this)) {
+            cuentaCaja.addView(texto(
+                "Entra con tu cuenta de Google para guardar tu licencia. Si reinstalas o cambias de celular, solo vuelves a entrar.",
+                Tema.T_TEXTO, cTexto2, false
+            ).apply { setLineSpacing(0f, 1.2f) })
+            cuentaCaja.addView(boton("Continuar con Google", Color.WHITE, Color.BLACK) { entrarConGoogle() }, margenArriba(Tema.S2))
+            return
+        }
+        val nombre = Cuenta.nombre(this)
+        cuentaCaja.addView(texto(nombre.ifEmpty { "Tu cuenta" }, Tema.T_SUB, cTexto, true))
+        cuentaCaja.addView(texto(Cuenta.correo(this), Tema.T_NOTA, cTenue, false), margenArriba(2))
+        when {
+            Cuenta.equipoQuitado(this) -> {
+                cuentaCaja.addView(texto("Este equipo fue quitado de tu cuenta.", Tema.T_TEXTO, cAmarillo, true), margenArriba(Tema.S1))
+                cuentaCaja.addView(boton("Activar este equipo", cVerde, Color.BLACK) {
+                    Cuenta.revisarAhora(this) { r -> mostrarResultadoCuenta(r) }
+                }, margenArriba(Tema.S1))
+            }
+            Cuenta.necesitaRevision(this) -> cuentaCaja.addView(texto(
+                "Llevas más de ${Cuenta.DIAS_SIN_RED} días sin revisar tu licencia. Abre Checa con internet.",
+                Tema.T_TEXTO, cAmarillo, false
+            ).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
+            Cuenta.licencia(this) == null -> cuentaCaja.addView(texto(
+                "Tu cuenta todavía no tiene licencia.", Tema.T_TEXTO, cTexto2, false
+            ), margenArriba(Tema.S1))
+        }
+        if (Cuenta.equipos(this).isNotEmpty()) cuentaCaja.addView(listaEquipos(true), margenArriba(Tema.S1))
+        if (Cuenta.licencia(this) == null && !Cuenta.equipoQuitado(this)) {
+            cuentaCaja.addView(boton("Pedir licencia por WhatsApp", cTarjeta2, cTexto) { pedirLicenciaCuenta() }, margenArriba(Tema.S2))
+        }
+        cuentaCaja.addView(boton("Cerrar sesión", cTarjeta2, cTexto) {
+            Toast.makeText(this, "Cerrando sesión…", Toast.LENGTH_SHORT).show()
+            Cuenta.cerrarSesion(this) { pintarLicencia(); pintarCuenta() }
+        }, margenArriba(Tema.S1))
     }
 
     private fun ofertaEjemplo() = Oferta(85.0, 7.2, 24.0, 1.5, 5.0, 1.2)
@@ -1317,7 +1542,7 @@ class MainActivity : Activity() {
     // =====================================================================
 
     /** Ventana de detalle con el mismo estilo de la app. */
-    private fun hoja(titulo: String, color: Int?, cuerpo: LinearLayout) {
+    private fun hoja(titulo: String, color: Int?, cuerpo: LinearLayout): Dialog {
         val d = Dialog(this)
         d.requestWindowFeature(Window.FEATURE_NO_TITLE)
         val raiz = LinearLayout(this).apply {
@@ -1353,6 +1578,7 @@ class MainActivity : Activity() {
         d.show()
         val ancho = minOf((resources.displayMetrics.widthPixels * 0.92f).toInt(), dp(520))
         d.window?.setLayout(ancho, ViewGroup.LayoutParams.WRAP_CONTENT)
+        return d
     }
 
     private fun redondo(color: Int, radio: Int) = GradientDrawable().apply {

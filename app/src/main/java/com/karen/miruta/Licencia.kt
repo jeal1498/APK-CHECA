@@ -47,20 +47,28 @@ object Licencia {
         return h.take(4).joinToString("") { "%02X".format(it.toInt() and 0xFF) }
     }
 
-    /** Hoy como AAAAMMDD, sin dejar que el reloj se regrese a una fecha ya vista. */
-    private fun hoy(ctx: Context): Int {
+    /** Hora actual sin dejar que el reloj se regrese a una fecha ya vista. */
+    fun ahora(ctx: Context): Long {
         val s = sp(ctx)
         val ahora = maxOf(System.currentTimeMillis(), s.getLong("visto", 0L))
         s.edit().putLong("visto", ahora).apply()
-        return SimpleDateFormat("yyyyMMdd", Locale.US).format(Date(ahora)).toInt()
+        return ahora
     }
+
+    /** Hoy como AAAAMMDD. */
+    private fun hoy(ctx: Context): Int =
+        SimpleDateFormat("yyyyMMdd", Locale.US).format(Date(ahora(ctx))).toInt()
+
+    fun limpiarCache() { cache = null }
 
     fun estado(ctx: Context): Estado {
         val t = System.currentTimeMillis()
         cache?.let { (cuando, e) -> if (t - cuando in 0..60_000) return e }
         val s = sp(ctx)
         val hoy = hoy(ctx)
-        val cod = s.getString("codigo", null)?.let { leer(ctx, it) }
+        // Licencia del equipo (código de activación) o de la cuenta Google: vale la que dure más.
+        val cod = listOfNotNull(s.getString("codigo", null)?.let { leer(ctx, it) }, Cuenta.licencia(ctx))
+            .maxByOrNull { it.vence }
         val vence = cod?.vence ?: 0
         val e = if (vence >= hoy) {
             Estado(true, true, 0, vence, cod?.fundador == true)
@@ -87,6 +95,19 @@ object Licencia {
         sp(ctx).edit().putString("codigo", limpio).apply()
         cache = null
         return c
+    }
+
+    /** Revisa la firma ECDSA (base64 url) de [texto] con la llave pública. */
+    fun verificar(texto: String, firmaB64: String): Boolean = try {
+        val firma = Base64.decode(firmaB64, Base64.URL_SAFE or Base64.NO_PADDING or Base64.NO_WRAP)
+        val llave = KeyFactory.getInstance("EC")
+            .generatePublic(X509EncodedKeySpec(Base64.decode(PUBLICA, Base64.DEFAULT)))
+        val v = Signature.getInstance("SHA256withECDSA")
+        v.initVerify(llave)
+        v.update(texto.toByteArray())
+        v.verify(firma)
+    } catch (_: Exception) {
+        false
     }
 
     private fun leer(ctx: Context, codigo: String): Codigo? = try {

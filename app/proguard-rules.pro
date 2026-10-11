@@ -4,3 +4,9 @@
 
 # Quita los nombres de archivo y líneas de los errores.
 -renamesourcefileattribute x
+
+# Credential Manager (inicio de sesión con Google): la implementación se carga por reflexión.
+-if class androidx.credentials.CredentialManager
+-keep class androidx.credentials.playservices.** {
+  *;
+}
