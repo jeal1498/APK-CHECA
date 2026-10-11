@@ -3,3 +3,4 @@ whatsapp=0000000000
 equipo=4817-F84C
 tipo=Normal
 dias=1
+# reintento
