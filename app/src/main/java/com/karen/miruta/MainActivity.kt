@@ -463,19 +463,19 @@ class MainActivity : Activity() {
         // La meta por hora se calcula sola: $/km × 20 (sigue siendo editable).
         var campoHora: EditText? = null
         cont.addView(filtro(
-            Icono.RELOJ, "Por hora", null, "$", "",
-            { prefs.filtroHora }, { prefs.filtroHora = it },
-            { prefs.minPorHora }, { prefs.minPorHora = it }
-        ) { campoHora = it }, margenArriba(Tema.S1))
-        cont.addView(separador())
-        cont.addView(filtro(
             Icono.TENDENCIA, "Por km", null, "$", "",
             { prefs.filtroKm }, { prefs.filtroKm = it },
             { prefs.minPorKm }, { v ->
                 prefs.minPorKm = v
                 campoHora?.setText(num(v * 20f))
             }
-        ))
+        ), margenArriba(Tema.S1))
+        cont.addView(separador())
+        cont.addView(filtro(
+            Icono.RELOJ, "Por hora", null, "$", "",
+            { prefs.filtroHora }, { prefs.filtroHora = it },
+            { prefs.minPorHora }, { prefs.minPorHora = it }
+        ) { campoHora = it })
         cont.addView(separador())
         cont.addView(filtro(
             Icono.PIN, "Recogida máx.", listOf(2f, 3f, 4f, 5f), "", "km",
@@ -619,20 +619,14 @@ class MainActivity : Activity() {
             mejoresHorasLista.addView(texto(msg, Tema.T_TEXTO, cTexto2, false))
             return
         }
-        top.forEachIndexed { i, g ->
-            val fila = LinearLayout(this).apply {
-                orientation = LinearLayout.HORIZONTAL
-                gravity = Gravity.CENTER_VERTICAL
-                minimumHeight = dp(32)
-            }
-            fila.addView(texto("${i + 1}", Tema.T_NOTA, if (i == 0) Color.BLACK else cTexto, true).apply {
-                gravity = Gravity.CENTER
-                background = punto(if (i == 0) cVerde else cTarjeta2)
-            }, LinearLayout.LayoutParams(dp(24), dp(24)).apply { rightMargin = dp(12) })
-            fila.addView(texto(g.etiqueta, Tema.T_TEXTO, cTexto, false), LinearLayout.LayoutParams(0, -2, 1f))
-            fila.addView(texto("${dinero(g.porKm)}/km", Tema.T_TEXTO, cVerde, true))
-            mejoresHorasLista.addView(fila)
-        }
+        val valores = DoubleArray(24)
+        porHoraDelDia(regs).filter { it.regs.size >= 3 }.forEach { valores[it.etiqueta.take(2).toInt()] = it.porKm }
+        val grafica = Grafica(this).apply { poner(valores, top.map { it.etiqueta.take(2).toInt() }.toSet()) }
+        mejoresHorasLista.addView(grafica, LinearLayout.LayoutParams(-1, dp(120)))
+        mejoresHorasLista.addView(texto(
+            "Mejores: " + top.joinToString(" · ") { it.etiqueta.take(5) + " " + dinero(it.porKm) },
+            Tema.T_NOTA, cTexto2, false
+        ), margenArriba(Tema.S1))
     }
 
     private fun verMejoresHoras() {
