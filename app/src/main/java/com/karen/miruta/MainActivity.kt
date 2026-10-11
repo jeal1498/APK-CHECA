@@ -35,6 +35,7 @@ import android.view.Window
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
@@ -304,14 +305,10 @@ class MainActivity : Activity() {
         col.addView(filaSem, margenTarjeta())
 
         // --- Mejores horas ---
-        val mh = tarjeta().apply {
-            background = ripple(cTarjeta, Tema.R_TARJETA)
-            isClickable = true
-            setOnClickListener { verMejoresHoras() }
-        }
-        mh.addView(cabeceraTarjeta(Icono.RELOJ, "Mejores horas", "Por $/km · últimos 30 días", true).first)
+        val mh = tarjeta()
+        mh.addView(cabeceraTarjeta(Icono.RELOJ, "Mejores horas", "Hoy, hora por hora · últimos 30 días", false).first)
         mejoresHorasLista = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        mh.addView(mejoresHorasLista, margenArriba(Tema.S1))
+        mh.addView(mejoresHorasLista, margenArriba(12))
         col.addView(mh, margenTarjeta())
 
         // --- Filtros inteligentes ---
@@ -468,6 +465,7 @@ class MainActivity : Activity() {
             { prefs.minPorKm }, { v ->
                 prefs.minPorKm = v
                 campoHora?.setText(num(v * 20f))
+                pintarMejoresHoras(false)
             }
         ), margenArriba(Tema.S1))
         cont.addView(separador())
@@ -582,98 +580,302 @@ class MainActivity : Activity() {
     // Mejores horas
     // =====================================================================
 
-    private data class Grupo(val etiqueta: String, val regs: List<Registro>) {
-        val porKm: Double get() { val km = regs.sumOf { it.km }; return if (km > 0) regs.sumOf { it.tarifa } / km else 0.0 }
-        val porHora: Double get() { val m = regs.sumOf { it.min }; return if (m > 0) regs.sumOf { it.tarifa } / m * 60 else 0.0 }
-        val pctVerde: Int get() = if (regs.isEmpty()) 0 else regs.count { it.nivel == Oferta.VERDE } * 100 / regs.size
-    }
+    private var mhRegs: List<Registro> = emptyList()
+    private val nombresDia = listOf("Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo")
 
-    private fun porHoraDelDia(regs: List<Registro>): List<Grupo> {
+    /** Día de la semana empezando en lunes (0) hasta domingo (6). */
+    private fun diaLunes(c: Calendar) = (c.get(Calendar.DAY_OF_WEEK) + 5) % 7
+
+    /** Ofertas agrupadas por [día][hora]. */
+    private fun celdas(regs: List<Registro>): Array<Array<ArrayList<Registro>>> {
+        val m = Array(7) { Array(24) { ArrayList<Registro>() } }
         val cal = Calendar.getInstance()
-        return regs.groupBy { cal.timeInMillis = it.hora; cal.get(Calendar.HOUR_OF_DAY) }
-            .toSortedMap()
-            .map { (h, l) -> Grupo(String.format(Locale.US, "%02d:00–%02d:00", h, (h + 1) % 24), l) }
+        regs.forEach { cal.timeInMillis = it.hora; m[diaLunes(cal)][cal.get(Calendar.HOUR_OF_DAY)].add(it) }
+        return m
     }
 
-    private fun porDiaSemana(regs: List<Registro>): List<Grupo> {
-        val nombres = mapOf(
-            Calendar.MONDAY to "Lunes", Calendar.TUESDAY to "Martes", Calendar.WEDNESDAY to "Miércoles",
-            Calendar.THURSDAY to "Jueves", Calendar.FRIDAY to "Viernes", Calendar.SATURDAY to "Sábado",
-            Calendar.SUNDAY to "Domingo"
-        )
-        val orden = listOf(Calendar.MONDAY, Calendar.TUESDAY, Calendar.WEDNESDAY, Calendar.THURSDAY,
-            Calendar.FRIDAY, Calendar.SATURDAY, Calendar.SUNDAY)
-        val cal = Calendar.getInstance()
-        val g = regs.groupBy { cal.timeInMillis = it.hora; cal.get(Calendar.DAY_OF_WEEK) }
-        return orden.filter { g.containsKey(it) }.map { Grupo(nombres[it]!!, g[it]!!) }
+    /** $/km promedio (total cobrado ÷ km); null si hay menos de 3 ofertas. */
+    private fun porKmDe(l: List<Registro>): Double? {
+        if (l.size < 3) return null
+        val km = l.sumOf { it.km }
+        return if (km > 0) l.sumOf { it.tarifa } / km else null
     }
 
-    private fun pintarMejoresHoras() {
+    private fun colorKm(v: Double?): Int {
+        val meta = prefs.minPorKm.toDouble()
+        return when {
+            v == null -> Tema.BORDE
+            v >= meta -> cVerde
+            v >= meta * 0.85 -> cAmarillo
+            else -> cRojo
+        }
+    }
+
+    private fun estadoKm(v: Double?): String {
+        val meta = prefs.minPorKm.toDouble()
+        return when {
+            v == null -> "Sin datos"
+            v >= meta -> "Conviene"
+            v >= meta * 0.85 -> "Casi"
+            else -> "Abajo"
+        }
+    }
+
+    private fun hh(h: Int) = String.format(Locale.US, "%02d:00", h)
+    private fun rango(h: Int) = hh(h) + "–" + hh((h + 1) % 24)
+
+    private fun cuadro(color: Int, marcado: Boolean, radio: Int) = GradientDrawable().apply {
+        setColor(color)
+        cornerRadius = dp(radio).toFloat()
+        if (marcado) setStroke(dp(2), cTexto)
+    }
+
+    private fun cajaResumen(titulo: String, color: Int?, valor: String, sub: String): View {
+        val c = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            background = redondo(cTarjeta2, Tema.R_BOTON)
+            setPadding(dp(12), dp(10), dp(12), dp(10))
+        }
+        c.addView(texto(titulo, 11f, cTenue, true).apply { letterSpacing = 0.06f })
+        val fila = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+        }
+        if (color != null) fila.addView(View(this).apply { background = punto(color) },
+            LinearLayout.LayoutParams(dp(8), dp(8)).apply { rightMargin = dp(6) })
+        fila.addView(texto(valor, Tema.T_TEXTO, cTexto, true))
+        c.addView(fila, margenArriba(4))
+        c.addView(texto(sub, Tema.T_NOTA, cTexto2, false), margenArriba(2))
+        return c
+    }
+
+    private fun leyenda(): View {
+        val fila = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
+        listOf(cVerde to "Conviene", cAmarillo to "Casi", cRojo to "Abajo", Tema.BORDE to "Sin datos").forEachIndexed { i, (c, t) ->
+            fila.addView(View(this).apply { background = redondo(c, 3) }, LinearLayout.LayoutParams(dp(10), dp(10)).apply {
+                if (i > 0) leftMargin = dp(12)
+                rightMargin = dp(4)
+            })
+            fila.addView(texto(t, Tema.T_NOTA, cTexto2, false))
+        }
+        return fila
+    }
+
+    /** Tarjeta de Inicio: solo el día de hoy, hora por hora, con colores del semáforo según la meta por km. */
+    private fun pintarMejoresHoras(recargar: Boolean = true) {
+        if (!::mejoresHorasLista.isInitialized) return
         mejoresHorasLista.removeAllViews()
-        val regs = Historial.ultimosDias(this, 30)
-        val top = if (regs.size < 10) emptyList()
-            else porHoraDelDia(regs).filter { it.regs.size >= 3 }.sortedByDescending { it.porKm }.take(3)
-        if (top.isEmpty()) {
-            val msg = if (regs.size < 10) "Necesito al menos 10 ofertas para calcularlas (llevas ${regs.size})."
-                else "Aún no hay suficientes ofertas por hora."
-            mejoresHorasLista.addView(texto(msg, Tema.T_TEXTO, cTexto2, false))
+        if (recargar) mhRegs = Historial.ultimosDias(this, 30)
+        val m = celdas(mhRegs)
+        val cal = Calendar.getInstance()
+        val hoy = diaLunes(cal)
+        val ahora = cal.get(Calendar.HOUR_OF_DAY)
+        val f = Array(24) { porKmDe(m[hoy][it]) }
+
+        // Ahora / Lo mejor que viene
+        val cajas = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+        val va = f[ahora]
+        cajas.addView(cajaResumen("AHORA", colorKm(va), estadoKm(va),
+            if (va == null) "Aún sin ofertas" else "${dinero(va)}/km"), LinearLayout.LayoutParams(0, -1, 1f))
+        var mejor = -1
+        for (h in ahora + 1 until 24) {
+            val v = f[h] ?: continue
+            if (mejor < 0 || v > (f[mejor] ?: 0.0)) mejor = h
+        }
+        val vm = if (mejor >= 0) f[mejor] else null
+        val caja2 = if (vm == null) cajaResumen("LO MEJOR QUE VIENE", null, "Sin datos", "Aún no hay suficientes ofertas")
+            else cajaResumen("LO MEJOR QUE VIENE", colorKm(vm), hh(mejor), "${dinero(vm)}/km · en ${mejor - ahora} h")
+        cajas.addView(caja2, LinearLayout.LayoutParams(0, -1, 1f).apply { leftMargin = dp(Tema.S1) })
+        mejoresHorasLista.addView(cajas)
+
+        // Las 24 horas de hoy (deslizable)
+        val detalle = texto("", Tema.T_NOTA, cTexto2, false).apply { visibility = View.GONE }
+        val tira = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+        var celdaAhora: View? = null
+        for (h in 0 until 24) {
+            val v = f[h]
+            val celda = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                gravity = Gravity.CENTER_HORIZONTAL
+            }
+            celda.addView(View(this).apply {
+                background = cuadro(colorKm(v), h == ahora, 6)
+                isClickable = true
+                setOnClickListener {
+                    detalle.visibility = View.VISIBLE
+                    detalle.text = if (v == null) "${rango(h)}: aún no hay suficientes ofertas."
+                        else "${rango(h)}: ${dinero(v)}/km (tu meta: ${dinero(prefs.minPorKm.toDouble())}/km)"
+                }
+            }, LinearLayout.LayoutParams(dp(28), dp(28)))
+            celda.addView(texto(if (h == ahora) "Ahora" else "$h", 10f, if (h == ahora) cTexto else cTenue, h == ahora).apply {
+                gravity = Gravity.CENTER
+            }, LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(3) })
+            if (h == ahora) celdaAhora = celda
+            tira.addView(celda, LinearLayout.LayoutParams(-2, -2).apply { if (h > 0) leftMargin = dp(4) })
+        }
+        val hsv = HorizontalScrollView(this).apply {
+            isHorizontalScrollBarEnabled = false
+            isHorizontalFadingEdgeEnabled = true
+            setFadingEdgeLength(dp(32))
+            addView(tira)
+        }
+        mejoresHorasLista.addView(hsv, margenArriba(12))
+        val ca = celdaAhora
+        hsv.post { if (ca != null) hsv.scrollTo(ca.left, 0) }
+
+        mejoresHorasLista.addView(leyenda(), margenArriba(12))
+        mejoresHorasLista.addView(detalle, margenArriba(Tema.S1))
+        if (mhRegs.size < 10) {
+            mejoresHorasLista.addView(texto("Llevas ${mhRegs.size} ofertas guardadas. Los colores se llenan conforme uses la app.",
+                Tema.T_NOTA, cTenue, false), margenArriba(Tema.S1))
+        }
+        mejoresHorasLista.addView(texto("Ver toda la semana ›", Tema.T_NOTA, cVerde, true).apply {
+            gravity = Gravity.END or Gravity.CENTER_VERTICAL
+            minHeight = dp(40)
+            setPadding(dp(Tema.S1), 0, dp(4), 0)
+            isClickable = true
+            setOnClickListener { verSemana() }
+        }, LinearLayout.LayoutParams(-2, -2).apply { gravity = Gravity.END; topMargin = 4 })
+    }
+
+    /** Ventana con toda la semana: mejor día, los 3 mejores momentos, tabla día × hora y detalle al tocar. */
+    private fun verSemana() {
+        val m = celdas(mhRegs)
+        val cal = Calendar.getInstance()
+        val hoy = diaLunes(cal)
+        val ahora = cal.get(Calendar.HOUR_OF_DAY)
+        val v = Array(7) { d -> Array(24) { h -> porKmDe(m[d][h]) } }
+        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+
+        // Mejor día y día más bajo
+        val prom = (0 until 7).map { d -> porKmDe(m[d].flatMap { it }) }
+        val conDatos = (0 until 7).filter { prom[it] != null }
+        if (conDatos.isNotEmpty()) {
+            val md = conDatos.maxBy { prom[it]!! }
+            val pd = conDatos.minBy { prom[it]!! }
+            val caja = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                background = redondo(Tema.VERDE_SUAVE, Tema.R_BOTON)
+                setPadding(dp(12), dp(10), dp(12), dp(10))
+            }
+            caja.addView(texto("Tu mejor día: ${nombresDia[md]} · ${dinero(prom[md]!!)}/km", Tema.T_TEXTO, cVerde, true))
+            if (pd != md) caja.addView(texto("El más bajo: ${nombresDia[pd].lowercase()} (${dinero(prom[pd]!!)}/km), buen día para descansar.",
+                Tema.T_NOTA, cTexto2, false), margenArriba(2))
+            cuerpo.addView(caja)
+        }
+
+        // Los 3 mejores momentos
+        data class Momento(val d: Int, val h: Int, val v: Double)
+        val top = ArrayList<Momento>()
+        for (d in 0 until 7) for (h in 0 until 24) v[d][h]?.let { top.add(Momento(d, h, it)) }
+        top.sortByDescending { it.v }
+        if (top.isNotEmpty()) {
+            cuerpo.addView(etiqueta("LOS 3 MEJORES MOMENTOS"))
+            top.take(3).forEachIndexed { i, x ->
+                val fila = LinearLayout(this).apply {
+                    orientation = LinearLayout.HORIZONTAL
+                    gravity = Gravity.CENTER_VERTICAL
+                    minimumHeight = dp(32)
+                }
+                fila.addView(texto("${i + 1}", Tema.T_NOTA, if (i == 0) Color.BLACK else cTexto, true).apply {
+                    gravity = Gravity.CENTER
+                    background = punto(if (i == 0) cVerde else cTarjeta2)
+                }, LinearLayout.LayoutParams(dp(22), dp(22)).apply { rightMargin = dp(10) })
+                fila.addView(texto("${nombresDia[x.d]} ${rango(x.h)}", Tema.T_TEXTO, cTexto, false), LinearLayout.LayoutParams(0, -2, 1f))
+                fila.addView(texto("${dinero(x.v)}/km", Tema.T_TEXTO, cVerde, true))
+                cuerpo.addView(fila)
+            }
+        }
+
+        // Tabla día × hora (los días quedan fijos a la izquierda)
+        cuerpo.addView(etiqueta("$/KM POR HORA · ÚLTIMOS 30 DÍAS"))
+        val ficha = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            background = redondo(cTarjeta2, Tema.R_BOTON)
+            setPadding(dp(12), dp(10), dp(12), dp(10))
+        }
+        ficha.addView(texto("Toca un cuadro para ver el detalle de esa hora.", Tema.T_NOTA, cTexto2, false))
+
+        val lado = 24; val hueco = 3
+        val tabla = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+        val nombres = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        nombres.addView(View(this), LinearLayout.LayoutParams(dp(36), dp(16)))
+        val rejilla = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        val horas = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+        for (h in 0 until 24) horas.addView(texto("$h", 10f, if (h == ahora) cTexto else cTenue, h == ahora).apply {
+            gravity = Gravity.CENTER
+        }, LinearLayout.LayoutParams(dp(lado), dp(16)).apply { if (h > 0) leftMargin = dp(hueco) })
+        rejilla.addView(horas)
+        var seleccion: Pair<View, Int>? = null
+        for (d in 0 until 7) {
+            nombres.addView(texto(nombresDia[d].take(3), Tema.T_NOTA, if (d == hoy) cVerde else cTexto2, d == hoy).apply {
+                gravity = Gravity.CENTER_VERTICAL
+            }, LinearLayout.LayoutParams(dp(36), dp(lado)).apply { topMargin = dp(hueco) })
+            val fila = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+            for (h in 0 until 24) {
+                val valor = v[d][h]
+                val col = colorKm(valor)
+                fila.addView(View(this).apply {
+                    background = cuadro(col, false, 5)
+                    isClickable = true
+                    setOnClickListener { vista ->
+                        seleccion?.let { (vv, c) -> vv.background = cuadro(c, false, 5) }
+                        vista.background = cuadro(col, true, 5)
+                        seleccion = vista to col
+                        llenarFicha(ficha, d, h, m[d][h], valor)
+                    }
+                }, LinearLayout.LayoutParams(dp(lado), dp(lado)).apply { if (h > 0) leftMargin = dp(hueco) })
+            }
+            rejilla.addView(fila, LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(hueco) })
+        }
+        val hsv = HorizontalScrollView(this).apply {
+            isHorizontalScrollBarEnabled = false
+            isHorizontalFadingEdgeEnabled = true
+            setFadingEdgeLength(dp(24))
+            addView(rejilla)
+        }
+        tabla.addView(nombres)
+        tabla.addView(hsv, LinearLayout.LayoutParams(0, -2, 1f))
+        cuerpo.addView(tabla)
+        cuerpo.addView(leyenda(), margenArriba(12))
+        cuerpo.addView(ficha, margenArriba(12))
+
+        hoja("Toda la semana", null, cuerpo)
+        hsv.post { hsv.scrollTo(maxOf(0, (ahora - 2) * dp(lado + hueco)), 0) }
+    }
+
+    private fun llenarFicha(ficha: LinearLayout, d: Int, h: Int, regs: List<Registro>, valor: Double?) {
+        ficha.removeAllViews()
+        ficha.addView(texto("${nombresDia[d]} ${rango(h)}", Tema.T_TEXTO, cTexto, true))
+        if (valor == null) {
+            ficha.addView(texto("Aún no hay suficientes ofertas a esta hora (${regs.size} de 3).", Tema.T_NOTA, cTexto2, false), margenArriba(4))
             return
         }
-        val valores = DoubleArray(24)
-        porHoraDelDia(regs).filter { it.regs.size >= 3 }.forEach { valores[it.etiqueta.take(2).toInt()] = it.porKm }
-        val grafica = Grafica(this).apply { poner(valores, top.map { it.etiqueta.take(2).toInt() }.toSet()) }
-        mejoresHorasLista.addView(grafica, LinearLayout.LayoutParams(-1, dp(120)))
-        mejoresHorasLista.addView(texto(
-            "Mejores: " + top.joinToString(" · ") { it.etiqueta.take(5) + " " + dinero(it.porKm) },
-            Tema.T_NOTA, cTexto2, false
-        ), margenArriba(Tema.S1))
-    }
-
-    private fun verMejoresHoras() {
-        val regs = Historial.ultimosDias(this, 30)
-        val lista = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        if (regs.isEmpty()) {
-            lista.addView(texto("Aún no hay ofertas guardadas.", Tema.T_TEXTO, cTenue, false))
-        } else {
-            lista.addView(texto("Promedio de $/km de las ofertas que te llegaron, y cuántas convenían.", Tema.T_NOTA, cTenue, false))
-            seccionGrupos(lista, "POR HORA", porHoraDelDia(regs))
-            seccionGrupos(lista, "POR DÍA", porDiaSemana(regs))
+        val pct = regs.count { it.nivel == Oferta.VERDE } * 100 / regs.size
+        val fila = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+        listOf(
+            "Pago por km" to "${dinero(valor)}",
+            "Ofertas" to "${regs.size}",
+            "Convenían" to "$pct%",
+            "Tu meta" to dinero(prefs.minPorKm.toDouble())
+        ).forEachIndexed { i, (t, x) ->
+            val c = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+            c.addView(texto(t, 11f, cTenue, false))
+            c.addView(texto(x, Tema.T_TEXTO, if (i == 0) colorKm(valor) else cTexto, true))
+            fila.addView(c, LinearLayout.LayoutParams(0, -2, 1f))
         }
-        hoja("Mejores horas (${regs.size} ofertas)", null, lista)
-    }
-
-    private fun seccionGrupos(lista: LinearLayout, titulo: String, grupos: List<Grupo>) {
-        lista.addView(etiqueta(titulo), margenArriba(Tema.S1))
-        val max = grupos.maxOfOrNull { it.porKm } ?: 1.0
-        val mejor = grupos.filter { it.regs.size >= 3 }.maxByOrNull { it.porKm }
-        grupos.forEach { g ->
-            val fila = LinearLayout(this).apply {
-                orientation = LinearLayout.VERTICAL
-                setPadding(dp(Tema.S2), dp(12), dp(Tema.S2), dp(12))
-                background = GradientDrawable().apply {
-                    cornerRadius = dp(Tema.R_BOTON).toFloat()
-                    setColor(if (g === mejor) Tema.VERDE_SUAVE else cTarjeta)
-                    if (g === mejor) setStroke(dp(1), cVerde)
-                }
-            }
-            val arriba = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
-            arriba.addView(texto(g.etiqueta, Tema.T_TEXTO, cTexto, true), LinearLayout.LayoutParams(0, -2, 1f))
-            arriba.addView(texto("${dinero(g.porKm)}/km", Tema.T_TEXTO, cVerde, true))
-            fila.addView(arriba)
-            // Barra proporcional
-            val barra = LinearLayout(this).apply {
-                orientation = LinearLayout.HORIZONTAL
-                background = redondo(cTarjeta2, 4)
-            }
-            val peso = (g.porKm / max).toFloat().coerceIn(0.03f, 1f)
-            barra.addView(View(this).apply { background = redondo(cVerde, 4) }, LinearLayout.LayoutParams(0, dp(6), peso))
-            barra.addView(View(this), LinearLayout.LayoutParams(0, dp(6), 1f - peso + 0.0001f))
-            fila.addView(barra, margenArriba(Tema.S1))
-            fila.addView(texto(
-                "${g.regs.size} ofertas · ${g.pctVerde}% convenían · ${dinero(g.porHora, 0)}/h",
-                Tema.T_NOTA, cTexto2, false
-            ), margenArriba(Tema.S1))
-            lista.addView(fila, margenArriba(Tema.S1))
+        ficha.addView(fila, margenArriba(Tema.S1))
+        // Uber vs DiDi (solo apps con ofertas a esa hora)
+        val porApp = regs.groupBy { it.app }.mapValues { (_, l) ->
+            val km = l.sumOf { it.km }; if (km > 0) l.sumOf { it.tarifa } / km else 0.0
+        }.filterValues { it > 0 }
+        if (porApp.size >= 2) {
+            val orden = porApp.entries.sortedByDescending { it.value }
+            ficha.addView(texto("${orden[0].key} pagó mejor: ${dinero(orden[0].value)} vs ${dinero(orden[1].value)}/km en ${orden[1].key}.",
+                Tema.T_NOTA, cTexto2, false), margenArriba(Tema.S1))
+        } else if (porApp.size == 1) {
+            val e = porApp.entries.first()
+            ficha.addView(texto("Solo hubo ofertas de ${e.key} (${dinero(e.value)}/km).", Tema.T_NOTA, cTexto2, false), margenArriba(Tema.S1))
         }
     }
 
