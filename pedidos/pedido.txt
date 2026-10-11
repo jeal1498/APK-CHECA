@@ -1,5 +1,0 @@
-nombre=Karen (propietaria)
-whatsapp=-
-correo=lalolopezxd@gmail.com
-tipo=Fundador
-dias=0

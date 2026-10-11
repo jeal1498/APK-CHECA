@@ -1,5 +1,5 @@
-nombre=Karen (reinstalación celular)
-equipo=05E7-8598
+nombre=Karen (propietaria)
+equipo=lalolopezxd@gmail.com
 tipo=Fundador
 vence=Sin vencimiento
-codigo=99991231F-MEQCIBj5Tguk-7iFxpCV8XiCQSOSi7NJaP0z4NvMlqfWMaMZAiBMaLwwfVKgxAHWWptEzI-0hCppctguZk-gJmXA9uenmQ
+codigo=99991231F-MEYCIQDFkRCoOr4hG0og6tP7XNh2waLGGrKO4ZCLozeCg0kSdwIhAOgiMmvopq4ELX5iMDoQFMN901rog8Oq8cNcZgBpzBf5
