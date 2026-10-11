@@ -11,8 +11,8 @@ android {
         applicationId = "com.karen.miruta"
         minSdk = 26
         targetSdk = 34
-        versionCode = 22
-        versionName = "4.1"
+        versionCode = 23
+        versionName = "4.2"
     }
 
     signingConfigs {
@@ -26,7 +26,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.getByName("propia")
         }
     }
