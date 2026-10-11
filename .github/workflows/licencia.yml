@@ -6,22 +6,42 @@ on:
       equipo:
         description: "Código del equipo (ej. A1B2-C3D4)"
         required: true
+      nombre:
+        description: "Nombre del conductor"
+        required: true
+      whatsapp:
+        description: "WhatsApp (opcional)"
+        required: false
+        default: ""
+      tipo:
+        description: "Tipo de cliente"
+        type: choice
+        options: [Fundador, Normal]
+        default: Fundador
       dias:
         description: "Días de licencia (30 = 1 mes, 365 = 1 año, 0 = sin vencimiento)"
         required: true
         default: "30"
 
+permissions:
+  contents: write
+
 jobs:
   generar:
     runs-on: ubuntu-latest
     steps:
-      - name: Firmar
+      - uses: actions/checkout@v4
+      - name: Firmar y anotar en la tabla
         env:
           EQUIPO: ${{ inputs.equipo }}
+          NOMBRE: ${{ inputs.nombre }}
+          WHATS: ${{ inputs.whatsapp }}
+          TIPO: ${{ inputs.tipo }}
           DIAS: ${{ inputs.dias }}
           LLAVE: ${{ secrets.LICENCIA_PRIVADA }}
         run: |
           set -euo pipefail
+          if [ -z "$LLAVE" ]; then echo "Falta el secreto LICENCIA_PRIVADA"; exit 1; fi
           eq=$(printf '%s' "$EQUIPO" | tr 'a-f' 'A-F' | tr -cd '0-9A-F')
           if [ ${#eq} -ne 8 ]; then echo "Código de equipo inválido: $EQUIPO"; exit 1; fi
           if ! printf '%s' "$DIAS" | grep -Eq '^[0-9]+$'; then echo "Días inválidos: $DIAS"; exit 1; fi
@@ -30,12 +50,28 @@ jobs:
           firma=$(printf 'LV|%s|%s' "$eq" "$vence" | openssl dgst -sha256 -sign llave.pem | base64 -w0 | tr '+/' '-_' | tr -d '=')
           rm -f llave.pem
           codigo="$vence-$firma"
+
+          # --- Tabla de clientes (clientes.md) ---
+          limpio() { printf '%s' "$1" | tr -d '|\r\n' | cut -c1-60; }
+          hoy=$(TZ=America/Cancun date +%Y-%m-%d)
+          if [ "$vence" = "99991231" ]; then fv="Sin vencimiento"; else fv="${vence:0:4}-${vence:4:2}-${vence:6:2}"; fi
+          if [ ! -f clientes.md ]; then
+            printf '# Clientes de Luz Verde\n\n| Fecha | Nombre | WhatsApp | Equipo | Tipo | Vence |\n|---|---|---|---|---|---|\n' > clientes.md
+          fi
+          printf '| %s | %s | %s | %s | %s | %s |\n' "$hoy" "$(limpio "$NOMBRE")" "$(limpio "$WHATS")" "${eq:0:4}-${eq:4:4}" "$TIPO" "$fv" >> clientes.md
+          fundadores=$(grep '| Fundador |' clientes.md | awk -F'|' '{print $5}' | sort -u | wc -l)
+          git config user.name "Luz Verde"
+          git config user.email "actions@users.noreply.github.com"
+          git add clientes.md
+          git commit -m "Licencia: $(limpio "$NOMBRE") ($TIPO) [skip ci]"
+          git push
+
           {
-            echo "### Licencia para ${eq:0:4}-${eq:4:4}"
-            echo "Vence: $vence"
+            echo "### Licencia para $(limpio "$NOMBRE") · ${eq:0:4}-${eq:4:4}"
+            echo "Tipo: $TIPO · Vence: $fv · Fundadores: $fundadores de 50"
             echo ""
+            echo "Copia este código y envíaselo:"
             echo '```'
             echo "$codigo"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
-          echo "$codigo"
