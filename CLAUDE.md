@@ -3,10 +3,11 @@
 Contexto para continuar el proyecto en una conversación nueva.
 
 ## Qué es
-**Luz Verde** (antes "Neta" y "Mi Ruta") es una app Android **personal** (sin fines comerciales) para conductores de **Uber y DiDi** en Cancún. Cuando llega una oferta de viaje, la app lee la pantalla y muestra un **pop-up** con **$/hora**, **$/km**, el semáforo (🟢 conviene / 🟡 regular / 🔴 no conviene), la ganancia neta después de gasolina y el multiplicador ⚡.
+**Luz Verde** (antes "Neta" y "Mi Ruta") es una app Android para conductores de **Uber y DiDi** en Cancún. Cuando llega una oferta de viaje, la app lee la pantalla y muestra un **pop-up** con **$/hora**, **$/km**, el semáforo (🟢 conviene / 🟡 regular / 🔴 no conviene), la ganancia neta después de gasolina y el multiplicador ⚡.
 
 - Se escribió **desde cero** como alternativa propia a la app comercial "Ruta Rentable".
 - **No** se modificó, descompiló ni copió el APK de Ruta Rentable, y esa regla se mantiene. Ruta Rentable solo sirve como referencia de *qué funciones* tener (formato del pop-up, "filtros inteligentes"). El diseño y el código son propios, con estilo verde y oscuro.
+- Desde v21 se **vende** a otros conductores con licencia por equipo (ver *Licencias y venta*).
 - Usuaria: Karen. Usa la app en su **teléfono** y en una **tablet en horizontal con pantalla dividida** (DiDi a la izquierda, Uber a la derecha).
 
 ## Cómo trabajar con la usuaria
@@ -18,7 +19,7 @@ Contexto para continuar el proyecto en una conversación nueva.
 ## Compilación (no hay Android SDK en el entorno local)
 - En el contenedor no hay acceso a Maven ni a Google, así que **no se puede compilar localmente**.
 - `.github/workflows/build.yml` compila en cada push a `main`: Java 17, Gradle 8.9 (`gradle/actions/setup-gradle`, sin wrapper) y `gradle assembleRelease`. Publica `MiRuta.apk` en un **Release `v<run_number>`**.
-- Revisar el estado con `https://api.github.com/repos/jeal1498/Mi-Ruta/actions/runs?per_page=1`.
+- Revisar el estado con `mcp__github__actions_list` (`list_workflow_runs`, `build.yml`) o esperando el tag `vN` con `git ls-remote origin refs/tags/vN`. La API pública ya no sirve (repo privado).
 - Firma: `app/miruta.jks` (pass `miruta123`, alias `miruta`). Está en el repo para que las actualizaciones se instalen encima de la versión anterior. El repo ya es privado.
 - Stack: AGP 8.5.2, Kotlin 1.9.24, compileSdk/targetSdk 34, minSdk 26. **UI 100% programática** (sin XML de layouts, sin AppCompat ni Compose). Única dependencia: `com.google.mlkit:text-recognition:16.0.1` (OCR en el teléfono, sin internet).
 - Como no hay compilador local, hay que **revisar el Kotlin con cuidado** antes de hacer push. Las regex se pueden probar con Python (`python3 -I`).
@@ -68,6 +69,8 @@ Contexto para continuar el proyecto en una conversación nueva.
   2. El workflow `licencia.yml` firma, anota en `clientes.md`, borra el pedido y escribe `pedidos/respuesta.txt` (`codigo=…`). Tarda ~30 s.
   3. `git pull origin main` hasta que la respuesta sea la nueva y pasarle el `codigo` completo.
   - Ese push no compila APK (`build.yml` ignora `pedidos/**`, `clientes.md` y `CLAUDE.md`).
+- Insignia dorada **⭐ Miembro fundador** en Inicio y Ajustes si la licencia trae `F`. Karen tiene licencia de fundadora sin vencimiento en su celular (05E7-8598) y su tablet (4817-F84C). **No** usar esos equipos para pruebas.
+- Probado de punta a punta desde una conversación nueva (pedido → código → activado en la tablet).
 - Precios: Ruta Rentable cobra $129/mes. Propuesta: $99/mes o $899/año; fundadores (primeros 50) $49/mes de por vida.
 - El repo ya es **privado** (la API pública da 404; usar las herramientas de GitHub MCP para revisar Actions).
 
@@ -77,6 +80,6 @@ Contexto para continuar el proyecto en una conversación nueva.
 - Pantalla dividida en tablet probada y correcta en v20 (dos pop-ups sólidos, ⭐ con borde dorado, sin mezclar ofertas). Si vuelve el parpadeo, pedir Diagnóstico.
 
 ## Historial de versiones
-v1 base (accesibilidad) → v2 OCR → v3 vibración/sonido + historial → v4 rediseño oscuro → v5–v6 pop-up nuevo → v7 botón circular + semáforo con detalle → v8–v9 filtros inteligentes (4) → v10 neta, mejores horas, multiplicador → v11 pantalla dividida, pop-up por app, ⭐ mejor opción (2.0) → **v12 rediseño "Neta"**: sistema de medidas, íconos propios, pop-up con franja de semáforo y neta grande, detalles en hojas propias, animaciones (versionName 3.0) → **v13 nombre "Luz Verde"** (ícono de semáforo) y aviso por voz (3.1) → **v14 pop-up B2 compacto** (3.2) → v15 fichas centradas (3.3) → v16 pantalla dividida sin zonas: separa por mitades (DiDi izq., Uber der.) y usa el título de la ventana (3.4) → v17 OCR "ll min" → "11 min" (3.5) → v18 sin parpadeo: el pop-up no se rehace si no cambia, el OCR ignora lo que tapa el pop-up y no se reemplaza la oferta si los tramos son iguales (3.6) → v19 recuerda la pantalla dividida 10 min para no volver a leer la pantalla entera cuando un pop-up tapa una mitad (3.7) → v20 pop-ups sólidos: la mejor con borde dorado grueso, la 2ª con franja apagada (3.8).
+v1 base (accesibilidad) → v2 OCR → v3 vibración/sonido + historial → v4 rediseño oscuro → v5–v6 pop-up nuevo → v7 botón circular + semáforo con detalle → v8–v9 filtros inteligentes (4) → v10 neta, mejores horas, multiplicador → v11 pantalla dividida, pop-up por app, ⭐ mejor opción (2.0) → **v12 rediseño "Neta"**: sistema de medidas, íconos propios, pop-up con franja de semáforo y neta grande, detalles en hojas propias, animaciones (versionName 3.0) → **v13 nombre "Luz Verde"** (ícono de semáforo) y aviso por voz (3.1) → **v14 pop-up B2 compacto** (3.2) → v15 fichas centradas (3.3) → v16 pantalla dividida sin zonas: separa por mitades (DiDi izq., Uber der.) y usa el título de la ventana (3.4) → v17 OCR "ll min" → "11 min" (3.5) → v18 sin parpadeo: el pop-up no se rehace si no cambia, el OCR ignora lo que tapa el pop-up y no se reemplaza la oferta si los tramos son iguales (3.6) → v19 recuerda la pantalla dividida 10 min para no volver a leer la pantalla entera cuando un pop-up tapa una mitad (3.7) → v20 pop-ups sólidos: la mejor con borde dorado grueso, la 2ª con franja apagada (3.8) → **v21 licencia** por equipo, 7 días de prueba, generador en GitHub (4.0) → v22 insignia ⭐ Miembro fundador (4.1).
 - El paquete sigue siendo `com.karen.miruta` y el APK `MiRuta.apk` para que se actualice encima.
 - Pop-up: ningún texto puede ser *solo un monto* (el OCR lo tomaría como tarifa); por eso "Te quedan $x", "$x/h", "$x/km" y "… km total".
