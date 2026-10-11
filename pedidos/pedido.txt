@@ -1,0 +1,5 @@
+nombre=Karen (reinstalación celular)
+whatsapp=-
+equipo=05E7-8598
+tipo=Fundador
+dias=0
