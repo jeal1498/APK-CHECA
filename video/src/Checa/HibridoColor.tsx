@@ -18,9 +18,15 @@ const P = {
   texto: "#FFFFFF",
   tenue: "#C9CFF0",
 };
-// Techos de colores y parques (paleta de @pixelmente)
-const TECHOS = ["#FF8A7A", "#F6C453", "#4FD1C5", "#B79CFF", "#F1F0FA", "#7DD3FC", "#FDA4AF"];
-const PARQUE = "#6BCB77";
+// Paletas para elegir (inspiradas en @pixelmente)
+type Paleta = { fondo: string; calle: string; rayas: string; linea: string; base: string; techos: string[]; parque: string; arbol: string; ventana: string; ventanaOp: number; coches: string[]; sombra: string; sombraOp: number; banda: string; caja: string; fin: string };
+export const PALETAS: Record<string, Paleta> = {
+  pastel: { fondo: "#141A3A", calle: "#4B5A8C", rayas: "#FFFFFF", linea: "#2A2F5E", base: "#E9E6F5", techos: ["#FF8A7A", "#F6C453", "#4FD1C5", "#B79CFF", "#F1F0FA", "#7DD3FC", "#FDA4AF"], parque: "#6BCB77", arbol: "#3E9B57", ventana: "#2A2F5E", ventanaOp: 0.35, coches: ["#F6C453", "#FDA4AF", "#4FD1C5", "#FFFFFF", "#B79CFF"], sombra: "#141A3A", sombraOp: 0.45, banda: "linear-gradient(180deg, #1B1F4B 0%, #3A1F5C 55%, #7A2E5F 100%)", caja: "rgba(20,26,58,0.92)", fin: "linear-gradient(180deg, #2563EB 0%, #7A2E5F 100%)" },
+  mapa: { fondo: "#E9EDF5", calle: "#F7F8FC", rayas: "#B8C0D6", linea: "#3B3F6B", base: "#DCE1EC", techos: ["#C9CFDD", "#B8C0D4", "#E6E9F1", "#AEB8CF"], parque: "#9BE5B0", arbol: "#3FB56B", ventana: "#3B3F6B", ventanaOp: 0.25, coches: ["#2563EB", "#EC4899", "#FACC15", "#14B8A6", "#6366F1"], sombra: "#E9EDF5", sombraOp: 0.4, banda: "linear-gradient(180deg, #0B1230 0%, #1B2550 100%)", caja: "rgba(11,18,48,0.94)", fin: "linear-gradient(180deg, #0B1230 0%, #2A1B5C 100%)" },
+  atardecer: { fondo: "#2A1B3D", calle: "#5B3F6E", rayas: "#F5D0A9", linea: "#2A1B3D", base: "#EBC08F", techos: ["#D9774B", "#F2C27B", "#C65D3B", "#E9A36A", "#B5533C"], parque: "#8FB862", arbol: "#4E7A3A", ventana: "#2A1B3D", ventanaOp: 0.4, coches: ["#FACC15", "#22D3EE", "#F472B6", "#FFFFFF", "#A78BFA"], sombra: "#2A1B3D", sombraOp: 0.45, banda: "linear-gradient(180deg, #3B2257 0%, #8E3B6B 60%, #E0784A 100%)", caja: "rgba(42,27,61,0.94)", fin: "linear-gradient(180deg, #3B2257 0%, #E0784A 100%)" },
+  neon: { fondo: "#0B1230", calle: "#1E2A5A", rayas: "#6C7BD0", linea: "#0B1230", base: "#2A3470", techos: ["#F2B544", "#4C5AC9", "#E85D9A", "#3BC9DB", "#8B5CF6"], parque: "#1F8A70", arbol: "#22C55E", ventana: "#FDE68A", ventanaOp: 0.9, coches: ["#FACC15", "#F472B6", "#22D3EE", "#FFFFFF", "#A3E635"], sombra: "#0B1230", sombraOp: 0.45, banda: "linear-gradient(180deg, #0B1230 0%, #2A1B5C 100%)", caja: "rgba(11,18,48,0.94)", fin: "linear-gradient(180deg, #1E2A5A 0%, #6D28D9 100%)" },
+};
+let K: Paleta = PALETAS.pastel;
 const PX = "Silkscreen";
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 const ap = (f: number, d: number, dur = 12) => interpolate(f, [d, d + dur], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) });
@@ -53,16 +59,16 @@ const Mapa: React.FC = () => {
   const mov = (ini: number, v: number) => ((((ini + frame * v) % 1400) + 1400) % 1400) - 100;
   return (
     <svg width={1080} height={1920} style={{ position: "absolute", overflow: "visible" }}>
-      <rect x={-300} y={-300} width={1700} height={1700} fill={P.calle} />
+      <rect x={-300} y={-300} width={1700} height={1700} fill={K.calle} />
       {XS.map((x) => (
-        <line key={x} x1={x} y1={-300} x2={x} y2={1400} stroke="#FFFFFF" strokeOpacity={0.35} strokeWidth={3} strokeDasharray="16 18" />
+        <line key={x} x1={x} y1={-300} x2={x} y2={1400} stroke={K.rayas} strokeOpacity={0.5} strokeWidth={3} strokeDasharray="16 18" />
       ))}
       {YS.map((y) => (
-        <line key={y} x1={-300} y1={y} x2={1400} y2={y} stroke="#FFFFFF" strokeOpacity={0.35} strokeWidth={3} strokeDasharray="16 18" />
+        <line key={y} x1={-300} y1={y} x2={1400} y2={y} stroke={K.rayas} strokeOpacity={0.5} strokeWidth={3} strokeDasharray="16 18" />
       ))}
       {manzanas.map((m, i) => {
         const parque = i % 7 === 3;
-        const c = parque ? PARQUE : TECHOS[(i * 5) % TECHOS.length];
+        const c = parque ? K.parque : K.techos[(i * 5) % K.techos.length];
         const casas: React.ReactNode[] = [];
         if (!parque) {
           // Edificios pixel: cuadros con ventanas más oscuras
@@ -71,22 +77,22 @@ const Mapa: React.FC = () => {
             const by = m.y + 14 + Math.floor(k / 2) * (m.h / 2 - 7);
             const bw = m.w / 2 - 21;
             const bh = m.h / 2 - 21;
-            casas.push(<rect key={k} x={bx} y={by} width={bw} height={bh} rx={4} fill={c} stroke={P.linea} strokeWidth={3} />);
+            casas.push(<rect key={k} x={bx} y={by} width={bw} height={bh} rx={4} fill={c} stroke={K.linea} strokeWidth={3} />);
             for (let w = 0; w < 3; w++)
-              casas.push(<rect key={`${k}w${w}`} x={bx + 10 + w * (bw - 20) / 3} y={by + 10} width={(bw - 40) / 3} height={10} fill={P.linea} opacity={0.35} />);
+              casas.push(<rect key={`${k}w${w}`} x={bx + 10 + w * (bw - 20) / 3} y={by + 10} width={(bw - 40) / 3} height={10} fill={K.ventana} opacity={K.ventanaOp} />);
           }
         } else {
-          for (let k = 0; k < 6; k++) casas.push(<circle key={k} cx={m.x + 30 + (k % 3) * (m.w - 60) / 2} cy={m.y + 30 + Math.floor(k / 3) * (m.h - 60)} r={18} fill="#3E9B57" stroke={P.linea} strokeWidth={3} />);
+          for (let k = 0; k < 6; k++) casas.push(<circle key={k} cx={m.x + 30 + (k % 3) * (m.w - 60) / 2} cy={m.y + 30 + Math.floor(k / 3) * (m.h - 60)} r={18} fill={K.arbol} stroke={K.linea} strokeWidth={3} />);
         }
         return (
           <g key={i}>
-            <rect x={m.x} y={m.y} width={m.w} height={m.h} rx={10} fill={parque ? PARQUE : "#E9E6F5"} stroke={P.linea} strokeWidth={4} />
+            <rect x={m.x} y={m.y} width={m.w} height={m.h} rx={10} fill={parque ? K.parque : K.base} stroke={K.linea} strokeWidth={4} />
             {casas}
           </g>
         );
       })}
       {otros.map((o, i) => (
-        <rect key={i} x={(o.eje === "v" ? o.fijo : mov(o.ini, o.v)) - (o.eje === "v" ? 12 : 18)} y={(o.eje === "h" ? o.fijo : mov(o.ini, o.v)) - (o.eje === "h" ? 12 : 18)} width={o.eje === "v" ? 24 : 36} height={o.eje === "v" ? 36 : 24} rx={6} fill={["#F6C453", "#FDA4AF", "#4FD1C5", "#FFFFFF", "#B79CFF"][i]} stroke={P.linea} strokeWidth={3} />
+        <rect key={i} x={(o.eje === "v" ? o.fijo : mov(o.ini, o.v)) - (o.eje === "v" ? 12 : 18)} y={(o.eje === "h" ? o.fijo : mov(o.ini, o.v)) - (o.eje === "h" ? 12 : 18)} width={o.eje === "v" ? 24 : 36} height={o.eje === "v" ? 36 : 24} rx={6} fill={K.coches[i]} stroke={K.linea} strokeWidth={3} />
       ))}
     </svg>
   );
@@ -110,7 +116,7 @@ const Ruta: React.FC<{ d: string; largo: number; desde: number; dur: number; col
 };
 
 const Caja: React.FC<{ color: string; children: React.ReactNode; tam?: number; tachado?: number }> = ({ color, children, tam = 34, tachado = 0 }) => (
-  <div style={{ position: "relative", display: "inline-block", fontFamily: PX, fontSize: tam, color, border: `4px solid ${color}`, padding: "8px 18px 6px", background: "rgba(20,26,58,0.92)", boxShadow: `0 0 18px ${color}55`, letterSpacing: 1 }}>
+  <div style={{ position: "relative", display: "inline-block", fontFamily: PX, fontSize: tam, color, border: `4px solid ${color}`, padding: "8px 18px 6px", background: K.caja, boxShadow: `0 0 18px ${color}55`, letterSpacing: 1 }}>
     {children}
     {tachado > 0 ? <div style={{ position: "absolute", left: -8, top: "50%", height: 6, width: `calc(${tachado * 100}% + 16px)`, background: P.magenta }} /> : null}
   </div>
@@ -159,7 +165,8 @@ const Subs: React.FC = () => {
   );
 };
 
-export const HibridoColor: React.FC = () => {
+export const HibridoColor: React.FC<{ paleta?: string }> = ({ paleta = "pastel" }) => {
+  K = PALETAS[paleta] ?? PALETAS.pastel;
   const frame = useCurrentFrame();
   // Cámara: empieza cerca del carro y se aleja
   const z = interpolate(frame, [0, 40], [1.9, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
@@ -172,11 +179,11 @@ export const HibridoColor: React.FC = () => {
   const tachar = ap(frame, tManejas, 8);
   const fin = 140;
   return (
-    <AbsoluteFill style={{ background: P.fondo, overflow: "hidden" }}>
+    <AbsoluteFill style={{ background: K.fondo, overflow: "hidden" }}>
       <AbsoluteFill style={{ transform: `translate(${540 - ox}px, ${760 - oy}px) scale(${z})`, transformOrigin: `${ox}px ${oy}px` }}>
         <Mapa />
         {/* Atenúa el mapa cuando entran las rutas para que resalten */}
-        <div style={{ position: "absolute", left: -400, top: -400, width: 1900, height: 1900, background: "#141A3A", opacity: 0.45 * ap(frame, tPago - 6, 14) }} />
+        <div style={{ position: "absolute", left: -400, top: -400, width: 1900, height: 1900, background: K.sombra, opacity: K.sombraOp * ap(frame, tPago - 6, 14) }} />
         {/* Viaje pagado: del pin al destino (8 km) */}
         <Ruta id="viaje" d="M420 800 L420 580 L900 580 L900 360" largo={920} desde={tPago - 4} dur={22} color={P.cian} />
         {/* Recogida sin pago: del carro al pin (6 km) */}
@@ -195,7 +202,7 @@ export const HibridoColor: React.FC = () => {
       </AbsoluteFill>
 
       {/* Banda de abajo: degradado atardecer como @pixelmente */}
-      <div style={{ position: "absolute", top: 1230, left: 0, right: 0, bottom: 0, background: "linear-gradient(180deg, #1B1F4B 0%, #3A1F5C 55%, #7A2E5F 100%)", borderTop: `6px solid ${P.linea}` }} />
+      <div style={{ position: "absolute", top: 1230, left: 0, right: 0, bottom: 0, background: K.banda, borderTop: `6px solid ${K.linea}` }} />
       {/* Etiqueta de la oferta arriba */}
       <div style={{ position: "absolute", top: 110, left: 0, right: 0, display: "flex", justifyContent: "center", gap: 18, opacity: ap(frame, 2, 10) * (1 - ap(frame, fin, 10)) }}>
         <Caja color={P.amarillo}>OFERTA · $80</Caja>
@@ -212,7 +219,7 @@ export const HibridoColor: React.FC = () => {
 
       {/* Cierre */}
       {frame >= fin ? (
-        <AbsoluteFill style={{ background: `linear-gradient(180deg, rgba(37,99,235,${0.9 * ap(frame, fin, 10)}) 0%, rgba(122,46,95,${0.95 * ap(frame, fin, 10)}) 100%)`, alignItems: "center", justifyContent: "center", gap: 40, display: "flex", flexDirection: "column" }}>
+        <AbsoluteFill style={{ background: K.fin, opacity: ap(frame, fin, 10), alignItems: "center", justifyContent: "center", gap: 40, display: "flex", flexDirection: "column" }}>
           <div style={{ opacity: ap(frame, fin + 4, 10) }}>
             <Caja color={P.cian} tam={40}>CHECA CUENTA LOS 14</Caja>
           </div>
