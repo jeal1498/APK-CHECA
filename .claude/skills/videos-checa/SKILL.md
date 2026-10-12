@@ -1,108 +1,108 @@
 ---
 name: videos-checa
-description: Hacer videos cortos explicativos de Checa (TikTok, Reels, Shorts) con narrador de IA y el estilo visual de las referencias «1Volt1Amp» (line-art sobre fondo oscuro, tipografía mono, diagramas animados), usando Remotion en el repo. Úsala cuando Eduardo pida un video, un guion para video, «otro video como el de los $150», cambiar la voz o la música de un video, o un video sin que él salga a cuadro.
+description: Hacer videos cortos de Checa (TikTok, Reels, Shorts) con narrador de IA en el estilo aprobado «ciudad 3D en tercera persona» (Remotion + three.js, edificios de colores, cielo de atardecer, etiquetas neón en letra pixel, número gigante, subtítulos con palabra clave en amarillo y 8 vistas de cámara). Úsala cuando Eduardo pida un video, un guion para video, el siguiente tema de marketing/temas-videos.md, cambiar la voz o la música de un video, o un video sin que él salga a cuadro.
 ---
 
-# Videos explicativos de Checa
+# Videos de Checa
 
-**Único video aprobado y plantilla:** `marketing/videos/gasolina150.mp4` (video 1 «Tus $150 no son $150», 40 s), código en `video/src/Checa/Gasolina150.tsx`, voz en `video/public/gasolina150/`. Los videos anteriores (estilo de golpes y asfalto) se borraron a pedido de Eduardo: no los vuelvas a usar como modelo.
+## Estilo aprobado: «punto dulce» (Eduardo, octubre 2026)
 
-**Lo que Eduardo quiere copiar de sus referencias es el DISEÑO VISUAL y el FORMATO, no la historia.** Hay 7 referencias analizadas en `referencia/README.md`: 4 de «1Volt1Amp» (line-art y diagramas) y 3 de «@pixelmente» (pixel art, mapa con puntos, teléfono, etiquetas neón). Léelo completo antes de cada video, mira `referencia/cuadros1–7.jpg` y sigue la sección *Estilo Checa: cómo mezclarlas*. **No** es obligatorio comparar dos casos A/B: eso solo era el tema de la referencia 1 (y del video 1). Cada video elige la historia que mejor explique su idea.
+Después de varias pruebas, Eduardo aprobó este estilo y **le gustan las 8 vistas**. Es el que se usa en todos los videos nuevos:
 
-**Diseño visual (obligatorio en todos; detalle en *Estilo Checa* del README):**
-- Fondo azul noche, **una idea por pantalla**; colores con significado: **magenta = lo malo / el mito / el número que duele**, **cian = lo bueno / la solución**, **amarillo/ámbar = dinero, gasolina y la palabra clave**. Verde/amarillo/rojo de semáforo solo dentro del pop-up de Checa.
-- **Teléfono con la oferta como personaje** y **mapa visto desde arriba** con calles, puntos que se mueven y rutas (recogida punteada magenta, viaje cian, regreso…).
-- **Etiquetas cortas en MAYÚSCULAS dentro de un recuadro con borde neón** (letra pixel/LCD o Fira Code), apiladas arriba; el mito se **tacha**. **Números gigantes** con una etiqueta chica.
-- Objetos simples: line-art (contorno lavanda, relleno oscuro) o pixel/isométrico sencillo (carro, gasolinera, calle). Diagramas limpios: cotas punteadas, rejilla de puntos, ✗ magenta / ✓ cian.
-- **Subtítulos** abajo (y≈1500), blancos en negrita, 1–2 líneas, con **la palabra clave en amarillo**.
-- Movimiento: la cámara se acerca y se mueve por la escena, trazos que se dibujan, puntos que avanzan, números que cuentan; cortes cada 2–4 s. Sin sacudidas ni destellos fuertes.
-- Cierre: frase que regresa al espectador + logo Checa + «7 días gratis · link en el perfil» + pregunta.
+- **Ciudad 3D en tercera persona** hecha con `@remotion/three` (three.js): calle con edificios de bloques de colores (rosa, turquesa, mostaza, morado, verde, naranja) con ventanas encendidas, banquetas lila, calle azul marino con rayas blancas, **cielo de atardecer** (degradado `#2B2A7A → #8E4B9C → #F08A5D`) y neblina morada al fondo. El carro del conductor es **blanco**, en bloques; otros carros de colores circulan.
+- **Rutas pintadas en el piso**: recogida sin pago en **magenta punteado**, viaje pagado en **cian sólido**, pin del pasajero magenta flotando y destino como cubo cian.
+- **Capas en pantalla (estilo @pixelmente):** etiquetas cortas en MAYÚSCULAS dentro de **recuadros neón** con letra pixel **Silkscreen** (`OFERTA · $80`, `8 KM · PAGADOS`, `6 KM · SIN PAGO`), apiladas arriba sobre una franja oscura; **número gigante** en Silkscreen negrita que cuenta o se **tacha** (amarillo → magenta); **subtítulos** abajo (y≈1500) blancos en Inter negrita con **la palabra clave en amarillo**.
+- **Colores con significado:** magenta = lo malo, lo que no te pagan, el número que duele; cian = lo que sí te pagan o la solución; amarillo = dinero, la oferta y la palabra clave. Verde/amarillo/rojo de semáforo solo dentro del pop-up de Checa.
+- **Pop-up de Checa idéntico a la app** (`Popup` con `exacto`) cuando sale el teléfono.
+- **Cierre:** fondo de atardecer + recuadro neón con la frase final + logo Checa (+ «7 días gratis · link en el perfil» y la pregunta en los videos completos).
+- Música calmada (`public/musica-calma.mp3`, volumen 0.14), efectos muy suaves; narrador calmado a velocidad 1.05; volumen final −14 LUFS.
 
-**Formato narrativo (patrones de las referencias):** gancho con una escena cotidiana del conductor que contradice o intriga → descartar la respuesta obvia → mecanismo con una imagen concreta y su número (de ejemplo o con fuente) → giro («y lo que casi nadie se imagina…») → consejo concreto con ✓/✗ → cierre que regresa a él («en tu próxima oferta…»). Narrador calmado, de tú, voz a 1.05. **40 s** para TikTok (una sola idea).
+### Las 8 vistas (todas aprobadas)
+Cambia de vista cada 4–8 s sin salir de la misma ciudad (como las referencias). Código de cada una en `video/src/Checa/Vistas3D.tsx` (componente `Camara`, casos `v === 0…7`, y `Capas` para lo que va encima):
 
-**Video 1 (`Gasolina150.tsx`)**: sirve como base técnica (voces, tiempos con `en()`, marcador, pestañas, `Popup exacto`, cierre, volumen), pero su estilo visual (carros rellenos, calle con luna) es anterior a este análisis: los siguientes deben usar el line-art de arriba.
+| # | Vista | Para qué sirve |
+|---|---|---|
+| 1 | **Detrás del carro** (persecución) | Estar manejando: la recogida, los km que no pagan |
+| 2 | **Dron que sube** | Enseñar la ruta completa y las distancias (toma de remate) |
+| 3 | **Isométrica fija** (maqueta que gira despacio) | Gasolinera, cuadra, carro esperando |
+| 4 | **Dentro del carro** (tablero + teléfono en el soporte con la oferta y el pop-up que cae) | Decidir en segundos, mostrar la app |
+| 5 | **Del teléfono a la calle** (la pantalla se encoge y entras a la ciudad) | Gancho: «esta oferta dice $80…» |
+| 6 | **Vista lateral** con regla de km abajo | Km totales, costo por km |
+| 7 | **Mapa de calor de noche** (zonas que palpitan + etiquetas de hora) | Mejores horas |
+| 8 | **Detalle en cámara lenta** (bomba con contador pixel subiendo) | El número que duele: gasolina |
 
-**Temas:** el orden aprobado por Eduardo está en `marketing/temas-videos.md` (14 miedos y problemas del conductor). Sigue ese orden salvo que él pida otro tema; no armes calendario ni propongas fechas hasta que lo pida.
+Combinación sugerida para 40 s: 5 (gancho) → 1 (explicación) → 8 (número que duele) → 2 (la cuenta completa) → 4 (el pop-up de Checa) → cierre. Ajústala al tema.
 
-Lee `.agents/product-marketing.md` antes de escribir el guion. Responde a Eduardo en español y corto.
+### Plantillas
+- **`video/src/Checa/Calle3D.tsx`** (`Calle3D`, 6 s con voz): base de un video con narración: cámara en tercera persona que sube al final, rutas que se pintan con la voz (`en("palabra")`), etiquetas neón, número gigante, subtítulos con palabra clave. Exporta `Edificios` (prop `soloLado`) y `Carro3D`.
+- **`video/src/Checa/Vistas3D.tsx`** (`Vistas3D`, muestrario de 19 s): las 8 cámaras, la `Gasolinera`, el mapa de `Calor`, el tablero con `Telefono` + `Oferta` + `Popup`, la regla de km y el contador de la bomba.
+- Muestras renderizadas en `marketing/videos/pruebas/` (`prueba-3d.mp4`, `prueba-vistas.mp4`; las demás son pruebas descartadas de estilos anteriores).
+- El video 1 (`marketing/videos/gasolina150.mp4`, `Gasolina150.tsx`) es de un estilo anterior (mundo plano). Sirve solo como referencia técnica (voces, `armarEscenas`, `crearEn`); no copies su aspecto.
+- Pendiente de pulir en el primer video real: la gasolinera vista de lejos se ve vacía (agregar autos, letrero, árboles) y la bomba de cerca es plana (agregar manguera y pantalla).
 
-## 1. Guion (primero, y pedir aprobación antes de producir)
+## Antes de escribir
 
-Eduardo aprueba el guion antes de gastar créditos. Preséntalo como tabla de segundos con 🎙️ voz y 🖥️ en pantalla, más «La cuenta» con cada cifra.
+1. Lee `.agents/product-marketing.md` y `referencia/README.md` (7 referencias analizadas: 1Volt1Amp y @pixelmente, con cuadros y transcripciones; sección *Estilo Checa*).
+2. **Tema:** sigue el orden de `marketing/temas-videos.md` (14 miedos y problemas del conductor, aprobado por Eduardo). El primero es «Trabajar mucho y no ver el dinero». En los temas donde Checa no ayuda (9–14), el video da un consejo útil y honesto y Checa solo firma al final. No armes calendario ni propongas fechas hasta que él lo pida.
+3. Carga con la herramienta Skill **`social`** (ganchos, estructura corta, reglas anti-IA) y **`marketing-psychology`** (elige 1–2 principios y nómbralos). Si chocan con esta skill, manda esta. Si Eduardo manda otra referencia de video, usa también **`video`** y agrega el análisis a `referencia/README.md`.
 
-**Antes de escribir cada guion, carga (con la herramienta Skill) estas dos skills y aplícalas** (Eduardo lo pidió):
-- **`social`**: fórmulas de gancho (curiosidad, historia, valor y sobre todo *contrarian*, que es el de las referencias), estructura de historia corta y reglas anti-IA. Úsala para el gancho, los ganchos alternativos y el ritmo.
-- **`marketing-psychology`**: elige 1 o 2 principios que refuercen el gancho y la idea (aversión a la pérdida, costo invisible, anclaje, prueba con números…) y nómbralos al presentar el guion.
+## 1. Guion (pedir aprobación antes de gastar créditos)
 
-Si alguna choca con esta skill, manda esta (formato, estilo visual, honestidad de las cifras, 40 s). Si Eduardo manda otra referencia de video, usa también la skill **`video`** (método de desarmar la referencia por escenas) y agrega el análisis a `referencia/README.md`.
+Preséntalo como tabla: segundos · 🎙️ voz · 🖥️ en pantalla · 🎥 vista (1–8). Agrega «La cuenta» con cada cifra, el color del pop-up si sale, los principios de psicología y 2 ganchos alternativos.
 
-Estructura sugerida (7–8 líneas, ~40 s; adáptala a la idea, no es obligatoria):
-1. Gancho que contradice lo que el conductor cree (con el ícono o la palabra tachada).
-2. Dato o ejemplo con números («con números de ejemplo»).
-3–5. Mecanismo paso a paso, cada paso con su diagrama y su número (pueden ser capítulos con pestañas si hay tres partes).
-6. Consejo concreto (✓/✗) y cómo Checa lo hace por ti (pop-up idéntico a la app).
-7. Frase final que repite la idea + «Pruébala siete días gratis» + pregunta.
+Formato narrativo (de las referencias): escena cotidiana del conductor que intriga o contradice lo que cree → descartar la respuesta obvia → mecanismo con una imagen concreta y su número → giro («y lo que casi nadie se imagina…») → consejo concreto → cierre que regresa a él («en tu próxima oferta…») + «Pruébala siete días gratis» + pregunta. **40 s**, 7–8 líneas de voz.
 
 Reglas:
 - Narrador que le habla al conductor de **tú**. Nada de «yo».
-- Números honestos. Gasolina: $24 el litro, 12 km/l = **$2 por km**. Fórmulas de la app (`Parser.kt`): $/km = tarifa ÷ km totales (con recogida), $/h = tarifa ÷ min totales × 60, neta = tarifa − km × $2. Si la voz usa $/h **neta** (ya sin gasolina) dilo así («ya sin gasolina»): el pop-up muestra $/h con la tarifa completa y Eduardo lo nota.
-- Nunca inventar testimonios ni ganancias. Sin ciudad ni país. Sin nombrar a la competencia. Sin «no es X, es Y» ni listas «sin X, sin Y».
+- Números honestos. Gasolina: $24 el litro, 12 km/l = **$2 por km**. Fórmulas de la app (`Parser.kt`): $/km = tarifa ÷ km totales (con recogida), $/h = tarifa ÷ min totales × 60, neta = tarifa − km × $2. Semáforo con metas por defecto ($8/km y $150/h): cumple las dos → verde, una → amarillo, ninguna → rojo. Si la voz usa $/h neta, dilo («ya sin gasolina»): el pop-up usa la tarifa completa.
+- Supuestos (regreso vacío, horas, etc.) se dicen como supuestos o «con números de ejemplo». Nunca inventar testimonios ni ganancias. Sin ciudad ni país. Sin nombrar a la competencia. Sin «no es X, es Y» ni listas «sin X, sin Y».
 - Números en la voz con letra («ciento cincuenta pesos»).
-- Ofrece 2 ganchos alternativos.
 
 ## 2. Voz y música (ElevenLabs)
 
-- Plan **Starter** de Eduardo (30 000 créditos/mes). Un video de 40 s gasta ~550 caracteres.
-- La **clave** se lee de `ELEVENLABS_API_KEY` (variable del entorno: menú del entorno en la barra de título → Edit). Si falta, pídele que la agregue ahí (Edit → Variables de entorno → `ELEVENLABS_API_KEY=sk_…` → Guardar → abrir una sesión nueva), no en el chat. Si la pega en el chat, guárdala solo en `/tmp/claude-0/.el_key` (`umask 077`) y recomiéndale cambiarla. **Nunca** en el repo. No tiene permiso de speech-to-text.
-- Voz `gncXGfeB8V1Weu7l6QUg`, **velocidad 1.05** (calmada).
-- Música: reutiliza `public/musica-calma.mp3` (78 s, ambiental). Efectos: `public/{whoosh,ding}.wav` y `public/pop.mp3`, a volumen bajo (0.12–0.18).
+- Plan **Starter** (30 000 créditos/mes); un video de 40 s gasta ~550 caracteres.
+- La clave se lee de `ELEVENLABS_API_KEY` (variable del entorno). Si falta, pídele que la agregue en el menú del entorno → Edit, no en el chat. Si la pega en el chat, guárdala solo en `/tmp/claude-0/.el_key` (`umask 077`) y recomiéndale cambiarla. **Nunca** en el repo. No tiene permiso de speech-to-text (para transcribir referencias usa `faster-whisper` con pip).
+- Voz `gncXGfeB8V1Weu7l6QUg`, velocidad **1.05**.
 
 ```bash
 cd video
-C=public/<video>
-V=gncXGfeB8V1Weu7l6QUg
+C=public/<video>; V=gncXGfeB8V1Weu7l6QUg
 python3 -I scripts/elevenlabs.py voz $C l1 "Primera línea." $V 1.05      # … hasta l8
 cd $C && for i in 1 2 3 4 5 6 7 8; do ffmpeg -loglevel error -y -i l$i.mp3 -af "loudnorm=I=-14:TP=-1.5:LRA=7" -ar 44100 -b:a 128k t.mp3 && mv t.mp3 l$i.mp3; done && cd ../..
 python3 -I scripts/lineas.py $C src/Checa/lineas<Nombre>.ts l1 l2 l3 l4 l5 l6 l7 l8
 ```
 
-`lineas.py` imprime las palabras con su tiempo. Si la suma pasa de ~37 s, recorta texto. Si solo cambia una parte del guion, reutiliza las voces que no cambian (copia el `.mp3` y el `.json`).
+`lineas.py` imprime cada palabra con su tiempo; úsalas para sincronizar (`en(i, "palabra")` con su puntuación exacta, p. ej. `"catorce."`). Si la suma pasa de ~37 s, recorta texto.
 
-## 3. Escenas en Remotion
+## 3. Escenas (Remotion + three.js)
 
-Copia `Gasolina150.tsx` a `<Nombre>.tsx` y cambia: el import de `lineas<Nombre>`, la carpeta de voces, los textos de `Intro`, `Cap1–Cap3`, `Marcador`, `Checa`, `Cierre` y los `en(i, "palabra")`. Lo común:
-- `plantilla.tsx`: `armarEscenas`, `crearEn` (`en(línea, "palabra", vez)` → cuadro en que se dice; escribe la palabra igual que en `lineas.py`, con puntuación: `"veinte;"`, `"cien."`).
-- `graficos.tsx`: `Carro` (de lado, llantas que giran).
-- `ui.tsx`: `Popup` con **`exacto`** (igual que `Popup.kt`): pastilla de la app («Uber» gris, «DiDi» con `pastillaColor="#FF7028"`), ✕, montos con 2 decimales como texto (`neta="130.00"`), fichas `"$450/h"` · `"$15.00/km"` · `"20 min"` con etiquetas `"meta $150"`, `"meta $8"`, `"10.0 km total"`; `c:"ok"` verde si cumple la meta, `"mal"` rojo con borde si no, `"neutro"` para el tiempo. Calcula el semáforo con las metas por defecto ($8/km y $150/h): cumple las dos → verde, una → amarillo, ninguna → rojo.
-- Helpers del archivo: `ap(frame, desde)` (entrada suave), `vis(frame, desde, hasta)` (entra y sale), `Abs`, `Etiqueta`.
+- Arma `<Nombre>.tsx` a partir de `Calle3D.tsx` y `Vistas3D.tsx`: una sola `ThreeCanvas` con la ciudad, una `Camara` que elige la vista según el segmento de voz, y capas HTML encima (etiquetas `Caja`, número gigante, subtítulos, teléfono/pop-up). Usa `armarEscenas` y `crearEn` de `plantilla.tsx` para los tiempos.
+- La cámara se mueve en `useLayoutEffect` con `camera.position.set(...)` y `lookAt(...)`; cambia `fov` por vista si hace falta.
+- Lo que tape la vista: el número gigante va arriba solo cuando la cámara está alta (si no, tapa el pin); en la vista lateral oculta los edificios del lado de la cámara (`<Edificios soloLado={-1} />`).
+- Fuentes cargadas en `Root.tsx`: Inter, InterDisplay, FiraCode y **Silkscreen** (400/700, `public/Silkscreen-*.woff2`).
+- `ui.tsx`: `Telefono`, `Mapa`, `Oferta`, `Popup` (`exacto`, `pastillaColor="#FF7028"` para DiDi, montos con 2 decimales como texto, fichas `"$450/h"`, `"$15.00/km"`, `"20 min"` con `"meta $150"`, `"meta $8"`, `"10.0 km total"`), `Logo`.
+- Registra la composición en `video/src/Root.tsx` (1080×1920, 30 fps). Nada importante abajo de y≈1570.
 
-Registra la composición en `video/src/Root.tsx` (1080×1920, 30 fps).
-
-Diseño:
-- Pestañas y gráficas entre y≈80 y y≈880; carros en y≈905; calle 1010–1180; marcador 1198–1480; subtítulos y≈1500; nada abajo de ~1570.
-- La luna se apaga durante los capítulos para no tapar los textos.
-- Cada parte debe tener algo en pantalla desde su primer cuadro.
-- Verde/amarillo/rojo solo con su significado de semáforo; rojo también para lo que no se paga; amarillo luna para montos de gasolina.
-
-## 4. Revisar y renderizar
+## 4. Revisar y renderizar (3D necesita `--gl=swangle`)
 
 ```bash
 cd video
 npm ci --loglevel=error          # solo si falta node_modules
 npx tsc --noEmit
 B=/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell
-for f in 5 140 300 400 520 640 760 880 1000 1150; do npx remotion still <Id> /tmp/claude-0/st/c$f.png --frame=$f --browser-executable=$B --log=error; done
+for f in 40 120 200 300 420 600 800 1100; do npx remotion still <Id> /tmp/claude-0/st/c$f.png --frame=$f --gl=swangle --browser-executable=$B --log=error; done
 # juntar en una tira (hstack/vstack) y mirarla con Read
-npx remotion render <Id> out/x.mp4 --browser-executable=$B --log=error
+npx remotion render <Id> out/x.mp4 --gl=swangle --browser-executable=$B --log=error
 ffmpeg -loglevel error -y -i out/x.mp4 -c:v copy -af "loudnorm=I=-14:TP=-1:LRA=9" -ar 48000 -c:a aac -b:a 192k out/<nombre>.mp4
 ```
 
-Revisa textos encimados (sobre todo con la luna), cosas cortadas en los bordes, partes vacías y que los pop-ups se lean. Volumen final −14 LUFS.
+Revisa: textos encimados con el pin o los edificios, la cámara metida en un edificio, partes vacías, pop-ups legibles. El render 3D tarda más (un video de 40 s, varios minutos).
 
 ## 5. Entregar
 
 1. `cp video/out/<nombre>.mp4 marketing/videos/`
 2. Commit con `[skip ci]` y `git push origin HEAD:main` (más la rama de trabajo si la hay).
-3. Manda el video con `SendUserFile` (`display: "render"`) y explica en 3–5 líneas qué trae y qué revisar, con la duración. Si Eduardo pide los montos, dáselos en tabla (concepto · A · B) y avisa de cualquier cifra que pueda verse distinta en el pop-up.
+3. Manda el video con `SendUserFile` (`display: "render"`) y explica en 3–5 líneas qué trae y qué revisar, con la duración. Si Eduardo pide los montos, dáselos en tabla y avisa de cualquier cifra que se vea distinta en el pop-up.
+4. Marca el tema como hecho en `marketing/temas-videos.md` (nota con el archivo del video).
 
 `video/out/` está en `.gitignore`; se versionan el código, `public/<video>/` y la copia en `marketing/videos/`.
