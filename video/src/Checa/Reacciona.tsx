@@ -3,7 +3,7 @@ import { AbsoluteFill, Audio, Sequence, interpolate, spring, staticFile, useCurr
 import { C, F, FD, Fondo, Logo, Oferta, Popup, Ficha, Nivel } from "./ui";
 import { LINEAS, Linea } from "./lineas1";
 
-// «El Checa reacciona a ofertas» · episodio 1 · ~34 s a 30 fps
+// «El Checa reacciona a ofertas» · episodio 1 · ~31 s a 30 fps
 const FPS = 30;
 const MARCA = { verde: "#22C55E", amarillo: "#FACC15", rojo: "#F43F5E", apagado: "#3A4541" };
 const INK = "#0B0F0D";
@@ -11,15 +11,18 @@ const INK = "#0B0F0D";
 type Animo = "feliz" | "duda" | "enojo" | "neutro";
 type Escena = { desde: number; hasta: number; voz: number; linea: number };
 
-// Escenas: [inicio, fin, inicio de la voz, línea de voz]
-const ESC: Escena[] = [
-  { desde: 0, hasta: 140, voz: 12, linea: 0 },
-  { desde: 140, hasta: 400, voz: 150, linea: 1 },
-  { desde: 400, hasta: 590, voz: 410, linea: 2 },
-  { desde: 590, hasta: 810, voz: 600, linea: 3 },
-  { desde: 810, hasta: 1020, voz: 822, linea: 4 },
-];
-export const DURACION_REACCIONA = 1020;
+// Escenas seguidas, medidas con la duración de cada voz. La 1ª arranca sin pausa: es el gancho.
+const ESC: Escena[] = [];
+{
+  let f = 0;
+  LINEAS.forEach((l, i) => {
+    const pausa = i === 0 ? 0 : i === LINEAS.length - 1 ? 12 : 10;
+    const fin = f + pausa + Math.round(l.dur * FPS) + (i === LINEAS.length - 1 ? 42 : 17);
+    ESC.push({ desde: f, hasta: fin, voz: f + pausa, linea: i });
+    f = fin;
+  });
+}
+export const DURACION_REACCIONA = ESC[ESC.length - 1].hasta;
 
 const OFERTAS: {
   tarifa: string;
@@ -62,7 +65,7 @@ const OFERTAS: {
       { v: "$9.4", l: "por km", c: "ok" },
       { v: "30 min", l: "16 km total", c: "neutro" },
     ],
-    revela: "Te",
+    revela: "¡Te",
     sfx: "ding.wav",
   },
   {
@@ -258,24 +261,30 @@ export const Reacciona: React.FC = () => {
   const local = frame - esc.desde;
 
   // Estado de la oferta (escenas 1 a 3)
-  const of = k >= 1 && k <= 3 ? OFERTAS[k - 1] : null;
+  const of = k <= 2 ? OFERTAS[k] : null;
+  const cierre = k === 3;
   const revelaF = of ? esc.voz + Math.round(tiempoDe(linea, of.revela) * FPS) : 0;
   const revelada = of ? frame >= revelaF : false;
   const pop = of ? spring({ frame: frame - revelaF, fps, config: { damping: 11, mass: 0.6 } }) : 0;
-  const entra = spring({ frame: local, fps, config: { damping: 14, mass: 0.7 } });
+  const entra = k === 0 ? 1 : spring({ frame: local, fps, config: { damping: 14, mass: 0.7 } });
 
   let color: string = MARCA.verde;
   let animo: Animo = "feliz";
   if (of) {
-    color = revelada ? MARCA[of.nivel] : MARCA.apagado;
-    animo = revelada ? of.animo : "neutro";
+    // En el gancho el Checa ya está rojo y enojado desde el primer cuadro
+    const yaReacciona = revelada || k === 0;
+    color = yaReacciona ? MARCA[of.nivel] : MARCA.apagado;
+    animo = yaReacciona ? of.animo : "neutro";
   }
-  if (k === 4) animo = "feliz";
-  const subColor = of && revelada ? MARCA[of.nivel] : "#F2F5F3";
+  const subColor = of && (revelada || k === 0) ? MARCA[of.nivel] : "#F2F5F3";
+  // Sacudida de enojo al inicio
+  const sacude = k === 0 ? Math.sin(frame * 1.9) * interpolate(frame, [0, 28], [14, 0], { extrapolateRight: "clamp" }) : 0;
 
   // Tamaño y posición de la mascota
-  const grande = k === 0 || k === 4;
-  const tam = grande ? 560 : 330;
+  const grande = cierre;
+  // Durante el texto del gancho la mascota va un poco más chica y abajo
+  const enGancho = k === 0 ? interpolate(frame, [95, 115], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }) : 0;
+  const tam = grande ? 560 : 330 - 50 * enGancho;
   const salto = of && revelada ? (1 - pop) * -40 : 0;
   const zoomPop = of && revelada ? 1 + 0.12 * Math.sin(Math.min(1, (frame - revelaF) / 8) * Math.PI) : 1;
   const flota = Math.sin(frame / 14) * 6;
@@ -291,18 +300,43 @@ export const Reacciona: React.FC = () => {
       <Audio src={staticFile("beat.m4a")} volume={0.12} />
       {ESC.map((e, i) => (
         <Sequence key={i} from={e.voz}>
-          <Audio src={staticFile(`checa1/s${i + 1}.mp3`)} volume={1} />
+          <Audio src={staticFile(`checa1/${LINEAS[i].archivo}.mp3`)} volume={1} />
         </Sequence>
       ))}
       {OFERTAS.map((o, i) => (
         <React.Fragment key={i}>
-          <Sfx en={ESC[i + 1].desde} src="whoosh.wav" vol={0.5} />
-          <Sfx en={ESC[i + 1].voz + Math.round(tiempoDe(LINEAS[i + 1], o.revela) * FPS)} src={o.sfx} vol={0.45} />
+          {i > 0 ? <Sfx en={ESC[i].desde} src="whoosh.wav" vol={0.5} /> : null}
+          <Sfx en={ESC[i].voz + Math.round(tiempoDe(LINEAS[i], o.revela) * FPS)} src={o.sfx} vol={0.45} />
         </React.Fragment>
       ))}
 
+      {/* Gancho en texto: arriba desde el cuadro 0 */}
+      {k === 0 && frame < 110 ? (
+        <div style={{ ...centro, top: 40 }}>
+          <div
+            style={{
+              fontFamily: FD,
+              fontWeight: 900,
+              fontSize: 62,
+              lineHeight: 1.05,
+              textAlign: "center",
+              color: "#F2F5F3",
+              background: "rgba(0,0,0,0.55)",
+              borderRadius: 24,
+              padding: "14px 30px",
+              opacity: interpolate(frame, [96, 110], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }),
+              transform: `rotate(-2deg) scale(${1 + 0.04 * Math.sin(frame / 4)})`,
+            }}
+          >
+            Solo <span style={{ color: MARCA.verde }}>1</span> de estas 3 ofertas
+            <br />
+            vale la pena
+          </div>
+        </div>
+      ) : null}
+
       {/* Etiqueta de serie */}
-      {k >= 1 && k <= 3 ? (
+      {of && !(k === 0 && frame < 110) ? (
         <div style={{ ...centro, top: 60, opacity: 1 }}>
           <div
             style={{
@@ -317,33 +351,19 @@ export const Reacciona: React.FC = () => {
               padding: "12px 28px",
             }}
           >
-            OFERTA {k} DE 3
+            OFERTA {k + 1} DE 3
           </div>
         </div>
       ) : null}
 
       {/* Mascota */}
-      <div style={{ ...centro, top: mascotaTop + salto + flota + (k >= 1 && k <= 3 ? 50 : 0) }}>
-        <div style={{ transform: `scale(${zoomPop * (k === 0 ? entra : 1)})`, transformOrigin: "center bottom" }}>
+      <div style={{ ...centro, top: mascotaTop + salto + flota + (of ? 50 : 0) + 90 * enGancho, transform: `translateX(${sacude}px)` }}>
+        <div style={{ transform: `scale(${zoomPop})`, transformOrigin: "center bottom" }}>
           <Bolita color={color} animo={animo} abre={abre} tam={tam} parpadeo={parpadeoEn(frame)} />
         </div>
       </div>
 
-      {/* Escena 1: título */}
-      {k === 0 ? (
-        <>
-          <div style={{ ...centro, top: 170, opacity: tituloSale }}>
-            <div style={{ fontFamily: FD, fontWeight: 900, fontSize: 110, color: "#F2F5F3", letterSpacing: -2, textAlign: "center", lineHeight: 1 }}>
-              El Checa
-              <br />
-              <span style={{ color: MARCA.verde }}>reacciona</span>
-            </div>
-          </div>
-          <Subs linea={linea} t={t} color={MARCA.verde} top={1260} />
-        </>
-      ) : null}
-
-      {/* Escenas 2 a 4: oferta y veredicto */}
+      {/* Ofertas y veredicto */}
       {of ? (
         <>
           <Subs linea={linea} t={t} color={subColor} top={640} />
@@ -365,8 +385,8 @@ export const Reacciona: React.FC = () => {
         </>
       ) : null}
 
-      {/* Escena 5: cierre */}
-      {k === 4 ? (
+      {/* Cierre */}
+      {cierre ? (
         <>
           <div style={{ ...centro, top: 150, opacity: tituloSale }}>
             <div style={{ fontFamily: FD, fontWeight: 900, fontSize: 96, color: "#F2F5F3", textAlign: "center", lineHeight: 1.05 }}>
