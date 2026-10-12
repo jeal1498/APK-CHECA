@@ -3,7 +3,7 @@ name: Compilar APK
 on:
   push:
     branches: [main]
-    paths-ignore: ["pedidos/**", "clientes.md", "CLAUDE.md", "supabase/**", "docs/**", ".github/workflows/supabase.yml"]
+    paths-ignore: ["pedidos/**", "clientes.md", "CLAUDE.md", "supabase/**", "docs/**", "video/**", ".github/workflows/supabase.yml"]
   workflow_dispatch:
 
 permissions:
