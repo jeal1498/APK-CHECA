@@ -1,0 +1,384 @@
+<title>Calendario de videos Checa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500;600&family=Fira+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: encabezado corto, pilares, calendario mensual (lista en teléfono) y 20 guiones como fichas de rodaje. Tema único oscuro, el de la app. */
+:root{
+  --bg:#000000; --card:#0F1211; --card2:#151A18; --line:#232A27;
+  --fg:#F2F5F3; --muted:#8C9792;
+  --verde:#22C55E; --amarillo:#FACC15; --rojo:#F43F5E; --dorado:#E8B84A;
+  --sans:"Fira Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"Fira Code",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.55 var(--sans);margin:0}
+.wrap{max-width:1040px;margin:0 auto;padding-inline:16px;padding-block:40px 80px}
+h1,h2,h3{text-wrap:balance;margin:0}
+h1{font-size:clamp(1.9rem,5vw,2.6rem);font-weight:800;letter-spacing:-.02em;line-height:1.1}
+h2{font-size:1.3rem;font-weight:700;margin-bottom:14px}
+.eyebrow{font:600 .75rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--verde)}
+.lead{color:var(--muted);max-width:62ch;margin:12px 0 0}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+section{margin-top:48px}
+
+.stats{display:flex;flex-wrap:wrap;gap:8px 24px;margin-top:20px;color:var(--muted);font-size:.92rem}
+.stats b{color:var(--fg);font-family:var(--mono);font-weight:600}
+
+.pilares{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.pilar{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--card);min-width:0}
+.pilar .t{display:flex;align-items:center;gap:8px;font-weight:700}
+.pilar p{margin:6px 0 0;color:var(--muted);font-size:.9rem}
+.dot{width:10px;height:10px;border-radius:50%;flex:none;background:var(--c)}
+.p-cuentas{--c:var(--rojo)} .p-checa{--c:var(--verde)} .p-calle{--c:var(--amarillo)} .p-confianza{--c:var(--dorado)}
+
+/* Calendario */
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.dow{font:600 .72rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:0 4px 6px}
+.dia{min-height:104px;border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--card);display:flex;flex-direction:column;gap:4px;min-width:0;text-decoration:none;color:inherit}
+.dia.vacio{background:transparent;border-style:dashed;opacity:.35}
+.dia .f{font:500 .75rem/1 var(--mono);color:var(--muted)}
+.dia .v{font:600 .72rem/1 var(--mono);color:var(--c)}
+.dia .tt{font-size:.82rem;font-weight:600;line-height:1.25;overflow-wrap:anywhere}
+a.dia{border-left:3px solid var(--c)}
+a.dia:hover,a.dia:focus-visible{background:var(--card2);outline:none;border-color:var(--c)}
+.dia.finde .tt{color:var(--muted);font-weight:500}
+.dia.grab{border-color:#3A3420}
+.dia.grab .tt{color:var(--dorado)}
+.dia.hecho{opacity:.55}
+.dia.hecho .tt::after{content:" ✓";color:var(--verde)}
+
+/* Guiones */
+.filtros{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.chip{font:600 .85rem/1 var(--sans);color:var(--fg);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:10px 14px;cursor:pointer;display:flex;align-items:center;gap:8px;min-height:40px}
+.chip[aria-pressed="true"]{border-color:var(--fg);background:var(--card2)}
+.chip:focus-visible,button:focus-visible{outline:2px solid var(--verde);outline-offset:2px}
+.guiones{display:grid;gap:16px}
+.g{border:1px solid var(--line);border-radius:16px;background:var(--card);overflow:hidden;scroll-margin-top:16px}
+.g-head{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;padding:16px 18px 12px;border-bottom:1px solid var(--line)}
+.g-head .n{font:600 .85rem/1 var(--mono);color:var(--c)}
+.g-head h3{font-size:1.15rem;flex:1 1 260px;min-width:0}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;padding:10px 18px;font-size:.82rem;color:var(--muted);border-bottom:1px solid var(--line)}
+.meta span b{color:var(--fg);font-weight:600}
+.g-body{padding:16px 18px;display:grid;gap:16px}
+.hook{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--card2)}
+.hook .lbl,.blk .lbl{font:600 .7rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--c);margin-bottom:8px}
+.hook dl{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin:0}
+.hook dt{color:var(--muted);font-size:.85rem}
+.hook dd{margin:0;min-width:0}
+.voz{font-weight:600}
+.texto{font-family:var(--mono);font-size:.9rem;background:#000;border:1px solid var(--line);border-radius:6px;padding:1px 6px}
+.beats{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.beats li{display:grid;grid-template-columns:62px 1fr;gap:12px;align-items:baseline}
+.beats .t{font:500 .78rem/1.4 var(--mono);color:var(--muted)}
+.beats .d{min-width:0}
+.beats .d em{font-style:normal;color:var(--muted)}
+.cuenta{font-family:var(--mono);font-size:.85rem;color:var(--fg);background:#000;border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin-top:6px;white-space:pre-wrap;overflow-x:auto}
+.foot{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.blk{border-top:1px solid var(--line);padding-top:12px;min-width:0}
+.caption{white-space:pre-wrap;font-size:.92rem}
+.acciones{display:flex;flex-wrap:wrap;gap:8px;padding:12px 18px;border-top:1px solid var(--line)}
+.btn{font:600 .85rem/1 var(--sans);color:var(--fg);background:transparent;border:1px solid var(--line);border-radius:10px;padding:10px 14px;cursor:pointer;min-height:44px;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{background:var(--card2)}
+.btn[aria-pressed="true"]{border-color:var(--verde);color:var(--verde)}
+
+.reglas{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.regla{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--card);min-width:0}
+.regla h3{font-size:1rem;margin-bottom:6px}
+.regla p,.regla li{color:var(--muted);font-size:.92rem;margin:0}
+.regla ul{margin:0;padding-left:18px;display:grid;gap:4px}
+.aviso{border:1px solid #4A1E28;background:#170A0D;border-radius:12px;padding:12px 16px;color:#F8C7D1;font-size:.92rem}
+
+@media (max-width:720px){
+  .cal{grid-template-columns:1fr}
+  .dow,.dia.vacio{display:none}
+  .dia{min-height:0;flex-direction:row;align-items:center;gap:10px;flex-wrap:wrap}
+  .dia .f{width:64px}
+}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Checa · Plan de contenido</div>
+    <h1>30 días, 20 videos</h1>
+    <p class="lead">Del sábado 17 de octubre al domingo 15 de noviembre. Se publica de lunes a viernes; el sábado se graba la semana y el domingo se descansa. Cada guion dura de 20 a 45 segundos y sirve igual para TikTok, Reels, Shorts y Facebook.</p>
+    <div class="stats">
+      <span><b>20</b> guiones</span>
+      <span><b>4</b> sábados de grabación</span>
+      <span>Publicar a la <b>1:00 pm</b> (hora de comida)</span>
+      <span>Llamada a la acción: <b>7 días gratis</b></span>
+    </div>
+  </header>
+
+  <section>
+    <h2>Los 4 temas</h2>
+    <div class="pilares">
+      <div class="pilar p-cuentas"><div class="t"><span class="dot"></span>Las cuentas que no ves</div><p>Gasolina, recogida, $/km y $/h con ejemplos reales. Atrae a conductores que todavía no conocen Checa.</p></div>
+      <div class="pilar p-checa"><div class="t"><span class="dot"></span>Checa en acción</div><p>Grabación de pantalla del pop-up, el semáforo, la voz, la pantalla dividida y las mejores horas.</p></div>
+      <div class="pilar p-calle"><div class="t"><span class="dot"></span>Vida de conductor</div><p>Situaciones que todo conductor reconoce, contadas con humor. Son los videos que más se comparten.</p></div>
+      <div class="pilar p-confianza"><div class="t"><span class="dot"></span>Confianza y precio</div><p>Bloqueos, instalación, precio y la historia de por qué existe Checa. Ayudan a decidirse a quien ya la conoce.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Calendario</h2>
+    <div class="cal" id="cal"></div>
+  </section>
+
+  <section>
+    <h2>Antes de grabar</h2>
+    <div class="reglas">
+      <div class="regla"><h3>Seguridad</h3><p>Nunca grabes manejando. Las tomas «en el auto» se hacen estacionado, y las de la app con grabación de pantalla o con alguien más grabando.</p></div>
+      <div class="regla"><h3>Los primeros 3 segundos</h3><p>Imagen, voz y texto en pantalla deben llegar juntos en el primer segundo. Si el gancho no engancha, no importa lo demás.</p></div>
+      <div class="regla"><h3>Subtítulos siempre</h3><p>La mayoría ve sin sonido. Máximo 2 líneas de 3 a 5 palabras; resalta los montos en verde o rojo (CapCut lo hace solo).</p></div>
+      <div class="regla"><h3>Datos honestos</h3><p>Los ejemplos usan $24 por litro y 12 km/l ($2 por km de gasolina). Cámbialos por los tuyos si son otros. No inventes testimonios ni ganancias.</p></div>
+      <div class="regla"><h3>Sin ciudad ni país</h3><p>Checa es para conductores de cualquier lugar. Que no se vean calles, placas ni letreros reconocibles.</p></div>
+      <div class="regla"><h3>Sin cara también funciona</h3><p>Los videos de cuentas (1, 4, 5, 15) se pueden hacer animados con Remotion, como el video que ya tiene Checa.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Guiones</h2>
+    <div class="filtros" id="filtros" role="group" aria-label="Filtrar por tema"></div>
+    <div class="guiones" id="guiones"></div>
+  </section>
+
+  <section>
+    <h2>Después de publicar</h2>
+    <div class="reglas">
+      <div class="regla"><h3>Primera hora</h3><p>Contesta todos los comentarios. Si alguien pregunta «¿cuál app es?», responde con el link y súbelo como video-respuesta.</p></div>
+      <div class="regla"><h3>Grupos de Facebook</h3><p>Comparte los videos de «Vida de conductor» y «Las cuentas» en grupos de conductores, sin link en el texto: el link va en el primer comentario si lo piden.</p></div>
+      <div class="regla"><h3>Sábado 14 de noviembre: revisión</h3><ul><li>Los 3 videos con más vistas y por qué funcionaron</li><li>Los 3 con menos vistas</li><li>Cuántas descargas y pruebas de 7 días salieron</li><li>Qué preguntas se repiten en comentarios: son los temas del próximo mes</li></ul></div>
+    </div>
+  </section>
+</div>
+
+<script>
+const PIL={cuentas:"Las cuentas que no ves",checa:"Checa en acción",calle:"Vida de conductor",confianza:"Confianza y precio"};
+const CTA_TXT="7 días gratis · link en el perfil";
+const HT="#uberdriver #didiconductor #conductoresdeapp #uber #didi #checa";
+
+const V=[
+{n:1,f:"2026-10-19",p:"cuentas",t:"Tus $150 no son $150",fmt:"Cara a cámara en el auto + texto",dur:"30 s",
+ h:{vis:"Tú en el auto estacionado, enseñando a la cámara una oferta de $150 en el teléfono.",voz:"Este viaje de 150 pesos no te deja 150 pesos.",txt:"$150 ≠ $150"},
+ b:[["0-3","Gancho."],["3-10","«Para llegar al pasajero manejas 4 km y el viaje son 16. Son 20 km.»"],["10-20","«Con la gasolina a 24 y un carro que hace 12 por litro, cada km te cuesta 2 pesos. Son 40 pesos que no ves.»",
+ "20 km × $2 = $40 de gasolina\n$150 − $40 = $110 que sí te quedan"],["20-26","«Te quedan 110. Y eso sin contar llantas ni aceite.»"],["26-30","Llamada a la acción."]],
+ cta:"Checa te hace esta cuenta en un segundo, encima de la oferta. Pruébala 7 días gratis.",
+ cap:"Lo que dice la oferta y lo que te queda no son lo mismo. ¿Tú ya le restas la gasolina a cada viaje?",
+ notas:"Usa una captura real de oferta (tapa el nombre del pasajero y la dirección). Pon la cuenta en pantalla grande."},
+
+{n:2,f:"2026-10-20",p:"cuentas",t:"La recogida que nadie te paga",fmt:"Captura de oferta + voz",dur:"30 s",
+ h:{vis:"Captura de oferta con «A 6 km» marcado en rojo.",voz:"Estos 6 kilómetros los pagas tú.",txt:"6 km gratis"},
+ b:[["0-3","Gancho."],["3-12","«Viaje de 80 pesos, 8 km. Uber te dice que son 10 pesos por kilómetro.»"],["12-22","«Pero antes manejas 6 km para recoger. En total son 14 km: en realidad ganas 5.70 por km.»",
+ "$80 ÷ 8 km = $10/km (lo que ves)\n$80 ÷ 14 km = $5.70/km (lo real)\nGasolina 14 km × $2 = $28 → te quedan $52"],["22-30","«Por eso Checa cuenta la recogida en cada oferta.»"]],
+ cta:"Link en el perfil: 7 días gratis.",
+ cap:"La recogida también es kilometraje. ¿Cuál es la recogida más lejana que te ha tocado aceptar?",
+ notas:"Termina con la pregunta en pantalla para que comenten su peor recogida."},
+
+{n:3,f:"2026-10-21",p:"calle",t:"POV: tienes 10 segundos para decidir",fmt:"Sketch con texto en pantalla",dur:"20 s",
+ h:{vis:"Tú mirando el teléfono, con un contador de 10 segundos encima.",voz:"(sin voz, sonido de reloj)",txt:"POV: llega una oferta y tienes 10 segundos"},
+ b:[["0-3","Gancho con el contador."],["3-12","Haces cuentas con los dedos, cara de estrés, sacas la calculadora. El contador llega a 0: «oferta expirada»."],["12-17","Corte: misma escena, aparece el pop-up verde de Checa: «ACEPTAR · $110 netos». Lo aceptas tranquilo."],["17-20","Texto final."]],
+ cta:"Texto: «Que la cuenta la haga Checa». Link en el perfil.",
+ cap:"Todos hemos perdido un buen viaje por hacer cuentas. 😅",
+ notas:"Graba el pop-up con la vista previa de Ajustes → Pop-up. Usa un sonido de tendencia de reloj o suspenso."},
+
+{n:4,f:"2026-10-22",p:"cuentas",t:"Tu costo por km en 10 segundos",fmt:"Tutorial con texto grande (puede ser animado)",dur:"30 s",
+ h:{vis:"Pantalla con «$ ÷ km/l» en grande.",voz:"Así sacas cuánto te cuesta cada kilómetro, en 10 segundos.",txt:"¿Cuánto te cuesta cada km?"},
+ b:[["0-3","Gancho."],["3-12","«Divide lo que pagas por litro entre los kilómetros que hace tu carro por litro.»",
+ "$24 ÷ 12 km/l = $2 por km\n$24 ÷ 10 km/l = $2.40 por km\n$24 ÷ 15 km/l = $1.60 por km"],["12-22","«Ese número multiplícalo por los km de cada viaje, recogida incluida. Eso es lo que se va en gasolina.»"],["22-30","«En Checa lo pones una vez y te lo descuenta en cada oferta.»"]],
+ cta:"Guárdalo para no olvidarlo. Checa: 7 días gratis.",
+ cap:"Guárdalo. ¿Cuántos km por litro hace tu carro?",
+ notas:"Video para guardar: deja la fórmula en pantalla 2 segundos al final."},
+
+{n:5,f:"2026-10-23",p:"cuentas",t:"3 viajes que parecen buenos y no lo son",fmt:"Lista con capturas",dur:"45 s",
+ h:{vis:"Tres capturas de ofertas, una al lado de otra.",voz:"Tres viajes que parecen buenos y te hacen perder.",txt:"3 trampas"},
+ b:[["0-3","Gancho."],["3-15","Uno: «El largo y barato. 220 pesos por 45 km: son menos de 5 pesos por km, 90 de gasolina, y luego regresas vacío.»","$220 − $90 = $130 por casi una hora"],["15-27","Dos: «El corto con recogida lejos. 55 pesos, 7 km para recoger y 4 de viaje.»","11 km × $2 = $22 → te quedan $33"],["27-38","Tres: «El de dinámica alta pero muchos km. El ⚡ se ve bien, pero 180 por 40 km son 4.50 por km.»"],["38-45","«Checa los pinta de rojo antes de que los aceptes.»"]],
+ cta:"Link en el perfil. ¿Cuál de las 3 te ha tocado más?",
+ cap:"¿Cuál de estas 3 te ha tocado más? La 2 es la más traicionera.",
+ notas:"Un número grande en pantalla por trampa (1, 2, 3)."},
+
+{n:6,f:"2026-10-26",p:"checa",t:"Así se ve Checa cuando llega una oferta",fmt:"Grabación de pantalla",dur:"25 s",
+ h:{vis:"Llega una oferta de Uber y aparece el pop-up verde encima.",voz:"Mira lo que aparece cuando me llega un viaje.",txt:"Esto aparece en cada oferta"},
+ b:[["0-3","Gancho con el pop-up apareciendo."],["3-10","Zoom a la franja: «ACEPTAR, CONSIDERAR o RECHAZAR, según tus metas.»"],["10-17","Zoom a la neta: «Esto es lo que te queda después de gasolina.»"],["17-22","Zoom a las fichas: «Pesos por hora, pesos por km y los km totales con recogida.»"],["22-25","Llamada a la acción."]],
+ cta:"Funciona con Uber y DiDi. 7 días gratis, link en el perfil.",
+ cap:"Así decido si acepto un viaje. Funciona con Uber y DiDi.",
+ notas:"Graba una oferta real o la vista previa de Ajustes. Tapa datos del pasajero."},
+
+{n:7,f:"2026-10-27",p:"checa",t:"Verde, amarillo o rojo: cómo decide",fmt:"Cara a cámara + 3 pop-ups",dur:"35 s",
+ h:{vis:"Los 3 pop-ups (verde, amarillo, rojo) uno junto a otro.",voz:"¿Por qué a veces sale verde y a veces rojo?",txt:"🟢 🟡 🔴 ¿por qué?"},
+ b:[["0-3","Gancho."],["3-12","«Tú pones dos metas: cuánto quieres por km y cuánto por hora. Por ejemplo, 8 pesos por km y 150 por hora.»"],["12-20","«Si la oferta cumple las dos, sale verde. Si cumple una, amarillo. Si no cumple ninguna, rojo.»"],["20-30","«Y si la recogida está muy lejos o el viaje es muy largo, también sale rojo, con el motivo.»"],["30-35","«Las metas las cambias cuando quieras.»"]],
+ cta:"Pon tus metas y pruébala 7 días gratis.",
+ cap:"Tú pones las reglas, Checa solo te avisa. ¿Cuál es tu meta por km?",
+ notas:"La pregunta del final genera comentarios con números: contéstalos todos."},
+
+{n:8,f:"2026-10-28",p:"calle",t:"Te lo dice en voz alta",fmt:"POV desde el asiento del copiloto",dur:"20 s",
+ h:{vis:"Teléfono en el soporte del tablero; llega una oferta.",voz:"(voz de Checa) «Rechazar»",txt:"Mi copiloto no me deja aceptar viajes malos"},
+ b:[["0-4","Gancho: suena «Rechazar». Tu cara de «ok, ok»."],["4-10","Llega otra. Suena «Considerar». Te lo piensas."],["10-16","Llega otra. Suena «Aceptar». Celebras."],["16-20","Texto final."]],
+ cta:"Texto: «Checa te avisa con voz para que no quites la vista del camino».",
+ cap:"Mi nuevo copiloto tiene más criterio que yo 😂",
+ notas:"Auto estacionado. Para tener los tres avisos, usa la vista previa o graba ofertas reales en días distintos."},
+
+{n:9,f:"2026-10-29",p:"checa",t:"Uber y DiDi al mismo tiempo",fmt:"Grabación de la tablet en pantalla dividida",dur:"30 s",
+ h:{vis:"Tablet con DiDi y Uber lado a lado, cada uno con su pop-up.",voz:"¿Te llegan dos ofertas al mismo tiempo? Checa te dice cuál conviene.",txt:"Uber vs DiDi"},
+ b:[["0-3","Gancho."],["3-12","«Pongo DiDi de un lado y Uber del otro. Checa lee las dos.»"],["12-22","Zoom a la estrella y el borde dorado: «La que más te conviene sale con estrella.»"],["22-30","«Se elige por lo que te queda por hora, por km o en total: tú decides.»"]],
+ cta:"7 días gratis, link en el perfil.",
+ cap:"Para los que trabajan con las dos apps al mismo tiempo. ¿Tú usas las dos?",
+ notas:"Es el video que más diferencia a Checa: graba con buena luz y sin reflejos."},
+
+{n:10,f:"2026-10-30",p:"checa",t:"Configúrala en 1 minuto",fmt:"Tutorial con grabación de pantalla",dur:"45 s",
+ h:{vis:"Cronómetro en 1:00 y la guía de inicio de Checa.",voz:"En un minuto la dejas lista.",txt:"Lista en 1 minuto"},
+ b:[["0-3","Gancho."],["3-12","«Entras con tu cuenta de Google.»"],["12-22","«Activas el permiso para que lea Uber y DiDi.»"],["22-32","«Pones tus metas por km y por hora, y lo que hace tu carro por litro y cuánto cuesta el litro.»"],["32-40","«Le das a Empezar y listo.»"],["40-45","Llamada a la acción."]],
+ cta:"Descárgala del link en el perfil. Los primeros 7 días son gratis.",
+ cap:"Paso a paso. Si te atoras en algún paso, déjalo en comentarios.",
+ notas:"Usa Ajustes → Cómo usarla para recorrer la guía sin reinstalar."},
+
+{n:11,f:"2026-11-02",p:"cuentas",t:"¿Cuánto debe pagar un viaje por km?",fmt:"Cara a cámara",dur:"40 s",
+ h:{vis:"Tú en el auto con una hoja que dice «$/km = ?».",voz:"¿Cuánto debe pagar un viaje por kilómetro para que valga la pena?",txt:"¿Cuál es TU número?"},
+ b:[["0-3","Gancho."],["3-15","«Depende de tu carro. Primero saca tu costo de gasolina por km: con 24 el litro y 12 km por litro, son 2 pesos.»"],["15-27","«Si tu meta es 8 pesos por km, después de gasolina te quedan 6 por cada km que manejas.»","Meta $8/km − $2 gasolina = $6/km para ti"],["27-36","«Empieza con 8 y ajústala con lo que veas en tus mejores horas.»"],["36-40","Llamada a la acción."]],
+ cta:"¿Cuál es tu meta por km? Te leo en comentarios.",
+ cap:"No hay un número mágico, depende de tu carro. ¿Cuál es el tuyo?",
+ notas:"No des un número como «el correcto»: invita a que cada quien diga el suyo."},
+
+{n:12,f:"2026-11-03",p:"checa",t:"Deja de manejar a ciegas",fmt:"Grabación de pantalla de Mejores horas",dur:"30 s",
+ h:{vis:"La fila de horas de Checa: verdes, amarillas y rojas.",voz:"¿A qué hora te conviene salir a manejar?",txt:"Tus mejores horas"},
+ b:[["0-3","Gancho."],["3-12","«Checa guarda las ofertas que te llegan y te pinta cada hora del día.»"],["12-20","«Verde: ahí pagan bien. Rojo: mejor descansa o come.»"],["20-27","Abre «Ver toda la semana»: «Y aquí ves tu mejor día y tus mejores momentos.»"],["27-30","Llamada a la acción."]],
+ cta:"Con 7 días de prueba ya ves tu semana. Link en el perfil.",
+ cap:"Las horas que pagan bien son distintas para cada conductor. ¿Cuál es la tuya?",
+ notas:"Necesita varios días de historial: graba de tu teléfono, no de uno nuevo."},
+
+{n:13,f:"2026-11-04",p:"calle",t:"El que acepta todo vs el que checa",fmt:"Sketch en pantalla dividida",dur:"30 s",
+ h:{vis:"Pantalla partida: tú de un lado con gorra, tú del otro sin gorra.",voz:"(sin voz) texto arriba de cada lado",txt:"Acepta todo vs Checa"},
+ b:[["0-3","Gancho."],["3-12","Izquierda: acepta una oferta sin ver, luego otra, otra. Derecha: ve el pop-up, rechaza una roja, acepta una verde."],["12-22","Final del día. Izquierda: «12 viajes» y cara de cansancio al ver la gasolina. Derecha: «8 viajes» y cara tranquila."],["22-30","Texto: «Más viajes no siempre es más dinero»."]],
+ cta:"Texto: «Checa · 7 días gratis».",
+ cap:"¿Tú eres de los que aceptan todo? 👀",
+ notas:"No pongas cifras de ganancia en este video: es humor, no un caso real."},
+
+{n:14,f:"2026-11-05",p:"checa",t:"Adiós a las recogidas de 5 km",fmt:"Grabación de pantalla de Filtros",dur:"30 s",
+ h:{vis:"Pantalla de Filtros, tocando «Recogida máx. 3 km».",voz:"Con esto ya no aceptas recogidas lejísimos.",txt:"Recogida máxima"},
+ b:[["0-3","Gancho."],["3-12","«En Filtros eliges tu recogida máxima: 2, 3, 4 o 5 km.»"],["12-20","«Y la duración máxima del viaje: 15, 20 o 30 minutos.»"],["20-27","«Si una oferta se pasa, sale en rojo y te dice por qué.»"],["27-30","Llamada a la acción."]],
+ cta:"Configúralo a tu gusto. 7 días gratis.",
+ cap:"¿Cuál es la recogida más lejana que aceptas?",
+ notas:"Muestra el pop-up rojo con el motivo de la recogida."},
+
+{n:15,f:"2026-11-06",p:"cuentas",t:"$/km o $/hora: ¿cuál importa más?",fmt:"Comparación de 2 viajes (puede ser animado)",dur:"45 s",
+ h:{vis:"Dos ofertas: A con $12/km y B con $6/km.",voz:"¿Cuál aceptas? Casi todos eligen mal.",txt:"¿A o B?"},
+ b:[["0-3","Gancho."],["3-14","«A: 60 pesos, 5 km, pero 25 minutos de tráfico. B: 120 pesos, 20 km, 30 minutos.»"],["14-28","«Por km gana A. Pero si ves lo que te queda por hora, B te deja más.»","A: $60 − $10 gasolina = $50 en 25 min → $120/h\nB: $120 − $40 gasolina = $80 en 30 min → $160/h"],["28-38","«Por eso Checa revisa las dos cosas al mismo tiempo.»"],["38-45","Llamada a la acción."]],
+ cta:"¿Tú cuál habrías aceptado? Checa: link en el perfil.",
+ cap:"Por km gana una, por hora gana la otra. ¿Cuál aceptabas?",
+ notas:"Pausa de 1 segundo en «¿A o B?» antes de la respuesta."},
+
+{n:16,f:"2026-11-09",p:"confianza",t:"¿Me pueden bloquear la cuenta?",fmt:"Cara a cámara",dur:"30 s",
+ h:{vis:"Captura de un comentario real que lo pregunte (si ya tienes uno).",voz:"¿Usar Checa me puede bloquear Uber o DiDi?",txt:"¿Te bloquean?"},
+ b:[["0-3","Gancho."],["3-15","«Checa solo lee lo que ya ves en tu pantalla. No toca nada, no acepta ni rechaza viajes por ti.»"],["15-23","«Tú sigues decidiendo y aceptando con tu dedo, como siempre.»"],["23-30","«Y los datos de tus viajes se quedan en tu teléfono.»"]],
+ cta:"¿Otra duda? Déjala en comentarios y la contesto en video.",
+ cap:"La pregunta que más me hacen. Si tienes otra, déjala aquí.",
+ notas:"No prometas «nunca te van a bloquear»: explica qué hace y qué no hace la app."},
+
+{n:17,f:"2026-11-10",p:"confianza",t:"Cómo instalarla (no está en Play Store)",fmt:"Grabación de pantalla paso a paso",dur:"45 s",
+ h:{vis:"Pantalla de «Instalar de todos modos».",voz:"Si te sale este aviso al instalar Checa, haz esto.",txt:"Instalar sin miedo"},
+ b:[["0-3","Gancho."],["3-12","«Descárgala del link. Como no viene de Play Store, Android avisa. Toca «Instalar de todos modos».»"],["12-25","«Si al activar el permiso dice «ajustes restringidos»: Info de la app, los tres puntitos y «Permitir configuración restringida».»"],["25-35","«Ahora sí, actívala en Accesibilidad. Solo lee Uber y DiDi.»"],["35-45","«Ábrela, dale a Empezar y elige Pantalla completa.»"]],
+ cta:"Guarda este video para cuando la instales.",
+ cap:"Paso a paso para instalar Checa en Android. Guárdalo.",
+ notas:"Graba en un teléfono de prueba (no en tus 2 equipos con licencia). Fíjalo en el perfil."},
+
+{n:18,f:"2026-11-11",p:"calle",t:"Un día manejando con Checa",fmt:"Día en la vida, tomas cortas",dur:"45 s",
+ h:{vis:"Tú arrancando el día, café en mano, botón verde ▶ de Checa.",voz:"Así se ve un día de trabajo con Checa.",txt:"Mi día con Checa"},
+ b:[["0-4","Gancho."],["4-15","Tomas cortas: revisas Mejores horas, sales a la hora verde."],["15-28","Pop-ups que van llegando (verde, rojo, verde). Rechazas uno y lo explicas en 1 frase."],["28-40","Final del día: pantalla de Inicio con tus verdes, amarillos y rojos del día."],["40-45","Cierre."]],
+ cta:"¿Quieres ver tu día así? 7 días gratis, link en el perfil.",
+ cap:"Un día normal, con números reales de mi teléfono.",
+ notas:"Usa tus números reales del día; si no fue un buen día, también vale: es más creíble."},
+
+{n:19,f:"2026-11-12",p:"confianza",t:"Cuánto cuesta (y por qué es pago único)",fmt:"Cara a cámara + pantalla de Paquetes",dur:"35 s",
+ h:{vis:"Pantalla de Paquetes en Checa.",voz:"Esto cuesta Checa, sin letras chiquitas.",txt:"Precio claro"},
+ b:[["0-3","Gancho."],["3-10","«Los primeros 7 días son gratis.»"],["10-20","«Luego: 1 mes 99 pesos, 6 meses 399, un año 899.»","6 meses = $399 ÷ 6 ≈ $66.50 al mes"],["20-28","«Es pago único con Mercado Pago: tarjeta, OXXO o saldo. No se cobra solo cada mes.»"],["28-35","«Si te ayuda a rechazar un viaje malo, ya recuperaste una parte.»"]],
+ cta:"Empieza con los 7 días gratis. Link en el perfil.",
+ cap:"Pago único, sin cobros automáticos. Primero pruébala gratis.",
+ notas:"No compares con otra app por nombre. Si la mencionan en comentarios, contesta con datos, sin atacar."},
+
+{n:20,f:"2026-11-13",p:"confianza",t:"Por qué hice Checa",fmt:"Historia cara a cámara",dur:"45 s",
+ h:{vis:"Tú en el auto, de noche o al final del día.",voz:"Hice esta app porque me cansé de trabajar todo el día y no ver el dinero.",txt:"Por qué existe Checa"},
+ b:[["0-4","Gancho."],["4-18","«Soy conductor. Aceptaba casi todo y al final del día la gasolina se llevaba más de lo que pensaba.» (Cuéntalo con tus palabras y un momento real.)"],["18-30","«Quería algo que me dijera en un segundo cuánto me queda de cada viaje. No existía como yo quería, así que la hice.»"],["30-40","«Hoy la uso en mi teléfono y en mi tablet, con Uber y DiDi.»"],["40-45","Cierre."]],
+ cta:"Si te pasa lo mismo, pruébala 7 días gratis. Link en el perfil.",
+ cap:"La historia detrás de Checa. Gracias por estar desde el principio.",
+ notas:"Cuéntalo con tu historia real; el texto es una guía. Es buen video para fijar en el perfil."}
+];
+
+const GRAB={ "2026-10-17":[1,5], "2026-10-24":[6,10], "2026-10-31":[11,15], "2026-11-07":[16,20] };
+const MES=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+const DOW=["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"];
+
+let hechos={};
+try{hechos=JSON.parse(localStorage.getItem("checa-videos")||"{}")}catch(e){}
+function guardar(){try{localStorage.setItem("checa-videos",JSON.stringify(hechos))}catch(e){}}
+
+function d(s){const [y,m,dd]=s.split("-").map(Number);return new Date(y,m-1,dd)}
+function iso(x){return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0")}
+function corta(x){return x.getDate()+" "+MES[x.getMonth()]}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+
+function pintarCal(){
+  const cal=document.getElementById("cal");
+  const porFecha={};V.forEach(v=>porFecha[v.f]=v);
+  let h=DOW.map(x=>`<div class="dow">${x}</div>`).join("");
+  const ini=d("2026-10-12"), fin=d("2026-11-15"), desde=d("2026-10-17");
+  for(let x=new Date(ini);x<=fin;x.setDate(x.getDate()+1)){
+    const k=iso(x), wd=(x.getDay()+6)%7;
+    if(x<desde){h+=`<div class="dia vacio"><span class="f">${corta(x)}</span></div>`;continue}
+    const v=porFecha[k];
+    if(v){h+=`<a class="dia p-${v.p}${hechos[v.n]?" hecho":""}" href="#v${v.n}"><span class="f">${DOW[wd]} ${corta(x)}</span><span class="v">VIDEO ${v.n}</span><span class="tt">${esc(v.t)}</span></a>`;continue}
+    if(GRAB[k]){const [a,b]=GRAB[k];h+=`<div class="dia finde grab"><span class="f">${DOW[wd]} ${corta(x)}</span><span class="tt">Grabar videos ${a} a ${b}</span></div>`;continue}
+    const t=k==="2026-11-14"?"Revisión de resultados":"Descanso";
+    h+=`<div class="dia finde"><span class="f">${DOW[wd]} ${corta(x)}</span><span class="tt">${t}</span></div>`;
+  }
+  cal.innerHTML=h;
+}
+
+let filtro="todos";
+function pintarFiltros(){
+  const f=document.getElementById("filtros");
+  const ops=[["todos","Todos",null]].concat(Object.keys(PIL).map(k=>[k,PIL[k],k]));
+  f.innerHTML=ops.map(([k,l,p])=>`<button class="chip ${p?"p-"+p:""}" data-f="${k}" aria-pressed="${filtro===k}">${p?'<span class="dot"></span>':""}${l} <span class="num">${k==="todos"?V.length:V.filter(v=>v.p===k).length}</span></button>`).join("");
+  f.querySelectorAll("button").forEach(b=>b.onclick=()=>{filtro=b.dataset.f;pintarFiltros();pintarGuiones()});
+}
+
+function pintarGuiones(){
+  const g=document.getElementById("guiones");
+  g.innerHTML=V.filter(v=>filtro==="todos"||v.p===filtro).map(v=>{
+    const x=d(v.f), wd=(x.getDay()+6)%7;
+    const beats=v.b.map(([t,txt,cuenta])=>`<li><span class="t">${t} s</span><span class="d">${esc(txt)}${cuenta?`<div class="cuenta">${esc(cuenta)}</div>`:""}</span></li>`).join("");
+    const capt=v.cap+"\n\n"+CTA_TXT+"\n"+HT;
+    return `<article class="g p-${v.p}" id="v${v.n}">
+      <div class="g-head"><span class="n">VIDEO ${v.n} · ${DOW[wd]} ${corta(x)}</span><h3>${esc(v.t)}</h3></div>
+      <div class="meta"><span><span class="dot" style="display:inline-block;margin-right:6px;vertical-align:middle"></span>${PIL[v.p]}</span><span>Formato: <b>${esc(v.fmt)}</b></span><span>Duración: <b>${v.dur}</b></span></div>
+      <div class="g-body">
+        <div class="hook"><div class="lbl">Gancho · 0-3 s</div><dl>
+          <dt>Imagen</dt><dd>${esc(v.h.vis)}</dd>
+          <dt>Dices</dt><dd class="voz">«${esc(v.h.voz)}»</dd>
+          <dt>Texto</dt><dd><span class="texto">${esc(v.h.txt)}</span></dd></dl></div>
+        <div class="blk" style="border:0;padding:0"><div class="lbl">Guion</div><ol class="beats">${beats}</ol></div>
+        <div class="foot">
+          <div class="blk"><div class="lbl">Cierre</div><div>${esc(v.cta)}</div></div>
+          <div class="blk"><div class="lbl">Notas de grabación</div><div style="color:var(--muted)">${esc(v.notas)}</div></div>
+          <div class="blk"><div class="lbl">Texto de la publicación</div><div class="caption" id="cap${v.n}">${esc(capt)}</div></div>
+        </div>
+      </div>
+      <div class="acciones">
+        <button class="btn" data-copiar="${v.n}">Copiar texto</button>
+        <button class="btn" data-hecho="${v.n}" aria-pressed="${!!hechos[v.n]}">${hechos[v.n]?"Publicado ✓":"Marcar publicado"}</button>
+      </div>
+    </article>`}).join("");
+  g.querySelectorAll("[data-copiar]").forEach(b=>b.onclick=()=>{
+    const el=document.getElementById("cap"+b.dataset.copiar);
+    const listo=()=>{b.textContent="Copiado";setTimeout(()=>b.textContent="Copiar texto",1500)};
+    const sel=()=>{const r=document.createRange();r.selectNodeContents(el);const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent="Texto seleccionado"};
+    try{navigator.clipboard.writeText(el.textContent).then(listo,sel)}catch(e){sel()}
+  });
+  g.querySelectorAll("[data-hecho]").forEach(b=>b.onclick=()=>{
+    const n=b.dataset.hecho; if(hechos[n])delete hechos[n]; else hechos[n]=1;
+    guardar(); pintarGuiones(); pintarCal();
+  });
+}
+pintarCal();pintarFiltros();pintarGuiones();
+</script>
