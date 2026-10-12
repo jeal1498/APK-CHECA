@@ -1,0 +1,174 @@
+<title>El Checa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500;600&family=Fira+Sans:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: 3 propuestas de mascota, cada una en sus 3 estados de semáforo; abajo las 3 voces. Tema único oscuro de Checa. */
+:root{
+  --bg:#000; --card:#0F1211; --card2:#151A18; --line:#232A27; --fg:#F2F5F3; --muted:#8C9792;
+  --verde:#22C55E; --amarillo:#FACC15; --rojo:#F43F5E; --dorado:#E8B84A;
+  --sans:"Fira Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"Fira Code",ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.55 var(--sans);margin:0}
+.wrap{max-width:1000px;margin:0 auto;padding-inline:16px;padding-block:40px 72px}
+h1,h2,h3{margin:0;text-wrap:balance}
+h1{font-size:clamp(2rem,6vw,2.8rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.25rem;margin-bottom:14px}
+.eyebrow{font:600 .75rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--verde)}
+.lead{color:var(--muted);max-width:62ch;margin:10px 0 0}
+section{margin-top:44px}
+.opcion{border:1px solid var(--line);border-radius:16px;background:var(--card);padding:18px;display:grid;gap:14px}
+.opcion+.opcion{margin-top:16px}
+.op-head{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline}
+.op-head .l{font:600 .85rem/1 var(--mono);color:var(--verde)}
+.op-head h3{font-size:1.15rem}
+.op-head .rec{font:600 .72rem/1 var(--mono);color:#000;background:var(--dorado);border-radius:999px;padding:5px 9px;letter-spacing:.06em}
+.op-desc{color:var(--muted);margin:0;max-width:70ch}
+.estados{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.estado{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px 8px 14px;display:grid;justify-items:center;gap:8px;min-width:0}
+.estado svg{width:100%;max-width:170px;height:auto;display:block}
+.dice{font-weight:700;text-align:center;font-size:.95rem}
+.est{font:500 .72rem/1 var(--mono);color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.voces{display:grid;gap:12px}
+.voz{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:14px 16px;display:grid;gap:8px}
+.voz .t{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline}
+.voz .t b{font-size:1.02rem}
+.voz .t span{color:var(--muted);font-size:.88rem}
+audio{width:100%;max-width:460px}
+.frase{color:var(--muted);font-size:.92rem;margin:0}
+.nota{border:1px solid var(--line);border-radius:12px;padding:14px 16px;color:var(--muted);font-size:.92rem}
+.nota b{color:var(--fg)}
+@media (max-width:560px){.estados{gap:6px}.estado{padding:8px 4px 10px}.dice{font-size:.8rem}}
+@media (prefers-reduced-motion:no-preference){
+  .parpadea{animation:blink 4.2s infinite;transform-box:fill-box;transform-origin:center}
+  .brinca{animation:hop 2.4s ease-in-out infinite}
+  @keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+  @keyframes hop{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Mascota de Checa</div>
+    <h1>El Checa</h1>
+    <p class="lead">Tres propuestas. Cada una se ve en sus tres estados: verde cuando el viaje conviene, amarillo cuando hay que pensarlo y rojo cuando no conviene. En los videos se anima: parpadea, mueve la boca al hablar y cambia de color.</p>
+  </header>
+
+  <section>
+    <h2>Propuestas</h2>
+    <div id="opciones"></div>
+  </section>
+
+  <section>
+    <h2>Voces</h2>
+    <div class="voces">
+      <div class="voz"><div class="t"><b>Voz A · «Claude»</b><span>Hombre, acento mexicano, más clara</span></div><audio controls preload="none" src="voz-A-claude.mp3"></audio></div>
+      <div class="voz"><div class="t"><b>Voz B · «Ald»</b><span>Hombre, acento mexicano, más grave</span></div><audio controls preload="none" src="voz-B-ald.mp3"></audio></div>
+      <div class="voz"><div class="t"><b>Voz C · caricatura</b><span>La voz B con tono más agudo, estilo personaje</span></div><audio controls preload="none" src="voz-C-caricatura.mp3"></audio></div>
+      <p class="frase">Las tres dicen: «¿Ochenta pesos por catorce kilómetros? ¡Ni loco! Ese viaje no te deja nada. Soy el Checa, y no trabajo gratis.»</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="nota"><b>Sobre las voces:</b> son gratis, se generan aquí mismo y no necesitan cuenta. Suenan un poco menos naturales que ElevenLabs, pero para una mascota funcionan bien. Si después consigues una cuenta de voz de mejor calidad, se cambia sin rehacer los videos.</div>
+  </section>
+</div>
+
+<script>
+const C={verde:"#22C55E",amarillo:"#FACC15",rojo:"#F43F5E"};
+const INK="#0B0F0D", OFF="#232B27", CUERPO="#171C1A", BORDE="#2C3531";
+const ESTADOS=[["verde","feliz","¡Acéptalo!"],["amarillo","duda","Mmm… piénsalo"],["rojo","enojo","¡Ni loco!"]];
+
+// Cara: ojos, cejas y boca según el ánimo. s = escala.
+function cara(cx,cy,s,animo){
+  const ex=10*s, ey=cy-5*s;
+  let h=`<g class="parpadea"><ellipse cx="${cx-ex}" cy="${ey}" rx="${6.5*s}" ry="${7.5*s}" fill="#fff"/><ellipse cx="${cx+ex}" cy="${ey}" rx="${6.5*s}" ry="${7.5*s}" fill="#fff"/>`;
+  const px=animo==="duda"?2*s:0;
+  h+=`<circle cx="${cx-ex+px}" cy="${ey+1*s}" r="${3.4*s}" fill="${INK}"/><circle cx="${cx+ex+px}" cy="${ey+1*s}" r="${3.4*s}" fill="${INK}"/></g>`;
+  const w=2.4*s;
+  if(animo==="enojo"){
+    h+=`<path d="M${cx-ex-7*s} ${ey-11*s} L${cx-ex+6*s} ${ey-6*s}" stroke="${INK}" stroke-width="${w*1.3}" stroke-linecap="round"/>`;
+    h+=`<path d="M${cx+ex+7*s} ${ey-11*s} L${cx+ex-6*s} ${ey-6*s}" stroke="${INK}" stroke-width="${w*1.3}" stroke-linecap="round"/>`;
+    h+=`<path d="M${cx-8*s} ${cy+15*s} Q${cx} ${cy+7*s} ${cx+8*s} ${cy+15*s}" fill="none" stroke="${INK}" stroke-width="${w}" stroke-linecap="round"/>`;
+  }else if(animo==="duda"){
+    h+=`<path d="M${cx-ex-6*s} ${ey-10*s} L${cx-ex+6*s} ${ey-10*s}" stroke="${INK}" stroke-width="${w}" stroke-linecap="round"/>`;
+    h+=`<path d="M${cx+ex-6*s} ${ey-12*s} Q${cx+ex} ${ey-16*s} ${cx+ex+6*s} ${ey-12*s}" fill="none" stroke="${INK}" stroke-width="${w}" stroke-linecap="round"/>`;
+    h+=`<path d="M${cx-8*s} ${cy+12*s} Q${cx-4*s} ${cy+8*s} ${cx} ${cy+12*s} T${cx+8*s} ${cy+12*s}" fill="none" stroke="${INK}" stroke-width="${w}" stroke-linecap="round"/>`;
+  }else{
+    h+=`<path d="M${cx-10*s} ${cy+7*s} Q${cx} ${cy+21*s} ${cx+10*s} ${cy+7*s} Z" fill="${INK}"/>`;
+    h+=`<path d="M${cx-5*s} ${cy+14.5*s} Q${cx} ${cy+18*s} ${cx+5*s} ${cy+14.5*s}" fill="#F43F5E" opacity=".85"/>`;
+  }
+  return h;
+}
+
+// Gorra de conductor encima de (cx, top), ancho w.
+function gorra(cx,top,w){
+  return `<path d="M${cx-w/2} ${top} Q${cx-w/2} ${top-w*.42} ${cx} ${top-w*.46} Q${cx+w/2} ${top-w*.42} ${cx+w/2} ${top} Z" fill="#0E1210" stroke="${BORDE}" stroke-width="2"/>
+  <rect x="${cx-w/2}" y="${top-w*.12}" width="${w}" height="${w*.1}" fill="${C.verde}"/>
+  <path d="M${cx-w*.1} ${top} Q${cx+w*.35} ${top-2} ${cx+w*.72} ${top+w*.08} Q${cx+w*.3} ${top+w*.14} ${cx-w*.1} ${top+w*.06} Z" fill="#0A0D0C" stroke="${BORDE}" stroke-width="2"/>`;
+}
+
+const glow=(id,col)=>`<defs><radialGradient id="${id}"><stop offset="0" stop-color="${col}" stop-opacity=".55"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></radialGradient></defs>`;
+
+// A · La luz es la cara
+function disenoA(col,animo,id){
+  const pos={verde:195,amarillo:130,rojo:65};
+  let h=glow(id,C[col]);
+  h+=`<rect x="50" y="26" width="100" height="214" rx="30" fill="${CUERPO}" stroke="${BORDE}" stroke-width="3"/>`;
+  h+=`<rect x="92" y="240" width="16" height="16" fill="${CUERPO}"/>`;
+  ["rojo","amarillo","verde"].forEach(k=>{
+    const cy=pos[k], on=k===col;
+    h+=`<path d="M64 ${cy-26} Q100 ${cy-46} 136 ${cy-26}" fill="none" stroke="#0A0D0C" stroke-width="7" stroke-linecap="round"/>`;
+    if(on) h+=`<circle cx="100" cy="${cy}" r="52" fill="url(#${id})"/>`;
+    h+=`<circle cx="100" cy="${cy}" r="28" fill="${on?C[k]:OFF}"/>`;
+    if(on) h+=cara(100,cy,1,animo);
+  });
+  h+=gorra(100,30,74);
+  return `<svg viewBox="0 -26 200 288" role="img" aria-label="Semáforo con cara en la luz ${col}"><g class="brinca">${h}</g></svg>`;
+}
+
+// B · Bola de luz con gorra
+function disenoB(col,animo,id){
+  let h=glow(id,C[col]);
+  h+=`<ellipse cx="100" cy="236" rx="46" ry="9" fill="#0A0D0C"/>`;
+  h+=`<circle cx="100" cy="140" r="96" fill="url(#${id})"/>`;
+  h+=`<circle cx="100" cy="146" r="72" fill="${C[col]}"/>`;
+  h+=`<ellipse cx="74" cy="114" rx="16" ry="10" fill="#fff" opacity=".22" transform="rotate(-30 74 114)"/>`;
+  h+=cara(100,150,2.1,animo);
+  h+=gorra(100,82,112);
+  return `<svg viewBox="0 -26 200 288" role="img" aria-label="Bola de luz ${col} con gorra"><g class="brinca">${h}</g></svg>`;
+}
+
+// C · El pop-up con cara
+function disenoC(col,animo,id){
+  const txt={verde:"ACEPTAR",amarillo:"CONSIDERAR",rojo:"RECHAZAR"}[col];
+  let h=glow(id,C[col]);
+  h+=`<circle cx="100" cy="140" r="100" fill="url(#${id})" opacity=".6"/>`;
+  h+=`<rect x="22" y="62" width="156" height="164" rx="22" fill="#181C1A" stroke="${C[col]}" stroke-width="3"/>`;
+  h+=`<path d="M22 84 Q22 62 44 62 H156 Q178 62 178 84 V96 H22 Z" fill="${C[col]}"/>`;
+  h+=`<text x="100" y="90" text-anchor="middle" font-family="Fira Sans, sans-serif" font-weight="800" font-size="15" fill="${INK}" letter-spacing="1">${txt}</text>`;
+  h+=`<circle cx="100" cy="152" r="40" fill="${C[col]}"/>`;
+  h+=cara(100,152,1.35,animo);
+  h+=`<rect x="34" y="204" width="40" height="12" rx="6" fill="#232B27"/><rect x="80" y="204" width="40" height="12" rx="6" fill="#232B27"/><rect x="126" y="204" width="40" height="12" rx="6" fill="#232B27"/>`;
+  h+=gorra(100,64,90);
+  return `<svg viewBox="0 -26 200 288" role="img" aria-label="Pop-up de Checa con cara, estado ${col}"><g class="brinca">${h}</g></svg>`;
+}
+
+const OPS=[
+  ["A","El semáforo",disenoA,true,"Un semáforo con gorra de conductor. Su cara vive en la luz encendida y salta de luz en luz: arriba cuando se enoja, abajo cuando está feliz. Se reconoce al instante y va con el ícono de la app."],
+  ["B","La bolita de luz",disenoB,false,"Una sola luz redonda que cambia de color completo. Es el más simple de animar y se ve bien en chiquito (por ejemplo, en una esquina del video)."],
+  ["C","El pop-up",disenoC,false,"El propio pop-up de Checa con cara. Enseña el producto en cada video, aunque se parece menos a un personaje."]
+];
+
+document.getElementById("opciones").innerHTML=OPS.map(([l,n,fn,rec,desc])=>`
+  <article class="opcion">
+    <div class="op-head"><span class="l">Opción ${l}</span><h3>${n}</h3>${rec?'<span class="rec">RECOMENDADA</span>':""}</div>
+    <p class="op-desc">${desc}</p>
+    <div class="estados">${ESTADOS.map(([col,animo,dice],i)=>`
+      <div class="estado">${fn(col,animo,"g"+l+i)}<div class="dice" style="color:${C[col]}">${dice}</div><div class="est">${col}</div></div>`).join("")}
+    </div>
+  </article>`).join("");
+</script>
