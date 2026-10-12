@@ -1,5 +1,6 @@
 package com.karen.miruta
 
+import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ColorFilter
@@ -7,24 +8,26 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PixelFormat
 import android.graphics.RectF
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 
 /** Paleta, medidas y tamaños de letra de toda la app (múltiplos de 8 dp). */
 object Tema {
-    // ---------- colores ----------
-    val FONDO = Color.rgb(14, 17, 16)        // #0E1110
-    val TARJETA = Color.rgb(24, 28, 26)      // #181C1A
-    val TARJETA2 = Color.rgb(34, 40, 38)     // controles dentro de tarjetas
-    val BORDE = Color.rgb(46, 53, 50)
-    val TEXTO = Color.rgb(242, 245, 243)     // blanco
-    val TEXTO2 = Color.rgb(180, 188, 183)    // gris claro
-    val TENUE = Color.rgb(125, 135, 129)     // gris tenue
+    // ---------- colores (6.0: negro OLED) ----------
+    val FONDO = Color.rgb(0, 0, 0)           // #000000
+    val TARJETA = Color.rgb(11, 15, 13)      // #0B0F0D
+    val TARJETA2 = Color.rgb(20, 26, 23)     // #141A17 controles dentro de tarjetas
+    val BORDE = Color.rgb(31, 41, 36)        // #1F2924
+    val TEXTO = Color.rgb(242, 247, 244)     // #F2F7F4
+    val TEXTO2 = Color.rgb(190, 202, 195)    // gris claro
+    val TENUE = Color.rgb(147, 163, 154)     // #93A39A
     val VERDE = Color.rgb(34, 197, 94)       // #22C55E
-    val VERDE_SUAVE = Color.rgb(21, 46, 31)
-    val AMARILLO = Color.rgb(245, 183, 10)
-    val AMARILLO_SUAVE = Color.rgb(52, 41, 12)
-    val ROJO = Color.rgb(239, 68, 68)
-    val ROJO_SUAVE = Color.rgb(56, 24, 24)
+    val VERDE_SUAVE = Color.rgb(12, 40, 24)
+    val AMARILLO = Color.rgb(250, 204, 21)   // #FACC15
+    val AMARILLO_SUAVE = Color.rgb(46, 38, 6)
+    val ROJO = Color.rgb(244, 63, 94)        // #F43F5E
+    val ROJO_SUAVE = Color.rgb(50, 12, 22)
+    val DORADO = Color.rgb(232, 184, 74)     // #E8B84A fundador
     val DIDI = Color.rgb(255, 112, 40)
 
     fun colorNivel(n: Int) = when (n) {
@@ -56,6 +59,49 @@ object Tema {
     const val T_TEXTO = 14f
     const val T_NOTA = 12f
     const val T_NUMERO = 28f
+}
+
+/** Paleta anterior: el pop-up se queda como estaba (v14). */
+object TemaPopup {
+    val TARJETA = Color.rgb(24, 28, 26)
+    val TARJETA2 = Color.rgb(34, 40, 38)
+    val BORDE = Color.rgb(46, 53, 50)
+    val TEXTO = Color.rgb(242, 245, 243)
+    val TEXTO2 = Color.rgb(180, 188, 183)
+    val TENUE = Color.rgb(125, 135, 129)
+    val VERDE = Color.rgb(34, 197, 94)
+    val AMARILLO = Color.rgb(245, 183, 10)
+    val ROJO = Color.rgb(239, 68, 68)
+    val ROJO_SUAVE = Color.rgb(56, 24, 24)
+    val DIDI = Color.rgb(255, 112, 40)
+    const val S1 = Tema.S1
+    const val R_TARJETA = Tema.R_TARJETA
+
+    fun colorNivel(n: Int) = when (n) {
+        Oferta.VERDE -> VERDE
+        Oferta.AMARILLO -> AMARILLO
+        else -> ROJO
+    }
+}
+
+/** Fira Sans (texto) y Fira Code (números de ancho fijo), en assets/fuentes. */
+object Fuentes {
+    var texto: Typeface = Typeface.DEFAULT; private set
+    var media: Typeface = Typeface.DEFAULT; private set
+    var negrita: Typeface = Typeface.DEFAULT_BOLD; private set
+    var numero: Typeface = Typeface.DEFAULT_BOLD; private set
+
+    fun iniciar(c: Context) {
+        val a = c.assets
+        try {
+            texto = Typeface.createFromAsset(a, "fuentes/FiraSans-Regular.ttf")
+            media = Typeface.createFromAsset(a, "fuentes/FiraSans-Medium.ttf")
+            negrita = Typeface.createFromAsset(a, "fuentes/FiraSans-Bold.ttf")
+        } catch (e: Exception) {}
+        try {
+            numero = Typeface.Builder(a, "fuentes/FiraCode.ttf").setFontVariationSettings("'wght' 700").build()
+        } catch (e: Exception) {}
+    }
 }
 
 /** Íconos lineales dibujados a mano en una cuadrícula de 24×24, todos del mismo grosor. */

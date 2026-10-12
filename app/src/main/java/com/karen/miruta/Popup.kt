@@ -138,7 +138,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
     fun construir(o: Oferta, interactivo: Boolean, app: String? = null, marca: Int = SIN_MARCA): View {
         val base = prefs.tamanoTexto.toFloat()
         val nivel = o.nivel(prefs)
-        val acento = Tema.colorNivel(nivel)
+        val acento = TemaPopup.colorNivel(nivel)
         // 2ª opción: sólida, pero con la franja apagada para que la mejor resalte.
         val segunda = marca == SEGUNDA
         val franjaColor = if (segunda) mezclar(acento, FONDO, 0.45f) else acento
@@ -176,9 +176,9 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
             orientation = LinearLayout.VERTICAL
             background = GradientDrawable().apply {
                 setColor(FONDO)
-                cornerRadius = dp(Tema.R_TARJETA).toFloat()
+                cornerRadius = dp(TemaPopup.R_TARJETA).toFloat()
                 // La mejor lleva un borde dorado grueso, como su ⭐.
-                setStroke(dp(if (marca == MEJOR) 3 else 1), if (marca == MEJOR) DORADO else Tema.BORDE)
+                setStroke(dp(if (marca == MEJOR) 3 else 1), if (marca == MEJOR) DORADO else TemaPopup.BORDE)
             }
             clipToOutline = true
             elevation = dp(8).toFloat()
@@ -190,36 +190,36 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
             setBackgroundColor(franjaColor)
-            setPadding(dp(Tema.S1), dp(4), dp(4), dp(4))
+            setPadding(dp(TemaPopup.S1), dp(4), dp(4), dp(4))
         }
         val izq = LinearLayout(ctx).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL or Gravity.START
         }
         if (!app.isNullOrEmpty()) {
-            izq.addView(pastilla(app.uppercase(), if (app == "DiDi") Tema.DIDI else Tema.TARJETA2, Color.WHITE))
+            izq.addView(pastilla(app.uppercase(), if (app == "DiDi") TemaPopup.DIDI else TemaPopup.TARJETA2, Color.WHITE))
         }
         if (marca != SIN_MARCA) {
             val esMejor = marca == MEJOR
             izq.addView(pastilla(if (esMejor) "⭐ MEJOR" else "2ª",
-                if (esMejor) DORADO else Tema.TARJETA2,
-                if (esMejor) Color.BLACK else Tema.TEXTO2),
+                if (esMejor) DORADO else TemaPopup.TARJETA2,
+                if (esMejor) Color.BLACK else TemaPopup.TEXTO2),
                 LinearLayout.LayoutParams(-2, -2).apply { leftMargin = dp(4) })
         }
         franja.addView(izq, LinearLayout.LayoutParams(0, -2, 1f))
         franja.addView(txt(accion, 0.8f, tinta, true).apply {
             letterSpacing = 0.1f
             gravity = Gravity.CENTER
-            setPadding(dp(Tema.S1), 0, dp(Tema.S1), 0)
+            setPadding(dp(TemaPopup.S1), 0, dp(TemaPopup.S1), 0)
         })
         val der = LinearLayout(ctx).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL or Gravity.END
         }
         if (o.multiplicador > 1.0) {
-            der.addView(pastilla("⚡" + fmtX(o.multiplicador) + "x", tinta, Tema.AMARILLO))
+            der.addView(pastilla("⚡" + fmtX(o.multiplicador) + "x", tinta, TemaPopup.AMARILLO))
         } else if (o.dinamica > 0) {
-            der.addView(pastilla("⚡+$" + String.format(java.util.Locale.US, "%.0f", o.dinamica), tinta, Tema.AMARILLO))
+            der.addView(pastilla("⚡+$" + String.format(java.util.Locale.US, "%.0f", o.dinamica), tinta, TemaPopup.AMARILLO))
         }
         val cerrarBtn = ImageView(ctx).apply {
             setImageDrawable(Icono(Icono.CERRAR, tinta))
@@ -242,13 +242,13 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         val etiqueta = if (conNeta) "netos" else "tarifa"
         val grande = SpannableString("$valor  $etiqueta")
         grande.setSpan(RelativeSizeSpan(0.4f), valor.length, grande.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        grande.setSpan(ForegroundColorSpan(Tema.TEXTO2), valor.length, grande.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        col.addView(txt(grande, 2.0f, Tema.TEXTO, true).apply { gravity = Gravity.CENTER },
+        grande.setSpan(ForegroundColorSpan(TemaPopup.TEXTO2), valor.length, grande.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        col.addView(txt(grande, 2.0f, TemaPopup.TEXTO, true).apply { gravity = Gravity.CENTER },
             LinearLayout.LayoutParams(-1, -2))
         if (conNeta) {
             col.addView(txt(
                 "Viaje $" + fmt(o.tarifa, 2) + "  ·  Gasolina −$" + fmt(o.gasolina(prefs), 2),
-                0.7f, Tema.TEXTO2, false
+                0.7f, TemaPopup.TEXTO2, false
             ).apply {
                 gravity = Gravity.CENTER
                 setPadding(0, dp(6), 0, 0)
@@ -261,18 +261,18 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         fun ficha(v: String, etq: String, cumple: Boolean?) = LinearLayout(ctx).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER
-            setPadding(dp(4), dp(Tema.S1), dp(4), dp(Tema.S1))
+            setPadding(dp(4), dp(TemaPopup.S1), dp(4), dp(TemaPopup.S1))
             background = GradientDrawable().apply {
                 cornerRadius = dp(10).toFloat()
                 if (cumple == false) {
-                    setColor(Tema.ROJO_SUAVE)
-                    setStroke(dp(1), Tema.ROJO)
-                } else setColor(Tema.TARJETA)
+                    setColor(TemaPopup.ROJO_SUAVE)
+                    setStroke(dp(1), TemaPopup.ROJO)
+                } else setColor(TemaPopup.TARJETA)
             }
-            val color = when (cumple) { true -> Tema.VERDE; false -> Tema.ROJO; null -> Tema.TEXTO }
+            val color = when (cumple) { true -> TemaPopup.VERDE; false -> TemaPopup.ROJO; null -> TemaPopup.TEXTO }
             addView(txt(v, 0.9f, color, true).apply { maxLines = 1; gravity = Gravity.CENTER; encoger(this) },
                 LinearLayout.LayoutParams(-1, -2))
-            addView(txt(etq, 0.6f, Tema.TENUE, false).apply {
+            addView(txt(etq, 0.6f, TemaPopup.TENUE, false).apply {
                 maxLines = 1
                 gravity = Gravity.CENTER
                 setPadding(0, dp(4), 0, 0)

@@ -61,9 +61,10 @@ class MainActivity : Activity() {
     private val cVerde = Tema.VERDE
     private val cAmarillo = Tema.AMARILLO
     private val cRojo = Tema.ROJO
-    private val DORADO = Color.rgb(255, 214, 10)
+    private val DORADO = Tema.DORADO
+    private val cSinDatos = Color.rgb(42, 50, 46)
 
-    private val fuenteMedia: Typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
+    private val fuenteMedia: Typeface get() = Fuentes.media
 
     private lateinit var prefs: Prefs
     private var popupPrueba: Popup? = null
@@ -87,6 +88,8 @@ class MainActivity : Activity() {
     private lateinit var statVerde: TextView
     private lateinit var statAmarillo: TextView
     private lateinit var statRojo: TextView
+    private lateinit var hoyEtiqueta: TextView
+    private lateinit var barraHoy: LinearLayout
 
     // Ajustes
     private lateinit var vistaPrevia: FrameLayout
@@ -109,6 +112,7 @@ class MainActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Fuentes.iniciar(this)
         prefs = Prefs(this)
         popupPrueba = Popup(this, prefs, WindowManager.LayoutParams.TYPE_APPLICATION)
         window.statusBarColor = cFondo
@@ -186,13 +190,10 @@ class MainActivity : Activity() {
         val barra = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
-            background = GradientDrawable().apply {
-                setColor(cTarjeta)
-                cornerRadii = floatArrayOf(
-                    dp(Tema.R_TARJETA).toFloat(), dp(Tema.R_TARJETA).toFloat(),
-                    dp(Tema.R_TARJETA).toFloat(), dp(Tema.R_TARJETA).toFloat(), 0f, 0f, 0f, 0f
-                )
-            }
+            background = LayerDrawable(arrayOf<Drawable>(
+                redondo(Tema.BORDE, 0),
+                InsetDrawable(redondo(cTarjeta, 0), 0, dp(1), 0, 0)
+            ))
         }
         fun pestana(nombre: String, tipo: Int, i: Int): View {
             val ico = Icono(tipo, cTenue)
@@ -264,7 +265,7 @@ class MainActivity : Activity() {
             val sel = j == i
             ico.color = if (sel) cVerde else cTenue
             etq.setTextColor(if (sel) cVerde else cTenue)
-            etq.typeface = if (sel) fuenteMedia else Typeface.DEFAULT
+            etq.typeface = if (sel) fuenteMedia else Fuentes.texto
         }
         if (i == 0) actualizarResumen()
         if (i == 2) refrescarVistaPrevia()
@@ -308,29 +309,39 @@ class MainActivity : Activity() {
         tarjetaLicencia = lic
         col.addView(lic, margenTarjeta())
 
-        // --- Semáforo del día (toca para ver el detalle) ---
-        col.addView(etiqueta("HOY · TOCA PARA VER EL DETALLE"))
+        // --- Semáforo del día: barra proporcional + conteos (toca para ver el detalle) ---
+        hoyEtiqueta = etiqueta("HOY")
+        col.addView(hoyEtiqueta)
+        barraHoy = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+        listOf(cVerde, cAmarillo, cRojo, cSinDatos).forEachIndexed { i, c ->
+            barraHoy.addView(View(this).apply { background = redondo(c, 5) },
+                LinearLayout.LayoutParams(0, -1, if (i == 3) 1f else 0f).apply { if (i in 1..2) leftMargin = dp(2) })
+        }
+        col.addView(barraHoy, LinearLayout.LayoutParams(-1, dp(10)).apply { bottomMargin = dp(Tema.S1) })
         val filaSem = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
-        statVerde = texto("0", Tema.T_NUMERO, cVerde, true)
-        statAmarillo = texto("0", Tema.T_NUMERO, cAmarillo, true)
-        statRojo = texto("0", Tema.T_NUMERO, cRojo, true)
+        statVerde = numero("0", Tema.T_NUMERO, cVerde)
+        statAmarillo = numero("0", Tema.T_NUMERO, cAmarillo)
+        statRojo = numero("0", Tema.T_NUMERO, cRojo)
         listOf(
-            Triple(statVerde, "Convienen", Oferta.VERDE),
-            Triple(statAmarillo, "Regulares", Oferta.AMARILLO),
-            Triple(statRojo, "No convienen", Oferta.ROJO)
+            Triple(statVerde, "Conviene", Oferta.VERDE),
+            Triple(statAmarillo, "Regular", Oferta.AMARILLO),
+            Triple(statRojo, "No conviene", Oferta.ROJO)
         ).forEachIndexed { i, (v, l, n) ->
             val c = LinearLayout(this).apply {
                 orientation = LinearLayout.VERTICAL
-                gravity = Gravity.CENTER_HORIZONTAL
-                setPadding(dp(Tema.S1), dp(Tema.S2), dp(Tema.S1), dp(Tema.S2))
-                background = ripple(cTarjeta, Tema.R_TARJETA)
+                setPadding(dp(12), dp(10), dp(Tema.S1), dp(10))
+                background = ripple(cTarjeta, Tema.R_BOTON)
                 isClickable = true
                 setOnClickListener { verNivel(n) }
-                addView(View(this@MainActivity).apply { background = punto(Tema.colorNivel(n)) },
-                    LinearLayout.LayoutParams(dp(8), dp(8)).apply { bottomMargin = dp(Tema.S1) })
-                addView(v.apply { gravity = Gravity.CENTER })
-                addView(texto(l, Tema.T_NOTA, cTexto2, false).apply { gravity = Gravity.CENTER },
-                    LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(4) })
+                addView(v)
+                val etq = LinearLayout(this@MainActivity).apply {
+                    orientation = LinearLayout.HORIZONTAL
+                    gravity = Gravity.CENTER_VERTICAL
+                }
+                etq.addView(View(this@MainActivity).apply { background = punto(Tema.colorNivel(n)) },
+                    LinearLayout.LayoutParams(dp(8), dp(8)).apply { rightMargin = dp(6) })
+                etq.addView(texto(l, Tema.T_NOTA, cTexto2, false))
+                addView(etq, LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(2) })
             }
             filaSem.addView(c, LinearLayout.LayoutParams(0, -2, 1f).apply {
                 if (i > 0) leftMargin = dp(Tema.S1)
@@ -358,11 +369,11 @@ class MainActivity : Activity() {
             bottomMargin = dp(Tema.S1)
         })
         col.addView(texto(
-            "🟢 si la oferta cumple todas tus metas activas, 🟡 si cumple alguna y 🔴 si no cumple ninguna. " +
-                "Si falla la recogida o la duración, va a 🔴 con el motivo.",
+            "Verde si la oferta cumple todas tus metas activas, amarillo si cumple alguna y rojo si no cumple ninguna. " +
+                "Si falla la recogida o la duración, va a rojo con el motivo.",
             Tema.T_NOTA, cTenue, false
         ).apply { setLineSpacing(0f, 1.2f) }, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(Tema.S2) })
-        col.addView(tarjetaFiltros(), margenTarjeta())
+        tarjetaFiltros(col)
         return scroll(col)
     }
 
@@ -442,6 +453,26 @@ class MainActivity : Activity() {
         statVerde.text = regs.count { it.nivel == Oferta.VERDE }.toString()
         statAmarillo.text = regs.count { it.nivel == Oferta.AMARILLO }.toString()
         statRojo.text = regs.count { it.nivel == Oferta.ROJO }.toString()
+        val cuentas = listOf(Oferta.VERDE, Oferta.AMARILLO, Oferta.ROJO).map { n -> regs.count { it.nivel == n } }
+        hoyEtiqueta.text = when (regs.size) {
+            0 -> "HOY · SIN OFERTAS AÚN"
+            1 -> "HOY · 1 OFERTA · TOCA PARA VER"
+            else -> "HOY · ${regs.size} OFERTAS · TOCA PARA VER"
+        }
+        cuentas.forEachIndexed { i, k ->
+            val lp = barraHoy.getChildAt(i).layoutParams as LinearLayout.LayoutParams
+            lp.weight = k.toFloat()
+            barraHoy.getChildAt(i).visibility = if (k > 0) View.VISIBLE else View.GONE
+        }
+        barraHoy.getChildAt(3).visibility = if (regs.isEmpty()) View.VISIBLE else View.GONE
+        // El primer tramo visible no lleva hueco a la izquierda.
+        var primero = true
+        for (i in 0..2) {
+            val hijo = barraHoy.getChildAt(i)
+            (hijo.layoutParams as LinearLayout.LayoutParams).leftMargin = if (hijo.visibility == View.VISIBLE && !primero) dp(2) else 0
+            if (hijo.visibility == View.VISIBLE) primero = false
+        }
+        barraHoy.requestLayout()
     }
 
     private fun verNivel(nivel: Int) {
@@ -504,62 +535,62 @@ class MainActivity : Activity() {
 
     private val repintarFiltros = ArrayList<() -> Unit>()
 
-    private fun tarjetaFiltros(): View {
-        val cont = tarjeta()
-
-        val (cab, _) = cabeceraTarjeta(Icono.FILTROS, "Filtros inteligentes", null, false)
+    /** Cada filtro en su tarjeta: nombre + interruptor arriba y −/+ (o fichas) abajo. */
+    private fun tarjetaFiltros(col: LinearLayout) {
+        val cab = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+        }
+        cab.addView(etiqueta("TUS METAS"), LinearLayout.LayoutParams(0, -2, 1f))
         val insignia = texto("", Tema.T_NOTA, cVerde, true).apply {
             setPadding(dp(12), dp(4), dp(12), dp(4))
             background = redondo(Tema.VERDE_SUAVE, 50)
         }
         cab.addView(insignia)
-        cont.addView(cab)
+        col.addView(cab)
 
         fun actualizarInsignia() { insignia.text = "${prefs.filtrosActivos()} activos" }
         repintarFiltros.add { actualizarInsignia() }
         actualizarInsignia()
 
         // La meta por hora se calcula sola: $/km × 20 (sigue siendo editable).
-        var campoHora: EditText? = null
-        cont.addView(filtro(
-            Icono.TENDENCIA, "Por km", null, "$", "",
+        var pintarHora: () -> Unit = {}
+        col.addView(filtro(
+            Icono.TENDENCIA, "Por km", null, "$", "/km", 0.5f,
             { prefs.filtroKm }, { prefs.filtroKm = it },
             { prefs.minPorKm }, { v ->
                 prefs.minPorKm = v
-                campoHora?.setText(num(v * 20f))
+                prefs.minPorHora = v * 20f
+                pintarHora()
                 pintarMejoresHoras(false)
             }
-        ), margenArriba(Tema.S1))
-        cont.addView(separador())
-        cont.addView(filtro(
-            Icono.RELOJ, "Por hora", null, "$", "",
+        ), margenTarjeta())
+        col.addView(filtro(
+            Icono.RELOJ, "Por hora", null, "$", "/h", 10f,
             { prefs.filtroHora }, { prefs.filtroHora = it },
             { prefs.minPorHora }, { prefs.minPorHora = it }
-        ) { campoHora = it })
-        cont.addView(separador())
-        cont.addView(filtro(
-            Icono.PIN, "Recogida máx.", listOf(2f, 3f, 4f, 5f), "", "km",
+        ) { pintarHora = it }, margenTarjeta())
+        col.addView(filtro(
+            Icono.PIN, "Recogida máx.", listOf(2f, 3f, 4f, 5f), "", "km", 0f,
             { prefs.filtroRecMax }, { prefs.filtroRecMax = it },
             { prefs.recogidaMaxKm }, { prefs.recogidaMaxKm = it }
-        ))
-        cont.addView(separador())
-        cont.addView(filtro(
-            Icono.DURACION, "Duración máx.", listOf(15f, 20f, 30f), "", "min",
+        ), margenTarjeta())
+        col.addView(filtro(
+            Icono.DURACION, "Duración máx.", listOf(15f, 20f, 30f), "", "min", 0f,
             { prefs.filtroDurMax }, { prefs.filtroDurMax = it },
             { prefs.duracionMax.toFloat() }, { prefs.duracionMax = it.toInt() }
-        ))
-        return cont
+        ), margenTarjeta())
     }
 
-    /** Fila de filtro sin desplegar: monto editable (o fichas de opciones) + interruptor. */
+    /** Tarjeta de un filtro: monto con − y + (o fichas de opciones) + interruptor. */
     private fun filtro(
         tipo: Int, titulo: String,
-        valores: List<Float>?, pre: String, unidad: String,
+        valores: List<Float>?, pre: String, unidad: String, paso: Float,
         leerOn: () -> Boolean, ponerOn: (Boolean) -> Unit,
         leerV: () -> Float, ponerV: (Float) -> Unit,
-        alCrearCampo: (EditText) -> Unit = {}
+        alCrearPintor: (() -> Unit) -> Unit = {}
     ): View {
-        val caja = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        val caja = tarjeta().apply { setPadding(dp(Tema.S2), dp(12), dp(Tema.S2), dp(Tema.S2)) }
 
         val fila = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
@@ -568,32 +599,57 @@ class MainActivity : Activity() {
         }
         val ico = iconoCirculo(tipo, true)
         fila.addView(ico, LinearLayout.LayoutParams(dp(36), dp(36)).apply { rightMargin = dp(12) })
-        fila.addView(texto(titulo, Tema.T_TEXTO, cTexto, false), LinearLayout.LayoutParams(0, -2, 1f))
-
-        var ed: EditText? = null
-        if (valores == null) {
-            fila.addView(texto(pre, Tema.T_SUB, cTenue, true), LinearLayout.LayoutParams(-2, -2).apply { rightMargin = dp(4) })
-            val e = campo(num(leerV())) { v -> if (v > 0) ponerV(v) }.apply {
-                setPadding(dp(Tema.S1), dp(4), dp(Tema.S1), dp(4))
-                minimumHeight = dp(40)
-                setTextColor(cVerde)
-            }
-            ed = e
-            alCrearCampo(e)
-            fila.addView(e, LinearLayout.LayoutParams(dp(88), dp(40)).apply { rightMargin = dp(Tema.S1) })
-        }
+        fila.addView(texto(titulo, Tema.T_SUB, cTexto, false).apply { typeface = fuenteMedia },
+            LinearLayout.LayoutParams(0, -2, 1f))
         val sw = interruptorSolo(leerOn())
         fila.addView(sw)
         caja.addView(fila)
 
-        val chipViews = ArrayList<Pair<Float, TextView>>()
         lateinit var pintar: () -> Unit
+        var valorTxt: TextView? = null
+        var pasos: LinearLayout? = null
+        if (valores == null) {
+            // − valor + (mantener presionado para avanzar rápido)
+            val vt = numero("", 22f, cTexto).apply { gravity = Gravity.CENTER }
+            valorTxt = vt
+            fun cambiar(signo: Int) {
+                val nuevo = Math.round((leerV() + signo * paso) * 100f) / 100f
+                if (nuevo >= paso) { ponerV(nuevo); pintar() }
+            }
+            fun tecla(sim: String, signo: Int) = numero(sim, 22f, cTexto2).apply {
+                gravity = Gravity.CENTER
+                background = ripple(Color.TRANSPARENT, Tema.R_BOTON)
+                isClickable = true
+                setOnClickListener { cambiar(signo) }
+                val repetir = object : Runnable {
+                    override fun run() { cambiar(signo); this@MainActivity.handler.postDelayed(this, 90) }
+                }
+                setOnLongClickListener { this@MainActivity.handler.post(repetir); true }
+                setOnTouchListener { _, ev ->
+                    if (ev.action == android.view.MotionEvent.ACTION_UP || ev.action == android.view.MotionEvent.ACTION_CANCEL) {
+                        this@MainActivity.handler.removeCallbacks(repetir)
+                    }
+                    false
+                }
+            }
+            val st = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                background = redondo(cTarjeta2, Tema.R_BOTON)
+            }
+            st.addView(tecla("−", -1), LinearLayout.LayoutParams(dp(56), dp(Tema.ALTO_TOQUE)))
+            st.addView(vt, LinearLayout.LayoutParams(0, -2, 1f))
+            st.addView(tecla("+", 1), LinearLayout.LayoutParams(dp(56), dp(Tema.ALTO_TOQUE)))
+            pasos = st
+            caja.addView(st, margenArriba(Tema.S1))
+        }
+
+        val chipViews = ArrayList<Pair<Float, TextView>>()
         if (valores != null) {
             val chips = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
             valores.forEachIndexed { i, v ->
-                val chip = texto(pre + num(v) + " " + unidad, Tema.T_TEXTO, cTexto, true).apply {
+                val chip = numero(num(v) + " " + unidad, Tema.T_TEXTO, cTexto).apply {
                     gravity = Gravity.CENTER
-                    minimumHeight = dp(40)
                     isClickable = true
                     setOnClickListener {
                         if (leerOn() && leerV() == v) {
@@ -606,9 +662,9 @@ class MainActivity : Activity() {
                     }
                 }
                 chipViews.add(v to chip)
-                chips.addView(chip, LinearLayout.LayoutParams(0, dp(40), 1f).apply { if (i > 0) leftMargin = dp(Tema.S1) })
+                chips.addView(chip, LinearLayout.LayoutParams(0, dp(44), 1f).apply { if (i > 0) leftMargin = dp(Tema.S1) })
             }
-            caja.addView(chips, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(4); bottomMargin = dp(4) })
+            caja.addView(chips, margenArriba(Tema.S1))
         }
 
         var cambiando = false
@@ -618,22 +674,26 @@ class MainActivity : Activity() {
             if (sw.isChecked != on) { cambiando = true; sw.isChecked = on; cambiando = false }
             ico.background = punto(if (on) Tema.VERDE_SUAVE else cTarjeta2)
             ico.alpha = if (on) 1f else 0.5f
-            ed?.alpha = if (on) 1f else 0.4f
+            valorTxt?.text = pre + num(v) + unidad
+            valorTxt?.setTextColor(if (on) cTexto else cTenue)
+            pasos?.alpha = if (on) 1f else 0.5f
             chipViews.forEach { (cv, chip) ->
                 val sel = on && cv == v
                 chip.background = GradientDrawable().apply {
                     cornerRadius = dp(Tema.R_BOTON).toFloat()
-                    setColor(if (sel) Tema.VERDE_SUAVE else cFondo)
-                    setStroke(dp(if (sel) 2 else 1), if (sel) cVerde else Tema.BORDE)
+                    setColor(if (sel) Tema.VERDE_SUAVE else cTarjeta2)
+                    if (sel) setStroke(dp(2), cVerde)
                 }
-                chip.setTextColor(if (sel) cVerde else cTexto)
+                chip.setTextColor(if (sel) cVerde else cTexto2)
             }
             repintarFiltros.forEach { it() }
         }
+        alCrearPintor(pintar)
 
         sw.setOnCheckedChangeListener { _, b ->
             if (!cambiando) { ponerOn(b); pintar() }
         }
+        fila.setOnClickListener { sw.toggle() }
         pintar()
         return caja
     }
@@ -666,7 +726,7 @@ class MainActivity : Activity() {
     private fun colorKm(v: Double?): Int {
         val meta = prefs.minPorKm.toDouble()
         return when {
-            v == null -> Tema.BORDE
+            v == null -> cSinDatos
             v >= meta -> cVerde
             v >= meta * 0.85 -> cAmarillo
             else -> cRojo
@@ -705,7 +765,7 @@ class MainActivity : Activity() {
         }
         if (color != null) fila.addView(View(this).apply { background = punto(color) },
             LinearLayout.LayoutParams(dp(8), dp(8)).apply { rightMargin = dp(6) })
-        fila.addView(texto(valor, Tema.T_TEXTO, cTexto, true))
+        fila.addView(texto(valor, Tema.T_SUB, cTexto, true).apply { if (valor.any { it.isDigit() }) typeface = Fuentes.numero })
         c.addView(fila, margenArriba(4))
         c.addView(texto(sub, Tema.T_NOTA, cTexto2, false), margenArriba(2))
         return c
@@ -713,7 +773,7 @@ class MainActivity : Activity() {
 
     private fun leyenda(): View {
         val fila = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
-        listOf(cVerde to "Conviene", cAmarillo to "Casi", cRojo to "Abajo", Tema.BORDE to "Sin datos").forEachIndexed { i, (c, t) ->
+        listOf(cVerde to "Conviene", cAmarillo to "Casi", cRojo to "Abajo", cSinDatos to "Sin datos").forEachIndexed { i, (c, t) ->
             fila.addView(View(this).apply { background = redondo(c, 3) }, LinearLayout.LayoutParams(dp(10), dp(10)).apply {
                 if (i > 0) leftMargin = dp(12)
                 rightMargin = dp(4)
@@ -759,11 +819,9 @@ class MainActivity : Activity() {
         var celdaAhora: View? = null
         for (h in 0 until 24) {
             val v = f[h]
-            val celda = LinearLayout(this).apply {
-                orientation = LinearLayout.VERTICAL
-                gravity = Gravity.CENTER_HORIZONTAL
-            }
-            celda.addView(View(this).apply {
+            // Cuadro con la hora adentro; la hora actual lleva contorno blanco.
+            val celda = numero("$h", 11f, if (v == null) cTenue else Color.argb(200, 0, 0, 0)).apply {
+                gravity = Gravity.CENTER
                 background = cuadro(colorKm(v), h == ahora, 6)
                 isClickable = true
                 setOnClickListener {
@@ -771,12 +829,9 @@ class MainActivity : Activity() {
                     detalle.text = if (v == null) "${rango(h)}: aún no hay suficientes ofertas."
                         else "${rango(h)}: ${dinero(v)}/km (tu meta: ${dinero(prefs.minPorKm.toDouble())}/km)"
                 }
-            }, LinearLayout.LayoutParams(dp(28), dp(28)))
-            celda.addView(texto(if (h == ahora) "Ahora" else "$h", 10f, if (h == ahora) cTexto else cTenue, h == ahora).apply {
-                gravity = Gravity.CENTER
-            }, LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(3) })
+            }
             if (h == ahora) celdaAhora = celda
-            tira.addView(celda, LinearLayout.LayoutParams(-2, -2).apply { if (h > 0) leftMargin = dp(4) })
+            tira.addView(celda, LinearLayout.LayoutParams(dp(32), dp(32)).apply { if (h > 0) leftMargin = dp(4) })
         }
         val hsv = HorizontalScrollView(this).apply {
             isHorizontalScrollBarEnabled = false
@@ -1076,11 +1131,11 @@ class MainActivity : Activity() {
         // --- Avisos ---
         col.addView(etiqueta("AVISOS"))
         val av = tarjeta()
-        av.addView(interruptor("Vibrar", "1 corta 🟢 · 2 cortas 🟡 · 1 larga 🔴", prefs.vibrar) { prefs.vibrar = it })
+        av.addView(interruptor("Vibrar", "1 corta: conviene · 2 cortas: regular · 1 larga: no", prefs.vibrar) { prefs.vibrar = it })
         av.addView(separador())
         av.addView(interruptor("Sonido", "Avisa con sonido cada oferta", prefs.sonido) { prefs.sonido = it })
         av.addView(separador())
-        av.addView(interruptor("Decirlo con voz", "«Aceptar» 🟢 · «Considerar» 🟡 · «Rechazar» 🔴 (apagado: tonos)", prefs.voz) { prefs.voz = it })
+        av.addView(interruptor("Decirlo con voz", "«Aceptar» · «Considerar» · «Rechazar» (apagado: tonos)", prefs.voz) { prefs.voz = it })
         av.addView(deslizador("Volumen", 10, 100, prefs.volumen, " %") { prefs.volumen = it })
         val pruebas = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
         val alertas = Alertas(this, prefs)
@@ -1332,12 +1387,12 @@ class MainActivity : Activity() {
         pintarCuenta()
     }
 
-    /** Etiqueta dorada "⭐ Miembro fundador" (solo visible con licencia de fundador). */
-    private fun insigniaFundador() = texto("⭐ Miembro fundador", Tema.T_NOTA, DORADO, true).apply {
+    /** Etiqueta dorada "★ Miembro fundador" (solo visible con licencia de fundador). */
+    private fun insigniaFundador() = texto("★ Miembro fundador", Tema.T_NOTA, DORADO, true).apply {
         setPadding(dp(10), dp(4), dp(10), dp(4))
         background = GradientDrawable().apply {
             cornerRadius = dp(Tema.R_BOTON).toFloat()
-            setColor(Color.argb(30, 255, 214, 10))
+            setColor(Color.argb(30, Color.red(DORADO), Color.green(DORADO), Color.blue(DORADO)))
             setStroke(dp(1), DORADO)
         }
         visibility = View.GONE
@@ -1896,7 +1951,7 @@ class MainActivity : Activity() {
                 else intArrayOf(Color.rgb(30, 36, 33), Color.rgb(20, 24, 22))
             ).apply {
                 cornerRadius = dp(20).toFloat()
-                setStroke(dp(1), if (e.fundador) Color.argb(115, 255, 214, 10) else Tema.BORDE)
+                setStroke(dp(1), if (e.fundador) Color.argb(115, Color.red(DORADO), Color.green(DORADO), Color.blue(DORADO)) else Tema.BORDE)
             }
         }
         val marca = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
@@ -1908,7 +1963,7 @@ class MainActivity : Activity() {
         }
         c.addView(marca)
         val titulo = when {
-            e.fundador -> "⭐ Miembro fundador"
+            e.fundador -> "★ Miembro fundador"
             e.pagada && e.basico -> "Plan Básico"
             e.pagada -> "Licencia activa"
             e.activa -> "Prueba gratis"
@@ -2197,7 +2252,12 @@ class MainActivity : Activity() {
         text = s
         setTextColor(color)
         setTextSize(TypedValue.COMPLEX_UNIT_SP, tam)
-        if (negrita) setTypeface(typeface, Typeface.BOLD)
+        typeface = if (negrita) Fuentes.negrita else Fuentes.texto
+    }
+
+    /** Número con letra de ancho fijo (Fira Code): no se mueve al cambiar. */
+    private fun numero(s: String, tam: Float, color: Int) = texto(s, tam, color, false).apply {
+        typeface = Fuentes.numero
     }
 
     private fun icono(tipo: Int, color: Int, @Suppress("UNUSED_PARAMETER") lado: Int) = ImageView(this).apply {
