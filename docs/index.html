@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checa</title>
+<meta name="description" content="Checa: app Android que calcula si conviene aceptar un viaje de Uber o DiDi, con $/km, $/hora y semáforo.">
+<style>
+  :root{
+    --bg:#ffffff; --fg:#13161a; --muted:#5b6672; --line:#e3e7ec;
+    --accent:#1668e3; --card:#f7f9fb;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0f1216; --fg:#eef2f6; --muted:#9aa6b2; --line:#232a32;
+      --accent:#7fb0ff; --card:#161b21;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0f1216; --fg:#eef2f6; --muted:#9aa6b2; --line:#232a32;
+    --accent:#7fb0ff; --card:#161b21;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);
+    font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;}
+  .wrap{max-width:720px;margin:0 auto;padding:56px 16px 72px}
+  h1{font-size:2.4rem;line-height:1.15;margin:0 0 .3em;letter-spacing:-.02em}
+  h2{font-size:1.15rem;margin:2.2em 0 .6em;letter-spacing:-.01em}
+  p{margin:0 0 1em}
+  .lead{font-size:1.1rem;color:var(--muted)}
+  ul{padding-left:1.15em;margin:0 0 1em}
+  li{margin:.35em 0}
+  .card{background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:18px 20px;margin:1.2em 0}
+  .tag{display:inline-block;font-size:.78rem;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--muted);border:1px solid var(--line);
+    border-radius:999px;padding:3px 10px;margin-bottom:18px}
+  a{color:var(--accent)}
+  footer{margin-top:3em;padding-top:1.2em;border-top:1px solid var(--line);
+    color:var(--muted);font-size:.9rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="tag">App Android</span>
+  <h1>Checa</h1>
+  <p class="lead">Calcula al instante si conviene aceptar un viaje. Cuando llega una oferta
+  en Uber Driver o DiDi Conductor, Checa muestra un pop-up con <strong>$/km</strong>,
+  <strong>$/hora</strong> y un semáforo: conviene, regular o no conviene.</p>
+
+  <h2>Qué hace</h2>
+  <ul>
+    <li>Lee la oferta en pantalla mediante un servicio de Accesibilidad de Android.</li>
+    <li>Calcula rendimiento por kilómetro y por hora con tus propios parámetros.</li>
+    <li>Semáforo visual para decidir en segundos, sin salir de la app del viaje.</li>
+    <li>Tamaño de texto ajustable y modo diagnóstico para calibrar la lectura.</li>
+  </ul>
+
+  <h2>Privacidad</h2>
+  <div class="card">
+    <p>Checa procesa la información <strong>únicamente en el dispositivo</strong>. No envía
+    los datos de los viajes a ningún servidor, no los almacena fuera del teléfono y no
+    los comparte con terceros.</p>
+    <p style="margin:0">Los datos de facturación de la suscripción se procesan a través de
+    <strong>Mercado Pago</strong>; Checa no almacena datos de tarjetas.</p>
+  </div>
+
+  <h2>Suscripción</h2>
+  <p>Checa se ofrece mediante una suscripción de pago recurrente gestionada con Mercado Pago.
+  La suscripción puede cancelarse en cualquier momento desde la cuenta de Mercado Pago del
+  usuario; al cancelar, el acceso continúa hasta el fin del periodo ya pagado.</p>
+
+  <h2>Contacto y soporte</h2>
+  <p>Dudas, reportes de errores y solicitudes de cancelación o reembolso:
+  <a href="https://github.com/jeal1498/Mi-Ruta/issues">github.com/jeal1498/Mi-Ruta/issues</a>.</p>
+
+  <footer>Checa — proyecto independiente. Las descargas de la app se publican en
+  <a href="https://github.com/jeal1498/Mi-Ruta/releases">Releases</a>.</footer>
+</div>
+</body>
+</html>
