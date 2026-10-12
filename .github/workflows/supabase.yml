@@ -1,0 +1,53 @@
+name: Subir cobros a Supabase
+
+# Instala en Supabase las funciones de Mercado Pago (mp-pago y mp-webhook),
+# sus secretos y las tablas de supabase/esquema.sql.
+on:
+  push:
+    branches: [main]
+    paths: ["supabase/**", ".github/workflows/supabase.yml"]
+  workflow_dispatch:
+
+concurrency:
+  group: supabase
+  cancel-in-progress: false
+
+jobs:
+  subir:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      PROYECTO: gqsadclvftkzwrihfipz
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Tablas
+        run: |
+          set -euo pipefail
+          jq -n --rawfile q supabase/esquema.sql '{query: $q}' > consulta.json
+          curl -sS --fail-with-body -X POST "https://api.supabase.com/v1/projects/$PROYECTO/database/query" \
+            -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" -H "Content-Type: application/json" \
+            -d @consulta.json
+      - name: Secretos
+        env:
+          MP_ACCESS_TOKEN: ${{ secrets.MP_ACCESS_TOKEN }}
+          MP_WEBHOOK_SECRET: ${{ secrets.MP_WEBHOOK_SECRET }}
+          LLAVE: ${{ secrets.LICENCIA_PRIVADA }}
+        run: |
+          set -euo pipefail
+          for v in SUPABASE_ACCESS_TOKEN MP_ACCESS_TOKEN MP_WEBHOOK_SECRET LLAVE; do
+            if [ -z "${!v}" ]; then echo "Falta el secreto $v"; exit 1; fi
+          done
+          llave=$(printf '%s\n' "$LLAVE" | base64 -w0)
+          supabase secrets set --project-ref "$PROYECTO" \
+            "MP_ACCESS_TOKEN=$MP_ACCESS_TOKEN" \
+            "MP_WEBHOOK_SECRET=$MP_WEBHOOK_SECRET" \
+            "LICENCIA_PRIVADA_B64=$llave"
+      - name: Funciones
+        run: |
+          set -euo pipefail
+          # Las dos revisan por su cuenta quién llama (mp-pago con la sesión, mp-webhook con Mercado Pago).
+          supabase functions deploy mp-pago --project-ref "$PROYECTO" --no-verify-jwt --use-api
+          supabase functions deploy mp-webhook --project-ref "$PROYECTO" --no-verify-jwt --use-api
