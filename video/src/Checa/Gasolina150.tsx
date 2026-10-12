@@ -335,5 +335,7 @@ export const Gasolina150: React.FC<{ musica?: string }> = ({ musica = MUSICA }) 
     subColor={SUB_COLOR}
     tonos={TONO}
     musica={musica}
+    volMusica={0.08}
+    volSfx={0.6}
   />
 );

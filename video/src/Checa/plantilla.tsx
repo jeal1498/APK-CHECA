@@ -130,7 +130,8 @@ export const VideoExplicativo: React.FC<{
   tonos: string[];
   musica: string;
   volMusica?: number;
-}> = ({ carpeta, lineas, esc, duracion, escenas, golpes, subColor, tonos, musica, volMusica = 0.11 }) => {
+  volSfx?: number;
+}> = ({ carpeta, lineas, esc, duracion, escenas, golpes, subColor, tonos, musica, volMusica = 0.11, volSfx = 1 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const k = Math.max(0, esc.findIndex((e) => frame >= e.desde && frame < e.hasta));
@@ -170,7 +171,7 @@ export const VideoExplicativo: React.FC<{
       {golpes
         .filter((g) => g.sfx)
         .map((g, i) => (
-          <Sfx key={i} en={g.f} src={g.sfx!} vol={g.fuerte ? 0.45 : 0.3} />
+          <Sfx key={i} en={g.f} src={g.sfx!} vol={(g.fuerte ? 0.45 : 0.3) * volSfx} />
         ))}
       <AbsoluteFill
         style={{

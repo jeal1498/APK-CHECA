@@ -85,7 +85,10 @@ npx remotion render <Id> out/<nombre>.mp4 --browser-executable=$B --log=error
 
 Revisa en la tira: textos encimados, cosas cortadas en los bordes, escenas vacías y subtítulos pegados. Una pasada de arreglos y render final.
 
-Volumen: la música va a `volMusica` 0.11 (≈12 dB debajo de la voz). Si cambias de pista, mide con `ffmpeg -i x.mp3 -af volumedetect -f null -` y ajusta.
+Volumen (Eduardo dijo que en el video 1 la voz casi no se oía):
+- Normaliza cada voz antes de renderizar: `ffmpeg -i lN.mp3 -af "loudnorm=I=-14:TP=-1.5:LRA=7" -ar 44100 -b:a 128k t.mp3 && mv t.mp3 lN.mp3` (no cambia los tiempos).
+- En `VideoExplicativo` usa `volMusica={0.08}` y `volSfx={0.6}`.
+- Al final normaliza el mp4 a −14 LUFS: `ffmpeg -i out/x.mp4 -c:v copy -af "loudnorm=I=-14:TP=-1:LRA=9" -ar 48000 -c:a aac -b:a 192k out/final.mp4`.
 
 ## 5. Entregar
 
