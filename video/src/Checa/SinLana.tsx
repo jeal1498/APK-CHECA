@@ -85,7 +85,7 @@ const Camara: React.FC = () => {
   return null;
 };
 
-const Guiones: React.FC<{ x?: number; desde: number; hasta: number; p?: number; ancho?: number }> = ({ x = 0, desde, hasta, p = 1, ancho = 1.6 }) => {
+export const Guiones: React.FC<{ x?: number; desde: number; hasta: number; p?: number; ancho?: number }> = ({ x = 0, desde, hasta, p = 1, ancho = 1.6 }) => {
   const zs: number[] = [];
   for (let z = desde; z > hasta; z -= 4) zs.push(z);
   return (
@@ -100,7 +100,7 @@ const Guiones: React.FC<{ x?: number; desde: number; hasta: number; p?: number; 
   );
 };
 
-const Pin: React.FC<{ x?: number; z: number; e?: number; tam?: number }> = ({ x = 0, z, e = 1, tam = 2.2 }) => {
+export const Pin: React.FC<{ x?: number; z: number; e?: number; tam?: number }> = ({ x = 0, z, e = 1, tam = 2.2 }) => {
   const frame = useCurrentFrame();
   const s = e * tam;
   return (
@@ -117,7 +117,7 @@ const Pin: React.FC<{ x?: number; z: number; e?: number; tam?: number }> = ({ x 
   );
 };
 
-const Viaje: React.FC<{ p: number; x?: number; desde?: number; hasta?: number }> = ({ p, x = 0, desde = Z_PIN, hasta = Z_DEST }) => {
+export const Viaje: React.FC<{ p: number; x?: number; desde?: number; hasta?: number }> = ({ p, x = 0, desde = Z_PIN, hasta = Z_DEST }) => {
   const largo = (desde - hasta) * p;
   if (largo < 0.1) return null;
   return (
@@ -205,14 +205,14 @@ const Escena: React.FC = () => {
   );
 };
 
-const Caja: React.FC<{ color: string; children: React.ReactNode; tam?: number }> = ({ color, children, tam = 32 }) => (
+export const Caja: React.FC<{ color: string; children: React.ReactNode; tam?: number }> = ({ color, children, tam = 32 }) => (
   <div style={{ display: "inline-block", fontFamily: PX, fontSize: tam, color, border: `4px solid ${color}`, padding: "8px 18px 6px", background: "rgba(20,18,52,0.9)", boxShadow: `0 0 18px ${color}66`, letterSpacing: 1, whiteSpace: "nowrap" }}>
     {children}
   </div>
 );
 
 // Etiquetas neón apiladas arriba
-const Cajas: React.FC<{ items: { desde: number; color: string; texto: string }[] }> = ({ items }) => {
+export const Cajas: React.FC<{ items: { desde: number; color: string; texto: string }[] }> = ({ items }) => {
   const frame = useCurrentFrame();
   return (
     <div style={{ position: "absolute", top: 110, left: 0, right: 0, display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap", padding: "0 40px" }}>
@@ -229,7 +229,7 @@ const Cajas: React.FC<{ items: { desde: number; color: string; texto: string }[]
 };
 
 // Número gigante en letra pixel (con tachado opcional)
-const Grande: React.FC<{ desde: number; texto: string; color: string; etiqueta?: string; tachar?: number; top?: number }> = ({ desde, texto, color, etiqueta, tachar = 0, top = 260 }) => {
+export const Grande: React.FC<{ desde: number; texto: string; color: string; etiqueta?: string; tachar?: number; top?: number }> = ({ desde, texto, color, etiqueta, tachar = 0, top = 260 }) => {
   const frame = useCurrentFrame();
   const a = ap(frame, desde, 8);
   return (
