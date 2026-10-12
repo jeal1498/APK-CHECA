@@ -2,7 +2,7 @@ import React, { useLayoutEffect } from "react";
 import { AbsoluteFill, Audio, Easing, Sequence, interpolate, staticFile, useCurrentFrame } from "remotion";
 import { ThreeCanvas } from "@remotion/three";
 import { useThree } from "@react-three/fiber";
-import type { PerspectiveCamera } from "three";
+import { CatmullRomCurve3, Vector3, type PerspectiveCamera } from "three";
 import { F, FD, Logo, Mapa, Oferta, Popup, Telefono } from "./ui";
 import { Carro3D, Edificios } from "./Calle3D";
 
@@ -77,7 +77,10 @@ const Camara: React.FC = () => {
   return null;
 };
 
-const Gasolinera: React.FC = () => (
+// Manguera de la bomba magenta hasta el tanque del carro
+const MANGUERA = new CatmullRomCurve3([new Vector3(-2.2, 2.0, 0.5), new Vector3(-1.4, 0.5, 1.4), new Vector3(-1.6, 0.6, 2.4), new Vector3(-2.0, 1.2, 2.75)]);
+
+export const Gasolinera: React.FC = () => (
   <group position={GS}>
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, 0]}>
       <planeGeometry args={[120, 120]} />
@@ -111,8 +114,16 @@ const Gasolinera: React.FC = () => (
           <boxGeometry args={[1.2, 0.8, 0.05]} />
           <meshBasicMaterial color="#0B1230" />
         </mesh>
+        <mesh position={[0, 2.4, 0.56]}>
+          <boxGeometry args={[0.9, 0.3, 0.02]} />
+          <meshBasicMaterial color={C.amarillo} />
+        </mesh>
       </group>
     ))}
+    <mesh>
+      <tubeGeometry args={[MANGUERA, 32, 0.09, 8, false]} />
+      <meshStandardMaterial color="#1A1430" />
+    </mesh>
     <group position={[-3, 0, 4]} rotation={[0, Math.PI / 2, 0]}>
       <Carro3D z={0} color="#FFFFFF" />
     </group>

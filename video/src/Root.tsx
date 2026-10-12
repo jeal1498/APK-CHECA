@@ -5,6 +5,7 @@ import { DURACION_HIBRIDO, Hibrido } from "./Checa/Hibrido";
 import { DURACION_HIBRIDO_COLOR, HibridoColor } from "./Checa/HibridoColor";
 import { Calle3D, DURACION_CALLE3D } from "./Checa/Calle3D";
 import { DURACION_VISTAS, Vistas3D } from "./Checa/Vistas3D";
+import { DURACION_SIN_LANA, SinLana } from "./Checa/SinLana";
 
 const fuentes: [string, string, string][] = [
   ["Inter", "Inter-Medium.otf", "500"],
@@ -27,6 +28,7 @@ export const RemotionRoot: React.FC = () => {
     <Composition id="HibridoColor" component={HibridoColor} durationInFrames={DURACION_HIBRIDO_COLOR} fps={30} width={1080} height={1920} />
     <Composition id="Calle3D" component={Calle3D} durationInFrames={DURACION_CALLE3D} fps={30} width={1080} height={1920} />
     <Composition id="Vistas3D" component={Vistas3D} durationInFrames={DURACION_VISTAS} fps={30} width={1080} height={1920} />
+    <Composition id="SinLana" component={SinLana} durationInFrames={DURACION_SIN_LANA} fps={30} width={1080} height={1920} />
     </>
   );
 };
