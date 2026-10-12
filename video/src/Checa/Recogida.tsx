@@ -26,6 +26,17 @@ const en = (i: number, palabra: string) => ESC[i].voz + Math.round((LINEAS[i].pa
 const centro: React.CSSProperties = { position: "absolute", left: 0, right: 0, display: "flex", justifyContent: "center" };
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
+// Punto en una curva cúbica (para mover el carrito por la ruta)
+const bez = (t: number, p: number[]) => {
+  const u = 1 - t;
+  const x = u * u * u * p[0] + 3 * u * u * t * p[2] + 3 * u * t * t * p[4] + t * t * t * p[6];
+  const y = u * u * u * p[1] + 3 * u * u * t * p[3] + 3 * u * t * t * p[5] + t * t * t * p[7];
+  return [x, y];
+};
+
+// Impulso que decae: 1 en el cuadro g y baja a 0 en ~10 cuadros
+const impulso = (frame: number, g: number, caida = 5) => (frame >= g ? Math.exp(-(frame - g) / caida) : 0);
+
 const useGolpe = (desde: number) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -118,7 +129,30 @@ const Gancho: React.FC = () => {
       <div style={{ ...centro, top: 120, flexDirection: "column", alignItems: "center", gap: 10 }}>
         <div style={{ fontFamily: F, fontWeight: 700, fontSize: 52, color: M.tenue }}>La app dice</div>
         <div style={{ position: "relative" }}>
-          <div style={{ fontFamily: FD, fontWeight: 900, fontSize: 210, color: tacha > 0 ? M.tenue : M.texto, lineHeight: 1 }}>8 km</div>
+          <div
+            style={{
+              fontFamily: FD,
+              fontWeight: 900,
+              fontSize: 210,
+              color: tacha > 0 ? M.tenue : M.texto,
+              lineHeight: 1,
+              transform: `scale(${1 + 0.12 * impulso(frame, en(0, "ocho"), 6)})`,
+            }}
+          >
+            8 km
+          </div>
+          <div
+            style={{
+              position: "absolute",
+              left: 0,
+              bottom: -14,
+              height: 14,
+              borderRadius: 7,
+              background: M.amarillo,
+              width: `${interpolate(frame, [en(0, "ocho"), en(0, "ocho") + 8], [0, 100], clamp)}%`,
+              opacity: tacha > 0 ? 0 : 1,
+            }}
+          />
           <div
             style={{
               position: "absolute",
@@ -191,10 +225,19 @@ const MapaRuta: React.FC = () => {
           strokeDasharray={`${lenV}`}
           strokeDashoffset={lenV * (1 - verde)}
         />
-        <circle cx={180} cy={760} r={34} fill={M.texto} />
-        <text x={180} y={772} textAnchor="middle" fontSize={34} fontFamily={F} fontWeight={800} fill="#000">
-          Tú
-        </text>
+        {(() => {
+          const r = [180, 760, 180, 560, 420, 640, 435, 413];
+          const v = [435, 413, 470, 250, 760, 300, 915, 120];
+          const [x, y] = verde > 0 ? bez(verde, v) : bez(rojo, r);
+          return (
+            <g transform={`translate(${x} ${y})`}>
+              <circle r={40} fill={M.texto} />
+              <text y={13} textAnchor="middle" fontSize={34} fontFamily={F} fontWeight={800} fill="#000">
+                Tú
+              </text>
+            </g>
+          );
+        })()}
         <circle cx={435} cy={413} r={28} fill={M.amarillo} stroke="#000" strokeWidth={6} />
         <circle cx={915} cy={120} r={28} fill={M.verde} stroke="#000" strokeWidth={6} />
       </svg>
@@ -210,7 +253,7 @@ const MapaRuta: React.FC = () => {
             borderRadius: 12,
             padding: "6px 16px",
             marginTop: 6,
-            transform: `scale(${etiqueta})`,
+            transform: `scale(${etiqueta}) rotate(${-4 * etiqueta}deg)`,
             transformOrigin: "left center",
           }}
         >
@@ -313,7 +356,30 @@ const Gasolina: React.FC = () => {
           ) : null,
         )}
       </div>
-      <div style={{ ...centro, top: 690 }}>
+      {/* Barra: los $80 de la tarifa; se cae el pedazo de la gasolina */}
+      {(() => {
+        const d = en(3, "veintiocho");
+        const cae = interpolate(frame, [d, d + 18], [0, 1], clamp);
+        const aparece = interpolate(frame, [ESC[3].voz, ESC[3].voz + 10], [0, 1], clamp);
+        const anchoTotal = 900;
+        const resto = (52 / 80) * anchoTotal;
+        return (
+          <div style={{ position: "absolute", top: 640, left: 90, width: anchoTotal * aparece, height: 60, borderRadius: 30, overflow: "visible", display: "flex" }}>
+            <div style={{ width: resto, height: 60, background: frame >= quedan ? M.amarillo : M.verde, borderRadius: "30px 0 0 30px" }} />
+            <div
+              style={{
+                width: anchoTotal - resto,
+                height: 60,
+                background: M.rojo,
+                borderRadius: "0 30px 30px 0",
+                transform: `translate(${cae * 60}px, ${cae * 240}px) rotate(${cae * 18}deg)`,
+                opacity: 1 - cae,
+              }}
+            />
+          </div>
+        );
+      })()}
+      <div style={{ ...centro, top: 735 }}>
         <div style={{ fontFamily: F, fontWeight: 600, fontSize: 36, color: M.tenue, opacity: frame >= en(3, "veintiocho") ? 1 : 0 }}>
           $24 el litro ÷ 12 km por litro = $2 por km
         </div>
@@ -384,11 +450,48 @@ const ESCENAS = [Gancho, MapaRuta, PorKm, Gasolina, Cierre];
 const SUBS_TOP = [1320, 1320, 1320, 1320, 1170];
 const TONO = ["rgba(244,63,94,0.16)", "rgba(244,63,94,0.12)", "rgba(244,63,94,0.12)", "rgba(250,204,21,0.12)", "rgba(34,197,94,0.16)"];
 
+// Momentos de golpe (zoom + sacudida + destello). Uno cada 2–3 s.
+const GOLPES: { f: number; color: string; fuerte?: boolean }[] = [
+  { f: en(0, "ocho"), color: M.amarillo },
+  { f: en(0, "catorce."), color: M.rojo, fuerte: true },
+  { f: en(1, "manejas"), color: M.rojo },
+  { f: en(1, "nadie"), color: M.rojo, fuerte: true },
+  { f: en(2, "diez"), color: M.texto },
+  { f: en(2, "son"), color: M.rojo, fuerte: true },
+  { f: en(3, "veintiocho"), color: M.rojo },
+  { f: en(3, "cincuenta"), color: M.amarillo, fuerte: true },
+  { f: ESC[4].voz + 10, color: M.rojo },
+  { f: en(4, "Pruébala"), color: M.verde, fuerte: true },
+];
+
 export const Recogida: React.FC = () => {
   const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
   const k = Math.max(0, ESC.findIndex((e) => frame >= e.desde && frame < e.hasta));
   const t = (frame - ESC[k].voz) / FPS;
   const Esc = ESCENAS[k];
+  let zoom = 1;
+  let sx = 0;
+  let sy = 0;
+  let flash = 0;
+  let flashColor = M.texto;
+  for (const g of GOLPES) {
+    const i = impulso(frame, g.f, 5);
+    if (i <= 0.01) continue;
+    zoom += (g.fuerte ? 0.09 : 0.05) * i;
+    if (g.fuerte) {
+      sx += Math.sin(frame * 2.3) * 18 * i;
+      sy += Math.cos(frame * 2.9) * 12 * i;
+    }
+    if (i * 0.35 > flash) {
+      flash = i * (g.fuerte ? 0.35 : 0.18);
+      flashColor = g.color;
+    }
+  }
+  // Zoom lento constante para que nunca esté quieto
+  const deriva = 1 + 0.04 * ((frame - ESC[k].desde) / (ESC[k].hasta - ESC[k].desde));
+  // Entrada de cada escena: barrido desde la derecha
+  const ent = k === 0 ? 1 : spring({ frame: frame - ESC[k].desde, fps, config: { damping: 15, mass: 0.6 } });
   return (
     <AbsoluteFill style={{ background: C.fondo, fontFamily: F, overflow: "hidden" }}>
       <Fondo tono={TONO[k]} />
@@ -407,7 +510,15 @@ export const Recogida: React.FC = () => {
       <Sfx en={en(3, "cincuenta")} src="golpe.wav" />
       <Sfx en={ESC[4].voz + 10} src="error.wav" vol={0.4} />
       <Sfx en={en(4, "Pruébala")} src="ding.wav" vol={0.4} />
-      <Esc />
+      <AbsoluteFill
+        style={{
+          transform: `translate(${sx + (1 - ent) * 700}px, ${sy}px) scale(${zoom * deriva}) rotate(${(1 - ent) * 4}deg)`,
+          opacity: Math.min(1, ent * 1.4),
+        }}
+      >
+        <Esc />
+      </AbsoluteFill>
+      <AbsoluteFill style={{ background: flashColor, opacity: flash, pointerEvents: "none" }} />
       {k < 4 ? <Subs linea={LINEAS[k]} t={t} color={k === 3 ? M.amarillo : M.texto} top={SUBS_TOP[k]} /> : null}
     </AbsoluteFill>
   );
