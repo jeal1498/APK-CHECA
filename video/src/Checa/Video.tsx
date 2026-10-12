@@ -15,12 +15,19 @@ import {
   useSpring,
 } from "./ui";
 
-// Guion «Este viaje de $150 en realidad te deja $90» — 25 s a 30 fps
-export const DURACION = 750;
+// Guion «Este viaje de $150 en realidad te deja $90» — ~28 s a 30 fps, con voz
+export const DURACION = 832;
 
 const Sfx: React.FC<{ en: number; src: string; vol?: number }> = ({ en, src, vol = 1 }) => (
   <Sequence from={en} durationInFrames={30}>
     <Audio src={staticFile(src)} volume={vol} />
+  </Sequence>
+);
+
+// Voz en off (Piper, es_MX-ald), un archivo por escena
+const Voz: React.FC<{ en: number; n: number }> = ({ en, n }) => (
+  <Sequence from={en}>
+    <Audio src={staticFile(`voz/v${n}.m4a`)} volume={1} />
   </Sequence>
 );
 
@@ -32,10 +39,10 @@ const Gancho: React.FC = () => {
   const entra = useSpring(0, { damping: 14, mass: 0.7 });
   const oferta = useSpring(4, { damping: 14, mass: 0.6 });
   const zoomTarifa = interpolate(frame, [12, 24, 50], [1, 1.18, 1.1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const pop = useSpring(60, { damping: 9, mass: 0.6 });
-  const tachado = aparecer(frame, 66, 10);
-  const acerca = interpolate(frame, [120, 140], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const gas = aparecer(frame, 132, 8);
+  const pop = useSpring(72, { damping: 9, mass: 0.6 });
+  const tachado = aparecer(frame, 78, 10);
+  const acerca = interpolate(frame, [132, 152], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const gas = aparecer(frame, 144, 8);
   return (
     <AbsoluteFill>
       <Fondo />
@@ -52,7 +59,7 @@ const Gancho: React.FC = () => {
           <div style={{ ...centro, bottom: 30, transform: `translateY(${(1 - oferta) * 700}px)` }}>
             <Oferta app="App de viajes" tarifa="$150.00" tramos={["6 min (2.4 km)", "39 min (27.6 km)"]} zoom={zoomTarifa} tachado={tachado} />
           </div>
-          {frame >= 60 ? (
+          {frame >= 72 ? (
             <div
               style={{
                 ...centro,
@@ -79,18 +86,21 @@ const Gancho: React.FC = () => {
           ) : null}
         </Telefono>
       </div>
-      <Sequence durationInFrames={60}>
+      <Sequence durationInFrames={72}>
         <Subtitulo texto="Este viaje de $150…" />
       </Sequence>
-      <Sequence from={60} durationInFrames={60}>
+      <Sequence from={72} durationInFrames={60}>
         <Subtitulo texto="…en realidad te deja ^$90" />
       </Sequence>
-      <Sequence from={120} durationInFrames={90}>
+      <Sequence from={132} durationInFrames={90}>
         <Subtitulo texto="La gasolina se lleva !$60 que no ves" />
       </Sequence>
       <Sfx en={0} src="whoosh.wav" />
-      <Sfx en={60} src="golpe.wav" />
-      <Sfx en={132} src="error.wav" vol={0.7} />
+      <Sfx en={72} src="golpe.wav" />
+      <Sfx en={144} src="error.wav" vol={0.5} />
+      <Voz en={0} n={1} />
+      <Voz en={72} n={2} />
+      <Voz en={132} n={3} />
     </AbsoluteFill>
   );
 };
@@ -98,8 +108,8 @@ const Gancho: React.FC = () => {
 // Escena 4: por qué existe Checa
 const PorQue: React.FC = () => {
   const frame = useCurrentFrame();
-  const sale = aparecer(frame, 46, 10);
-  const logo = useSpring(50, { damping: 10, mass: 0.6 });
+  const sale = aparecer(frame, 76, 10);
+  const logo = useSpring(80, { damping: 10, mass: 0.6 });
   const linea = (texto: string, desde: number, color: string) => {
     const a = aparecer(frame, desde, 8);
     return (
@@ -121,19 +131,20 @@ const PorQue: React.FC = () => {
         }}
       >
         {linea("Soy conductor.", 0, C.texto)}
-        {linea("Me cansé de eso.", 20, C.texto2)}
+        {linea("Me cansé de eso.", 40, C.texto2)}
       </AbsoluteFill>
-      {frame >= 50 ? (
+      {frame >= 80 ? (
         <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", gap: 60 }}>
           <div style={{ transform: `scale(${logo})` }}>
             <Logo tam={190} brillo={logo} />
           </div>
-          <div style={{ fontFamily: FD, fontWeight: 800, fontSize: 76, color: C.verde, opacity: aparecer(frame, 60, 8) }}>
+          <div style={{ fontFamily: FD, fontWeight: 800, fontSize: 76, color: C.verde, opacity: aparecer(frame, 84, 8) }}>
             Por eso hice Checa
           </div>
         </AbsoluteFill>
       ) : null}
-      <Sfx en={50} src="ding.wav" vol={0.6} />
+      <Sfx en={80} src="ding.wav" vol={0.5} />
+      <Voz en={0} n={4} />
     </AbsoluteFill>
   );
 };
@@ -199,7 +210,8 @@ const Ejemplo: React.FC<{ bueno: boolean }> = ({ bueno }) => {
       ) : (
         <Subtitulo texto="…o si vas a quemar gasolina !gratis" />
       )}
-      <Sfx en={18} src={bueno ? "ding.wav" : "error.wav"} vol={0.7} />
+      <Sfx en={18} src={bueno ? "ding.wav" : "error.wav"} vol={0.5} />
+      <Voz en={0} n={bueno ? 5 : 6} />
     </AbsoluteFill>
   );
 };
@@ -286,7 +298,8 @@ const Tablet: React.FC = () => {
       >
         La mejor opción, marcada en dorado
       </div>
-      <Sfx en={14} src="ding.wav" vol={0.5} />
+      <Sfx en={14} src="ding.wav" vol={0.4} />
+      <Voz en={0} n={7} />
     </AbsoluteFill>
   );
 };
@@ -335,7 +348,8 @@ const Meta: React.FC = () => {
         </div>
       </div>
       <Subtitulo texto="Tú pones tu ^meta" />
-      <Sfx en={20} src="ding.wav" vol={0.4} />
+      <Sfx en={20} src="ding.wav" vol={0.3} />
+      <Voz en={0} n={8} />
     </AbsoluteFill>
   );
 };
@@ -358,9 +372,9 @@ const Cierre: React.FC = () => {
   const frame = useCurrentFrame();
   const logo = useSpring(0, { damping: 11 });
   const l1 = useSpring(18, { damping: 10 });
-  const l2 = useSpring(34, { damping: 10 });
-  const l3 = useSpring(52, { damping: 10 });
-  const pulso = 1 + 0.05 * Math.sin(Math.max(0, frame - 62) / 4);
+  const l2 = useSpring(80, { damping: 10 });
+  const l3 = useSpring(140, { damping: 10 });
+  const pulso = 1 + 0.05 * Math.sin(Math.max(0, frame - 150) / 4);
   const pal = (s: number): React.CSSProperties => ({ opacity: s, transform: `scale(${0.6 + 0.4 * s})` });
   return (
     <AbsoluteFill>
@@ -389,35 +403,36 @@ const Cierre: React.FC = () => {
           Comenta “YO”
         </div>
       </AbsoluteFill>
-      <Sfx en={18} src="golpe.wav" vol={0.6} />
-      <Sfx en={34} src="ding.wav" vol={0.5} />
-      <Sfx en={52} src="ding.wav" vol={0.6} />
+      <Sfx en={18} src="golpe.wav" vol={0.4} />
+      <Sfx en={80} src="ding.wav" vol={0.4} />
+      <Sfx en={140} src="ding.wav" vol={0.5} />
+      <Voz en={0} n={9} />
     </AbsoluteFill>
   );
 };
 
 export const VideoChecas: React.FC = () => (
   <AbsoluteFill style={{ background: C.fondo }}>
-    <Audio src={staticFile("beat.m4a")} volume={0.35} />
-    <Sequence durationInFrames={210}>
+    <Audio src={staticFile("beat.m4a")} volume={0.18} />
+    <Sequence durationInFrames={222}>
       <Gancho />
     </Sequence>
-    <Sequence from={210} durationInFrames={90}>
+    <Sequence from={222} durationInFrames={140}>
       <PorQue />
     </Sequence>
-    <Sequence from={300} durationInFrames={90}>
+    <Sequence from={362} durationInFrames={60}>
       <Ejemplo bueno />
     </Sequence>
-    <Sequence from={390} durationInFrames={90}>
+    <Sequence from={422} durationInFrames={80}>
       <Ejemplo bueno={false} />
     </Sequence>
-    <Sequence from={480} durationInFrames={90}>
+    <Sequence from={502} durationInFrames={80}>
       <Tablet />
     </Sequence>
-    <Sequence from={570} durationInFrames={60}>
+    <Sequence from={582} durationInFrames={60}>
       <Meta />
     </Sequence>
-    <Sequence from={630} durationInFrames={120}>
+    <Sequence from={642} durationInFrames={190}>
       <Cierre />
     </Sequence>
   </AbsoluteFill>
