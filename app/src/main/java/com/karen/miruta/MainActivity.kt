@@ -1126,14 +1126,12 @@ class MainActivity : Activity() {
         col.addView(cta, margenTarjeta())
         pintarCuenta()
 
-        // --- Licencia ---
-        col.addView(etiqueta("LICENCIA"))
+        // --- Tu plan (los códigos de equipo ya activados siguen valiendo, pero ya no se piden aquí) ---
+        col.addView(etiqueta("TU PLAN"))
         val licA = tarjeta()
         licAjustes = texto("", Tema.T_TEXTO, cTexto, true)
         licA.addView(licAjustes)
         licA.addView(insigniaFundador(), LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(Tema.S1) })
-        licA.addView(texto("Código de este equipo: ${Licencia.codigoEquipo(this)}", Tema.T_NOTA, cTenue, false), margenArriba(4))
-        licA.addView(boton("Tengo un código de activación", cTarjeta2, cTexto) { verLicencia() }, margenArriba(Tema.S2))
         col.addView(licA, margenTarjeta())
 
         // --- Paquetes ---
@@ -1332,7 +1330,7 @@ class MainActivity : Activity() {
         } else if (!e.activa) {
             licTitulo.text = "Tu licencia terminó"
             licTitulo.setTextColor(cAmarillo)
-            licTexto.text = "Activa o renueva tu licencia para volver a ver los pop-ups."
+            licTexto.text = "Renueva tu paquete para volver a ver los pop-ups."
         }
         insignias.forEach { it.visibility = if (e.fundador) View.VISIBLE else View.GONE }
         notaComparador?.visibility = if (e.basico) View.VISIBLE else View.GONE
@@ -1360,49 +1358,6 @@ class MainActivity : Activity() {
         }
         visibility = View.GONE
         insignias.add(this)
-    }
-
-    private fun verLicencia() {
-        val codigo = Licencia.codigoEquipo(this)
-        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        cuerpo.addView(texto("Código de este equipo:", Tema.T_TEXTO, cTexto2, false))
-        cuerpo.addView(texto(codigo, Tema.T_NUMERO, cVerde, true).apply {
-            gravity = Gravity.CENTER
-            setTextIsSelectable(true)
-        }, margenArriba(Tema.S1))
-        cuerpo.addView(texto("Si te dieron un código de activación, pégalo aquí:", Tema.T_TEXTO, cTexto2, false)
-            .apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S3))
-        val campoCodigo = EditText(this).apply {
-            setTextColor(cTexto)
-            setHintTextColor(cTenue)
-            hint = "Código de activación"
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, Tema.T_NOTA)
-            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or
-                InputType.TYPE_TEXT_FLAG_MULTI_LINE
-            minimumHeight = dp(Tema.ALTO_TOQUE)
-            setPadding(dp(Tema.S2), dp(12), dp(Tema.S2), dp(12))
-            background = GradientDrawable().apply {
-                cornerRadius = dp(Tema.R_BOTON).toFloat()
-                setColor(cTarjeta)
-                setStroke(dp(1), Tema.BORDE)
-            }
-        }
-        cuerpo.addView(campoCodigo, margenArriba(Tema.S1))
-        cuerpo.addView(boton("Activar", cVerde, Color.BLACK) {
-            val c = Licencia.activar(this, campoCodigo.text.toString())
-            if (c == null) {
-                Toast.makeText(this, "Código no válido para este equipo", Toast.LENGTH_LONG).show()
-            } else if (!Licencia.estado(this).pagada) {
-                Toast.makeText(this, "Ese código ya venció", Toast.LENGTH_LONG).show()
-            } else {
-                val msg = (if (c.vence >= Licencia.PERMANENTE) "Licencia activada sin vencimiento"
-                    else "Licencia activada hasta el ${Licencia.fechaBonita(c.vence)}") +
-                    (if (c.fundador) "\n⭐ ¡Gracias por ser miembro fundador!" else "")
-                Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
-                pintarLicencia()
-            }
-        }, margenArriba(Tema.S1))
-        hoja("Licencia", cVerde, cuerpo)
     }
 
     // =====================================================================
