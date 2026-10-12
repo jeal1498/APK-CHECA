@@ -16,6 +16,8 @@ description: Hacer videos cortos explicativos de Checa (TikTok, Reels, Shorts) c
 - Cierre: los dos **pop-ups idénticos a la app** y luego logo + «7 días gratis · link en el perfil» + pregunta.
 - **Duración para TikTok: 40 s** (Eduardo la pidió así). Una línea de voz por capítulo; `armarEscenas(LINEAS, 3, 3, 40)`.
 
+**Antes de cada video lee `referencia/README.md`** (estructura por segundo, recursos visuales y transcripción de la referencia) y mira `referencia/cuadros.jpg`.
+
 Lee `.agents/product-marketing.md` antes de escribir el guion. Responde a Eduardo en español y corto.
 
 **Calendario:** los 20 guiones están en `marketing/calendario-videos.html` (arreglo `V`). Están escritos para el estilo viejo: al producir uno, **adáptalo a este formato** (dos casos A/B, 3 capítulos, 40 s) y presenta el guion adaptado para aprobación. Al terminar, márcalo con `est:"hecho",archivo:"marketing/videos/<nombre>.mp4"` y pon en `L` las líneas finales.
@@ -42,7 +44,7 @@ Reglas:
 ## 2. Voz y música (ElevenLabs)
 
 - Plan **Starter** de Eduardo (30 000 créditos/mes). Un video de 40 s gasta ~550 caracteres.
-- La **clave** se lee de `ELEVENLABS_API_KEY` (variable del entorno: menú del entorno en la barra de título → Edit). Si falta, pídele que la agregue ahí, no en el chat. Si la pega en el chat, guárdala solo en `/tmp/claude-0/.el_key` (`umask 077`) y recomiéndale cambiarla. **Nunca** en el repo. No tiene permiso de speech-to-text.
+- La **clave** se lee de `ELEVENLABS_API_KEY` (variable del entorno: menú del entorno en la barra de título → Edit). Si falta, pídele que la agregue ahí (Edit → Variables de entorno → `ELEVENLABS_API_KEY=sk_…` → Guardar → abrir una sesión nueva), no en el chat. Si la pega en el chat, guárdala solo en `/tmp/claude-0/.el_key` (`umask 077`) y recomiéndale cambiarla. **Nunca** en el repo. No tiene permiso de speech-to-text.
 - Voz `gncXGfeB8V1Weu7l6QUg`, **velocidad 1.05** (calmada).
 - Música: reutiliza `public/musica-calma.mp3` (78 s, ambiental). Efectos: `public/{whoosh,ding}.wav` y `public/pop.mp3`, a volumen bajo (0.12–0.18).
 
