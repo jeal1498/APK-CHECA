@@ -97,6 +97,8 @@ class MainActivity : Activity() {
     private lateinit var paquetesVista: View
     private val insignias = ArrayList<TextView>()
     private var notaComparador: TextView? = null
+    /** Se abrió Mercado Pago: al volver a la app se busca la licencia. */
+    private var esperandoPago = false
 
     private val refresco = object : Runnable {
         override fun run() {
@@ -141,6 +143,20 @@ class MainActivity : Activity() {
         actualizarEstado()
         actualizarResumen()
         handler.post(refresco)
+        if (esperandoPago && Cuenta.conectada(this)) {
+            Cuenta.revisarAhora(this) { r ->
+                if (r is Cuenta.Resultado.Ok && Cuenta.licencia(this) == null) {
+                    pintarLicencia()
+                    pintarCuenta()
+                    Toast.makeText(this, "Si ya pagaste, tu licencia aparece en unos minutos. Toca «Ya pagué» en Cuenta.",
+                        Toast.LENGTH_LONG).show()
+                } else {
+                    esperandoPago = false
+                    mostrarResultadoCuenta(r)
+                }
+            }
+            return
+        }
         Cuenta.revisarSiToca(this) { r ->
             pintarLicencia()
             pintarCuenta()
@@ -1123,8 +1139,13 @@ class MainActivity : Activity() {
         // --- Paquetes ---
         val paq = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         paq.addView(etiqueta("PAQUETES"))
+        paq.addView(texto(
+            "Paga con tarjeta, OXXO o saldo de Mercado Pago. Tu licencia se activa sola en tu cuenta; " +
+                "si ya tienes una, los días se suman.",
+            Tema.T_NOTA, cTenue, false
+        ).apply { setLineSpacing(0f, 1.2f) }, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(Tema.S1) })
         paq.addView(tarjetaPaquete(
-            "1 MES", "Plan Básico", "$99", "Para probar todo en tu día a día.",
+            "1m", "1 MES", "Plan Básico", "$99", "Para probar todo en tu día a día.",
             listOf(
                 "Pop-up con semáforo, ganancia neta, $/\u2060hora, $/\u2060km y dinámica ⚡",
                 "Filtros inteligentes y aviso por voz o vibración",
@@ -1134,7 +1155,7 @@ class MainActivity : Activity() {
             ), false
         ), margenTarjeta())
         paq.addView(tarjetaPaquete(
-            "6 MESES", "Plan Estratega", "$399", "Equivale a $66.50 al mes · Ahorras 33 %",
+            "6m", "6 MESES", "Plan Estratega", "$399", "Equivale a $66.50 al mes · Ahorras 33 %",
             listOf(
                 "Todo lo del Plan Básico, más:",
                 "Uber y DiDi al mismo tiempo: Checa marca cuál conviene más",
@@ -1144,7 +1165,7 @@ class MainActivity : Activity() {
             ), true
         ), margenTarjeta())
         paq.addView(tarjetaPaquete(
-            "1 AÑO", "Plan Pro", "$899", "Equivale a $74.90 al mes",
+            "12m", "1 AÑO", "Plan Pro", "$899", "Equivale a $74.90 al mes",
             listOf(
                 "Todo lo del Plan Estratega",
                 "2 equipos (teléfono + tablet)",
@@ -1232,7 +1253,7 @@ class MainActivity : Activity() {
     }
 
     private fun tarjetaPaquete(
-        duracion: String, nombre: String, precio: String, sub: String,
+        plan: String, duracion: String, nombre: String, precio: String, sub: String,
         beneficios: List<String>, destacado: Boolean
     ): View {
         val t = tarjeta()
@@ -1265,18 +1286,32 @@ class MainActivity : Activity() {
                 LinearLayout.LayoutParams(0, -2, 1f))
             t.addView(fila, margenArriba(Tema.S1))
         }
-        t.addView(boton("Lo quiero", if (destacado) cVerde else cTarjeta2, if (destacado) Color.BLACK else cTexto) {
-            pedirPaquete("$duracion ($precio)")
+        t.addView(boton("Pagar con Mercado Pago", if (destacado) cVerde else cTarjeta2, if (destacado) Color.BLACK else cTexto) {
+            pagarPaquete(plan)
         }, margenArriba(Tema.S2))
         return t
     }
 
-    private fun pedirPaquete(paquete: String) {
-        val quien = if (Cuenta.conectada(this)) "Mi cuenta: ${Cuenta.correo(this)}"
-            else "Código de mi equipo: ${Licencia.codigoEquipo(this)}"
-        if (!Cuenta.conectada(this)) Toast.makeText(this,
-            "Tip: entra con Google arriba y tu licencia se activa sola", Toast.LENGTH_LONG).show()
-        abrirWhatsApp("Hola, quiero el paquete de $paquete de Checa. $quien")
+    /** Abre Mercado Pago con el paquete; la licencia se activa sola en la cuenta Google. */
+    private fun pagarPaquete(plan: String) {
+        if (!Cuenta.conectada(this)) {
+            Toast.makeText(this, "Primero entra con tu cuenta de Google: ahí se guarda tu licencia", Toast.LENGTH_LONG).show()
+            entrarConGoogle()
+            return
+        }
+        Toast.makeText(this, "Abriendo Mercado Pago…", Toast.LENGTH_SHORT).show()
+        Cuenta.crearPago(this, plan) { url, error ->
+            if (url == null) {
+                Toast.makeText(this, error, Toast.LENGTH_LONG).show()
+                return@crearPago
+            }
+            try {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                esperandoPago = true
+            } catch (_: Exception) {
+                Toast.makeText(this, "No hay navegador para abrir Mercado Pago", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     // =====================================================================
@@ -1330,16 +1365,12 @@ class MainActivity : Activity() {
     private fun verLicencia() {
         val codigo = Licencia.codigoEquipo(this)
         val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        cuerpo.addView(texto("1. Envía el código de este equipo para pagar tu licencia:", Tema.T_TEXTO, cTexto2, false)
-            .apply { setLineSpacing(0f, 1.2f) })
+        cuerpo.addView(texto("Código de este equipo:", Tema.T_TEXTO, cTexto2, false))
         cuerpo.addView(texto(codigo, Tema.T_NUMERO, cVerde, true).apply {
             gravity = Gravity.CENTER
             setTextIsSelectable(true)
         }, margenArriba(Tema.S1))
-        cuerpo.addView(boton("Enviar mi código", cTarjeta2, cTexto) {
-            abrirWhatsApp("Hola, quiero activar Checa. Código de mi equipo: $codigo")
-        }, margenArriba(Tema.S1))
-        cuerpo.addView(texto("2. Pega aquí el código de activación que te enviaron:", Tema.T_TEXTO, cTexto2, false)
+        cuerpo.addView(texto("Si te dieron un código de activación, pégalo aquí:", Tema.T_TEXTO, cTexto2, false)
             .apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S3))
         val campoCodigo = EditText(this).apply {
             setTextColor(cTexto)
@@ -1463,26 +1494,12 @@ class MainActivity : Activity() {
                 Tema.T_SUB, if (e.activa) cVerde else cAmarillo, true
             ), margenArriba(Tema.S1))
             cuerpo.addView(texto(
-                "Elige tu paquete y pídelo por WhatsApp. Se activa solo en esta cuenta; no tienes que escribir ningún código.",
+                "Elige tu paquete y paga con Mercado Pago. Se activa solo en esta cuenta; no tienes que escribir ningún código.",
                 Tema.T_NOTA, cTenue, false
             ).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
             cuerpo.addView(boton("Ver paquetes", cTarjeta2, cTexto) { irAPaquetes() }, margenArriba(Tema.S2))
             cuerpo.addView(boton("Empezar", cVerde, Color.BLACK) { dialogoCuenta?.dismiss() }, margenArriba(Tema.S1))
             dialogoCuenta = hoja(if (nombre.isEmpty()) "Bienvenido" else "Bienvenido, $nombre", null, cuerpo)
-        }
-    }
-
-    /** Abre el chat de WhatsApp (Business) de ventas con el mensaje ya escrito. */
-    private fun abrirWhatsApp(mensaje: String) {
-        val uri = Uri.parse("https://wa.me/$WHATSAPP_VENTAS?text=" + Uri.encode(mensaje))
-        try {
-            startActivity(Intent(Intent.ACTION_VIEW, uri))
-        } catch (e: Exception) {
-            val i = Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, "$mensaje\nWhatsApp: +52 998 521 4490")
-            }
-            startActivity(Intent.createChooser(i, "Pedir licencia"))
         }
     }
 
@@ -1886,7 +1903,5 @@ class MainActivity : Activity() {
 
     companion object {
         private const val REQ_CAPTURA = 42
-        /** WhatsApp Business de ventas (52 = México). */
-        private const val WHATSAPP_VENTAS = "529985214490"
     }
 }

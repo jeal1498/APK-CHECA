@@ -195,6 +195,29 @@ object Cuenta {
         }.start()
     }
 
+    /**
+     * Pide a Supabase (función mp-pago) el link de pago de Mercado Pago para [plan] (1m, 6m o 12m).
+     * [listo] recibe el link, o null y un mensaje si falló.
+     */
+    fun crearPago(ctx: Context, plan: String, listo: (String?, String) -> Unit) {
+        val app = ctx.applicationContext
+        Thread {
+            var url: String? = null
+            var error = ""
+            try {
+                val r = pedir("POST", "/functions/v1/mp-pago", token(app), JSONObject().put("plan", plan).toString())
+                url = JSONObject(r).optString("url").ifEmpty { null }
+                if (url == null) error = "No se pudo abrir Mercado Pago. Inténtalo más tarde."
+            } catch (e: HttpError) {
+                error = if (e.codigo == 401) "Vuelve a entrar con tu cuenta de Google."
+                    else "No se pudo abrir Mercado Pago (${e.codigo}). Inténtalo más tarde."
+            } catch (_: Exception) {
+                error = "Sin conexión. Inténtalo cuando tengas internet."
+            }
+            principal.post { listo(url, error) }
+        }.start()
+    }
+
     // ------------------------------------------------------------------
     // Supabase
     // ------------------------------------------------------------------

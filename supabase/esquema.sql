@@ -58,3 +58,14 @@ end $$;
 drop trigger if exists limite_equipos on public.equipos;
 create trigger limite_equipos before insert on public.equipos
   for each row execute function public.limite_equipos();
+
+-- Pagos de Mercado Pago (los escribe solo la función mp-webhook). Evita activar dos veces el mismo pago.
+create table if not exists public.pagos (
+  id      text primary key,               -- id del pago en Mercado Pago
+  correo  text not null,
+  plan    text not null,                  -- 1m, 6m, 12m
+  monto   numeric not null,
+  vence   integer,                        -- AAAAMMDD que quedó en la licencia
+  creado  timestamptz not null default now()
+);
+alter table public.pagos enable row level security;
