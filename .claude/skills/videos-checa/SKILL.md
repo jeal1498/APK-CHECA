@@ -1,6 +1,6 @@
 ---
 name: videos-checa
-description: Hacer videos cortos de Checa (TikTok, Reels, Shorts) con narrador de IA en el estilo aprobado «ciudad 3D en tercera persona» (Remotion + three.js, edificios de colores, cielo de atardecer, etiquetas neón en letra pixel, número gigante, subtítulos con palabra clave en amarillo y 8 vistas de cámara). Úsala cuando Eduardo pida un video, un guion para video, el siguiente tema de marketing/temas-videos.md, cambiar la voz o la música de un video, o un video sin que él salga a cuadro.
+description: Hacer videos cortos de Checa (TikTok, Reels, Shorts) con narrador de IA en el estilo aprobado «ciudad 3D» (Remotion + three.js, cada escena con la vista de cámara que mejor la cuente, edificios de colores, cielo de atardecer, etiquetas neón en letra pixel, número gigante, subtítulos con palabra clave en amarillo y 8 vistas de cámara). Úsala cuando Eduardo pida un video, un guion para video, el siguiente tema de marketing/temas-videos.md, cambiar la voz o la música de un video, o un video sin que él salga a cuadro.
 ---
 
 # Videos de Checa
@@ -9,7 +9,7 @@ description: Hacer videos cortos de Checa (TikTok, Reels, Shorts) con narrador d
 
 Después de varias pruebas, Eduardo aprobó este estilo y **le gustan las 8 vistas**. Es el que se usa en todos los videos nuevos:
 
-- **Ciudad 3D en tercera persona** hecha con `@remotion/three` (three.js): calle con edificios de bloques de colores (rosa, turquesa, mostaza, morado, verde, naranja) con ventanas encendidas, banquetas lila, calle azul marino con rayas blancas, **cielo de atardecer** (degradado `#2B2A7A → #8E4B9C → #F08A5D`) y neblina morada al fondo. El carro del conductor es **blanco**, en bloques; otros carros de colores circulan.
+- **Una ciudad 3D** (el mismo mundo en todo el video) hecha con `@remotion/three` (three.js): calle con edificios de bloques de colores (rosa, turquesa, mostaza, morado, verde, naranja) con ventanas encendidas, banquetas lila, calle azul marino con rayas blancas, **cielo de atardecer** (degradado `#2B2A7A → #8E4B9C → #F08A5D`) y neblina morada al fondo. El carro del conductor es **blanco**, en bloques; otros carros de colores circulan.
 - **Rutas pintadas en el piso**: recogida sin pago en **magenta punteado**, viaje pagado en **cian sólido**, pin del pasajero magenta flotando y destino como cubo cian.
 - **Capas en pantalla (estilo @pixelmente):** etiquetas cortas en MAYÚSCULAS dentro de **recuadros neón** con letra pixel **Silkscreen** (`OFERTA · $80`, `8 KM · PAGADOS`, `6 KM · SIN PAGO`), apiladas arriba sobre una franja oscura; **número gigante** en Silkscreen negrita que cuenta o se **tacha** (amarillo → magenta); **subtítulos** abajo (y≈1500) blancos en Inter negrita con **la palabra clave en amarillo**.
 - **Colores con significado:** magenta = lo malo, lo que no te pagan, el número que duele; cian = lo que sí te pagan o la solución; amarillo = dinero, la oferta y la palabra clave. Verde/amarillo/rojo de semáforo solo dentro del pop-up de Checa.
@@ -18,7 +18,7 @@ Después de varias pruebas, Eduardo aprobó este estilo y **le gustan las 8 vist
 - Música calmada (`public/musica-calma.mp3`, volumen 0.14), efectos muy suaves; narrador calmado a velocidad 1.05; volumen final −14 LUFS.
 
 ### Las 8 vistas (todas aprobadas)
-Cambia de vista cada 4–8 s sin salir de la misma ciudad (como las referencias). Código de cada una en `video/src/Checa/Vistas3D.tsx` (componente `Camara`, casos `v === 0…7`, y `Capas` para lo que va encima):
+**No hay una vista principal: la tercera persona es solo una de las 8.** Para cada escena del guion elige la vista que mejor cuente esa idea (la tabla dice para qué sirve cada una) y justifícala en una frase al presentar el guion. Cambia de vista cada 4–8 s sin salir de la misma ciudad (como las referencias); no repitas la misma vista en dos escenas seguidas salvo que la historia lo pida. Código de cada una en `video/src/Checa/Vistas3D.tsx` (componente `Camara`, casos `v === 0…7`, y `Capas` para lo que va encima):
 
 | # | Vista | Para qué sirve |
 |---|---|---|
@@ -31,7 +31,7 @@ Cambia de vista cada 4–8 s sin salir de la misma ciudad (como las referencias)
 | 7 | **Mapa de calor de noche** (zonas que palpitan + etiquetas de hora) | Mejores horas |
 | 8 | **Detalle en cámara lenta** (bomba con contador pixel subiendo) | El número que duele: gasolina |
 
-Combinación sugerida para 40 s: 5 (gancho) → 1 (explicación) → 8 (número que duele) → 2 (la cuenta completa) → 4 (el pop-up de Checa) → cierre. Ajústala al tema.
+Ejemplo de combinación para 40 s (solo ejemplo, no plantilla fija): 5 (gancho) → 1 (explicación) → 8 (número que duele) → 2 (la cuenta completa) → 4 (el pop-up de Checa) → cierre. Cada tema tendrá su propia mezcla.
 
 ### Plantillas
 - **`video/src/Checa/Calle3D.tsx`** (`Calle3D`, 6 s con voz): base de un video con narración: cámara en tercera persona que sube al final, rutas que se pintan con la voz (`en("palabra")`), etiquetas neón, número gigante, subtítulos con palabra clave. Exporta `Edificios` (prop `soloLado`) y `Carro3D`.
