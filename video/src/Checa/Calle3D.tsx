@@ -49,7 +49,7 @@ const Camara: React.FC = () => {
   return null;
 };
 
-const Edificios: React.FC = () => {
+export const Edificios: React.FC<{ soloLado?: number }> = ({ soloLado }) => {
   const lista = useMemo(() => {
     const out: { x: number; z: number; w: number; d: number; h: number; c: string }[] = [];
     let k = 0;
@@ -65,7 +65,7 @@ const Edificios: React.FC = () => {
   }, []);
   return (
     <>
-      {lista.map((b, i) => (
+      {lista.filter((b) => !soloLado || Math.sign(b.x) === soloLado).map((b, i) => (
         <group key={i} position={[b.x, b.h / 2, b.z]}>
           <mesh>
             <boxGeometry args={[b.w, b.h, b.d]} />
@@ -86,7 +86,7 @@ const Edificios: React.FC = () => {
   );
 };
 
-const Carro3D: React.FC<{ z: number; color: string; x?: number }> = ({ z, color, x = 0 }) => (
+export const Carro3D: React.FC<{ z: number; color: string; x?: number }> = ({ z, color, x = 0 }) => (
   <group position={[x, 0, z]}>
     <mesh position={[0, 0.9, 0]}>
       <boxGeometry args={[2.6, 1.1, 4.6]} />
