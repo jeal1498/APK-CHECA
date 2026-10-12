@@ -3,7 +3,7 @@
 Contexto para continuar el proyecto en una conversación nueva.
 
 ## Qué es
-**Checa** (antes "Luz Verde", "Neta" y "Mi Ruta") es una app Android para conductores de **Uber y DiDi** en Cancún. Cuando llega una oferta de viaje, la app lee la pantalla y muestra un **pop-up** con **$/hora**, **$/km**, el semáforo (🟢 conviene / 🟡 regular / 🔴 no conviene), la ganancia neta después de gasolina y el multiplicador ⚡.
+**Checa** (antes "Luz Verde", "Neta" y "Mi Ruta") es una app Android para conductores de **Uber y DiDi** de todo México (no solo Cancún). Cuando llega una oferta de viaje, la app lee la pantalla y muestra un **pop-up** con **$/hora**, **$/km**, el semáforo (🟢 conviene / 🟡 regular / 🔴 no conviene), la ganancia neta después de gasolina y el multiplicador ⚡.
 
 - Se escribió **desde cero** como alternativa propia a la app comercial "Ruta Rentable".
 - **No** se modificó, descompiló ni copió el APK de Ruta Rentable, y esa regla se mantiene. Ruta Rentable solo sirve como referencia de *qué funciones* tener (formato del pop-up, "filtros inteligentes"). El diseño y el código son propios, con estilo verde y oscuro.
