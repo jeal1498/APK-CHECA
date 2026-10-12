@@ -400,14 +400,15 @@ const Checa: React.FC = () => {
         <Popup
           ancho={470}
           nivel="verde"
-          app="Viaje A"
-          neta={130}
-          viaje={150}
-          gas={20}
+          app="Uber"
+          exacto
+          neta="130.00"
+          viaje="150.00"
+          gas="20.00"
           fichas={[
-            { v: "$450", l: "por hora", c: "ok" },
-            { v: "$15", l: "por km", c: "ok" },
-            { v: "20 min", l: "10 km total", c: "neutro" },
+            { v: "$450/h", l: "meta $150", c: "ok" },
+            { v: "$15.00/km", l: "meta $8", c: "ok" },
+            { v: "20 min", l: "10.0 km total", c: "neutro" },
           ]}
         />,
       )}
@@ -417,14 +418,16 @@ const Checa: React.FC = () => {
         <Popup
           ancho={470}
           nivel="amarillo"
-          app="Viaje B"
-          neta={90}
-          viaje={150}
-          gas={60}
+          app="DiDi"
+          exacto
+          pastillaColor="#FF7028"
+          neta="90.00"
+          viaje="150.00"
+          gas="60.00"
           fichas={[
-            { v: "$180", l: "por hora", c: "ok" },
-            { v: "$5", l: "por km", c: "mal" },
-            { v: "50 min", l: "30 km total", c: "neutro" },
+            { v: "$180/h", l: "meta $150", c: "ok" },
+            { v: "$5.00/km", l: "meta $8", c: "mal" },
+            { v: "50 min", l: "30.0 km total", c: "neutro" },
           ]}
         />,
       )}

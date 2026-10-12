@@ -109,16 +109,19 @@ export type Ficha = { v: string; l: string; c: "ok" | "mal" | "neutro" };
 export const Popup: React.FC<{
   nivel: Nivel;
   app: string;
-  neta: number;
-  viaje: number;
-  gas: number;
+  neta: number | string;
+  viaje: number | string;
+  gas: number | string;
   fichas: Ficha[];
   multi?: string;
   oro?: boolean;
   apagada?: boolean;
   ancho?: number;
   resaltarGas?: number;
-}> = ({ nivel, app, neta, viaje, gas, fichas, multi, oro, apagada, ancho = 860, resaltarGas = 0 }) => {
+  // exacto: igual que Popup.kt (pastilla de la app, ✕, «netos» chico, etiquetas tenues)
+  exacto?: boolean;
+  pastillaColor?: string;
+}> = ({ nivel, app, neta, viaje, gas, fichas, multi, oro, apagada, ancho = 860, resaltarGas = 0, exacto = false, pastillaColor = C.tarjeta2 }) => {
   const u = ancho / 860;
   const col = colorNivel[nivel];
   const txtBanda = nivel === "rojo" ? "#FFFFFF" : "#08130C";
@@ -148,17 +151,32 @@ export const Popup: React.FC<{
       >
         <div style={{ fontSize: 34 * u, fontWeight: 700, width: 170 * u, display: "flex", alignItems: "center", gap: 8 * u }}>
           {oro ? <Estrella tam={36 * u} color={txtBanda} /> : null}
-          {app}
+          {exacto ? (
+            <span style={{ background: pastillaColor, color: "#FFFFFF", borderRadius: 999, padding: `${6 * u}px ${18 * u}px`, fontSize: 28 * u, fontWeight: 700 }}>
+              {app.toUpperCase()}
+            </span>
+          ) : (
+            app
+          )}
         </div>
-        <div style={{ fontSize: 50 * u, fontWeight: 800, letterSpacing: 1 }}>{accion[nivel]}</div>
-        <div style={{ fontSize: 34 * u, fontWeight: 700, width: 170 * u, textAlign: "right" }}>{multi ?? ""}</div>
+        <div style={{ fontSize: 50 * u, fontWeight: 800, letterSpacing: exacto ? 5 * u : 1 }}>{accion[nivel]}</div>
+        <div style={{ fontSize: 34 * u, fontWeight: 700, width: 170 * u, textAlign: "right", display: "flex", justifyContent: "flex-end" }}>
+          {exacto ? (
+            <svg width={44 * u} height={44 * u} viewBox="0 0 24 24">
+              <path d="M6 6 L18 18 M18 6 L6 18" stroke={txtBanda} strokeWidth={2.4} strokeLinecap="round" />
+            </svg>
+          ) : (
+            multi ?? ""
+          )}
+        </div>
       </div>
       <div style={{ padding: `${34 * u}px ${30 * u}px ${30 * u}px`, textAlign: "center" }}>
         <div style={{ fontFamily: FD, fontWeight: 700, fontSize: 124 * u, color: C.texto, lineHeight: 1 }}>
-          ${neta} netos
+          ${neta}
+          {exacto ? <span style={{ fontSize: 124 * u * 0.4, color: C.texto2, fontWeight: 700 }}>{"  "}netos</span> : " netos"}
         </div>
         <div style={{ fontSize: 38 * u, fontWeight: 500, color: C.texto2, marginTop: 22 * u }}>
-          Viaje ${viaje} ·{" "}
+          Viaje ${viaje} {exacto ? "\u00a0·\u00a0" : "·"}{" "}
           <span
             style={{
               display: "inline-block",
@@ -182,7 +200,7 @@ export const Popup: React.FC<{
                   flex: 1,
                   height: 156 * u,
                   borderRadius: 28 * u,
-                  background: f.c === "mal" ? "#2A1818" : C.tarjeta2,
+                  background: f.c === "mal" ? (exacto ? "#381818" : "#2A1818") : exacto ? C.tarjeta : C.tarjeta2,
                   border: f.c === "mal" ? `${3 * u}px solid ${C.rojo}` : `${3 * u}px solid transparent`,
                   display: "flex",
                   flexDirection: "column",
@@ -190,8 +208,8 @@ export const Popup: React.FC<{
                   justifyContent: "center",
                 }}
               >
-                <div style={{ fontFamily: FD, fontWeight: 700, fontSize: 54 * u, color: c }}>{f.v}</div>
-                <div style={{ fontSize: 28 * u, fontWeight: 500, color: C.texto2, marginTop: 4 * u }}>{f.l}</div>
+                <div style={{ fontFamily: FD, fontWeight: 700, fontSize: (exacto ? 48 : 54) * u, color: c, whiteSpace: "nowrap" }}>{f.v}</div>
+                <div style={{ fontSize: 28 * u, fontWeight: 500, color: exacto ? C.tenue : C.texto2, marginTop: 4 * u }}>{f.l}</div>
               </div>
             );
           })}
