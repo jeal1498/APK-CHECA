@@ -46,9 +46,13 @@ jobs:
 
       - name: Copiar APK y actualizar version.json
         env:
+          GH_TOKEN: ${{ github.token }}
           TAG: ${{ github.event.release.tag_name || inputs.tag }}
         run: |
-          VERSION="${TAG#v}"
+          # La versión que ve el usuario (versionName, p. ej. 5.7), no el número del release (v46).
+          VERSION="$(gh api "repos/$GITHUB_REPOSITORY/contents/app/build.gradle.kts?ref=$TAG" --jq .content \
+            | base64 -d | sed -n 's/.*versionName *= *"\([^"]*\)".*/\1/p' | head -n1)"
+          [ -n "$VERSION" ] || VERSION="${TAG#v}"
           FECHA="$(date -u +%Y-%m-%d)"
           TAMANO="$(awk -v b=$(stat -c%s Checa.apk) 'BEGIN{printf "%.1f MB", b/1048576}')"
           mkdir -p web/descargar
