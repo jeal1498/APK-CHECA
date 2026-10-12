@@ -1,0 +1,59 @@
+# Copiar a: <repo de la app>/.github/workflows/publicar-apk.yml
+# Cuando publicas un Release con un .apk adjunto, lo sube a checa-web/descargar/
+# como Checa.apk y actualiza version.json.
+# Requiere el secret CHECA_WEB_TOKEN (token con Contents: Read and write en checa-web).
+name: Publicar APK en la web
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag del release a publicar (ej. v5.5)"
+        required: true
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Descargar APK del release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name || inputs.tag }}
+        run: |
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern '*.apk' --dir apk
+          ls apk/*.apk | head -n1 | xargs -I{} mv {} Checa.apk
+
+      - name: Clonar checa-web
+        uses: actions/checkout@v4
+        with:
+          repository: jeal1498/checa-web
+          ref: main
+          token: ${{ secrets.CHECA_WEB_TOKEN }}
+          path: web
+
+      - name: Copiar APK y actualizar version.json
+        env:
+          TAG: ${{ github.event.release.tag_name || inputs.tag }}
+        run: |
+          VERSION="${TAG#v}"
+          FECHA="$(date -u +%Y-%m-%d)"
+          TAMANO="$(awk -v b=$(stat -c%s Checa.apk) 'BEGIN{printf "%.1f MB", b/1048576}')"
+          mkdir -p web/descargar
+          cp Checa.apk web/descargar/Checa.apk
+          printf '{"version":"%s","fecha":"%s","tamano":"%s"}\n' "$VERSION" "$FECHA" "$TAMANO" > web/descargar/version.json
+
+      - name: Commit y push
+        working-directory: web
+        env:
+          TAG: ${{ github.event.release.tag_name || inputs.tag }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898315+github-actions[bot]@users.noreply.github.com"
+          git add descargar/
+          git diff --cached --quiet && { echo "Sin cambios"; exit 0; }
+          git commit -m "APK ${TAG}"
+          git push
