@@ -1,341 +1,538 @@
 import React from "react";
-import { interpolate, useCurrentFrame } from "remotion";
-import { F, FD, Logo, Mapa, Oferta, Popup, Telefono } from "./ui";
-import { Billetes, Bomba, Carro, K, Letrero, Ticket } from "./graficos";
+import { AbsoluteFill, Audio, Easing, Sequence, interpolate, staticFile, useCurrentFrame } from "remotion";
+import { Carro } from "./graficos";
+import { F, FD, Logo, Popup } from "./ui";
 import { LINEAS } from "./lineasGasolina150";
-import { Cae, Golpe, GolpeCam, Pill, Titulo, VideoExplicativo, armarEscenas, centro, clamp, crearEn, impulso, useResorte } from "./plantilla";
+import { Linea, armarEscenas, clamp, crearEn } from "./plantilla";
 
-// «Tus $150 no son $150» · video 1 del calendario · narrador, gráficos de calle · ~37 s a 30 fps
-export const MUSICA = "recogida2/musica.mp3";
-const { esc: ESC, duracion } = armarEscenas(LINEAS);
+// «Tus $150 no son $150» · video 1 · versión TikTok (~40 s) · estilo explicativo tranquilo (referencia de Eduardo):
+// un solo mundo sin cortes (calle de noche con dos carros), marcador fijo abajo, 3 capítulos con pestañas y gráficas encima.
+const { esc: ESC, duracion } = armarEscenas(LINEAS, 3, 3, 40);
 export const DURACION_GASOLINA150 = duracion;
 const en = crearEn(LINEAS, ESC);
 
-const TRAMOS: [string, string] = ["8 min (4.0 km)", "24 min (16.0 km)"];
-
-// 1 · Gancho: la oferta de $150
-const S1: React.FC = () => {
-  const frame = useCurrentFrame();
-  const vibra = Math.sin(frame * 3.1) * 6 * (impulso(frame, 0, 10) + impulso(frame, en(0, "menos."), 8));
-  return (
-    <>
-      <Golpe desde={0} top={110}>
-        <Titulo tam={190}>$150</Titulo>
-      </Golpe>
-      <Golpe desde={en(0, "menos.")} top={320} rot={-3}>
-        <Titulo tam={110} color={K.amarillo}>
-          ¿CUÁNTO LLEGA?
-        </Titulo>
-      </Golpe>
-      <div style={{ ...centro, top: 480, transform: `rotate(${vibra}deg)` }}>
-        <Telefono ancho={500} alto={680}>
-          <Mapa />
-          <div style={{ ...centro, bottom: 14 }}>
-            <Oferta app="App de viajes" tarifa="$150.00" tramos={TRAMOS} ancho={450} />
-          </div>
-        </Telefono>
-      </div>
-      <Golpe desde={en(0, "Al")} top={1190}>
-        <Pill>Al final: cuánto se va al mes 👀</Pill>
-      </Golpe>
-    </>
-  );
+const P = {
+  cielo1: "#070C1F",
+  cielo2: "#18234D",
+  monte: "#0E1736",
+  monte2: "#142045",
+  calle: "#121625",
+  linea: "#323A58",
+  cian: "#22D3EE",
+  morado: "#A855F7",
+  luna: "#FCD34D",
+  texto: "#E8ECF8",
+  tenue: "#7C86A8",
+  rojo: "#F43F5E",
 };
+const M = "FiraCode";
+const XA = 270;
+const XB = 810;
 
-// 2 · La gasolina no aparece
-const S2: React.FC = () => {
+// 0 → 1 con salida suave
+const ap = (frame: number, desde: number, dur = 14) =>
+  interpolate(frame, [desde, desde + dur], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) });
+// visible entre dos cuadros, con entrada y salida suaves
+const vis = (frame: number, desde: number, hasta: number, dur = 14) => Math.min(ap(frame, desde, dur), 1 - ap(frame, hasta - dur, dur));
+
+const CAP1 = ESC[3].desde;
+const CAP2 = ESC[4].desde;
+const CAP3 = ESC[5].desde;
+const RECAP = ESC[6].desde;
+const CIERRE = ESC[7].desde;
+
+const Abs: React.FC<{ x?: number; y: number; ancho?: number; o?: number; style?: React.CSSProperties; children: React.ReactNode }> = ({ x, y, ancho, o = 1, style, children }) => (
+  <div
+    style={{
+      position: "absolute",
+      top: y,
+      left: x === undefined ? 0 : x - (ancho ?? 0) / 2,
+      width: x === undefined ? "100%" : ancho,
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      opacity: o,
+      ...style,
+    }}
+  >
+    {children}
+  </div>
+);
+
+const Etiqueta: React.FC<{ children: React.ReactNode; color?: string; tam?: number }> = ({ children, color = P.tenue, tam = 32 }) => (
+  <div style={{ fontFamily: M, fontSize: tam, color, letterSpacing: 1, whiteSpace: "nowrap" }}>{children}</div>
+);
+
+// ───────── Mundo fijo ─────────
+const Mundo: React.FC = () => {
   const frame = useCurrentFrame();
-  const gira = Math.sin(frame / 4) * 4;
-  return (
-    <>
-      <Cae desde={ESC[1].desde + 2} top={110}>
-        <Letrero arriba="LA OFERTA DICE" grande="$150" ancho={700} />
-      </Cae>
-      <div style={{ ...centro, top: 520, transform: `rotate(${gira}deg)` }}>
-        <Bomba pesos={0} litros={0} tam={300} />
-      </div>
-      <Golpe desde={en(1, "gasolina")} top={560} rot={8}>
-        <div style={{ fontFamily: FD, fontWeight: 900, fontSize: 260, color: K.amarillo, marginLeft: 420 }}>?</div>
-      </Golpe>
-      <Golpe desde={en(1, "ningún")} top={1050} rot={-4}>
-        <div style={{ fontFamily: FD, fontWeight: 900, fontSize: 80, color: K.rojo, border: `10px solid ${K.rojo}`, borderRadius: 20, padding: "0 30px" }}>
-          NO APARECE
-        </div>
-      </Golpe>
-    </>
+  const luna = 1 - 0.8 * vis(frame, CAP1, CIERRE, 20);
+  const estrellas = React.useMemo(
+    () => Array.from({ length: 70 }).map((_, i) => ({ x: (i * 197) % 1080, y: (i * 89) % 860, r: 1 + (i % 3) * 0.8, f: i * 0.7 })),
+    [],
   );
-};
-
-// 3 · Recogida + viaje = 20 km
-const S3: React.FC = () => {
-  const frame = useCurrentFrame();
-  const entra = useResorte(ESC[2].desde, 14);
-  const dash = (frame * 30) % 160;
+  const dash = (frame * 3) % 120;
   return (
-    <>
-      <div style={{ position: "absolute", left: 0, right: 0, top: 1060, height: 110, background: K.asfalto2, overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: 50, left: -dash, display: "flex", gap: 80 }}>
-          {Array.from({ length: 12 }).map((_, i) => (
-            <div key={i} style={{ width: 80, height: 12, background: K.linea, borderRadius: 6 }} />
+    <AbsoluteFill>
+      <AbsoluteFill style={{ background: `linear-gradient(180deg, ${P.cielo1} 0%, ${P.cielo2} 55%, ${P.cielo2} 100%)` }} />
+      <svg width={1080} height={1920} style={{ position: "absolute" }}>
+        {estrellas.map((s, i) => (
+          <circle key={i} cx={s.x} cy={s.y} r={s.r} fill="#fff" opacity={0.25 + 0.25 * Math.sin(frame / 20 + s.f)} />
+        ))}
+        <g opacity={luna}>
+          <circle cx={880} cy={250} r={120} fill={P.luna} opacity={0.06} />
+          <circle cx={880} cy={250} r={80} fill={P.luna} opacity={0.1} />
+          <circle cx={880} cy={250} r={46} fill={P.luna} />
+        </g>
+        <path d="M0 900 L140 830 L260 870 L420 780 L560 860 L700 800 L860 870 L1080 790 L1080 1010 L0 1010 Z" fill={P.monte2} />
+        <path d="M0 950 L180 900 L340 940 L520 880 L700 950 L900 905 L1080 940 L1080 1010 L0 1010 Z" fill={P.monte} />
+        {/* postes y cable con luces que fluyen */}
+        {[60, 540, 1020].map((x) => (
+          <rect key={x} x={x - 5} y={760} width={10} height={250} fill="#3A2F2A" />
+        ))}
+        <path d="M0 790 Q300 830 540 790 Q780 830 1080 790" stroke="#2A3150" strokeWidth={3} fill="none" />
+        {Array.from({ length: 36 }).map((_, i) => {
+          const t = ((i / 36 + frame / 900) % 1) * 1080;
+          const y = 790 + 40 * Math.sin((t % 540) / 540 * Math.PI) * 1;
+          return <circle key={i} cx={t} cy={y} r={4} fill={i % 2 ? P.cian : P.morado} opacity={0.75} />;
+        })}
+      </svg>
+      {/* calle */}
+      <div style={{ position: "absolute", top: 1010, left: 0, right: 0, height: 170, background: P.calle }}>
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 6, background: "#1C2236" }} />
+        <div style={{ position: "absolute", top: 120, left: -dash, display: "flex", gap: 60 }}>
+          {Array.from({ length: 14 }).map((_, i) => (
+            <div key={i} style={{ width: 60, height: 8, background: P.linea, borderRadius: 4 }} />
           ))}
         </div>
       </div>
-      <div style={{ position: "absolute", top: 890, left: 300 + (1 - entra) * -900 + Math.sin(frame / 6) * 6 }}>
-        <Carro ancho={460} avance={frame * 8} />
-      </div>
-      <Cae desde={en(2, "cuatro")} top={90}>
-        <Letrero arriba="RECOGIDA" grande="4 km" fondo={K.rojo} ancho={560} />
-      </Cae>
-      <Cae desde={en(2, "dieciséis.")} top={360}>
-        <Letrero arriba="VIAJE" grande="16 km" ancho={560} />
-      </Cae>
-      <Golpe desde={en(2, "Veinte")} top={630} rot={-2}>
-        <Letrero arriba="TÚ MANEJAS" grande="20 km" fondo={K.amarillo} texto="#111" ancho={720} />
-      </Golpe>
-    </>
+      <div style={{ position: "absolute", top: 1180, left: 0, right: 0, bottom: 0, background: "#0A0D18" }} />
+    </AbsoluteFill>
   );
 };
 
-// 4 · Cada km cuesta $2
-const S4: React.FC = () => {
+const Carros: React.FC = () => {
   const frame = useCurrentFrame();
-  const pesos = interpolate(frame, [ESC[3].voz, en(3, "veinticuatro")], [0, 24], clamp);
+  const carro = (x: number, color: string, nombre: string, fase: number) => (
+    <div style={{ position: "absolute", top: 905 + Math.sin(frame / 9 + fase) * 2, left: x - 190 }}>
+      <Carro ancho={380} color={color} avance={frame * 4} />
+      <div style={{ position: "absolute", top: 160, width: 380, textAlign: "center" }}>
+        <Etiqueta color={color}>{nombre}</Etiqueta>
+      </div>
+    </div>
+  );
   return (
     <>
-      <div style={{ ...centro, top: 110 }}>
-        <Bomba pesos={pesos} litros={pesos / 24} tam={340} />
-      </div>
-      <Golpe desde={en(3, "veinticuatro")} top={640}>
-        <Pill tam={54}>Litro a $24</Pill>
-      </Golpe>
-      <Golpe desde={en(3, "doce")} top={760}>
-        <Pill tam={54}>12 km por litro</Pill>
-      </Golpe>
-      <Golpe desde={en(3, "dos")} top={910} rot={-2}>
-        <Titulo tam={200} color={K.amarillo}>
-          $2 <span style={{ fontSize: 100, color: K.blanco }}>por km</span>
-        </Titulo>
-      </Golpe>
+      {carro(XA, P.cian, "Viaje A", 0)}
+      {carro(XB, P.morado, "Viaje B", 2)}
     </>
   );
 };
 
-// 5 · El ticket: $150 − $40 = $110
-const S5: React.FC = () => {
+// ───────── Pestañas de capítulo ─────────
+const Pestanas: React.FC = () => {
   const frame = useCurrentFrame();
-  const q = en(4, "quedan");
-  const queda = Math.round(interpolate(frame, [q, en(4, "diez.") + 4], [150, 110], clamp));
+  const caps = ["Kilómetros", "Recogida", "Tiempo"];
+  const activa = frame >= CAP3 ? 2 : frame >= CAP2 ? 1 : frame >= CAP1 ? 0 : -1;
+  const o = 1 - ap(frame, RECAP - 10, 14);
   return (
-    <>
-      <div style={{ ...centro, top: 110 }}>
-        <Ticket
-          ancho={820}
-          lineas={[
-            { l: "Tarifa", v: "$150", desde: ESC[4].desde + 4 },
-            { l: "Gasolina 20 km", v: "−$40", c: K.rojo, desde: en(4, "cuarenta") },
-            { l: "TE QUEDAN", v: `$${queda}`, c: "#B45309", grande: true, desde: q },
-          ]}
-        />
-      </div>
-      <Cae desde={en(4, "cuarenta")} top={850}>
-        <Letrero arriba="GASOLINA" grande="−$40" fondo={K.rojo} ancho={560} />
-      </Cae>
-      <Billetes desde={q} />
-    </>
-  );
-};
-
-// 6 · Lo que se va al mes
-const S6: React.FC = () => {
-  const frame = useCurrentFrame();
-  const fase2 = en(5, "Casi");
-  if (frame < fase2) {
-    return (
-      <>
-        <Cae desde={ESC[5].desde + 2} top={130}>
-          <Letrero arriba="MANEJAS AL DÍA" grande="150 km" ancho={700} />
-        </Cae>
-        <Golpe desde={en(5, "trescientos")} top={620}>
-          <div style={{ display: "flex", alignItems: "center", gap: 30 }}>
-            <Bomba pesos={300} litros={12.5} tam={170} />
-            <Titulo tam={150} color={K.amarillo}>
-              $300
-              <div style={{ fontSize: 56, color: K.blanco, letterSpacing: 0 }}>de gasolina al día</div>
-            </Titulo>
+    <div style={{ position: "absolute", top: 80, left: 0, right: 0, display: "flex", justifyContent: "center", gap: 18, opacity: o }}>
+      {caps.map((c, i) => {
+        const e = ap(frame, en(2, "tres") + i * 6, 12);
+        const on = i === activa;
+        return (
+          <div
+            key={c}
+            style={{
+              fontFamily: M,
+              fontSize: 30,
+              color: on ? P.texto : P.tenue,
+              border: `3px solid ${on ? P.cian : "#2C3558"}`,
+              background: on ? "rgba(34,211,238,0.12)" : "rgba(10,14,30,0.6)",
+              borderRadius: 999,
+              padding: "10px 26px",
+              opacity: e,
+              transform: `translateY(${(1 - e) * -20}px)`,
+              fontWeight: on ? 700 : 400,
+            }}
+          >
+            {i + 1} {c}
           </div>
-        </Golpe>
-      </>
-    );
-  }
-  const dias = Math.min(26, Math.max(0, Math.floor((frame - fase2) / 1.5)));
-  const mes = Math.round(interpolate(frame, [fase2, en(5, "mes") + 6], [300, 7800], clamp) / 100) * 100;
-  return (
-    <>
-      <Golpe desde={fase2} top={110}>
-        <div style={{ fontFamily: F, fontWeight: 800, fontSize: 56, color: K.tenue, letterSpacing: 4 }}>EN UN MES · 26 DÍAS</div>
-      </Golpe>
-      <div style={{ position: "absolute", top: 220, left: 140, right: 140, display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 12 }}>
-        {Array.from({ length: 28 }).map((_, i) => {
-          const dom = (i + 1) % 7 === 0;
-          const n = i - Math.floor((i + 1) / 7);
-          const lleno = !dom && n < dias;
-          return (
-            <div
-              key={i}
-              style={{
-                height: 62,
-                borderRadius: 10,
-                background: lleno ? K.rojo : "#1E2730",
-                color: lleno ? "#fff" : K.tenue,
-                fontFamily: F,
-                fontWeight: 800,
-                fontSize: 26,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                opacity: dom ? 0.35 : 1,
-              }}
-            >
-              {i + 1}
-            </div>
-          );
-        })}
-      </div>
-      <Golpe desde={en(5, "ocho")} top={610} rot={-2}>
-        <Titulo tam={210} color={K.rojo}>
-          −${mes.toLocaleString("en-US")}
-        </Titulo>
-      </Golpe>
-      <Golpe desde={en(5, "ninguna")} top={900}>
-        <Pill fondo={K.rojo} color="#fff" tam={50}>
-          que ninguna oferta te enseña
-        </Pill>
-      </Golpe>
-      <Billetes desde={en(5, "mil")} n={10} />
-    </>
+        );
+      })}
+    </div>
   );
 };
 
-// 7 · Checa y cierre
-const S7: React.FC = () => {
+// ───────── Marcador fijo ─────────
+const Marcador: React.FC = () => {
   const frame = useCurrentFrame();
-  const cierre = en(6, "Pruébala");
-  const pop = useResorte(en(6, "encima") , 11);
-  if (frame < cierre) {
+  const o = ap(frame, ESC[1].voz, 16) * (1 - ap(frame, CIERRE, 14));
+  const a = Math.round(interpolate(frame, [en(1, "treinta,"), en(1, "treinta,") + 20], [150, 130], { ...clamp, easing: Easing.out(Easing.cubic) }));
+  const b = Math.round(interpolate(frame, [en(1, "noventa."), en(1, "noventa.") + 20], [150, 90], { ...clamp, easing: Easing.out(Easing.cubic) }));
+  const pulso = 1 + 0.06 * Math.sin(Math.min(1, Math.max(0, (frame - RECAP) / 20)) * Math.PI);
+  const col = (x: number, v: number, color: string) => (
+    <Abs x={x} y={1235} ancho={420}>
+      <div style={{ fontFamily: FD, fontWeight: 900, fontSize: 150, color: P.texto, lineHeight: 1, transform: `scale(${pulso})` }}>${v}</div>
+      <div style={{ width: 220, height: 10, borderRadius: 5, background: "#1E2440", marginTop: 14, overflow: "hidden" }}>
+        <div style={{ width: `${(v / 150) * 100}%`, height: "100%", background: color }} />
+      </div>
+      <div style={{ marginTop: 10 }}>
+        <Etiqueta>te quedan</Etiqueta>
+      </div>
+    </Abs>
+  );
+  return (
+    <div style={{ opacity: o }}>
+      <Abs y={1198}>
+        <Etiqueta tam={26}>Ejemplo · gasolina a $2 por km</Etiqueta>
+      </Abs>
+      {col(XA, a, P.cian)}
+      {col(XB, b, P.morado)}
+    </div>
+  );
+};
+
+// ───────── Intro ─────────
+const Intro: React.FC = () => {
+  const frame = useCurrentFrame();
+  const o = 1 - ap(frame, CAP1 - 12, 12);
+  const tag = (x: number, d: number, color: string) => {
+    const e = ap(frame, d, 16);
     return (
-      <>
-        <Golpe desde={ESC[6].desde} top={90}>
-          <Titulo tam={80}>
-            Lo que te queda, <span style={{ color: K.verde }}>en 1 segundo</span>
-          </Titulo>
-        </Golpe>
-        <div style={{ ...centro, top: 240 }}>
-          <Telefono ancho={620} alto={1000}>
-            <Mapa />
-            <div style={{ ...centro, bottom: 14 }}>
-              <Oferta app="App de viajes" tarifa="$150.00" tramos={TRAMOS} ancho={560} />
-            </div>
-            <div style={{ ...centro, top: 50, opacity: Math.min(1, pop * 2), transform: `translateY(${(1 - pop) * -200}px)` }}>
-              <Popup
-                ancho={570}
-                nivel="amarillo"
-                app="Viaje"
-                neta={110}
-                viaje={150}
-                gas={40}
-                fichas={[
-                  { v: "$281", l: "por hora", c: "ok" },
-                  { v: "$7.5", l: "por km", c: "mal" },
-                  { v: "32 min", l: "20 km total", c: "neutro" },
-                ]}
-              />
-            </div>
-          </Telefono>
+      <Abs x={x} y={720 + (1 - e) * -40} ancho={300} o={e}>
+        <div style={{ fontFamily: FD, fontWeight: 900, fontSize: 90, color: P.texto, border: `4px solid ${color}`, borderRadius: 24, padding: "4px 30px", background: "rgba(7,12,31,0.7)" }}>
+          $150
         </div>
-      </>
+      </Abs>
     );
-  }
-  const sale = interpolate(frame, [cierre + 10, ESC[6].hasta], [-600, 1300]);
+  };
+  const q = vis(frame, ESC[2].voz, CAP1);
+  return (
+    <div style={{ opacity: o }}>
+      <Abs y={300} o={ap(frame, 0, 10) * (1 - ap(frame, ESC[2].voz - 6, 10))}>
+        <Etiqueta tam={40} color={P.texto}>
+          2 viajes · mismo carro
+        </Etiqueta>
+        <div style={{ height: 14 }} />
+        <Etiqueta tam={34}>misma gasolina</Etiqueta>
+      </Abs>
+      {tag(XA, 2, P.cian)}
+      {tag(XB, en(0, "ciento"), P.morado)}
+      <Abs y={330} o={q}>
+        <div style={{ fontFamily: FD, fontWeight: 900, fontSize: 200, color: P.luna, lineHeight: 1 }}>?</div>
+        <Etiqueta tam={36} color={P.texto}>
+          3 cosas que la oferta no dice
+        </Etiqueta>
+      </Abs>
+    </div>
+  );
+};
+
+// ───────── Capítulo 1 · Kilómetros ─────────
+const Bombita: React.FC<{ tam: number }> = ({ tam }) => (
+  <svg width={tam} height={tam * 1.3} viewBox="0 0 100 130">
+    <rect x={10} y={10} width={60} height={110} rx={10} fill="#1F2A55" stroke={P.cian} strokeWidth={3} />
+    <rect x={20} y={22} width={40} height={26} rx={4} fill="#0A0F24" />
+    <path d="M70 40 L86 50 L86 100 Q86 110 78 108" stroke={P.cian} strokeWidth={4} fill="none" />
+    <rect x={4} y={118} width={72} height={8} rx={3} fill="#1F2A55" />
+  </svg>
+);
+
+const Cap1: React.FC = () => {
+  const frame = useCurrentFrame();
+  const o1 = vis(frame, CAP1 + 4, en(3, "Diez"));
+  const base = 880;
+  const barra = (x: number, km: number, dKm: number, dGas: number, gas: number, color: string) => {
+    const h = 15 * km * ap(frame, dKm, 22);
+    const g = ap(frame, dGas, 12);
+    return (
+      <div key={x}>
+        <div style={{ position: "absolute", left: x - 60, top: base - h, width: 120, height: h, background: `linear-gradient(180deg, ${color}, ${color}55)`, borderRadius: "14px 14px 0 0" }} />
+        <Abs x={x} y={base - h - 120} ancho={320} o={ap(frame, dKm + 10, 10)}>
+          <Etiqueta tam={40} color={P.texto}>
+            {km} km
+          </Etiqueta>
+          <div style={{ fontFamily: FD, fontWeight: 900, fontSize: 64, color: P.luna, opacity: g, transform: `scale(${0.8 + 0.2 * g})` }}>−${gas}</div>
+        </Abs>
+      </div>
+    );
+  };
+  const o2 = vis(frame, en(3, "Diez") - 4, CAP2);
   return (
     <>
-      <Golpe desde={cierre} top={140}>
-        <Logo tam={130} />
-      </Golpe>
-      <Golpe desde={en(6, "siete")} top={360}>
-        <Pill fondo={K.verde} tam={54}>
-          7 días gratis · link en el perfil
-        </Pill>
-      </Golpe>
-      <div style={{ position: "absolute", top: 560, left: sale }}>
-        <Carro ancho={440} avance={frame * 10} humo={(frame % 20) / 20} />
+      <Abs y={260} o={o1}>
+        <div style={{ display: "flex", alignItems: "center", gap: 40 }}>
+          <Bombita tam={170} />
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <div style={{ opacity: ap(frame, CAP1 + 4) }}>
+              <Etiqueta tam={40} color={P.texto}>
+                Litro · $24
+              </Etiqueta>
+            </div>
+            <div style={{ opacity: ap(frame, CAP1 + 10) }}>
+              <Etiqueta tam={40} color={P.texto}>
+                Rinde · 12 km/l
+              </Etiqueta>
+            </div>
+          </div>
+        </div>
+        <div style={{ marginTop: 40, opacity: ap(frame, en(3, "dos")), transform: `scale(${0.9 + 0.1 * ap(frame, en(3, "dos"))})` }}>
+          <div style={{ fontFamily: FD, fontWeight: 900, fontSize: 120, color: P.luna }}>
+            $2 <span style={{ fontSize: 60, color: P.texto }}>por km</span>
+          </div>
+        </div>
+      </Abs>
+      <div style={{ opacity: o2 }}>
+        {barra(XA, 10, en(3, "Diez"), en(3, "veinte;"), 20, P.cian)}
+        {barra(XB, 30, en(3, "treinta"), en(3, "sesenta."), 60, P.morado)}
       </div>
-      <Golpe desde={en(6, "¿Tú")} top={850} rot={-2}>
-        <Titulo tam={96} color={K.amarillo}>
-          ¿Ya le restas
-          <br />
-          la gasolina? 👇
-        </Titulo>
-      </Golpe>
     </>
   );
 };
 
-const ESCENAS = [S1, S2, S3, S4, S5, S6, S7];
+// ───────── Capítulo 2 · Recogida ─────────
+const Ruta: React.FC<{ y: number; rec: number; via: number; dRec: number; color: string; nombre: string }> = ({ y, rec, via, dRec, color, nombre }) => {
+  const frame = useCurrentFrame();
+  const k = 28;
+  const x0 = 120;
+  const r = rec * k * ap(frame, dRec, 16);
+  const v = via * k * ap(frame, dRec + 16, 24);
+  const sinPago = ap(frame, en(4, "nadie"), 12);
+  const gas = ap(frame, en(4, "nadie") + 14, 12);
+  return (
+    <>
+      <div style={{ position: "absolute", top: y - 60, left: x0 }}>
+        <Etiqueta color={color}>{nombre}</Etiqueta>
+      </div>
+      <svg width={1080} height={200} style={{ position: "absolute", top: y - 20, left: 0, overflow: "visible" }}>
+        <line x1={x0} y1={20} x2={x0 + 30 * k} y2={20} stroke="#222A48" strokeWidth={12} strokeLinecap="round" />
+        <line x1={x0} y1={20} x2={x0 + r} y2={20} stroke={P.rojo} strokeWidth={10} strokeDasharray="14 12" />
+        <line x1={x0 + rec * k} y1={20} x2={x0 + rec * k + v} y2={20} stroke={color} strokeWidth={12} strokeLinecap="round" opacity={v > 0 ? 1 : 0} />
+        <circle cx={x0} cy={20} r={14} fill={P.texto} />
+        {r >= rec * k - 1 ? <circle cx={x0 + rec * k} cy={20} r={16} fill={color} stroke={P.texto} strokeWidth={4} /> : null}
+      </svg>
+      <div style={{ position: "absolute", top: y + 22, left: x0 - 20, opacity: ap(frame, dRec, 10) }}>
+        <Etiqueta tam={32} color={P.texto}>
+          recogida {rec} km
+        </Etiqueta>
+        <div style={{ opacity: sinPago, marginTop: 6 }}>
+          <Etiqueta tam={30} color={P.rojo}>
+            sin pago · <span style={{ color: P.luna, opacity: gas }}>−${rec * 2} gasolina</span>
+          </Etiqueta>
+        </div>
+      </div>
+    </>
+  );
+};
 
-const GOLPES: GolpeCam[] = [
-  { f: 0, color: K.blanco, fuerte: true, sfx: "golpe.wav" },
-  { f: en(0, "menos."), color: K.amarillo, fuerte: true, sfx: "golpe.wav" },
-  { f: en(0, "Al"), color: K.amarillo, sfx: "recogida2/pop.mp3" },
-  { f: ESC[1].desde + 2, color: K.verde, sfx: "whoosh.wav" },
-  { f: en(1, "gasolina"), color: K.amarillo, sfx: "recogida2/pop.mp3" },
-  { f: en(1, "ningún"), color: K.rojo, fuerte: true, sfx: "error.wav" },
-  { f: ESC[2].desde, color: K.blanco, sfx: "recogida2/motor.mp3" },
-  { f: en(2, "cuatro"), color: K.rojo, sfx: "whoosh.wav" },
-  { f: en(2, "dieciséis."), color: K.verde, sfx: "whoosh.wav" },
-  { f: en(2, "Veinte"), color: K.amarillo, fuerte: true, sfx: "golpe.wav" },
-  { f: ESC[3].desde, color: K.blanco, sfx: "whoosh.wav" },
-  { f: en(3, "veinticuatro"), color: K.blanco, sfx: "recogida2/pop.mp3" },
-  { f: en(3, "doce"), color: K.blanco, sfx: "recogida2/pop.mp3" },
-  { f: en(3, "dos"), color: K.amarillo, fuerte: true, sfx: "golpe.wav" },
-  { f: ESC[4].desde, color: K.blanco, sfx: "whoosh.wav" },
-  { f: en(4, "cuarenta"), color: K.rojo, fuerte: true, sfx: "error.wav" },
-  { f: en(4, "quedan"), color: K.amarillo, sfx: "recogida2/caja.mp3" },
-  { f: ESC[5].desde, color: K.blanco, sfx: "whoosh.wav" },
-  { f: ESC[5].desde + 2, color: K.verde, sfx: "recogida2/motor.mp3" },
-  { f: en(5, "trescientos"), color: K.amarillo, fuerte: true, sfx: "golpe.wav" },
-  { f: en(5, "Casi"), color: K.blanco, sfx: "whoosh.wav" },
-  { f: en(5, "ocho"), color: K.rojo, fuerte: true, sfx: "golpe.wav" },
-  { f: en(5, "ninguna"), color: K.rojo, sfx: "recogida2/caja.mp3" },
-  { f: ESC[6].desde, color: K.amarillo, sfx: "whoosh.wav" },
-  { f: en(6, "encima"), color: K.amarillo, fuerte: true, sfx: "recogida2/pop.mp3" },
-  { f: en(6, "Pruébala"), color: K.verde, fuerte: true, sfx: "ding.wav" },
-  { f: en(6, "siete") + 10, color: K.verde, sfx: "recogida2/motor.mp3" },
-  { f: en(6, "¿Tú"), color: K.amarillo, fuerte: true, sfx: "golpe.wav" },
+const Cap2: React.FC = () => {
+  const frame = useCurrentFrame();
+  const o = vis(frame, CAP2 + 4, CAP3);
+  return (
+    <div style={{ opacity: o }}>
+      <Abs y={200} o={ap(frame, ESC[4].voz + 4)}>
+        <Etiqueta tam={34} color={P.texto}>
+          Antes de que suba el pasajero…
+        </Etiqueta>
+      </Abs>
+      <Ruta y={380} rec={1} via={9} dRec={en(4, "un")} color={P.cian} nombre="A" />
+      <Ruta y={620} rec={5} via={25} dRec={en(4, "cinco")} color={P.morado} nombre="B" />
+    </div>
+  );
+};
+
+// ───────── Capítulo 3 · Tiempo ─────────
+const Cap3: React.FC = () => {
+  const frame = useCurrentFrame();
+  const o2 = vis(frame, CAP3 + 4, RECAP);
+  const fila = (y: number, v: number, d: number, color: string, nombre: string) => (
+    <div style={{ position: "absolute", top: y, left: 120 }}>
+      <Etiqueta color={color}>{nombre}</Etiqueta>
+      <div style={{ display: "flex", alignItems: "center", gap: 20, marginTop: 10 }}>
+        <div style={{ width: (v / 390) * 600 * ap(frame, d, 24), height: 56, background: color, borderRadius: 12 }} />
+        <div style={{ fontFamily: FD, fontWeight: 900, fontSize: 64, color: P.texto, opacity: ap(frame, d + 10) }}>
+          ${v}
+          <span style={{ fontFamily: M, fontWeight: 400, fontSize: 32, color: P.tenue }}> /hora</span>
+        </div>
+      </div>
+    </div>
+  );
+  const x36 = ap(frame, en(5, "cien.") + 16, 16);
+  return (
+    <div style={{ opacity: o2 }}>
+      <Abs y={200} o={ap(frame, ESC[5].voz)}>
+        <Etiqueta tam={34} color={P.texto}>
+          Por hora, ya sin gasolina
+        </Etiqueta>
+      </Abs>
+      {fila(300, 390, en(5, "cuatrocientos;"), P.cian, "A")}
+      {fila(470, 108, en(5, "cien."), P.morado, "B")}
+      <Abs y={680} o={x36}>
+        <div style={{ fontFamily: FD, fontWeight: 900, fontSize: 110, color: P.luna, transform: `scale(${0.85 + 0.15 * x36})` }}>3,6 veces</div>
+      </Abs>
+    </div>
+  );
+};
+
+// ───────── Repaso y Checa ─────────
+const Checa: React.FC = () => {
+  const frame = useCurrentFrame();
+  const o = vis(frame, ESC[6].desde, CIERRE);
+  const pop = (x: number, d: number, children: React.ReactNode) => {
+    const e = ap(frame, d, 18);
+    return (
+      <div style={{ position: "absolute", top: 420 + (1 - e) * -60, left: x - 235, opacity: e }}>
+        {children}
+      </div>
+    );
+  };
+  return (
+    <div style={{ opacity: o }}>
+      <Abs y={220} o={ap(frame, ESC[6].desde)}>
+        <Etiqueta tam={34} color={P.texto}>
+          Mira km totales y tiempo
+        </Etiqueta>
+      </Abs>
+      {pop(
+        XA,
+        en(6, "Checa") + 4,
+        <Popup
+          ancho={470}
+          nivel="verde"
+          app="Uber"
+          exacto
+          neta="130.00"
+          viaje="150.00"
+          gas="20.00"
+          fichas={[
+            { v: "$450/h", l: "meta $150", c: "ok" },
+            { v: "$15.00/km", l: "meta $8", c: "ok" },
+            { v: "20 min", l: "10.0 km total", c: "neutro" },
+          ]}
+        />,
+      )}
+      {pop(
+        XB,
+        en(6, "Checa") + 12,
+        <Popup
+          ancho={470}
+          nivel="amarillo"
+          app="DiDi"
+          exacto
+          pastillaColor="#FF7028"
+          neta="90.00"
+          viaje="150.00"
+          gas="60.00"
+          fichas={[
+            { v: "$180/h", l: "meta $150", c: "ok" },
+            { v: "$5.00/km", l: "meta $8", c: "mal" },
+            { v: "50 min", l: "30.0 km total", c: "neutro" },
+          ]}
+        />,
+      )}
+    </div>
+  );
+};
+
+const Cierre: React.FC = () => {
+  const frame = useCurrentFrame();
+  const o = ap(frame, CIERRE, 18);
+  if (o <= 0) return null;
+  return (
+    <AbsoluteFill style={{ background: `rgba(5,8,20,${0.85 * o})` }}>
+      <Abs y={560} o={ap(frame, CIERRE + 6, 18)}>
+        <Logo tam={150} />
+      </Abs>
+      <Abs y={820} o={ap(frame, en(7, "siete"))}>
+        <div style={{ fontFamily: F, fontWeight: 800, fontSize: 50, color: "#08130C", background: "#22C55E", borderRadius: 999, padding: "14px 36px" }}>7 días gratis · link en el perfil</div>
+      </Abs>
+      <Abs y={1000} o={ap(frame, en(7, "¿Tú"))}>
+        <div style={{ fontFamily: FD, fontWeight: 900, fontSize: 80, color: P.luna, textAlign: "center", lineHeight: 1.1 }}>
+          ¿Tú en qué te
+          <br />
+          fijas primero?
+        </div>
+      </Abs>
+    </AbsoluteFill>
+  );
+};
+
+// ───────── Subtítulos discretos ─────────
+const grupos = (l: Linea) => {
+  const g: { i: number; f: number }[] = [];
+  let ini = 0;
+  l.palabras.forEach((p, i) => {
+    if (/[.!?…,:]$/.test(p.w) || i - ini === 4 || i === l.palabras.length - 1) {
+      g.push({ i: ini, f: i });
+      ini = i + 1;
+    }
+  });
+  return g;
+};
+
+const Subs: React.FC = () => {
+  const frame = useCurrentFrame();
+  const k = ESC.findIndex((e) => frame >= e.desde && frame < e.hasta);
+  if (k < 0) return null;
+  const l = LINEAS[k];
+  const t = (frame - ESC[k].voz) / 30;
+  if (t < 0 || t > l.dur + 0.3) return null;
+  const gs = grupos(l);
+  const g = gs.find((x) => t < l.palabras[x.f].e + 0.15) ?? gs[gs.length - 1];
+  return (
+    <div style={{ position: "absolute", top: frame >= CIERRE ? 1440 : 1500, left: 60, right: 60, textAlign: "center", fontFamily: F, fontWeight: 600, fontSize: 42, color: P.texto, textShadow: "0 3px 12px rgba(0,0,0,0.9)" }}>
+      {l.palabras
+        .slice(g.i, g.f + 1)
+        .map((p) => p.w)
+        .join(" ")}
+    </div>
+  );
+};
+
+// ───────── Video ─────────
+const SFX: { f: number; src: string; vol: number }[] = [
+  { f: en(2, "tres"), src: "whoosh.wav", vol: 0.12 },
+  { f: CAP1, src: "whoosh.wav", vol: 0.12 },
+  { f: CAP2, src: "whoosh.wav", vol: 0.12 },
+  { f: CAP3, src: "whoosh.wav", vol: 0.12 },
+  { f: en(5, "cien.") + 16, src: "ding.wav", vol: 0.15 },
+  { f: en(6, "Checa") + 4, src: "pop.mp3", vol: 0.18 },
+  { f: CIERRE, src: "ding.wav", vol: 0.15 },
 ];
 
-const SUB_COLOR = [K.amarillo, K.blanco, K.blanco, K.amarillo, K.amarillo, K.blanco, K.verde];
-const TONO = [
-  "rgba(250,204,21,0.14)",
-  "rgba(244,63,94,0.12)",
-  "rgba(255,181,71,0.12)",
-  "rgba(250,204,21,0.12)",
-  "rgba(244,63,94,0.12)",
-  "rgba(244,63,94,0.16)",
-  "rgba(34,197,94,0.16)",
-];
-
-export const Gasolina150: React.FC<{ musica?: string }> = ({ musica = MUSICA }) => (
-  <VideoExplicativo
-    carpeta="gasolina150"
-    lineas={LINEAS}
-    esc={ESC}
-    duracion={DURACION_GASOLINA150}
-    escenas={ESCENAS}
-    golpes={GOLPES}
-    subColor={SUB_COLOR}
-    tonos={TONO}
-    musica={musica}
-    volMusica={0.08}
-    volSfx={0.6}
-  />
-);
+export const Gasolina150: React.FC = () => {
+  const frame = useCurrentFrame();
+  const zoom = interpolate(frame, [0, duracion], [1, 1.05]) + 0.015 * Math.sin(frame / 90);
+  return (
+    <AbsoluteFill style={{ background: P.cielo1, overflow: "hidden" }}>
+      <AbsoluteFill style={{ transform: `scale(${zoom})`, transformOrigin: "50% 55%" }}>
+        <Mundo />
+        <Carros />
+        <Intro />
+        <Cap1 />
+        <Cap2 />
+        <Cap3 />
+        <Checa />
+        <Marcador />
+        <Pestanas />
+      </AbsoluteFill>
+      <Cierre />
+      <Subs />
+      <Audio
+        src={staticFile("musica-calma.mp3")}
+        volume={(f) => interpolate(f, [0, 20, duracion - 50, duracion], [0, 0.14, 0.14, 0], clamp)}
+      />
+      {ESC.map((e, i) => (
+        <Sequence key={i} from={e.voz}>
+          <Audio src={staticFile(`gasolina150/${LINEAS[i].archivo}.mp3`)} />
+        </Sequence>
+      ))}
+      {SFX.map((s, i) => (
+        <Sequence key={`s${i}`} from={s.f} durationInFrames={60}>
+          <Audio src={staticFile(s.src)} volume={s.vol} />
+        </Sequence>
+      ))}
+    </AbsoluteFill>
+  );
+};
