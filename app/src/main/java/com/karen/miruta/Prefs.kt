@@ -15,6 +15,11 @@ class Prefs(context: Context) {
         get() = sp.getFloat("minHora", 150f)
         set(v) { sp.edit().putFloat("minHora", v).apply() }
 
+    /** Ya vio (u omitió) la guía de primer uso. */
+    var guiaVista: Boolean
+        get() = sp.getBoolean("guiaVista", false)
+        set(v) { sp.edit().putBoolean("guiaVista", v).apply() }
+
     // ---------- Filtros inteligentes: encendido + valor ----------
     private fun b(k: String, d: Boolean) = sp.getBoolean(k, d)
     private fun setB(k: String, v: Boolean) { sp.edit().putBoolean(k, v).apply() }

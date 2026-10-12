@@ -130,7 +130,7 @@ class MainActivity : Activity() {
         }
         setContentView(raiz)
         mostrarPestana(savedInstanceState?.getInt("tab") ?: 0, false)
-        if (savedInstanceState == null) bienvenidaSiHaceFalta()
+        if (savedInstanceState == null && !guiaSiHaceFalta()) bienvenidaSiHaceFalta()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -141,6 +141,10 @@ class MainActivity : Activity() {
     override fun onResume() {
         super.onResume()
         actualizarEstado()
+        // Volvió de Accesibilidad con el permiso activado: la guía pasa sola al paso de metas.
+        if (guia?.isShowing == true && guiaPaso == 1) {
+            if (servicioActivo()) handler.postDelayed({ if (guiaPaso == 1) pintarGuia(2) }, 600) else pintarGuia(1)
+        }
         actualizarResumen()
         handler.post(refresco)
         if (esperandoPago && Cuenta.conectada(this)) {
@@ -1178,6 +1182,7 @@ class MainActivity : Activity() {
                 LinearLayout.LayoutParams(0, -2, 1f).apply { topMargin = dp(2) })
             pasos.addView(fila, if (i > 0) margenArriba(12) else LinearLayout.LayoutParams(-1, -2))
         }
+        pasos.addView(boton("Ver la guía de inicio", cTarjeta2, cTexto) { mostrarGuia() }, margenArriba(Tema.S2))
         col.addView(pasos, margenTarjeta())
 
         // --- Permisos ---
@@ -1342,6 +1347,290 @@ class MainActivity : Activity() {
     // =====================================================================
     // Cuenta Google (licencia ligada a la cuenta, hasta 2 equipos)
     // =====================================================================
+
+    // =====================================================================
+    // Guía de primer uso (maqueta https://claude.ai/artifact/2LAgUcZUwZzKk98XqXsNy5)
+    // =====================================================================
+
+    private var guia: Dialog? = null
+    private var guiaPaso = 0
+    private lateinit var guiaCuerpo: LinearLayout
+    private lateinit var guiaPie: LinearLayout
+    private lateinit var guiaProgreso: LinearLayout
+    private lateinit var guiaOmitir: TextView
+    private var guiaHoraTocada = false
+    private var guiaCambio = false
+
+    /** Solo en instalaciones nuevas: sin permiso, sin licencia pagada y sin cuenta. */
+    private fun guiaSiHaceFalta(): Boolean {
+        if (prefs.guiaVista) return false
+        if (servicioActivo() || Licencia.estado(this).pagada || Cuenta.conectada(this)) {
+            prefs.guiaVista = true
+            return false
+        }
+        mostrarGuia()
+        return true
+    }
+
+    private fun mostrarGuia() {
+        guia?.dismiss()
+        guiaHoraTocada = false
+        guiaCambio = false
+        val d = Dialog(this, android.R.style.Theme_DeviceDefault_NoActionBar)
+        val raiz = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setBackgroundColor(cFondo)
+        }
+        val arriba = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(dp(20), dp(20), dp(12), 0)
+        }
+        guiaProgreso = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+        arriba.addView(guiaProgreso, LinearLayout.LayoutParams(0, dp(4), 1f))
+        guiaOmitir = texto("Omitir", Tema.T_TEXTO, cTenue, false).apply {
+            typeface = fuenteMedia
+            gravity = Gravity.CENTER
+            minHeight = dp(Tema.ALTO_TOQUE)
+            setPadding(dp(12), 0, dp(8), 0)
+            isClickable = true
+            setOnClickListener { guia?.dismiss() }
+        }
+        arriba.addView(guiaOmitir)
+        raiz.addView(arriba)
+        guiaCuerpo = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(20), dp(Tema.S3), dp(20), dp(Tema.S2))
+        }
+        raiz.addView(ScrollView(this).apply {
+            isVerticalScrollBarEnabled = false
+            addView(guiaCuerpo)
+        }, LinearLayout.LayoutParams(-1, 0, 1f))
+        guiaPie = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(20), dp(Tema.S2), dp(20), dp(Tema.S3))
+        }
+        raiz.addView(guiaPie)
+        d.setContentView(raiz)
+        d.window?.statusBarColor = cFondo
+        d.window?.navigationBarColor = cFondo
+        d.setOnDismissListener {
+            prefs.guiaVista = true
+            Cuenta.marcarBienvenida(this)
+            if (guiaCambio) refrescarFiltrosYAjustes()
+            guia = null
+        }
+        guia = d
+        pintarGuia(0)
+        d.show()
+    }
+
+    private fun pintarGuia(paso: Int) {
+        if (guia == null) return
+        guiaPaso = paso
+        guiaProgreso.removeAllViews()
+        for (i in 0..4) {
+            guiaProgreso.addView(View(this).apply { background = redondo(if (i <= paso) cVerde else cTarjeta2, 2) },
+                LinearLayout.LayoutParams(0, -1, 1f).apply { if (i > 0) leftMargin = dp(6) })
+        }
+        guiaOmitir.visibility = if (paso < 4) View.VISIBLE else View.INVISIBLE
+        guiaCuerpo.removeAllViews()
+        guiaPie.removeAllViews()
+        val c = guiaCuerpo
+        val atras = texto("Atrás", Tema.T_TEXTO, cTenue, false).apply {
+            typeface = fuenteMedia
+            gravity = Gravity.CENTER
+            minHeight = dp(Tema.ALTO_TOQUE)
+            isClickable = true
+            setOnClickListener { pintarGuia(guiaPaso - 1) }
+        }
+        fun titulo(s: String) = texto(s, 28f, cTexto, true).apply { setLineSpacing(0f, 1.1f) }
+        fun parrafo(s: String) = texto(s, Tema.T_SUB, cTexto2, false).apply { setLineSpacing(0f, 1.3f) }
+        fun pasoDe(n: Int) = texto("PASO $n DE 4", Tema.T_NOTA, cVerde, true).apply { letterSpacing = 0.1f }
+        fun principal(s: String, accion: () -> Unit) = guiaPie.addView(boton(s, cVerde, Color.BLACK, accion).apply {
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
+        }, LinearLayout.LayoutParams(-1, dp(52)))
+
+        when (paso) {
+            0 -> {
+                c.addView(ImageView(this).apply { setImageResource(R.mipmap.ic_launcher) },
+                    LinearLayout.LayoutParams(dp(88), dp(88)).apply { gravity = Gravity.CENTER_HORIZONTAL; topMargin = dp(Tema.S2) })
+                c.addView(titulo("Lo que de verdad te deja cada viaje").apply { gravity = Gravity.CENTER }, margenArriba(Tema.S3))
+                c.addView(parrafo("Cuando te llega una oferta en Uber o DiDi, Checa te dice en un segundo si conviene.")
+                    .apply { gravity = Gravity.CENTER }, margenArriba(Tema.S2))
+                val t = tarjeta()
+                listOf(
+                    cVerde to "Ganancia neta después de gasolina",
+                    cAmarillo to "\$/km y \$/hora contra tus metas",
+                    cRojo to "Te lo dice en voz alta: Aceptar, Considerar o Rechazar"
+                ).forEachIndexed { i, (col, s) ->
+                    val f = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+                    f.addView(View(this).apply { background = punto(col) },
+                        LinearLayout.LayoutParams(dp(10), dp(10)).apply { topMargin = dp(6); rightMargin = dp(12) })
+                    f.addView(texto(s, Tema.T_SUB, cTexto2, false), LinearLayout.LayoutParams(0, -2, 1f))
+                    t.addView(f, if (i > 0) margenArriba(12) else LinearLayout.LayoutParams(-1, -2))
+                }
+                c.addView(t, margenArriba(Tema.S3))
+                if (!Licencia.estado(this).pagada) {
+                    c.addView(texto("Tienes ${Licencia.DIAS_PRUEBA} días gratis con todo incluido.", Tema.T_TEXTO, cTenue, false)
+                        .apply { gravity = Gravity.CENTER }, margenArriba(Tema.S2))
+                }
+                principal("Empezar") { pintarGuia(1) }
+                if (!Cuenta.conectada(this)) {
+                    guiaPie.addView(boton("Continuar con Google", Color.WHITE, Color.BLACK) {
+                        Cuenta.marcarBienvenida(this)
+                        pintarGuia(1)
+                        entrarConGoogle()
+                    }.apply { setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f) },
+                        LinearLayout.LayoutParams(-1, dp(52)).apply { topMargin = dp(Tema.S1) })
+                }
+            }
+            1 -> {
+                val listo = servicioActivo()
+                c.addView(pasoDe(1))
+                c.addView(titulo("Activa el lector"), margenArriba(Tema.S1))
+                c.addView(parrafo("Checa necesita permiso para ver la oferta en tu pantalla. Solo lee Uber y DiDi; no toca nada ni acepta viajes por ti."),
+                    margenArriba(Tema.S2))
+                val t = tarjeta()
+                val fila = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
+                fila.addView(texto("Checa – lector de ofertas", Tema.T_SUB, cTexto, false).apply { typeface = fuenteMedia },
+                    LinearLayout.LayoutParams(0, -2, 1f))
+                fila.addView(texto(if (listo) "Listo" else "Falta", Tema.T_NOTA, if (listo) cVerde else cAmarillo, true).apply {
+                    setPadding(dp(10), dp(4), dp(10), dp(4))
+                    background = redondo(if (listo) Tema.VERDE_SUAVE else Tema.AMARILLO_SUAVE, 50)
+                })
+                t.addView(fila)
+                listOf("Toca «Abrir Accesibilidad»", "Busca «Checa – lector de ofertas»", "Actívalo y regresa aquí")
+                    .forEachIndexed { i, s ->
+                        val f = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
+                        f.addView(texto("${i + 1}", Tema.T_NOTA, cTexto, true).apply {
+                            gravity = Gravity.CENTER
+                            background = punto(cTarjeta2)
+                        }, LinearLayout.LayoutParams(dp(28), dp(28)).apply { rightMargin = dp(12) })
+                        f.addView(texto(s, Tema.T_TEXTO, cTexto2, false), LinearLayout.LayoutParams(0, -2, 1f))
+                        t.addView(f, margenArriba(12))
+                    }
+                c.addView(t, margenArriba(Tema.S2))
+                val r = tarjeta()
+                r.addView(texto("¿Sale «Controlado por ajustes restringidos»?", Tema.T_TEXTO, cTexto, false).apply { typeface = fuenteMedia })
+                r.addView(texto(
+                    "En Información de la app toca ⋮ (arriba a la derecha) → «Permitir configuración restringida». Luego vuelve a intentar.",
+                    Tema.T_NOTA, cTenue, false
+                ).apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S1))
+                r.addView(boton("Información de la app", cTarjeta2, cTexto) { abrirInfoApp() }, margenArriba(12))
+                c.addView(r, margenArriba(Tema.ENTRE_TARJETAS))
+                if (listo) principal("Siguiente") { pintarGuia(2) } else principal("Abrir Accesibilidad") { abrirAccesibilidad() }
+                guiaPie.addView(atras, margenArriba(Tema.S1))
+            }
+            2 -> {
+                c.addView(pasoDe(2))
+                c.addView(titulo("¿Cuánto quieres ganar?"), margenArriba(Tema.S1))
+                c.addView(parrafo("Con esto Checa pinta cada oferta de verde, amarillo o rojo. Lo puedes cambiar cuando quieras en Filtros."),
+                    margenArriba(Tema.S2))
+                c.addView(campoGuia("Por kilómetro", { "\$" + num(prefs.minPorKm) + "/km" }) { signo ->
+                    prefs.minPorKm = (prefs.minPorKm + 0.5f * signo).coerceIn(1f, 50f)
+                    if (!guiaHoraTocada) prefs.minPorHora = Math.round(prefs.minPorKm * 20).toFloat()
+                    pintarGuia(2)
+                }, margenArriba(Tema.S2))
+                c.addView(campoGuia("Por hora", { "\$" + num(prefs.minPorHora) + "/h" }) { signo ->
+                    guiaHoraTocada = true
+                    prefs.minPorHora = (prefs.minPorHora + 10f * signo).coerceIn(10f, 1000f)
+                }, margenArriba(Tema.ENTRE_TARJETAS))
+                c.addView(texto("Si no sabes, deja \$8/km y ajústalo después de unos días.", Tema.T_TEXTO, cTenue, false),
+                    margenArriba(Tema.S2))
+                principal("Siguiente") { pintarGuia(3) }
+                guiaPie.addView(atras, margenArriba(Tema.S1))
+            }
+            3 -> {
+                c.addView(pasoDe(3))
+                c.addView(titulo("Tu auto"), margenArriba(Tema.S1))
+                c.addView(parrafo("Para restar la gasolina y mostrarte lo que te queda de verdad."), margenArriba(Tema.S2))
+                val costo = texto("", 22f, cTexto, true)
+                fun pintarCosto() { costo.text = "\$" + num1((prefs.precioLitro / prefs.kmPorLitro).toDouble()) }
+                c.addView(campoGuia("Rendimiento", { num(prefs.kmPorLitro) + " km/l" }) { signo ->
+                    prefs.kmPorLitro = (prefs.kmPorLitro + signo).coerceIn(4f, 40f)
+                    pintarCosto()
+                }, margenArriba(Tema.S2))
+                c.addView(campoGuia("Precio de la gasolina", { "\$" + num(prefs.precioLitro) + "/l" }) { signo ->
+                    prefs.precioLitro = (prefs.precioLitro + 0.5f * signo).coerceIn(5f, 60f)
+                    pintarCosto()
+                }, margenArriba(Tema.ENTRE_TARJETAS))
+                val t = tarjeta()
+                val f = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
+                f.addView(texto("Te cuesta cada km", Tema.T_SUB, cTexto2, false), LinearLayout.LayoutParams(0, -2, 1f))
+                f.addView(costo)
+                t.addView(f)
+                pintarCosto()
+                c.addView(t, margenArriba(Tema.ENTRE_TARJETAS))
+                principal("Siguiente") { pintarGuia(4) }
+                guiaPie.addView(atras, margenArriba(Tema.S1))
+            }
+            else -> {
+                val o = ofertaEjemplo()
+                val accion = when (o.nivel(prefs)) {
+                    Oferta.VERDE -> "Aceptar"
+                    Oferta.AMARILLO -> "Considerar"
+                    else -> "Rechazar"
+                }
+                c.addView(pasoDe(4))
+                c.addView(titulo("Así se verá"), margenArriba(Tema.S1))
+                c.addView(parrafo("Cuando llegue una oferta, este aviso sale encima de Uber o DiDi y te dice «$accion» en voz alta."),
+                    margenArriba(Tema.S2))
+                c.addView(Popup(this, prefs, WindowManager.LayoutParams.TYPE_APPLICATION).construir(o, false),
+                    margenArriba(Tema.S2))
+                c.addView(texto("Oferta de ejemplo con tus metas. Si regresas y cambias tus metas, cambia el color.",
+                    Tema.T_NOTA, cTenue, false).apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S1))
+                val t = tarjeta()
+                t.addView(texto("Al tocar Empezar", Tema.T_TEXTO, cTexto, false).apply { typeface = fuenteMedia })
+                t.addView(texto(
+                    "Android te pregunta qué compartir: elige «Pantalla completa» → Empezar. Si reinicias el teléfono, vuelve a tocar ▶.",
+                    Tema.T_NOTA, cTenue, false
+                ).apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S1))
+                c.addView(t, margenArriba(Tema.S2))
+                principal("▶  Empezar a leer ofertas") {
+                    guia?.dismiss()
+                    iniciarCaptura()
+                }
+                guiaPie.addView(atras, margenArriba(Tema.S1))
+            }
+        }
+    }
+
+    /** Campo con − y + para la guía. [cambio] recibe -1 o +1 y guarda en prefs. */
+    private fun campoGuia(etq: String, valor: () -> String, cambio: (Int) -> Unit): View {
+        val t = tarjeta()
+        t.addView(texto(etq, Tema.T_TEXTO, cTexto2, false))
+        val f = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
+        val v = texto(valor(), 30f, cTexto, true).apply { gravity = Gravity.CENTER }
+        fun tecla(s: String, signo: Int) = texto(s, 22f, cTexto, false).apply {
+            gravity = Gravity.CENTER
+            background = ripple(cTarjeta2, Tema.R_BOTON)
+            isClickable = true
+            setOnClickListener {
+                guiaCambio = true
+                cambio(signo)
+                v.text = valor()
+            }
+        }
+        f.addView(tecla("−", -1), LinearLayout.LayoutParams(dp(48), dp(48)))
+        f.addView(v, LinearLayout.LayoutParams(0, -2, 1f))
+        f.addView(tecla("+", 1), LinearLayout.LayoutParams(dp(48), dp(48)))
+        t.addView(f, margenArriba(12))
+        return t
+    }
+
+    /** Vuelve a armar Filtros y Ajustes para que muestren lo que se eligió en la guía. */
+    private fun refrescarFiltrosYAjustes() {
+        val actual = pestanas.indexOfFirst { it.visibility == View.VISIBLE }.coerceAtLeast(0)
+        listOf(1 to { pantallaFiltros() }, 2 to { pantallaAjustes() }).forEach { (i, crear) ->
+            contenido.removeView(pestanas[i])
+            val nueva = crear()
+            pestanas[i] = nueva
+            contenido.addView(nueva, i, FrameLayout.LayoutParams(-1, -1))
+        }
+        mostrarPestana(actual, false)
+        actualizarEstado()
+    }
 
     private var dialogoCuenta: Dialog? = null
 
