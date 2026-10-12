@@ -2,6 +2,7 @@ import { Composition, staticFile } from "remotion";
 import { loadFont } from "@remotion/fonts";
 import { DURACION_GASOLINA150, Gasolina150 } from "./Checa/Gasolina150";
 import { DURACION_HIBRIDO, Hibrido } from "./Checa/Hibrido";
+import { DURACION_HIBRIDO_COLOR, HibridoColor } from "./Checa/HibridoColor";
 
 const fuentes: [string, string, string][] = [
   ["Inter", "Inter-Medium.otf", "500"],
@@ -21,6 +22,7 @@ export const RemotionRoot: React.FC = () => {
     <>
     <Composition id="Gasolina150" component={Gasolina150} durationInFrames={DURACION_GASOLINA150} fps={30} width={1080} height={1920} />
     <Composition id="Hibrido" component={Hibrido} durationInFrames={DURACION_HIBRIDO} fps={30} width={1080} height={1920} />
+    <Composition id="HibridoColor" component={HibridoColor} durationInFrames={DURACION_HIBRIDO_COLOR} fps={30} width={1080} height={1920} />
     </>
   );
 };
