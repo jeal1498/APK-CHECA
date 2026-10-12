@@ -30,6 +30,12 @@ Lee `.agents/product-marketing.md` antes de escribir el guion. Responde a Eduard
 
 Eduardo aprueba el guion antes de gastar créditos. Preséntalo como tabla de segundos con 🎙️ voz y 🖥️ en pantalla, más «La cuenta» con cada cifra.
 
+**Antes de escribir cada guion, carga (con la herramienta Skill) estas dos skills y aplícalas** (Eduardo lo pidió):
+- **`social`**: fórmulas de gancho (curiosidad, historia, valor y sobre todo *contrarian*, que es el de las referencias), estructura de historia corta y reglas anti-IA. Úsala para el gancho, los ganchos alternativos y el ritmo.
+- **`marketing-psychology`**: elige 1 o 2 principios que refuercen el gancho y la idea (aversión a la pérdida, costo invisible, anclaje, prueba con números…) y nómbralos al presentar el guion.
+
+Si alguna choca con esta skill, manda esta (formato, estilo visual, honestidad de las cifras, 40 s). Si Eduardo manda otra referencia de video, usa también la skill **`video`** (método de desarmar la referencia por escenas) y agrega el análisis a `referencia/README.md`.
+
 Estructura sugerida (7–8 líneas, ~40 s; adáptala a la idea, no es obligatoria):
 1. Gancho que contradice lo que el conductor cree (con el ícono o la palabra tachada).
 2. Dato o ejemplo con números («con números de ejemplo»).
