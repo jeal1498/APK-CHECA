@@ -26,6 +26,7 @@ import android.os.Looper
 import android.provider.Settings
 import android.text.Editable
 import android.text.InputType
+import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.TypedValue
 import android.view.Gravity
@@ -91,7 +92,6 @@ class MainActivity : Activity() {
     private lateinit var vistaPrevia: FrameLayout
     private lateinit var ayudaPermiso: TextView
     private lateinit var ayudaPermisoIcono: Icono
-    private lateinit var licAjustes: TextView
     private lateinit var cuentaCaja: LinearLayout
     private lateinit var cuentaScroll: ScrollView
     private lateinit var paquetesVista: View
@@ -1114,25 +1114,11 @@ class MainActivity : Activity() {
 
     private fun pantallaCuenta(): View {
         val col = columna()
-        col.addView(texto("Cuenta", Tema.T_TITULO, cTexto, true), LinearLayout.LayoutParams(-1, -2).apply {
-            bottomMargin = dp(Tema.S1)
-        })
 
-        // --- Cuenta Google ---
-        col.addView(etiqueta("CUENTA"))
-        val cta = tarjeta()
+        // --- Perfil, credencial del plan y equipos (diseño «A · Credencial») ---
         cuentaCaja = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        cta.addView(cuentaCaja)
-        col.addView(cta, margenTarjeta())
+        col.addView(cuentaCaja, margenTarjeta())
         pintarCuenta()
-
-        // --- Tu plan (los códigos de equipo ya activados siguen valiendo, pero ya no se piden aquí) ---
-        col.addView(etiqueta("TU PLAN"))
-        val licA = tarjeta()
-        licAjustes = texto("", Tema.T_TEXTO, cTexto, true)
-        licA.addView(licAjustes)
-        licA.addView(insigniaFundador(), LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(Tema.S1) })
-        col.addView(licA, margenTarjeta())
 
         // --- Paquetes ---
         val paq = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
@@ -1338,14 +1324,7 @@ class MainActivity : Activity() {
         if (::paquetesVista.isInitialized) {
             paquetesVista.visibility = if (e.pagada && e.vence >= Licencia.PERMANENTE) View.GONE else View.VISIBLE
         }
-        if (::licAjustes.isInitialized) {
-            licAjustes.text = when {
-                e.pagada -> "Activa${if (e.basico) " · Plan Básico" else ""} · ${if (e.vence >= Licencia.PERMANENTE) "sin vencimiento" else "vence el " + Licencia.fechaBonita(e.vence)}"
-                e.activa -> "Prueba gratis · quedan ${e.diasRestantes} días"
-                else -> "Sin licencia"
-            }
-            licAjustes.setTextColor(if (e.activa) cVerde else cAmarillo)
-        }
+        pintarCuenta()
     }
 
     /** Etiqueta dorada "⭐ Miembro fundador" (solo visible con licencia de fundador). */
@@ -1521,24 +1500,29 @@ class MainActivity : Activity() {
         return fila
     }
 
-    /** Tarjeta "Cuenta" de Ajustes. */
+    /** Pestaña Cuenta: perfil arriba, credencial del plan, equipos y «Cerrar sesión» discreto. */
     private fun pintarCuenta() {
         if (!::cuentaCaja.isInitialized) return
         cuentaCaja.removeAllViews()
+        val e = Licencia.estado(this)
         if (!Cuenta.conectada(this)) {
-            cuentaCaja.addView(texto(
+            val t = tarjeta()
+            t.addView(texto("Entra con tu cuenta", Tema.T_SUB, cTexto, true))
+            t.addView(texto(
                 "Entra con tu cuenta de Google para guardar tu licencia. Si reinstalas o cambias de celular, solo vuelves a entrar.",
                 Tema.T_TEXTO, cTexto2, false
-            ).apply { setLineSpacing(0f, 1.2f) })
-            cuentaCaja.addView(boton("Continuar con Google", Color.WHITE, Color.BLACK) { entrarConGoogle() }, margenArriba(Tema.S2))
+            ).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
+            t.addView(boton("Continuar con Google", Color.WHITE, Color.BLACK) { entrarConGoogle() }, margenArriba(Tema.S2))
+            cuentaCaja.addView(t)
+            cuentaCaja.addView(credencial(e), margenArriba(Tema.ENTRE_TARJETAS))
             return
         }
         val nombre = Cuenta.nombre(this)
-        cuentaCaja.addView(texto(nombre.ifEmpty { "Tu cuenta" }, Tema.T_SUB, cTexto, true))
-        cuentaCaja.addView(texto(Cuenta.correo(this), Tema.T_NOTA, cTenue, false), margenArriba(2))
+        cuentaCaja.addView(perfil(nombre, Cuenta.correo(this), e.fundador))
+        cuentaCaja.addView(credencial(e), margenArriba(Tema.S3))
         when {
             Cuenta.equipoQuitado(this) -> {
-                cuentaCaja.addView(texto("Este equipo fue quitado de tu cuenta.", Tema.T_TEXTO, cAmarillo, true), margenArriba(Tema.S1))
+                cuentaCaja.addView(texto("Este equipo fue quitado de tu cuenta.", Tema.T_TEXTO, cAmarillo, true), margenArriba(Tema.S2))
                 cuentaCaja.addView(boton("Activar este equipo", cVerde, Color.BLACK) {
                     Cuenta.revisarAhora(this) { r -> mostrarResultadoCuenta(r) }
                 }, margenArriba(Tema.S1))
@@ -1546,23 +1530,191 @@ class MainActivity : Activity() {
             Cuenta.necesitaRevision(this) -> cuentaCaja.addView(texto(
                 "Llevas más de ${Cuenta.DIAS_SIN_RED} días sin revisar tu licencia. Abre Checa con internet.",
                 Tema.T_TEXTO, cAmarillo, false
-            ).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
-            Cuenta.licencia(this) == null -> cuentaCaja.addView(texto(
-                "Tu cuenta todavía no tiene licencia.", Tema.T_TEXTO, cTexto2, false
-            ), margenArriba(Tema.S1))
+            ).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S2))
+            Cuenta.licencia(this) == null -> {
+                cuentaCaja.addView(boton("Ver paquetes", cVerde, Color.BLACK) { irAPaquetes() }, margenArriba(Tema.S2))
+                cuentaCaja.addView(boton("Ya pagué: revisar mi licencia", cTarjeta2, cTexto) {
+                    Toast.makeText(this, "Buscando tu licencia…", Toast.LENGTH_SHORT).show()
+                    Cuenta.revisarAhora(this) { r -> mostrarResultadoCuenta(r) }
+                }, margenArriba(Tema.S1))
+            }
+            e.pagada && e.vence < Licencia.PERMANENTE ->
+                cuentaCaja.addView(boton("Renovar · se suman los días", cVerde, Color.BLACK) { irAPaquetes() }, margenArriba(Tema.S2))
         }
-        if (Cuenta.equipos(this).isNotEmpty()) cuentaCaja.addView(listaEquipos(true), margenArriba(Tema.S1))
-        if (Cuenta.licencia(this) == null && !Cuenta.equipoQuitado(this)) {
-            cuentaCaja.addView(boton("Ver paquetes", cTarjeta2, cTexto) { irAPaquetes() }, margenArriba(Tema.S2))
-            cuentaCaja.addView(boton("Ya pagué: revisar mi licencia", cVerde, Color.BLACK) {
-                Toast.makeText(this, "Buscando tu licencia…", Toast.LENGTH_SHORT).show()
-                Cuenta.revisarAhora(this) { r -> mostrarResultadoCuenta(r) }
-            }, margenArriba(Tema.S1))
+        val lista = Cuenta.equipos(this)
+        if (lista.isNotEmpty()) {
+            cuentaCaja.addView(etiqueta("EQUIPOS · ${lista.size} DE ${Cuenta.maxEquipos(this)}"), margenArriba(Tema.S1))
+            val fila = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+            val huecos = maxOf(lista.size, Cuenta.maxEquipos(this))
+            for (i in 0 until huecos) {
+                val v = if (i < lista.size) lugarEquipo(lista[i]) else lugarLibre()
+                fila.addView(v, LinearLayout.LayoutParams(0, -1, 1f).apply { if (i > 0) leftMargin = dp(Tema.S1) })
+            }
+            cuentaCaja.addView(fila, LinearLayout.LayoutParams(-1, -2))
         }
-        cuentaCaja.addView(boton("Cerrar sesión", cTarjeta2, cTexto) {
-            Toast.makeText(this, "Cerrando sesión…", Toast.LENGTH_SHORT).show()
-            Cuenta.cerrarSesion(this) { pintarLicencia(); pintarCuenta() }
+        cuentaCaja.addView(texto("Cerrar sesión", Tema.T_TEXTO, cTenue, false).apply {
+            gravity = Gravity.CENTER
+            minHeight = dp(Tema.ALTO_TOQUE)
+            typeface = fuenteMedia
+            isClickable = true
+            setOnClickListener {
+                Toast.makeText(this@MainActivity, "Cerrando sesión…", Toast.LENGTH_SHORT).show()
+                Cuenta.cerrarSesion(this@MainActivity) { pintarLicencia(); pintarCuenta() }
+            }
+        }, margenArriba(Tema.S2))
+    }
+
+    /** Foto con la inicial (aro dorado si es fundador), nombre grande y correo, centrados. */
+    private fun perfil(nombre: String, correo: String, fundador: Boolean): View {
+        val caja = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
+            setPadding(0, dp(Tema.S2), 0, 0)
+        }
+        val inicial = (nombre.ifEmpty { correo }.trim().firstOrNull() ?: '?').uppercaseChar().toString()
+        val foto = texto(inicial, 34f, Color.BLACK, true).apply {
+            gravity = Gravity.CENTER
+            background = GradientDrawable(
+                GradientDrawable.Orientation.TL_BR, intArrayOf(Color.rgb(74, 222, 128), Color.rgb(22, 163, 74))
+            ).apply { shape = GradientDrawable.OVAL }
+        }
+        val aro = FrameLayout(this).apply {
+            setPadding(dp(5), dp(5), dp(5), dp(5))
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.OVAL
+                setColor(Color.TRANSPARENT)
+                setStroke(dp(2), if (fundador) DORADO else cVerde)
+            }
+            addView(foto, FrameLayout.LayoutParams(dp(84), dp(84)))
+        }
+        caja.addView(aro, LinearLayout.LayoutParams(-2, -2))
+        caja.addView(texto(nombre.ifEmpty { "Tu cuenta" }, 24f, cTexto, true).apply { gravity = Gravity.CENTER },
+            LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(12) })
+        caja.addView(texto(correo, Tema.T_TEXTO, cTenue, false).apply { gravity = Gravity.CENTER },
+            LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(2) })
+        return caja
+    }
+
+    /** Tarjeta tipo membresía con el plan: dorada para fundadores. */
+    private fun credencial(e: Licencia.Estado): View {
+        val sinFin = e.pagada && e.vence >= Licencia.PERMANENTE
+        val c = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(20), dp(20), dp(20), dp(20))
+            background = GradientDrawable(
+                GradientDrawable.Orientation.TL_BR,
+                if (e.fundador) intArrayOf(Color.rgb(42, 37, 18), Color.rgb(22, 20, 12))
+                else intArrayOf(Color.rgb(30, 36, 33), Color.rgb(20, 24, 22))
+            ).apply {
+                cornerRadius = dp(20).toFloat()
+                setStroke(dp(1), if (e.fundador) Color.argb(115, 255, 214, 10) else Tema.BORDE)
+            }
+        }
+        val marca = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
+        marca.addView(texto("CHECA", Tema.T_NOTA, cTexto2, true).apply { letterSpacing = 0.14f },
+            LinearLayout.LayoutParams(0, -2, 1f))
+        listOf(cVerde, cAmarillo, cRojo).forEach { col ->
+            marca.addView(View(this).apply { background = punto(col) },
+                LinearLayout.LayoutParams(dp(8), dp(8)).apply { leftMargin = dp(4) })
+        }
+        c.addView(marca)
+        val titulo = when {
+            e.fundador -> "⭐ Miembro fundador"
+            e.pagada && e.basico -> "Plan Básico"
+            e.pagada -> "Licencia activa"
+            e.activa -> "Prueba gratis"
+            else -> "Sin licencia"
+        }
+        val colorTitulo = when {
+            e.fundador -> DORADO
+            e.activa -> cTexto
+            else -> cAmarillo
+        }
+        c.addView(texto(titulo, 26f, colorTitulo, true), margenArriba(Tema.S2))
+        val quedan = if (e.pagada && !sinFin) diasHasta(e.vence) else e.diasRestantes
+        val sub = when {
+            sinFin -> "Activa · sin vencimiento"
+            e.pagada -> "Vence el ${Licencia.fechaBonita(e.vence)} · ${quedanDias(quedan)}"
+            e.activa -> "Todo incluido · ${quedanDias(quedan)}"
+            else -> "Elige un paquete para volver a ver los pop-ups"
+        }
+        c.addView(texto(sub, Tema.T_TEXTO, cTexto2, false), margenArriba(4))
+        if (!e.pagada && e.activa) {
+            // Barra de la prueba: lo que queda de los 7 días.
+            val barra = FrameLayout(this).apply { background = redondo(cTarjeta2, 3) }
+            val lleno = View(this).apply { background = redondo(cAmarillo, 3) }
+            barra.addView(lleno, FrameLayout.LayoutParams(0, -1))
+            barra.post {
+                lleno.layoutParams = FrameLayout.LayoutParams(barra.width * quedan / Licencia.DIAS_PRUEBA, -1)
+            }
+            c.addView(barra, LinearLayout.LayoutParams(-1, dp(6)).apply { topMargin = dp(Tema.S2) })
+        }
+        return c
+    }
+
+    private fun quedanDias(n: Int) = if (n == 1) "queda 1 día" else "quedan $n días"
+
+    /** Días desde hoy hasta una fecha AAAAMMDD (0 si ya pasó). */
+    private fun diasHasta(aaaammdd: Int): Int = try {
+        val f = SimpleDateFormat("yyyyMMdd", Locale.US).parse(aaaammdd.toString())!!.time
+        val hoy = SimpleDateFormat("yyyyMMdd", Locale.US).let { it.parse(it.format(Date()))!!.time }
+        maxOf(0, ((f - hoy) / 86_400_000L).toInt() + 1)
+    } catch (_: Exception) { 0 }
+
+    /** Un lugar de equipo: ícono, nombre, último uso y «Aquí» o «Quitar» (pide confirmar). */
+    private fun lugarEquipo(eq: Cuenta.Equipo): View {
+        val esEste = eq.id == Licencia.codigoEquipo(this)
+        val caja = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(12), dp(12), dp(12), dp(12))
+            background = redondo(cTarjeta2, Tema.R_BOTON)
+        }
+        val arriba = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
+        arriba.addView(texto(if (esEste) "Este equipo" else "Otro equipo", Tema.T_NOTA, cTenue, false),
+            LinearLayout.LayoutParams(0, -2, 1f))
+        if (esEste) {
+            arriba.addView(texto("AQUÍ", Tema.T_NOTA, cVerde, true).apply {
+                setPadding(dp(8), dp(3), dp(8), dp(3))
+                background = redondo(Tema.VERDE_SUAVE, 50)
+            })
+        } else {
+            arriba.addView(texto("Quitar", Tema.T_NOTA, cRojo, true).apply {
+                setPadding(dp(10), dp(6), dp(10), dp(6))
+                background = GradientDrawable().apply {
+                    cornerRadius = dp(10).toFloat()
+                    setStroke(dp(1), Tema.BORDE)
+                }
+                isClickable = true
+                var confirmar = false
+                setOnClickListener {
+                    if (!confirmar) {
+                        confirmar = true
+                        text = "¿Seguro?"
+                        setTextColor(Color.WHITE)
+                        background = redondo(cRojo, 10)
+                    } else {
+                        Toast.makeText(this@MainActivity, "Quitando ${eq.nombre}…", Toast.LENGTH_SHORT).show()
+                        Cuenta.quitarEquipo(this@MainActivity, eq.id) { r -> mostrarResultadoCuenta(r) }
+                    }
+                }
+            })
+        }
+        caja.addView(arriba)
+        caja.addView(texto(eq.nombre.ifEmpty { eq.id }, Tema.T_TEXTO, cTexto, true).apply {
+            maxLines = 1
+            ellipsize = TextUtils.TruncateAt.END
         }, margenArriba(Tema.S1))
+        caja.addView(texto("Último uso: " + Cuenta.haceCuanto(eq.ultimoUso), Tema.T_NOTA, cTenue, false), margenArriba(2))
+        return caja
+    }
+
+    private fun lugarLibre() = texto("Libre", Tema.T_NOTA, cTenue, false).apply {
+        gravity = Gravity.CENTER
+        minHeight = dp(88)
+        background = GradientDrawable().apply {
+            cornerRadius = dp(Tema.R_BOTON).toFloat()
+            setStroke(dp(1), Tema.BORDE, dp(6).toFloat(), dp(4).toFloat())
+        }
     }
 
     private fun ofertaEjemplo() = Oferta(85.0, 7.2, 24.0, 1.5, 5.0, 1.2)
