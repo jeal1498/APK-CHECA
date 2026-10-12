@@ -1,111 +1,15 @@
 import React from "react";
-import { AbsoluteFill, Audio, Sequence, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
+import { interpolate, useCurrentFrame } from "remotion";
 import { F, FD, Logo, Mapa, Oferta, Popup, Telefono } from "./ui";
-import { Asfalto, Billetes, Bomba, Carro, K, Letrero, SemaforoLuz, Ticket } from "./graficos";
-import { LINEAS, Linea } from "./lineasRecogida2";
+import { Billetes, Bomba, Carro, K, Letrero, SemaforoLuz, Ticket } from "./graficos";
+import { LINEAS } from "./lineasRecogida2";
+import { Cae, Golpe, GolpeCam, Pill, Titulo, VideoExplicativo, armarEscenas, centro, clamp, crearEn, impulso, useResorte } from "./plantilla";
 
 // «Los 6 kilómetros que nadie te paga» v2 · narrador, gráficos de calle, ritmo alto · ~38 s a 30 fps
-const FPS = 30;
 export const MUSICA = "recogida2/musica.mp3";
-
-type Escena = { desde: number; hasta: number; voz: number };
-const ESC: Escena[] = [];
-{
-  let f = 0;
-  LINEAS.forEach((l, i) => {
-    const pausa = i === 0 ? 0 : 5;
-    const fin = f + pausa + Math.round(l.dur * FPS) + (i === LINEAS.length - 1 ? 50 : 8);
-    ESC.push({ desde: f, hasta: fin, voz: f + pausa });
-    f = fin;
-  });
-}
-export const DURACION_RECOGIDA2 = ESC[ESC.length - 1].hasta;
-
-const en = (i: number, palabra: string) => {
-  const p = LINEAS[i].palabras.find((x) => x.w === palabra);
-  if (!p) throw new Error(`No existe la palabra «${palabra}» en la línea ${i + 1}`);
-  return ESC[i].voz + Math.round(p.s * FPS);
-};
-const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
-const centro: React.CSSProperties = { position: "absolute", left: 0, right: 0, display: "flex", justifyContent: "center" };
-const impulso = (frame: number, g: number, caida = 5) => (frame >= g ? Math.exp(-(frame - g) / caida) : 0);
-
-const useResorte = (desde: number, damping = 10) => {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-  return spring({ frame: frame - desde, fps, config: { damping, mass: 0.6 } });
-};
-
-// Entra con golpe (de grande a su tamaño)
-const Golpe: React.FC<{ desde: number; children: React.ReactNode; rot?: number; top: number }> = ({ desde, children, rot = 0, top }) => {
-  const frame = useCurrentFrame();
-  const g = useResorte(desde);
-  if (frame < desde) return null;
-  return (
-    <div style={{ ...centro, top, transform: `scale(${1.7 - 0.7 * g}) rotate(${rot}deg)`, opacity: Math.min(1, g * 1.6) }}>{children}</div>
-  );
-};
-
-// Cae desde arriba
-const Cae: React.FC<{ desde: number; children: React.ReactNode; top: number }> = ({ desde, children, top }) => {
-  const frame = useCurrentFrame();
-  const g = useResorte(desde, 12);
-  if (frame < desde) return null;
-  return <div style={{ ...centro, top, transform: `translateY(${(1 - g) * -900}px) rotate(${(1 - g) * -8}deg)` }}>{children}</div>;
-};
-
-const Titulo: React.FC<{ children: React.ReactNode; tam?: number; color?: string }> = ({ children, tam = 140, color = K.blanco }) => (
-  <div style={{ fontFamily: FD, fontWeight: 900, fontSize: tam, color, lineHeight: 1, letterSpacing: -3, textAlign: "center", textShadow: "0 10px 40px rgba(0,0,0,0.6)" }}>
-    {children}
-  </div>
-);
-
-const Pill: React.FC<{ children: React.ReactNode; fondo?: string; color?: string; tam?: number }> = ({ children, fondo = K.amarillo, color = "#111", tam = 46 }) => (
-  <div style={{ fontFamily: F, fontWeight: 800, fontSize: tam, color, background: fondo, borderRadius: 999, padding: "14px 34px" }}>{children}</div>
-);
-
-// Subtítulos tipo karaoke
-const Subs: React.FC<{ linea: Linea; t: number; color: string }> = ({ linea, t, color }) => {
-  const grupos: { i: number; f: number }[] = [];
-  let ini = 0;
-  linea.palabras.forEach((p, i) => {
-    if (/[.!?…,:]$/.test(p.w) || i - ini === 3 || i === linea.palabras.length - 1) {
-      grupos.push({ i: ini, f: i });
-      ini = i + 1;
-    }
-  });
-  if (t > linea.dur + 0.25 || t < -0.1) return null;
-  const g = [...grupos].reverse().find((x) => t >= linea.palabras[x.i].s - 0.05) ?? grupos[0];
-  return (
-    <div
-      style={{
-        position: "absolute",
-        top: 1340,
-        left: 70,
-        right: 70,
-        display: "flex",
-        flexWrap: "wrap",
-        justifyContent: "center",
-        gap: "0 26px",
-        fontFamily: FD,
-        fontWeight: 900,
-        fontSize: 70,
-        lineHeight: 1.1,
-        textAlign: "center",
-        textShadow: "0 4px 0 #000, 0 8px 24px rgba(0,0,0,0.9)",
-      }}
-    >
-      {linea.palabras.slice(g.i, g.f + 1).map((p, k) => {
-        const on = t >= p.s - 0.05;
-        return (
-          <span key={k} style={{ color: on ? color : "rgba(244,246,245,0.4)", transform: `scale(${on && t < p.e ? 1.04 : 1})`, display: "inline-block" }}>
-            {p.w}
-          </span>
-        );
-      })}
-    </div>
-  );
-};
+const { esc: ESC, duracion } = armarEscenas(LINEAS);
+export const DURACION_RECOGIDA2 = duracion;
+const en = crearEn(LINEAS, ESC);
 
 // 1 · Gancho
 const S1: React.FC = () => {
@@ -388,13 +292,7 @@ const S7: React.FC = () => {
 
 const ESCENAS = [S1, S2, S3, S4, S5, S6, S7];
 
-const Sfx: React.FC<{ en: number; src: string; vol?: number }> = ({ en: e, src, vol = 0.5 }) => (
-  <Sequence from={e} durationInFrames={45}>
-    <Audio src={staticFile(src)} volume={vol} />
-  </Sequence>
-);
-
-const GOLPES: { f: number; color: string; fuerte?: boolean; sfx?: string }[] = [
+const GOLPES: GolpeCam[] = [
   { f: 0, color: K.blanco, fuerte: true, sfx: "golpe.wav" },
   { f: en(0, "lana"), color: K.amarillo, fuerte: true, sfx: "golpe.wav" },
   { f: en(0, "Al"), color: K.amarillo, sfx: "recogida2/pop.mp3" },
@@ -432,59 +330,16 @@ const TONO = [
   "rgba(34,197,94,0.16)",
 ];
 
-export const Recogida2: React.FC<{ musica?: string }> = ({ musica = MUSICA }) => {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-  const k = Math.max(0, ESC.findIndex((e) => frame >= e.desde && frame < e.hasta));
-  const t = (frame - ESC[k].voz) / FPS;
-  const Esc = ESCENAS[k];
-  let zoom = 1;
-  let sx = 0;
-  let sy = 0;
-  let flash = 0;
-  let flashColor = K.blanco;
-  for (const g of GOLPES) {
-    const i = impulso(frame, g.f, 5);
-    if (i <= 0.01) continue;
-    zoom += (g.fuerte ? 0.1 : 0.05) * i;
-    if (g.fuerte) {
-      sx += Math.sin(frame * 2.3) * 20 * i;
-      sy += Math.cos(frame * 2.9) * 14 * i;
-    }
-    const fl = i * (g.fuerte ? 0.3 : 0.15);
-    if (fl > flash) {
-      flash = fl;
-      flashColor = g.color;
-    }
-  }
-  const deriva = 1 + 0.05 * ((frame - ESC[k].desde) / (ESC[k].hasta - ESC[k].desde));
-  const ent = k === 0 ? 1 : spring({ frame: frame - ESC[k].desde, fps, config: { damping: 15, mass: 0.5 } });
-  const dir = k % 2 ? 1 : -1;
-  return (
-    <AbsoluteFill style={{ fontFamily: F, overflow: "hidden" }}>
-      <Asfalto tono={TONO[k]} vel={k === 1 ? 40 : 22} />
-      <Audio
-        src={staticFile(musica)}
-        volume={(f) => interpolate(f, [0, 6, DURACION_RECOGIDA2 - 40, DURACION_RECOGIDA2], [0.2, 0.11, 0.11, 0], clamp)}
-      />
-      {ESC.map((e, i) => (
-        <Sequence key={i} from={e.voz}>
-          <Audio src={staticFile(`recogida2/${LINEAS[i].archivo}.mp3`)} />
-        </Sequence>
-      ))}
-      {GOLPES.filter((g) => g.sfx).map((g, i) => (
-        <Sfx key={i} en={g.f} src={g.sfx!} vol={g.fuerte ? 0.45 : 0.3} />
-      ))}
-      <AbsoluteFill
-        style={{
-          transform: `translate(${sx + (1 - ent) * 800 * dir}px, ${sy}px) scale(${zoom * deriva}) rotate(${(1 - ent) * 5 * dir}deg)`,
-          opacity: Math.min(1, ent * 1.5),
-        }}
-      >
-        <Esc />
-      </AbsoluteFill>
-      <AbsoluteFill style={{ background: flashColor, opacity: flash, pointerEvents: "none" }} />
-      <Subs linea={LINEAS[k]} t={t} color={SUB_COLOR[k]} />
-    </AbsoluteFill>
-  );
-};
+export const Recogida2: React.FC<{ musica?: string }> = ({ musica = MUSICA }) => (
+  <VideoExplicativo
+    carpeta="recogida2"
+    lineas={LINEAS}
+    esc={ESC}
+    duracion={DURACION_RECOGIDA2}
+    escenas={ESCENAS}
+    golpes={GOLPES}
+    subColor={SUB_COLOR}
+    tonos={TONO}
+    musica={musica}
+  />
+);
