@@ -1,0 +1,38 @@
+   0.0-   4.0 En todas las gasolineras del mundo hay un cartel que te prohíbe usar el móvil.
+   4.0-   8.0 Lleva 20 años vigilando al sospechoso equivocado.
+   8.0-  13.0 Porque lo que enciende la gasolina no está en tu mano, está en el asiento de tu coche.
+  13.0-  18.0 El instituto que registra estos incendios ha revisado 176 casos.
+  18.0-  22.0 En ninguno había un móvil implicado, ni en uno.
+  22.0-  24.0 En laboratorio tampoco.
+  24.0-  29.0 Un teléfono rodeado de vapor de gasolina en la mezcla perfecta no lo enciende.
+  30.0-  33.0 Lo que sí aparece una y otra vez es esto.
+  33.0-  37.0 El conductor se vuelve a meter en el coche mientras se llena el depósito.
+  37.0-  44.0 La ropa roza el asiento, las cargas se separan, y al salir tu cuerpo va a varios miles de voltios.
+  44.0-  47.0 87 de esos incendios empezaron así.
+  47.0-  50.0 Y ahora lo que casi nadie se imagina.
+  50.0-  53.0 Dentro del depósito no puede arder nada.
+  53.0-  57.0 Ahí hay tanto vapor y tampoco aire que la mezcla es demasiado rica.
+  57.0-  62.0 Lo que arde es el anillo de la boca, donde el vapor sale y se encuentra con el aire.
+  62.0-  69.0 Alargas la mano hacia la manguera y antes de tocarla, el aire se rompe, salta el arco justo en ese anillo.
+  69.0-  72.0 Encender esa mezcla cuesta un cuarto de milijulio.
+  72.0-  77.0 El chispazo que te hace decir, ahí, lleva casi cuatro veces más.
+  77.0-  80.0 Y en un día seco, más de veinte.
+  80.0-  83.0 Y no hace falta ni volver a entrar.
+  83.0-  86.0 Otros treinta y nueve incendios pasaron antes de empezar.
+  86.0-  90.0 El conductor bajó ya cargado y lo primero que tocó fue el tapón.
+  90.0-  94.8 Por eso el consejo no es no te subas al coche.
+  94.8-  97.8 Es no subirte mientras se llena el depósito.
+  97.8- 100.8 Ese rato y solo ese, es el que importa.
+ 100.8- 108.8 Y como donde te cargas es al salir, cada vez que bajes toca antes la chapa de la puerta con la mano desnuda, lejos del depósito.
+ 108.8- 111.8 Ahí la chispa salta donde no hay nada que arder.
+ 111.8- 114.8 Luego cuelgas la manguera, te subes y te vas tranquilo.
+ 114.8- 118.8 Y si aún así prende, tu instinto te va a traicionar.
+ 118.8- 121.8 Vas a querer arrancar la manguera, no la toques.
+ 121.8- 125.8 Deja la puesta, apartate y avisa para que corten el surtidor.
+ 125.8- 128.8 Con la manguera dentro la llama se queda en la boca.
+ 128.8- 131.8 En cuanto la sacas, la repartes.
+ 131.8- 135.8 Y con los bidones igual se llenan en el suelo nunca en el maletero.
+ 135.8- 140.8 Sobre el plástico la carga que genera el propio chorro no tiene por dónde escaparse.
+ 140.8- 142.8 Pasa poquísimo.
+ 142.8- 149.8 Unos 170 casos frente a miles de millones de repostajes, pero quedarte fuera esos dos minutos no cuesta nada.
+ 149.8- 152.8 Y ese cartel debería cambiar de sospechoso.

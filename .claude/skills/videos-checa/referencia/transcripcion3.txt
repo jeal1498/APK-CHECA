@@ -1,0 +1,24 @@
+   0.0-   4.8 Si cae un cable de alta tensión delante de ti, tu instinto es salir corriendo y correr
+   4.8-  10.0 es justo lo que te mata, porque el suelo no está a cero voltios.
+  10.0-  14.9 Cuando esa corriente entra en la tierra no desaparece, se reparte y el voltaje va bajando
+  14.9-  16.2 con la distancia.
+  16.2-  20.9 Alrededor del punto de contacto el suelo deja de ser plano, se levanta una montaña
+  20.9-  22.1 de voltaje.
+  22.1-  26.8 A un metro el terreno puede estar a ocho mil voltios, a dos metros a cuatro mil.
+  26.8-  28.9 Ahora piensa dónde tienes los pies.
+  29.0-  33.8 Si das una zancada de un metro un pie te queda a ocho mil voltios y el otro a cuatro mil.
+  33.8-  37.2 Cuatro mil voltios de diferencia entre un pie y el otro.
+  37.2-  40.3 Y uno de los caminos que los une pasa por tus piernas.
+  40.3-  41.9 Eso es la tensión de paso.
+  41.9-  44.9 No tocas nada, te electrocuta el propio suelo.
+  44.9-  48.4 Y cuanto más larga es la zancada, mayor es la diferencia.
+  48.4-  51.5 Correr es hacerla lo más larga posible.
+  51.5-  55.4 Por eso, cuando un rayo cae junto a un árbol mata a las vacas que hay debajo
+  55.4-  58.3 y muchas veces no a la persona que estaba al lado.
+  58.4-  63.7 Entre las patas delanteras y las traseras de una vaca hay casi dos metros de terreno
+  63.7-  65.4 y de voltaje.
+  65.4-  68.2 Así que si ves un cable en el suelo, pies juntos.
+  68.2-  72.5 Con los dos pies en el mismo punto de la cuesta entre ellos hay cero voltios.
+  72.5-  77.9 Y sales de ahí a pasitos cortísimos, sin separarlos nunca hasta estar a diez metros.
+  77.9-  80.5 El suelo no es cero voltios, es una cuesta.
+  80.5-  82.4 Y bajarla zancadas es lo que te mata.

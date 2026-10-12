@@ -1,33 +1,54 @@
-# Video de referencia (el estilo que Eduardo quiere alcanzar)
+# Referencias de video (lo que Eduardo quiere: el **diseño visual y el formato**)
 
-Explicativo vertical de «1Volt1Amp» (¿compensa poner paneles solares?), 720×1280, 2:15, −14 LUFS. El video original no se guarda en el repo (es de otra persona); aquí quedan la transcripción y los cuadros clave (`cuadros.jpg`, con el segundo de cada uno).
+Son 4 explicativos verticales de «1Volt1Amp». Lo que Eduardo pidió copiar es **el estilo visual y el formato**, no la historia de cada uno. **No** hace falta que cada video compare dos casos A/B: eso solo era el tema de la referencia 1.
 
-## Estructura (por segundo)
+| # | Tema | Duración | Cuadros | Transcripción |
+|---|---|---|---|---|
+| 1 | ¿Compensa poner paneles solares? (dos casas) | 2:15 | `cuadros1.jpg` | abajo |
+| 2 | El móvil en la gasolinera: «el sospechoso equivocado» | 2:37 | `cuadros2.jpg` | `transcripcion2.txt` |
+| 3 | Cable caído: «correr es lo que te mata» (tensión de paso) | 1:30 | `cuadros3.jpg` | `transcripcion3.txt` |
+| 4 | Duendes rojos sobre las tormentas | 2:56 | `cuadros4.jpg` | `transcripcion4.txt` |
+
+Los videos originales no se guardan (son de otra persona).
+
+## Sistema visual (lo obligatorio)
+- **Fondo casi negro azulado** (#05060F a #0B1026) con mucho espacio vacío. **Una sola idea en pantalla**, centrada; a veces un solo objeto.
+- **Ilustración de línea (line-art)**: objetos dibujados con contorno de 3–4 px en lavanda (#8B7FD6 / #A78BFA) y relleno muy oscuro (#120F2A). Carro, surtidor, persona, bidón, cable, poste: siluetas simples, esquinas redondeadas, sin texturas ni sombras. (La ref. 1 y 4 usan escenas planas rellenas más ricas, pero con la misma paleta.)
+- **Paleta de significado**: magenta/morado (#D946EF / #C026D3) = lo malo, el peligro, el número que duele; **cian (#22D3EE) = lo bueno o seguro**, la solución, «0 V»; amarillo/ámbar (#FBBF24) = fuego, chispa, energía, dinero; rojo con brillo solo para algo espectacular.
+- **Tipografía monoespaciada** en todo: números grandes en negrita («176», «8 000 V», «0 V») con una etiqueta chica debajo en minúsculas («incendios revisados», «tu cuerpo», «entre un pie y el otro»). Frases clave en MAYÚSCULAS espaciadas abajo («EL SOSPECHOSO EQUIVOCADO», «TENSIÓN DE PASO», «PIES JUNTOS», «DESCARGA LEJOS DEL DEPÓSITO») y una línea chica debajo que la explica. Fuente citada en letra mínima («Petroleum Equipment Institute · informe de 2018»).
+- **Recursos gráficos que se repiten**:
+  - Ícono en cuadro redondeado con **diagonal magenta** (prohibido / mito).
+  - Palabra **tachada** para el mito («~~CORRER~~ es lo que te mata»).
+  - **Rejilla de puntos** para contar casos (176 puntos; 87 se iluminan en magenta).
+  - Diagramas tipo ciencia: curvas rellenas con degradado, **líneas punteadas de cota** con su valor («8.000 V a 1 m»), flechas de medida («zancada de 1 m», «10 m»), reglas de altura en el borde («40 km… 80 km»).
+  - **✗ magenta / ✓ cian** para lo que no se hace y lo que sí.
+  - Partículas y cargas como puntitos que se mueven; brillos suaves (glow) en lo importante.
+- **Movimiento**: los trazos se dibujan solos, los puntos aparecen uno por uno, los números cuentan, un objeto se transforma en el siguiente. Cambios de escena por corte limpio o transformación, siempre con el mismo lenguaje visual. Zoom de cámara para entrar a un detalle.
+- **Sin subtítulos de karaoke.** En pantalla solo va la frase clave de cada momento (no lo que dice el narrador palabra por palabra).
+- **Cierre**: frase final que repite la idea («El suelo no es cero. Es una cuesta.») y la marca en mono con dos colores («1Volt1Amp» cian + magenta), sin llamada de venta agresiva.
+
+## Formato narrativo (libre, pero con estos patrones)
+- **Gancho que contradice lo que todos creen** en 1–2 frases: «el cartel… lleva 20 años vigilando al sospechoso equivocado», «tu instinto es correr y correr es justo lo que te mata», «nadie les creyó».
+- **Dato duro con fuente** muy pronto («176 casos… en ninguno había un móvil»).
+- **Mecanismo explicado paso a paso** con el diagrama (por qué pasa), luego el **número que lo vuelve real** («a un metro 8 000 V, a dos 4 000 V»).
+- **Giro**: «Y ahora lo que casi nadie se imagina…».
+- **Consejo práctico** concreto y corto («pies juntos», «toca la chapa lejos del depósito»), con ✓/✗.
+- **Honestidad**: «pasa poquísimo… pero no cuesta nada».
+- **Frase final** que repite la tesis en pocas palabras.
+- Narrador calmado, segunda persona, frases cortas. Duración original 1:30–3:00; para Checa se recorta a ~40 s (una sola idea).
+
+## Referencia 1 en detalle (paneles solares)
 
 | Seg | Parte | Qué hace |
 |---|---|---|
-| 0–11 | Gancho de paradoja | Dos casas iguales, mismos paneles, mismo sol y mismo precio. «Con números de ejemplo», una recupera en 6 años y la otra en más de 15. El marcador «6 años · 15+ años» con «Ejemplo» sube abajo. |
-| 11–29 | Pregunta y tesis | «¿Compensa…?» → «Depende mucho menos del panel que de la casa». Rompe el mito («se dice que se pagan solos») y anuncia «tres cosas de tu casa». Aparecen las pestañas. |
-| 29–50 | Cap. 1 · Sombra | Explica el mecanismo: la cámara entra **a pantalla completa en un solo panel** (cuadros de 40 y 47 s), con barra «Potencia 81 % → 67 %» y la parte apagada en negro. Cierra con un ejemplo concreto («una chimenea… apaga un tercio del panel»). |
-| 50–74 | Cap. 2 · Hora | Gráfica de curvas sobre las casas: «Lo que produce» (cian) contra «Lo que gastas» (morado), sol que se mueve por el día, monedas «Te la venden» grande y «Te la pagan» chica. Remata con una frase que se queda: «la luz que más vale es la que no compras». |
-| 74–106 | Cap. 3 · Años | Gráfica de potencia que baja en 30 años, marca «Se paga», el marcador recibe barras «3,8 veces / 1,6 veces lo que costó». Detalles honestos: el inversor dura 10–15 años, si te mudas lo ahorra el siguiente. |
-| 106–116 | Objeción extra | «¿Y una batería?»: escena aparte (casa de noche con la batería), responde con honestidad (encarece y alarga la recuperación). |
-| 116–126 | Repaso | Regresa al gancho: «Por eso la casa de 6 y la de 15 tenían los mismos paneles» y dice qué tenía cada una. |
-| 126–135 | Consejo + logo | Acción concreta («mira tu tejado a mediodía y a qué hora gastas»), frase final que repite la tesis y logo «1Volt1Amp» sin llamada de venta. |
+| 0–11 | Gancho de paradoja | Dos casas iguales; con números de ejemplo una recupera en 6 años y la otra en más de 15. Marcador «6 años · 15+ años». |
+| 11–29 | Pregunta y tesis | «Depende mucho menos del panel que de la casa»; rompe el mito y anuncia tres cosas. Pestañas. |
+| 29–50 | Cap. 1 · Sombra | Zoom a pantalla completa en un panel, barra de potencia 81 % → 67 %. |
+| 50–74 | Cap. 2 · Hora | Curvas «lo que produce / lo que gastas», monedas «te la venden / te la pagan». |
+| 74–106 | Cap. 3 · Años | Gráfica de 30 años, marca «Se paga», barras «3,8 veces / 1,6 veces». |
+| 106–135 | Batería, repaso, consejo, logo | Regresa al gancho y da una acción concreta. |
 
-## Recursos visuales
-- Un solo mundo (calle de noche con dos casas) que nunca se corta; la cámara se acerca, se aleja y a veces entra a un detalle a pantalla completa y regresa.
-- Marcador fijo abajo durante todo el video; se le agregan barras cuando hay dato nuevo.
-- Pestañas «1 Sombra · 2 Hora · 3 Años» arriba; la activa con borde cian.
-- Gráficas dibujándose (curvas, líneas, barras) con etiquetas chicas monoespaciadas; cian para un caso y morado para el otro; amarillo para el sol y el dinero.
-- Puntitos que fluyen por los cables (la energía) para que siempre haya movimiento suave.
-- El cielo cambia con la hora (atardecer morado → noche → día) cuando la historia lo pide.
-- Sin subtítulos tipo karaoke, sin sacudidas, sin destellos. Música ambiental muy baja.
-
-## Narración
-Calmada, en segunda persona, frases cortas que explican el porqué (mecanismo) antes del número. Siempre dice «con números de ejemplo». Cada capítulo empieza con «La primera / La segunda / La tercera…» y termina con una frase que resume.
-
-## Transcripción
+### Transcripción (referencia 1)
 
 ```
   0.0-  5.6  Pon los mismos paneles solares en dos casas iguales con el mismo sol y el mismo precio.
@@ -66,5 +87,5 @@ Calmada, en segunda persona, frases cortas que explican el porqué (mecanismo) a
 ```
 
 ## Qué ya tomamos y qué falta (video 1 de Checa)
-- Ya está: gancho de paradoja, mundo fijo, marcador, pestañas, gráficas por capítulo, colores cian/morado, movimiento suave.
-- Se puede agregar en los siguientes: **entrar a un detalle a pantalla completa** (p. ej. el pop-up o el odómetro) y regresar; **frase que se queda** al final de cada capítulo; **romper un mito** al inicio («se dice que…»); **repaso** que regresa al gancho; cielo que cambia con la hora. En 40 s caben 1 o 2 de estos, no todos.
+- El video 1 (`Gasolina150.tsx`) siguió solo la referencia 1: dos casos A/B, mundo fijo con carros rellenos, marcador y pestañas.
+- Falta acercarlo al sistema visual común de las 4: **line-art** con contorno lavanda, mono en todo, frases clave en mayúsculas espaciadas, ícono tachado del mito, rejilla de puntos, cotas punteadas, ✓/✗, una idea por pantalla.

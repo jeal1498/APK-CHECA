@@ -1,38 +1,41 @@
 ---
 name: videos-checa
-description: Hacer videos cortos explicativos de Checa (TikTok, Reels, Shorts) con narrador de IA, un solo mundo animado, marcador fijo y capítulos con gráficas, usando la plantilla de Remotion del repo. Úsala cuando Eduardo pida un video, un guion para video, «otro video como el de los $150», cambiar la voz o la música de un video, o un video sin que él salga a cuadro.
+description: Hacer videos cortos explicativos de Checa (TikTok, Reels, Shorts) con narrador de IA y el estilo visual de las referencias «1Volt1Amp» (line-art sobre fondo oscuro, tipografía mono, diagramas animados), usando Remotion en el repo. Úsala cuando Eduardo pida un video, un guion para video, «otro video como el de los $150», cambiar la voz o la música de un video, o un video sin que él salga a cuadro.
 ---
 
 # Videos explicativos de Checa
 
 **Único video aprobado y plantilla:** `marketing/videos/gasolina150.mp4` (video 1 «Tus $150 no son $150», 40 s), código en `video/src/Checa/Gasolina150.tsx`, voz en `video/public/gasolina150/`. Los videos anteriores (estilo de golpes y asfalto) se borraron a pedido de Eduardo: no los vuelvas a usar como modelo.
 
-**Formato** (sale de una referencia que le gusta a Eduardo, un explicativo de paneles solares de «1Volt1Amp»):
-- **Gancho de paradoja:** lo mismo en dos casos con resultado distinto, «con números de ejemplo» («Dos viajes de $150, mismo carro… uno te deja $130 y el otro $90»).
-- **Un solo mundo sin cortes:** calle de noche con dos carros (A en cian `#22D3EE`, B en morado `#A855F7`), estrellas, luna, cable con lucecitas que fluyen. La cámara solo hace un zoom lento.
-- **Marcador fijo abajo** con «Ejemplo · gasolina a $2 por km» y los dos resultados con barrita de color.
-- **3 capítulos con pestañas** arriba («1 Kilómetros · 2 Recogida · 3 Tiempo»); la activa se ilumina en cian. Cada capítulo dibuja su gráfica en el cielo (barras, ruta con la recogida punteada en rojo, barras de $/hora).
-- Etiquetas chicas en **Fira Code**, números grandes en InterDisplay. Movimiento suave (`Easing.out`), **sin sacudidas, destellos ni karaoke**; subtítulos discretos en y≈1500.
-- Cierre: los dos **pop-ups idénticos a la app** y luego logo + «7 días gratis · link en el perfil» + pregunta.
-- **Duración para TikTok: 40 s** (Eduardo la pidió así). Una línea de voz por capítulo; `armarEscenas(LINEAS, 3, 3, 40)`.
+**Lo que Eduardo quiere copiar de sus referencias es el DISEÑO VISUAL y el FORMATO, no la historia.** Hay 4 referencias de «1Volt1Amp» analizadas en `referencia/README.md` (léelo completo antes de cada video y mira `referencia/cuadros1–4.jpg`). **No** es obligatorio comparar dos casos A/B: eso solo era el tema de la referencia 1 (y del video 1). Cada video elige la historia que mejor explique su idea.
 
-**Antes de cada video lee `referencia/README.md`** (estructura por segundo, recursos visuales y transcripción de la referencia) y mira `referencia/cuadros.jpg`.
+**Diseño visual (obligatorio en todos):**
+- Fondo casi negro azulado, mucho espacio vacío, **una idea por pantalla**.
+- **Line-art**: objetos con contorno lavanda de 3–4 px y relleno muy oscuro (carro, teléfono, surtidor, persona, pin de recogida). Sin texturas ni sombras.
+- Colores con significado: **magenta = lo malo / el mito / el número que duele**, **cian = lo bueno / la solución**, ámbar = dinero o gasolina. Verde/amarillo/rojo de semáforo solo dentro del pop-up de Checa.
+- **Todo en monoespaciada (Fira Code)**: número grande + etiqueta chica debajo; frase clave en MAYÚSCULAS espaciadas abajo con una línea que la explica.
+- Recursos: ícono tachado con diagonal magenta (el mito), palabra tachada, rejilla de puntos para contar, cotas punteadas con su valor, flechas de medida, ✗ magenta / ✓ cian, partículas y brillos suaves.
+- Movimiento: trazos que se dibujan, puntos que aparecen, números que cuentan, objetos que se transforman; zoom a un detalle. Sin sacudidas, destellos ni karaoke; en pantalla solo la frase clave (subtítulos discretos opcionales en y≈1500).
+- Cierre: frase que repite la idea + logo Checa + «7 días gratis · link en el perfil» + pregunta.
+
+**Formato narrativo (patrones de las referencias):** gancho que contradice lo que todos creen → dato con fuente o número de ejemplo → mecanismo paso a paso con su diagrama → giro («y lo que casi nadie se imagina…») → consejo concreto con ✓/✗ → frase final. Narrador calmado, de tú, voz a 1.05. **40 s** para TikTok (una sola idea).
+
+**Video 1 (`Gasolina150.tsx`)**: sirve como base técnica (voces, tiempos con `en()`, marcador, pestañas, `Popup exacto`, cierre, volumen), pero su estilo visual (carros rellenos, calle con luna) es anterior a este análisis: los siguientes deben usar el line-art de arriba.
+
+**Calendario:** los 20 guiones están en `marketing/calendario-videos.html` (arreglo `V`), escritos para el estilo viejo. Al producir uno, **adáptalo a este formato** y presenta el guion para aprobación. Al terminar, márcalo con `est:"hecho",archivo:"marketing/videos/<nombre>.mp4"` y pon en `L` las líneas finales.
 
 Lee `.agents/product-marketing.md` antes de escribir el guion. Responde a Eduardo en español y corto.
-
-**Calendario:** los 20 guiones están en `marketing/calendario-videos.html` (arreglo `V`). Están escritos para el estilo viejo: al producir uno, **adáptalo a este formato** (dos casos A/B, 3 capítulos, 40 s) y presenta el guion adaptado para aprobación. Al terminar, márcalo con `est:"hecho",archivo:"marketing/videos/<nombre>.mp4"` y pon en `L` las líneas finales.
 
 ## 1. Guion (primero, y pedir aprobación antes de producir)
 
 Eduardo aprueba el guion antes de gastar créditos. Preséntalo como tabla de segundos con 🎙️ voz y 🖥️ en pantalla, más «La cuenta» con cada cifra.
 
-Estructura (8 líneas, ~40 s):
-1. Gancho: los dos casos iguales (misma tarifa, mismo carro).
-2. Resultado distinto, «con números de ejemplo» (sube el marcador).
-3. «La diferencia está en tres cosas que la oferta no te dice» (aparecen las pestañas).
-4–6. Un capítulo por línea: «Uno, …», «Dos, …», «Tres, …», cada uno con su número.
-7. Checa hace esa cuenta encima de cada oferta (pop-ups).
-8. «Pruébala siete días gratis» + pregunta para comentarios.
+Estructura sugerida (7–8 líneas, ~40 s; adáptala a la idea, no es obligatoria):
+1. Gancho que contradice lo que el conductor cree (con el ícono o la palabra tachada).
+2. Dato o ejemplo con números («con números de ejemplo»).
+3–5. Mecanismo paso a paso, cada paso con su diagrama y su número (pueden ser capítulos con pestañas si hay tres partes).
+6. Consejo concreto (✓/✗) y cómo Checa lo hace por ti (pop-up idéntico a la app).
+7. Frase final que repite la idea + «Pruébala siete días gratis» + pregunta.
 
 Reglas:
 - Narrador que le habla al conductor de **tú**. Nada de «yo».
