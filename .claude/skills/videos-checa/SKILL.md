@@ -5,10 +5,13 @@ description: Hacer videos cortos explicativos de Checa (TikTok, Reels, Shorts) c
 
 # Videos explicativos de Checa
 
-Formato aprobado por Eduardo (video de referencia: `marketing/videos/recogida-v2.mp4`, código en `video/src/Checa/Recogida2.tsx`):
+Formato aprobado por Eduardo. Videos hechos: `marketing/videos/recogida-v2.mp4` (`Recogida2.tsx`) y `marketing/videos/gasolina150.mp4` (`Gasolina150.tsx`, video 1 del calendario: **úsalo como plantilla**, ya trae el volumen corregido).
+Formato:
 narrador con voz de IA, **sin mascota y sin persona a cuadro**, fondo de asfalto de noche, gráficos del trabajo (carro, letreros de carretera, ticket, bomba de gasolina, billetes, semáforo, teléfono con la oferta y el pop-up de Checa), **algo que se mueve o golpea cada ~1.5 s**, música propia y efectos de sonido.
 
 Lee `.agents/product-marketing.md` antes de escribir el guion. Responde a Eduardo en español y corto.
+
+**Calendario:** los 20 guiones del mes ya están en `marketing/calendario-videos.html` (arreglo `V`), en este formato. Si Eduardo dice «apruebo el N», produce ese guion tal cual: el texto de `L[i][0]` es la voz de la línea `l{i+1}`, `L[i][1]` el texto en pantalla y `L[i][2]` el gráfico. Al terminar, márcalo en el calendario con `est:"hecho",archivo:"marketing/videos/<nombre>.mp4"`. Si un guion nuevo no está en el calendario, agrégalo ahí con el mismo formato.
 
 ## 1. Guion (primero, y pedir aprobación antes de producir)
 
@@ -37,7 +40,8 @@ Checklist viral (revísalo antes de entregar el guion): gancho en 1–3 s, una s
 ## 2. Voz, música y efectos (ElevenLabs)
 
 - Plan **Starter** de Eduardo (30 000 créditos/mes, licencia comercial). Un video de ~40 s gasta ~700 caracteres de voz, más la música.
-- La **clave** la da Eduardo en el chat. Guárdala solo en `/tmp/claude-0/.el_key` (con `umask 077`) o en `ELEVENLABS_API_KEY`. **Nunca** en el repo ni en commits. Debe tener permisos de Text to Speech, Music y Sound Effects.
+- La **clave** se lee de la variable de entorno `ELEVENLABS_API_KEY`. Eduardo la debe agregar en la configuración del entorno (menú del entorno en la barra de título → Edit → variable de entorno) para que no se pida en cada sesión. Si falta, pídele que la agregue ahí; no le pidas que la pegue en el chat. Si aun así la pega, guárdala solo en `/tmp/claude-0/.el_key` (con `umask 077`) y recomiéndale cambiarla y ponerla en la variable. **Nunca** en el repo ni en commits. Debe tener permisos de Text to Speech, Music y Sound Effects.
+- Ahorra créditos: reutiliza la música y los efectos que ya existen si el video dura ≤ 42 s.
 - Voz del narrador: `gncXGfeB8V1Weu7l6QUg` (ya es la predeterminada del script), velocidad 1.15.
 
 ```bash
@@ -61,6 +65,8 @@ Copia `video/src/Checa/Recogida2.tsx` a `video/src/Checa/<Nombre>.tsx` y cambia 
 - `graficos.tsx`: `Asfalto`, `Letrero` (de carretera: verde, rojo o amarillo), `Carro` (de lado, llantas que giran, humo), `Ticket` (se imprime por líneas), `Bomba` (display de pesos y litros), `Billetes` (salen volando), `SemaforoLuz`, y la paleta `K`.
 - `ui.tsx`: `Telefono`, `Mapa`, `Oferta` (oferta genérica, no imita marcas), `Popup` (el pop-up real de Checa), `Logo`.
 
+Mejor aún, copia `video/src/Checa/Gasolina150.tsx` (último video, con `volMusica={0.08}` y `volSfx={0.6}`).
+
 Registra la composición en `video/src/Root.tsx` (1080×1920, 30 fps, `durationInFrames` exportado por el archivo).
 
 Reglas de diseño:
@@ -68,6 +74,8 @@ Reglas de diseño:
 - **Un golpe cada 1–2 s** en `GOLPES`, sincronizado con la palabra clave (`en(i, "palabra")`), con su efecto de sonido. Los `fuerte: true` (sacudida) para los números que duelen.
 - Cada escena debe tener algo en pantalla desde su primer cuadro (no dejar huecos esperando a la voz).
 - Colores: verde/amarillo/rojo **solo** con su significado de semáforo; amarillo de carretera para resaltar; letreros verdes para datos neutros, rojos para pérdidas.
+- El pop-up debe salir con el color que daría la app con las metas por defecto ($8/km y $150/h): calcula $/km, $/h y la neta con las fórmulas de `Parser.kt` antes de ponerlo (en el video 1, $150 ÷ 20 km = $7.50/km → amarillo, no verde).
+- Si una escena espera una palabra para mostrar su primer elemento, pon ese elemento en `ESC[i].desde + 2` en lugar de esperar a la voz (en el video 1 la escena de «ciento cincuenta kilómetros al día» salía vacía).
 - Escribe las palabras de `en()` exactamente como salen en `lineas.py` (con puntuación: `"catorce."`, `"aceptes:"`). Si se repite, usa el 3er argumento (`vez`).
 
 ## 4. Revisar y renderizar
