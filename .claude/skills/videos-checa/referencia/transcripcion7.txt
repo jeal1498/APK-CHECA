@@ -1,0 +1,26 @@
+   0.0-   5.2 Esta calle se acaba de poner roja y Google no tiene ni una cámara ahí.
+   5.2-   7.8 Hace un minuto, dos coches han chocado.
+   7.8-   9.8 Detrás, la cola crece.
+   9.8-  11.6 ¿Quién se lo ha contado a Google?
+  11.6-  12.6 ¿El satélite?
+  12.6-  14.2 Su foto tiene meses.
+  14.2-  16.6 La respuesta va dentro de cada coche.
+  16.6-  19.0 Un móvil con la ubicación activada.
+  19.0-  21.8 Para Google, cada uno es un punto que se mueve.
+  21.8-  25.6 Dos posiciones y el tiempo entre ellas dan la velocidad.
+  25.6-  27.6 Por aquí se suele ir a 50.
+  27.6-  29.8 Ahora, los puntos van a 6.
+  29.8-  31.8 Así que, la pinta de rojo.
+  31.8-  33.8 Maps no sabe que hay un choque.
+  33.8-  36.2 Sólo sabe que los puntos se han frenado.
+  36.2-  38.8 Y si el punto lento es alguien andando.
+  38.8-  40.6 Por eso no se fía de uno.
+  40.6-  43.2 Necesita muchos, igual de lentos.
+  43.2-  45.0 Y ahí está la trampa.
+  45.0-  50.4 En 2020, el artista Simon Weckard metió 99 móviles en un carrito
+  50.4-  52.4 y lo paseo por una calle vacía.
+  52.4-  56.0 Maps pintó un atasco, sin un solo coche.
+  56.0-  58.8 Y empezó a mandar a los demás por otra calle.
+  58.8-  61.0 El rojo que ves no lo ve Google.
+  61.0-  63.6 Lo pintan los móviles de los de delante.
+  63.6-  68.0 Y en tu próximo atasco, el tuyo se lo pinta a los que vienen detrás.

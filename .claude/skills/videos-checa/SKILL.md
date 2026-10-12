@@ -7,18 +7,18 @@ description: Hacer videos cortos explicativos de Checa (TikTok, Reels, Shorts) c
 
 **Único video aprobado y plantilla:** `marketing/videos/gasolina150.mp4` (video 1 «Tus $150 no son $150», 40 s), código en `video/src/Checa/Gasolina150.tsx`, voz en `video/public/gasolina150/`. Los videos anteriores (estilo de golpes y asfalto) se borraron a pedido de Eduardo: no los vuelvas a usar como modelo.
 
-**Lo que Eduardo quiere copiar de sus referencias es el DISEÑO VISUAL y el FORMATO, no la historia.** Hay 4 referencias de «1Volt1Amp» analizadas en `referencia/README.md` (léelo completo antes de cada video y mira `referencia/cuadros1–4.jpg`). **No** es obligatorio comparar dos casos A/B: eso solo era el tema de la referencia 1 (y del video 1). Cada video elige la historia que mejor explique su idea.
+**Lo que Eduardo quiere copiar de sus referencias es el DISEÑO VISUAL y el FORMATO, no la historia.** Hay 7 referencias analizadas en `referencia/README.md`: 4 de «1Volt1Amp» (line-art y diagramas) y 3 de «@pixelmente» (pixel art, mapa con puntos, teléfono, etiquetas neón). Léelo completo antes de cada video, mira `referencia/cuadros1–7.jpg` y sigue la sección *Estilo Checa: cómo mezclarlas*. **No** es obligatorio comparar dos casos A/B: eso solo era el tema de la referencia 1 (y del video 1). Cada video elige la historia que mejor explique su idea.
 
-**Diseño visual (obligatorio en todos):**
-- Fondo casi negro azulado, mucho espacio vacío, **una idea por pantalla**.
-- **Line-art**: objetos con contorno lavanda de 3–4 px y relleno muy oscuro (carro, teléfono, surtidor, persona, pin de recogida). Sin texturas ni sombras.
-- Colores con significado: **magenta = lo malo / el mito / el número que duele**, **cian = lo bueno / la solución**, ámbar = dinero o gasolina. Verde/amarillo/rojo de semáforo solo dentro del pop-up de Checa.
-- **Todo en monoespaciada (Fira Code)**: número grande + etiqueta chica debajo; frase clave en MAYÚSCULAS espaciadas abajo con una línea que la explica.
-- Recursos: ícono tachado con diagonal magenta (el mito), palabra tachada, rejilla de puntos para contar, cotas punteadas con su valor, flechas de medida, ✗ magenta / ✓ cian, partículas y brillos suaves.
-- Movimiento: trazos que se dibujan, puntos que aparecen, números que cuentan, objetos que se transforman; zoom a un detalle. Sin sacudidas, destellos ni karaoke; en pantalla solo la frase clave (subtítulos discretos opcionales en y≈1500).
-- Cierre: frase que repite la idea + logo Checa + «7 días gratis · link en el perfil» + pregunta.
+**Diseño visual (obligatorio en todos; detalle en *Estilo Checa* del README):**
+- Fondo azul noche, **una idea por pantalla**; colores con significado: **magenta = lo malo / el mito / el número que duele**, **cian = lo bueno / la solución**, **amarillo/ámbar = dinero, gasolina y la palabra clave**. Verde/amarillo/rojo de semáforo solo dentro del pop-up de Checa.
+- **Teléfono con la oferta como personaje** y **mapa visto desde arriba** con calles, puntos que se mueven y rutas (recogida punteada magenta, viaje cian, regreso…).
+- **Etiquetas cortas en MAYÚSCULAS dentro de un recuadro con borde neón** (letra pixel/LCD o Fira Code), apiladas arriba; el mito se **tacha**. **Números gigantes** con una etiqueta chica.
+- Objetos simples: line-art (contorno lavanda, relleno oscuro) o pixel/isométrico sencillo (carro, gasolinera, calle). Diagramas limpios: cotas punteadas, rejilla de puntos, ✗ magenta / ✓ cian.
+- **Subtítulos** abajo (y≈1500), blancos en negrita, 1–2 líneas, con **la palabra clave en amarillo**.
+- Movimiento: la cámara se acerca y se mueve por la escena, trazos que se dibujan, puntos que avanzan, números que cuentan; cortes cada 2–4 s. Sin sacudidas ni destellos fuertes.
+- Cierre: frase que regresa al espectador + logo Checa + «7 días gratis · link en el perfil» + pregunta.
 
-**Formato narrativo (patrones de las referencias):** gancho que contradice lo que todos creen → dato con fuente o número de ejemplo → mecanismo paso a paso con su diagrama → giro («y lo que casi nadie se imagina…») → consejo concreto con ✓/✗ → frase final. Narrador calmado, de tú, voz a 1.05. **40 s** para TikTok (una sola idea).
+**Formato narrativo (patrones de las referencias):** gancho con una escena cotidiana del conductor que contradice o intriga → descartar la respuesta obvia → mecanismo con una imagen concreta y su número (de ejemplo o con fuente) → giro («y lo que casi nadie se imagina…») → consejo concreto con ✓/✗ → cierre que regresa a él («en tu próxima oferta…»). Narrador calmado, de tú, voz a 1.05. **40 s** para TikTok (una sola idea).
 
 **Video 1 (`Gasolina150.tsx`)**: sirve como base técnica (voces, tiempos con `en()`, marcador, pestañas, `Popup exacto`, cierre, volumen), pero su estilo visual (carros rellenos, calle con luna) es anterior a este análisis: los siguientes deben usar el line-art de arriba.
 

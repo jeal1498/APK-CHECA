@@ -1,0 +1,42 @@
+   0.0-   5.7 Esta antena cambia de satélite cada 15 segundos y no se mueve ni un milímetro.
+   5.7-   6.8 ¿Cómo lo hace?
+   6.8-   8.7 Lleva un motor escondido
+   8.7-  10.5 o apunta sin moverse.
+  10.5-  14.9 El internet por satélite de siempre usa uno que se queda quieto en el cielo
+  14.9-  19.2 pero para quedarse quieto tiene que estar a casi 36 mil kilómetros.
+  19.2-  20.8 Tu señal sube y baja
+  20.8-  23.3 con más de medio segundo de retraso.
+  23.3-  25.3 Starlink hizo lo contrario.
+  25.3-  28.4 Miles de satélites a sólo 500 kilómetros.
+  28.4-  30.4 70 veces más cerca.
+  30.4-  33.2 El retraso baja a unas 30 milésimas.
+  33.2-  35.4 Pero tan cerca no se quedan quietos.
+  35.4-  37.9 Van a 27 mil kilómetros por hora
+  37.9-  40.1 y cruzan tu cielo en unos minutos.
+  40.1-  43.6 Por eso tu antena salta de uno a otro cada 15 segundos.
+  43.6-  45.0 Un plato con motor.
+  45.0-  46.4 No llegaría a tiempo.
+  46.4-  49.2 Por dentro esta tiene más de mil antenitas.
+  49.2-  51.2 Imagina piedras cayendo al agua.
+  51.2-  54.6 Si caen todas juntas las ondas se suman y suben derechito.
+  54.6-  57.8 Si cada una cae un instante después que la de al lado
+  57.9-  59.5 la onda se inclina.
+  59.5-  61.2 Así apunta sin moverse
+  61.2-  64.1 y cambia de satélite en millonésimas de segundo.
+  64.1-  65.8 Y en mitad del océano
+  65.8-  68.5 se pasan tus datos de satélite en satélite
+  68.5-  69.6 con láser.
+  69.6-  70.6 Y en el vacío
+  70.6-  73.8 la luz corre más rápido que dentro de un cable de fibra.
+  73.8-  76.8 En Estados Unidos ya lo hacen con tu celular normal.
+  76.8-  80.6 Satélites con una antena de estas de 25 metros cuadrados
+  80.6-  84.0 que te dejan mandar mensajes sin una sola raya de señal.
+  84.0-  86.3 Hoy hay más de 11.000 allá arriba.
+  86.4-  88.8 Dos de cada tres satélites que funcionan
+  88.8-  90.2 son de Starlink.
+  90.2-  92.5 Si tienes una y se te corta unos segundos
+  92.5-  95.0 casi siempre es una rama que tapa el cielo.
+  95.0-  95.8 En la app
+  95.8-  98.2 comprobar obstrucciones te dice cuál.
+  98.2- 101.9 Y esta noche si ves un punto cruzar el cielo sin parpadear
+ 101.9- 103.9 probablemente es uno de ellos.

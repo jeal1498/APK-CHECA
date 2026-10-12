@@ -1,0 +1,14 @@
+   0.0-   6.7 Son las tres de la mañana. Tu móvil lleva cuatro horas al cien por cien y se está gastando.
+   6.7-  13.8 No se está sobrecargando. Al llegar al cien, deja de cargar. Entonces, ¿qué lo está gastando?
+  13.8-  19.8 Dentro hay una sola celda, dos láminas enrolladas, con litio entre ellas. Cargar es empujar
+  19.8-  26.7 ese litio de un lado al otro, en una carga completa unos 90.000 trillones de átomos.
+  26.7-  33.8 Al cien están todos apretados en un lado y así, llenos, crece más deprisa una costra que atrapa
+  33.8-  39.7 litio para siempre. Eso es lo que baja la salud de tu batería y con calor todavía más.
+  39.7-  49.8 Mira estas dos baterías, iguales un año guardadas sin usarlas. Esta al 40, conserva el 96%. Esta al
+  49.8-  57.0 100, el 80. Entonces, ¿mejor dejarla morir? Tampoco. Vaciarla entera la desgasta más que
+  57.0-  62.7 muchas cargas cortas. Eso de gastarla hasta el final viene de las pilas de níquel que tenían memoria.
+  62.7-  70.0 El litio no. Y si se te apaga, tu cero no es cero. Se apaga guardando una reserva. Lo que
+  70.0-  75.5 de verdad la daña es dejar la vacía durante semanas. Por eso, a las 3 de la mañana tu
+  75.5-  81.9 móvil puede estar en el 80. Aprende a qué hora lo coges y termina justo antes. Así que sí,
+  81.9-  87.2 déjalo cargando toda la noche. Tu móvil usa una pequeña ía solo para esto,
+  87.2-  90.4 que su batería pase llena el menor tiempo posible.

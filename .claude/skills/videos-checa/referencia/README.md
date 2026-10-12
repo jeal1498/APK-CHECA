@@ -1,5 +1,7 @@
 # Referencias de video (lo que Eduardo quiere: el **diseño visual y el formato**)
 
+Hay dos familias: **A · «1Volt1Amp»** (refs. 1–4, line-art y diagramas) y **B · «@pixelmente»** (refs. 5–7, pixel art y escenas 3D de bloques). A Eduardo le gustan las dos; ver al final *Estilo Checa: cómo mezclarlas*.
+
 Son 4 explicativos verticales de «1Volt1Amp». Lo que Eduardo pidió copiar es **el estilo visual y el formato**, no la historia de cada uno. **No** hace falta que cada video compare dos casos A/B: eso solo era el tema de la referencia 1.
 
 | # | Tema | Duración | Cuadros | Transcripción |
@@ -8,10 +10,13 @@ Son 4 explicativos verticales de «1Volt1Amp». Lo que Eduardo pidió copiar es 
 | 2 | El móvil en la gasolinera: «el sospechoso equivocado» | 2:37 | `cuadros2.jpg` | `transcripcion2.txt` |
 | 3 | Cable caído: «correr es lo que te mata» (tensión de paso) | 1:30 | `cuadros3.jpg` | `transcripcion3.txt` |
 | 4 | Duendes rojos sobre las tormentas | 2:56 | `cuadros4.jpg` | `transcripcion4.txt` |
+| 5 | B · Dejar el móvil cargando toda la noche | 1:35 | `cuadros5.jpg` | `transcripcion5.txt` |
+| 6 | B · Cómo apunta la antena de Starlink sin moverse | 1:49 | `cuadros6.jpg` | `transcripcion6.txt` |
+| 7 | B · Quién le avisa a Google Maps del atasco | 1:13 | `cuadros7.jpg` | `transcripcion7.txt` |
 
 Los videos originales no se guardan (son de otra persona).
 
-## Sistema visual (lo obligatorio)
+## Familia A · 1Volt1Amp: sistema visual
 - **Fondo casi negro azulado** (#05060F a #0B1026) con mucho espacio vacío. **Una sola idea en pantalla**, centrada; a veces un solo objeto.
 - **Ilustración de línea (line-art)**: objetos dibujados con contorno de 3–4 px en lavanda (#8B7FD6 / #A78BFA) y relleno muy oscuro (#120F2A). Carro, surtidor, persona, bidón, cable, poste: siluetas simples, esquinas redondeadas, sin texturas ni sombras. (La ref. 1 y 4 usan escenas planas rellenas más ricas, pero con la misma paleta.)
 - **Paleta de significado**: magenta/morado (#D946EF / #C026D3) = lo malo, el peligro, el número que duele; **cian (#22D3EE) = lo bueno o seguro**, la solución, «0 V»; amarillo/ámbar (#FBBF24) = fuego, chispa, energía, dinero; rojo con brillo solo para algo espectacular.
@@ -87,5 +92,35 @@ Los videos originales no se guardan (son de otra persona).
 ```
 
 ## Qué ya tomamos y qué falta (video 1 de Checa)
+- Ver también *Estilo Checa* al final: falta el mapa con puntos, el teléfono como personaje, etiquetas neón con letra pixel y subtítulos con palabra clave en amarillo.
 - El video 1 (`Gasolina150.tsx`) siguió solo la referencia 1: dos casos A/B, mundo fijo con carros rellenos, marcador y pestañas.
 - Falta acercarlo al sistema visual común de las 4: **line-art** con contorno lavanda, mono en todo, frases clave en mayúsculas espaciadas, ícono tachado del mito, rejilla de puntos, cotas punteadas, ✓/✗, una idea por pantalla.
+
+## Familia B · @pixelmente (refs. 5–7)
+
+**Sistema visual**
+- **Pixel art y voxel**: escenas en isométrico o 3D de bloques (cuarto con cama y buró, calle con edificios y coches cuadrados, pueblo en el desierto, la Tierra en baja resolución) y objetos en pixel art plano (batería, celda por dentro). Mucho más detalle y color que la familia A, pero siempre sobre azul noche.
+- **Teléfono como personaje**: un celular con barra de estado «9:41», app de navegación o batería grande «100 %» aparece al inicio y al final (ref. 5 y 7). Ideal para Checa.
+- **Mapa visto desde arriba**: cuadras blancas, calles con línea de color (verde normal, magenta/rojo atasco) y **puntos azules que se mueven** = cada coche/teléfono (ref. 7). Encaja perfecto con ofertas, recogidas y km.
+- **Etiquetas en recuadro con letra pixel/LCD**: textos cortos en mayúsculas dentro de un rectángulo con borde neón (cian, magenta o amarillo): «UN MOTOR», «SIN MOVERSE», «AHORA: 6 KM/H», «CÁMARAS DE GOOGLE AQUÍ: 0», «×70 MÁS CERCA». Se apilan arriba como resumen y se **tachan** cuando son el mito («~~UN MOTOR~~ → SIN MOVERSE»).
+- **Números gigantes en fuente pixel** para el dato que importa («14.432 KM» blanco, «0,4 S» magenta, «27.000 KM/H» en recuadro amarillo, «2020» dorado).
+- **Gráficas tipo pantalla de aparato**: barra «SALUD 80 %», línea de carga de 23:00 a 7:00 con el momento actual marcado, comparaciones lado a lado (40 % vs 100 % tras «1 AÑO»).
+- **Subtítulos siempre**, abajo, blancos en negrita, 1–2 líneas, con **la palabra clave en amarillo/naranja** («y se está *gastando*», «Setenta veces más *cerca*»). Firma chica @usuario debajo.
+- Paleta: azul noche (#0B1230 → #1B2550), cian #22D3EE, magenta #EC4899, amarillo #FACC15, verde #4ADE80; acentos naranja/arena en escenas de día.
+- **Movimiento**: la cámara vuela por la escena 3D (acercamientos, giros, pasar de la calle al mapa desde arriba al teléfono), cortes rápidos cada 2–4 s, transiciones con efecto de pantalla/glitch suave, los puntos del mapa se mueven en tiempo real.
+
+**Formato narrativo**
+- Gancho con una escena cotidiana + pregunta que intriga: «Son las tres de la mañana. Tu móvil lleva cuatro horas al 100 % y se está gastando», «Esta calle se acaba de poner roja y Google no tiene ni una cámara ahí», «Esta antena cambia de satélite cada 15 segundos y no se mueve ni un milímetro».
+- Descarta las respuestas obvias una por una («¿El satélite? Su foto tiene meses.» «No se está sobrecargando.»).
+- Revela el mecanismo con una imagen concreta («para Google, cada uno es un punto que se mueve», «imagina piedras cayendo al agua»).
+- Dato o caso real con fecha («en 2020, el artista Simon Weckert metió 99 móviles en un carrito…»).
+- Consejo y **cierre que regresa a ti**: «Y en tu próximo atasco, el tuyo se lo pinta a los que vienen detrás», «esta noche, si ves un punto cruzar el cielo sin parpadear, probablemente es uno de ellos».
+- Frases muy cortas, ritmo más rápido que la familia A, duración 1:10–1:50.
+
+## Estilo Checa: cómo mezclarlas
+Lo común a las 7: fondo azul noche, cian/magenta/amarillo con significado, **una idea por pantalla**, etiquetas cortas en mayúsculas, números grandes, gancho que contradice o intriga, mecanismo explicado con una imagen, cierre que regresa al espectador.
+
+Para Checa, tomar:
+- De **B**: el **teléfono con la oferta** como personaje, el **mapa desde arriba con puntos y rutas** (recogida, viaje, regreso), las **etiquetas en recuadro neón** con letra pixel y tachado del mito, los **números gigantes**, los **subtítulos con la palabra clave en amarillo** y escenas isométricas sencillas (carro, gasolinera, calle).
+- De **A**: diagramas limpios (cotas punteadas, rejilla de puntos, curvas), ✗ magenta / ✓ cian y la calma del narrador en las partes de explicación.
+- Mantener: pop-up de Checa idéntico a la app, cifras honestas, 40 s.
