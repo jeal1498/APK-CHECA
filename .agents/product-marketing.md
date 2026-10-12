@@ -1,6 +1,6 @@
 # Product Marketing Context — Checa
 
-**Document version:** v1
+**Document version:** v2
 **Last updated:** 2026-10-12
 
 ## Product Overview
@@ -8,7 +8,7 @@
 **What it does:** Cuando llega una oferta en Uber Driver o DiDi Conductor, Checa lee la pantalla y muestra un pop-up encima con la ganancia neta (después de gasolina), $/km, $/hora y un semáforo: ACEPTAR (verde), CONSIDERAR (amarillo) o RECHAZAR (rojo). También avisa con voz o vibración, compara dos ofertas a la vez (pantalla dividida) y muestra las mejores horas para manejar.
 **Product category:** App calculadora / asistente de ofertas para conductores de apps de transporte (se busca como "calculadora de viajes Uber", "filtro de viajes DiDi", alternativa a Ruta Rentable).
 **Product type:** App Android (APK fuera de Play Store por ahora) con licencia por cuenta Google.
-**Business model:** 7 días de prueba gratis, luego pago con Mercado Pago (tarjeta, OXXO, saldo):
+**Business model:** 7 días de prueba gratis, luego **pago único** con Mercado Pago (tarjeta, OXXO, saldo); no es suscripción, no hay cobros automáticos ni nada que cancelar:
 - 1 mes $99 (Plan Básico: 1 equipo, sin comparador ni "lo mejor que viene")
 - 6 meses $399 (Plan Estratega, el recomendado, "Más popular")
 - 1 año $899 (Plan Pro)
@@ -60,6 +60,7 @@ B2C, una sola persona: el conductor que quiere ganar más por hora y gastar meno
 |-----------|----------|
 | "¿Me pueden bloquear la cuenta de Uber/DiDi?" | Checa solo lee la pantalla; no toca ni acepta viajes por ti. |
 | "No está en Play Store, ¿es seguro?" | Pide Accesibilidad solo para leer Uber/DiDi; los datos no salen del teléfono. Guía paso a paso para instalar. |
+| "No quiero que me cobren cada mes" | Es pago único: pagas el paquete y listo, sin cargos automáticos. |
 | "¿Vale la pena pagar?" | Un solo viaje malo evitado al día paga el mes. 7 días gratis para probar. |
 | "Mi banco bloquea apps con Accesibilidad" | El lector se limita a Uber/DiDi y se puede pausar desde Ajustes. |
 
@@ -95,9 +96,9 @@ B2C, una sola persona: el conductor que quiere ganar más por hora y gastar meno
 **Visual:** Fondo negro, verde #22C55E, amarillo #FACC15, rojo #F43F5E, dorado #E8B84A (fundador); Fira Sans / Fira Code.
 
 ## Proof Points
-**Metrics:** Pendiente (número de conductores, ofertas leídas, ahorro promedio).
-**Customers:** Pendiente.
-**Testimonials:** Pendiente.
+**Metrics:** Aún no hay (2026-10-12) (número de conductores, ofertas leídas, ahorro promedio).
+**Customers:** Aún no hay clientes que citar.
+**Testimonials:** Aún no hay. No inventar testimonios.
 **Value themes:**
 | Theme | Proof |
 |-------|-------|
@@ -112,4 +113,5 @@ B2C, una sola persona: el conductor que quiere ganar más por hora y gastar meno
 
 ## Changelog
 *Newest first. One line per revision: what changed and why.*
+- v2 (2026-10-12) — Modelo de cobro: pago único (no suscripción); objeción de cobros recurrentes; sin clientes ni testimonios todavía.
 - v1 (2026-10-12) — Initial context, borrador desde el código, CLAUDE.md, landing y video.
