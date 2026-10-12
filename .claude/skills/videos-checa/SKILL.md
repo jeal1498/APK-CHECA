@@ -9,6 +9,8 @@ Formato aprobado por Eduardo. Videos hechos: `marketing/videos/recogida-v2.mp4` 
 Formato:
 narrador con voz de IA, **sin mascota y sin persona a cuadro**, fondo de asfalto de noche, gráficos del trabajo (carro, letreros de carretera, ticket, bomba de gasolina, billetes, semáforo, teléfono con la oferta y el pop-up de Checa), **algo que se mueve o golpea cada ~1.5 s**, música propia y efectos de sonido.
 
+**Formato B · explicativo tranquilo (el que Eduardo quiere alcanzar, referencia «1Volt1Amp» de paneles solares):** primera versión en `marketing/videos/gasolina150-v2.mp4` (`video/src/Checa/Gasolina150b.tsx`, 74 s). Gancho de paradoja (lo mismo en dos casos con un resultado distinto, «con números de ejemplo»), **un solo mundo sin cortes** (calle de noche con dos carros, A en cian y B en morado), **marcador fijo abajo** con «Ejemplo», **3 capítulos con pestañas** arriba, gráficas animadas con etiquetas chicas en Fira Code, movimientos suaves (sin sacudidas ni destellos), subtítulos discretos, voz a 1.05, música calmada propia (`volumen 0.14`) y cierre que regresa al gancho + consejo + logo. Dura 60–90 s. Para este formato copia `Gasolina150b.tsx` (no usa `VideoExplicativo`).
+
 Lee `.agents/product-marketing.md` antes de escribir el guion. Responde a Eduardo en español y corto.
 
 **Calendario:** los 20 guiones del mes ya están en `marketing/calendario-videos.html` (arreglo `V`), en este formato. Si Eduardo dice «apruebo el N», produce ese guion tal cual: el texto de `L[i][0]` es la voz de la línea `l{i+1}`, `L[i][1]` el texto en pantalla y `L[i][2]` el gráfico. Al terminar, márcalo en el calendario con `est:"hecho",archivo:"marketing/videos/<nombre>.mp4"`. Si un guion nuevo no está en el calendario, agrégalo ahí con el mismo formato.
