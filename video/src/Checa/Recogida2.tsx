@@ -397,26 +397,27 @@ const Sfx: React.FC<{ en: number; src: string; vol?: number }> = ({ en: e, src, 
 const GOLPES: { f: number; color: string; fuerte?: boolean; sfx?: string }[] = [
   { f: 0, color: K.blanco, fuerte: true, sfx: "golpe.wav" },
   { f: en(0, "lana"), color: K.amarillo, fuerte: true, sfx: "golpe.wav" },
-  { f: en(0, "Al"), color: K.amarillo, sfx: "ding.wav" },
-  { f: ESC[1].desde, color: K.blanco, sfx: "whoosh.wav" },
+  { f: en(0, "Al"), color: K.amarillo, sfx: "recogida2/pop.mp3" },
+  { f: ESC[1].desde, color: K.blanco, sfx: "recogida2/motor.mp3" },
   { f: en(1, "Son"), color: K.rojo, sfx: "whoosh.wav" },
-  { f: en(1, "nadie"), color: K.rojo, fuerte: true, sfx: "error.wav" },
+  { f: en(1, "nadie"), color: K.rojo, fuerte: true, sfx: "recogida2/frenado.mp3" },
   { f: ESC[2].desde + 2, color: K.verde, sfx: "whoosh.wav" },
   { f: en(2, "seis"), color: K.rojo, sfx: "whoosh.wav" },
   { f: en(2, "Esos"), color: K.amarillo, fuerte: true, sfx: "golpe.wav" },
   { f: ESC[3].desde, color: K.blanco, sfx: "whoosh.wav" },
   { f: en(3, "veintiocho"), color: K.rojo, sfx: "error.wav" },
-  { f: en(3, "quedan"), color: K.amarillo, fuerte: true, sfx: "golpe.wav" },
+  { f: en(3, "quedan"), color: K.amarillo, fuerte: true, sfx: "recogida2/caja.mp3" },
   { f: ESC[4].desde, color: K.rojo, sfx: "whoosh.wav" },
-  { f: en(4, "treinta"), color: K.rojo, sfx: "whoosh.wav" },
+  { f: en(4, "treinta"), color: K.rojo, sfx: "recogida2/pop.mp3" },
   { f: en(4, "Sesenta"), color: K.amarillo, fuerte: true, sfx: "golpe.wav" },
   { f: en(4, "En"), color: K.blanco, sfx: "whoosh.wav" },
   { f: en(4, "mes"), color: K.rojo, fuerte: true, sfx: "golpe.wav" },
-  { f: en(4, "salen"), color: K.rojo, sfx: "error.wav" },
+  { f: en(4, "salen"), color: K.rojo, sfx: "recogida2/caja.mp3" },
   { f: ESC[5].desde, color: K.amarillo, sfx: "whoosh.wav" },
   { f: en(5, "aceptes:"), color: K.rojo, fuerte: true, sfx: "golpe.wav" },
   { f: en(5, "cuánto"), color: K.blanco, sfx: "whoosh.wav" },
   { f: ESC[6].desde, color: K.verde, fuerte: true, sfx: "ding.wav" },
+  { f: ESC[6].voz + 10, color: K.verde, sfx: "recogida2/motor.mp3" },
   { f: en(6, "¿cuál"), color: K.amarillo, fuerte: true, sfx: "golpe.wav" },
 ];
 
@@ -431,7 +432,7 @@ const TONO = [
   "rgba(34,197,94,0.16)",
 ];
 
-export const Recogida2: React.FC<{ musica?: string }> = ({ musica = "beat.m4a" }) => {
+export const Recogida2: React.FC<{ musica?: string }> = ({ musica = MUSICA }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const k = Math.max(0, ESC.findIndex((e) => frame >= e.desde && frame < e.hasta));
@@ -462,7 +463,10 @@ export const Recogida2: React.FC<{ musica?: string }> = ({ musica = "beat.m4a" }
   return (
     <AbsoluteFill style={{ fontFamily: F, overflow: "hidden" }}>
       <Asfalto tono={TONO[k]} vel={k === 1 ? 40 : 22} />
-      <Audio src={staticFile(musica)} volume={0.16} />
+      <Audio
+        src={staticFile(musica)}
+        volume={(f) => interpolate(f, [0, 6, DURACION_RECOGIDA2 - 40, DURACION_RECOGIDA2], [0.2, 0.11, 0.11, 0], clamp)}
+      />
       {ESC.map((e, i) => (
         <Sequence key={i} from={e.voz}>
           <Audio src={staticFile(`recogida2/${LINEAS[i].archivo}.mp3`)} />

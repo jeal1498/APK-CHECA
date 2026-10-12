@@ -28,7 +28,7 @@ export const RemotionRoot: React.FC = () => {
     />
     <Composition id="ChecaReacciona1" component={Reacciona} durationInFrames={DURACION_REACCIONA} fps={30} width={1080} height={1920} />
     <Composition id="ExplicaRecogida" component={Recogida} durationInFrames={DURACION_RECOGIDA} fps={30} width={1080} height={1920} />
-    <Composition id="Recogida2" component={Recogida2} durationInFrames={DURACION_RECOGIDA2} fps={30} width={1080} height={1920} defaultProps={{ musica: "beat.m4a" }} />
+    <Composition id="Recogida2" component={Recogida2} durationInFrames={DURACION_RECOGIDA2} fps={30} width={1080} height={1920} defaultProps={{ musica: "recogida2/musica.mp3" }} />
     </>
   );
 };
