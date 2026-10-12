@@ -22,7 +22,7 @@ description: Hacer videos cortos explicativos de Checa (TikTok, Reels, Shorts) c
 
 **Video 1 (`Gasolina150.tsx`)**: sirve como base técnica (voces, tiempos con `en()`, marcador, pestañas, `Popup exacto`, cierre, volumen), pero su estilo visual (carros rellenos, calle con luna) es anterior a este análisis: los siguientes deben usar el line-art de arriba.
 
-**Calendario:** los 20 guiones están en `marketing/calendario-videos.html` (arreglo `V`), escritos para el estilo viejo. Al producir uno, **adáptalo a este formato** y presenta el guion para aprobación. Al terminar, márcalo con `est:"hecho",archivo:"marketing/videos/<nombre>.mp4"` y pon en `L` las líneas finales.
+**Calendario:** el calendario viejo de 20 guiones se borró a pedido de Eduardo. Él va a indicar cuándo hacer uno nuevo; no lo armes ni propongas temas por tu cuenta hasta que lo pida.
 
 Lee `.agents/product-marketing.md` antes de escribir el guion. Responde a Eduardo en español y corto.
 
