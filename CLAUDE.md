@@ -8,9 +8,9 @@ Contexto para continuar el proyecto en una conversación nueva.
 - Se escribió **desde cero** como alternativa propia a la app comercial "Ruta Rentable".
 - **No** se modificó, descompiló ni copió el APK de Ruta Rentable, y esa regla se mantiene. Ruta Rentable solo sirve como referencia de *qué funciones* tener (formato del pop-up, "filtros inteligentes"). El diseño y el código son propios, con estilo verde y oscuro.
 - Desde v21 se **vende** a otros conductores; desde v31 la licencia va **ligada a la cuenta Google** (Supabase), y los códigos por equipo siguen valiendo (ver *Licencias y venta*).
-- Usuaria: Karen. Usa la app en su **teléfono** y en una **tablet en horizontal con pantalla dividida** (DiDi a la izquierda, Uber a la derecha).
+- Usuario: **Eduardo** (Lalo, hombre: tratarlo en masculino; la cuenta de Claude está a nombre de Karen). Donde este archivo dice «ella» o «la usuaria», se refiere a él. Usa la app en su **teléfono** y en una **tablet en horizontal con pantalla dividida** (DiDi a la izquierda, Uber a la derecha).
 
-## Cómo trabajar con la usuaria
+## Cómo trabajar con el usuario
 - **Respuestas concisas, en español**, sin textos largos.
 - Tras cada cambio: commit, push a `main`, esperar a que GitHub Actions compile y **pasarle el link directo del APK** (`https://github.com/jeal1498/Mi-Ruta/releases/download/vN/MiRuta.apk`).
 - Ella prueba en su teléfono y manda **capturas**. Para bugs de lectura, pedirle que active **Diagnóstico** y comparta las "capturas de texto".
@@ -71,7 +71,7 @@ Contexto para continuar el proyecto en una conversación nueva.
   2. El workflow `licencia.yml` firma, anota en `clientes.md`, borra el pedido y escribe `pedidos/respuesta.txt` (`codigo=…`). Tarda ~30 s.
   3. `git pull origin main` hasta que la respuesta sea la nueva y pasarle el `codigo` completo.
   - Ese push no compila APK (`build.yml` ignora `pedidos/**`, `clientes.md` y `CLAUDE.md`).
-- Insignia dorada **⭐ Miembro fundador** en Inicio y Ajustes si la licencia trae `F`. Karen tiene licencia de fundadora sin vencimiento en su celular (05E7-8598) y su tablet (4817-F84C). **No** usar esos equipos para pruebas.
+- Insignia dorada **⭐ Miembro fundador** en Inicio y Ajustes si la licencia trae `F`. Eduardo tiene licencia de fundador sin vencimiento en su celular (05E7-8598) y su tablet (4817-F84C). **No** usar esos equipos para pruebas.
 - Probado de punta a punta desde una conversación nueva (pedido → código → activado en la tablet).
 - Precios: Ruta Rentable cobra $129/mes. Propuesta: $99/mes o $899/año; fundadores (primeros 50) $49/mes de por vida.
 - El repo ya es **privado** (la API pública da 404; usar las herramientas de GitHub MCP para revisar Actions).
