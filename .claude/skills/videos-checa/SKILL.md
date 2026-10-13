@@ -5,7 +5,19 @@ description: Hacer videos cortos de Checa (TikTok, Reels, Shorts) con narrador d
 
 # Videos de Checa
 
-## Estilo aprobado: «punto dulce» (Eduardo, octubre 2026)
+## ⚠️ Estilo actual: «1Volt a color» (Eduardo, octubre 2026)
+
+Desde el anuncio «Recogidas lejanas» Eduardo pidió **usar siempre el estilo 1Volt** (2D, line-art en SVG) porque el 3D gasta demasiados tokens y tiempo (render por software). El 3D le gusta mucho, pero queda **en pausa**: no lo uses salvo que él lo pida.
+
+- Plantilla: **`video/src/Checa/Recogida1Volt.tsx`** (`marketing/videos/recogida-1volt.mp4`). Una idea por pantalla: trazos que se dibujan solos (`Trazo`), cotas punteadas (`Cota`), rejilla de puntos, ticket con la cuenta, número gigante en Fira Code, frase clave en MAYÚSCULAS espaciadas con una línea chica debajo, ícono tachado, pop-up exacto (`POPUP`) y cierre con logo.
+- **Más colores**: cada escena tiene su color de trazo y tinte de fondo (`TONO`: naranja, rosa, azul, morado, verde, amarillo, rojo, magenta, cian), además de cian/magenta/amarillo con significado.
+- **Subtítulos para redes** (`Subs`): abajo en y≈1500, Inter 800 de 70 px con contorno negro, 1–3 palabras, rebote al entrar y palabras clave a color (`CLAVE`). La frase clave va en y≈1270.
+- Render **sin** `--gl=swangle`: `npx remotion render <Id> out/x.mp4 --browser-executable=$B --log=error` (~1 min para 30 s).
+- **Ahorro de tokens**: reutiliza la plantilla y cambia solo escenas, textos y cifras; revisa como máximo una tira de 4 cuadros antes del render; no rehagas la voz si el texto no cambió.
+
+Lo que sigue describe el estilo 3D (en pausa); las reglas de guion, voz, cifras y entrega aplican igual.
+
+## Estilo 3D «punto dulce» (en pausa) (Eduardo, octubre 2026)
 
 Después de varias pruebas, Eduardo aprobó este estilo y **le gustan las 8 vistas**. Es el que se usa en todos los videos nuevos:
 
