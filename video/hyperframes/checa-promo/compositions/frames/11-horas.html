@@ -1,0 +1,137 @@
+<template>
+  <div id="root" data-composition-id="11-horas" data-start="0" data-duration="2.351" data-width="1080" data-height="1920">
+    <style>
+      @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Regular.ttf') format('truetype'); font-weight: 400; font-display: block; }
+      @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Medium.ttf') format('truetype'); font-weight: 500 600; font-display: block; }
+      @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Bold.ttf') format('truetype'); font-weight: 700 900; font-display: block; }
+      @font-face{ font-family: 'Fira Code'; src: url('assets/fonts/FiraCode.ttf') format('truetype'); font-weight: 300 700; font-display: block; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; font-family: 'Fira Sans', sans-serif; color: #000000; }
+      .h11-bg { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; background: #F1F5F2; container-type: size; }
+      .h11-stage { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+      .h11-kicker { position: absolute; left: 78px; top: 236px; display: flex; align-items: center; gap: 22px; font-family: 'Fira Code', monospace; font-weight: 500; font-size: 34px; letter-spacing: 0.14em; text-transform: uppercase; color: #000000; white-space: nowrap; }
+      .h11-kicker .h11-idx { color: #22C55E; }
+      .h11-rule { position: absolute; left: 78px; top: 300px; width: 72px; height: 4px; background: #22C55E; }
+      .h11-cam { position: absolute; left: 78px; top: 380px; width: 924px; height: 924px; }
+      .h11-grid { position: absolute; left: 0; top: 0; width: 924px; height: 924px; display: grid; grid-template-columns: repeat(4, 216px); grid-template-rows: repeat(4, 216px); gap: 20px; }
+      .h11-slot { border: 2px solid #D7D9D8; }
+      .h11-tile { position: relative; width: 216px; height: 216px; }
+      .h11-face { position: absolute; left: 0; top: 0; width: 216px; height: 216px; display: flex; align-items: center; justify-content: center; }
+      .h11-v .h11-face { background: #22C55E; }
+      .h11-a .h11-face { background: #F5B70A; }
+      .h11-r .h11-face { background: #EF4444; }
+      .h11-num { font-family: 'Fira Code', monospace; font-weight: 600; font-size: 96px; letter-spacing: -0.02em; color: #000000; line-height: 1; }
+      .h11-unit { position: absolute; left: 18px; top: 16px; font-family: 'Fira Code', monospace; font-weight: 500; font-size: 22px; letter-spacing: 0.14em; color: rgba(17,17,17,0.55); }
+      .h11-glow { position: absolute; left: -26px; top: -26px; width: 268px; height: 268px; background: #22C55E; filter: blur(26px); opacity: 0; }
+      .h11-line { position: absolute; left: 78px; top: 1400px; width: 924px; display: flex; align-items: baseline; font-family: 'Fira Code', monospace; font-weight: 500; font-size: 50px; color: #000000; white-space: nowrap; }
+      .h11-line .h11-wrap { display: inline-flex; align-items: baseline; min-width: 880px; white-space: pre; }
+      .h11-line .h11-hl { color: #16A34A; font-weight: 700; }
+      .h11-cursor { display: inline-block; width: 16px; height: 50px; margin-left: 6px; background: #22C55E; align-self: center; }
+    </style>
+
+    <div class="h11-bg clip" data-start="0" data-duration="2.351" data-track-index="0"></div>
+
+    <div class="h11-stage clip" data-start="0" data-duration="2.351" data-track-index="1">
+      <div class="h11-kicker" id="h11-kicker"><span class="h11-idx">09</span><span>/</span><span>MEJORES HORAS</span></div>
+      <div class="h11-rule" id="h11-rule"></div>
+
+      <div class="h11-cam" id="h11-cam">
+        <div class="h11-grid" id="h11-slots">
+          <div class="h11-slot"></div>
+          <div class="h11-slot"></div>
+          <div class="h11-slot"></div>
+          <div class="h11-slot"></div>
+          <div class="h11-slot"></div>
+          <div class="h11-slot"></div>
+          <div class="h11-slot"></div>
+          <div class="h11-slot"></div>
+          <div class="h11-slot"></div>
+          <div class="h11-slot"></div>
+          <div class="h11-slot"></div>
+          <div class="h11-slot"></div>
+          <div class="h11-slot"></div>
+          <div class="h11-slot"></div>
+          <div class="h11-slot"></div>
+          <div class="h11-slot"></div>
+        </div>
+        <div class="h11-grid" id="h11-tiles">
+          <div class="h11-tile h11-r" id="h11-t6"><div class="h11-face"><span class="h11-num">06</span><span class="h11-unit">H</span></div></div>
+          <div class="h11-tile h11-a" id="h11-t7"><div class="h11-face"><span class="h11-num">07</span><span class="h11-unit">H</span></div></div>
+          <div class="h11-tile h11-v" id="h11-t8"><div class="h11-face"><span class="h11-num">08</span><span class="h11-unit">H</span></div></div>
+          <div class="h11-tile h11-v" id="h11-t9"><div class="h11-face"><span class="h11-num">09</span><span class="h11-unit">H</span></div></div>
+          <div class="h11-tile h11-a" id="h11-t10"><div class="h11-face"><span class="h11-num">10</span><span class="h11-unit">H</span></div></div>
+          <div class="h11-tile h11-r" id="h11-t11"><div class="h11-face"><span class="h11-num">11</span><span class="h11-unit">H</span></div></div>
+          <div class="h11-tile h11-a" id="h11-t12"><div class="h11-face"><span class="h11-num">12</span><span class="h11-unit">H</span></div></div>
+          <div class="h11-tile h11-v" id="h11-t13"><div class="h11-face"><span class="h11-num">13</span><span class="h11-unit">H</span></div></div>
+          <div class="h11-tile h11-a" id="h11-t14"><div class="h11-face"><span class="h11-num">14</span><span class="h11-unit">H</span></div></div>
+          <div class="h11-tile h11-r" id="h11-t15"><div class="h11-face"><span class="h11-num">15</span><span class="h11-unit">H</span></div></div>
+          <div class="h11-tile h11-a" id="h11-t16"><div class="h11-face"><span class="h11-num">16</span><span class="h11-unit">H</span></div></div>
+          <div class="h11-tile h11-v h11-hero" id="h11-t17"><div class="h11-glow"></div><div class="h11-face"><span class="h11-num">17</span><span class="h11-unit">H</span></div></div>
+          <div class="h11-tile h11-v h11-hero" id="h11-t18"><div class="h11-glow"></div><div class="h11-face"><span class="h11-num">18</span><span class="h11-unit">H</span></div></div>
+          <div class="h11-tile h11-v h11-hero" id="h11-t19"><div class="h11-glow"></div><div class="h11-face"><span class="h11-num">19</span><span class="h11-unit">H</span></div></div>
+          <div class="h11-tile h11-a" id="h11-t20"><div class="h11-face"><span class="h11-num">20</span><span class="h11-unit">H</span></div></div>
+          <div class="h11-tile h11-r" id="h11-t21"><div class="h11-face"><span class="h11-num">21</span><span class="h11-unit">H</span></div></div>
+        </div>
+      </div>
+
+      <div class="h11-line" id="h11-line">
+        <span class="h11-wrap"><span id="h11-txt"></span><span class="h11-hl" id="h11-hl"></span><span class="h11-cursor" id="h11-cursor"></span></span>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      (function () {
+        var root = document.querySelector('[data-composition-id="11-horas"]');
+        var q = function (s) { return root.querySelectorAll(s); };
+        var one = function (s) { return root.querySelector(s); };
+        var tl = gsap.timeline({ paused: true });
+
+        // Scene 1 (0.0-0.5): kicker + empty 4x4 grid outline
+        tl.fromTo(one("#h11-kicker"), { opacity: 0, x: -24 }, { opacity: 1, x: 0, duration: 0.3, ease: "power3.out" }, 0.02);
+        tl.fromTo(one("#h11-rule"), { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.3, ease: "power3.out" }, 0.08);
+        tl.fromTo(q("#h11-slots .h11-slot"), { opacity: 0, scale: 0.94 }, { opacity: 1, scale: 1, duration: 0.22, ease: "power2.out", stagger: 0.012 }, 0.06);
+
+        // Scene 2 (0.5-1.6): 16 hour tiles cascade into their slots in reading order
+        tl.fromTo(q("#h11-tiles .h11-tile"), { opacity: 0, y: 26, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.3, ease: "power3.out", stagger: 0.045 }, 0.5);
+
+        // Hold: slow camera push-in under the whole shot
+        tl.fromTo(one("#h11-cam"), { scale: 1 }, { scale: 1.035, duration: 1.85, ease: "none", transformOrigin: "50% 50%" }, 0.5);
+
+        // Scene 3 (1.55-end): on "pagan mejor" the 17-19 tiles light up and lift
+        tl.to(q("#h11-tiles .h11-tile:not(.h11-hero)"), { opacity: 0.4, duration: 0.3, ease: "power2.out" }, 1.55);
+        tl.fromTo(q("#h11-tiles .h11-hero"), { y: 0, scale: 1 }, { y: -16, scale: 1.07, duration: 0.32, ease: "back.out(2)", stagger: 0.05 }, 1.55);
+        tl.fromTo(q("#h11-tiles .h11-glow"), { opacity: 0 }, { opacity: 0.85, duration: 0.3, ease: "power2.out", stagger: 0.05 }, 1.55);
+
+        // discrete-text-sequence: "lo mejor que viene: 17–19 h"
+        var SEQ = [
+          { t: 0.0, a: "", b: "" },
+          { t: 1.62, a: "lo", b: "" },
+          { t: 1.70, a: "lo mejor", b: "" },
+          { t: 1.79, a: "lo mejor que", b: "" },
+          { t: 1.88, a: "lo mejor que viene: ", b: "" },
+          { t: 1.98, a: "lo mejor que viene: ", b: "17–19" },
+          { t: 2.04, a: "lo mejor que viene: ", b: "17–19 h" }
+        ];
+        function stateAt(time) {
+          for (var i = SEQ.length - 1; i >= 0; i--) { if (time >= SEQ[i].t) return SEQ[i]; }
+          return SEQ[0];
+        }
+        var txt = one("#h11-txt"), hl = one("#h11-hl"), cur = one("#h11-cursor");
+        var driver = { t: 0 };
+        tl.to(driver, {
+          t: 2.351, duration: 2.351, ease: "none",
+          onUpdate: function () {
+            var s = stateAt(driver.t);
+            txt.textContent = s.a;
+            hl.textContent = s.b;
+            var on = driver.t >= 1.58 && Math.sin((driver.t - 1.58) * Math.PI * 2 / 0.6 + Math.PI / 2) > -0.2;
+            cur.style.opacity = on ? "1" : "0";
+          }
+        }, 0);
+
+        window.__timelines = window.__timelines || {};
+        window.__timelines["11-horas"] = tl;
+      })();
+    </script>
+  </div>
+</template>

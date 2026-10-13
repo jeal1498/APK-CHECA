@@ -1,0 +1,253 @@
+<template>
+  <style>
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Regular.ttf') format('truetype'); font-weight: 400; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Medium.ttf') format('truetype'); font-weight: 500 600; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Bold.ttf') format('truetype'); font-weight: 700 900; font-display: block; }
+    @font-face{ font-family: 'Fira Code'; src: url('assets/fonts/FiraCode.ttf') format('truetype'); font-weight: 300 700; font-display: block; }
+
+    #root {
+      position: absolute;
+      inset: 0;
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+      container-type: size;
+      font-family: 'Fira Sans', sans-serif;
+      color: #F1F5F2;
+    }
+    #root * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    .n06-bg {
+      position: absolute;
+      inset: 0;
+      background: #000000;
+    }
+    .n06-stage {
+      position: absolute;
+      inset: 0;
+    }
+    .n06-camera {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1600px;
+      transform-origin: 540px 820px;
+    }
+
+    .n06-kicker {
+      position: absolute;
+      left: 90px;
+      top: 300px;
+      font-family: 'Fira Code', monospace;
+      font-weight: 500;
+      font-size: 30px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #22C55E;
+    }
+    .n06-kicker-rule {
+      position: absolute;
+      left: 90px;
+      top: 360px;
+      width: 36px;
+      height: 2px;
+      background: #22C55E;
+    }
+
+    .n06-card {
+      position: absolute;
+      left: 90px;
+      top: 430px;
+      width: 900px;
+      height: 860px;
+      background: #111413;
+      border: 1px solid #262B28;
+      padding: 64px 64px 0 64px;
+    }
+    .n06-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      height: 96px;
+      border-bottom: 1px solid #262B28;
+    }
+    .n06-row-label {
+      font-family: 'Fira Sans', sans-serif;
+      font-weight: 500;
+      font-size: 54px;
+      color: #AFB7B2;
+    }
+    .n06-row-value {
+      font-family: 'Fira Code', monospace;
+      font-weight: 500;
+      font-size: 58px;
+      font-variant-numeric: tabular-nums;
+      color: #F1F5F2;
+    }
+    .n06-row-gas .n06-row-label,
+    .n06-row-gas .n06-row-value { color: #F43F5E; }
+    .n06-row-gas { margin-top: 24px; }
+
+    .n06-rule {
+      margin-top: 56px;
+      width: 100%;
+      height: 2px;
+      background: #F1F5F2;
+      transform-origin: left center;
+    }
+
+    .n06-hero {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 400px;
+      height: 400px;
+    }
+    .n06-glow {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 1000px;
+      height: 640px;
+      margin-left: -500px;
+      margin-top: -320px;
+      border-radius: 50%;
+      background: radial-gradient(closest-side, rgba(21,128,61,1) 0%, rgba(21,128,61,0.55) 45%, rgba(21,128,61,0) 100%);
+      opacity: 0;
+      z-index: 1;
+    }
+    .n06-count-wrap {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 30px;
+      display: flex;
+      justify-content: center;
+      z-index: 2;
+    }
+    .n06-count {
+      display: inline-block;
+      width: 640px;
+      text-align: center;
+      font-family: 'Fira Code', monospace;
+      font-weight: 700;
+      font-size: 230px;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+      color: #22C55E;
+      transform-origin: center center;
+    }
+    .n06-netos {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 280px;
+      text-align: center;
+      font-family: 'Fira Sans', sans-serif;
+      font-weight: 700;
+      font-size: 76px;
+      letter-spacing: -0.02em;
+      color: #22C55E;
+      z-index: 2;
+    }
+
+    .n06-note {
+      position: absolute;
+      left: 90px;
+      top: 1336px;
+      font-family: 'Fira Code', monospace;
+      font-weight: 500;
+      font-size: 28px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #AFB7B2;
+    }
+  </style>
+
+  <div id="root" data-composition-id="06-neta" data-width="1080" data-height="1920">
+    <div id="n06-bg" class="clip n06-bg" data-start="0" data-duration="3.109" data-track-index="0"></div>
+
+    <div id="n06-stage" class="clip n06-stage" data-start="0" data-duration="3.109" data-track-index="1">
+      <div class="n06-camera" id="n06-camera">
+        <div class="n06-kicker" id="n06-kicker">04 / Lo que te queda</div>
+        <div class="n06-kicker-rule" id="n06-kicker-rule"></div>
+
+        <div class="n06-card" id="n06-card">
+          <div class="n06-row" id="n06-row-viaje">
+            <span class="n06-row-label">Viaje</span>
+            <span class="n06-row-value">$150</span>
+          </div>
+          <div class="n06-row n06-row-gas" id="n06-row-gas">
+            <span class="n06-row-label">Gasolina</span>
+            <span class="n06-row-value">−$32</span>
+          </div>
+          <div class="n06-rule" id="n06-rule"></div>
+
+          <div class="n06-hero" id="n06-hero">
+            <div class="n06-glow" id="n06-glow"></div>
+            <div class="n06-count-wrap">
+              <span class="n06-count" id="n06-count">$150</span>
+            </div>
+            <div class="n06-netos" id="n06-netos">netos</div>
+          </div>
+        </div>
+
+        <div class="n06-note" id="n06-note">Números de ejemplo</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      const tl = gsap.timeline({ paused: true });
+      const DUR = 3.109;
+
+      // Slow continuous camera push-in underneath the whole shot
+      tl.fromTo("#n06-camera", { scale: 1 }, { scale: 1.035, duration: DUR, ease: "none" }, 0);
+
+      // Scene 1 (0.0–0.8): kicker + receipt card rise + "Viaje $150"
+      tl.fromTo("#n06-kicker", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0);
+      tl.fromTo("#n06-kicker-rule", { scaleX: 0, transformOrigin: "left center" }, { scaleX: 1, duration: 0.4, ease: "power3.out" }, 0.1);
+      tl.fromTo("#n06-card", { opacity: 0, y: 90 }, { opacity: 1, y: 0, duration: 0.65, ease: "power3.out" }, 0.05);
+      tl.fromTo("#n06-row-viaje", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.3);
+
+      // Scene 2a (0.8): rule draws, big "$150 netos" lands below it
+      tl.fromTo("#n06-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.4, ease: "power3.out" }, 0.75);
+      tl.fromTo("#n06-count", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.85);
+      tl.fromTo("#n06-netos", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.95);
+
+      // Scene 2b (~1.3): "Gasolina −$32" slides in red, number counts DOWN 150 → 118 and shrinks slightly
+      tl.fromTo("#n06-row-gas", { opacity: 0, x: 120 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 1.25);
+
+      const counter = document.getElementById("n06-count");
+      const state = { value: 150 };
+      const COUNT_AT = 1.35;
+      const COUNT_DUR = 0.75;
+      tl.fromTo(
+        state,
+        { value: 150 },
+        {
+          value: 118,
+          duration: COUNT_DUR,
+          ease: "power3.out",
+          onUpdate: function () {
+            counter.textContent = "$" + Math.round(state.value);
+          },
+        },
+        COUNT_AT
+      );
+      tl.fromTo(counter, { scale: 1 }, { scale: 0.94, duration: COUNT_DUR, ease: "power3.out", immediateRender: false }, COUNT_AT);
+
+      // Scene 3 (2.1–end): held breather — glow blooms once (pulse-on-arrival), note fades in
+      tl.fromTo("#n06-glow", { opacity: 0, scale: 0.85 }, { opacity: 0.38, scale: 1.04, duration: 0.45, ease: "power2.out" }, 2.1);
+      tl.to("#n06-glow", { opacity: 0.26, scale: 1, duration: 0.45, ease: "power2.inOut" }, 2.6);
+      tl.fromTo("#n06-note", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 2.2);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["06-neta"] = tl;
+    })();
+  </script>
+</template>

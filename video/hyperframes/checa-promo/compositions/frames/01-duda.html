@@ -1,0 +1,206 @@
+<template>
+  <style>
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Regular.ttf') format('truetype'); font-weight: 400; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Medium.ttf') format('truetype'); font-weight: 500 600; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Bold.ttf') format('truetype'); font-weight: 700 900; font-display: block; }
+    @font-face{ font-family: 'Fira Code'; src: url('assets/fonts/FiraCode.ttf') format('truetype'); font-weight: 300 700; font-display: block; }
+
+    #root {
+      position: absolute;
+      inset: 0;
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+      font-family: 'Fira Sans', sans-serif;
+      color: #F1F5F2;
+    }
+    .clip { position: absolute; }
+    #duda01-ground { inset: 0; background: #000000; }
+
+    #duda01-stage {
+      left: 0; top: 0; width: 1080px; height: 1600px;
+      transform-origin: 50% 40%;
+    }
+
+    /* — kinetic words — */
+    .duda01-word {
+      position: absolute;
+      left: 0; right: 0;
+      text-align: center;
+      font-weight: 800;
+      text-transform: lowercase;
+      line-height: 0.9;
+      white-space: nowrap;
+    }
+    #duda01-w1 { top: 170px; font-size: 210px; letter-spacing: -0.04em; color: #F1F5F2; }
+    .duda01-w2 { top: 410px; font-size: 128px; letter-spacing: -0.03em; color: #AFB7B2; }
+    #duda01-saber { color: #F1F5F2; }
+    #duda01-line {
+      position: absolute;
+      left: 290px; top: 548px;
+      width: 500px; height: 10px;
+      background: #FACC15;
+      transform-origin: 0% 50%;
+    }
+
+    /* — offer card (3 depth layers: ghost, card, "?") — */
+    #duda01-cardwrap {
+      position: absolute;
+      left: 230px; top: 690px;
+      width: 620px; height: 720px;
+    }
+    #duda01-ghost {
+      position: absolute; inset: 0;
+      border-radius: 36px;
+      background: #141614;
+      border: 2px solid #2A2E2C;
+    }
+    #duda01-card {
+      position: absolute; inset: 0;
+      border-radius: 36px;
+      background: #F4F5F4;
+      color: #111111;
+      padding: 52px 52px 48px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+      overflow: hidden;
+    }
+    .duda01-kick {
+      font-family: 'Fira Code', monospace;
+      font-weight: 500;
+      font-size: 28px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #5C635F;
+    }
+    .duda01-fare {
+      font-family: 'Fira Code', monospace;
+      font-weight: 700;
+      font-size: 120px;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-top: 26px;
+    }
+    .duda01-row {
+      display: flex; align-items: center; gap: 22px;
+      font-size: 40px; font-weight: 500;
+      margin-top: 30px;
+      color: #222;
+    }
+    .duda01-row:first-of-type { margin-top: 44px; }
+    .duda01-dot { width: 20px; height: 20px; border-radius: 50%; background: #111; flex: none; }
+    .duda01-sq { width: 20px; height: 20px; background: #111; flex: none; }
+    .duda01-sep { height: 2px; background: #D7D9D8; margin: 40px 0 0; }
+    .duda01-btn {
+      margin-top: 40px;
+      height: 112px;
+      border-radius: 20px;
+      background: #111111;
+      color: #F4F5F4;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 46px; font-weight: 700;
+    }
+    #duda01-dim {
+      position: absolute; inset: 0;
+      border-radius: 36px;
+      background: #000000;
+    }
+
+    #duda01-q {
+      position: absolute;
+      left: 660px; top: 470px;
+      width: 380px;
+      text-align: center;
+      font-weight: 800;
+      font-size: 600px;
+      line-height: 1;
+      color: #FACC15;
+      transform-origin: 50% 85%;
+    }
+  </style>
+
+  <div id="root" data-composition-id="01-duda" data-width="1080" data-height="1920" data-start="0" data-duration="2.952">
+    <div id="duda01-ground" class="clip" data-start="0" data-duration="2.952" data-track-index="0"></div>
+
+    <div id="duda01-stage" class="clip" data-start="0" data-duration="2.952" data-track-index="1">
+      <div id="duda01-cardwrap">
+        <div id="duda01-ghost"></div>
+        <div id="duda01-card">
+          <div class="duda01-kick">Nueva solicitud</div>
+          <div class="duda01-fare">$150.00</div>
+          <div class="duda01-row"><span class="duda01-dot"></span>A 6 min (3 km)</div>
+          <div class="duda01-row"><span class="duda01-sq"></span>Viaje: 22 min (13 km)</div>
+          <div class="duda01-sep"></div>
+          <div class="duda01-btn">Aceptar</div>
+          <div id="duda01-dim"></div>
+        </div>
+      </div>
+
+      <div id="duda01-w1" class="duda01-word">¿aceptas</div>
+      <div id="duda01-viajes" class="duda01-word duda01-w2">viajes</div>
+      <div id="duda01-saber" class="duda01-word duda01-w2">sin saber</div>
+      <div id="duda01-line"></div>
+
+      <div id="duda01-q">?</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      var DUR = 2.952;
+      // One beat array from the voiceover onsets: ¿aceptas · viajes · sin saber · de verdad · conviene
+      var BEATS = [0.06, 0.52, 0.84, 1.6, 2.11];
+
+      // Scene 1 — "¿aceptas" slams in (scale + blur slam, power4.out)
+      tl.fromTo("#duda01-w1",
+        { scale: 1.6, opacity: 0, filter: "blur(18px)" },
+        { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.42, ease: "power4.out" },
+        BEATS[0]);
+
+      // Scene 2 — card rises into the middle, tilted −4° (rise + rotate, circ.out)
+      tl.fromTo("#duda01-cardwrap",
+        { y: 520, rotation: 6, opacity: 0 },
+        { y: 0, rotation: -4, opacity: 1, duration: 0.55, ease: "circ.out" },
+        BEATS[1]);
+      tl.fromTo("#duda01-ghost",
+        { x: 0, y: 0, rotation: 0 },
+        { x: 34, y: 26, rotation: 5, duration: 0.6, ease: "expo.out" },
+        BEATS[1] + 0.08);
+
+      // "viajes" side-snaps in below, then hard-cuts to "sin saber"
+      tl.fromTo("#duda01-viajes",
+        { x: -260, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.3, ease: "expo.out" },
+        BEATS[1]);
+      tl.set("#duda01-viajes", { opacity: 0 }, BEATS[2]);
+      tl.set("#duda01-saber", { opacity: 0 }, 0);
+      tl.set("#duda01-saber", { opacity: 1 }, BEATS[2]);
+
+      // "de verdad" — yellow stroke draws under "sin saber"
+      tl.fromTo("#duda01-line",
+        { scaleX: 0 },
+        { scaleX: 1, duration: 0.4, ease: "power3.out" },
+        BEATS[3]);
+
+      // Slow push-in underneath from the card beat to the end
+      tl.fromTo("#duda01-stage",
+        { scale: 1 },
+        { scale: 1.04, duration: DUR - BEATS[1], ease: "none" },
+        BEATS[1]);
+
+      // Scene 3 — giant "?" spring-pops over the card corner (the one playful overshoot)
+      tl.fromTo("#duda01-q",
+        { scale: 0, opacity: 0, rotation: -14 },
+        { scale: 1, opacity: 1, rotation: 8, duration: 0.55, ease: "back.out(1.8)" },
+        BEATS[4]);
+      // card dims slightly
+      tl.fromTo("#duda01-dim", { opacity: 0 }, { opacity: 0.38, duration: 0.4, ease: "power2.out" }, BEATS[4]);
+      // quiet settle on the hold
+      tl.to("#duda01-q", { rotation: 6, duration: DUR - BEATS[4] - 0.55, ease: "sine.inOut" }, BEATS[4] + 0.55);
+
+      window.__timelines["01-duda"] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,120 @@
+<template>
+  <div id="root" data-composition-id="12-resultado" data-start="0" data-duration="2.586" data-width="1080" data-height="1920">
+    <style>
+      @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Regular.ttf') format('truetype'); font-weight: 400; font-display: block; }
+      @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Medium.ttf') format('truetype'); font-weight: 500 600; font-display: block; }
+      @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Bold.ttf') format('truetype'); font-weight: 700 900; font-display: block; }
+      @font-face{ font-family: 'Fira Code'; src: url('assets/fonts/FiraCode.ttf') format('truetype'); font-weight: 300 700; font-display: block; }
+
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+      .r12-ground { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; background: #22C55E; }
+      .r12-stage { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; container-type: size; transform-origin: 50% 40%; }
+      .r12-type { position: absolute; left: 5.5cqw; font-family: 'Fira Sans', sans-serif; font-weight: 800; color: #04120A; text-transform: lowercase; white-space: nowrap; }
+
+      .r12-kicker { top: 230px; font-family: 'Fira Code', monospace; font-weight: 500; font-size: 2.2cqw; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(17,17,17,0.55); display: flex; align-items: center; gap: 2cqw; }
+      .r12-kicker i { display: block; width: 36px; height: 2px; background: #04120A; }
+
+      .r12-old { top: 300px; display: flex; flex-direction: column; gap: 0; }
+      .r12-old .r12-ln { font-size: 11cqw; line-height: 1.0; letter-spacing: -0.03em; }
+      .r12-word { display: inline-block; }
+      .r12-strike-wrap { position: relative; display: inline-block; }
+      .r12-strike { position: absolute; left: -3%; top: 8%; width: 106%; height: 84%; overflow: visible; }
+
+      .r12-big { top: 640px; display: flex; flex-direction: column; }
+      .r12-big .r12-word { font-size: 25cqw; line-height: 0.88; letter-spacing: -0.04em; transform-origin: 0% 70%; }
+
+      .r12-burst { position: absolute; left: 820px; top: 700px; width: 0; height: 0; }
+      .r12-burst i { position: absolute; left: 0; top: 0; width: 0; height: 0; }
+      .r12-burst b { position: absolute; left: 40px; top: -6px; width: 70px; height: 12px; background: #04120A; transform-origin: 0% 50%; }
+
+      .r12-tail { top: 1250px; display: flex; align-items: center; gap: 3cqw; }
+      .r12-tail-mask { overflow: hidden; padding-bottom: 1cqw; }
+      .r12-tail-txt { display: inline-block; font-size: 10cqw; line-height: 1.05; letter-spacing: -0.03em; }
+      .r12-arrow { width: 9cqw; height: 9cqw; display: block; }
+    </style>
+
+    <div class="r12-ground clip" id="r12-ground" data-start="0" data-duration="2.586" data-track-index="0"></div>
+
+    <div class="r12-stage clip" id="r12-stage" data-start="0" data-duration="2.586" data-track-index="1">
+      <div class="r12-type r12-kicker" id="r12-kicker"><i></i>EL RESULTADO</div>
+
+      <div class="r12-type r12-old" id="r12-old">
+        <div class="r12-ln"><span class="r12-word" id="r12-w-menos">menos</span></div>
+        <div class="r12-ln">
+          <span class="r12-strike-wrap">
+            <span class="r12-word" id="r12-w-viajes">viajes</span> <span class="r12-word" id="r12-w-malos">malos</span>
+            <svg class="r12-strike" viewBox="0 0 600 100" preserveAspectRatio="none" aria-hidden="true">
+              <path id="r12-strike-path" pathLength="1" d="M6,62 C90,48 170,58 250,50 C330,42 420,56 520,44 C560,40 585,46 594,42 M590,30 C470,52 330,64 200,66 C130,67 60,70 14,74" fill="none" stroke="#04120A" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </div>
+      </div>
+
+      <div class="r12-type r12-big">
+        <span class="r12-word" id="r12-w-mas">más</span>
+        <span class="r12-word" id="r12-w-dinero">dinero</span>
+      </div>
+
+      <div class="r12-burst" id="r12-burst" aria-hidden="true">
+        <i style="transform: rotate(-80deg)"><b></b></i>
+        <i style="transform: rotate(-45deg)"><b></b></i>
+        <i style="transform: rotate(-10deg)"><b></b></i>
+        <i style="transform: rotate(25deg)"><b></b></i>
+        <i style="transform: rotate(-115deg)"><b></b></i>
+      </div>
+
+      <div class="r12-type r12-tail">
+        <div class="r12-tail-mask"><span class="r12-tail-txt" id="r12-tail-txt">en tu cuenta</span></div>
+        <svg class="r12-arrow" id="r12-arrow" viewBox="0 0 100 100" aria-hidden="true">
+          <path d="M50,88 L50,16 M22,42 L50,14 L78,42" fill="none" stroke="#04120A" stroke-width="12" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      (function () {
+        window.__timelines = window.__timelines || {};
+        var tl = gsap.timeline({ paused: true });
+        // One beat array from the voice cues: menos, viajes, malos, más, dinero, cuenta.
+        var BEATS = [0.03, 0.30, 0.67, 1.08, 1.26, 1.86];
+        var DUR = 2.586;
+
+        // Scene 1 — "menos viajes malos" slams in, one word per beat.
+        tl.fromTo("#r12-kicker", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.35, ease: "expo.out" }, 0);
+        tl.fromTo("#r12-w-menos", { scale: 1.5, filter: "blur(16px)", opacity: 0, transformOrigin: "0% 60%" },
+          { scale: 1, filter: "blur(0px)", opacity: 1, duration: 0.4, ease: "power4.out" }, BEATS[0]);
+        tl.fromTo("#r12-w-viajes", { x: -260, opacity: 0 },
+          { x: 0, opacity: 1, duration: 0.35, ease: "expo.out" }, BEATS[1]);
+        tl.fromTo("#r12-w-malos", { y: 90, rotation: 6, opacity: 0 },
+          { y: 0, rotation: 0, opacity: 1, duration: 0.35, ease: "circ.out" }, BEATS[2]);
+
+        // Scene 2 — hand-drawn strike through "viajes malos", then "más dinero" slams huge.
+        tl.fromTo("#r12-strike-path", { strokeDasharray: 1, strokeDashoffset: 1 },
+          { strokeDashoffset: 0, duration: 0.32, ease: "power1.inOut" }, 0.98);
+        tl.fromTo("#r12-old", { opacity: 1 }, { opacity: 0.45, duration: 0.3, ease: "power2.out" }, 1.12);
+        tl.fromTo("#r12-w-mas", { scale: 1.7, filter: "blur(18px)", opacity: 0 },
+          { scale: 1, filter: "blur(0px)", opacity: 1, duration: 0.4, ease: "power4.out" }, BEATS[3]);
+        tl.fromTo("#r12-w-dinero", { x: 420, opacity: 0 },
+          { x: 0, opacity: 1, duration: 0.38, ease: "back.out(2)" }, BEATS[4]);
+        // burst ticks fire outward from "dinero" on its hit
+        tl.fromTo("#r12-burst b", { scaleX: 0, opacity: 1 },
+          { scaleX: 1, duration: 0.22, ease: "expo.out", stagger: 0.02 }, BEATS[4] + 0.06);
+        tl.to("#r12-burst b", { opacity: 0, duration: 0.25, ease: "power1.in" }, BEATS[4] + 0.4);
+
+        // Scene 3 — "en tu cuenta" lands smaller, arrow ticks up, hold.
+        tl.fromTo("#r12-tail-txt", { yPercent: 105 },
+          { yPercent: 0, duration: 0.4, ease: "circ.out" }, BEATS[5] - 0.12);
+        tl.fromTo("#r12-arrow", { y: 40, scale: 0, opacity: 0 },
+          { y: 0, scale: 1, opacity: 1, duration: 0.3, ease: "back.out(2.4)" }, BEATS[5] + 0.12);
+        tl.to("#r12-arrow", { y: -14, duration: 0.12, ease: "power2.out" }, 2.30);
+        tl.to("#r12-arrow", { y: 0, duration: 0.14, ease: "power2.in" }, 2.43);
+
+        // finite settle under the hold
+        tl.fromTo("#r12-stage", { scale: 1 }, { scale: 1.015, duration: DUR - 1.5, ease: "sine.inOut" }, 1.5);
+
+        window.__timelines["12-resultado"] = tl;
+      })();
+    </script>
+  </div>
+</template>
