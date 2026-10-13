@@ -24,7 +24,7 @@ Desde el anuncio «Recogidas lejanas» Eduardo pidió **usar siempre el estilo 1
 3. Revisa honestidad antes de grabar: «la app Checa» cuando pueda confundirse; «números de ejemplo» en pantalla si la voz no lo dice; nada que no podamos garantizar (cobros de cancelación, «menos de un segundo», bloqueos, ciudad o país en hashtags). Avisa cada ajuste.
 4. Voz Fernando Martínez (1 línea por `[Corte]`), escena 1Volt a partir del video anterior (`<Nombre>1Volt.tsx`, `<Toma>` incluida), 1 tira de ~6 cuadros, render, `marketing/publicar/NN_fecha_tema.mp4` + portada + entrada en `calendario.md`, marca el tema en `temas-videos.md`, commit `[skip ci]` y push a `main` y a la rama de trabajo.
 
-### Videos hechos (1Volt salvo que se indique)
+### Videos hechos (1Volt salvo que se indique; listos en `marketing/publicar/` con su portada)
 | Tema | Video | Código |
 |---|---|---|
 | 1 Trabajar mucho y no ver el dinero | `02_2026-10-15_trabajar-mucho-sin-lana.mp4` (+ `sin-lana.mp4` en 3D) | `SinLana1Volt.tsx` |
@@ -44,6 +44,8 @@ Desde el anuncio «Recogidas lejanas» Eduardo pidió **usar siempre el estilo 1
 | Campaña beta testers (clips de Eduardo) | `01_2026-10-14_beta-testers.mp4` | `Beta.tsx` |
 
 Serie de 14 temas completa en 1Volt (octubre 2026).
+
+**Estado al 13 oct 2026:** calendario del 14 al 28 de octubre en `marketing/calendario.md` (1 al día a las 8 pm, beta primero y luego venta/consejo alternados). Pendiente: publicar según el calendario, juntar opiniones de los beta testers (con permiso) para testimonios en `.agents/product-marketing.md`, y si hay nuevos temas, agregarlos a `temas-videos.md`, al calendario (número siguiente) y a esta tabla.
 
 Componentes reutilizables: `Trazo`, `Cota`, `Numero`, `Etiqueta`, `Frase`, `Subs`, `Fondo` (en cada archivo), `Num` y `Palomita`/`Tache` (Seguridad, Bloqueo, Pasajeros), pop-ups exactos (`Popup` de `ui.tsx`), `Toma` (cambio cada 3 s). Los videos de valor (9–14) cierran con logo + «+ Seguir», sin prueba gratis.
 

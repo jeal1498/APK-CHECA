@@ -15,7 +15,7 @@
 - Miembro fundador ⭐ (primeros clientes): licencia especial, insignia dorada.
 
 ## Campaña actual: beta testers (octubre 2026)
-- Video: `marketing/videos/beta-testers.mp4` (Eduardo a cuadro, conductor que hizo la app).
+- Video: `marketing/publicar/01_2026-10-14_beta-testers.mp4` (se publica el 14 oct; calendario en `marketing/calendario.md`) (Eduardo a cuadro, conductor que hizo la app).
 - Oferta: **50 accesos gratis por 3 meses** a cambio de feedback; **+1 mes gratis para ambos** si lo comparten con un amigo.
 - Canal: grupos de Facebook y WhatsApp de conductores. Llamada: «comenta YO o mándame mensaje privado».
 - Meta: primeros usuarios reales, opiniones y testimonios para el lanzamiento de pago. Al terminar los 3 meses, ofrecerles el plan de fundador.
