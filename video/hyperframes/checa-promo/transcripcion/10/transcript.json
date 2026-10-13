@@ -1,0 +1,50 @@
+[
+  {
+    "text": "Si",
+    "start": 0.04,
+    "end": 0.12,
+    "id": "w0"
+  },
+  {
+    "text": "caen",
+    "start": 0.12,
+    "end": 0.36,
+    "id": "w1"
+  },
+  {
+    "text": "dos",
+    "start": 0.36,
+    "end": 0.53,
+    "id": "w2"
+  },
+  {
+    "text": "ofertas,",
+    "start": 0.53,
+    "end": 1.06,
+    "id": "w3"
+  },
+  {
+    "text": "te",
+    "start": 1.14,
+    "end": 1.2,
+    "id": "w4"
+  },
+  {
+    "text": "marca",
+    "start": 1.21,
+    "end": 1.52,
+    "id": "w5"
+  },
+  {
+    "text": "la",
+    "start": 1.52,
+    "end": 1.64,
+    "id": "w6"
+  },
+  {
+    "text": "mejor.",
+    "start": 1.64,
+    "end": 2.01,
+    "id": "w7"
+  }
+]

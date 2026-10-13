@@ -1,0 +1,86 @@
+[
+  {
+    "text": "Te",
+    "start": 0.09,
+    "end": 0.15,
+    "id": "w0"
+  },
+  {
+    "text": "llega",
+    "start": 0.15,
+    "end": 0.52,
+    "id": "w1"
+  },
+  {
+    "text": "una",
+    "start": 0.52,
+    "end": 0.74,
+    "id": "w2"
+  },
+  {
+    "text": "oferta",
+    "start": 0.74,
+    "end": 1.14,
+    "id": "w3"
+  },
+  {
+    "text": "de",
+    "start": 1.18,
+    "end": 1.31,
+    "id": "w4"
+  },
+  {
+    "text": "150",
+    "start": 1.33,
+    "end": 2,
+    "id": "w5"
+  },
+  {
+    "text": "pesos,",
+    "start": 2,
+    "end": 2.44,
+    "id": "w6"
+  },
+  {
+    "text": "pero¿cuánto",
+    "start": 2.51,
+    "end": 2.89,
+    "id": "w7"
+  },
+  {
+    "text": "te",
+    "start": 2.89,
+    "end": 2.99,
+    "id": "w8"
+  },
+  {
+    "text": "queda",
+    "start": 2.99,
+    "end": 3.28,
+    "id": "w9"
+  },
+  {
+    "text": "limpio",
+    "start": 3.28,
+    "end": 3.6,
+    "id": "w10"
+  },
+  {
+    "text": "en",
+    "start": 3.65,
+    "end": 3.76,
+    "id": "w11"
+  },
+  {
+    "text": "la",
+    "start": 3.77,
+    "end": 3.89,
+    "id": "w12"
+  },
+  {
+    "text": "bolsa?",
+    "start": 3.89,
+    "end": 4.35,
+    "id": "w13"
+  }
+]

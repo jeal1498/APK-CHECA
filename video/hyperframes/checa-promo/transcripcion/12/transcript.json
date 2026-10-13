@@ -1,0 +1,50 @@
+[
+  {
+    "text": "Menos",
+    "start": 0.03,
+    "end": 0.3,
+    "id": "w0"
+  },
+  {
+    "text": "viajes",
+    "start": 0.3,
+    "end": 0.66,
+    "id": "w1"
+  },
+  {
+    "text": "malos,",
+    "start": 0.67,
+    "end": 1.08,
+    "id": "w2"
+  },
+  {
+    "text": "más",
+    "start": 1.08,
+    "end": 1.26,
+    "id": "w3"
+  },
+  {
+    "text": "dinero",
+    "start": 1.26,
+    "end": 1.62,
+    "id": "w4"
+  },
+  {
+    "text": "en",
+    "start": 1.62,
+    "end": 1.74,
+    "id": "w5"
+  },
+  {
+    "text": "tu",
+    "start": 1.74,
+    "end": 1.86,
+    "id": "w6"
+  },
+  {
+    "text": "cuenta.",
+    "start": 1.86,
+    "end": 2.28,
+    "id": "w7"
+  }
+]

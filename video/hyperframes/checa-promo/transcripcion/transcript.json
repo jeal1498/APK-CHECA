@@ -1,0 +1,56 @@
+[
+  {
+    "text": "Aceptas",
+    "start": 0.06,
+    "end": 0.5,
+    "id": "w0"
+  },
+  {
+    "text": "viajes",
+    "start": 0.5,
+    "end": 0.9,
+    "id": "w1"
+  },
+  {
+    "text": "sin",
+    "start": 0.96,
+    "end": 1.13,
+    "id": "w2"
+  },
+  {
+    "text": "saber",
+    "start": 1.13,
+    "end": 1.47,
+    "id": "w3"
+  },
+  {
+    "text": "si",
+    "start": 1.49,
+    "end": 1.63,
+    "id": "w4"
+  },
+  {
+    "text": "de",
+    "start": 1.63,
+    "end": 1.77,
+    "id": "w5"
+  },
+  {
+    "text": "verdad",
+    "start": 1.77,
+    "end": 2.2,
+    "id": "w6"
+  },
+  {
+    "text": "te",
+    "start": 2.2,
+    "end": 2.34,
+    "id": "w7"
+  },
+  {
+    "text": "conviene.",
+    "start": 2.34,
+    "end": 2.92,
+    "id": "w8"
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "text": "También",
+    "start": 0.09,
+    "end": 0.41,
+    "id": "w0"
+  },
+  {
+    "text": "te",
+    "start": 0.45,
+    "end": 0.57,
+    "id": "w1"
+  },
+  {
+    "text": "enseña",
+    "start": 0.57,
+    "end": 0.94,
+    "id": "w2"
+  },
+  {
+    "text": "a",
+    "start": 0.94,
+    "end": 1.01,
+    "id": "w3"
+  },
+  {
+    "text": "qué",
+    "start": 1.01,
+    "end": 1.18,
+    "id": "w4"
+  },
+  {
+    "text": "horas",
+    "start": 1.19,
+    "end": 1.48,
+    "id": "w5"
+  },
+  {
+    "text": "pagan",
+    "start": 1.55,
+    "end": 1.83,
+    "id": "w6"
+  },
+  {
+    "text": "mejor.",
+    "start": 1.83,
+    "end": 2.3,
+    "id": "w7"
+  }
+]

@@ -1,6 +1,6 @@
 ---
 format: 1080x1920
-duration: 50s
+duration: 40s
 message: "Checa te dice en un segundo si una oferta de Uber o DiDi de verdad te conviene"
 arc: PAS con Demo Loop — duda → dolor → Checa lee → pop-up → por hora/km → neta → semáforo → metas → recogida → la mejor → horas → resultado → prueba gratis
 audience: conductores de Uber y DiDi
@@ -25,7 +25,7 @@ music: none
 - voiceover: "¿Aceptas viajes sin saber si de verdad te conviene?"
 - duration: 2.952s
 - transition_in: cut
-- status: outline
+- status: animated
 - src: compositions/frames/01-duda.html
 - type: hook
 - persuasion: Pain validation (pregunta retórica directa al conductor)
@@ -50,7 +50,7 @@ keyMessage: aceptas a ciegas.
 - voiceover: "Te llega una oferta de 150 pesos... pero ¿cuánto te queda limpio en la bolsa?"
 - duration: 4.676s
 - transition_in: crossfade
-- status: outline
+- status: animated
 - src: compositions/frames/02-cuanto.html
 - type: pain_point
 - persuasion: Negative contrast (lo que cobras vs lo que te queda)
@@ -76,7 +76,7 @@ keyMessage: la tarifa no es lo que te queda.
 - voiceover: "Checa lee la oferta en cuanto cae a tu pantalla..."
 - duration: 2.952s
 - transition_in: zoom-through
-- status: outline
+- status: animated
 - src: compositions/frames/03-lee.html
 - type: product_intro
 - persuasion: Show-don't-tell proof
@@ -101,7 +101,7 @@ keyMessage: Checa lee la oferta sola.
 - voiceover: "y de inmediato te muestra un aviso flotante."
 - duration: 2.691s
 - transition_in: cut
-- status: outline
+- status: animated
 - src: compositions/frames/04-aviso.html
 - type: feature_showcase
 - persuasion: Show-don't-tell proof
@@ -126,7 +126,7 @@ keyMessage: un pop-up te dice todo encima de Uber/DiDi.
 - voiceover: "Te da lo que ganas por hora y por kilómetro."
 - duration: 2.534s
 - transition_in: push-slide UP
-- status: outline
+- status: animated
 - src: compositions/frames/05-hora-km.html
 - type: feature_showcase
 - persuasion: Feature-to-benefit translation
@@ -151,7 +151,7 @@ keyMessage: sabes cuánto ganas por hora y por km.
 - voiceover: "Con tu ganancia neta, ya descontada la gasolina."
 - duration: 3.109s
 - transition_in: crossfade
-- status: outline
+- status: animated
 - src: compositions/frames/06-neta.html
 - type: benefit_highlight
 - persuasion: Value framing (lo que de verdad te llevas)
@@ -176,7 +176,7 @@ keyMessage: ves lo que te queda limpio.
 - voiceover: "El semáforo te dice qué hacer: verde, acepta; amarillo, piénsalo; rojo, recházalo."
 - duration: 5.616s
 - transition_in: zoom-through
-- status: outline
+- status: animated
 - src: compositions/frames/07-semaforo.html
 - type: feature_showcase
 - persuasion: Rule of three
@@ -202,7 +202,7 @@ keyMessage: verde, amarillo, rojo: decides en un segundo.
 - voiceover: "Tú pones tus metas de cuánto quieres ganar."
 - duration: 2.325s
 - transition_in: push-slide LEFT
-- status: outline
+- status: animated
 - src: compositions/frames/08-metas.html
 - type: feature_showcase
 - persuasion: Status seeking / control (tú mandas)
@@ -226,7 +226,7 @@ keyMessage: Checa juzga con tus metas.
 - voiceover: "Y si la recogida queda muy lejos, te avisa de inmediato."
 - duration: 3.239s
 - transition_in: push-slide LEFT
-- status: outline
+- status: animated
 - src: compositions/frames/09-recogida.html
 - type: feature_showcase
 - persuasion: Loss aversion (kilómetros que nadie paga)
@@ -251,7 +251,7 @@ keyMessage: no más recogidas lejanas gratis.
 - voiceover: "Si caen dos ofertas, te marca la mejor."
 - duration: 2.325s
 - transition_in: crossfade
-- status: outline
+- status: animated
 - src: compositions/frames/10-mejor.html
 - type: feature_showcase
 - persuasion: Show-don't-tell proof
@@ -276,7 +276,7 @@ keyMessage: con dos ofertas, Checa elige la mejor.
 - voiceover: "También te enseña a qué horas pagan mejor."
 - duration: 2.351s
 - transition_in: zoom-through
-- status: outline
+- status: animated
 - src: compositions/frames/11-horas.html
 - type: benefit_highlight
 - persuasion: Future pacing (planea tu turno)
@@ -300,7 +300,7 @@ keyMessage: sabes cuándo salir a manejar.
 - voiceover: "Menos viajes malos, más dinero en tu cuenta."
 - duration: 2.586s
 - transition_in: crossfade
-- status: outline
+- status: animated
 - src: compositions/frames/12-resultado.html
 - type: benefit_highlight
 - persuasion: Value stacking
@@ -324,7 +324,7 @@ keyMessage: ganas más.
 - voiceover: "Pide Checa y pruébala 7 días sin costo."
 - duration: 2.821s
 - transition_in: blur-crossfade
-- status: outline
+- status: animated
 - src: compositions/frames/13-cta.html
 - type: cta
 - persuasion: Risk reversal

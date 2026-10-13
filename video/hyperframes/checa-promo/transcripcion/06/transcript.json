@@ -1,0 +1,50 @@
+[
+  {
+    "text": "Con",
+    "start": 0.09,
+    "end": 0.21,
+    "id": "w0"
+  },
+  {
+    "text": "tu",
+    "start": 0.21,
+    "end": 0.35,
+    "id": "w1"
+  },
+  {
+    "text": "ganancia",
+    "start": 0.35,
+    "end": 0.91,
+    "id": "w2"
+  },
+  {
+    "text": "neta",
+    "start": 0.91,
+    "end": 1.18,
+    "id": "w3"
+  },
+  {
+    "text": "ya",
+    "start": 1.26,
+    "end": 1.33,
+    "id": "w4"
+  },
+  {
+    "text": "descontada",
+    "start": 1.33,
+    "end": 2.03,
+    "id": "w5"
+  },
+  {
+    "text": "la",
+    "start": 2.03,
+    "end": 2.17,
+    "id": "w6"
+  },
+  {
+    "text": "gasolina.",
+    "start": 2.17,
+    "end": 3.06,
+    "id": "w7"
+  }
+]

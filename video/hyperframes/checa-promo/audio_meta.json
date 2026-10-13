@@ -12,63 +12,57 @@
       "words": [
         {
           "id": "w0",
-          "text": "Deceptas",
+          "text": "¿Aceptas",
           "start": 0.06,
-          "end": 0.52
+          "end": 0.5
         },
         {
           "id": "w1",
-          "text": "vi",
-          "start": 0.52,
-          "end": 0.65
+          "text": "viajes",
+          "start": 0.5,
+          "end": 0.9
         },
         {
           "id": "w2",
-          "text": "aje",
-          "start": 0.65,
-          "end": 0.84
+          "text": "sin",
+          "start": 0.96,
+          "end": 1.13
         },
         {
           "id": "w3",
-          "text": "sinsa",
-          "start": 0.84,
-          "end": 1.15
-        },
-        {
-          "id": "w4",
-          "text": "ver",
-          "start": 1.15,
-          "end": 1.34
-        },
-        {
-          "id": "w5",
-          "text": "si",
-          "start": 1.34,
+          "text": "saber",
+          "start": 1.13,
           "end": 1.47
         },
         {
-          "id": "w6",
+          "id": "w4",
+          "text": "si",
+          "start": 1.49,
+          "end": 1.63
+        },
+        {
+          "id": "w5",
           "text": "de",
-          "start": 1.47,
-          "end": 1.6
+          "start": 1.63,
+          "end": 1.77
+        },
+        {
+          "id": "w6",
+          "text": "verdad",
+          "start": 1.77,
+          "end": 2.2
         },
         {
           "id": "w7",
-          "text": "verdad",
-          "start": 1.6,
-          "end": 1.98
+          "text": "te",
+          "start": 2.2,
+          "end": 2.34
         },
         {
           "id": "w8",
-          "text": "te",
-          "start": 1.98,
-          "end": 2.11
-        },
-        {
-          "id": "w9",
-          "text": "combiene.",
-          "start": 2.11,
-          "end": 2.72
+          "text": "conviene?",
+          "start": 2.34,
+          "end": 2.92
         }
       ]
     },
@@ -79,105 +73,93 @@
       "words": [
         {
           "id": "w0",
-          "text": "Té",
-          "start": 0.06,
-          "end": 0.12
+          "text": "Te",
+          "start": 0.09,
+          "end": 0.15
         },
         {
           "id": "w1",
           "text": "llega",
-          "start": 0.12,
-          "end": 0.42
+          "start": 0.15,
+          "end": 0.52
         },
         {
           "id": "w2",
           "text": "una",
-          "start": 0.42,
-          "end": 0.6
+          "start": 0.52,
+          "end": 0.74
         },
         {
           "id": "w3",
           "text": "oferta",
-          "start": 0.6,
-          "end": 0.96
+          "start": 0.74,
+          "end": 1.14
         },
         {
           "id": "w4",
           "text": "de",
-          "start": 0.96,
-          "end": 1.08
+          "start": 1.18,
+          "end": 1.31
         },
         {
           "id": "w5",
-          "text": "sientos",
-          "start": 1.08,
-          "end": 1.5
+          "text": "150",
+          "start": 1.33,
+          "end": 2
         },
         {
           "id": "w6",
-          "text": "in",
-          "start": 1.5,
-          "end": 1.6
+          "text": "pesos...",
+          "start": 2,
+          "end": 2.44
         },
         {
           "id": "w7",
-          "text": "cuenta",
-          "start": 1.62,
-          "end": 1.98
+          "text": "pero",
+          "start": 2.51,
+          "end": 2.648
         },
         {
           "id": "w8",
-          "text": "pesos,",
-          "start": 1.98,
-          "end": 2.34
+          "text": "¿cuánto",
+          "start": 2.648,
+          "end": 2.89
         },
         {
           "id": "w9",
-          "text": "pero",
-          "start": 2.51,
-          "end": 2.68
+          "text": "te",
+          "start": 2.89,
+          "end": 2.99
         },
         {
           "id": "w10",
-          "text": "cuanto",
-          "start": 2.68,
-          "end": 3.03
+          "text": "queda",
+          "start": 2.99,
+          "end": 3.28
         },
         {
           "id": "w11",
-          "text": "te",
-          "start": 3.03,
-          "end": 3.15
+          "text": "limpio",
+          "start": 3.28,
+          "end": 3.6
         },
         {
           "id": "w12",
-          "text": "quedal",
-          "start": 3.15,
-          "end": 3.49
+          "text": "en",
+          "start": 3.65,
+          "end": 3.76
         },
         {
           "id": "w13",
-          "text": "impio",
-          "start": 3.49,
-          "end": 3.78
+          "text": "la",
+          "start": 3.77,
+          "end": 3.89
         },
         {
           "id": "w14",
-          "text": "en",
-          "start": 3.78,
-          "end": 3.9
-        },
-        {
-          "id": "w15",
-          "text": "la",
-          "start": 3.9,
-          "end": 4.02
-        },
-        {
-          "id": "w16",
-          "text": "bolsa.",
-          "start": 4.02,
-          "end": 4.44
+          "text": "bolsa?",
+          "start": 3.89,
+          "end": 4.35
         }
       ]
     },
@@ -188,57 +170,63 @@
       "words": [
         {
           "id": "w0",
-          "text": "Che",
+          "text": "Checa",
           "start": 0.08,
-          "end": 0.32
+          "end": 0.336
         },
         {
           "id": "w1",
-          "text": "Kale",
-          "start": 0.32,
-          "end": 0.73
+          "text": "lee",
+          "start": 0.336,
+          "end": 0.49
         },
         {
           "id": "w2",
-          "text": "La",
-          "start": 0.78,
-          "end": 0.88
+          "text": "la",
+          "start": 0.49,
+          "end": 0.63
         },
         {
           "id": "w3",
-          "text": "Ferta",
-          "start": 0.88,
-          "end": 1.16
+          "text": "oferta",
+          "start": 0.63,
+          "end": 1.06
         },
         {
           "id": "w4",
           "text": "en",
-          "start": 1.17,
-          "end": 1.28
+          "start": 1.06,
+          "end": 1.2
         },
         {
           "id": "w5",
           "text": "cuanto",
-          "start": 1.28,
+          "start": 1.2,
           "end": 1.63
         },
         {
           "id": "w6",
-          "text": "caya",
+          "text": "cae",
           "start": 1.63,
-          "end": 1.86
+          "end": 1.84
         },
         {
           "id": "w7",
-          "text": "tu",
-          "start": 1.86,
-          "end": 1.98
+          "text": "a",
+          "start": 1.84,
+          "end": 1.91
         },
         {
           "id": "w8",
-          "text": "pantaja.",
-          "start": 1.98,
-          "end": 2.58
+          "text": "tu",
+          "start": 1.91,
+          "end": 2.05
+        },
+        {
+          "id": "w9",
+          "text": "pantalla...",
+          "start": 2.05,
+          "end": 2.7
         }
       ]
     },
@@ -249,57 +237,51 @@
       "words": [
         {
           "id": "w0",
-          "text": "and",
+          "text": "y",
           "start": 0.05,
-          "end": 0.19
+          "end": 0.06
         },
         {
           "id": "w1",
-          "text": "the",
-          "start": 0.19,
-          "end": 0.38
+          "text": "de",
+          "start": 0.06,
+          "end": 0.18
         },
         {
           "id": "w2",
-          "text": "immediate",
-          "start": 0.38,
-          "end": 0.95
+          "text": "inmediato",
+          "start": 0.18,
+          "end": 0.72
         },
         {
           "id": "w3",
-          "text": "total",
-          "start": 0.95,
-          "end": 1.26
+          "text": "te",
+          "start": 0.72,
+          "end": 0.84
         },
         {
           "id": "w4",
-          "text": "is",
+          "text": "muestra",
+          "start": 0.84,
+          "end": 1.26
+        },
+        {
+          "id": "w5",
+          "text": "un",
           "start": 1.26,
           "end": 1.38
         },
         {
-          "id": "w5",
-          "text": "a",
-          "start": 1.38,
-          "end": 1.44
-        },
-        {
           "id": "w6",
-          "text": "float",
-          "start": 1.44,
-          "end": 1.75
+          "text": "aviso",
+          "start": 1.38,
+          "end": 1.68
         },
         {
           "id": "w7",
-          "text": "of",
-          "start": 1.75,
-          "end": 1.87
-        },
-        {
-          "id": "w8",
-          "text": "time.",
-          "start": 1.87,
-          "end": 2.3
+          "text": "flotante.",
+          "start": 1.68,
+          "end": 2.31
         }
       ]
     },
@@ -311,62 +293,62 @@
         {
           "id": "w0",
           "text": "Te",
-          "start": 0,
-          "end": 0.011
+          "start": 0.1,
+          "end": 0.12
         },
         {
           "id": "w1",
-          "text": "dalo",
-          "start": 0.011,
-          "end": 0.023
+          "text": "da",
+          "start": 0.12,
+          "end": 0.24
         },
         {
           "id": "w2",
-          "text": "que",
-          "start": 0.023,
-          "end": 0.034
+          "text": "lo",
+          "start": 0.24,
+          "end": 0.36
         },
         {
           "id": "w3",
-          "text": "ganas",
-          "start": 0.034,
-          "end": 0.046
+          "text": "que",
+          "start": 0.36,
+          "end": 0.55
         },
         {
           "id": "w4",
-          "text": "por",
-          "start": 0.046,
-          "end": 0.057
+          "text": "ganas",
+          "start": 0.55,
+          "end": 0.8
         },
         {
           "id": "w5",
-          "text": "ora",
-          "start": 0.057,
-          "end": 0.069
+          "text": "por",
+          "start": 0.88,
+          "end": 1.05
         },
         {
           "id": "w6",
-          "text": "y",
-          "start": 0.069,
-          "end": 0.08
+          "text": "hora",
+          "start": 1.05,
+          "end": 1.24
         },
         {
           "id": "w7",
-          "text": "porque",
-          "start": 0.08,
-          "end": 0.71
+          "text": "y",
+          "start": 1.31,
+          "end": 1.36
         },
         {
           "id": "w8",
-          "text": "lo",
-          "start": 0.71,
-          "end": 1.13
+          "text": "por",
+          "start": 1.36,
+          "end": 1.55
         },
         {
           "id": "w9",
-          "text": "metro.",
-          "start": 1.13,
-          "end": 2.24
+          "text": "kilómetro.",
+          "start": 1.55,
+          "end": 2.2
         }
       ]
     },
@@ -377,39 +359,51 @@
       "words": [
         {
           "id": "w0",
-          "text": "contuganancianeta",
+          "text": "Con",
           "start": 0.09,
-          "end": 1.12
+          "end": 0.21
         },
         {
           "id": "w1",
-          "text": "y",
-          "start": 1.12,
-          "end": 1.17
+          "text": "tu",
+          "start": 0.21,
+          "end": 0.35
         },
         {
           "id": "w2",
-          "text": "a",
-          "start": 1.17,
-          "end": 1.26
+          "text": "ganancia",
+          "start": 0.35,
+          "end": 0.91
         },
         {
           "id": "w3",
-          "text": "descontada",
-          "start": 1.26,
-          "end": 1.9
+          "text": "neta,",
+          "start": 0.91,
+          "end": 1.18
         },
         {
           "id": "w4",
-          "text": "la",
-          "start": 1.9,
-          "end": 2.03
+          "text": "ya",
+          "start": 1.26,
+          "end": 1.33
         },
         {
           "id": "w5",
-          "text": "gasoline.",
+          "text": "descontada",
+          "start": 1.33,
+          "end": 2.03
+        },
+        {
+          "id": "w6",
+          "text": "la",
           "start": 2.03,
-          "end": 2.73
+          "end": 2.17
+        },
+        {
+          "id": "w7",
+          "text": "gasolina.",
+          "start": 2.17,
+          "end": 3.06
         }
       ]
     },
@@ -420,75 +414,75 @@
       "words": [
         {
           "id": "w0",
-          "text": "¡El",
+          "text": "El",
           "start": 0.05,
-          "end": 0.25
+          "end": 0.16
         },
         {
           "id": "w1",
-          "text": "semá",
-          "start": 0.25,
-          "end": 0.51
+          "text": "semáforo",
+          "start": 0.16,
+          "end": 0.81
         },
         {
           "id": "w2",
-          "text": "furo",
-          "start": 0.51,
-          "end": 0.76
+          "text": "te",
+          "start": 0.81,
+          "end": 0.92
         },
         {
           "id": "w3",
-          "text": "tedíce",
-          "start": 0.76,
-          "end": 1.16
+          "text": "dice",
+          "start": 0.98,
+          "end": 1.3
         },
         {
           "id": "w4",
-          "text": "que",
-          "start": 1.16,
-          "end": 1.33
+          "text": "qué",
+          "start": 1.3,
+          "end": 1.55
         },
         {
           "id": "w5",
-          "text": "hacer,",
-          "start": 1.33,
-          "end": 1.78
-        },
-        {
-          "id": "w6",
-          "text": "verde",
-          "start": 1.78,
+          "text": "hacer:",
+          "start": 1.68,
           "end": 2.08
         },
         {
-          "id": "w7",
-          "text": "asepta",
+          "id": "w6",
+          "text": "verde,",
           "start": 2.16,
-          "end": 2.56
+          "end": 2.4
+        },
+        {
+          "id": "w7",
+          "text": "acepta;",
+          "start": 2.4,
+          "end": 2.69
         },
         {
           "id": "w8",
           "text": "amarillo,",
-          "start": 2.56,
+          "start": 2.77,
           "end": 3.31
         },
         {
           "id": "w9",
-          "text": "pienzalo,",
-          "start": 3.31,
-          "end": 3.86
+          "text": "piénsalo;",
+          "start": 3.4,
+          "end": 3.89
         },
         {
           "id": "w10",
-          "text": "rojo",
+          "text": "rojo,",
           "start": 4.02,
-          "end": 4.34
+          "end": 4.45
         },
         {
           "id": "w11",
-          "text": "recasalo.",
-          "start": 4.34,
-          "end": 5.3
+          "text": "recházalo.",
+          "start": 4.53,
+          "end": 5.2
         }
       ]
     },
@@ -499,51 +493,51 @@
       "words": [
         {
           "id": "w0",
-          "text": "Tu",
+          "text": "Tú",
           "start": 0.09,
-          "end": 0.11
+          "end": 0.12
         },
         {
           "id": "w1",
           "text": "pones",
-          "start": 0.11,
-          "end": 0.38
+          "start": 0.12,
+          "end": 0.43
         },
         {
           "id": "w2",
           "text": "tus",
-          "start": 0.38,
-          "end": 0.53
+          "start": 0.43,
+          "end": 0.61
         },
         {
           "id": "w3",
           "text": "metas",
-          "start": 0.54,
-          "end": 0.81
+          "start": 0.61,
+          "end": 0.91
         },
         {
           "id": "w4",
           "text": "de",
-          "start": 0.81,
-          "end": 0.92
+          "start": 0.91,
+          "end": 1.03
         },
         {
           "id": "w5",
-          "text": "cuanto",
-          "start": 0.92,
-          "end": 1.25
+          "text": "cuánto",
+          "start": 1.03,
+          "end": 1.4
         },
         {
           "id": "w6",
           "text": "quieres",
-          "start": 1.25,
-          "end": 1.63
+          "start": 1.4,
+          "end": 1.83
         },
         {
           "id": "w7",
           "text": "ganar.",
-          "start": 1.63,
-          "end": 2.13
+          "start": 1.83,
+          "end": 2.27
         }
       ]
     },
@@ -554,87 +548,69 @@
       "words": [
         {
           "id": "w0",
-          "text": "and",
+          "text": "Y",
           "start": 0.05,
-          "end": 0.15
+          "end": 0.06
         },
         {
           "id": "w1",
-          "text": "the",
-          "start": 0.17,
-          "end": 0.32
+          "text": "si",
+          "start": 0.06,
+          "end": 0.18
         },
         {
           "id": "w2",
-          "text": "recogita",
-          "start": 0.32,
-          "end": 0.74
+          "text": "la",
+          "start": 0.19,
+          "end": 0.32
         },
         {
           "id": "w3",
-          "text": "that",
-          "start": 0.74,
-          "end": 0.95
+          "text": "recogida",
+          "start": 0.32,
+          "end": 0.82
         },
         {
           "id": "w4",
-          "text": "I'm",
-          "start": 0.95,
-          "end": 1.1
+          "text": "queda",
+          "start": 0.83,
+          "end": 1.15
         },
         {
           "id": "w5",
-          "text": "going",
-          "start": 1.1,
-          "end": 1.36
+          "text": "muy",
+          "start": 1.15,
+          "end": 1.34
         },
         {
           "id": "w6",
-          "text": "to",
-          "start": 1.36,
-          "end": 1.4
-        },
-        {
-          "id": "w7",
-          "text": "make",
-          "start": 1.45,
+          "text": "lejos,",
+          "start": 1.34,
           "end": 1.63
         },
         {
-          "id": "w8",
-          "text": "is",
+          "id": "w7",
+          "text": "te",
           "start": 1.76,
-          "end": 1.77
+          "end": 1.81
+        },
+        {
+          "id": "w8",
+          "text": "avisa",
+          "start": 1.81,
+          "end": 2.07
         },
         {
           "id": "w9",
-          "text": "the",
-          "start": 1.77,
-          "end": 1.93
+          "text": "de",
+          "start": 2.11,
+          "end": 2.2
         },
         {
           "id": "w10",
-          "text": "Visa",
-          "start": 1.93,
-          "end": 2.14
-        },
-        {
-          "id": "w11",
-          "text": "of",
-          "start": 2.14,
-          "end": 2.24
-        },
-        {
-          "id": "w12",
-          "text": "the",
-          "start": 2.24,
-          "end": 2.4
-        },
-        {
-          "id": "w13",
-          "text": "Mediato.",
-          "start": 2.4,
-          "end": 2.9
+          "text": "inmediato.",
+          "start": 2.2,
+          "end": 2.88
         }
       ]
     },
@@ -645,51 +621,51 @@
       "words": [
         {
           "id": "w0",
-          "text": "¡Sica",
+          "text": "Si",
           "start": 0.04,
-          "end": 0.32
+          "end": 0.12
         },
         {
           "id": "w1",
-          "text": "en",
-          "start": 0.32,
-          "end": 0.43
+          "text": "caen",
+          "start": 0.12,
+          "end": 0.36
         },
         {
           "id": "w2",
           "text": "dos",
-          "start": 0.43,
-          "end": 0.6
+          "start": 0.36,
+          "end": 0.53
         },
         {
           "id": "w3",
-          "text": "ofertas",
-          "start": 0.6,
-          "end": 0.98
+          "text": "ofertas,",
+          "start": 0.53,
+          "end": 1.06
         },
         {
           "id": "w4",
           "text": "te",
-          "start": 0.98,
-          "end": 1.06
+          "start": 1.14,
+          "end": 1.2
         },
         {
           "id": "w5",
           "text": "marca",
-          "start": 1.14,
-          "end": 1.37
+          "start": 1.21,
+          "end": 1.52
         },
         {
           "id": "w6",
           "text": "la",
-          "start": 1.37,
-          "end": 1.48
+          "start": 1.52,
+          "end": 1.64
         },
         {
           "id": "w7",
-          "text": "mejor!",
-          "start": 1.48,
-          "end": 1.99
+          "text": "mejor.",
+          "start": 1.64,
+          "end": 2.01
         }
       ]
     },
@@ -701,44 +677,50 @@
         {
           "id": "w0",
           "text": "También",
-          "start": 0.04,
-          "end": 0.3
+          "start": 0.09,
+          "end": 0.41
         },
         {
           "id": "w1",
-          "text": "tenseña",
-          "start": 0.3,
-          "end": 0.61
+          "text": "te",
+          "start": 0.45,
+          "end": 0.57
         },
         {
           "id": "w2",
-          "text": "a",
-          "start": 0.61,
-          "end": 0.63
-        },
-        {
-          "id": "w3",
-          "text": "qué",
-          "start": 0.65,
-          "end": 0.78
-        },
-        {
-          "id": "w4",
-          "text": "oras",
-          "start": 0.78,
+          "text": "enseña",
+          "start": 0.57,
           "end": 0.94
         },
         {
-          "id": "w5",
-          "text": "pagán",
+          "id": "w3",
+          "text": "a",
+          "start": 0.94,
+          "end": 1.01
+        },
+        {
+          "id": "w4",
+          "text": "qué",
           "start": 1.01,
-          "end": 1.59
+          "end": 1.18
+        },
+        {
+          "id": "w5",
+          "text": "horas",
+          "start": 1.19,
+          "end": 1.48
         },
         {
           "id": "w6",
+          "text": "pagan",
+          "start": 1.55,
+          "end": 1.83
+        },
+        {
+          "id": "w7",
           "text": "mejor.",
-          "start": 1.59,
-          "end": 2.2
+          "start": 1.83,
+          "end": 2.3
         }
       ]
     },
@@ -749,63 +731,51 @@
       "words": [
         {
           "id": "w0",
-          "text": "¡Mé",
+          "text": "Menos",
           "start": 0.03,
-          "end": 0.64
+          "end": 0.3
         },
         {
           "id": "w1",
-          "text": "nos",
-          "start": 0.64,
-          "end": 1.12
+          "text": "viajes",
+          "start": 0.3,
+          "end": 0.66
         },
         {
           "id": "w2",
-          "text": "biaque",
-          "start": 1.12,
-          "end": 1.45
+          "text": "malos,",
+          "start": 0.67,
+          "end": 1.08
         },
         {
           "id": "w3",
-          "text": "es",
-          "start": 1.45,
-          "end": 1.51
+          "text": "más",
+          "start": 1.08,
+          "end": 1.26
         },
         {
           "id": "w4",
-          "text": "malos",
-          "start": 1.51,
-          "end": 1.66
+          "text": "dinero",
+          "start": 1.26,
+          "end": 1.62
         },
         {
           "id": "w5",
-          "text": "más",
-          "start": 1.66,
-          "end": 1.75
+          "text": "en",
+          "start": 1.62,
+          "end": 1.74
         },
         {
           "id": "w6",
-          "text": "dinero",
-          "start": 1.75,
-          "end": 1.93
+          "text": "tu",
+          "start": 1.74,
+          "end": 1.86
         },
         {
           "id": "w7",
-          "text": "en",
-          "start": 1.93,
-          "end": 1.99
-        },
-        {
-          "id": "w8",
-          "text": "tu",
-          "start": 1.99,
-          "end": 2.04
-        },
-        {
-          "id": "w9",
-          "text": "cuenta!",
-          "start": 2.04,
-          "end": 2.24
+          "text": "cuenta.",
+          "start": 1.86,
+          "end": 2.28
         }
       ]
     },
@@ -817,50 +787,50 @@
         {
           "id": "w0",
           "text": "Pide",
-          "start": 0.05,
-          "end": 0.22
+          "start": 0.07,
+          "end": 0.28
         },
         {
           "id": "w1",
-          "text": "checka",
-          "start": 0.22,
-          "end": 0.55
+          "text": "Checa",
+          "start": 0.28,
+          "end": 0.63
         },
         {
           "id": "w2",
           "text": "y",
-          "start": 0.6,
-          "end": 0.61
+          "start": 0.63,
+          "end": 0.7
         },
         {
           "id": "w3",
-          "text": "prevala",
-          "start": 0.61,
-          "end": 1.08
+          "text": "pruébala",
+          "start": 0.7,
+          "end": 1.571
         },
         {
           "id": "w4",
-          "text": "siete",
-          "start": 1.08,
-          "end": 1.5
+          "text": "7",
+          "start": 1.571,
+          "end": 1.68
         },
         {
           "id": "w5",
-          "text": "dia",
-          "start": 1.5,
-          "end": 1.75
+          "text": "días",
+          "start": 1.68,
+          "end": 1.96
         },
         {
           "id": "w6",
           "text": "sin",
-          "start": 1.75,
-          "end": 2.01
+          "start": 1.96,
+          "end": 2.17
         },
         {
           "id": "w7",
           "text": "costo.",
-          "start": 2.01,
-          "end": 2.5
+          "start": 2.17,
+          "end": 2.56
         }
       ]
     }

@@ -1,0 +1,56 @@
+[
+  {
+    "text": "Checale",
+    "start": 0.08,
+    "end": 0.49,
+    "id": "w0"
+  },
+  {
+    "text": "la",
+    "start": 0.49,
+    "end": 0.63,
+    "id": "w1"
+  },
+  {
+    "text": "oferta",
+    "start": 0.63,
+    "end": 1.06,
+    "id": "w2"
+  },
+  {
+    "text": "en",
+    "start": 1.06,
+    "end": 1.2,
+    "id": "w3"
+  },
+  {
+    "text": "cuanto",
+    "start": 1.2,
+    "end": 1.63,
+    "id": "w4"
+  },
+  {
+    "text": "cae",
+    "start": 1.63,
+    "end": 1.84,
+    "id": "w5"
+  },
+  {
+    "text": "a",
+    "start": 1.84,
+    "end": 1.91,
+    "id": "w6"
+  },
+  {
+    "text": "tu",
+    "start": 1.91,
+    "end": 2.05,
+    "id": "w7"
+  },
+  {
+    "text": "pantalla.",
+    "start": 2.05,
+    "end": 2.7,
+    "id": "w8"
+  }
+]

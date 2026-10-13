@@ -1,0 +1,50 @@
+[
+  {
+    "text": "Tú",
+    "start": 0.09,
+    "end": 0.12,
+    "id": "w0"
+  },
+  {
+    "text": "pones",
+    "start": 0.12,
+    "end": 0.43,
+    "id": "w1"
+  },
+  {
+    "text": "tus",
+    "start": 0.43,
+    "end": 0.61,
+    "id": "w2"
+  },
+  {
+    "text": "metas",
+    "start": 0.61,
+    "end": 0.91,
+    "id": "w3"
+  },
+  {
+    "text": "de",
+    "start": 0.91,
+    "end": 1.03,
+    "id": "w4"
+  },
+  {
+    "text": "cuánto",
+    "start": 1.03,
+    "end": 1.4,
+    "id": "w5"
+  },
+  {
+    "text": "quieres",
+    "start": 1.4,
+    "end": 1.83,
+    "id": "w6"
+  },
+  {
+    "text": "ganar.",
+    "start": 1.83,
+    "end": 2.27,
+    "id": "w7"
+  }
+]

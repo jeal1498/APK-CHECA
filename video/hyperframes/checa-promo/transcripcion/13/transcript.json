@@ -1,0 +1,56 @@
+[
+  {
+    "text": "Pide",
+    "start": 0.07,
+    "end": 0.28,
+    "id": "w0"
+  },
+  {
+    "text": "checa",
+    "start": 0.28,
+    "end": 0.63,
+    "id": "w1"
+  },
+  {
+    "text": "y",
+    "start": 0.63,
+    "end": 0.7,
+    "id": "w2"
+  },
+  {
+    "text": "prueba",
+    "start": 0.7,
+    "end": 1.12,
+    "id": "w3"
+  },
+  {
+    "text": "las",
+    "start": 1.12,
+    "end": 1.33,
+    "id": "w4"
+  },
+  {
+    "text": "siete",
+    "start": 1.33,
+    "end": 1.68,
+    "id": "w5"
+  },
+  {
+    "text": "días",
+    "start": 1.68,
+    "end": 1.96,
+    "id": "w6"
+  },
+  {
+    "text": "sin",
+    "start": 1.96,
+    "end": 2.17,
+    "id": "w7"
+  },
+  {
+    "text": "costo.",
+    "start": 2.17,
+    "end": 2.56,
+    "id": "w8"
+  }
+]

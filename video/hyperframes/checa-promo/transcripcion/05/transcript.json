@@ -1,0 +1,62 @@
+[
+  {
+    "text": "te",
+    "start": 0.1,
+    "end": 0.12,
+    "id": "w0"
+  },
+  {
+    "text": "da",
+    "start": 0.12,
+    "end": 0.24,
+    "id": "w1"
+  },
+  {
+    "text": "lo",
+    "start": 0.24,
+    "end": 0.36,
+    "id": "w2"
+  },
+  {
+    "text": "que",
+    "start": 0.36,
+    "end": 0.55,
+    "id": "w3"
+  },
+  {
+    "text": "ganas",
+    "start": 0.55,
+    "end": 0.8,
+    "id": "w4"
+  },
+  {
+    "text": "por",
+    "start": 0.88,
+    "end": 1.05,
+    "id": "w5"
+  },
+  {
+    "text": "hora",
+    "start": 1.05,
+    "end": 1.24,
+    "id": "w6"
+  },
+  {
+    "text": "y",
+    "start": 1.31,
+    "end": 1.36,
+    "id": "w7"
+  },
+  {
+    "text": "por",
+    "start": 1.36,
+    "end": 1.55,
+    "id": "w8"
+  },
+  {
+    "text": "kilómetro.",
+    "start": 1.55,
+    "end": 2.2,
+    "id": "w9"
+  }
+]

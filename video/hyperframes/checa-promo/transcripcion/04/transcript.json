@@ -1,0 +1,50 @@
+[
+  {
+    "text": "y",
+    "start": 0.05,
+    "end": 0.06,
+    "id": "w0"
+  },
+  {
+    "text": "de",
+    "start": 0.06,
+    "end": 0.18,
+    "id": "w1"
+  },
+  {
+    "text": "inmediato",
+    "start": 0.18,
+    "end": 0.72,
+    "id": "w2"
+  },
+  {
+    "text": "te",
+    "start": 0.72,
+    "end": 0.84,
+    "id": "w3"
+  },
+  {
+    "text": "muestra",
+    "start": 0.84,
+    "end": 1.26,
+    "id": "w4"
+  },
+  {
+    "text": "un",
+    "start": 1.26,
+    "end": 1.38,
+    "id": "w5"
+  },
+  {
+    "text": "aviso",
+    "start": 1.38,
+    "end": 1.68,
+    "id": "w6"
+  },
+  {
+    "text": "flotante.",
+    "start": 1.68,
+    "end": 2.31,
+    "id": "w7"
+  }
+]
