@@ -41,10 +41,20 @@ Desde el anuncio «Recogidas lejanas» Eduardo pidió **usar siempre el estilo 1
 | 12 Cansancio y salud (valor) | `salud-1volt.mp4` | `Salud1Volt.tsx` |
 | 13 Ingreso inestable (valor) | `ingreso-1volt.mp4` | `Ingreso1Volt.tsx` |
 | 14 Multas y papeles (valor) | `multas-1volt.mp4` | `Multas1Volt.tsx` |
+| Campaña beta testers (clips de Eduardo) | `beta-testers.mp4` | `Beta.tsx` |
 
 Serie de 14 temas completa en 1Volt (octubre 2026).
 
 Componentes reutilizables: `Trazo`, `Cota`, `Numero`, `Etiqueta`, `Frase`, `Subs`, `Fondo` (en cada archivo), `Num` y `Palomita`/`Tache` (Seguridad, Bloqueo, Pasajeros), pop-ups exactos (`Popup` de `ui.tsx`), `Toma` (cambio cada 3 s). Los videos de valor (9–14) cierran con logo + «+ Seguir», sin prueba gratis.
+
+### Videos con clips de Eduardo (él a cuadro)
+Cuando Eduardo mande sus propios clips para unir (p. ej. la campaña de beta testers, `marketing/videos/beta-testers.mp4`, código `video/src/Checa/Beta.tsx`):
+1. Copia los clips a una carpeta temporal y extrae audio: `ffmpeg -i clip.mp4 -ac 1 -ar 16000 clip.wav`.
+2. Transcribe con `video/scripts/transcribir.py` (faster-whisper `small`, lee el wav con numpy porque la versión de `av` no acepta archivos). Con el texto identificas qué clip es cuál aunque los nombres no digan el orden.
+3. Revisa orientación con una hoja de cuadros (`ffmpeg -ss 2 -frames:v 1`); ffmpeg ya aplica la rotación del teléfono.
+4. `video/scripts/preparar_clips.py`: recorta silencios (primera palabra −0.12 s, última +0.25 s), escala a 1080×1920 30 fps, `loudnorm` −14 y genera `lineasBeta.ts` con el texto del guion de Eduardo (los tiempos de palabra salen de whisper; el texto, del guion).
+5. Composición tipo `Beta.tsx`: `OffthreadVideo` por clip, zoom suave 1→1.06, destello en cada corte, acercamiento al pop-up en el clip de demo, etiqueta neón arriba por clip con la oferta, subtítulos 1–3 palabras en mayúsculas (y≈1330, abajo de la cara), música a 0.05 y cierre de 1.5 s con logo + llamada.
+6. Comprime para WhatsApp/Facebook: `-crf 24 -preset slow -movflags +faststart` (~20 MB por 40 s). Los clips originales van en `video/public/beta/` (ignorado en git, pesan mucho); solo se versiona el video final.
 
 Lo que sigue describe el estilo 3D (en pausa); las reglas de guion, voz, cifras y entrega aplican igual.
 
