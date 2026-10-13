@@ -69,3 +69,23 @@ create table if not exists public.pagos (
   creado  timestamptz not null default now()
 );
 alter table public.pagos enable row level security;
+
+-- Medición de la web (checa-web). La página solo puede insertar; nadie de fuera puede leer.
+-- Sin cookies ni datos personales: «visita» es un número al azar por pestaña.
+create table if not exists public.web_eventos (
+  id          uuid primary key default gen_random_uuid(),
+  creado      timestamptz not null default now(),
+  evento      text not null check (evento in ('visita','clic_descargar','descarga','llego_instalar','descarga_instalar','whatsapp_ayuda','beta','beta_whatsapp','video_play')),
+  pagina      text check (char_length(pagina) <= 60),
+  desde       text check (char_length(desde) <= 30),
+  visita      text check (char_length(visita) <= 20),
+  fuente      text check (char_length(fuente) <= 60),
+  campana     text check (char_length(campana) <= 60),
+  dispositivo text check (dispositivo in ('android','iphone','pc','otro'))
+);
+alter table public.web_eventos enable row level security;
+drop policy if exists "la web anota eventos" on public.web_eventos;
+create policy "la web anota eventos" on public.web_eventos
+  for insert to anon with check (creado > now() - interval '1 minute');
+grant insert on public.web_eventos to anon;
+create index if not exists web_eventos_creado on public.web_eventos (creado);
