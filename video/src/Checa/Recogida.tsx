@@ -29,7 +29,7 @@ const PLANOS: { desde: number; v: Vista }[] = [
 
 const PX = "Silkscreen";
 const C = { cian: "#22D3EE", magenta: "#EC4899", amarillo: "#FACC15", verde: "#22C55E", rojo: "#F43F5E", texto: "#FFFFFF", tenue: "#C9CFF0", calle: "#262B55", banqueta: "#4A5080" };
-const NOCHE = "linear-gradient(180deg, #070A1F 0%, #141A45 55%, #2E2466 100%)";
+export const NOCHE = "linear-gradient(180deg, #070A1F 0%, #141A45 55%, #2E2466 100%)";
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 const suave = { ...clamp, easing: Easing.inOut(Easing.cubic) };
 const ap = (f: number, d: number, dur = 10) => interpolate(f, [d, d + dur], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) });
@@ -83,7 +83,7 @@ const Camara: React.FC = () => {
 };
 
 // Escenario nuevo: postes con luz cálida a los dos lados de la calle
-const Postes: React.FC = () => (
+export const Postes: React.FC = () => (
   <>
     {Array.from({ length: 12 }).map((_, k) =>
       [-1, 1].map((lado) => {
@@ -114,7 +114,7 @@ const Postes: React.FC = () => (
 );
 
 // Carro del conductor con faros encendidos
-const CarroNoche: React.FC<{ z: number }> = ({ z }) => (
+export const CarroNoche: React.FC<{ z: number }> = ({ z }) => (
   <>
     <Carro3D z={z} color="#FFFFFF" />
     {[-0.8, 0.8].map((x) => (
@@ -175,7 +175,7 @@ const Escena: React.FC = () => {
   );
 };
 
-const POPUP = (ancho: number) => (
+export const POPUP = (ancho: number) => (
   <Popup
     ancho={ancho}
     nivel="rojo"
@@ -191,7 +191,7 @@ const POPUP = (ancho: number) => (
     ]}
   />
 );
-const OFERTA = (ancho: number) => <Oferta app="App de viajes" tarifa="$70.00" tramos={["14 min (6.0 km)", "16 min (7.0 km)"]} ancho={ancho} />;
+export const OFERTA = (ancho: number) => <Oferta app="App de viajes" tarifa="$70.00" tramos={["14 min (6.0 km)", "16 min (7.0 km)"]} ancho={ancho} />;
 
 const Capas: React.FC = () => {
   const frame = useCurrentFrame();
