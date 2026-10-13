@@ -87,7 +87,7 @@ La app se queda una comisión y las tarifas no suben. [Corte] La comisión no la
 ---
 
 ## Tema 7 · Miedo a rechazar (calificación / tasa de aceptación)
-Video: `marketing/videos/rechazar-1volt.mp4` (`Rechazar1Volt.tsx`) · en la voz, «La app solo lee la pantalla» quedó como «Checa solo lee la pantalla» (para no confundir con Uber/DiDi); en pantalla, «números de ejemplo»
+Video: `marketing/videos/rechazar-1volt.mp4` (`Rechazar1Volt.tsx`) · en la voz, «La app solo lee la pantalla» quedó como «La app Checa solo lee la pantalla» (para no confundir con Uber/DiDi); en pantalla, «números de ejemplo»
 
 Te da miedo rechazar viajes [Corte] porque sientes que la app te va a castigar. [Corte] Así que terminas aceptando de todo, [Corte] hasta los viajes que te hacen perder dinero. [Corte] Cada plataforma tiene sus reglas y hay que saber jugarlas... [Corte] pero si vas a rechazar, que sea el viaje que de verdad no conviene. [Corte] Checa esto: $70 pesos por 13 kilómetros solo te dejan $44 limpios. [Corte] En cambio, $120 pesos por 12 kilómetros te dejan $96 en la bolsa. [Corte] Checa te dice cuál es cuál, y la decisión siempre es tuya. [Corte] La app solo lee la pantalla, [Corte] el botón siempre lo tocas tú. [Corte] Pide tus 7 días de prueba sin costo en el link del perfil.
 
