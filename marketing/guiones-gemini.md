@@ -83,3 +83,22 @@ La app se queda una comisión y las tarifas no suben. [Corte] La comisión no la
 | 7 | 0:24–0:27 | En 20 viajes al día, son $240 pesos más en tu bolsa. | Rejilla de 20 puntos que suma $240 |
 | 8 | 0:27–0:29 | Checa te marca de volada cuál conviene antes de aceptar. | Pop-ups amarillo y verde con ⭐ |
 | 9 | 0:29–0:32 | Pide tus 7 días de prueba sin costo en el link del perfil. | Logo + 7 días de prueba sin costo |
+
+---
+
+## Tema 7 · Miedo a rechazar (calificación / tasa de aceptación)
+Video: `marketing/videos/rechazar-1volt.mp4` (`Rechazar1Volt.tsx`) · en la voz, «La app solo lee la pantalla» quedó como «Checa solo lee la pantalla» (para no confundir con Uber/DiDi); en pantalla, «números de ejemplo»
+
+Te da miedo rechazar viajes [Corte] porque sientes que la app te va a castigar. [Corte] Así que terminas aceptando de todo, [Corte] hasta los viajes que te hacen perder dinero. [Corte] Cada plataforma tiene sus reglas y hay que saber jugarlas... [Corte] pero si vas a rechazar, que sea el viaje que de verdad no conviene. [Corte] Checa esto: $70 pesos por 13 kilómetros solo te dejan $44 limpios. [Corte] En cambio, $120 pesos por 12 kilómetros te dejan $96 en la bolsa. [Corte] Checa te dice cuál es cuál, y la decisión siempre es tuya. [Corte] La app solo lee la pantalla, [Corte] el botón siempre lo tocas tú. [Corte] Pide tus 7 días de prueba sin costo en el link del perfil.
+
+| Corte | Tiempo | Voz | En pantalla |
+|---|---|---|---|
+| 1 | 0:00–0:04 | Te da miedo rechazar viajes porque sientes que la app te va a castigar. | Dedo dudando entre «Aceptar» y «Rechazar» |
+| 2 | 0:04–0:08 | Así que terminas aceptando de todo, hasta los viajes que te hacen perder dinero. | Lista de viajes con varios en rojo |
+| 3 | 0:08–0:11 | Cada plataforma tiene sus reglas y hay que saber jugarlas... | Libreta/reglamento abriéndose |
+| 4 | 0:11–0:14 | ...pero si vas a rechazar, que sea el viaje que de verdad no conviene. | Un viaje malo resaltado en rojo |
+| 5 | 0:14–0:18 | Checa esto: $70 pesos por 13 kilómetros solo te dejan $44 limpios. | Pop-up rojo RECHAZAR · $44 |
+| 6 | 0:18–0:21 | En cambio, $120 pesos por 12 kilómetros te dejan $96 en la bolsa. | Pop-up verde ACEPTAR · $96 |
+| 7 | 0:21–0:25 | Checa te dice cuál es cuál, y la decisión siempre es tuya. | Los dos pop-ups y una mano eligiendo |
+| 8 | 0:25–0:28 | La app solo lee la pantalla, el botón siempre lo tocas tú. | Ojo escaneando la pantalla, dedo tocando |
+| 9 | 0:28–0:31 | Pide tus 7 días de prueba sin costo en el link del perfil. | Logo + 7 días de prueba sin costo |

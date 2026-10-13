@@ -10,7 +10,7 @@ Miedos y problemas del conductor de plataformas, en el orden en que se van a tra
 | 4 | 10 | Horas muertas, no saber a qué hora salir ✅ `marketing/videos/horas-1volt.mp4` (`Horas1Volt.tsx`, guion de Gemini) | «Hoy no cae nada» | Sí (Mejores horas) |
 | 5 | 11 | Decidir en segundos sin poder hacer la cuenta ✅ `marketing/videos/decidir-1volt.mp4` (`Decidir1Volt.tsx`, guion de Gemini) | «Acepto sin pensar porque se va» | Sí (pop-up y voz) |
 | 6 | 5 | Tarifas bajas y comisión alta ✅ `marketing/videos/comision-1volt.mp4` (`Comision1Volt.tsx`, guion de Gemini) | «La app se queda con todo» | Parcial (elegir mejores viajes) |
-| 7 | 7 | Miedo a que baje la calificación o la tasa de aceptación al rechazar | «Si rechazo me castigan» | Parcial (rechazar solo los malos) |
+| 7 | 7 | Miedo a que baje la calificación o la tasa de aceptación al rechazar ✅ `marketing/videos/rechazar-1volt.mp4` (`Rechazar1Volt.tsx`, guion de Gemini) | «Si rechazo me castigan» | Parcial (rechazar solo los malos) |
 | 8 | 8 | Desgaste del carro / renta semanal | «El carro se está acabando» | Parcial (solo gasolina) |
 | 9 | 1 | Inseguridad: asaltos, robo, zonas peligrosas | «Ya no salgo de noche» | No: video de valor, sin vender |
 | 10 | 4 | Bloqueo o desactivación sin explicación | «Me desactivaron y nadie responde» | Indirecto (Checa no toca la app) |
