@@ -5,14 +5,14 @@ Guiones finales que Eduardo trae de Gemini, en el orden en que se hicieron. `[Co
 ---
 
 ## Tema 3 · Recogidas lejanas, kilómetros que nadie paga
-Video: `marketing/videos/recogida-1volt.mp4` (`Recogida1Volt.tsx`) · versión 3D: `recogida2.mp4` · voz Fernando Martínez
+Video: `marketing/publicar/04_2026-10-17_recogidas-lejanas.mp4` (`Recogida1Volt.tsx`) · versión 3D: `recogida2.mp4` · voz Fernando Martínez
 
 ¿Manejar 6 kilómetros solo para ir por el pasaje? [Corte] Prácticamente estás regalando la gasolina. [Corte] Ves una oferta de $70, pero entre la recogida y el viaje te avientas 13 kilómetros... [Corte] Terminaste trabajando la mitad del camino de a gratis. [Corte] Checa te suma la recogida al instante y le resta la gasolina de tu carro. [Corte] Te muestra que solo te quedan $44 limpios... [Corte] y de una te marca: RECHAZAR. [Corte] Deja de regalar tu trabajo. [Corte] Pide tus 7 días de prueba sin costo en el link del perfil.
 
 ---
 
 ## Tema 2 · Gasolina cara que se come la ganancia
-Video: `marketing/videos/gasolina-1volt.mp4` (`Gasolina1Volt.tsx`)
+Video: `marketing/publicar/06_2026-10-19_gasolina-cara.mp4` (`Gasolina1Volt.tsx`)
 
 Le metes $800 pesos de gas al carro [Corte] y a media semana ya andas en la reserva. [Corte] Haz cuentas: cada kilómetro te cuesta $2 pesos de pura gasolina. [Corte] Te cae una oferta de $90 pesos... Suena bien, ¿no? [Corte] Pero entre ir a recoger y el viaje te avientas 15 kilómetros... [Corte] ¡$30 pesos se van directo al tanque! [Corte] Te quedan $60. Un tercio de tu viaje se lo comió la gasolina. [Corte] Checa hace esa resta antes de que aceptes, [Corte] calculando el rendimiento real de tu carro [Corte] para decirte si el viaje conviene o no. [Corte] Que la gasolina no se coma tu ganancia. [Corte] Pide tus 7 días de prueba sin costo en el link del perfil.
 
@@ -30,7 +30,7 @@ Le metes $800 pesos de gas al carro [Corte] y a media semana ya andas en la rese
 ---
 
 ## Tema 4 · Horas muertas, no saber a qué hora salir
-Video: `marketing/videos/horas-1volt.mp4` (`Horas1Volt.tsx`) · en pantalla se agregó «números de ejemplo» bajo $6 y $11
+Video: `marketing/publicar/10_2026-10-23_mejores-horas.mp4` (`Horas1Volt.tsx`) · en pantalla se agregó «números de ejemplo» bajo $6 y $11
 
 Sales a manejar a las tres de la tarde [Corte] y en dos horas no cae nada que valga la pena. [Corte] Nomás andas gastando gasolina dando vueltas, [Corte] esperando a que caiga el viaje bueno. [Corte] Haz cuentas: a esa hora las ofertas te pagan como $6 pesos por kilómetro... [Corte] pero a las siete de la noche suben a $11 pesos. [Corte] La hora a la que sales define cuánto te llevas a la bolsa. [Corte] Checa guarda cada oferta que te llega [Corte] y te arma un semáforo de tus mejores horas en verde, amarillo y rojo. [Corte] Así sabes exactamente a qué hora conviene salir y a qué hora descansar. [Corte] Deja de manejar a ciegas. [Corte] Pide tus 7 días de prueba sin costo en el link del perfil.
 
@@ -50,7 +50,7 @@ Sales a manejar a las tres de la tarde [Corte] y en dos horas no cae nada que va
 ---
 
 ## Tema 5 · Decidir en segundos sin poder hacer la cuenta
-Video: `marketing/videos/decidir-1volt.mp4` (`Decidir1Volt.tsx`) · en la voz, «en menos de un segundo» quedó como «en un segundo» (la app lee la pantalla cada segundo)
+Video: `marketing/publicar/08_2026-10-21_decidir-en-segundos.mp4` (`Decidir1Volt.tsx`) · en la voz, «en menos de un segundo» quedó como «en un segundo» (la app lee la pantalla cada segundo)
 
 Te cae una oferta y solo tienes unos segundos para decidir. [Corte] Tarifa, kilómetros, tiempo de recogida... ¿y la gasolina? [Corte] No da tiempo de sacar cuentas, así que terminas aceptando al aventón. [Corte] Y ahí es donde se te cuelan los viajes que te hacen perder dinero. [Corte] Checa lee la pantalla en menos de un segundo [Corte] y te lo canta en voz alta: Aceptar, Considerar o Rechazar. [Corte] Tú solo ves el color o escuchas el aviso, y sigues manejando. [Corte] Pide tus 7 días de prueba sin costo en el link del perfil.
 
@@ -68,7 +68,7 @@ Te cae una oferta y solo tienes unos segundos para decidir. [Corte] Tarifa, kil�
 ---
 
 ## Tema 6 · Tarifas bajas y comisión alta
-Video: `marketing/videos/comision-1volt.mp4` (`Comision1Volt.tsx`) · en pantalla se agregó «números de ejemplo»
+Video: `marketing/publicar/12_2026-10-25_comision-y-tarifas.mp4` (`Comision1Volt.tsx`) · en pantalla se agregó «números de ejemplo»
 
 La app se queda una comisión y las tarifas no suben. [Corte] La comisión no la puedes cambiar... [Corte] pero qué viajes aceptas, eso sí lo decides tú. [Corte] Checa esto: entran dos ofertas de $100 pesos. [Corte] Una son 14 kilómetros en total; [Corte] la otra son solo 8 kilómetros. [Corte] Ya con gasolina, en la primera te quedan $72 limpios... y en la segunda, $84. [Corte] ¡$12 pesos de diferencia en la misma tarifa! [Corte] En 20 viajes al día, son $240 pesos más en tu bolsa. [Corte] Checa te marca de volada cuál te conviene antes de aceptar. [Corte] Pide tus 7 días de prueba sin costo en el link del perfil.
 
@@ -87,7 +87,7 @@ La app se queda una comisión y las tarifas no suben. [Corte] La comisión no la
 ---
 
 ## Tema 7 · Miedo a rechazar (calificación / tasa de aceptación)
-Video: `marketing/videos/rechazar-1volt.mp4` (`Rechazar1Volt.tsx`) · en la voz, «La app solo lee la pantalla» quedó como «La app Checa solo lee la pantalla» (para no confundir con Uber/DiDi); en pantalla, «números de ejemplo»
+Video: `marketing/publicar/14_2026-10-27_miedo-a-rechazar.mp4` (`Rechazar1Volt.tsx`) · en la voz, «La app solo lee la pantalla» quedó como «La app Checa solo lee la pantalla» (para no confundir con Uber/DiDi); en pantalla, «números de ejemplo»
 
 Te da miedo rechazar viajes [Corte] porque sientes que la app te va a castigar. [Corte] Así que terminas aceptando de todo, [Corte] hasta los viajes que te hacen perder dinero. [Corte] Cada plataforma tiene sus reglas y hay que saber jugarlas... [Corte] pero si vas a rechazar, que sea el viaje que de verdad no conviene. [Corte] Checa esto: $70 pesos por 13 kilómetros solo te dejan $44 limpios. [Corte] En cambio, $120 pesos por 12 kilómetros te dejan $96 en la bolsa. [Corte] Checa te dice cuál es cuál, y la decisión siempre es tuya. [Corte] La app solo lee la pantalla, [Corte] el botón siempre lo tocas tú. [Corte] Pide tus 7 días de prueba sin costo en el link del perfil.
 
@@ -106,7 +106,7 @@ Te da miedo rechazar viajes [Corte] porque sientes que la app te va a castigar. 
 ---
 
 ## Tema 8 · Desgaste del carro / renta semanal
-Video: `marketing/videos/desgaste-1volt.mp4` (`Desgaste1Volt.tsx`) · en la voz, «Checa escanea» quedó como «La app Checa escanea»; en pantalla, «números de ejemplo» junto a los $500
+Video: `marketing/publicar/15_2026-10-28_desgaste-y-renta.mp4` (`Desgaste1Volt.tsx`) · en la voz, «Checa escanea» quedó como «La app Checa escanea»; en pantalla, «números de ejemplo» junto a los $500
 
 Despertar todos los días debiendo $500 pesos... esa sí es una chinga. [Corte] Si rentas carro, empiezas el día en números rojos antes de ganarte un solo peso. [Corte] Y si el auto es tuyo, no te engañes: [Corte] cada kilómetro de más le saca la vida a tus llantas, frenos y aceite. [Corte] Viaje malo que aceptas, dinero que pierdes por doble: gasolina y desgaste. [Corte] Checa escanea la oferta al instante [Corte] y te destapa los kilómetros reales de la recogida y el pago exacto por kilómetro. [Corte] La gasolina ya te la calcula en automático. [Corte] El mantenimiento, ese sí apártalo tú. [Corte] Deja de regalar el desgaste de tu carro. [Corte] Pide tus 7 días de prueba sin costo en el enlace del perfil.
 
@@ -123,7 +123,7 @@ Despertar todos los días debiendo $500 pesos... esa sí es una chinga. [Corte] 
 ---
 
 ## Tema 9 · Inseguridad (video de valor, Checa solo firma)
-Video: `marketing/videos/seguridad-1volt.mp4` (`Seguridad1Volt.tsx`)
+Video: `marketing/publicar/03_2026-10-16_seguridad-de-noche.mp4` (`Seguridad1Volt.tsx`)
 
 Manejar de noche en la calle ya no es un juego. [Corte] Si sientes ese hueco en el estómago cada que se sube un desconocido, guarda estos 5 consejos. [Corte] Uno: Comparte tu ubicación en tiempo real con alguien de confianza, siempre. [Corte] Dos: Revisa que la foto y el nombre del usuario coincidan antes de quitar el seguro. [Corte] Tres: Si algo no te late, no lo pienses: cancela y vete. Tu vida vale más que una tarifa. [Corte] Cuatro: Ubica el botón de emergencia en tu app antes de que de verdad lo necesites. [Corte] Cinco: El celular siempre en el soporte, jamás en las piernas ni en la mano. [Corte] Cuídate mucho en el turno. Síguenos para más consejos de conductor a conductor.
 
@@ -144,7 +144,7 @@ Caption sugerido: La calle está difícil y la seguridad es primero. 🛡️ Gua
 ---
 
 ## Tema 10 · Bloqueo o desactivación sin explicación (video de valor)
-Video: `marketing/videos/bloqueo-1volt.mp4` (`Bloqueo1Volt.tsx`)
+Video: `marketing/publicar/09_2026-10-22_cuenta-desactivada.mp4` (`Bloqueo1Volt.tsx`)
 
 Abrir la app a las 6 de la mañana y ver 'Cuenta Desactivada'... esa sí es una pesadilla. [Corte] Y lo peor: nadie te dice por qué. [Corte] Para que no te agarre desprevenido, haz esto desde hoy. [Corte] Uno: Guarda captura de cada viaje raro o con problema, junto con tus reportes. [Corte] Dos: Ten tu licencia y documentos vigentes antes de que te los reboten. [Corte] Tres: Si te la bloquean, apela por los canales oficiales, con calma y con tus pruebas en mano. [Corte] Cuatro: Cuidado con apps que aceptan viajes por ti o modifican la plataforma. [Corte] La app Checa solo lee la oferta en pantalla; [Corte] aceptar o rechazar siempre lo decides tú. [Corte] Comparte esto con un compañero. Síguenos para más consejos de conductor a conductor.
 
@@ -162,7 +162,7 @@ Abrir la app a las 6 de la mañana y ver 'Cuenta Desactivada'... esa sí es una 
 ---
 
 ## Tema 11 · Pasajeros problemáticos, cancelaciones y esperas (video de valor)
-Video: `marketing/videos/pasajeros-1volt.mp4` (`Pasajeros1Volt.tsx`) · en la voz, «cancela sin culpa y cobra tu tarifa» quedó como «cancela sin culpa y checa si te toca cobro» (el cobro por cancelación depende de cada app)
+Video: `marketing/publicar/07_2026-10-20_pasajeros-y-cancelaciones.mp4` (`Pasajeros1Volt.tsx`) · en la voz, «cancela sin culpa y cobra tu tarifa» quedó como «cancela sin culpa y checa si te toca cobro» (el cobro por cancelación depende de cada app)
 
 Llegas por el pasaje… y te cancela. [Corte] O peor: te deja plantado 10 minutos en la calle. [Corte] Aplica estos 4 consejos de volada. [Corte] Uno: Conoce las reglas exactas de espera de tu app. [Corte] Cumplido el tiempo, cancela sin culpa y cobra tu tarifa. [Corte] Dos: Si te cancelan ya estando ahí, guarda captura y reporta. [Corte] Tres: Confirma nombre y destino antes de quitar seguros. [Corte] Cuatro: Si el usuario se pone pesado, ni le alegues. [Corte] Párate en un lugar seguro y cancela el viaje. [Corte] Comparte esto con un compañero. [Corte] Síguenos para más consejos de conductor a conductor.
 
@@ -182,7 +182,7 @@ Llegas por el pasaje… y te cancela. [Corte] O peor: te deja plantado 10 minuto
 ---
 
 ## Tema 12 · Cansancio y salud (video de valor)
-Video: `marketing/videos/salud-1volt.mp4` (`Salud1Volt.tsx`)
+Video: `marketing/publicar/05_2026-10-18_cansancio-y-salud.mp4` (`Salud1Volt.tsx`)
 
 Doce horas sentado y la espalda ya no aguanta. [Corte] Tu cuerpo también es tu herramienta de trabajo. [Corte] Aplica estos 4 consejos para aguantar el turno. [Corte] Uno: Cada dos horas, bájate a estirar las piernas 5 minutos. [Corte] Dos: Trae tu botella de agua a la mano y toma seguido. [Corte] Tres: Ajusta el asiento con la espalda pegada al respaldo. [Corte] Cuatro: Si parpadeas pesado o bostezas, oríllate a descansar. [Corte] Ningún viaje vale más que regresar bien a tu casa. [Corte] Comparte esto con un compañero. [Corte] Síguenos para más consejos de conductor a conductor.
 
@@ -201,7 +201,7 @@ Doce horas sentado y la espalda ya no aguanta. [Corte] Tu cuerpo también es tu 
 ---
 
 ## Tema 13 · Ingreso inestable, sin prestaciones ni seguro (video de valor)
-Video: `marketing/videos/ingreso-1volt.mp4` (`Ingreso1Volt.tsx`) · «Two» del guion de Gemini quedó como «Dos»
+Video: `marketing/publicar/11_2026-10-24_ingreso-inestable.mp4` (`Ingreso1Volt.tsx`) · «Two» del guion de Gemini quedó como «Dos»
 
 Un día te va bien… y tres te va mal. [Corte] Y si te enfermas, nadie te paga el día. [Corte] Aplica estos 4 tips para no vivir al día. [Corte] Uno: De lo que ganes a diario, guarda el 10% sin tocarlo. [Corte] Ese va a ser tu fondo para cuando caiga la racha mala. [Corte] Dos: Separa en sobres la gasolina, la cuota y el mantenimiento. [Corte] Tres: Mide tus ingresos en ganancias netas, no en lo que cobras. [Corte] Cuatro: Investiga opciones de ahorro o seguro para independientes. [Corte] Comparte esto con un compañero. [Corte] Síguenos para más consejos de conductor a conductor.
 
@@ -220,7 +220,7 @@ Un día te va bien… y tres te va mal. [Corte] Y si te enfermas, nadie te paga 
 ---
 
 ## Tema 14 · Multas, tránsito y papeles (video de valor)
-Video: `marketing/videos/multas-1volt.mp4` (`Multas1Volt.tsx`)
+Video: `marketing/publicar/13_2026-10-26_multas-y-papeles.mp4` (`Multas1Volt.tsx`)
 
 Te botan la direccional, ves la torreta... y empieza el nervio. [Corte] Que no te agarren con los papeles en desorden. [Corte] Aplica estos 4 tips para circular tranquilo. [Corte] Uno: Licencia, tarjeta de circulación y seguro, siempre vigentes. [Corte] Tráelos a la mano y ten una copia digital en tu teléfono. [Corte] Dos: Revisa una vez al mes si tu placa no tiene infracciones pendientes. [Corte] Tres: Si te paran, pide identificación al agente y boleta por escrito. [Corte] Cuatro: Cero arreglos en la calle: paga solo en canales oficiales. [Corte] Comparte esto con un compañero. [Corte] Síguenos para más consejos de conductor a conductor.
 
@@ -239,6 +239,6 @@ Te botan la direccional, ves la torreta... y empieza el nervio. [Corte] Que no t
 ---
 
 ## Tema 1 · Trabajar mucho y no ver el dinero (guion propio aprobado, sin Gemini)
-Video: `marketing/videos/sin-lana-1volt.mp4` (`SinLana1Volt.tsx`) · versión 3D: `sin-lana.mp4`
+Video: `marketing/publicar/02_2026-10-15_trabajar-mucho-sin-lana.mp4` (`SinLana1Volt.tsx`) · versión 3D: `sin-lana.mp4`
 
 Doce horas al volante. [Corte] Llegas a tu casa y la lana no aparece. [Corte] Con números de ejemplo: veinte viajes de ochenta pesos. [Corte] Mil seiscientos en la app. [Corte] Y a cada uno te mandaron a recoger a seis kilómetros que nadie paga. [Corte] Seis de recogida y ocho de viaje. [Corte] De los ochenta, la gasolina se lleva veintiocho. [Corte] Al final del día, quinientos sesenta pesos se fueron al tanque. [Corte] Y ciento veinte kilómetros los manejaste gratis. [Corte] La app Checa te dice cuánto te queda limpio antes de aceptar. [Corte] En tu próxima oferta, checa los netos. [Corte] Pruébala siete días gratis. ¿Cuánto te quedó hoy?

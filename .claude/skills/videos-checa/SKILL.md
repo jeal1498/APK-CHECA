@@ -9,7 +9,7 @@ description: Hacer videos cortos de Checa (TikTok, Reels, Shorts) con narrador d
 
 Desde el anuncio «Recogidas lejanas» Eduardo pidió **usar siempre el estilo 1Volt** (2D, line-art en SVG) porque el 3D gasta demasiados tokens y tiempo (render por software). El 3D le gusta mucho, pero queda **en pausa**: no lo uses salvo que él lo pida.
 
-- Plantilla: **`video/src/Checa/Recogida1Volt.tsx`** (`marketing/videos/recogida-1volt.mp4`). Una idea por pantalla: trazos que se dibujan solos (`Trazo`), cotas punteadas (`Cota`), rejilla de puntos, ticket con la cuenta, número gigante en Fira Code, frase clave en MAYÚSCULAS espaciadas con una línea chica debajo, ícono tachado, pop-up exacto (`POPUP`) y cierre con logo.
+- Plantilla: **`video/src/Checa/Recogida1Volt.tsx`** (`marketing/publicar/04_2026-10-17_recogidas-lejanas.mp4`). Una idea por pantalla: trazos que se dibujan solos (`Trazo`), cotas punteadas (`Cota`), rejilla de puntos, ticket con la cuenta, número gigante en Fira Code, frase clave en MAYÚSCULAS espaciadas con una línea chica debajo, ícono tachado, pop-up exacto (`POPUP`) y cierre con logo.
 - **Más colores**: cada escena tiene su color de trazo y tinte de fondo (`TONO`: naranja, rosa, azul, morado, verde, amarillo, rojo, magenta, cian), además de cian/magenta/amarillo con significado.
 - **Subtítulos para redes** (`Subs`): abajo en y≈1500, Inter 800 de 70 px con contorno negro, 1–3 palabras, rebote al entrar y palabras clave a color (`CLAVE`). La frase clave va en y≈1270.
 - Render **sin** `--gl=swangle`: `npx remotion render <Id> out/x.mp4 --browser-executable=$B --log=error` (~1 min para 30 s).
@@ -22,37 +22,37 @@ Desde el anuncio «Recogidas lejanas» Eduardo pidió **usar siempre el estilo 1
 1. Propón el guion del siguiente tema de `marketing/temas-videos.md` en tabla (corte · voz · en pantalla), ~70 palabras, frases de ~3 s, y la cuenta de cada cifra.
 2. Eduardo lo pasa a Gemini y trae la versión corregida: **guárdala primero** en `marketing/guiones-gemini.md` (corrido + tabla + archivo del video + ajustes que hiciste).
 3. Revisa honestidad antes de grabar: «la app Checa» cuando pueda confundirse; «números de ejemplo» en pantalla si la voz no lo dice; nada que no podamos garantizar (cobros de cancelación, «menos de un segundo», bloqueos, ciudad o país en hashtags). Avisa cada ajuste.
-4. Voz Fernando Martínez (1 línea por `[Corte]`), escena 1Volt a partir del video anterior (`<Nombre>1Volt.tsx`, `<Toma>` incluida), 1 tira de ~6 cuadros, render, `marketing/videos/<nombre>-1volt.mp4`, marca el tema en `temas-videos.md`, commit `[skip ci]` y push a `main` y a la rama de trabajo.
+4. Voz Fernando Martínez (1 línea por `[Corte]`), escena 1Volt a partir del video anterior (`<Nombre>1Volt.tsx`, `<Toma>` incluida), 1 tira de ~6 cuadros, render, `marketing/publicar/NN_fecha_tema.mp4` + portada + entrada en `calendario.md`, marca el tema en `temas-videos.md`, commit `[skip ci]` y push a `main` y a la rama de trabajo.
 
 ### Videos hechos (1Volt salvo que se indique)
 | Tema | Video | Código |
 |---|---|---|
-| 1 Trabajar mucho y no ver el dinero | `sin-lana-1volt.mp4` (+ `sin-lana.mp4` en 3D) | `SinLana1Volt.tsx` |
-| 2 Gasolina cara | `gasolina-1volt.mp4` | `Gasolina1Volt.tsx` |
-| 3 Recogidas lejanas | `recogida-1volt.mp4` (+ `recogida.mp4`, `recogida2.mp4` en 3D) | `Recogida1Volt.tsx` |
-| 4 Horas muertas | `horas-1volt.mp4` | `Horas1Volt.tsx` |
-| 5 Decidir en segundos | `decidir-1volt.mp4` | `Decidir1Volt.tsx` |
-| 6 Comisión alta | `comision-1volt.mp4` | `Comision1Volt.tsx` |
-| 7 Miedo a rechazar | `rechazar-1volt.mp4` | `Rechazar1Volt.tsx` |
-| 8 Desgaste / renta | `desgaste-1volt.mp4` | `Desgaste1Volt.tsx` |
-| 9 Inseguridad (valor) | `seguridad-1volt.mp4` | `Seguridad1Volt.tsx` |
-| 10 Bloqueo (valor) | `bloqueo-1volt.mp4` | `Bloqueo1Volt.tsx` |
-| 11 Pasajeros problemáticos (valor) | `pasajeros-1volt.mp4` | `Pasajeros1Volt.tsx` |
-| 12 Cansancio y salud (valor) | `salud-1volt.mp4` | `Salud1Volt.tsx` |
-| 13 Ingreso inestable (valor) | `ingreso-1volt.mp4` | `Ingreso1Volt.tsx` |
-| 14 Multas y papeles (valor) | `multas-1volt.mp4` | `Multas1Volt.tsx` |
-| Campaña beta testers (clips de Eduardo) | `beta-testers.mp4` | `Beta.tsx` |
+| 1 Trabajar mucho y no ver el dinero | `02_2026-10-15_trabajar-mucho-sin-lana.mp4` (+ `sin-lana.mp4` en 3D) | `SinLana1Volt.tsx` |
+| 2 Gasolina cara | `06_2026-10-19_gasolina-cara.mp4` | `Gasolina1Volt.tsx` |
+| 3 Recogidas lejanas | `04_2026-10-17_recogidas-lejanas.mp4` (+ `recogida.mp4`, `recogida2.mp4` en 3D) | `Recogida1Volt.tsx` |
+| 4 Horas muertas | `10_2026-10-23_mejores-horas.mp4` | `Horas1Volt.tsx` |
+| 5 Decidir en segundos | `08_2026-10-21_decidir-en-segundos.mp4` | `Decidir1Volt.tsx` |
+| 6 Comisión alta | `12_2026-10-25_comision-y-tarifas.mp4` | `Comision1Volt.tsx` |
+| 7 Miedo a rechazar | `14_2026-10-27_miedo-a-rechazar.mp4` | `Rechazar1Volt.tsx` |
+| 8 Desgaste / renta | `15_2026-10-28_desgaste-y-renta.mp4` | `Desgaste1Volt.tsx` |
+| 9 Inseguridad (valor) | `03_2026-10-16_seguridad-de-noche.mp4` | `Seguridad1Volt.tsx` |
+| 10 Bloqueo (valor) | `09_2026-10-22_cuenta-desactivada.mp4` | `Bloqueo1Volt.tsx` |
+| 11 Pasajeros problemáticos (valor) | `07_2026-10-20_pasajeros-y-cancelaciones.mp4` | `Pasajeros1Volt.tsx` |
+| 12 Cansancio y salud (valor) | `05_2026-10-18_cansancio-y-salud.mp4` | `Salud1Volt.tsx` |
+| 13 Ingreso inestable (valor) | `11_2026-10-24_ingreso-inestable.mp4` | `Ingreso1Volt.tsx` |
+| 14 Multas y papeles (valor) | `13_2026-10-26_multas-y-papeles.mp4` | `Multas1Volt.tsx` |
+| Campaña beta testers (clips de Eduardo) | `01_2026-10-14_beta-testers.mp4` | `Beta.tsx` |
 
 Serie de 14 temas completa en 1Volt (octubre 2026).
 
 Componentes reutilizables: `Trazo`, `Cota`, `Numero`, `Etiqueta`, `Frase`, `Subs`, `Fondo` (en cada archivo), `Num` y `Palomita`/`Tache` (Seguridad, Bloqueo, Pasajeros), pop-ups exactos (`Popup` de `ui.tsx`), `Toma` (cambio cada 3 s). Los videos de valor (9–14) cierran con logo + «+ Seguir», sin prueba gratis.
 
 ### Portadas y textos para publicar
-- **Portadas**: composición `Portada` (`video/src/Checa/Portada.tsx`, props `titulo` con `|` para alternar color por línea, `sub`, `color`, `etiqueta`, `fondo` opcional). Render: `npx remotion still Portada out.png --props '{...}'` y pásala a JPG (`ffmpeg -q:v 3`). Guardar en `marketing/portadas/<video>.jpg`; la lista de títulos y colores está en el historial del commit y en este archivo de textos.
-- **Textos**: `marketing/textos-publicacion.md`, uno por video (2–3 líneas, 3–5 hashtags, sin ciudad ni país, sin #ubermexico). Agrega el de cada video nuevo.
+- **Portadas**: composición `Portada` (`video/src/Checa/Portada.tsx`, props `titulo` con `|` para alternar color por línea, `sub`, `color`, `etiqueta`, `fondo` opcional). Render: `npx remotion still Portada out.png --props '{...}'` y pásala a JPG (`ffmpeg -q:v 3`). Guarda la portada junto a su video en `marketing/publicar/NN_fecha_tema.jpg`.
+- **Textos y calendario**: `marketing/calendario.md` (fecha, tipo y texto de cada publicación), uno por video (2–3 líneas, 3–5 hashtags, sin ciudad ni país, sin #ubermexico). Agrega el de cada video nuevo.
 
 ### Videos con clips de Eduardo (él a cuadro)
-Cuando Eduardo mande sus propios clips para unir (p. ej. la campaña de beta testers, `marketing/videos/beta-testers.mp4`, código `video/src/Checa/Beta.tsx`):
+Cuando Eduardo mande sus propios clips para unir (p. ej. la campaña de beta testers, `marketing/publicar/01_2026-10-14_beta-testers.mp4`, código `video/src/Checa/Beta.tsx`):
 1. Copia los clips a una carpeta temporal y extrae audio: `ffmpeg -i clip.mp4 -ac 1 -ar 16000 clip.wav`.
 2. Transcribe con `video/scripts/transcribir.py` (faster-whisper `small`, lee el wav con numpy porque la versión de `av` no acepta archivos). Con el texto identificas qué clip es cuál aunque los nombres no digan el orden.
 3. Revisa orientación con una hoja de cuadros (`ffmpeg -ss 2 -frames:v 1`); ffmpeg ya aplica la rotación del teléfono.
