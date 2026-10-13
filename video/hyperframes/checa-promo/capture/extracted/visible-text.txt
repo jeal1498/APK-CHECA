@@ -1,0 +1,108 @@
+[a] Saltar al contenido
+[a] Checa
+[a] Cómo funciona
+[a] Preguntas
+[a] Descargar gratis
+[span] Para conductores de Uber y DiDi
+[h1] Antes de aceptar,
+[span] checa cuánto te queda.
+[em] Mira cómo funciona · 27 s
+[p] En cada oferta, Checa te muestra tus
+[strong] netos después de gasolina
+[p] , el pago por km y por hora, y te dice en voz alta si conviene.
+[a] Descargar gratis · 7 días
+[li] Sin tarjeta
+[li] Nada se cobra solo
+[li] Garantía de lectura
+[p] Versión 6.2 · 13 oct 2026 · 42.3 MB · Android 8+
+[p] Estás en computadora: abre esta página en tu teléfono Android para instalar Checa.
+[span] Cómo funciona
+[h2] Funciona en tu próxima oferta
+[b] Te llega la oferta
+[li] en Uber o DiDi, como siempre.
+[b] Checa la lee
+[li] y hace la cuenta con tu gasolina y tus metas.
+[b] Te avisa
+[li] con color, voz y vibración. Tú decides y tú tocas.
+[span] Aceptar
+[span] Considerar
+[span] Rechazar
+[div] ACEPTAR
+[small] Uber
+[div] $97
+[span] netos
+[div] Viaje $120 · Gasolina −$23
+[b] $327
+[div] por hora
+[b] $10.4
+[div] por km
+[b] 22 min
+[div] 11.5 km
+[div] ⚡ Dinámica +$15 incluido
+[span] Uber · Nuevo viaje
+[b] $120
+[div] Recogida 4 min (1.5 km) · Viaje 18 min (10 km)
+[span] Confianza
+[h2] Tu cuenta y tus datos se quedan contigo
+[b] Solo lee la pantalla.
+[li] Nunca toca botones, acepta ni rechaza viajes.
+[b] Todo pasa en tu teléfono.
+[li] Tus viajes no se envían a ningún lado.
+[b] Lee solo Uber y DiDi.
+[li] Si tu banco se queja, pausas el lector con un toque.
+[b] Garantía de lectura.
+[li] Si pagas y no lee las ofertas en tu teléfono, te devolvemos tu dinero en los primeros 7 días.
+[p] Checa es independiente y no está afiliada a Uber ni a DiDi.
+[span] Precios
+[h2] Pruébala 7 días gratis. Luego eliges.
+[p] Pago único con tarjeta, OXXO o saldo de Mercado Pago. Nada se cobra solo.
+[h3] Básico
+[div] $99
+[small] · 1 mes
+[div] $3.30
+[small] al día
+[li] Netos y semáforo, filtros y voz
+[li] 1 equipo
+[span] Recomendado
+[h3] Estratega
+[div] $399
+[small] · 6 meses
+[div] $2.20
+[small] al día
+[li] Todo lo del Básico
+[li] Uber y DiDi juntos, con ⭐ a la mejor
+[li] Mejores horas de la semana
+[li] 2 equipos
+[h3] Pro
+[div] $899
+[small] · 1 año
+[div] $2.46
+[small] al día
+[li] Todo lo del Estratega
+[li] Un año sin renovar
+[p] Con un viaje malo que evites a la semana, el Estratega ya se pagó.
+[a] Empezar mis 7 días gratis
+[span] Preguntas
+[h2] Lo que más nos preguntan
+[summary] ¿Me pueden bloquear la cuenta?
+[p] Checa solo lee la pantalla. Nunca toca botones ni acepta viajes por ti, y no cambia las apps. Cada plataforma tiene sus propios términos y no podemos hablar por ellas.
+[summary] ¿Por qué no está en Play Store?
+[p] Por ahora se instala como APK desde esta página. Play Protect avisa porque Checa usa Accesibilidad para leer la oferta. Te guiamos
+[a] paso a paso
+[p] y, si te atoras, te ayudamos por WhatsApp.
+[summary] ¿Funciona en tablet?
+[p] Sí. Con pantalla dividida ves un pop-up por app y la ⭐ marca la mejor (Estratega y Pro).
+[summary] ¿Qué pasa al terminar la prueba?
+[p] Checa deja de mostrar el pop-up. Como no pediste tarjeta, nada se cobra. Pagas en la app (Cuenta → Paquetes) solo si quieres seguir.
+[summary] ¿Y si no me funciona?
+[p] Tienes la garantía de lectura: si pagas y Checa no lee las ofertas en tu teléfono, te devolvemos tu dinero en los primeros 7 días. Detalles en la
+[a] política de reembolso
+[h2] Tu próxima oferta, con la cuenta hecha.
+[a] Descargar gratis · 7 días
+[p] Versión 6.2 · 13 oct 2026 · 42.3 MB · Android 8+
+[a] Descargar gratis · 7 días
+[a] Instalar
+[a] Privacidad
+[a] Términos y reembolsos
+[a] Ayuda por WhatsApp
+[p] Checa. Proyecto independiente. No afiliado a Uber ni a DiDi; sus nombres son marcas de sus dueños. Pagos procesados por Mercado Pago.

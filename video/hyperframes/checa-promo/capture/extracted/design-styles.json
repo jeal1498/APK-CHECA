@@ -1,0 +1,293 @@
+{
+  "typography": [
+    {
+      "role": "display",
+      "fontFamily": "Fira Sans",
+      "fontSize": "54.4px",
+      "fontWeight": "800",
+      "lineHeight": "62.56px",
+      "letterSpacing": "-1.088px",
+      "color": "#F1F5F2",
+      "sampleText": "Antes de aceptar, checa cuánto te queda."
+    },
+    {
+      "role": "heading",
+      "fontFamily": "Fira Sans",
+      "fontSize": "36.8px",
+      "fontWeight": "800",
+      "lineHeight": "42.32px",
+      "letterSpacing": "-0.736px",
+      "color": "#F1F5F2",
+      "sampleText": "Funciona en tu próxima oferta"
+    },
+    {
+      "role": "link",
+      "fontFamily": "Fira Sans",
+      "fontSize": "20px",
+      "fontWeight": "800",
+      "lineHeight": "32px",
+      "letterSpacing": "normal",
+      "color": "#F1F5F2",
+      "sampleText": "Checa"
+    },
+    {
+      "role": "heading-3",
+      "fontFamily": "Fira Sans",
+      "fontSize": "18.4px",
+      "fontWeight": "800",
+      "lineHeight": "21.16px",
+      "letterSpacing": "-0.368px",
+      "color": "#F1F5F2",
+      "sampleText": "Básico"
+    },
+    {
+      "role": "body",
+      "fontFamily": "Fira Sans",
+      "fontSize": "18px",
+      "fontWeight": "400",
+      "lineHeight": "28.8px",
+      "letterSpacing": "normal",
+      "color": "#A3ADA7",
+      "sampleText": "En cada oferta, Checa te muestra tus netos después de gasoli"
+    },
+    {
+      "role": "body-small",
+      "fontFamily": "Fira Code",
+      "fontSize": "16px",
+      "fontWeight": "600",
+      "lineHeight": "16px",
+      "letterSpacing": "-1.152px",
+      "color": "#A3ADA7",
+      "sampleText": "· 1 mes"
+    },
+    {
+      "role": "label",
+      "fontFamily": "Fira Sans",
+      "fontSize": "12.48px",
+      "fontWeight": "800",
+      "lineHeight": "19.968px",
+      "letterSpacing": "0.7488px",
+      "color": "#04120A",
+      "sampleText": "Recomendado"
+    }
+  ],
+  "spacing": {
+    "observed": [
+      4,
+      6,
+      8,
+      9,
+      10,
+      12,
+      14,
+      16,
+      18,
+      20,
+      22,
+      28,
+      30,
+      32,
+      40
+    ],
+    "baseUnit": 4
+  },
+  "radius": [
+    "10px",
+    "12px",
+    "16px"
+  ],
+  "shadows": [
+    {
+      "value": "rgba(0, 0, 0, 0.6) 0px 30px 80px 0px, rgb(49, 55, 52) 0px 0px 0px 1px",
+      "count": 1
+    },
+    {
+      "value": "rgba(0, 0, 0, 0.55) 0px 12px 30px 0px",
+      "count": 1
+    }
+  ],
+  "buttons": [
+    {
+      "label": "Descargar gratis",
+      "background": "#22C55E",
+      "backgroundImage": "",
+      "backdropFilter": "",
+      "color": "#04120A",
+      "padding": "12px 10px",
+      "borderRadius": "12px",
+      "border": "2px solid rgba(0, 0, 0, 0)",
+      "boxShadow": "none",
+      "fontSize": "15.2px",
+      "fontWeight": "700",
+      "height": "52.3125px"
+    },
+    {
+      "label": "Mira cómo funciona · 27 s",
+      "background": "#000000",
+      "backgroundImage": "",
+      "backdropFilter": "",
+      "color": "#04120A",
+      "padding": "1px 6px",
+      "borderRadius": "0px",
+      "border": "0px none rgb(4, 18, 10)",
+      "boxShadow": "none",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "height": "531.328px"
+    },
+    {
+      "label": "Descargar gratis · 7 días",
+      "background": "transparent",
+      "backgroundImage": "",
+      "backdropFilter": "",
+      "color": "#F1F5F2",
+      "padding": "0px",
+      "borderRadius": "0px",
+      "border": "0px none rgb(241, 245, 242)",
+      "boxShadow": "none",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "height": "60.1406px"
+    }
+  ],
+  "cards": [
+    {
+      "label": "card",
+      "background": "#050605",
+      "backgroundImage": "",
+      "backdropFilter": "",
+      "color": "#F1F5F2",
+      "padding": "0px",
+      "borderRadius": "20px",
+      "border": "1px solid rgb(38, 43, 40)",
+      "boxShadow": "none",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "height": "533.328px"
+    },
+    {
+      "label": "card",
+      "background": "#F4F4F4",
+      "backgroundImage": "",
+      "backdropFilter": "",
+      "color": "#111111",
+      "padding": "14px",
+      "borderRadius": "16px",
+      "border": "0px none rgb(17, 17, 17)",
+      "boxShadow": "none",
+      "fontSize": "12.8px",
+      "fontWeight": "400",
+      "height": "153.406px"
+    },
+    {
+      "label": "card",
+      "background": "#111413",
+      "backgroundImage": "",
+      "backdropFilter": "",
+      "color": "#F1F5F2",
+      "padding": "22px",
+      "borderRadius": "16px",
+      "border": "1px solid rgb(38, 43, 40)",
+      "boxShadow": "none",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "height": "331.578px"
+    },
+    {
+      "label": "card",
+      "background": "#0E1A12",
+      "backgroundImage": "",
+      "backdropFilter": "",
+      "color": "#F1F5F2",
+      "padding": "22px",
+      "borderRadius": "16px",
+      "border": "2px solid rgb(34, 197, 94)",
+      "boxShadow": "none",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "height": "331.578px"
+    }
+  ],
+  "nav": {
+    "label": "navigation",
+    "background": "#000000",
+    "backgroundImage": "",
+    "backdropFilter": "blur(8px)",
+    "color": "#F1F5F2",
+    "padding": "0px",
+    "borderRadius": "0px",
+    "border": "",
+    "boxShadow": "none",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "height": "61px"
+  },
+  "chips": [
+    {
+      "label": "$124por hora$5.9por km30",
+      "background": "transparent",
+      "color": "#F1F5F2",
+      "padding": "0px",
+      "borderRadius": "0px",
+      "border": "0px none rgb(241, 245, 242)",
+      "boxShadow": "none",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "height": "45.3906px"
+    },
+    {
+      "label": "$124por hora",
+      "background": "#1F2421",
+      "color": "#A3ADA7",
+      "padding": "6px 4px",
+      "borderRadius": "10px",
+      "border": "0px none rgb(163, 173, 167)",
+      "boxShadow": "none",
+      "fontSize": "11.52px",
+      "fontWeight": "400",
+      "height": "45.3906px"
+    },
+    {
+      "label": "Recomendado",
+      "background": "#22C55E",
+      "color": "#04120A",
+      "padding": "4px 12px",
+      "borderRadius": "999px",
+      "border": "0px none rgb(4, 18, 10)",
+      "boxShadow": "none",
+      "fontSize": "12.48px",
+      "fontWeight": "800",
+      "height": "27.9688px"
+    },
+    {
+      "label": "Sin tarjeta",
+      "background": "transparent",
+      "color": "#A3ADA7",
+      "padding": "6px 12px",
+      "borderRadius": "999px",
+      "border": "1px solid rgb(38, 43, 40)",
+      "boxShadow": "none",
+      "fontSize": "13.6px",
+      "fontWeight": "400",
+      "height": "35.75px"
+    }
+  ],
+  "statCells": [],
+  "tabs": [],
+  "backgrounds": [
+    {
+      "value": "linear-gradient(115deg, rgba(0, 0, 0, 0) 46%, rgb(38, 44, 41) 46%, rgb(38, 44, 41) 50%, rgba(0, 0, 0, 0) 50%), linear-gradient(25deg, rgba(0, 0, 0, 0) 62%, rgb(35, 40, 38) 62%, rgb(35, 40, 38) 65%, rgba(0, 0, 0, 0) 65%), linear-gradient(160deg, rgba(0, 0, 0, 0) 30%, rgb(32, 37, 35) 30%, rgb(32, 37, 35) 32%, rgba(0, 0, 0, 0) 32%), radial-gradient(circle at 30% 20%, rgb(26, 31, 28), rgb(18, 21, 19))",
+      "area": 155550
+    }
+  ],
+  "glass": [
+    {
+      "backdropFilter": "blur(8px)",
+      "background": "rgba(0, 0, 0, 0.88)",
+      "border": "",
+      "borderRadius": "0px",
+      "boxShadow": "",
+      "area": 117120
+    }
+  ]
+}

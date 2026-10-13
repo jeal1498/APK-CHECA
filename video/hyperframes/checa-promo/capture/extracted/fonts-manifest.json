@@ -1,0 +1,199 @@
+{
+  "files": [
+    {
+      "file": "uU9NCBsR6Z2vfE9aq3bh09SDqFGedCMX.woff2",
+      "family": "Fira Code",
+      "rawFamily": "Fira Code Light",
+      "subfamily": "Regular",
+      "postscript": "FiraCode-Light",
+      "weight": 300,
+      "style": "normal",
+      "variationAxes": [
+        "wght"
+      ],
+      "identified": true,
+      "isIcon": false
+    },
+    {
+      "file": "uU9NCBsR6Z2vfE9aq3bh0NSDqFGedCMX.woff2",
+      "family": "Fira Code",
+      "rawFamily": "Fira Code Light",
+      "subfamily": "Regular",
+      "postscript": "FiraCode-Light",
+      "weight": 300,
+      "style": "normal",
+      "variationAxes": [
+        "wght"
+      ],
+      "identified": true,
+      "isIcon": false
+    },
+    {
+      "file": "uU9NCBsR6Z2vfE9aq3bh0dSDqFGedCMX.woff2",
+      "family": "Fira Code",
+      "rawFamily": "Fira Code Light",
+      "subfamily": "Regular",
+      "postscript": "FiraCode-Light",
+      "weight": 300,
+      "style": "normal",
+      "variationAxes": [
+        "wght"
+      ],
+      "identified": true,
+      "isIcon": false
+    },
+    {
+      "file": "uU9NCBsR6Z2vfE9aq3bh2dSDqFGedCMX.woff2",
+      "family": "Fira Code",
+      "rawFamily": "Fira Code Light",
+      "subfamily": "Regular",
+      "postscript": "FiraCode-Light",
+      "weight": 300,
+      "style": "normal",
+      "variationAxes": [
+        "wght"
+      ],
+      "identified": true,
+      "isIcon": false
+    },
+    {
+      "file": "uU9NCBsR6Z2vfE9aq3bh3dSDqFGedA.woff2",
+      "family": "Fira Code",
+      "rawFamily": "Fira Code Light",
+      "subfamily": "Regular",
+      "postscript": "FiraCode-Light",
+      "weight": 300,
+      "style": "normal",
+      "variationAxes": [
+        "wght"
+      ],
+      "identified": true,
+      "isIcon": false
+    },
+    {
+      "file": "uU9NCBsR6Z2vfE9aq3bh3tSDqFGedCMX.woff2",
+      "family": "Fira Code",
+      "rawFamily": "Fira Code Light",
+      "subfamily": "Regular",
+      "postscript": "FiraCode-Light",
+      "weight": 300,
+      "style": "normal",
+      "variationAxes": [
+        "wght"
+      ],
+      "identified": true,
+      "isIcon": false
+    },
+    {
+      "file": "va9E4kDNxMZdWfMOD5Vvk4jLazX3dGTP.woff2",
+      "family": "Fira Sans",
+      "rawFamily": "Fira Sans",
+      "subfamily": "Regular",
+      "postscript": "FiraSans-Regular",
+      "weight": 400,
+      "style": "normal",
+      "variationAxes": [],
+      "identified": true,
+      "isIcon": false
+    },
+    {
+      "file": "va9E4kDNxMZdWfMOD5VvlIjLazX3dGTP.woff2",
+      "family": "Fira Sans",
+      "rawFamily": "Fira Sans",
+      "subfamily": "Regular",
+      "postscript": "FiraSans-Regular",
+      "weight": 400,
+      "style": "normal",
+      "variationAxes": [],
+      "identified": true,
+      "isIcon": false
+    },
+    {
+      "file": "va9E4kDNxMZdWfMOD5Vvm4jLazX3dGTP.woff2",
+      "family": "Fira Sans",
+      "rawFamily": "Fira Sans",
+      "subfamily": "Regular",
+      "postscript": "FiraSans-Regular",
+      "weight": 400,
+      "style": "normal",
+      "variationAxes": [],
+      "identified": true,
+      "isIcon": false
+    },
+    {
+      "file": "va9E4kDNxMZdWfMOD5VvmIjLazX3dGTP.woff2",
+      "family": "Fira Sans",
+      "rawFamily": "Fira Sans",
+      "subfamily": "Regular",
+      "postscript": "FiraSans-Regular",
+      "weight": 400,
+      "style": "normal",
+      "variationAxes": [],
+      "identified": true,
+      "isIcon": false
+    },
+    {
+      "file": "va9E4kDNxMZdWfMOD5VvmYjLazX3dGTP.woff2",
+      "family": "Fira Sans",
+      "rawFamily": "Fira Sans",
+      "subfamily": "Regular",
+      "postscript": "FiraSans-Regular",
+      "weight": 400,
+      "style": "normal",
+      "variationAxes": [],
+      "identified": true,
+      "isIcon": false
+    },
+    {
+      "file": "va9E4kDNxMZdWfMOD5VvmojLazX3dGTP.woff2",
+      "family": "Fira Sans",
+      "rawFamily": "Fira Sans",
+      "subfamily": "Regular",
+      "postscript": "FiraSans-Regular",
+      "weight": 400,
+      "style": "normal",
+      "variationAxes": [],
+      "identified": true,
+      "isIcon": false
+    }
+  ],
+  "families": [
+    {
+      "family": "Fira Code",
+      "weights": [
+        300
+      ],
+      "variable": true,
+      "fileCount": 6,
+      "files": [
+        "uU9NCBsR6Z2vfE9aq3bh09SDqFGedCMX.woff2",
+        "uU9NCBsR6Z2vfE9aq3bh0NSDqFGedCMX.woff2",
+        "uU9NCBsR6Z2vfE9aq3bh0dSDqFGedCMX.woff2",
+        "uU9NCBsR6Z2vfE9aq3bh2dSDqFGedCMX.woff2",
+        "uU9NCBsR6Z2vfE9aq3bh3dSDqFGedA.woff2",
+        "uU9NCBsR6Z2vfE9aq3bh3tSDqFGedCMX.woff2"
+      ]
+    },
+    {
+      "family": "Fira Sans",
+      "weights": [
+        400
+      ],
+      "variable": false,
+      "fileCount": 6,
+      "files": [
+        "va9E4kDNxMZdWfMOD5Vvk4jLazX3dGTP.woff2",
+        "va9E4kDNxMZdWfMOD5VvlIjLazX3dGTP.woff2",
+        "va9E4kDNxMZdWfMOD5Vvm4jLazX3dGTP.woff2",
+        "va9E4kDNxMZdWfMOD5VvmIjLazX3dGTP.woff2",
+        "va9E4kDNxMZdWfMOD5VvmYjLazX3dGTP.woff2",
+        "va9E4kDNxMZdWfMOD5VvmojLazX3dGTP.woff2"
+      ]
+    }
+  ],
+  "unidentified": [],
+  "meta": {
+    "generatedAt": "2026-10-13T23:18:10.341Z",
+    "tool": "fontkit"
+  }
+}
