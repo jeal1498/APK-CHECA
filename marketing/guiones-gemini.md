@@ -235,3 +235,10 @@ Te botan la direccional, ves la torreta... y empieza el nervio. [Corte] Que no t
 | 7 | 0:18–0:21 | Tres: Si te paran, pide identificación al agente y boleta por escrito. | Gafete y boleta |
 | 8 | 0:21–0:24 | Cuatro: Cero arreglos en la calle: paga solo en canales oficiales. | Recibo oficial ✓ y billetes en mano ❌ |
 | 9 | 0:24–0:27 | Comparte esto con un compañero. Síguenos para más consejos de conductor a conductor. | Logo + Compartir y Seguir |
+
+---
+
+## Tema 1 · Trabajar mucho y no ver el dinero (guion propio aprobado, sin Gemini)
+Video: `marketing/videos/sin-lana-1volt.mp4` (`SinLana1Volt.tsx`) · versión 3D: `sin-lana.mp4`
+
+Doce horas al volante. [Corte] Llegas a tu casa y la lana no aparece. [Corte] Con números de ejemplo: veinte viajes de ochenta pesos. [Corte] Mil seiscientos en la app. [Corte] Y a cada uno te mandaron a recoger a seis kilómetros que nadie paga. [Corte] Seis de recogida y ocho de viaje. [Corte] De los ochenta, la gasolina se lleva veintiocho. [Corte] Al final del día, quinientos sesenta pesos se fueron al tanque. [Corte] Y ciento veinte kilómetros los manejaste gratis. [Corte] La app Checa te dice cuánto te queda limpio antes de aceptar. [Corte] En tu próxima oferta, checa los netos. [Corte] Pruébala siete días gratis. ¿Cuánto te quedó hoy?

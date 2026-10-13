@@ -27,7 +27,7 @@ Desde el anuncio «Recogidas lejanas» Eduardo pidió **usar siempre el estilo 1
 ### Videos hechos (1Volt salvo que se indique)
 | Tema | Video | Código |
 |---|---|---|
-| 1 Trabajar mucho y no ver el dinero | `sin-lana.mp4` (3D) | `SinLana.tsx` |
+| 1 Trabajar mucho y no ver el dinero | `sin-lana-1volt.mp4` (+ `sin-lana.mp4` en 3D) | `SinLana1Volt.tsx` |
 | 2 Gasolina cara | `gasolina-1volt.mp4` | `Gasolina1Volt.tsx` |
 | 3 Recogidas lejanas | `recogida-1volt.mp4` (+ `recogida.mp4`, `recogida2.mp4` en 3D) | `Recogida1Volt.tsx` |
 | 4 Horas muertas | `horas-1volt.mp4` | `Horas1Volt.tsx` |
@@ -42,7 +42,7 @@ Desde el anuncio «Recogidas lejanas» Eduardo pidió **usar siempre el estilo 1
 | 13 Ingreso inestable (valor) | `ingreso-1volt.mp4` | `Ingreso1Volt.tsx` |
 | 14 Multas y papeles (valor) | `multas-1volt.mp4` | `Multas1Volt.tsx` |
 
-Serie de 14 temas completa (octubre 2026). El tema 1 solo existe en 3D; si Eduardo lo pide, rehacerlo en 1Volt.
+Serie de 14 temas completa en 1Volt (octubre 2026).
 
 Componentes reutilizables: `Trazo`, `Cota`, `Numero`, `Etiqueta`, `Frase`, `Subs`, `Fondo` (en cada archivo), `Num` y `Palomita`/`Tache` (Seguridad, Bloqueo, Pasajeros), pop-ups exactos (`Popup` de `ui.tsx`), `Toma` (cambio cada 3 s). Los videos de valor (9–14) cierran con logo + «+ Seguir», sin prueba gratis.
 
