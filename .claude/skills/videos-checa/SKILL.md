@@ -40,6 +40,9 @@ Desde el anuncio «Recogidas lejanas» Eduardo pidió **usar siempre el estilo 1
 | 11 Pasajeros problemáticos (valor) | `pasajeros-1volt.mp4` | `Pasajeros1Volt.tsx` |
 | 12 Cansancio y salud (valor) | `salud-1volt.mp4` | `Salud1Volt.tsx` |
 | 13 Ingreso inestable (valor) | `ingreso-1volt.mp4` | `Ingreso1Volt.tsx` |
+| 14 Multas y papeles (valor) | `multas-1volt.mp4` | `Multas1Volt.tsx` |
+
+Serie de 14 temas completa (octubre 2026). El tema 1 solo existe en 3D; si Eduardo lo pide, rehacerlo en 1Volt.
 
 Componentes reutilizables: `Trazo`, `Cota`, `Numero`, `Etiqueta`, `Frase`, `Subs`, `Fondo` (en cada archivo), `Num` y `Palomita`/`Tache` (Seguridad, Bloqueo, Pasajeros), pop-ups exactos (`Popup` de `ui.tsx`), `Toma` (cambio cada 3 s). Los videos de valor (9–14) cierran con logo + «+ Seguir», sin prueba gratis.
 
