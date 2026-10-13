@@ -1,0 +1,239 @@
+<template>
+  <style>
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Regular.ttf') format('truetype'); font-weight: 400; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Medium.ttf') format('truetype'); font-weight: 500 600; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Bold.ttf') format('truetype'); font-weight: 700 900; font-display: block; }
+    @font-face{ font-family: 'Fira Code'; src: url('assets/fonts/FiraCode.ttf') format('truetype'); font-weight: 300 700; font-display: block; }
+
+    #root {
+      position: absolute;
+      inset: 0;
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+      color: #000000;
+    }
+    .c02-cuanto-ground {
+      position: absolute;
+      inset: 0;
+      background: #F1F5F2;
+    }
+    .c02-cuanto-stage {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      container-type: size;
+    }
+    .c02-cuanto-kicker {
+      position: absolute;
+      left: 5.5cqw;
+      top: 9cqw;
+      display: flex;
+      align-items: center;
+      gap: 2cqw;
+      font-family: 'Fira Code', monospace;
+      font-weight: 500;
+      font-size: 2.6cqw;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #000000;
+    }
+    .c02-cuanto-kicker b {
+      display: inline-block;
+      width: 36px;
+      height: 2px;
+      background: #22C55E;
+    }
+    .c02-cuanto-kicker .c02-cuanto-num { color: #22C55E; font-weight: 500; }
+    /* camera: one wrapper around the counter instrument; origin aimed at the "0" of $150 */
+    .c02-cuanto-camera {
+      position: absolute;
+      inset: 0;
+      transform-origin: 790px 590px;
+      will-change: transform, filter;
+    }
+    .c02-cuanto-counter-wrap {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      top: 460px;
+      height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .c02-cuanto-counter {
+      display: inline-block;
+      font-family: 'Fira Code', monospace;
+      font-weight: 700;
+      font-size: 300px;
+      line-height: 300px;
+      letter-spacing: 0;
+      font-variant-numeric: tabular-nums;
+      transform-origin: center center;
+      color: #000000;
+      white-space: nowrap;
+    }
+    .c02-cuanto-label {
+      position: absolute;
+      left: 0;
+      width: 1080px;
+      top: 820px;
+      text-align: center;
+      font-family: 'Fira Code', monospace;
+      font-weight: 500;
+      font-size: 3.4cqw;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(17,17,17,0.55);
+    }
+    .c02-cuanto-stack {
+      position: absolute;
+      left: 5.5cqw;
+      right: 5.5cqw;
+      top: 330px;
+      font-family: 'Fira Sans', sans-serif;
+      font-weight: 800;
+      font-size: 17cqw;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      text-transform: lowercase;
+      color: #000000;
+    }
+    .c02-cuanto-word {
+      display: block;
+      transform-origin: 0% 60%;
+      opacity: 0;
+    }
+    .c02-cuanto-stamp {
+      position: absolute;
+      left: 5.5cqw;
+      top: 1000px;
+      font-family: 'Fira Code', monospace;
+      font-weight: 700;
+      font-size: 300px;
+      line-height: 1;
+      color: #F43F5E;
+      transform-origin: 30% 55%;
+      opacity: 0;
+    }
+    .c02-cuanto-note {
+      position: absolute;
+      left: 5.5cqw;
+      top: 1430px;
+      font-family: 'Fira Code', monospace;
+      font-weight: 500;
+      font-size: 2.6cqw;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(17,17,17,0.55);
+      opacity: 0;
+    }
+  </style>
+
+  <div id="root" data-composition-id="02-cuanto" data-width="1080" data-height="1920">
+    <div id="frame-02-cuanto-ground" class="c02-cuanto-ground clip" data-start="0" data-duration="4.676" data-track-index="0"></div>
+    <div class="c02-cuanto-stage">
+      <div class="c02-cuanto-kicker" id="frame-02-cuanto-kicker"><b></b><span class="c02-cuanto-num">02</span><span>/ la oferta</span></div>
+
+      <div class="c02-cuanto-camera" id="frame-02-cuanto-camera">
+        <div class="c02-cuanto-counter-wrap">
+          <span class="c02-cuanto-counter" id="frame-02-cuanto-counter">$0</span>
+        </div>
+        <div class="c02-cuanto-label" id="frame-02-cuanto-label">Números de ejemplo</div>
+      </div>
+
+      <div class="c02-cuanto-stack" id="frame-02-cuanto-stack">
+        <span class="c02-cuanto-word" id="frame-02-cuanto-w1">¿cuánto</span>
+        <span class="c02-cuanto-word" id="frame-02-cuanto-w2">te</span>
+        <span class="c02-cuanto-word" id="frame-02-cuanto-w3">queda</span>
+      </div>
+      <div class="c02-cuanto-stamp" id="frame-02-cuanto-stamp">¿$?</div>
+      <div class="c02-cuanto-note" id="frame-02-cuanto-note">Números de ejemplo</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var FRAME = "02-cuanto";
+      var DUR = 4.676;
+      var root = document.querySelector('[data-composition-id="02-cuanto"]');
+      var q = function (id) { return root.querySelector('[id="' + id + '"]'); };
+
+      var kicker = q("frame-02-cuanto-kicker");
+      var camera = q("frame-02-cuanto-camera");
+      var counter = q("frame-02-cuanto-counter");
+      var label = q("frame-02-cuanto-label");
+      var w1 = q("frame-02-cuanto-w1");
+      var w2 = q("frame-02-cuanto-w2");
+      var w3 = q("frame-02-cuanto-w3");
+      var stamp = q("frame-02-cuanto-stamp");
+      var note = q("frame-02-cuanto-note");
+
+      var tl = gsap.timeline({ paused: true });
+
+      // ---- Scene 1 (0.0–1.3): light ground, kicker + big "$0" ----
+      tl.fromTo(kicker, { opacity: 0, x: -24 }, { opacity: 1, x: 0, duration: 0.45, ease: "power3.out" }, 0.05);
+
+      var START_SCALE = 0.55; // START_SIZE / END_SIZE
+      tl.fromTo(counter, { opacity: 0, scale: START_SCALE * 0.85 },
+        { opacity: 1, scale: START_SCALE, duration: 0.4, ease: "power3.out" }, 0);
+
+      // ---- Scene 2 (1.3–2.5): value-scaled count-up $0 -> $150 ----
+      var COUNT_AT = 1.3, COUNT_DUR = 1.15, COUNT_EASE = "power3.out";
+      var state = { value: 0 };
+      tl.to(state, {
+        value: 150,
+        duration: COUNT_DUR,
+        ease: COUNT_EASE,
+        onUpdate: function () { counter.textContent = "$" + Math.round(state.value); }
+      }, COUNT_AT);
+      tl.fromTo(counter, { scale: START_SCALE }, { scale: 1, duration: COUNT_DUR, ease: COUNT_EASE, immediateRender: false }, COUNT_AT);
+      tl.fromTo(label, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 1.5);
+
+      // ---- Camera: slow drift + push THROUGH the "0" (Scene 3, 2.5–3.0) ----
+      var phase = { scale: 1, blur: 0 };
+      tl.to(phase, { scale: 1.04, duration: 2.4, ease: "power2.out" }, 0.1);
+      tl.to(phase, { scale: 18, duration: 0.5, ease: "power3.in" }, 2.5);
+      // motion-blur streak peaks at max push velocity
+      tl.to(phase, { blur: 14, duration: 0.42, ease: "power2.in" }, 2.55);
+      tl.to(camera, { opacity: 0, duration: 0.14, ease: "power1.in" }, 2.86);
+
+      var drift = { p: 0 };
+      tl.to(drift, {
+        p: Math.PI * 2 * 1.2,
+        duration: DUR,
+        ease: "none",
+        onUpdate: function () {
+          var dx = Math.sin(drift.p) * 4;
+          var dy = Math.sin(drift.p * 1.3) * 2;
+          camera.style.transform = "translate(" + dx + "px, " + dy + "px) scale(" + phase.scale + ")";
+          camera.style.filter = phase.blur > 0.05 ? "blur(" + phase.blur.toFixed(2) + "px)" : "none";
+        }
+      }, 0);
+
+      // land on the stacked line, one word at a time (arrive from depth, blur resolves)
+      var words = [w1, w2, w3];
+      var WORD_AT = [2.92, 3.18, 3.42];
+      words.forEach(function (w, i) {
+        tl.fromTo(w,
+          { opacity: 0, scale: 1.6, filter: "blur(12px)" },
+          { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.32, ease: "power3.out" },
+          WORD_AT[i]);
+      });
+
+      // ---- Scene 4 (3.9–end): red "¿$?" stamps below, then hold ----
+      tl.fromTo(stamp,
+        { opacity: 0, scale: 2.2, rotation: -6 },
+        { opacity: 1, scale: 1, rotation: -3, duration: 0.18, ease: "power4.in" }, 3.9);
+      // impact jolt on the stack as the stamp lands
+      tl.fromTo(q("frame-02-cuanto-stack"), { y: 0 }, { y: 10, duration: 0.06, ease: "power2.out" }, 4.08);
+      tl.to(q("frame-02-cuanto-stack"), { y: 0, duration: 0.22, ease: "power2.out" }, 4.14);
+      tl.fromTo(note, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 4.1);
+
+      window.__timelines[FRAME] = tl;
+    })();
+  </script>
+</template>

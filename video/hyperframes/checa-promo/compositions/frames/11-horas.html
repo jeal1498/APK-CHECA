@@ -28,9 +28,9 @@
       .h11-cursor { display: inline-block; width: 16px; height: 50px; margin-left: 6px; background: #22C55E; align-self: center; }
     </style>
 
-    <div class="h11-bg clip" data-start="0" data-duration="2.351" data-track-index="0"></div>
+    <div id="h11-bg" class="h11-bg clip" data-start="0" data-duration="2.351" data-track-index="0"></div>
 
-    <div class="h11-stage clip" data-start="0" data-duration="2.351" data-track-index="1">
+    <div id="h11-stage" class="h11-stage clip" data-start="0" data-duration="2.351" data-track-index="1">
       <div class="h11-kicker" id="h11-kicker"><span class="h11-idx">09</span><span>/</span><span>MEJORES HORAS</span></div>
       <div class="h11-rule" id="h11-rule"></div>
 
@@ -99,7 +99,7 @@
 
         // Scene 3 (1.55-end): on "pagan mejor" the 17-19 tiles light up and lift
         tl.to(q("#h11-tiles .h11-tile:not(.h11-hero)"), { opacity: 0.4, duration: 0.3, ease: "power2.out" }, 1.55);
-        tl.fromTo(q("#h11-tiles .h11-hero"), { y: 0, scale: 1 }, { y: -16, scale: 1.07, duration: 0.32, ease: "back.out(2)", stagger: 0.05 }, 1.55);
+        tl.fromTo(q("#h11-tiles .h11-hero"), { y: 0, scale: 1 }, { y: -16, scale: 1.07, duration: 0.32, ease: "back.out(2)", stagger: 0.05, immediateRender: false }, 1.55);
         tl.fromTo(q("#h11-tiles .h11-glow"), { opacity: 0 }, { opacity: 0.85, duration: 0.3, ease: "power2.out", stagger: 0.05 }, 1.55);
 
         // discrete-text-sequence: "lo mejor que viene: 17–19 h"
