@@ -16,7 +16,7 @@ Miedos y problemas del conductor de plataformas, en el orden en que se van a tra
 | 10 | 4 | Bloqueo o desactivación sin explicación ✅ `marketing/videos/bloqueo-1volt.mp4` (`Bloqueo1Volt.tsx`, guion de Gemini) | «Me desactivaron y nadie responde» | Indirecto (Checa no toca la app) |
 | 11 | 9 | Pasajeros problemáticos, cancelaciones, esperas ✅ `marketing/videos/pasajeros-1volt.mp4` (`Pasajeros1Volt.tsx`, guion de Gemini) | «Me canceló cuando ya había llegado» | No: video de valor |
 | 12 | 12 | Cansancio y salud ✅ `marketing/videos/salud-1volt.mp4` (`Salud1Volt.tsx`, guion de Gemini) | «Ya no aguanto el volante» | No: video de valor |
-| 13 | 13 | Ingreso inestable, sin prestaciones ni seguro | «Un día bueno, tres malos» | No: video de valor |
+| 13 | 13 | Ingreso inestable, sin prestaciones ni seguro ✅ `marketing/videos/ingreso-1volt.mp4` (`Ingreso1Volt.tsx`, guion de Gemini) | «Un día bueno, tres malos» | No: video de valor |
 | 14 | 14 | Multas, tránsito y papeles | «Me pararon y me sacaron dinero» | No: video de valor |
 
 Reglas: en los temas donde Checa no ayuda, el video da un consejo útil y honesto y no promete que la app lo resuelve (el cierre puede mencionar Checa solo como firma). No inventar cifras: si un dato no sale de las fórmulas de la app, debe tener fuente o decir «con números de ejemplo».

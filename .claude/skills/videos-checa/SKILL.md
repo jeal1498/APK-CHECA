@@ -39,6 +39,7 @@ Desde el anuncio «Recogidas lejanas» Eduardo pidió **usar siempre el estilo 1
 | 10 Bloqueo (valor) | `bloqueo-1volt.mp4` | `Bloqueo1Volt.tsx` |
 | 11 Pasajeros problemáticos (valor) | `pasajeros-1volt.mp4` | `Pasajeros1Volt.tsx` |
 | 12 Cansancio y salud (valor) | `salud-1volt.mp4` | `Salud1Volt.tsx` |
+| 13 Ingreso inestable (valor) | `ingreso-1volt.mp4` | `Ingreso1Volt.tsx` |
 
 Componentes reutilizables: `Trazo`, `Cota`, `Numero`, `Etiqueta`, `Frase`, `Subs`, `Fondo` (en cada archivo), `Num` y `Palomita`/`Tache` (Seguridad, Bloqueo, Pasajeros), pop-ups exactos (`Popup` de `ui.tsx`), `Toma` (cambio cada 3 s). Los videos de valor (9–14) cierran con logo + «+ Seguir», sin prueba gratis.
 
