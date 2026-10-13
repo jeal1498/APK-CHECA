@@ -98,7 +98,7 @@ const Escena: React.FC = () => {
   const p = (desde: number, dur = 18) => ap(frame, desde, dur);
 
   if (i === 0) {
-    const s = p(en(0, "comisionaza"), 20);
+    const s = p(en(0, "comisión"), 20);
     return (
       <>
         <svg width={1080} height={1920} style={{ position: "absolute" }}>
@@ -112,7 +112,7 @@ const Escena: React.FC = () => {
           )}
         </svg>
         <div style={{ position: "absolute", top: 780, left: 220, width: 300, textAlign: "center", fontFamily: MONO, fontWeight: 700, fontSize: 90, color: K.verde, opacity: p(d0 + 8, 8) }}>$</div>
-        <Frase texto="COMISIÓN" sub="y las tarifas no suben" desde={en(0, "comisionaza")} color={K.rosa} />
+        <Frase texto="COMISIÓN" sub="y las tarifas no suben" desde={en(0, "comisión")} color={K.rosa} />
       </>
     );
   }
@@ -238,7 +238,7 @@ const Escena: React.FC = () => {
 };
 
 const CLAVE: Record<string, string> = {
-  comisionaza: K.rosa, comisión: K.rosa, decides: K.verde, cien: K.amarillo, catorce: K.magenta, ocho: K.cian, setenta: K.amarillo, ochenta: K.verde, cuatro: K.verde,
+comisión: K.rosa, decides: K.verde, cien: K.amarillo, catorce: K.magenta, ocho: K.cian, setenta: K.amarillo, ochenta: K.verde, cuatro: K.verde,
   doce: K.verde, doscientos: K.verde, cuarenta: K.verde, bolsa: K.verde, checa: K.verde, conviene: "#E8B84A", siete: K.verde, días: K.verde, prueba: K.verde,
 };
 const limpia = (w: string) => w.toLowerCase().replace(/[^a-záéíóúñ]/g, "");
@@ -301,7 +301,7 @@ export const Comision1Volt: React.FC = () => (
         <Audio src={staticFile(`comision/${l.archivo}.mp3`)} />
       </Sequence>
     ))}
-    <Sfx en={en(0, "comisionaza")} src="whoosh.wav" vol={0.1} />
+    <Sfx en={en(0, "comisión")} src="whoosh.wav" vol={0.1} />
     <Sfx en={en(2, "decides")} src="pop.mp3" vol={0.12} />
     <Sfx en={esc[7].desde} src="ding.wav" vol={0.13} />
     <Sfx en={en(9, "conviene")} src="ding.wav" vol={0.12} />

@@ -70,11 +70,11 @@ Te cae una oferta y solo tienes unos segundos para decidir. [Corte] Tarifa, kil�
 ## Tema 6 · Tarifas bajas y comisión alta
 Video: `marketing/videos/comision-1volt.mp4` (`Comision1Volt.tsx`) · en pantalla se agregó «números de ejemplo»
 
-La app se queda una comisionaza y las tarifas no suben. [Corte] La comisión no la puedes cambiar... [Corte] pero qué viajes aceptas, eso sí lo decides tú. [Corte] Checa esto: entran dos ofertas de $100 pesos. [Corte] Una son 14 kilómetros en total; [Corte] la otra son solo 8 kilómetros. [Corte] Ya con gasolina, en la primera te quedan $72 limpios... y en la segunda, $84. [Corte] ¡$12 pesos de diferencia en la misma tarifa! [Corte] En 20 viajes al día, son $240 pesos más en tu bolsa. [Corte] Checa te marca de volada cuál te conviene antes de aceptar. [Corte] Pide tus 7 días de prueba sin costo en el link del perfil.
+La app se queda una comisión y las tarifas no suben. [Corte] La comisión no la puedes cambiar... [Corte] pero qué viajes aceptas, eso sí lo decides tú. [Corte] Checa esto: entran dos ofertas de $100 pesos. [Corte] Una son 14 kilómetros en total; [Corte] la otra son solo 8 kilómetros. [Corte] Ya con gasolina, en la primera te quedan $72 limpios... y en la segunda, $84. [Corte] ¡$12 pesos de diferencia en la misma tarifa! [Corte] En 20 viajes al día, son $240 pesos más en tu bolsa. [Corte] Checa te marca de volada cuál te conviene antes de aceptar. [Corte] Pide tus 7 días de prueba sin costo en el link del perfil.
 
 | Corte | Tiempo | Voz | En pantalla |
 |---|---|---|---|
-| 1 | 0:00–0:04 | La app se queda una comisionaza y las tarifas no suben. | Billete line-art partiéndose, una parte volando |
+| 1 | 0:00–0:04 | La app se queda una comisión y las tarifas no suben. | Billete line-art partiéndose, una parte volando |
 | 2 | 0:04–0:08 | La comisión no la puedes cambiar... pero qué viajes aceptas, eso sí lo decides tú. | Candado sobre «Comisión», mano en «Tus viajes» |
 | 3 | 0:08–0:11 | Checa esto: entran dos ofertas de $100 pesos. | Dos teléfonos con $100 |
 | 4 | 0:11–0:15 | Una son 14 kilómetros en total; la otra son solo 8 kilómetros. | Cotas 14 km (magenta) vs 8 km (cian) |
