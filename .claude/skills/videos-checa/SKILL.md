@@ -47,6 +47,10 @@ Serie de 14 temas completa en 1Volt (octubre 2026).
 
 Componentes reutilizables: `Trazo`, `Cota`, `Numero`, `Etiqueta`, `Frase`, `Subs`, `Fondo` (en cada archivo), `Num` y `Palomita`/`Tache` (Seguridad, Bloqueo, Pasajeros), pop-ups exactos (`Popup` de `ui.tsx`), `Toma` (cambio cada 3 s). Los videos de valor (9–14) cierran con logo + «+ Seguir», sin prueba gratis.
 
+### Portadas y textos para publicar
+- **Portadas**: composición `Portada` (`video/src/Checa/Portada.tsx`, props `titulo` con `|` para alternar color por línea, `sub`, `color`, `etiqueta`, `fondo` opcional). Render: `npx remotion still Portada out.png --props '{...}'` y pásala a JPG (`ffmpeg -q:v 3`). Guardar en `marketing/portadas/<video>.jpg`; la lista de títulos y colores está en el historial del commit y en este archivo de textos.
+- **Textos**: `marketing/textos-publicacion.md`, uno por video (2–3 líneas, 3–5 hashtags, sin ciudad ni país, sin #ubermexico). Agrega el de cada video nuevo.
+
 ### Videos con clips de Eduardo (él a cuadro)
 Cuando Eduardo mande sus propios clips para unir (p. ej. la campaña de beta testers, `marketing/videos/beta-testers.mp4`, código `video/src/Checa/Beta.tsx`):
 1. Copia los clips a una carpeta temporal y extrae audio: `ffmpeg -i clip.mp4 -ac 1 -ar 16000 clip.wav`.

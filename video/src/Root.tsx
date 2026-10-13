@@ -23,6 +23,7 @@ import { DURACION_INGRESO_1VOLT, Ingreso1Volt } from "./Checa/Ingreso1Volt";
 import { DURACION_MULTAS_1VOLT, Multas1Volt } from "./Checa/Multas1Volt";
 import { DURACION_SINLANA_1VOLT, SinLana1Volt } from "./Checa/SinLana1Volt";
 import { Beta, DURACION_BETA } from "./Checa/Beta";
+import { Portada, PORTADA_DEFAULT } from "./Checa/Portada";
 
 const fuentes: [string, string, string][] = [
   ["Inter", "Inter-Medium.otf", "500"],
@@ -63,6 +64,7 @@ export const RemotionRoot: React.FC = () => {
     <Composition id="Multas1Volt" component={Multas1Volt} durationInFrames={DURACION_MULTAS_1VOLT} fps={30} width={1080} height={1920} />
     <Composition id="SinLana1Volt" component={SinLana1Volt} durationInFrames={DURACION_SINLANA_1VOLT} fps={30} width={1080} height={1920} />
     <Composition id="Beta" component={Beta} durationInFrames={DURACION_BETA} fps={30} width={1080} height={1920} />
+    <Composition id="Portada" component={Portada} durationInFrames={1} fps={30} width={1080} height={1920} defaultProps={PORTADA_DEFAULT} />
     </>
   );
 };

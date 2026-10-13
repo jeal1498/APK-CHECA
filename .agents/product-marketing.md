@@ -1,7 +1,7 @@
 # Product Marketing Context — Checa
 
-**Document version:** v2
-**Last updated:** 2026-10-12
+**Document version:** v3
+**Last updated:** 2026-10-13
 
 ## Product Overview
 **One-liner:** Checa te dice en un segundo si un viaje de Uber o DiDi conviene, cuánto te queda limpio después de gasolina.
@@ -13,6 +13,13 @@
 - 6 meses $399 (Plan Estratega, el recomendado, "Más popular")
 - 1 año $899 (Plan Pro)
 - Miembro fundador ⭐ (primeros clientes): licencia especial, insignia dorada.
+
+## Campaña actual: beta testers (octubre 2026)
+- Video: `marketing/videos/beta-testers.mp4` (Eduardo a cuadro, conductor que hizo la app).
+- Oferta: **50 accesos gratis por 3 meses** a cambio de feedback; **+1 mes gratis para ambos** si lo comparten con un amigo.
+- Canal: grupos de Facebook y WhatsApp de conductores. Llamada: «comenta YO o mándame mensaje privado».
+- Meta: primeros usuarios reales, opiniones y testimonios para el lanzamiento de pago. Al terminar los 3 meses, ofrecerles el plan de fundador.
+- Pendiente: registrar quién entra (cuenta Google) para darles la licencia con el generador (`pedidos/pedido.txt` con `correo=` y `dias=90`, +30 por referido).
 
 ## Target Audience
 **Target:** Conductores de Uber y DiDi (B2C), de tiempo completo o parcial, con auto propio o rentado, que pagan su gasolina.
@@ -98,7 +105,7 @@ B2C, una sola persona: el conductor que quiere ganar más por hora y gastar meno
 ## Proof Points
 **Metrics:** Aún no hay (2026-10-12) (número de conductores, ofertas leídas, ahorro promedio).
 **Customers:** Aún no hay clientes que citar.
-**Testimonials:** Aún no hay. No inventar testimonios.
+**Testimonials:** Aún no hay. No inventar testimonios. Juntarlos de los beta testers (con su permiso) y anotarlos aquí.
 **Value themes:**
 | Theme | Proof |
 |-------|-------|
@@ -113,5 +120,6 @@ B2C, una sola persona: el conductor que quiere ganar más por hora y gastar meno
 
 ## Changelog
 *Newest first. One line per revision: what changed and why.*
+- v3 (2026-10-13) — Campaña de beta testers (50 accesos, 3 meses, +1 mes por referido) y plan para juntar testimonios reales.
 - v2 (2026-10-12) — Modelo de cobro: pago único (no suscripción); objeción de cobros recurrentes; sin clientes ni testimonios todavía.
 - v1 (2026-10-12) — Initial context, borrador desde el código, CLAUDE.md, landing y video.
