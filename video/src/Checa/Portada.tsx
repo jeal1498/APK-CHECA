@@ -21,9 +21,9 @@ export const Portada: React.FC<PropsPortada> = ({ titulo, sub, color, etiqueta, 
         <circle cx={540} cy={960} r={420} fill="none" stroke={color} strokeOpacity={0.25} strokeWidth={6} strokeDasharray="30 22" />
       </svg>
     )}
-    <div style={{ position: "absolute", top: 170, left: 0, right: 0, display: "flex", justifyContent: "center" }}>
+    {etiqueta ? <div style={{ position: "absolute", top: 170, left: 0, right: 0, display: "flex", justifyContent: "center" }}>
       <div style={{ fontFamily: "FiraCode", fontSize: 40, color, border: `4px solid ${color}`, borderRadius: 14, padding: "8px 24px", background: "rgba(5,6,15,0.8)" }}>{etiqueta}</div>
-    </div>
+    </div> : null}
     <div style={{ position: "absolute", top: fondo ? 1150 : 640, left: 70, right: 70, textAlign: "center" }}>
       <div style={{ fontFamily: "Inter", fontWeight: 800, fontSize: 118, lineHeight: 1.02, color: "#FFFFFF", WebkitTextStroke: "4px #000", paintOrder: "stroke fill", textShadow: `0 8px 0 #000, 0 0 50px ${color}88` }}>
         {titulo.split("|").map((t, k) => (

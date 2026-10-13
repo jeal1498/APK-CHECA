@@ -73,4 +73,4 @@ Un día bien y tres mal. 4 tips para no vivir al día: fondo de emergencia, sobr
 ## Campaña · `beta-testers.mp4` (grupos de Facebook y WhatsApp)
 Compañeros, hice una app para saber si un viaje conviene antes de aceptarlo: te dice cuánto te queda limpio después de gasolina y el pago por kilómetro.
 Busco 50 conductores que la usen gratis por 3 meses y me den su opinión. Si la compartes con un amigo, les doy 1 mes más a cada uno.
-Comenta «YO» o mándame mensaje y te paso el acceso. Funciona en Android con Uber y DiDi.
+Comenta «YO» o mándame mensaje y te paso el acceso. Funciona en teléfonos Android, con Uber y DiDi; te paso el acceso y una guía corta para instalarla.
