@@ -1,0 +1,62 @@
+name: Reporte de la web
+
+# Embudo de checa-web desde la tabla web_eventos de Supabase.
+# Se pide con un push a reportes/pedir.txt (dias=N) y escribe reportes/web.md.
+on:
+  push:
+    branches: [main]
+    paths: ["reportes/pedir.txt"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  reporte:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      PROYECTO: gqsadclvftkzwrihfipz
+    steps:
+      - uses: actions/checkout@v4
+      - name: Consultar
+        run: |
+          set -euo pipefail
+          DIAS=$(grep -oE '^dias=[0-9]+' reportes/pedir.txt | cut -d= -f2 || true)
+          DIAS=${DIAS:-30}
+          q() {
+            jq -n --arg q "$1" '{query: $q}' | curl -sS --fail-with-body -X POST \
+              "https://api.supabase.com/v1/projects/$PROYECTO/database/query" \
+              -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" -H "Content-Type: application/json" -d @-
+          }
+          W="creado > now() - interval '$DIAS days'"
+          tabla() { jq -r '(.[0] | keys_unsorted | "| " + join(" | ") + " |"), (.[0] | keys_unsorted | map("---") | "| " + join(" | ") + " |"), (.[] | [.[] | tostring] | "| " + join(" | ") + " |")' 2>/dev/null || echo "Sin datos todavía."; }
+          {
+            echo "# Reporte de la web · últimos $DIAS días"
+            echo
+            echo "Generado: $(date -u '+%Y-%m-%d %H:%M') UTC. Cuenta visitas únicas (una por pestaña)."
+            echo
+            echo "## Embudo"
+            q "select evento, count(distinct visita) as visitas, count(*) as veces from web_eventos where $W group by evento order by visitas desc" | tabla
+            echo
+            echo "## Por fuente (visitas → descargas)"
+            q "select coalesce(fuente,'directo') as fuente, coalesce(campana,'') as campana, count(distinct visita) filter (where evento='visita') as visitas, count(distinct visita) filter (where evento='descarga') as descargas from web_eventos where $W group by 1,2 order by visitas desc limit 20" | tabla
+            echo
+            echo "## Por dispositivo"
+            q "select coalesce(dispositivo,'otro') as dispositivo, count(distinct visita) filter (where evento='visita') as visitas, count(distinct visita) filter (where evento='descarga') as descargas from web_eventos where $W group by 1 order by visitas desc" | tabla
+            echo
+            echo "## Qué botón lleva a descargar"
+            q "select coalesce(desde,'?') as boton, count(*) as descargas from web_eventos where $W and evento='descarga' group by 1 order by descargas desc" | tabla
+            echo
+            echo "## Por día"
+            q "select to_char(creado at time zone 'America/Mexico_City','YYYY-MM-DD') as dia, count(distinct visita) filter (where evento='visita') as visitas, count(distinct visita) filter (where evento='descarga') as descargas from web_eventos where $W group by 1 order by 1 desc limit 31" | tabla
+          } > reportes/web.md
+          cat reportes/web.md
+      - name: Guardar
+        run: |
+          git config user.name "Checa"
+          git config user.email "actions@users.noreply.github.com"
+          git add reportes/web.md
+          git commit -m "Reporte de la web [skip ci]" || exit 0
+          git pull -q --rebase origin main
+          git push
