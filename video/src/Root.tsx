@@ -9,6 +9,7 @@ import { DURACION_SIN_LANA, SinLana } from "./Checa/SinLana";
 import { DURACION_RECOGIDA, Recogida } from "./Checa/Recogida";
 import { DURACION_RECOGIDA2, Recogida2 } from "./Checa/Recogida2";
 import { DURACION_RECOGIDA_1VOLT, Recogida1Volt } from "./Checa/Recogida1Volt";
+import { DURACION_GASOLINA_1VOLT, Gasolina1Volt } from "./Checa/Gasolina1Volt";
 
 const fuentes: [string, string, string][] = [
   ["Inter", "Inter-Medium.otf", "500"],
@@ -35,6 +36,7 @@ export const RemotionRoot: React.FC = () => {
     <Composition id="Recogida" component={Recogida} durationInFrames={DURACION_RECOGIDA} fps={30} width={1080} height={1920} />
     <Composition id="Recogida2" component={Recogida2} durationInFrames={DURACION_RECOGIDA2} fps={30} width={1080} height={1920} />
     <Composition id="Recogida1Volt" component={Recogida1Volt} durationInFrames={DURACION_RECOGIDA_1VOLT} fps={30} width={1080} height={1920} />
+    <Composition id="Gasolina1Volt" component={Gasolina1Volt} durationInFrames={DURACION_GASOLINA_1VOLT} fps={30} width={1080} height={1920} />
     </>
   );
 };
