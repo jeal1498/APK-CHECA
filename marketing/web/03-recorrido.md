@@ -57,4 +57,4 @@ La página era muy larga. Ahora: **título → video → botón** arriba, luego 
 - Salieron del inicio: la demo interactiva, la calculadora, la sección «El problema» (la cubre el video) y la banda de beta.
 - La beta vive solo en **`/beta/`** (página completa: qué recibes, qué te pido, cómo entrar), enlazada en el pie y para usar en redes con `?utm_campaign=beta`.
 - El botón fijo del teléfono aparece siempre que el botón principal no está en pantalla.
-- Pendiente: un video VSL propio de 60–90 s que muestre la app funcionando (el actual es de dolor, 36 s).
+- Video del inicio: clip de Eduardo (beta) recortado a 27 s sin la parte de «busco 50 / comenta YO» (`media/vsl.mp4`). Pendiente opcional: VSL propio de 60–90 s.

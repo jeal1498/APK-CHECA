@@ -165,3 +165,6 @@ Revisa: textos encimados con el pin o los edificios, la cámara metida en un edi
 4. Marca el tema como hecho en `marketing/temas-videos.md` (nota con el archivo del video).
 
 `video/out/` está en `.gitignore`; se versionan el código, `public/<video>/` y la copia en `marketing/videos/`.
+
+## Video de la web (VSL)
+El inicio de la web usa `checa-web/media/vsl.mp4`: el video de beta (`01_2026-10-14_beta-testers.mp4`) recortado a 26.9 s (clips c1–c4 de `lineasBeta.ts`, sin c5–c7 ni la tarjeta «Comenta YO»), 720×1280, CRF 28, con fundido final. Se rehízo con ffmpeg: `-t 26.9 -vf "scale=720:1280,fade=t=out:st=26.3:d=0.6" -af "afade=t=out:st=26.3:d=0.6"`.

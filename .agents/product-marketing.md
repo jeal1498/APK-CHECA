@@ -1,6 +1,6 @@
 # Product Marketing Context — Checa
 
-**Document version:** v4
+**Document version:** v5
 **Last updated:** 2026-10-13
 
 ## Product Overview
@@ -132,10 +132,12 @@ B2C, una sola persona: el conductor que quiere ganar más por hora y gastar meno
 **Current metrics:** Medición de la web desde el 13 oct 2026 (Supabase `web_eventos`, reporte en `reportes/web.md`; links con UTM en `marketing/web/06-medicion.md`). Meta inicial: 15 % de visitas Android que descargan.
 
 ## Web (funnel)
-Plan completo en `marketing/web/` (01 público → 06 medición). Título: «Antes de aceptar, checa cuánto te queda.» Botón único: «Descargar gratis · 7 días». Orden: encabezado → video 02 → problema → cómo funciona → demo → confianza + garantía → calculadora → precios por día → beta → preguntas → cierre. Páginas `/instalar/` y `/beta/`.
+Plan completo en `marketing/web/` (01 público → 06 medición). Título: «Antes de aceptar, checa cuánto te queda.» Botón único: «Descargar gratis · 7 días». Inicio como **VSL**: título → video de Eduardo (27 s, `media/vsl.mp4`) → botón; luego cómo funciona, confianza + garantía, precios por día, 5 preguntas y cierre. Páginas `/instalar/` y `/beta/` (la beta ya no va en el inicio).
+**Invita a un amigo (app 6.2):** código por cuenta; si el amigo paga su primer paquete, los dos ganan 30 días (link `?ref=` + portapapeles + campo a mano).
 
 ## Changelog
 *Newest first. One line per revision: what changed and why.*
+- v5 (2026-10-13) — Inicio como VSL con el video de Eduardo, beta en página propia, Invita a un amigo en la app 6.2 y aviso de actualización (6.1).
 - v4 (2026-10-13) — Web como funnel: garantía de lectura, bono de ayuda por WhatsApp, precio por día, título nuevo, sin competencia en público, medición con Supabase.
 - v3 (2026-10-13) — Campaña de beta testers (50 accesos, 3 meses, +1 mes por referido) y plan para juntar testimonios reales.
 - v2 (2026-10-12) — Modelo de cobro: pago único (no suscripción); objeción de cobros recurrentes; sin clientes ni testimonios todavía.
