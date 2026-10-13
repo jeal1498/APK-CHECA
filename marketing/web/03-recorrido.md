@@ -51,3 +51,10 @@ Cambios contra la web actual: entra el video, la **confianza sube antes de preci
 
 ## Medición (paso 7)
 Clic en Descargar · llegada a `/instalar/` · clic en WhatsApp de ayuda · clic en Beta · reproducciones del video.
+
+## Cambio 13 oct 2026: inicio como VSL (pedido de Eduardo)
+La página era muy larga. Ahora: **título → video → botón** arriba, luego Cómo funciona (con el pop-up), Confianza, Precios, 5 preguntas y Cierre (≈ la mitad de largo).
+- Salieron del inicio: la demo interactiva, la calculadora, la sección «El problema» (la cubre el video) y la banda de beta.
+- La beta vive solo en **`/beta/`** (página completa: qué recibes, qué te pido, cómo entrar), enlazada en el pie y para usar en redes con `?utm_campaign=beta`.
+- El botón fijo del teléfono aparece siempre que el botón principal no está en pantalla.
+- Pendiente: un video VSL propio de 60–90 s que muestre la app funcionando (el actual es de dolor, 36 s).
