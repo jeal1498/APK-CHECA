@@ -55,3 +55,8 @@ Camino secundario mientras dure la beta: «Quiero ser beta tester».
 ## Detalles a corregir en la web actual
 - El pie dice «hecho en Cancún»: la marca no menciona ciudad. Quitar.
 - La web compara con «Uber vs DiDi» en planes: está bien (son las apps que se leen, no competencia).
+
+## Decisiones de Eduardo (13 oct 2026)
+- Garantía de lectura: **sí**.
+- Ayuda para instalar por WhatsApp: **sí**.
+- Beta testers en la web: **sí, como opción secundaria**.
