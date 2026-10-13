@@ -45,6 +45,8 @@ Desde el anuncio «Recogidas lejanas» Eduardo pidió **usar siempre el estilo 1
 
 Serie de 14 temas completa en 1Volt (octubre 2026).
 
+**HyperFrames** (desde el 13 oct 2026, skill `hyperframes`): «Cómo funciona Checa» `16_como-funciona-checa.mp4` (47 s, estilo nuevo, proyecto `video/hyperframes/checa-como-funciona/`, `generar.py` arma la composición desde los tiempos de la voz).
+
 **Estado al 13 oct 2026:** calendario del 14 al 28 de octubre en `marketing/calendario.md` (1 al día a las 8 pm, beta primero y luego venta/consejo alternados). Pendiente: publicar según el calendario, juntar opiniones de los beta testers (con permiso) para testimonios en `.agents/product-marketing.md`, y si hay nuevos temas, agregarlos a `temas-videos.md`, al calendario (número siguiente) y a esta tabla.
 
 Componentes reutilizables: `Trazo`, `Cota`, `Numero`, `Etiqueta`, `Frase`, `Subs`, `Fondo` (en cada archivo), `Num` y `Palomita`/`Tache` (Seguridad, Bloqueo, Pasajeros), pop-ups exactos (`Popup` de `ui.tsx`), `Toma` (cambio cada 3 s). Los videos de valor (9–14) cierran con logo + «+ Seguir», sin prueba gratis.
