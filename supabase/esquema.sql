@@ -89,3 +89,83 @@ create policy "la web anota eventos" on public.web_eventos
   for insert to anon with check (creado > now() - interval '1 minute');
 grant insert on public.web_eventos to anon;
 create index if not exists web_eventos_creado on public.web_eventos (creado);
+
+-- ===================== Invita a un amigo =====================
+-- Cada cuenta tiene un código (p. ej. LALO-7K2). El amigo lo usa antes de su primer pago;
+-- cuando paga cualquier paquete, mp-webhook da 30 días más a los dos (una sola vez por amigo).
+create table if not exists public.codigos (
+  correo text primary key,
+  codigo text not null unique
+);
+alter table public.codigos enable row level security;
+
+create table if not exists public.invitaciones (
+  invitado  text primary key,               -- correo de quien usó el código
+  codigo    text not null,
+  invitador text not null,                  -- correo del dueño del código
+  creado    timestamptz not null default now(),
+  premiado  timestamptz                     -- cuándo se dio el mes a los dos
+);
+alter table public.invitaciones enable row level security;
+
+-- Meses ganados por invitaciones (la app avisa «¡Ganaste 1 mes!» cuando sube).
+alter table public.licencias add column if not exists premios integer not null default 0;
+
+-- Código de la cuenta que llama (lo crea la primera vez).
+create or replace function public.mi_codigo() returns text
+language plpgsql security definer set search_path = public as $$
+declare
+  yo text := lower(auth.jwt() ->> 'email');
+  c text;
+  base text;
+  letras text := 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+begin
+  if yo is null then raise exception 'sin_sesion'; end if;
+  select codigo into c from codigos where correo = yo;
+  if c is not null then return c; end if;
+  base := rpad(left(upper(regexp_replace(translate(split_part(yo, '@', 1), 'áéíóúñ', 'aeioun'), '[^a-zA-Z]', '', 'g')), 4), 4, 'X');
+  loop
+    c := base || '-' || substr(letras, 1 + floor(random() * 32)::int, 1)
+                     || substr(letras, 1 + floor(random() * 32)::int, 1)
+                     || substr(letras, 1 + floor(random() * 32)::int, 1);
+    begin
+      insert into codigos (correo, codigo) values (yo, c);
+      return c;
+    exception when unique_violation then
+      select codigo into c from codigos where correo = yo;
+      if c is not null then return c; end if;
+    end;
+  end loop;
+end $$;
+
+-- Usa el código de un amigo. Devuelve: ok, no_existe, propio, ya_tienes, ya_pagaste.
+create or replace function public.usar_codigo(c text) returns text
+language plpgsql security definer set search_path = public as $$
+declare
+  yo text := lower(auth.jwt() ->> 'email');
+  limpio text := upper(regexp_replace(coalesce(c, ''), '[^a-zA-Z0-9]', '', 'g'));
+  dueno text;
+  cod text;
+begin
+  if yo is null then raise exception 'sin_sesion'; end if;
+  if exists (select 1 from invitaciones where invitado = yo) then return 'ya_tienes'; end if;
+  select correo, codigo into dueno, cod from codigos where replace(codigo, '-', '') = limpio;
+  if dueno is null then return 'no_existe'; end if;
+  if dueno = yo then return 'propio'; end if;
+  if exists (select 1 from pagos where correo = yo) then return 'ya_pagaste'; end if;
+  insert into invitaciones (invitado, codigo, invitador) values (yo, cod, dueno);
+  return 'ok';
+end $$;
+
+-- Código con el que entró la cuenta que llama (o null).
+create or replace function public.mi_invitacion() returns text
+language sql security definer set search_path = public as $$
+  select codigo from invitaciones where invitado = lower(auth.jwt() ->> 'email');
+$$;
+
+revoke all on function public.mi_codigo() from public, anon;
+revoke all on function public.usar_codigo(text) from public, anon;
+revoke all on function public.mi_invitacion() from public, anon;
+grant execute on function public.mi_codigo() to authenticated;
+grant execute on function public.usar_codigo(text) to authenticated;
+grant execute on function public.mi_invitacion() to authenticated;
