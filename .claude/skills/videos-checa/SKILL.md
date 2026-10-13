@@ -15,7 +15,7 @@ Después de varias pruebas, Eduardo aprobó este estilo y **le gustan las 8 vist
 - **Colores con significado:** magenta = lo malo, lo que no te pagan, el número que duele; cian = lo que sí te pagan o la solución; amarillo = dinero, la oferta y la palabra clave. Verde/amarillo/rojo de semáforo solo dentro del pop-up de Checa.
 - **Pop-up de Checa idéntico a la app** (`Popup` con `exacto`) cuando sale el teléfono.
 - **Cierre:** fondo de atardecer + recuadro neón con la frase final + logo Checa (+ «7 días gratis · link en el perfil» y la pregunta en los videos completos).
-- Música calmada (`public/musica-calma.mp3`, volumen 0.14), efectos muy suaves; narrador calmado a velocidad 1.05; volumen final −14 LUFS.
+- Música calmada (`public/musica-calma.mp3`, volumen 0.14), efectos muy suaves; narrador Fernando Martínez a velocidad 1.0; volumen final −14 LUFS.
 
 ### Las 8 vistas (todas aprobadas)
 **No hay una vista principal: la tercera persona es solo una de las 8.** Para cada escena del guion elige la vista que mejor cuente esa idea (la tabla dice para qué sirve cada una) y justifícala en una frase al presentar el guion. Cambia de vista cada 4–8 s sin salir de la misma ciudad (como las referencias); no repitas la misma vista en dos escenas seguidas salvo que la historia lo pida. Código de cada una en `video/src/Checa/Vistas3D.tsx` (componente `Camara`, casos `v === 0…7`, y `Capas` para lo que va encima):
@@ -62,12 +62,12 @@ Reglas:
 
 - Plan **Starter** (30 000 créditos/mes); un video de 40 s gasta ~550 caracteres.
 - La clave se lee de `ELEVENLABS_API_KEY` (variable del entorno). Si falta, pídele que la agregue en el menú del entorno → Edit, no en el chat. Si la pega en el chat, guárdala solo en `/tmp/claude-0/.el_key` (`umask 077`) y recomiéndale cambiarla. **Nunca** en el repo. No tiene permiso de speech-to-text (para transcribir referencias usa `faster-whisper` con pip).
-- Voz `gncXGfeB8V1Weu7l6QUg`, velocidad **1.05**.
+- Voz **Fernando Martínez** (`dlGxemPxFMTY7iXagmOj`, latina neutra, la más usada de la biblioteca), velocidad **1.0**. Eduardo la eligió en octubre 2026; la anterior (`gncXGfeB8V1Weu7l6QUg`) y las mexicanas Juan Limón, Miguel Zermeño y Juan Campillo no le gustaron (muestras en `marketing/voces/`). La clave ya tiene permiso `voices_read`: para buscar voces usa `/v1/shared-voices` con `sort=usage_character_count_1y`.
 
 ```bash
 cd video
-C=public/<video>; V=gncXGfeB8V1Weu7l6QUg
-python3 -I scripts/elevenlabs.py voz $C l1 "Primera línea." $V 1.05      # … hasta l8
+C=public/<video>; V=dlGxemPxFMTY7iXagmOj
+python3 -I scripts/elevenlabs.py voz $C l1 "Primera línea." $V 1.0      # … hasta l8
 cd $C && for i in 1 2 3 4 5 6 7 8; do ffmpeg -loglevel error -y -i l$i.mp3 -af "loudnorm=I=-14:TP=-1.5:LRA=7" -ar 44100 -b:a 128k t.mp3 && mv t.mp3 l$i.mp3; done && cd ../..
 python3 -I scripts/lineas.py $C src/Checa/lineas<Nombre>.ts l1 l2 l3 l4 l5 l6 l7 l8
 ```

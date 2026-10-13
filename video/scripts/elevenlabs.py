@@ -10,7 +10,7 @@ Uso:
 """
 import base64, json, os, ssl, sys, urllib.request
 
-VOZ = "gncXGfeB8V1Weu7l6QUg"  # voz del narrador elegida por Eduardo
+VOZ = "dlGxemPxFMTY7iXagmOj"  # Fernando Martínez, voz del narrador elegida por Eduardo
 CA = "/root/.ccr/ca-bundle.crt"
 
 
