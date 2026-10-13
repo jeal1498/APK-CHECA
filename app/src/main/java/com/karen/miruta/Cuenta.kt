@@ -281,7 +281,7 @@ object Cuenta {
             sp(ctx).edit().putBoolean("quitado", true).putString("equipos", equiposJson(lista)).commit()
             return Resultado.Limite(lista)
         }
-        val lic = JSONArray(pedir("GET", "/rest/v1/licencias?select=vence,fundador,firma,max_equipos", t, null))
+        val lic = JSONArray(pedir("GET", "/rest/v1/licencias?select=vence,fundador,firma,max_equipos,premios", t, null))
         val lista = leerEquipos(ctx, t)
         val e = sp(ctx).edit()
             .putBoolean("quitado", false)
@@ -293,11 +293,101 @@ object Cuenta {
                 .putBoolean("lic_f", o.optBoolean("fundador", false))
                 .putInt("lic_eq", o.optInt("max_equipos", MAX_EQUIPOS))
                 .putString("lic_firma", o.getString("firma"))
+                .putInt("premios", o.optInt("premios", 0))
+            // Primera revisión de esta cuenta en el teléfono: no avisar premios viejos.
+            if (!sp(ctx).contains("premios_vistos")) e.putInt("premios_vistos", o.optInt("premios", 0))
         } else {
             e.remove("lic_vence").remove("lic_f").remove("lic_eq").remove("lic_firma")
+            if (!sp(ctx).contains("premios_vistos")) e.putInt("premios_vistos", 0)
         }
         e.commit()
+        sincronizarInvitacion(ctx, t)
         return Resultado.Ok
+    }
+
+    // ------------------------------------------------------------------
+    // Invita a un amigo
+    // ------------------------------------------------------------------
+
+    private val FORMATO_CODIGO = Regex("^[A-Z0-9]{4}-?[A-Z0-9]{3}$")
+
+    /** Deja el código como ABCD-EF2, o null si no tiene ese formato. */
+    fun normalizarCodigo(c: String): String? {
+        val l = c.uppercase(Locale.ROOT).filter { it.isLetterOrDigit() }
+        if (!FORMATO_CODIGO.matches(l)) return null
+        return l.take(4) + "-" + l.drop(4)
+    }
+
+    /** Código de esta cuenta para compartir (null si aún no se ha descargado). */
+    fun miCodigo(ctx: Context): String? = if (conectada(ctx)) sp(ctx).getString("mi_codigo", null) else null
+
+    /** Código del amigo ya registrado en la cuenta. */
+    fun invitacion(ctx: Context): String? = sp(ctx).getString("invitacion", null)
+
+    /** Código guardado que se aplicará al entrar con Google. */
+    fun invitacionPendiente(ctx: Context): String? = sp(ctx).getString("inv_pendiente", null)
+
+    /** Meses ganados por invitaciones que la app todavía no ha avisado. */
+    fun premiosNuevos(ctx: Context): Int = sp(ctx).getInt("premios", 0) - sp(ctx).getInt("premios_vistos", 0)
+
+    fun marcarPremiosVistos(ctx: Context) =
+        sp(ctx).edit().putInt("premios_vistos", sp(ctx).getInt("premios", 0)).apply()
+
+    /**
+     * Guarda el código de un amigo. Con sesión lo registra ya; sin sesión queda pendiente.
+     * [listo] recibe un mensaje para mostrar y si quedó bien.
+     */
+    fun usarCodigo(ctx: Context, codigo: String, listo: (String, Boolean) -> Unit) {
+        val app = ctx.applicationContext
+        val c = normalizarCodigo(codigo)
+        if (c == null) { listo("Ese código no es válido. Tiene 7 letras o números, como ABCD-EF2.", false); return }
+        if (!conectada(app)) {
+            sp(app).edit().putString("inv_pendiente", c).apply()
+            listo("Código $c guardado. Se aplica cuando entres con Google.", true)
+            return
+        }
+        Thread {
+            val (msj, ok) = try {
+                aplicarCodigo(app, token(app), c)
+            } catch (_: Exception) {
+                sp(app).edit().putString("inv_pendiente", c).apply()
+                "Sin conexión. Guardamos el código y lo aplicamos cuando tengas internet." to true
+            }
+            principal.post { listo(msj, ok) }
+        }.start()
+    }
+
+    private fun aplicarCodigo(ctx: Context, t: String, c: String): Pair<String, Boolean> {
+        val r = JSONObject("{\"r\":" + pedir("POST", "/rest/v1/rpc/usar_codigo", t, JSONObject().put("c", c).toString()) + "}")
+            .optString("r")
+        val e = sp(ctx).edit().remove("inv_pendiente")
+        val res = when (r) {
+            "ok" -> { e.putString("invitacion", c); "¡Listo! Cuando pagues tu primer paquete, tú y tu amigo ganan 1 mes gratis." to true }
+            "ya_tienes" -> "Tu cuenta ya tiene el código de un amigo." to true
+            "propio" -> "Ese es tu propio código. Compártelo con un amigo." to false
+            "ya_pagaste" -> "El código de amigo solo vale antes de tu primer pago." to false
+            else -> "No encontramos ese código. Revísalo con tu amigo." to false
+        }
+        e.apply()
+        return res
+    }
+
+    /** Descarga el código propio, aplica uno pendiente y recuerda con qué código entró la cuenta. */
+    private fun sincronizarInvitacion(ctx: Context, t: String) {
+        try {
+            if (sp(ctx).getString("mi_codigo", null) == null) {
+                val c = JSONObject("{\"r\":" + pedir("POST", "/rest/v1/rpc/mi_codigo", t, "{}") + "}").optString("r")
+                if (c.isNotEmpty() && c != "null") sp(ctx).edit().putString("mi_codigo", c).apply()
+            }
+            val pendiente = invitacionPendiente(ctx)
+            if (pendiente != null && invitacion(ctx) == null) {
+                aplicarCodigo(ctx, t, pendiente)
+            }
+            if (invitacion(ctx) == null) {
+                val c = JSONObject("{\"r\":" + pedir("POST", "/rest/v1/rpc/mi_invitacion", t, "{}") + "}").optString("r")
+                if (c.isNotEmpty() && c != "null") sp(ctx).edit().putString("invitacion", c).apply()
+            }
+        } catch (_: Exception) { }
     }
 
     private fun leerEquipos(ctx: Context, t: String): List<Equipo> {

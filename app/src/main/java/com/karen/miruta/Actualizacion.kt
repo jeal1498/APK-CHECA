@@ -93,16 +93,20 @@ object Actualizacion {
     // Compartir
     // ------------------------------------------------------------------
 
-    private const val TEXTO_COMPARTIR =
-        "Te recomiendo Checa: en cada oferta de Uber o DiDi te dice cuánto te queda después de gasolina " +
-            "y si conviene aceptarla. Pruébala 7 días gratis (Android): " +
-            WEB + "?utm_source=app&utm_campaign=compartir"
+    /** Mensaje para compartir; con [codigo], el link lleva ?ref= y el amigo gana el mes extra al pagar. */
+    fun textoCompartir(codigo: String?): String {
+        val link = WEB + "?" + (if (codigo != null) "ref=$codigo&" else "") + "utm_source=app&utm_campaign=compartir"
+        val base = "Te recomiendo Checa: en cada oferta de Uber o DiDi te dice cuánto te queda después de gasolina " +
+            "y si conviene aceptarla. Pruébala 7 días gratis (Android): $link"
+        return if (codigo == null) base
+        else "$base\n\nUsa mi código $codigo: si pagas un paquete, los dos ganamos 1 mes gratis."
+    }
 
-    fun compartir(ctx: Context) {
+    fun compartir(ctx: Context, codigo: String?) {
         val i = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
             putExtra(Intent.EXTRA_SUBJECT, "Checa")
-            putExtra(Intent.EXTRA_TEXT, TEXTO_COMPARTIR)
+            putExtra(Intent.EXTRA_TEXT, textoCompartir(codigo))
         }
         try {
             ctx.startActivity(Intent.createChooser(i, "Compartir Checa").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))

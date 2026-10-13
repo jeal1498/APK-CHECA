@@ -101,6 +101,8 @@ class MainActivity : Activity() {
     private lateinit var cuentaScroll: ScrollView
     private lateinit var paquetesVista: View
     private var botonBuscarAct: TextView? = null
+    private val cajasCompartir = ArrayList<LinearLayout>()
+    private var cajaInvitado: LinearLayout? = null
     private var dialogoAct: Dialog? = null
     private val insignias = ArrayList<TextView>()
     private var notaComparador: TextView? = null
@@ -1197,6 +1199,10 @@ class MainActivity : Activity() {
         pintarCuenta()
 
         col.addView(tarjetaCompartir(), margenTarjeta())
+        val invitado = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        cajaInvitado = invitado
+        col.addView(invitado, LinearLayout.LayoutParams(-1, -2))
+        pintarInvitar()
 
         // --- Paquetes ---
         val paq = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
@@ -1356,11 +1362,117 @@ class MainActivity : Activity() {
         }
     }
 
+    /** Tarjeta «Invita a un amigo» (Inicio y Cuenta); su contenido lo pinta [pintarInvitar]. */
     private fun tarjetaCompartir(): View {
         val t = tarjeta()
-        t.addView(cabeceraTarjeta(Icono.COMPARTIR, "Comparte Checa", "¿Un compa también maneja? Pásale la app", false).first)
-        t.addView(boton("Compartir con un amigo", cVerde, Color.BLACK) { Actualizacion.compartir(this) }, margenArriba(Tema.S2))
+        cajasCompartir.add(t)
+        pintarInvitar()
         return t
+    }
+
+    private fun pintarInvitar() {
+        val codigo = Cuenta.miCodigo(this)
+        cajasCompartir.forEach { t ->
+            t.removeAllViews()
+            t.addView(cabeceraTarjeta(Icono.COMPARTIR, "Invita a un amigo",
+                if (codigo != null) "Si paga cualquier paquete, los dos ganan 1 mes gratis"
+                else "¿Un compa también maneja? Pásale la app", false).first)
+            if (codigo != null) {
+                val fila = LinearLayout(this).apply {
+                    orientation = LinearLayout.HORIZONTAL
+                    gravity = Gravity.CENTER_VERTICAL
+                    background = redondo(cTarjeta2, Tema.R_BOTON)
+                    setPadding(dp(Tema.S2), dp(12), dp(Tema.S2), dp(12))
+                }
+                fila.addView(texto("Tu código", Tema.T_NOTA, cTenue, false), LinearLayout.LayoutParams(0, -2, 1f))
+                fila.addView(numero(codigo, Tema.T_SUB, cVerde))
+                t.addView(fila, margenArriba(Tema.S2))
+            } else if (!Cuenta.conectada(this)) {
+                t.addView(texto("Entra con Google para tener tu código y ganar meses gratis.", Tema.T_NOTA, cTenue, false)
+                    .apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
+            }
+            t.addView(boton("Compartir con un amigo", cVerde, Color.BLACK) { Actualizacion.compartir(this, Cuenta.miCodigo(this)) },
+                margenArriba(Tema.S2))
+        }
+        pintarInvitado()
+    }
+
+    /** «¿Te invitó alguien?»: solo antes del primer pago y si la cuenta aún no tiene código de amigo. */
+    private fun pintarInvitado() {
+        val caja = cajaInvitado ?: return
+        caja.removeAllViews()
+        val usado = Cuenta.invitacion(this)
+        if (usado != null || Licencia.estado(this).pagada) return
+        val t = tarjeta()
+        t.addView(texto("¿Te invitó alguien?", Tema.T_SUB, cTexto, true))
+        val pendiente = Cuenta.invitacionPendiente(this)
+        if (pendiente != null) {
+            t.addView(texto("Código $pendiente guardado. Se aplica cuando entres con Google; al pagar tu primer paquete, tú y tu amigo ganan 1 mes gratis.",
+                Tema.T_TEXTO, cTexto2, false).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
+        } else {
+            t.addView(texto("Escribe el código de tu amigo. Al pagar tu primer paquete, los dos ganan 1 mes gratis.",
+                Tema.T_TEXTO, cTexto2, false).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
+            val campo = EditText(this).apply {
+                hint = "ABCD-EF2"
+                setHintTextColor(cTenue)
+                setTextColor(cTexto)
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, Tema.T_SUB)
+                typeface = Fuentes.numero
+                isSingleLine = true
+                inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS
+                background = redondo(cTarjeta2, Tema.R_BOTON)
+                setPadding(dp(Tema.S2), dp(12), dp(Tema.S2), dp(12))
+                minHeight = dp(Tema.ALTO_TOQUE)
+            }
+            t.addView(campo, margenArriba(Tema.S2))
+            t.addView(boton("Aplicar código", cTarjeta2, cTexto) {
+                Cuenta.usarCodigo(this, campo.text.toString()) { msj, _ ->
+                    Toast.makeText(this, msj, Toast.LENGTH_LONG).show()
+                    pintarInvitar()
+                }
+            }, margenArriba(Tema.S1))
+        }
+        caja.addView(t, margenTarjeta())
+    }
+
+    /** Ventana «¡Ganaste 1 mes!» cuando suben los premios de la cuenta. */
+    private fun avisarPremios() {
+        val n = Cuenta.premiosNuevos(this)
+        if (n <= 0 || guia?.isShowing == true || dialogoCuenta?.isShowing == true) return
+        Cuenta.marcarPremiosVistos(this)
+        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        cuerpo.addView(texto(
+            (if (n == 1) "Ganaste 1 mes gratis" else "Ganaste $n meses gratis") +
+                " con «Invita a un amigo». Ya se sumó a tu licencia.",
+            Tema.T_TEXTO, cTexto2, false
+        ).apply { setLineSpacing(0f, 1.2f) })
+        cuerpo.addView(boton("Invitar a otro amigo", cVerde, Color.BLACK) {
+            dialogoCuenta?.dismiss()
+            Actualizacion.compartir(this, Cuenta.miCodigo(this))
+        }, margenArriba(Tema.S2))
+        dialogoCuenta = hoja("¡Ganaste ${if (n == 1) "1 mes" else "$n meses"}!", DORADO, cuerpo)
+    }
+
+    /** Si llegó desde el link de un amigo, la web dejó «CHECA-REF:CODIGO» en el portapapeles. */
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (!hasFocus) return
+        val sp = getSharedPreferences("invitar", Context.MODE_PRIVATE)
+        val veces = sp.getInt("portapapeles", 0)
+        if (veces >= 3 || Cuenta.invitacion(this) != null || Cuenta.invitacionPendiente(this) != null ||
+            Licencia.estado(this).pagada) return
+        sp.edit().putInt("portapapeles", veces + 1).apply()
+        val clip = try {
+            (getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager)
+                .primaryClip?.getItemAt(0)?.coerceToText(this)?.toString()
+        } catch (_: Exception) { null } ?: return
+        val c = Regex("CHECA-REF:([A-Za-z0-9-]{7,8})").find(clip)?.groupValues?.get(1) ?: return
+        if (Cuenta.normalizarCodigo(c) == null || Cuenta.normalizarCodigo(c) == Cuenta.miCodigo(this)) return
+        sp.edit().putInt("portapapeles", 3).apply()
+        Cuenta.usarCodigo(this, c) { msj, ok ->
+            if (ok) Toast.makeText(this, "Te invitó un amigo. $msj", Toast.LENGTH_LONG).show()
+            pintarInvitar()
+        }
     }
 
     /** Lleva a la pestaña Cuenta, a la parte de los paquetes. */
@@ -1921,6 +2033,8 @@ class MainActivity : Activity() {
     /** Pestaña Cuenta: perfil arriba, credencial del plan, equipos y «Cerrar sesión» discreto. */
     private fun pintarCuenta() {
         if (!::cuentaCaja.isInitialized) return
+        pintarInvitar()
+        avisarPremios()
         cuentaCaja.removeAllViews()
         val e = Licencia.estado(this)
         if (!Cuenta.conectada(this)) {
