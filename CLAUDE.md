@@ -87,6 +87,7 @@ Contexto para continuar el proyecto en una conversación nueva.
 - Planes en `supabase/functions/_shared/planes.ts` (1m $99/30 d, 6m $399/180 d, 12m $899/365 d); deben coincidir con las tarjetas de `MainActivity`.
 - `.github/workflows/supabase.yml` (push a `supabase/**` o manual): corre `esquema.sql` por la API de administración, copia los secretos de GitHub `MP_ACCESS_TOKEN`, `MP_WEBHOOK_SECRET`, `LICENCIA_PRIVADA` a Supabase y despliega las 2 funciones (`--no-verify-jwt`). Usa el secreto `SUPABASE_ACCESS_TOKEN`. Ella autorizó este proceso.
 - Landing obligatoria para MP: https://jeal1498.github.io/checa-web/ (repo `jeal1498/checa-web`; copia en `docs/`).
+- **Web como funnel (oct 2026)**: plan y decisiones en `marketing/web/` (01 público, 02 oferta, 03 recorrido, 04 textos). Meta única: descargar y empezar 7 días gratis; `/instalar/` tras descargar (ayuda por WhatsApp) y `/beta/` (50 lugares). Garantía de lectura de 7 días (también en `terminos.html`). Sin nombres de competencia ni ciudad. Eduardo pidió **pasar todo cambio de la web directo a `main`**.
 - El generador `pedidos/pedido.txt` sigue como respaldo para regalar licencias.
 
 ## Ideas propuestas y pendientes
