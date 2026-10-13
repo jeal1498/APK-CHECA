@@ -18,6 +18,29 @@ Desde el anuncio «Recogidas lejanas» Eduardo pidió **usar siempre el estilo 1
 - **Checa es una app**: en la voz di «la app Checa» cuando pueda confundirse con Uber/DiDi («la app» a secas = la plataforma).
 - **Ahorro de tokens**: reutiliza la plantilla y cambia solo escenas, textos y cifras; revisa como máximo una tira de 4 cuadros antes del render; no rehagas la voz si el texto no cambió.
 
+### Proceso actual (cada video)
+1. Propón el guion del siguiente tema de `marketing/temas-videos.md` en tabla (corte · voz · en pantalla), ~70 palabras, frases de ~3 s, y la cuenta de cada cifra.
+2. Eduardo lo pasa a Gemini y trae la versión corregida: **guárdala primero** en `marketing/guiones-gemini.md` (corrido + tabla + archivo del video + ajustes que hiciste).
+3. Revisa honestidad antes de grabar: «la app Checa» cuando pueda confundirse; «números de ejemplo» en pantalla si la voz no lo dice; nada que no podamos garantizar (cobros de cancelación, «menos de un segundo», bloqueos, ciudad o país en hashtags). Avisa cada ajuste.
+4. Voz Fernando Martínez (1 línea por `[Corte]`), escena 1Volt a partir del video anterior (`<Nombre>1Volt.tsx`, `<Toma>` incluida), 1 tira de ~6 cuadros, render, `marketing/videos/<nombre>-1volt.mp4`, marca el tema en `temas-videos.md`, commit `[skip ci]` y push a `main` y a la rama de trabajo.
+
+### Videos hechos (1Volt salvo que se indique)
+| Tema | Video | Código |
+|---|---|---|
+| 1 Trabajar mucho y no ver el dinero | `sin-lana.mp4` (3D) | `SinLana.tsx` |
+| 2 Gasolina cara | `gasolina-1volt.mp4` | `Gasolina1Volt.tsx` |
+| 3 Recogidas lejanas | `recogida-1volt.mp4` (+ `recogida.mp4`, `recogida2.mp4` en 3D) | `Recogida1Volt.tsx` |
+| 4 Horas muertas | `horas-1volt.mp4` | `Horas1Volt.tsx` |
+| 5 Decidir en segundos | `decidir-1volt.mp4` | `Decidir1Volt.tsx` |
+| 6 Comisión alta | `comision-1volt.mp4` | `Comision1Volt.tsx` |
+| 7 Miedo a rechazar | `rechazar-1volt.mp4` | `Rechazar1Volt.tsx` |
+| 8 Desgaste / renta | `desgaste-1volt.mp4` | `Desgaste1Volt.tsx` |
+| 9 Inseguridad (valor) | `seguridad-1volt.mp4` | `Seguridad1Volt.tsx` |
+| 10 Bloqueo (valor) | `bloqueo-1volt.mp4` | `Bloqueo1Volt.tsx` |
+| 11 Pasajeros problemáticos (valor) | `pasajeros-1volt.mp4` | `Pasajeros1Volt.tsx` |
+
+Componentes reutilizables: `Trazo`, `Cota`, `Numero`, `Etiqueta`, `Frase`, `Subs`, `Fondo` (en cada archivo), `Num` y `Palomita`/`Tache` (Seguridad, Bloqueo, Pasajeros), pop-ups exactos (`Popup` de `ui.tsx`), `Toma` (cambio cada 3 s). Los videos de valor (9–14) cierran con logo + «+ Seguir», sin prueba gratis.
+
 Lo que sigue describe el estilo 3D (en pausa); las reglas de guion, voz, cifras y entrega aplican igual.
 
 ## Estilo 3D «punto dulce» (en pausa) (Eduardo, octubre 2026)
