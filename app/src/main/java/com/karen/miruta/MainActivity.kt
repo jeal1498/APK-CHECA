@@ -82,6 +82,8 @@ class MainActivity : Activity() {
     // Inicio
     private lateinit var tarjetaPermiso: View
     private lateinit var tarjetaLicencia: View
+    private lateinit var tarjetaActualizacion: View
+    private lateinit var actTexto: TextView
     private lateinit var licTitulo: TextView
     private lateinit var licTexto: TextView
     private lateinit var mejoresHorasLista: LinearLayout
@@ -98,6 +100,8 @@ class MainActivity : Activity() {
     private lateinit var cuentaCaja: LinearLayout
     private lateinit var cuentaScroll: ScrollView
     private lateinit var paquetesVista: View
+    private var botonBuscarAct: TextView? = null
+    private var dialogoAct: Dialog? = null
     private val insignias = ArrayList<TextView>()
     private var notaComparador: TextView? = null
     /** Se abrió Mercado Pago: al volver a la app se busca la licencia. */
@@ -151,6 +155,7 @@ class MainActivity : Activity() {
         }
         actualizarResumen()
         handler.post(refresco)
+        Actualizacion.revisar(this) { v, _ -> pintarActualizacion(v, true) }
         if (esperandoPago && Cuenta.conectada(this)) {
             Cuenta.revisarAhora(this) { r ->
                 if (r is Cuenta.Resultado.Ok && Cuenta.licencia(this) == null) {
@@ -299,6 +304,16 @@ class MainActivity : Activity() {
         tarjetaPermiso = perm
         col.addView(perm, margenTarjeta())
 
+        // --- Versión nueva (solo si hay) ---
+        val act = tarjeta(Tema.VERDE_SUAVE)
+        act.addView(cabeceraTarjeta(Icono.DESCARGA, "Hay una versión nueva", null, false).first)
+        actTexto = texto("", Tema.T_TEXTO, cTexto, false).apply { setLineSpacing(0f, 1.2f) }
+        act.addView(actTexto, margenArriba(Tema.S1))
+        act.addView(boton("Actualizar ahora", cVerde, Color.BLACK) { Actualizacion.abrirDescarga(this) }, margenArriba(Tema.S2))
+        act.visibility = View.GONE
+        tarjetaActualizacion = act
+        col.addView(act, margenTarjeta())
+
         // --- Licencia (solo en prueba o vencida) ---
         val lic = tarjeta(Tema.VERDE_SUAVE)
         licTitulo = texto("", Tema.T_SUB, cVerde, true)
@@ -355,6 +370,8 @@ class MainActivity : Activity() {
         mejoresHorasLista = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         mh.addView(mejoresHorasLista, margenArriba(12))
         col.addView(mh, margenTarjeta())
+
+        col.addView(tarjetaCompartir(), margenTarjeta())
 
         return scroll(col)
     }
@@ -1179,6 +1196,8 @@ class MainActivity : Activity() {
         col.addView(cuentaCaja, margenTarjeta())
         pintarCuenta()
 
+        col.addView(tarjetaCompartir(), margenTarjeta())
+
         // --- Paquetes ---
         val paq = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         paq.addView(etiqueta("PAQUETES"))
@@ -1281,12 +1300,67 @@ class MainActivity : Activity() {
         }, margenArriba(Tema.S1))
         col.addView(diag, margenTarjeta())
 
-        val version = try { packageManager.getPackageInfo(packageName, 0).versionName } catch (_: Exception) { "" }
-        col.addView(texto("Checa $version", Tema.T_NOTA, cTenue, false).apply {
-            gravity = Gravity.CENTER
-            setPadding(0, dp(Tema.S1), 0, dp(Tema.S1))
-        }, LinearLayout.LayoutParams(-1, -2))
+        col.addView(etiqueta("VERSIÓN"))
+        val ver = tarjeta()
+        ver.addView(texto("Checa ${Actualizacion.instalada(this)}", Tema.T_TEXTO, cTexto, true))
+        botonBuscarAct = boton("Buscar actualización", cTarjeta2, cTexto) { buscarActualizacion() }
+        ver.addView(botonBuscarAct, margenArriba(Tema.S2))
+        col.addView(ver, margenTarjeta())
         return scroll(col).also { cuentaScroll = it }
+    }
+
+    // =====================================================================
+    // Actualizaciones y compartir
+    // =====================================================================
+
+    /** Muestra u oculta la tarjeta de Inicio; la ventana sale una vez por versión. */
+    private fun pintarActualizacion(v: String?, avisar: Boolean) {
+        if (!::tarjetaActualizacion.isInitialized) return
+        tarjetaActualizacion.visibility = if (v == null) View.GONE else View.VISIBLE
+        botonBuscarAct?.text = if (v == null) "Buscar actualización" else "Actualizar a la $v"
+        if (v == null) return
+        actTexto.text = "Checa $v ya está lista (tienes la ${Actualizacion.instalada(this)}). " +
+            "Se instala encima: no pierdes tu cuenta, ajustes ni historial."
+        val ocupado = guia?.isShowing == true || dialogoCuenta?.isShowing == true || dialogoAct?.isShowing == true
+        if (avisar && !ocupado && !Actualizacion.avisoMostrado(this, v)) {
+            Actualizacion.marcarAviso(this, v)
+            dialogoActualizacion(v)
+        }
+    }
+
+    private fun dialogoActualizacion(v: String) {
+        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        cuerpo.addView(texto(
+            "Ya está lista la versión $v de Checa. Toca «Actualizar», abre el archivo que se descarga y toca «Actualizar» o «Instalar».",
+            Tema.T_TEXTO, cTexto2, false
+        ).apply { setLineSpacing(0f, 1.2f) })
+        cuerpo.addView(texto("No pierdes tu cuenta, ajustes ni historial.", Tema.T_NOTA, cTenue, false), margenArriba(Tema.S1))
+        cuerpo.addView(boton("Actualizar", cVerde, Color.BLACK) {
+            dialogoAct?.dismiss()
+            Actualizacion.abrirDescarga(this)
+        }, margenArriba(Tema.S2))
+        cuerpo.addView(boton("Después", cTarjeta2, cTexto) { dialogoAct?.dismiss() }, margenArriba(Tema.S1))
+        dialogoAct = hoja("Nueva versión", cVerde, cuerpo)
+    }
+
+    private fun buscarActualizacion() {
+        Actualizacion.pendiente(this)?.let { Actualizacion.abrirDescarga(this); return }
+        botonBuscarAct?.text = "Buscando…"
+        Actualizacion.revisar(this, forzar = true) { v, ok ->
+            pintarActualizacion(v, false)
+            when {
+                v != null -> dialogoActualizacion(v)
+                ok -> Toast.makeText(this, "Ya tienes la versión más nueva.", Toast.LENGTH_SHORT).show()
+                else -> Toast.makeText(this, "Sin conexión. Inténtalo cuando tengas internet.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun tarjetaCompartir(): View {
+        val t = tarjeta()
+        t.addView(cabeceraTarjeta(Icono.COMPARTIR, "Comparte Checa", "¿Un compa también maneja? Pásale la app", false).first)
+        t.addView(boton("Compartir con un amigo", cVerde, Color.BLACK) { Actualizacion.compartir(this) }, margenArriba(Tema.S2))
+        return t
     }
 
     /** Lleva a la pestaña Cuenta, a la parte de los paquetes. */

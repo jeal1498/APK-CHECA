@@ -213,6 +213,19 @@ class Icono(private val tipo: Int, color: Int) : Drawable() {
                 p.cubicTo(16f, 13.5f, 19.5f, 15.5f, 20f, 20.5f)
                 c.drawPath(p, trazo)
             }
+            COMPARTIR -> {
+                c.drawCircle(18f, 5.5f, 2.8f, trazo)
+                c.drawCircle(6f, 12f, 2.8f, trazo)
+                c.drawCircle(18f, 18.5f, 2.8f, trazo)
+                c.drawLine(8.5f, 10.7f, 15.5f, 6.8f, trazo)
+                c.drawLine(8.5f, 13.3f, 15.5f, 17.2f, trazo)
+            }
+            DESCARGA -> {
+                p.moveTo(12f, 3.5f); p.lineTo(12f, 15f)
+                p.moveTo(7f, 10.5f); p.lineTo(12f, 15.5f); p.lineTo(17f, 10.5f)
+                p.moveTo(4f, 20f); p.lineTo(20f, 20f)
+                c.drawPath(p, trazo)
+            }
         }
         c.restore()
     }
@@ -239,5 +252,7 @@ class Icono(private val tipo: Int, color: Int) : Drawable() {
         const val ALERTA = 12
         const val OK = 13
         const val CUENTA = 14
+        const val COMPARTIR = 15
+        const val DESCARGA = 16
     }
 }
