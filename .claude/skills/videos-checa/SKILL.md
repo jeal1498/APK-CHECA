@@ -51,7 +51,7 @@ Componentes reutilizables: `Trazo`, `Cota`, `Numero`, `Etiqueta`, `Frase`, `Subs
 
 ### Portadas y textos para publicar
 - **Portadas**: composición `Portada` (`video/src/Checa/Portada.tsx`, props `titulo` con `|` para alternar color por línea, `sub`, `color`, `etiqueta`, `fondo` opcional). Render: `npx remotion still Portada out.png --props '{...}'` y pásala a JPG (`ffmpeg -q:v 3`). Guarda la portada junto a su video en `marketing/publicar/NN_fecha_tema.jpg`.
-- **Textos y calendario**: `marketing/calendario.md` (fecha, tipo y texto de cada publicación), uno por video (2–3 líneas, 3–5 hashtags, sin ciudad ni país, sin #ubermexico). Agrega el de cada video nuevo.
+- **Textos y calendario**: `marketing/calendario.md` (fecha, tipo y texto de cada publicación). Sigue la **fórmula** de arriba del calendario: gancho, 1–2 frases con palabras de búsqueda, pregunta, «Comenta CHECA» (venta) o «Guárdalo» (consejo) y 4–5 hashtags. No pegar el guion completo. Sin ciudad ni país, sin #ubermexico, sin «link en el perfil» (no hay link en la bio de TikTok). Agrega el de cada video nuevo.
 
 ### Videos con clips de Eduardo (él a cuadro)
 Cuando Eduardo mande sus propios clips para unir (p. ej. la campaña de beta testers, `marketing/publicar/01_2026-10-14_beta-testers.mp4`, código `video/src/Checa/Beta.tsx`):
