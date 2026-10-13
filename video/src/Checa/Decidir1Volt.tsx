@@ -2,6 +2,7 @@ import React from "react";
 import { AbsoluteFill, Audio, Easing, Sequence, interpolate, staticFile, useCurrentFrame } from "remotion";
 import { Logo, Popup } from "./ui";
 import { armarEscenas, crearEn } from "./plantilla";
+import { Toma } from "./Toma";
 import { LINEAS } from "./lineasDecidir";
 
 // Tema 5 «Decidir en segundos sin poder hacer la cuenta» (pop-up y voz), estilo 1Volt a color. Guion de Gemini.
@@ -277,7 +278,9 @@ const Sfx: React.FC<{ en: number; src: string; vol: number }> = ({ en: e, src, v
 export const Decidir1Volt: React.FC = () => (
   <AbsoluteFill style={{ background: K.fondo }}>
     <Fondo />
-    <Escena />
+    <Toma esc={esc}>
+      <Escena />
+    </Toma>
     <Subs />
     {LINEAS.map((l, k) => (
       <Sequence key={l.archivo} from={esc[k].voz}>

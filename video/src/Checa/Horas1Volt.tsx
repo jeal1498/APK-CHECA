@@ -2,6 +2,7 @@ import React from "react";
 import { AbsoluteFill, Audio, Easing, Sequence, interpolate, staticFile, useCurrentFrame } from "remotion";
 import { Logo } from "./ui";
 import { armarEscenas, crearEn } from "./plantilla";
+import { Toma } from "./Toma";
 import { LINEAS } from "./lineasHoras";
 
 // Tema 4 «Horas muertas, no saber a qué hora salir» (Mejores horas), estilo 1Volt a color. Guion de Gemini.
@@ -308,7 +309,9 @@ const Sfx: React.FC<{ en: number; src: string; vol: number }> = ({ en: e, src, v
 export const Horas1Volt: React.FC = () => (
   <AbsoluteFill style={{ background: K.fondo }}>
     <Fondo />
-    <Escena />
+    <Toma esc={esc}>
+      <Escena />
+    </Toma>
     <Subs />
     {LINEAS.map((l, k) => (
       <Sequence key={l.archivo} from={esc[k].voz}>

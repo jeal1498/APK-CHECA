@@ -3,6 +3,7 @@ import { AbsoluteFill, Audio, Easing, Sequence, interpolate, staticFile, useCurr
 import { Logo } from "./ui";
 import { POPUP } from "./Recogida";
 import { armarEscenas, crearEn } from "./plantilla";
+import { Toma } from "./Toma";
 import { LINEAS } from "./lineasRecogida2";
 
 // «Recogidas lejanas» en el estilo 1Volt1Amp: line-art lavanda sobre azul noche, letra mono,
@@ -291,7 +292,9 @@ const Sfx: React.FC<{ en: number; src: string; vol: number }> = ({ en: e, src, v
 export const Recogida1Volt: React.FC = () => (
   <AbsoluteFill style={{ background: K.fondo }}>
     <Fondo />
-    <Escena />
+    <Toma esc={esc}>
+      <Escena />
+    </Toma>
     <Subs />
     {LINEAS.map((l, k) => (
       <Sequence key={l.archivo} from={esc[k].voz}>

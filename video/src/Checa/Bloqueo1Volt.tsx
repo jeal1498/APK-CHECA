@@ -2,6 +2,7 @@ import React from "react";
 import { AbsoluteFill, Audio, Easing, Sequence, interpolate, staticFile, useCurrentFrame } from "remotion";
 import { Logo } from "./ui";
 import { armarEscenas, crearEn } from "./plantilla";
+import { Toma } from "./Toma";
 import { LINEAS } from "./lineasBloqueo";
 
 // Tema 10 «Bloqueo o desactivación sin explicación» (video de valor), estilo 1Volt a color. Guion de Gemini.
@@ -260,7 +261,9 @@ const Sfx: React.FC<{ en: number; src: string; vol: number }> = ({ en: e, src, v
 export const Bloqueo1Volt: React.FC = () => (
   <AbsoluteFill style={{ background: K.fondo }}>
     <Fondo />
-    <Escena />
+    <Toma esc={esc}>
+      <Escena />
+    </Toma>
     <Subs />
     {LINEAS.map((l, k) => (
       <Sequence key={l.archivo} from={esc[k].voz}>

@@ -2,6 +2,7 @@ import React from "react";
 import { AbsoluteFill, Audio, Easing, Sequence, interpolate, staticFile, useCurrentFrame } from "remotion";
 import { Logo, Popup } from "./ui";
 import { armarEscenas, crearEn } from "./plantilla";
+import { Toma } from "./Toma";
 import { LINEAS } from "./lineasGasolina";
 
 // Tema 2 «Gasolina cara que se come la ganancia», estilo 1Volt a color (plantilla: Recogida1Volt.tsx). Guion de Gemini.
@@ -324,7 +325,9 @@ const Sfx: React.FC<{ en: number; src: string; vol: number }> = ({ en: e, src, v
 export const Gasolina1Volt: React.FC = () => (
   <AbsoluteFill style={{ background: K.fondo }}>
     <Fondo />
-    <Escena />
+    <Toma esc={esc}>
+      <Escena />
+    </Toma>
     <Subs />
     {LINEAS.map((l, k) => (
       <Sequence key={l.archivo} from={esc[k].voz}>
