@@ -17,6 +17,7 @@ import { DURACION_RECHAZAR_1VOLT, Rechazar1Volt } from "./Checa/Rechazar1Volt";
 import { DURACION_DESGASTE_1VOLT, Desgaste1Volt } from "./Checa/Desgaste1Volt";
 import { DURACION_SEGURIDAD_1VOLT, Seguridad1Volt } from "./Checa/Seguridad1Volt";
 import { DURACION_BLOQUEO_1VOLT, Bloqueo1Volt } from "./Checa/Bloqueo1Volt";
+import { DURACION_PASAJEROS_1VOLT, Pasajeros1Volt } from "./Checa/Pasajeros1Volt";
 
 const fuentes: [string, string, string][] = [
   ["Inter", "Inter-Medium.otf", "500"],
@@ -51,6 +52,7 @@ export const RemotionRoot: React.FC = () => {
     <Composition id="Desgaste1Volt" component={Desgaste1Volt} durationInFrames={DURACION_DESGASTE_1VOLT} fps={30} width={1080} height={1920} />
     <Composition id="Seguridad1Volt" component={Seguridad1Volt} durationInFrames={DURACION_SEGURIDAD_1VOLT} fps={30} width={1080} height={1920} />
     <Composition id="Bloqueo1Volt" component={Bloqueo1Volt} durationInFrames={DURACION_BLOQUEO_1VOLT} fps={30} width={1080} height={1920} />
+    <Composition id="Pasajeros1Volt" component={Pasajeros1Volt} durationInFrames={DURACION_PASAJEROS_1VOLT} fps={30} width={1080} height={1920} />
     </>
   );
 };
