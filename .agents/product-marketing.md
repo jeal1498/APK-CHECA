@@ -1,10 +1,10 @@
 # Product Marketing Context — Checa
 
-**Document version:** v3
+**Document version:** v4
 **Last updated:** 2026-10-13
 
 ## Product Overview
-**One-liner:** Checa te dice en un segundo si un viaje de Uber o DiDi conviene, cuánto te queda limpio después de gasolina.
+**One-liner:** Antes de aceptar, checa cuánto te queda. Checa te dice en un segundo si un viaje de Uber o DiDi conviene y cuánto te queda limpio después de gasolina.
 **What it does:** Cuando llega una oferta en Uber Driver o DiDi Conductor, Checa lee la pantalla y muestra un pop-up encima con la ganancia neta (después de gasolina), $/km, $/hora y un semáforo: ACEPTAR (verde), CONSIDERAR (amarillo) o RECHAZAR (rojo). También avisa con voz o vibración, compara dos ofertas a la vez (pantalla dividida) y muestra las mejores horas para manejar.
 **Product category:** App calculadora / asistente de ofertas para conductores de apps de transporte (se busca como "calculadora de viajes Uber", "filtro de viajes DiDi", alternativa a Ruta Rentable).
 **Product type:** App Android (APK fuera de Play Store por ahora) con licencia por cuenta Google.
@@ -13,6 +13,10 @@
 - 6 meses $399 (Plan Estratega, el recomendado, "Más popular")
 - 1 año $899 (Plan Pro)
 - Miembro fundador ⭐ (primeros clientes): licencia especial, insignia dorada.
+
+**Garantía de lectura (desde 13 oct 2026):** si pagas y Checa no lee las ofertas en tu teléfono, escribe en los primeros 7 días y se devuelve el dinero (también en `terminos.html`).
+**Bono:** ayuda para instalar por WhatsApp (`/instalar/` en la web).
+**Precio por día:** Básico $3.30, Estratega $2.20, Pro $2.46. Frase: «Con un viaje malo que evites a la semana, el Estratega ya se pagó». Sin cupones ni descuentos para nuevos clientes.
 
 ## Campaña actual: beta testers (octubre 2026)
 - Video: `marketing/publicar/01_2026-10-14_beta-testers.mp4` (se publica el 14 oct; calendario en `marketing/calendario.md`) (Eduardo a cuadro, conductor que hizo la app).
@@ -68,7 +72,10 @@ B2C, una sola persona: el conductor que quiere ganar más por hora y gastar meno
 | "¿Me pueden bloquear la cuenta de Uber/DiDi?" | Checa solo lee la pantalla; no toca ni acepta viajes por ti. |
 | "No está en Play Store, ¿es seguro?" | Pide Accesibilidad solo para leer Uber/DiDi; los datos no salen del teléfono. Guía paso a paso para instalar. |
 | "No quiero que me cobren cada mes" | Es pago único: pagas el paquete y listo, sin cargos automáticos. |
-| "¿Vale la pena pagar?" | Un solo viaje malo evitado al día paga el mes. 7 días gratis para probar. |
+| "¿Vale la pena pagar?" | Estratega = $2.20 al día; un viaje malo evitado a la semana lo paga. 7 días gratis para probar. |
+| "¿Y si pago y no lee bien?" | Garantía de lectura: si no lee las ofertas en tu teléfono, se devuelve el dinero en los primeros 7 días. |
+| "Instalar es complicado" | Guía en `/instalar/` y ayuda por WhatsApp. |
+| "Tengo iPhone" | Solo Android; la web lo avisa en iPhone y computadora. |
 | "Mi banco bloquea apps con Accesibilidad" | El lector se limita a Uber/DiDi y se puede pausar desde Ajustes. |
 
 **Anti-persona:** Conductores con iPhone (solo Android), quien no paga su gasolina o acepta todo sin importar el pago.
@@ -83,10 +90,15 @@ B2C, una sola persona: el conductor que quiere ganar más por hora y gastar meno
 **How they describe the problem:**
 - "No sé si me conviene."
 - "La gasolina se lleva lo que no ves."
+- "12 horas y la lana no aparece."
+- "Me mandan a recoger a 6 km."
+- "Acepto sin pensar porque se va."
+- "Si rechazo me castigan."
+*(de los temas de videos; falta validarlas con conductores reales, ver `marketing/web/01-publico.md`)*
 **How they describe us:**
 - "Te dice si aceptar o no."
 **Words to use:** checa, conviene, netos, te queda, $/km, $/hora, gasolina, recogida, aceptar / considerar / rechazar, semáforo.
-**Words to avoid:** jerga técnica (OCR, accesibilidad, algoritmo), promesas de ganancias garantizadas, nombres de ciudad o país.
+**Words to avoid:** jerga técnica (OCR, accesibilidad, algoritmo), promesas de ganancias garantizadas, nombres de ciudad o país. **En material público no se nombra a la competencia** (decisión de Eduardo, 13 oct 2026); la comparación con Ruta Rentable es solo interna.
 **Glossary:**
 | Term | Meaning |
 |------|---------|
@@ -111,15 +123,20 @@ B2C, una sola persona: el conductor que quiere ganar más por hora y gastar meno
 |-------|-------|
 | Lo que de verdad te queda | Ejemplo del video: "…en realidad te deja $90", "La gasolina se lleva $60 que no ves" |
 | Uber y DiDi al mismo tiempo | Pantalla dividida con dos pop-ups y ⭐ |
-| Más barato | $99 vs $129/mes de Ruta Rentable |
+| Más barato | $2.20 al día con el Estratega (interno: $99 vs $129/mes de Ruta Rentable; no usar en público) |
+| Riesgo cero | 7 días gratis sin tarjeta + garantía de lectura |
 
 ## Goals
 **Business goal:** Conseguir conductores que paguen (fundadores primero) y que renueven.
-**Conversion action:** Instalar → probar 7 días → pagar con Mercado Pago (meta: plan de 6 meses).
-**Current metrics:** Pendiente.
+**Conversion action:** Web → Descargar (`/instalar/`) → probar 7 días → pagar con Mercado Pago (meta: plan de 6 meses).
+**Current metrics:** Medición de la web desde el 13 oct 2026 (Supabase `web_eventos`, reporte en `reportes/web.md`; links con UTM en `marketing/web/06-medicion.md`). Meta inicial: 15 % de visitas Android que descargan.
+
+## Web (funnel)
+Plan completo en `marketing/web/` (01 público → 06 medición). Título: «Antes de aceptar, checa cuánto te queda.» Botón único: «Descargar gratis · 7 días». Orden: encabezado → video 02 → problema → cómo funciona → demo → confianza + garantía → calculadora → precios por día → beta → preguntas → cierre. Páginas `/instalar/` y `/beta/`.
 
 ## Changelog
 *Newest first. One line per revision: what changed and why.*
+- v4 (2026-10-13) — Web como funnel: garantía de lectura, bono de ayuda por WhatsApp, precio por día, título nuevo, sin competencia en público, medición con Supabase.
 - v3 (2026-10-13) — Campaña de beta testers (50 accesos, 3 meses, +1 mes por referido) y plan para juntar testimonios reales.
 - v2 (2026-10-12) — Modelo de cobro: pago único (no suscripción); objeción de cobros recurrentes; sin clientes ni testimonios todavía.
 - v1 (2026-10-12) — Initial context, borrador desde el código, CLAUDE.md, landing y video.
