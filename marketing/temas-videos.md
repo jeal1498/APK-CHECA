@@ -13,7 +13,7 @@ Miedos y problemas del conductor de plataformas, en el orden en que se van a tra
 | 7 | 7 | Miedo a que baje la calificación o la tasa de aceptación al rechazar ✅ `marketing/videos/rechazar-1volt.mp4` (`Rechazar1Volt.tsx`, guion de Gemini) | «Si rechazo me castigan» | Parcial (rechazar solo los malos) |
 | 8 | 8 | Desgaste del carro / renta semanal ✅ `marketing/videos/desgaste-1volt.mp4` (`Desgaste1Volt.tsx`, guion de Gemini) | «El carro se está acabando» | Parcial (solo gasolina) |
 | 9 | 1 | Inseguridad: asaltos, robo, zonas peligrosas ✅ `marketing/videos/seguridad-1volt.mp4` (`Seguridad1Volt.tsx`, guion de Gemini) | «Ya no salgo de noche» | No: video de valor, sin vender |
-| 10 | 4 | Bloqueo o desactivación sin explicación | «Me desactivaron y nadie responde» | Indirecto (Checa no toca la app) |
+| 10 | 4 | Bloqueo o desactivación sin explicación ✅ `marketing/videos/bloqueo-1volt.mp4` (`Bloqueo1Volt.tsx`, guion de Gemini) | «Me desactivaron y nadie responde» | Indirecto (Checa no toca la app) |
 | 11 | 9 | Pasajeros problemáticos, cancelaciones, esperas | «Me canceló cuando ya había llegado» | No: video de valor |
 | 12 | 12 | Cansancio y salud | «Ya no aguanto el volante» | No: video de valor |
 | 13 | 13 | Ingreso inestable, sin prestaciones ni seguro | «Un día bueno, tres malos» | No: video de valor |
