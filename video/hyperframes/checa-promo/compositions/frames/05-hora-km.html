@@ -1,0 +1,241 @@
+<template>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <style>
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Regular.ttf') format('truetype'); font-weight: 400; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Medium.ttf') format('truetype'); font-weight: 500 600; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Bold.ttf') format('truetype'); font-weight: 700 900; font-display: block; }
+    @font-face{ font-family: 'Fira Code'; src: url('assets/fonts/FiraCode.ttf') format('truetype'); font-weight: 300 700; font-display: block; }
+
+    #root {
+      position: absolute;
+      inset: 0;
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+      color: #F1F5F2;
+      font-family: "Fira Sans", sans-serif;
+    }
+
+    /* ground: black + two faint green blooms (left 30% / right 70%) */
+    .f05-ground { position: absolute; inset: 0; background: #000000; }
+    .f05-glow {
+      position: absolute;
+      width: 760px; height: 760px;
+      top: 660px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(34,197,94,0.20) 0%, rgba(34,197,94,0.07) 42%, rgba(34,197,94,0) 70%);
+    }
+    .f05-glow-l { left: -56px; }
+    .f05-glow-r { left: 376px; }
+
+    /* kicker */
+    .f05-kicker {
+      position: absolute;
+      left: 60px; top: 196px;
+      display: flex; align-items: center; gap: 18px;
+      font-family: "Fira Code", monospace;
+      font-weight: 500;
+      font-size: 30px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #22C55E;
+    }
+    .f05-stub { width: 36px; height: 2px; background: #22C55E; }
+
+    /* pop-up anchor (small, top) */
+    .f05-popwrap { position: absolute; left: 282px; top: 290px; transform-origin: 50% 0%; }
+
+    /* ===== Checa pop-up — copied verbatim from assets/checa-popup.html ===== */
+    .cp { --u: 1; width: calc(860px * var(--u)); border-radius: calc(40px * var(--u)); background: #181C1A; border: calc(3px * var(--u)) solid #2E3532; overflow: hidden; box-shadow: 0 calc(24px * var(--u)) calc(60px * var(--u)) rgba(0,0,0,.6); font-family: "Fira Sans", sans-serif; color: #F2F5F3; }
+    .cp.cp-oro { border: calc(10px * var(--u)) solid #E8B84A; }
+    .cp-banda { height: calc(100px * var(--u)); display: flex; align-items: center; justify-content: space-between; padding: 0 calc(34px * var(--u)); color: #08130C; }
+    .cp-verde .cp-banda { background: #22C55E; } .cp-amarillo .cp-banda { background: #F5B70A; } .cp-rojo .cp-banda { background: #EF4444; color: #fff; }
+    .cp-apagada .cp-banda { opacity: .5; }
+    .cp-lado { width: calc(190px * var(--u)); display: flex; align-items: center; gap: calc(8px * var(--u)); }
+    .cp-lado.der { justify-content: flex-end; }
+    .cp-app { background: #222826; color: #fff; border-radius: 999px; padding: calc(6px * var(--u)) calc(16px * var(--u)); font-size: calc(26px * var(--u)); font-weight: 700; }
+    .cp-accion { font-size: calc(50px * var(--u)); font-weight: 700; letter-spacing: calc(5px * var(--u)); }
+    .cp-cuerpo { padding: calc(34px * var(--u)) calc(30px * var(--u)) calc(30px * var(--u)); text-align: center; }
+    .cp-neta { font-family: "Fira Code", monospace; font-weight: 700; font-size: calc(124px * var(--u)); line-height: 1; }
+    .cp-neta small { font-size: .4em; color: #B4BCB7; }
+    .cp-linea { font-size: calc(38px * var(--u)); color: #B4BCB7; margin-top: calc(22px * var(--u)); }
+    .cp-fichas { display: flex; gap: calc(20px * var(--u)); margin-top: calc(40px * var(--u)); }
+    .cp-ficha { flex: 1; height: calc(156px * var(--u)); border-radius: calc(28px * var(--u)); background: #181C1A; border: calc(3px * var(--u)) solid transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .cp-ficha b { font-family: "Fira Code", monospace; font-weight: 700; font-size: calc(48px * var(--u)); white-space: nowrap; }
+    .cp-ficha span { font-size: calc(28px * var(--u)); color: #7D8781; margin-top: calc(4px * var(--u)); }
+    .cp-ok b { color: #22C55E; } .cp-mal { background: #381818; border-color: #EF4444; } .cp-mal b { color: #EF4444; }
+    /* ===== end pop-up ===== */
+
+    /* split stage — perspective REQUIRED for the book-open tilt */
+    .f05-stage {
+      position: absolute;
+      left: 0; top: 0; width: 1080px; height: 1920px;
+      perspective: 1400px;
+      transform-style: preserve-3d;
+    }
+    .f05-slot {
+      position: absolute;
+      top: 820px;
+      width: 440px; height: 380px;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+    .f05-slot-l { left: 70px; }
+    .f05-slot-r { left: 570px; }
+    .f05-card {
+      width: 100%; height: 100%;
+      border-radius: 36px;
+      background: #181C1A;
+      border: 3px solid #22C55E;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 18px;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+    .f05-card-l { box-shadow: 22px 34px 70px rgba(34,197,94,0.18); }
+    .f05-card-r { box-shadow: -22px 34px 70px rgba(34,197,94,0.18); }
+    .f05-num {
+      font-family: "Fira Code", monospace;
+      font-weight: 700;
+      font-size: 92px;
+      line-height: 1;
+      color: #22C55E;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+    .f05-lbl {
+      font-family: "Fira Sans", sans-serif;
+      font-weight: 500;
+      font-size: 44px;
+      color: #AFB7B2;
+    }
+
+    /* inner-edge badges (on the parent, never inside a card) */
+    .f05-badge {
+      position: absolute;
+      top: 1170px;
+      height: 70px;
+      padding: 0 26px;
+      border-radius: 999px;
+      background: #22C55E;
+      color: #04120A;
+      display: flex; align-items: center; gap: 10px;
+      font-family: "Fira Code", monospace;
+      font-weight: 700;
+      font-size: 30px;
+      white-space: nowrap;
+      will-change: transform;
+    }
+    .f05-badge-l { right: 548px; transform-origin: 100% 50%; }
+    .f05-badge-r { left: 548px; transform-origin: 0% 50%; }
+
+    .f05-ejemplo {
+      position: absolute;
+      left: 0; width: 1080px;
+      top: 1330px;
+      text-align: center;
+      font-family: "Fira Sans", sans-serif;
+      font-size: 32px;
+      color: #AFB7B2;
+    }
+  </style>
+
+  <div id="root" data-composition-id="05-hora-km" data-width="1080" data-height="1920" data-start="0" data-duration="2.534">
+    <div id="f05-ground" class="clip f05-ground" data-start="0" data-duration="2.534" data-track-index="0">
+      <div class="f05-glow f05-glow-l"></div>
+      <div class="f05-glow f05-glow-r"></div>
+    </div>
+
+    <div id="f05-layer" class="clip f05-layer" data-start="0" data-duration="2.534" data-track-index="1" style="position:absolute;inset:0;">
+      <div class="f05-kicker"><div class="f05-stub"></div><span>03 / LO QUE GANAS</span></div>
+
+      <div class="f05-popwrap">
+        <div class="cp cp-verde" style="--u:0.6">
+          <div class="cp-banda">
+            <div class="cp-lado"><span class="cp-app">UBER</span></div>
+            <div class="cp-accion">ACEPTAR</div>
+            <div class="cp-lado der"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M6 6 L18 18 M18 6 L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div>
+          </div>
+          <div class="cp-cuerpo">
+            <div class="cp-neta f05-dim">$118<small>&nbsp;netos</small></div>
+            <div class="cp-linea f05-dim">Viaje $150&nbsp;·&nbsp;Gasolina −$32</div>
+            <div class="cp-fichas">
+              <div class="cp-ficha cp-ok f05-ficha-h"><b>$321/h</b><span>por hora</span></div>
+              <div class="cp-ficha cp-ok f05-ficha-k"><b>$9.4/km</b><span>por km</span></div>
+              <div class="cp-ficha f05-dim"><b>28 min</b><span>16 km total</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="f05-stage">
+        <div class="f05-slot f05-slot-l">
+          <div class="f05-card f05-card-l">
+            <div class="f05-num">$321/h</div>
+            <div class="f05-lbl">por hora</div>
+          </div>
+        </div>
+        <div class="f05-slot f05-slot-r">
+          <div class="f05-card f05-card-r">
+            <div class="f05-num">$9.4/km</div>
+            <div class="f05-lbl">por km</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="f05-badge f05-badge-l">meta $150/h<svg width="30" height="30" viewBox="0 0 24 24"><path d="M5 12.5 L10 17.5 L19 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="f05-badge f05-badge-r">meta $8/km<svg width="30" height="30" viewBox="0 0 24 24"><path d="M5 12.5 L10 17.5 L19 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+      <div class="f05-ejemplo">Números de ejemplo</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const S = '[data-composition-id="05-hora-km"] ';
+      const q = (sel) => document.querySelector(S + sel);
+      const qa = (sel) => document.querySelectorAll(S + sel);
+      const tl = gsap.timeline({ paused: true });
+
+      // Ambient: two soft side blooms
+      tl.fromTo(qa(".f05-glow"), { opacity: 0, scale: 0.85 }, { opacity: 1, scale: 1, duration: 0.9, ease: "power2.out" }, 0);
+
+      // Scene 1 — kicker slides down, pop-up lands small at the top
+      tl.fromTo(q(".f05-kicker"), { y: -28, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0);
+      tl.fromTo(q(".f05-popwrap"), { y: 24, scale: 0.94, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.45, ease: "power3.out" }, 0.04);
+      // highlight the two green fichas; the rest of the pop-up steps back
+      tl.fromTo(qa(".f05-dim"), { opacity: 1 }, { opacity: 0.35, duration: 0.3, ease: "power2.out" }, 0.45);
+      tl.fromTo(qa(".f05-ficha-h, .f05-ficha-k"), { scale: 1 }, { scale: 1.1, duration: 0.3, ease: "power3.out" }, 0.45);
+
+      // Scene 2 — "por hora": $321/h ficha detaches and flies down-left (split-tilt entry, from the ficha)
+      // slot start = ficha centre (≈377,568) relative to slot centre (290,1010); scale ≈ ficha/card width
+      tl.fromTo(q(".f05-slot-l"),
+        { x: 87, y: -442, scale: 0.36, opacity: 0 },
+        { x: 0, y: 0, scale: 1, opacity: 1, duration: 0.7, ease: "power3.out" }, 0.8);
+      tl.fromTo(q(".f05-card-l"), { rotateY: 22 }, { rotateY: 14, duration: 0.7, ease: "power3.out" }, 0.8);
+      tl.fromTo(q(".f05-ficha-h"), { opacity: 1 }, { opacity: 0.2, duration: 0.2, ease: "power2.out" }, 0.8);
+      tl.fromTo(q(".f05-card-l .f05-lbl"), { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 1.15);
+
+      // Scene 3 — "kilómetro": $9.4/km ficha does the same to the right
+      tl.fromTo(q(".f05-slot-r"),
+        { x: -250, y: -442, scale: 0.36, opacity: 0 },
+        { x: 0, y: 0, scale: 1, opacity: 1, duration: 0.62, ease: "power3.out" }, 1.6);
+      tl.fromTo(q(".f05-card-r"), { rotateY: -22 }, { rotateY: -14, duration: 0.62, ease: "power3.out" }, 1.6);
+      tl.fromTo(q(".f05-ficha-k"), { opacity: 1 }, { opacity: 0.2, duration: 0.2, ease: "power2.out" }, 1.6);
+      tl.fromTo(q(".f05-card-r .f05-lbl"), { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 1.92);
+
+      // Counter-phase idle (inner layer only, explicit legs — no repeat/yoyo)
+      tl.to(q(".f05-card-l"), { y: -6, duration: 0.45, ease: "sine.inOut" }, 1.55);
+      tl.to(q(".f05-card-l"), { y: 0, duration: 0.45, ease: "sine.inOut" }, 2.0);
+      tl.to(q(".f05-card-r"), { y: 6, duration: 0.3, ease: "sine.inOut" }, 2.22);
+
+      // Scene 4 — inner-edge badges pop (the lone overshoot), then "Números de ejemplo"
+      tl.fromTo(q(".f05-badge-l"), { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.26, ease: "back.out(1.7)" }, 2.22);
+      tl.fromTo(q(".f05-badge-r"), { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.24, ease: "back.out(1.7)" }, 2.29);
+      tl.fromTo(q(".f05-ejemplo"), { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.22, ease: "power2.out" }, 2.3);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["05-hora-km"] = tl;
+    })();
+  </script>
+</template>

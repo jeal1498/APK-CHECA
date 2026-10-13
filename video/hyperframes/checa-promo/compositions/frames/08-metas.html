@@ -9,42 +9,42 @@
     #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; font-family: 'Fira Sans', sans-serif; color: #F1F5F2; }
 
     /* ground + glow (depth layers) */
-    .\30 8-metas-bg { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; background: #000000; }
-    .\30 8-metas-glow { position: absolute; left: 90px; top: 820px; width: 900px; height: 820px; border-radius: 50%;
+    .frame-08-metas-bg { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; background: #000000; }
+    .frame-08-metas-glow { position: absolute; left: 90px; top: 820px; width: 900px; height: 820px; border-radius: 50%;
       background: radial-gradient(closest-side, rgba(34,197,94,0.22), rgba(34,197,94,0) 100%); }
-    .\30 8-metas-glow-y { background: radial-gradient(closest-side, rgba(245,183,10,0.22), rgba(245,183,10,0) 100%); }
+    .frame-08-metas-glow-y { background: radial-gradient(closest-side, rgba(245,183,10,0.22), rgba(245,183,10,0) 100%); }
 
-    .\30 8-metas-world { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; transform-origin: 540px 760px; }
+    .frame-08-metas-world { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; transform-origin: 540px 760px; }
 
     /* kicker */
-    .\30 8-metas-kicker { position: absolute; left: 60px; top: 210px; display: flex; align-items: center; gap: 20px;
+    .frame-08-metas-kicker { position: absolute; left: 60px; top: 210px; display: flex; align-items: center; gap: 20px;
       font-family: 'Fira Code', monospace; font-weight: 500; font-size: 30px; letter-spacing: 0.14em; text-transform: uppercase; color: #22C55E; }
-    .\30 8-metas-rule { width: 36px; height: 2px; background: #22C55E; }
+    .frame-08-metas-rule { width: 36px; height: 2px; background: #22C55E; }
 
     /* settings cards */
-    .\30 8-metas-card { position: absolute; left: 60px; width: 960px; height: 210px; box-sizing: border-box;
+    .frame-08-metas-card { position: absolute; left: 60px; width: 960px; height: 210px; box-sizing: border-box;
       background: #111413; border: 2px solid #262B28; border-radius: 32px; padding: 0 36px 0 44px;
       display: flex; align-items: center; justify-content: space-between; }
-    .\30 8-metas-c1 { top: 300px; }
-    .\30 8-metas-c2 { top: 530px; }
-    .\30 8-metas-label { font-size: 50px; font-weight: 700; letter-spacing: -0.01em; color: #F1F5F2; }
-    .\30 8-metas-sub { display: block; font-family: 'Fira Code', monospace; font-size: 22px; font-weight: 500; letter-spacing: 0.14em; color: #AFB7B2; margin-top: 8px; text-transform: uppercase; }
-    .\30 8-metas-ctrl { display: flex; align-items: center; gap: 22px; }
-    .\30 8-metas-btn-wrap { position: relative; width: 112px; height: 112px; }
-    .\30 8-metas-btn { position: absolute; left: 0; top: 0; width: 112px; height: 112px; border-radius: 50%; z-index: 2;
+    .frame-08-metas-c1 { top: 300px; }
+    .frame-08-metas-c2 { top: 530px; }
+    .frame-08-metas-label { font-size: 50px; font-weight: 700; letter-spacing: -0.01em; color: #F1F5F2; }
+    .frame-08-metas-sub { display: block; font-family: 'Fira Code', monospace; font-size: 22px; font-weight: 500; letter-spacing: 0.14em; color: #AFB7B2; margin-top: 8px; text-transform: uppercase; }
+    .frame-08-metas-ctrl { display: flex; align-items: center; gap: 22px; }
+    .frame-08-metas-btn-wrap { position: relative; width: 112px; height: 112px; }
+    .frame-08-metas-btn { position: absolute; left: 0; top: 0; width: 112px; height: 112px; border-radius: 50%; z-index: 2;
       display: flex; align-items: center; justify-content: center; box-sizing: border-box; transform-origin: 50% 50%; }
-    .\30 8-metas-minus { background: #1C211F; border: 2px solid #2E3532; color: #AFB7B2; }
-    .\30 8-metas-plus { background: #22C55E; color: #04120A; box-shadow: 0 12px 30px rgba(34,197,94,0.35); }
-    .\30 8-metas-burst { position: absolute; left: 0; top: 0; width: 112px; height: 112px; border-radius: 50%; z-index: 1;
+    .frame-08-metas-minus { background: #1C211F; border: 2px solid #2E3532; color: #AFB7B2; }
+    .frame-08-metas-plus { background: #22C55E; color: #04120A; box-shadow: 0 12px 30px rgba(34,197,94,0.35); }
+    .frame-08-metas-burst { position: absolute; left: 0; top: 0; width: 112px; height: 112px; border-radius: 50%; z-index: 1;
       background: radial-gradient(closest-side, rgba(22,163,74,0.95), rgba(22,163,74,0)); filter: blur(10px); opacity: 0; }
-    .\30 8-metas-val { font-family: 'Fira Code', monospace; font-weight: 700; font-size: 84px; font-variant-numeric: tabular-nums;
+    .frame-08-metas-val { font-family: 'Fira Code', monospace; font-weight: 700; font-size: 84px; font-variant-numeric: tabular-nums;
       min-width: 200px; text-align: center; white-space: nowrap; color: #F1F5F2; }
-    .\30 8-metas-val small { font-size: 0.42em; color: #AFB7B2; }
+    .frame-08-metas-val small { font-size: 0.42em; color: #AFB7B2; }
 
-    .\30 8-metas-note { position: absolute; left: 60px; top: 1500px; width: 960px; text-align: center;
+    .frame-08-metas-note { position: absolute; left: 60px; top: 1500px; width: 960px; text-align: center;
       font-family: 'Fira Code', monospace; font-size: 24px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #AFB7B2; }
 
-    .\30 8-metas-popwrap { position: absolute; left: 217px; top: 960px; width: 645px; transform-origin: 50% 50%; }
+    .frame-08-metas-popwrap { position: absolute; left: 217px; top: 960px; width: 645px; transform-origin: 50% 50%; }
 
     /* ===== Checa pop-up (verbatim from assets/checa-popup.html) ===== */
     .cp { --u: 1; width: calc(860px * var(--u)); border-radius: calc(40px * var(--u)); background: #181C1A; border: calc(3px * var(--u)) solid #2E3532; overflow: hidden; box-shadow: 0 calc(24px * var(--u)) calc(60px * var(--u)) rgba(0,0,0,.6); font-family: "Fira Sans", sans-serif; color: #F2F5F3; }
@@ -68,47 +68,47 @@
   </style>
 
   <div id="root" data-composition-id="08-metas" data-width="1080" data-height="1920" data-duration="2.325">
-    <div class="08-metas-bg clip" data-start="0" data-duration="2.325" data-track-index="0"></div>
-    <div id="08-metas-glow" class="08-metas-glow clip" data-start="0" data-duration="2.325" data-track-index="1"></div>
+    <div id="frame-08-metas-bg" class="frame-08-metas-bg clip" data-start="0" data-duration="2.325" data-track-index="0"></div>
+    <div id="frame-08-metas-glow" class="frame-08-metas-glow clip" data-start="0" data-duration="2.325" data-track-index="1"></div>
 
-    <div id="08-metas-world" class="08-metas-world clip" data-start="0" data-duration="2.325" data-track-index="2">
-      <div id="08-metas-kicker" class="08-metas-kicker"><span class="08-metas-rule"></span>06 / TUS METAS</div>
+    <div id="frame-08-metas-world" class="frame-08-metas-world clip" data-start="0" data-duration="2.325" data-track-index="2">
+      <div id="frame-08-metas-kicker" class="frame-08-metas-kicker"><span class="frame-08-metas-rule"></span>06 / TUS METAS</div>
 
       <!-- Row 1: Meta por km -->
-      <div id="08-metas-c1" class="08-metas-card 08-metas-c1">
-        <div class="08-metas-label">Meta por km<span class="08-metas-sub">Filtro activo</span></div>
-        <div class="08-metas-ctrl">
-          <div class="08-metas-btn-wrap">
-            <div class="08-metas-btn 08-metas-minus"><svg width="44" height="44" viewBox="0 0 24 24"><path d="M5 12 H19" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg></div>
+      <div id="frame-08-metas-c1" class="frame-08-metas-card frame-08-metas-c1">
+        <div class="frame-08-metas-label">Meta por km<span class="frame-08-metas-sub">Filtro activo</span></div>
+        <div class="frame-08-metas-ctrl">
+          <div class="frame-08-metas-btn-wrap">
+            <div class="frame-08-metas-btn frame-08-metas-minus"><svg width="44" height="44" viewBox="0 0 24 24"><path d="M5 12 H19" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg></div>
           </div>
-          <div id="08-metas-val1" class="08-metas-val">$8<small>/km</small></div>
-          <div class="08-metas-btn-wrap">
-            <div id="08-metas-burst" class="08-metas-burst"></div>
-            <div id="08-metas-plus" class="08-metas-btn 08-metas-plus"><svg width="48" height="48" viewBox="0 0 24 24"><path d="M12 5 V19 M5 12 H19" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg></div>
+          <div id="frame-08-metas-val1" class="frame-08-metas-val">$8<small>/km</small></div>
+          <div class="frame-08-metas-btn-wrap">
+            <div id="frame-08-metas-burst" class="frame-08-metas-burst"></div>
+            <div id="frame-08-metas-plus" class="frame-08-metas-btn frame-08-metas-plus"><svg width="48" height="48" viewBox="0 0 24 24"><path d="M12 5 V19 M5 12 H19" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg></div>
           </div>
         </div>
       </div>
 
       <!-- Row 2: Meta por hora (appears on "ganar") -->
-      <div id="08-metas-c2" class="08-metas-card 08-metas-c2">
-        <div class="08-metas-label">Meta por hora<span class="08-metas-sub">Filtro activo</span></div>
-        <div class="08-metas-ctrl">
-          <div class="08-metas-btn-wrap">
-            <div class="08-metas-btn 08-metas-minus"><svg width="44" height="44" viewBox="0 0 24 24"><path d="M5 12 H19" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg></div>
+      <div id="frame-08-metas-c2" class="frame-08-metas-card frame-08-metas-c2">
+        <div class="frame-08-metas-label">Meta por hora<span class="frame-08-metas-sub">Filtro activo</span></div>
+        <div class="frame-08-metas-ctrl">
+          <div class="frame-08-metas-btn-wrap">
+            <div class="frame-08-metas-btn frame-08-metas-minus"><svg width="44" height="44" viewBox="0 0 24 24"><path d="M5 12 H19" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg></div>
           </div>
-          <div class="08-metas-val">$150<small>/h</small></div>
-          <div class="08-metas-btn-wrap">
-            <div class="08-metas-btn 08-metas-plus"><svg width="48" height="48" viewBox="0 0 24 24"><path d="M12 5 V19 M5 12 H19" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg></div>
+          <div class="frame-08-metas-val">$150<small>/h</small></div>
+          <div class="frame-08-metas-btn-wrap">
+            <div class="frame-08-metas-btn frame-08-metas-plus"><svg width="48" height="48" viewBox="0 0 24 24"><path d="M12 5 V19 M5 12 H19" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg></div>
           </div>
         </div>
       </div>
 
       <!-- Bound target: the Checa pop-up -->
-      <div id="08-metas-popwrap" class="08-metas-popwrap">
-        <div id="08-metas-cp" class="cp cp-verde" style="--u:0.75">
+      <div id="frame-08-metas-popwrap" class="frame-08-metas-popwrap">
+        <div id="frame-08-metas-cp" class="cp cp-verde" style="--u:0.75">
           <div class="cp-banda">
             <div class="cp-lado"><span class="cp-app">UBER</span></div>
-            <div id="08-metas-accion" class="cp-accion">ACEPTAR</div>
+            <div id="frame-08-metas-accion" class="cp-accion">ACEPTAR</div>
             <div class="cp-lado der"><svg width="33" height="33" viewBox="0 0 24 24"><path d="M6 6 L18 18 M18 6 L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div>
           </div>
           <div class="cp-cuerpo">
@@ -116,14 +116,14 @@
             <div class="cp-linea">Viaje $150&nbsp;·&nbsp;Gasolina −$32</div>
             <div class="cp-fichas">
               <div class="cp-ficha cp-ok"><b>$321/h</b><span>por hora</span></div>
-              <div id="08-metas-fkm" class="cp-ficha cp-ok"><b>$9.4/km</b><span>por km</span></div>
+              <div id="frame-08-metas-fkm" class="cp-ficha cp-ok"><b>$9.4/km</b><span>por km</span></div>
               <div class="cp-ficha"><b>28 min</b><span>16 km total</span></div>
             </div>
           </div>
         </div>
       </div>
 
-      <div id="08-metas-note" class="08-metas-note">Números de ejemplo</div>
+      <div id="frame-08-metas-note" class="frame-08-metas-note">Números de ejemplo</div>
     </div>
   </div>
 
@@ -131,11 +131,11 @@
     (function () {
       var D = 2.325;
       var $ = function (id) { return document.getElementById(id); };
-      var world = $("08-metas-world"), glow = $("08-metas-glow"), kicker = $("08-metas-kicker");
-      var c1 = $("08-metas-c1"), c2 = $("08-metas-c2"), val1 = $("08-metas-val1");
-      var plus = $("08-metas-plus"), burst = $("08-metas-burst");
-      var popwrap = $("08-metas-popwrap"), cp = $("08-metas-cp"), accion = $("08-metas-accion"), fkm = $("08-metas-fkm");
-      var note = $("08-metas-note");
+      var world = $("frame-08-metas-world"), glow = $("frame-08-metas-glow"), kicker = $("frame-08-metas-kicker");
+      var c1 = $("frame-08-metas-c1"), c2 = $("frame-08-metas-c2"), val1 = $("frame-08-metas-val1");
+      var plus = $("frame-08-metas-plus"), burst = $("frame-08-metas-burst");
+      var popwrap = $("frame-08-metas-popwrap"), cp = $("frame-08-metas-cp"), accion = $("frame-08-metas-accion"), fkm = $("frame-08-metas-fkm");
+      var note = $("frame-08-metas-note");
 
       var tl = gsap.timeline({ paused: true });
 
@@ -185,11 +185,11 @@
         if (s.lvl === 1) {
           cp.className = "cp cp-amarillo"; accion.textContent = "CONSIDERAR";
           fkm.className = "cp-ficha cp-mal";
-          glow.className = "08-metas-glow 08-metas-glow-y clip";
+          glow.className = "frame-08-metas-glow frame-08-metas-glow-y clip";
         } else {
           cp.className = "cp cp-verde"; accion.textContent = "ACEPTAR";
           fkm.className = "cp-ficha cp-ok";
-          glow.className = "08-metas-glow clip";
+          glow.className = "frame-08-metas-glow clip";
         }
       }
       var driver = { t: 0 };
