@@ -1,6 +1,6 @@
 ---
 name: videos-checa
-description: Hacer videos cortos de Checa (TikTok, Reels, Shorts) con narrador de IA en el estilo aprobado «ciudad 3D» (Remotion + three.js, cada escena con la vista de cámara que mejor la cuente, edificios de colores, cielo de atardecer, etiquetas neón en letra pixel, número gigante, subtítulos con palabra clave en amarillo y 8 vistas de cámara). Úsala cuando Eduardo pida un video, un guion para video, el siguiente tema de marketing/temas-videos.md, cambiar la voz o la música de un video, o un video sin que él salga a cuadro.
+description: Hacer videos cortos de Checa (TikTok, Reels, Shorts) con narrador de IA en el estilo actual «1Volt a color» (Remotion 2D, line-art en SVG que se dibuja solo, letra mono, una idea por pantalla, colores por escena, subtítulos para redes y cambio de toma cada 3 s; el 3D queda en pausa). Guarda los guiones de Gemini en marketing/guiones-gemini.md. Úsala cuando Eduardo pida un video, un guion para video, el siguiente tema de marketing/temas-videos.md, cambiar la voz o la música de un video, o un video sin que él salga a cuadro.
 ---
 
 # Videos de Checa
