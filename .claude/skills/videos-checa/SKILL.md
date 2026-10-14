@@ -21,9 +21,16 @@ Referencia: `marketing/publicar/17_como-funciona-checa-hyperframes.mp4` (40 s, 9
 4. Música propia: `python3 -I video/scripts/elevenlabs.py musica <proy>/assets/audio bgm "<prompt>" <seg>` y `audio_meta.json` inicial `{"bgm":{"path":"assets/audio/bgm.mp3","source":"host"},"voices":[],"sfx":[]}`.
 5. Voz (Fernando): `HYPERFRAMES_TTS_CONCURRENCY=2 node .claude/skills/product-launch-video/scripts/audio.mjs --script ./SCRIPT.md --storyboard ./STORYBOARD.md --hyperframes . --out ./audio_meta.json --provider elevenlabs --voice dlGxemPxFMTY7iXagmOj` (**concurrencia 2**: con 4 ElevenLabs falla). **Nunca** lo corras sin `--voice` ni con `--help`: vuelve a generar voces con la voz por defecto (mujer) y quedan 2 voces mezcladas. Necesita `pip install elevenlabs`.
 6. Transcripción en **español** (la del motor sale en inglés): por cada `assets/voice/NN.wav`, `npx hyperframes transcribe assets/voice/NN.wav --language es --model small --json -d transcripcion/NN`. Luego `sync-durations`, `fetch-sfx` y **al final** `python3 -I alinear.py` (fetch-sfx vuelve a meter las palabras mal; alinear siempre después).
-7. Escenas: copia la más parecida de la biblioteca a `compositions/frames/NN-nombre.html`, cambia el id de la composición, `data-duration` (= duración de la voz de esa línea) y textos/cifras; ajusta los tiempos de entrada a las palabras (`audio_meta.json` → `voices[].words`). Ids sin dígito al inicio (`f07-…`). Una pista (`data-track-index`) por clip, sin traslapes.
+7. Escenas: copia la más parecida de la biblioteca a `compositions/frames/NN-nombre.html`, cambia el id de la composición, `data-duration` (= duración de la voz de esa línea) y textos/cifras; ajusta los tiempos de entrada a las palabras (`audio_meta.json` → `voices[].words`). El `data-composition-id` debe ser **igual al nombre del archivo** (`07-cabeza`), o `assemble-index` falla; los ids de los elementos internos sí van sin dígito al inicio (`f07-…`). Una pista (`data-track-index`) por clip, sin traslapes.
 8. Ensamble: `captions.mjs build`, `assemble-index.mjs`, `transitions.mjs inject` + `verify`, agrega `data-audio-group="voiceover"` a cada `<audio id="el-…-voice">` y corre `hyperframes-audio/scripts/carve.mjs --comp ./index.html` (baja la música cuando habla). Si `captions.html` vuelve a salir con placa clara, copia los colores de `checa-promo/compositions/captions.html` (placa negra, pendiente #8A938E, actual #04120A sobre #22C55E, dicha #F1F5F2).
 9. `npx hyperframes check` → `snapshot` (una hoja) → `render --quality high --output renders/video.mp4` → copia a `marketing/publicar/NN_fecha_tema.mp4` + `.jpg`. `.gitignore` del proyecto: `.hyperframes/`, `renders/`, `audio_engine_meta.json`. Commit `[skip ci]`, push a `main` y a la rama.
+
+**Atajo probado (video 18, `video/hyperframes/cuanto-ganas-tu/`)**: en lugar de copiar escena por escena, copia ese proyecto y edita su `generar.py`. Arma las 12 escenas desde `audio_meta.json`, con `t(n, "palabra")` para sincronizar, la oferta genérica, el pop-up real, íconos line-art, el reloj y el CTA de `13-cta`. Lecciones:
+- **Sincronía con la voz**: cada texto entra **0.25 s antes** de su palabra (`LEAD`) y la máscara dura **0.3 s**. Si entra justo en la palabra, Eduardo lo siente atrasado.
+- `STORYBOARD.md` necesita `- duration: Xs` por escena (= voz + 0.15 s; la última + 1 s). `fetch-sfx` vuelve a poner duraciones viejas en `audio_meta.json`: después corre `ffprobe` sobre cada wav y luego `alinear.py`.
+- `captions.mjs build` sale con la placa por defecto: conserva el `captions.html` con estilo Checa y cambia solo `GROUPS` y la duración.
+- `carve.mjs` necesita `npm i` en el proyecto; agrega `node_modules/` al `.gitignore`.
+- Portada = cuadro del video con la frase clave (`ffmpeg -ss <t> -frames:v 1 -q:v 3`).
 
 **Biblioteca de escenas** (`video/hyperframes/checa-promo/compositions/frames/`):
 | Escena | Sirve para |
@@ -92,6 +99,8 @@ Desde el anuncio «Recogidas lejanas» Eduardo pidió el estilo 1Volt (2D, line-
 | Campaña beta testers (clips de Eduardo) | `01_2026-10-14_beta-testers.mp4` | `Beta.tsx` |
 
 Serie de 14 temas completa en 1Volt (octubre 2026).
+
+**Estilo HyperFrames, video 18**: «Cuánto ganas tú» `18_cuanto-ganas-tu.mp4` (41 s; responde de forma abierta al comentario «la app ya te da esa información»; proyecto `video/hyperframes/cuanto-ganas-tu/`).
 
 **HyperFrames** (desde el 13 oct 2026, skill `hyperframes`): «Cómo funciona Checa» `16_como-funciona-checa.mp4` (47 s, estilo nuevo, proyecto `video/hyperframes/checa-como-funciona/`, `generar.py` arma la composición desde los tiempos de la voz).
 
