@@ -1,6 +1,6 @@
-name: Reporte de la web
+name: Reporte de Checa
 
-# Embudo de checa-web desde la tabla web_eventos de Supabase.
+# Web (web_eventos) y app (cuentas, pagos, licencias, invitaciones) desde Supabase.
 # Se pide con un push a reportes/pedir.txt (dias=N) y escribe reportes/web.md.
 on:
   push:
@@ -30,11 +30,41 @@ jobs:
               -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" -H "Content-Type: application/json" -d @-
           }
           W="creado > now() - interval '$DIAS days'"
+          WU="created_at > now() - interval '$DIAS days'"
+          HOY="to_char((now() at time zone 'America/Mexico_City')::date,'YYYYMMDD')::int"
+          EN7="to_char((now() at time zone 'America/Mexico_City')::date + 7,'YYYYMMDD')::int"
           tabla() { jq -r '(.[0] | keys_unsorted | "| " + join(" | ") + " |"), (.[0] | keys_unsorted | map("---") | "| " + join(" | ") + " |"), (.[] | [.[] | tostring] | "| " + join(" | ") + " |")' 2>/dev/null || echo "Sin datos todavía."; }
           {
-            echo "# Reporte de la web · últimos $DIAS días"
+            echo "# Reporte de Checa (web + app) · últimos $DIAS días"
             echo
             echo "Generado: $(date -u '+%Y-%m-%d %H:%M') UTC. Cuenta visitas únicas (una por pestaña)."
+            echo
+            echo "## Resumen"
+            q "select (select count(distinct visita) from web_eventos where $W and evento='visita') as visitas, (select count(distinct visita) from web_eventos where $W and evento='descarga') as descargas, (select count(*) from auth.users where $WU) as cuentas_nuevas, (select count(*) from pagos where $W) as pagos, (select coalesce(sum(monto),0) from pagos where $W) as ingresos, (select count(*) from licencias where vence >= $HOY) as licencias_activas" | tabla
+            echo
+            echo "# App"
+            echo
+            echo "## Cuentas nuevas por día (inicio con Google)"
+            q "select to_char(created_at at time zone 'America/Mexico_City','YYYY-MM-DD') as dia, count(*) as cuentas from auth.users where $WU group by 1 order by 1 desc limit 31" | tabla
+            echo
+            echo "## Pagos por plan"
+            q "select plan, count(*) as pagos, sum(monto) as ingresos from pagos where $W group by plan order by ingresos desc" | tabla
+            echo
+            echo "## Ingresos por mes (últimos 6)"
+            q "select to_char(creado at time zone 'America/Mexico_City','YYYY-MM') as mes, count(*) as pagos, sum(monto) as ingresos from pagos group by 1 order by 1 desc limit 6" | tabla
+            echo
+            echo "## Licencias activas"
+            q "select case when vence = 99991231 then 'sin vencimiento' when max_equipos = 1 then 'básico (1 equipo)' else 'con vencimiento' end as tipo, count(*) filter (where fundador) as fundadores, count(*) as total from licencias where vence >= $HOY group by 1 order by total desc" | tabla
+            echo
+            echo "## Por vencer en 7 días"
+            q "select correo, coalesce(nombre,'') as nombre, vence from licencias where vence between $HOY and $EN7 order by vence" | tabla
+            echo
+            echo "## Invita a un amigo"
+            q "select count(*) as codigos_usados, count(premiado) as premiados from invitaciones where $W" | tabla
+            echo
+            q "select invitador, count(*) as invitados, count(premiado) as premiados from invitaciones where $W group by 1 order by invitados desc limit 10" | tabla
+            echo
+            echo "# Web"
             echo
             echo "## Embudo"
             q "select evento, count(distinct visita) as visitas, count(*) as veces from web_eventos where $W group by evento order by visitas desc" | tabla
