@@ -1,13 +1,52 @@
 ---
 name: videos-checa
-description: Hacer videos cortos de Checa (TikTok, Reels, Shorts) con narrador de IA en el estilo actual «1Volt a color» (Remotion 2D, line-art en SVG que se dibuja solo, letra mono, una idea por pantalla, colores por escena, subtítulos para redes y cambio de toma cada 3 s; el 3D queda en pausa). Guarda los guiones de Gemini en marketing/guiones-gemini.md. Úsala cuando Eduardo pida un video, un guion para video, el siguiente tema de marketing/temas-videos.md, cambiar la voz o la música de un video, o un video sin que él salga a cuadro.
+description: Hacer videos cortos de Checa (TikTok, Reels, Shorts) con narrador de IA, en «Estilo HyperFrames» (el favorito de Eduardo desde el 14 oct 2026, plantilla checa-promo, proceso económico sin agentes) o en «1Volt a color» (Remotion 2D, line-art en SVG que se dibuja solo, letra mono, una idea por pantalla, colores por escena, subtítulos para redes y cambio de toma cada 3 s; el 3D queda en pausa). Guarda los guiones de Gemini en marketing/guiones-gemini.md. Úsala cuando Eduardo pida un video, un guion para video, el siguiente tema de marketing/temas-videos.md, cambiar la voz o la música de un video, o un video sin que él salga a cuadro.
 ---
 
 # Videos de Checa
 
-## ⚠️ Estilo actual: «1Volt a color» (Eduardo, octubre 2026)
+## ⭐ Estilo HyperFrames (favorito de Eduardo, 14 oct 2026) — proceso ECONÓMICO
 
-Desde el anuncio «Recogidas lejanas» Eduardo pidió **usar siempre el estilo 1Volt** (2D, line-art en SVG) porque el 3D gasta demasiados tokens y tiempo (render por software). El 3D le gusta mucho, pero queda **en pausa**: no lo uses salvo que él lo pida.
+Referencia: `marketing/publicar/17_como-funciona-checa-hyperframes.mp4` (40 s, 9:16), proyecto **`video/hyperframes/checa-promo/`**. A Eduardo le gustó mucho. La primera vez costó ~1.7 M tokens (proceso completo de HyperFrames con 13 agentes); **no repetir eso**. Meta: **~150–300 mil tokens por video**.
+
+**Reglas de ahorro (obligatorias):**
+1. **No correr el proceso completo de HyperFrames** (`/hyperframes` → intent, captura de la web, `build-frame`, leer las guías de story/visual/motion, `frame-packets`). Todo eso ya está hecho en `checa-promo`. No leer las skills `hyperframes-*` salvo que algo falle.
+2. **Sin agentes.** Cada agente gastó ~115 mil tokens solo en leer reglas. Las escenas las escribes tú, copiando y adaptando las de la biblioteca de abajo. Usa un agente solo si una escena es totalmente nueva y no se parece a ninguna, y con modelo `sonnet` o `haiku`.
+3. **Una sola hoja de cuadros** (`snapshot` con 6–8 tiempos) y **un solo render**.
+
+**Proceso (cada video nuevo):**
+1. Guion: igual que siempre (propones → Eduardo lo pasa por Gemini → guárdalo en `marketing/guiones-gemini.md`).
+2. Copia el proyecto: `cp -r video/hyperframes/checa-promo video/hyperframes/<tema>` y borra `compositions/frames/*`, `assets/voice`, `transcripcion`, `renders`, `.hyperframes/artifacts`, `index.html`, `audio_meta.json`, `audio_engine_meta.json`. Se quedan: `frame.md` (diseño ya corregido), `assets/checa-popup.html`, `assets/logo-7eb355dc.svg`, `assets/fonts/` (Fira de la app), `.hyperframes/caption-skin.html` (subtítulos con buen contraste), `alinear.py`.
+3. Escribe `SCRIPT.md` (una línea por escena, verbatim) y `STORYBOARD.md` corto: frontmatter (`format: 1080x1920`, `music: none`, `mode: autonomous`) + por escena `src`, `voiceover`, `transition_in`, `sfx` (de la librería: chime, click, click-soft, error, glitch-1/2/3, impact-bass-1/2, key-press, notification, ping, pop, riser, sparkle, typing, whoosh, whoosh-cinematic, whoosh-short) y 2–3 líneas de qué pasa. Sin blueprints ni Video direction largos.
+4. Música propia: `python3 -I video/scripts/elevenlabs.py musica <proy>/assets/audio bgm "<prompt>" <seg>` y `audio_meta.json` inicial `{"bgm":{"path":"assets/audio/bgm.mp3","source":"host"},"voices":[],"sfx":[]}`.
+5. Voz (Fernando): `HYPERFRAMES_TTS_CONCURRENCY=2 node .claude/skills/product-launch-video/scripts/audio.mjs --script ./SCRIPT.md --storyboard ./STORYBOARD.md --hyperframes . --out ./audio_meta.json --provider elevenlabs --voice dlGxemPxFMTY7iXagmOj` (**concurrencia 2**: con 4 ElevenLabs falla). Necesita `pip install elevenlabs`.
+6. Transcripción en **español** (la del motor sale en inglés): por cada `assets/voice/NN.wav`, `npx hyperframes transcribe assets/voice/NN.wav --language es --model small --json -d transcripcion/NN`. Luego `sync-durations`, `fetch-sfx` y **al final** `python3 -I alinear.py` (fetch-sfx vuelve a meter las palabras mal; alinear siempre después).
+7. Escenas: copia la más parecida de la biblioteca a `compositions/frames/NN-nombre.html`, cambia el id de la composición, `data-duration` (= duración de la voz de esa línea) y textos/cifras; ajusta los tiempos de entrada a las palabras (`audio_meta.json` → `voices[].words`). Ids sin dígito al inicio (`f07-…`). Una pista (`data-track-index`) por clip, sin traslapes.
+8. Ensamble: `captions.mjs build`, `assemble-index.mjs`, `transitions.mjs inject` + `verify`, agrega `data-audio-group="voiceover"` a cada `<audio id="el-…-voice">` y corre `hyperframes-audio/scripts/carve.mjs --comp ./index.html` (baja la música cuando habla). Si `captions.html` vuelve a salir con placa clara, copia los colores de `checa-promo/compositions/captions.html` (placa negra, pendiente #8A938E, actual #04120A sobre #22C55E, dicha #F1F5F2).
+9. `npx hyperframes check` → `snapshot` (una hoja) → `render --quality high --output renders/video.mp4` → copia a `marketing/publicar/NN_fecha_tema.mp4` + `.jpg`. `.gitignore` del proyecto: `.hyperframes/`, `renders/`, `audio_engine_meta.json`. Commit `[skip ci]`, push a `main` y a la rama.
+
+**Biblioteca de escenas** (`video/hyperframes/checa-promo/compositions/frames/`):
+| Escena | Sirve para |
+|---|---|
+| `01-duda` | Gancho: palabra gigante + oferta genérica blanca + «?» |
+| `02-cuanto` | Contador de un monto en fondo claro + empuje de cámara + pregunta |
+| `03-lee` | Teléfono con oferta + escáner verde + datos que salen como fichas |
+| `04-aviso` | El pop-up real cae sobre la oferta |
+| `05-hora-km` | Dos fichas grandes lado a lado con pastillas «meta ✓» |
+| `06-neta` | Ticket: viaje − gasolina, contador hasta los netos |
+| `07-semaforo` | Semáforo + pop-up fijo que cambia verde/amarillo/rojo |
+| `08-metas` | Panel de meta con −/+ que cambia el pop-up en vivo |
+| `09-recogida` | Mapa de recogida lejana + pop-up rojo + ficha marcada |
+| `10-mejor` | Dos pop-ups (Uber/DiDi), el mejor con borde dorado |
+| `11-horas` | Cuadrícula de horas con colores de semáforo |
+| `12-resultado` | Fondo verde, frase que se tacha y frase gigante |
+| `13-cta` | Logo semáforo que se arma + «checa» + pastilla de prueba |
+
+Reglas de marca: el pop-up sale siempre de `assets/checa-popup.html` sin rediseñar; ningún texto es solo un monto; «Números de ejemplo» donde haya cifras; las cifras de ejemplo deben cuadrar (neta = viaje − gasolina, gasolina ≈ $2/km); oferta genérica sin logos de Uber/DiDi; sin ciudad ni país.
+
+## Estilo «1Volt a color» (Remotion; sigue vigente, más barato)
+
+Desde el anuncio «Recogidas lejanas» Eduardo pidió el estilo 1Volt (2D, line-art en SVG; desde el 14 oct prefiere el Estilo HyperFrames de arriba) porque el 3D gasta demasiados tokens y tiempo (render por software). El 3D le gusta mucho, pero queda **en pausa**: no lo uses salvo que él lo pida.
 
 - Plantilla: **`video/src/Checa/Recogida1Volt.tsx`** (`marketing/publicar/04_2026-10-17_recogidas-lejanas.mp4`). Una idea por pantalla: trazos que se dibujan solos (`Trazo`), cotas punteadas (`Cota`), rejilla de puntos, ticket con la cuenta, número gigante en Fira Code, frase clave en MAYÚSCULAS espaciadas con una línea chica debajo, ícono tachado, pop-up exacto (`POPUP`) y cierre con logo.
 - **Más colores**: cada escena tiene su color de trazo y tinte de fondo (`TONO`: naranja, rosa, azul, morado, verde, amarillo, rojo, magenta, cian), además de cian/magenta/amarillo con significado.
