@@ -54,10 +54,10 @@
       var tl = gsap.timeline({ paused: true });
       var D = 2.24;
       tl.fromTo("#f06-meta-p", { y: 120, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 0);
-      tl.fromTo(".f06-meta-m", { x: -60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.3, stagger: 0.12, ease: "power3.out" }, 0.57);
-      tl.fromTo("#f06-meta-pill", { y: 160, scale: .5, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.8)" }, 0.98);
-      tl.to("#f06-meta-p", { y: -14, duration: 0.12, ease: "power2.out", yoyo: true, repeat: 1 }, 1.23);
-      tl.to("#f06-meta-pill", { rotation: -4, duration: 0.5, ease: "sine.inOut" }, 1.63);
+      tl.fromTo(".f06-meta-m", { x: -60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.3, stagger: 0.12, ease: "power3.out" }, 0.32);
+      tl.fromTo("#f06-meta-pill", { y: 160, scale: .5, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.8)" }, 0.73);
+      tl.to("#f06-meta-p", { y: -14, duration: 0.12, ease: "power2.out", yoyo: true, repeat: 1 }, 0.98);
+      tl.to("#f06-meta-pill", { rotation: -4, duration: 0.5, ease: "sine.inOut" }, 1.38);
       tl.fromTo("#f06-meta-stage", { scale: 1 }, { scale: 1.05, duration: D - 0, ease: "none" }, 0);
 
       window.__timelines["06-meta"] = tl;

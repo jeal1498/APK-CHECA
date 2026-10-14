@@ -5,6 +5,7 @@ import json, re
 m = json.load(open("audio_meta.json"))
 V = {v["frame"]: v for v in m["voices"]}
 PAD, PAD_FIN = 0.15, 1.0
+LEAD = 0.25  # las entradas se adelantan a la palabra para que se vean completas cuando la voz la dice
 
 
 def dur(n):
@@ -14,7 +15,7 @@ def dur(n):
 def t(n, palabra, k=0):
     """Inicio de la k-ésima palabra que empieza con `palabra` en la línea n."""
     ws = [w for w in V[n]["words"] if w["text"].lower().strip("¿¡").startswith(palabra.lower())]
-    return round(ws[k]["start"], 3)
+    return round(max(0.0, ws[k]["start"] - LEAD), 3)
 
 
 FUENTES = """
@@ -78,7 +79,7 @@ def frame(n, cid, css, body, js, ground="#000"):
 """
 
 
-def mask_in(sel, at, dur=0.45):
+def mask_in(sel, at, dur=0.3):
     return f'      tl.fromTo("{sel}", {{ yPercent: 105 }}, {{ yPercent: 0, duration: {dur}, ease: "power3.out" }}, {at});\n'
 
 

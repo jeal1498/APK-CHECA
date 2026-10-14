@@ -61,17 +61,17 @@
       var tl = gsap.timeline({ paused: true });
       var D = 3.99;
       tl.fromTo("#f03-avienta-phone", { y: 900 }, { y: 0, duration: 0.5, ease: "power3.out" }, 0);
-      tl.fromTo("#f03-avienta-card", { y: -500, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: "power4.out" }, 0.13);
-      tl.fromTo("#f03-avienta-c1", { x: 250, scale: .3, opacity: 0 }, { x: 0, scale: 1, opacity: 1, duration: 0.35, ease: "back.out(1.6)" }, 0.71);
-      tl.fromTo("#f03-avienta-c2", { x: -250, scale: .3, opacity: 0 }, { x: 0, scale: 1, opacity: 1, duration: 0.35, ease: "back.out(1.6)" }, 1.41);
-      tl.fromTo("#f03-avienta-c3", { x: 250, scale: .3, opacity: 0 }, { x: 0, scale: 1, opacity: 1, duration: 0.35, ease: "back.out(1.6)" }, 2.11);
-      tl.fromTo("#f03-avienta-zz", { scale: 1.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: "power4.out" }, 2.8);
-      tl.to("#f03-avienta-stage", { x: 14, duration: 0.05, ease: "none" }, 2.8);
-      tl.to("#f03-avienta-stage", { x: -12, duration: 0.05, ease: "none" }, 2.85);
-      tl.to("#f03-avienta-stage", { x: 9, duration: 0.05, ease: "none" }, 2.9);
-      tl.to("#f03-avienta-stage", { x: -6, duration: 0.05, ease: "none" }, 2.95);
-      tl.to("#f03-avienta-stage", { x: 3, duration: 0.05, ease: "none" }, 3.0);
-      tl.to("#f03-avienta-stage", { x: 0, duration: 0.05, ease: "none" }, 3.05);
+      tl.fromTo("#f03-avienta-card", { y: -500, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: "power4.out" }, 0.0);
+      tl.fromTo("#f03-avienta-c1", { x: 250, scale: .3, opacity: 0 }, { x: 0, scale: 1, opacity: 1, duration: 0.35, ease: "back.out(1.6)" }, 0.46);
+      tl.fromTo("#f03-avienta-c2", { x: -250, scale: .3, opacity: 0 }, { x: 0, scale: 1, opacity: 1, duration: 0.35, ease: "back.out(1.6)" }, 1.16);
+      tl.fromTo("#f03-avienta-c3", { x: 250, scale: .3, opacity: 0 }, { x: 0, scale: 1, opacity: 1, duration: 0.35, ease: "back.out(1.6)" }, 1.86);
+      tl.fromTo("#f03-avienta-zz", { scale: 1.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: "power4.out" }, 2.55);
+      tl.to("#f03-avienta-stage", { x: 14, duration: 0.05, ease: "none" }, 2.55);
+      tl.to("#f03-avienta-stage", { x: -12, duration: 0.05, ease: "none" }, 2.6);
+      tl.to("#f03-avienta-stage", { x: 9, duration: 0.05, ease: "none" }, 2.65);
+      tl.to("#f03-avienta-stage", { x: -6, duration: 0.05, ease: "none" }, 2.7);
+      tl.to("#f03-avienta-stage", { x: 3, duration: 0.05, ease: "none" }, 2.75);
+      tl.to("#f03-avienta-stage", { x: 0, duration: 0.05, ease: "none" }, 2.8);
       tl.fromTo("#f03-avienta-phone, #f03-avienta-c1, #f03-avienta-c2, #f03-avienta-c3", { scale: 1 }, { scale: 1.03, duration: D - 0.5, ease: "none" }, 0.5);
 
       window.__timelines["03-avienta"] = tl;

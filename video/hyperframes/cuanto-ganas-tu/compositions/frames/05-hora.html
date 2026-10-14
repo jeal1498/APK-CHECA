@@ -60,13 +60,13 @@
       var D = 3.259;
       var rec = document.getElementById("f05-hora-via"); var L = rec.getTotalLength(); rec.style.strokeDasharray = L;
       tl.fromTo("#f05-hora-chip", { y: -300, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0);
-      tl.fromTo("#f05-hora-chip i", { scale: 0 }, { scale: 1, duration: 0.3, ease: "back.out(2)", transformOrigin: "50% 60%" }, 1.36);
-      tl.fromTo("#f05-hora-map", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 1.17);
-      tl.fromTo(rec, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: 0.5, ease: "power2.out" }, 1.17);
-      tl.fromTo("#f05-hora-rec", { strokeDashoffset: 300 }, { strokeDashoffset: 0, duration: 1.0, ease: "none" }, 1.66);
-      tl.fromTo("#f05-hora-pin", { scale: 0, transformOrigin: "420px 260px" }, { scale: 1, duration: 0.3, ease: "back.out(2)" }, 2.23);
-      tl.fromTo("#f05-hora-lbl", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "power3.out" }, 2.23);
-      tl.fromTo("#f05-hora-stage", { scale: 1.08, y: 120 }, { scale: 1.08, y: -160, duration: 0.8, ease: "power2.inOut" }, 1.46);
+      tl.fromTo("#f05-hora-chip i", { scale: 0 }, { scale: 1, duration: 0.3, ease: "back.out(2)", transformOrigin: "50% 60%" }, 1.11);
+      tl.fromTo("#f05-hora-map", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.92);
+      tl.fromTo(rec, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: 0.5, ease: "power2.out" }, 0.92);
+      tl.fromTo("#f05-hora-rec", { strokeDashoffset: 300 }, { strokeDashoffset: 0, duration: 1.0, ease: "none" }, 1.41);
+      tl.fromTo("#f05-hora-pin", { scale: 0, transformOrigin: "420px 260px" }, { scale: 1, duration: 0.3, ease: "back.out(2)" }, 1.98);
+      tl.fromTo("#f05-hora-lbl", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "power3.out" }, 1.98);
+      tl.fromTo("#f05-hora-stage", { scale: 1.08, y: 120 }, { scale: 1.08, y: -160, duration: 0.8, ease: "power2.inOut" }, 1.21);
       tl.set("#f05-hora-stage", { scale: 1.08, y: 120 }, 0);
 
       window.__timelines["05-hora"] = tl;
