@@ -124,3 +124,15 @@ Para Checa, tomar:
 - De **B**: el **teléfono con la oferta** como personaje, el **mapa desde arriba con puntos y rutas** (recogida, viaje, regreso), las **etiquetas en recuadro neón** con letra pixel y tachado del mito, los **números gigantes**, los **subtítulos con la palabra clave en amarillo** y escenas isométricas sencillas (carro, gasolinera, calle).
 - De **A**: diagramas limpios (cotas punteadas, rejilla de puntos, curvas), ✗ magenta / ✓ cian y la calma del narrador en las partes de explicación.
 - Mantener: pop-up de Checa idéntico a la app, cifras honestas, 40 s.
+
+## Referencia 8: «¿Tus animaciones con Claude parecen PowerPoint?» (TikTok, 14 oct 2026)
+Video de 70 s, 9:16, que le gustó mucho a Eduardo (cuadros en `cuadros8.jpg`, texto en `transcripcion8.txt`). Fondo crema, acento naranja, número gigante en serif itálica + etiqueta con fondo de color («Instrucción 2 de 5»), caja tipo chat que escribe la instrucción con palabras resaltadas, subtítulos con la palabra clave resaltada.
+
+Las 5 instrucciones (ya son reglas del Estilo HyperFrames en `SKILL.md`):
+1. **Revela el texto desde una máscara** (las palabras salen de atrás de un borde, no solo se encienden).
+2. **Encadena tus movimientos** (un elemento entra, empuja al siguiente y provoca una acción).
+3. **Haz que la cámara siga algo importante** (visor «REC · sigue la mano», el encuadre persigue el objeto).
+4. **Transforma un objeto para introducir la siguiente escena** (la tarjeta se expande y se vuelve la interfaz).
+5. **Sincroniza las entradas y los énfasis con la narración** (si dice una cifra, un carro o una acción, aparece en esa palabra).
+
+Detalles para copiar: rótulo chico arriba en pastilla con la instrucción, contador de pasos con puntos (●●●○○), anotaciones a mano en naranja con flecha («esta tarjeta», «entra», «empuja»), forma de onda de la voz con la palabra actual en naranja, cierre con «GUARDA» + las 5 en pastillas.

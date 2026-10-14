@@ -1,6 +1,6 @@
 ---
 name: videos-checa
-description: Hacer videos cortos de Checa (TikTok, Reels, Shorts) con narrador de IA, en «Estilo HyperFrames» (el favorito de Eduardo desde el 14 oct 2026, plantilla checa-promo, proceso económico sin agentes) o en «1Volt a color» (Remotion 2D, line-art en SVG que se dibuja solo, letra mono, una idea por pantalla, colores por escena, subtítulos para redes y cambio de toma cada 3 s; el 3D queda en pausa). Guarda los guiones de Gemini en marketing/guiones-gemini.md. Úsala cuando Eduardo pida un video, un guion para video, el siguiente tema de marketing/temas-videos.md, cambiar la voz o la música de un video, o un video sin que él salga a cuadro.
+description: Hacer videos cortos de Checa (TikTok, Reels, Shorts) con narrador de IA, en «Estilo HyperFrames» (el favorito de Eduardo desde el 14 oct 2026, plantilla checa-promo, proceso económico sin agentes y las 5 instrucciones de movimiento: máscara, encadenar, cámara que sigue, objeto que se transforma y sincronía con la voz) o en «1Volt a color» (Remotion 2D, line-art en SVG que se dibuja solo, letra mono, una idea por pantalla, colores por escena, subtítulos para redes y cambio de toma cada 3 s; el 3D queda en pausa). Guarda los guiones de Gemini en marketing/guiones-gemini.md. Úsala cuando Eduardo pida un video, un guion para video, el siguiente tema de marketing/temas-videos.md, cambiar la voz o la música de un video, o un video sin que él salga a cuadro.
 ---
 
 # Videos de Checa
@@ -41,6 +41,15 @@ Referencia: `marketing/publicar/17_como-funciona-checa-hyperframes.mp4` (40 s, 9
 | `11-horas` | Cuadrícula de horas con colores de semáforo |
 | `12-resultado` | Fondo verde, frase que se tacha y frase gigante |
 | `13-cta` | Logo semáforo que se arma + «checa» + pastilla de prueba |
+
+**Las 5 instrucciones de movimiento (obligatorias en cada video, Eduardo, 14 oct 2026).** Vienen de un video de referencia que le gustó mucho (`referencia/README.md` → *Referencia 8*, cuadros en `cuadros8.jpg`). Evitan que el video «parezca PowerPoint». Cada escena usa al menos 2 y el video entero, las 5:
+1. **Revelar el texto desde una máscara**: las palabras suben desde atrás de un borde (contenedor con `overflow:hidden` y el texto en `yPercent: 100 → 0`, línea por línea, con stagger), en lugar de solo aparecer con opacidad. Para títulos, frases clave y la frase final.
+2. **Encadenar los movimientos**: un elemento entra, **empuja** al siguiente y este provoca una acción (la ficha $/km entra y empuja a la de $/h; el pop-up cae y empuja la oferta; el botón «Aceptar» se presiona). En GSAP: el siguiente arranca en el momento del choque (`"<0.8"`), con un pequeño rebote del que recibe el golpe. Nada de elementos que entran solos y sin relación.
+3. **La cámara sigue algo importante**: el encuadre (escala + desplazamiento del contenedor de la escena) persigue lo que importa: el dedo que toca la oferta, el carro que avanza por la ruta, la ficha que se pone roja. Puede llevar visor tipo «REC» con esquinas. Más dinamismo y la vista va donde debe.
+4. **Un objeto se transforma para presentar la siguiente escena**: transición por forma, no por corte. Ej.: la tarjeta de la oferta se expande y se vuelve el teléfono; el pop-up se encoge y se vuelve una ficha; el número gigante se convierte en la barra del semáforo; el logo se arma desde las 3 luces. Úsalo en vez de `transition_in` genérico al menos 2 veces por video.
+5. **Sincronizar entradas y énfasis con la voz**: cuando la voz dice una cifra, la cifra aparece justo en esa palabra; si dice «carro», sale el carro; si dice una acción («rechaza», «acepta»), pasa esa animación. Los tiempos salen de `audio_meta.json` → `voices[].words` (no a ojo). Énfasis = resaltado naranja/verde detrás de la palabra o un pulso de escala.
+
+Al presentar el `STORYBOARD.md`, anota en cada escena cuáles de las 5 usa. Revisa en la hoja de cuadros que se vean (sobre todo 1, 4 y 5).
 
 Reglas de marca: el pop-up sale siempre de `assets/checa-popup.html` sin rediseñar; ningún texto es solo un monto; «Números de ejemplo» donde haya cifras; las cifras de ejemplo deben cuadrar (neta = viaje − gasolina, gasolina ≈ $2/km); oferta genérica sin logos de Uber/DiDi; sin ciudad ni país.
 
