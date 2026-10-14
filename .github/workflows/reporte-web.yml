@@ -1,11 +1,13 @@
 name: Reporte de Checa
 
 # Web (web_eventos) y app (cuentas, pagos, licencias, invitaciones) desde Supabase.
-# Se pide con un push a reportes/pedir.txt (dias=N) y escribe reportes/web.md.
+# Corre solo cada día y también con un push a reportes/pedir.txt (dias=N). Escribe reportes/web.md.
 on:
   push:
     branches: [main]
     paths: ["reportes/pedir.txt"]
+  schedule:
+    - cron: "52 12 * * *"   # diario ~6:52 am hora de México (12:52 UTC)
   workflow_dispatch:
 
 permissions:
