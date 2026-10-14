@@ -30,7 +30,7 @@ Referencia: `marketing/publicar/17_como-funciona-checa-hyperframes.mp4` (40 s, 9
 - `STORYBOARD.md` necesita `- duration: Xs` por escena (= voz + 0.15 s; la última + 1 s). `fetch-sfx` vuelve a poner duraciones viejas en `audio_meta.json`: después corre `ffprobe` sobre cada wav y luego `alinear.py`.
 - `captions.mjs build` sale con la placa por defecto: conserva el `captions.html` con estilo Checa y cambia solo `GROUPS` y la duración.
 - `carve.mjs` necesita `npm i` en el proyecto; agrega `node_modules/` al `.gitignore`.
-- Portada = cuadro del video con la frase clave (`ffmpeg -ss <t> -frames:v 1 -q:v 3`).
+- Portada: **estilo curiosidad** (ver «Portadas» abajo). Nunca un cuadro del video.
 
 **Biblioteca de escenas** (`video/hyperframes/checa-promo/compositions/frames/`):
 | Escena | Sirve para |
@@ -109,7 +109,14 @@ Serie de 14 temas completa en 1Volt (octubre 2026).
 Componentes reutilizables: `Trazo`, `Cota`, `Numero`, `Etiqueta`, `Frase`, `Subs`, `Fondo` (en cada archivo), `Num` y `Palomita`/`Tache` (Seguridad, Bloqueo, Pasajeros), pop-ups exactos (`Popup` de `ui.tsx`), `Toma` (cambio cada 3 s). Los videos de valor (9–14) cierran con logo + «+ Seguir», sin prueba gratis.
 
 ### Portadas y textos para publicar
-- **Portadas**: composición `Portada` (`video/src/Checa/Portada.tsx`, props `titulo` con `|` para alternar color por línea, `sub`, `color`, `etiqueta`, `fondo` opcional). Render: `npx remotion still Portada out.png --props '{...}'` y pásala a JPG (`ffmpeg -q:v 3`). Guarda la portada junto a su video en `marketing/publicar/NN_fecha_tema.jpg`.
+- **Portadas: estilo curiosidad (obligatorio desde el 14 oct 2026; a Eduardo le encantó).** Plantilla: `video/hyperframes/cuanto-ganas-tu/portada/portada.html` (referencia `marketing/publicar/18_cuanto-ganas-tu.jpg`). Copia la carpeta `portada/` al proyecto nuevo y cambia solo los textos y el objeto. Reglas:
+  1. **Título arriba en 2 líneas**, MAYÚSCULAS, Fira Sans 800: la 1ª en blanco y la 2ª más grande en amarillo #FACC15. Es una promesa que da curiosidad («LO QUE LA APP / NO TE DICE»), no un resumen del video.
+  2. **Un objeto concreto al centro**, ladeado unos −4°: la oferta genérica blanca, el pop-up, un ticket, el tablero, etc. Sin logos de Uber/DiDi.
+  3. **La respuesta escondida**: una etiqueta roja #F43F5E con la cifra o la palabra clave **borrosa** (`filter: blur(14px)`), p. ej. «Te quedan ▒▒», más un «?» rojo gigante que se asoma por una esquina del objeto. Lo borroso es lo que obliga a ver el video.
+  4. **Pregunta corta abajo** en gris #AFB7B2 con la palabra clave en blanco («¿Cuánto **ganas tú** de verdad?»).
+  5. Fondo negro con un brillo rojo suave al centro. Nada importante debajo de y≈1700 ni pegado a la derecha (ahí van los botones de TikTok). Las cifras deben cuadrar con el video.
+  - Render (sin Remotion): `/opt/pw-browsers/chromium-1194/chrome-linux/chrome --headless --no-sandbox --disable-gpu --hide-scrollbars --window-size=1080,1920 --screenshot=p.png file://$PWD/portada.html` → `ffmpeg -i p.png -q:v 3 marketing/publicar/NN_tema.jpg`. Revísala con Read antes de mandarla.
+- *(Antes)* composición `Portada` (`video/src/Checa/Portada.tsx`, props `titulo` con `|` para alternar color por línea, `sub`, `color`, `etiqueta`, `fondo` opcional). Render: `npx remotion still Portada out.png --props '{...}'` y pásala a JPG (`ffmpeg -q:v 3`). Guarda la portada junto a su video en `marketing/publicar/NN_fecha_tema.jpg`.
 - **Textos y calendario**: `marketing/calendario.md` (fecha, tipo y texto de cada publicación). Sigue la **fórmula** de arriba del calendario: gancho, 1–2 frases con palabras de búsqueda, pregunta, «Comenta CHECA» (venta) o «Guárdalo» (consejo) y 4–5 hashtags. No pegar el guion completo. Sin ciudad ni país, sin #ubermexico, sin «link en el perfil» (no hay link en la bio de TikTok). Agrega el de cada video nuevo.
 
 ### Videos con clips de Eduardo (él a cuadro)
