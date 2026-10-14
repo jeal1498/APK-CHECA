@@ -1,0 +1,62 @@
+[
+  {
+    "text": "No",
+    "start": 0.02,
+    "end": 0.12,
+    "id": "w0"
+  },
+  {
+    "text": "te",
+    "start": 0.12,
+    "end": 0.24,
+    "id": "w1"
+  },
+  {
+    "text": "dice",
+    "start": 0.24,
+    "end": 0.42,
+    "id": "w2"
+  },
+  {
+    "text": "cuánto",
+    "start": 0.5,
+    "end": 0.84,
+    "id": "w3"
+  },
+  {
+    "text": "ganas",
+    "start": 0.84,
+    "end": 1.12,
+    "id": "w4"
+  },
+  {
+    "text": "por",
+    "start": 1.21,
+    "end": 1.32,
+    "id": "w5"
+  },
+  {
+    "text": "hora",
+    "start": 1.32,
+    "end": 1.51,
+    "id": "w6"
+  },
+  {
+    "text": "contando",
+    "start": 1.58,
+    "end": 2.02,
+    "id": "w7"
+  },
+  {
+    "text": "la",
+    "start": 2.04,
+    "end": 2.12,
+    "id": "w8"
+  },
+  {
+    "text": "recogida.",
+    "start": 2.17,
+    "end": 2.97,
+    "id": "w9"
+  }
+]

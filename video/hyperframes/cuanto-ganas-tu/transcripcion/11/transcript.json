@@ -1,0 +1,86 @@
+[
+  {
+    "text": "Tú",
+    "start": 0.1,
+    "end": 0.13,
+    "id": "w0"
+  },
+  {
+    "text": "solo",
+    "start": 0.13,
+    "end": 0.4,
+    "id": "w1"
+  },
+  {
+    "text": "ocúpate",
+    "start": 0.4,
+    "end": 0.86,
+    "id": "w2"
+  },
+  {
+    "text": "de",
+    "start": 0.86,
+    "end": 0.99,
+    "id": "w3"
+  },
+  {
+    "text": "manejar",
+    "start": 0.99,
+    "end": 1.44,
+    "id": "w4"
+  },
+  {
+    "text": "y",
+    "start": 1.53,
+    "end": 1.56,
+    "id": "w5"
+  },
+  {
+    "text": "de",
+    "start": 1.56,
+    "end": 1.68,
+    "id": "w6"
+  },
+  {
+    "text": "darle",
+    "start": 1.68,
+    "end": 2,
+    "id": "w7"
+  },
+  {
+    "text": "a",
+    "start": 2,
+    "end": 2.08,
+    "id": "w8"
+  },
+  {
+    "text": "tu",
+    "start": 2.08,
+    "end": 2.22,
+    "id": "w9"
+  },
+  {
+    "text": "pasaje",
+    "start": 2.24,
+    "end": 2.73,
+    "id": "w10"
+  },
+  {
+    "text": "el",
+    "start": 2.8,
+    "end": 2.89,
+    "id": "w11"
+  },
+  {
+    "text": "mejor",
+    "start": 2.89,
+    "end": 3.22,
+    "id": "w12"
+  },
+  {
+    "text": "servicio.",
+    "start": 3.22,
+    "end": 3.9,
+    "id": "w13"
+  }
+]

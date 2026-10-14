@@ -33,6 +33,7 @@ Sin link en la bio (TikTok pide constancia del SAT para cuenta de empresa): a qu
 | 13 | dom 26 oct | Consejo | `13_2026-10-26_multas-y-papeles` | |
 | 14 | lun 27 oct | Venta | `14_2026-10-27_miedo-a-rechazar` | |
 | 15 | mar 28 oct | Venta | `15_2026-10-28_desgaste-y-renta` | |
+| 18 | por definir | Venta | `18_cuanto-ganas-tu` | |
 
 ---
 
@@ -168,6 +169,15 @@ Renta, desgaste y kilómetros: cuánto le cuesta de verdad a un chofer de Uber o
 ¿Cuánto pagas de renta a la semana? 👇
 Comenta «CHECA» y te mando la app que te muestra los km reales de cada oferta (7 días gratis, solo Android).
 #conductores #rentadeauto #uber #didi #checaapp
+
+## 18 · por definir · Venta
+Video: `marketing/publicar/18_cuanto-ganas-tu.mp4` · Portada: `18_cuanto-ganas-tu.jpg`
+
+La app te dice cuánto te paga… pero no cuánto ganas tú 🤔
+Tarifa, minutos y kilómetros: la cuenta de gasolina y recogida de cada viaje de Uber o DiDi la haces tú, de cabeza y manejando.
+¿Tú cómo sabes si un viaje te conviene? 👇
+Comenta «CHECA» y te mando la app que hace esa cuenta por ti (7 días gratis, solo Android).
+#choferes #uber #didi #conductoresdeapp #checaapp
 
 ---
 

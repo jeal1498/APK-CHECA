@@ -1,0 +1,38 @@
+[
+  {
+    "text": "Yesa",
+    "start": 0.07,
+    "end": 0.53,
+    "id": "w0"
+  },
+  {
+    "text": "cuenta",
+    "start": 0.53,
+    "end": 0.73,
+    "id": "w1"
+  },
+  {
+    "text": "la",
+    "start": 1.45,
+    "end": 1.57,
+    "id": "w2"
+  },
+  {
+    "text": "haces",
+    "start": 1.57,
+    "end": 2.09,
+    "id": "w3"
+  },
+  {
+    "text": "de",
+    "start": 2.1,
+    "end": 2.31,
+    "id": "w4"
+  },
+  {
+    "text": "cabeza.",
+    "start": 2.31,
+    "end": 2.97,
+    "id": "w5"
+  }
+]

@@ -1,0 +1,185 @@
+<template>
+  <style>
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Regular.ttf') format('truetype'); font-weight: 400; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Medium.ttf') format('truetype'); font-weight: 500 600; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Bold.ttf') format('truetype'); font-weight: 700 900; font-display: block; }
+    @font-face{ font-family: 'Fira Code'; src: url('assets/fonts/FiraCode.ttf') format('truetype'); font-weight: 300 700; font-display: block; }
+
+    #root {
+      position: absolute;
+      inset: 0;
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+      font-family: 'Fira Sans', sans-serif;
+    }
+    #root .clip { position: absolute; inset: 0; }
+
+    #f12cta-ground { background: #000000; }
+    #f12cta-bloom {
+      position: absolute;
+      left: -10px;
+      top: 88px;
+      width: 1100px;
+      height: 1100px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 50% 50%, rgba(34,197,94,0.42) 0%, rgba(34,197,94,0.16) 34%, rgba(34,197,94,0) 68%);
+    }
+
+    #f12cta-lockup {
+      position: absolute;
+      left: 103px;
+      top: 440px;
+      width: 874px;
+      height: 397px;
+    }
+    #f12cta-mark {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 230px;
+      height: 397px;
+      z-index: 2;
+      overflow: visible;
+    }
+    #f12cta-wordmask {
+      position: absolute;
+      left: 274px;
+      top: 0;
+      width: 600px;
+      height: 397px;
+      overflow: hidden;
+      z-index: 1;
+    }
+    #f12cta-word {
+      position: absolute;
+      left: 0;
+      top: 78px;
+      font-size: 220px;
+      line-height: 1;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: #FFFFFF;
+      white-space: nowrap;
+    }
+
+    #f12cta-pill {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 980px;
+      margin: 0 auto;
+      width: 840px;
+      height: 124px;
+      border-radius: 62px;
+      background: #22C55E;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      font-size: 56px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: #000000;
+      white-space: nowrap;
+    }
+    #f12cta-pill span { display: inline-block; }
+
+
+    #f12cta-black { background: #000000; }
+    #f12cta-com { position: absolute; left: 0; right: 0; top: 1210px; text-align: center; font-size: 72px; font-weight: 700; color: #F1F5F2; }
+    #f12cta-com b { font-family: 'Fira Code', monospace; color: #22C55E; }
+    #f12cta-com small { display: block; margin-top: 20px; font-family: 'Fira Code', monospace; font-weight: 500; font-size: 30px; letter-spacing: .14em; text-transform: uppercase; color: #8A938E; }
+  </style>
+
+  <div id="root" data-composition-id="12-cta" data-width="1080" data-height="1920" data-start="0" data-duration="4.527">
+    <div id="f12cta-ground" class="clip" data-start="0" data-duration="4.527" data-track-index="0">
+      <div id="f12cta-bloom"></div>
+    </div>
+
+    <div id="f12cta-stage" class="clip" data-start="0" data-duration="4.527" data-track-index="1">
+      <div id="f12cta-lockup">
+        <div id="f12cta-wordmask">
+          <div id="f12cta-word">checa</div>
+        </div>
+        <svg id="f12cta-mark" viewBox="0 0 22 38" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <filter id="f12cta-glowblur" x="-150%" y="-150%" width="400%" height="400%">
+              <feGaussianBlur stdDeviation="2.4" />
+            </filter>
+          </defs>
+          <path id="f12cta-body"
+            d="M 7 1 L 15 1 Q 21 1 21 7 L 21 31 Q 21 37 15 37 L 7 37 Q 1 37 1 31 L 1 7 Q 1 1 7 1 Z"
+            fill="#111413" fill-opacity="0" stroke="#AFB7B2" stroke-width="0.9" stroke-linejoin="round" />
+          <circle id="f12cta-glow" cx="11" cy="28.5" r="6" fill="#22C55E" filter="url(#f12cta-glowblur)" opacity="0" />
+          <circle id="f12cta-red" cx="11" cy="9.5" r="4.2" fill="#F43F5E" />
+          <circle id="f12cta-yellow" cx="11" cy="19" r="4.2" fill="#FACC15" />
+          <circle id="f12cta-green" cx="11" cy="28.5" r="4.2" fill="#22C55E" />
+        </svg>
+      </div>
+
+      <div id="f12cta-pill">
+        <span id="f12cta-w1">Pruébala</span>
+        <span id="f12cta-w2">7 días</span>
+        <span id="f12cta-w3">sin costo</span>
+      </div>
+      <div id="f12cta-com">comenta <b>CHECA</b><small>solo Android</small>
+      </div>
+
+    </div>
+
+    <div id="f12cta-black" class="clip" data-start="0" data-duration="4.527" data-track-index="2"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const D = 4.527;
+      const MARK_CENTER_OFFSET = 322; // (gap 44 + word 600) / 2 — mark sits dead center before the wordmark arrives
+
+      // Measured path length for the stroke draw (svg-path-draw)
+      const body = document.getElementById("f12cta-body");
+      const len = body.getTotalLength() * 1.05;
+      body.style.strokeDasharray = String(len);
+
+      // Scene 1 (0.0–0.55): black ground, green bloom, capsule body draws, lights pop in sequence
+      tl.fromTo("#f12cta-bloom", { opacity: 0, scale: 0.7 }, { opacity: 0.55, scale: 1, duration: 0.6, ease: "power2.out" }, 0);
+            tl.fromTo(body, { strokeDashoffset: len }, { strokeDashoffset: 0, duration: 0.36, ease: "power2.out" }, 0.0);
+      tl.to(body, { attr: { "fill-opacity": 1 }, duration: 0.2, ease: "power1.out" }, 0.28);
+      tl.to(body, { stroke: "#262B28", duration: 0.25, ease: "power1.out" }, 0.34);
+
+      const pop = { scale: 1, duration: 0.28, ease: "back.out(2)" };
+      tl.fromTo("#f12cta-red", { scale: 0, transformOrigin: "50% 50%" }, Object.assign({ opacity: 1 }, pop), 0.2);
+      tl.fromTo("#f12cta-yellow", { scale: 0, transformOrigin: "50% 50%" }, Object.assign({ opacity: 1 }, pop), 0.3);
+      tl.fromTo("#f12cta-green", { scale: 0, opacity: 0.35, transformOrigin: "50% 50%" }, Object.assign({ opacity: 0.35 }, pop), 0.4);
+
+      // Scene 2 (0.55–1.15): green ignites with glow; mark slides left as "checa" slides out from behind it
+      tl.to("#f12cta-green", { opacity: 1, duration: 0.18, ease: "power2.out" }, 0.58);
+      tl.to("#f12cta-green", { scale: 1.12, duration: 0.14, ease: "power2.out" }, 0.58);
+      tl.to("#f12cta-green", { scale: 1, duration: 0.3, ease: "power2.inOut" }, 0.73);
+      tl.fromTo("#f12cta-glow", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power2.out" }, 0.58);
+      tl.to("#f12cta-glow", { opacity: 0.6, duration: 0.5, ease: "power1.inOut" }, 0.8);
+      tl.to("#f12cta-bloom", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.61);
+      tl.to("#f12cta-bloom", { opacity: 0.7, duration: 0.8, ease: "power1.inOut" }, 0.92);
+
+      tl.fromTo("#f12cta-mark", { x: MARK_CENTER_OFFSET }, { x: 0, duration: 0.5, ease: "power3.inOut" }, 0.66);
+      tl.fromTo("#f12cta-word", { x: -620 }, { x: 0, duration: 0.5, ease: "power3.inOut" }, 0.66);
+
+      // Scene 3 (1.15–end): pill rises under the lockup; its words land on "pruébala" · "7 días" · "costo"
+      tl.fromTo("#f12cta-pill", { y: 90, opacity: 0, scale: 0.92 }, { y: 0, opacity: 1, scale: 1, duration: 0.45, ease: "power3.out" }, 0.009999999999999995);
+      tl.fromTo("#f12cta-w1", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "power3.out" }, 0.09);
+      tl.fromTo("#f12cta-w2", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "power3.out" }, 0.837);
+      tl.to("#f12cta-w2", { scale: 1.1, duration: 0.14, ease: "power2.out" }, 0.9369999999999999);
+      tl.to("#f12cta-w2", { scale: 1, duration: 0.25, ease: "power2.inOut" }, 1.087);
+      tl.fromTo("#f12cta-w3", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "power3.out" }, 1.2);
+      tl.fromTo("#f12cta-com", { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 1.95);
+
+      // Hold, then the video's only exit: fade to black in the final 0.4s
+      tl.fromTo("#f12cta-black", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.in" }, D - 0.4);
+
+      window.__timelines["12-cta"] = tl;
+    })();
+  </script>
+</template>

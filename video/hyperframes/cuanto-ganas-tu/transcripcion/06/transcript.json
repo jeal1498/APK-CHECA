@@ -1,0 +1,44 @@
+[
+  {
+    "text": "Ni",
+    "start": 0.04,
+    "end": 0.16,
+    "id": "w0"
+  },
+  {
+    "text": "si",
+    "start": 0.16,
+    "end": 0.32,
+    "id": "w1"
+  },
+  {
+    "text": "ese",
+    "start": 0.32,
+    "end": 0.57,
+    "id": "w2"
+  },
+  {
+    "text": "viaje",
+    "start": 0.57,
+    "end": 0.98,
+    "id": "w3"
+  },
+  {
+    "text": "cumple",
+    "start": 0.98,
+    "end": 1.47,
+    "id": "w4"
+  },
+  {
+    "text": "tu",
+    "start": 1.47,
+    "end": 1.63,
+    "id": "w5"
+  },
+  {
+    "text": "meta.",
+    "start": 1.63,
+    "end": 2.09,
+    "id": "w6"
+  }
+]

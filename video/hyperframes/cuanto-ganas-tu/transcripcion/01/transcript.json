@@ -1,0 +1,44 @@
+[
+  {
+    "text": "La",
+    "start": 0.05,
+    "end": 0.14,
+    "id": "w0"
+  },
+  {
+    "text": "plataforma",
+    "start": 0.15,
+    "end": 0.93,
+    "id": "w1"
+  },
+  {
+    "text": "te",
+    "start": 0.93,
+    "end": 0.97,
+    "id": "w2"
+  },
+  {
+    "text": "dice",
+    "start": 1.08,
+    "end": 1.26,
+    "id": "w3"
+  },
+  {
+    "text": "cuánto",
+    "start": 1.5,
+    "end": 1.79,
+    "id": "w4"
+  },
+  {
+    "text": "te",
+    "start": 1.84,
+    "end": 1.91,
+    "id": "w5"
+  },
+  {
+    "text": "paga.",
+    "start": 1.98,
+    "end": 2.25,
+    "id": "w6"
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "text": "Todo",
+    "start": 0.09,
+    "end": 0.22,
+    "id": "w0"
+  },
+  {
+    "text": "en",
+    "start": 0.22,
+    "end": 0.33,
+    "id": "w1"
+  },
+  {
+    "text": "unos",
+    "start": 0.33,
+    "end": 0.55,
+    "id": "w2"
+  },
+  {
+    "text": "cuantos",
+    "start": 0.55,
+    "end": 0.94,
+    "id": "w3"
+  },
+  {
+    "text": "segundos.",
+    "start": 0.94,
+    "end": 1.54,
+    "id": "w4"
+  }
+]

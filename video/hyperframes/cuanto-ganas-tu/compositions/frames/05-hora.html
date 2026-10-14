@@ -1,0 +1,75 @@
+<template>
+  <style>
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Regular.ttf') format('truetype'); font-weight: 400; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Medium.ttf') format('truetype'); font-weight: 500 600; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Bold.ttf') format('truetype'); font-weight: 700 900; font-display: block; }
+    @font-face{ font-family: 'Fira Code'; src: url('assets/fonts/FiraCode.ttf') format('truetype'); font-weight: 300 700; font-display: block; }
+    #root { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; font-family: 'Fira Sans', sans-serif; color: #F1F5F2; }
+    .clip { position: absolute; }
+    .P-ground { inset: 0; background: #000; }
+    .P-stage { left: 0; top: 0; width: 1080px; height: 1600px; transform-origin: 50% 45%; }
+    .P-glow { position: absolute; left: 140px; top: 420px; width: 800px; height: 800px; border-radius: 50%; background: radial-gradient(circle, rgba(34,197,94,.20), rgba(34,197,94,0) 65%); }
+    .P-kick { position: absolute; left: 0; right: 0; top: 210px; text-align: center; font-family: 'Fira Code', monospace; font-weight: 500; font-size: 30px; letter-spacing: .14em; text-transform: uppercase; color: #22C55E; }
+    .P-kick:before { content: ""; display: block; width: 36px; height: 2px; background: #22C55E; margin: 0 auto 18px; }
+    .P-mask { position: absolute; left: 0; right: 0; overflow: hidden; text-align: center; }
+    .P-mask > div { font-weight: 800; text-transform: lowercase; letter-spacing: -.04em; line-height: 1.02; white-space: nowrap; }
+    .P-ej { position: absolute; left: 0; right: 0; top: 1500px; text-align: center; font-family: 'Fira Code', monospace; font-size: 26px; letter-spacing: .12em; text-transform: uppercase; color: #6B736F; }
+    .P-num { font-family: 'Fira Code', monospace; font-weight: 700; font-variant-numeric: tabular-nums; }
+    /* oferta genérica (sin logos) */
+    .P-card { position: absolute; width: 620px; border-radius: 36px; background: #F4F5F4; color: #111; padding: 48px 52px 44px; box-shadow: 0 30px 80px rgba(0,0,0,.7); }
+    .P-card .k { font-family: 'Fira Code', monospace; font-weight: 500; font-size: 28px; letter-spacing: .14em; text-transform: uppercase; color: #5C635F; }
+    .P-card .f { font-family: 'Fira Code', monospace; font-weight: 700; font-size: 112px; letter-spacing: -.03em; line-height: 1; margin-top: 22px; }
+    .P-card .r { display: flex; align-items: center; gap: 22px; font-size: 40px; font-weight: 500; margin-top: 28px; color: #222; }
+    .P-card .d { width: 20px; height: 20px; border-radius: 50%; background: #111; flex: none; }
+    .P-card .s { width: 20px; height: 20px; background: #111; flex: none; }
+    .P-card .b { margin-top: 38px; height: 104px; border-radius: 20px; background: #111; color: #F4F5F4; display: flex; align-items: center; justify-content: center; font-size: 44px; font-weight: 700; }
+
+    #f05-hora-ground { background: #000; }
+
+    #f05-hora-chip { position: absolute; left: 190px; top: 380px; width: 700px; height: 340px; border-radius: 40px; background: #181C1A; border: 4px solid #2E3532; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    #f05-hora-chip b { font-family: 'Fira Code', monospace; font-weight: 700; font-size: 140px; line-height: 1; }
+    #f05-hora-chip b i { font-style: normal; color: #FACC15; }
+    #f05-hora-chip span { font-size: 38px; color: #8A938E; margin-top: 16px; }
+    #f05-hora-map { position: absolute; left: 140px; top: 820px; width: 800px; height: 520px; }
+    #f05-hora-lbl { position: absolute; left: 0; right: 0; top: 1360px; text-align: center; font-family: 'Fira Code', monospace; font-weight: 700; font-size: 46px; color: #F43F5E; }
+
+  </style>
+
+  <div id="root" data-composition-id="05-hora" data-width="1080" data-height="1920" data-start="0" data-duration="3.154">
+    <div id="f05-hora-ground" class="clip P-ground" data-start="0" data-duration="3.154" data-track-index="0"></div>
+    <div id="f05-hora-stage" class="clip P-stage" data-start="0" data-duration="3.154" data-track-index="1">
+      <div class="P-glow"></div>
+      <div id="f05-hora-chip"><b>$<i>?</i>/h</b><span>por hora</span></div>
+      <svg id="f05-hora-map" viewBox="0 0 800 520">
+        <path id="f05-hora-rec" d="M 90 440 C 200 300, 330 420, 420 260" fill="none" stroke="#F43F5E" stroke-width="12" stroke-linecap="round" stroke-dasharray="4 28"/>
+        <path id="f05-hora-via" d="M 420 260 C 520 120, 640 220, 720 80" fill="none" stroke="#22C55E" stroke-width="12" stroke-linecap="round"/>
+        <rect x="60" y="410" width="60" height="60" rx="14" fill="#F1F5F2"/>
+        <circle id="f05-hora-pin" cx="420" cy="260" r="26" fill="#F43F5E" stroke="#000" stroke-width="6"/>
+        <rect x="694" y="54" width="52" height="52" rx="8" fill="#22C55E"/>
+      </svg>
+      <div id="f05-hora-lbl">+ la recogida: 4 min · 1.5 km</div>
+      <div class="P-ej">Números de ejemplo</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      var D = 3.154;
+      var rec = document.getElementById("f05-hora-via"); var L = rec.getTotalLength(); rec.style.strokeDasharray = L;
+      tl.fromTo("#f05-hora-chip", { y: -300, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0);
+      tl.fromTo("#f05-hora-chip i", { scale: 0 }, { scale: 1, duration: 0.3, ease: "back.out(2)", transformOrigin: "50% 60%" }, 1.32);
+      tl.fromTo("#f05-hora-map", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 1.21);
+      tl.fromTo(rec, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: 0.5, ease: "power2.out" }, 1.21);
+      tl.fromTo("#f05-hora-rec", { strokeDashoffset: 300 }, { strokeDashoffset: 0, duration: 1.0, ease: "none" }, 1.58);
+      tl.fromTo("#f05-hora-pin", { scale: 0, transformOrigin: "420px 260px" }, { scale: 1, duration: 0.3, ease: "back.out(2)" }, 2.17);
+      tl.fromTo("#f05-hora-lbl", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "power3.out" }, 2.17);
+      tl.fromTo("#f05-hora-stage", { scale: 1.08, y: 120 }, { scale: 1.08, y: -160, duration: 0.8, ease: "power2.inOut" }, 1.3800000000000001);
+      tl.set("#f05-hora-stage", { scale: 1.08, y: 120 }, 0);
+
+      window.__timelines["05-hora"] = tl;
+    })();
+  </script>
+</template>
