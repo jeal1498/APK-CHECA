@@ -128,7 +128,7 @@ Para Checa, tomar:
 ## Referencia 8: «¿Tus animaciones con Claude parecen PowerPoint?» (TikTok, 14 oct 2026)
 Video de 70 s, 9:16, que le gustó mucho a Eduardo (cuadros en `cuadros8.jpg`, texto en `transcripcion8.txt`). Fondo crema, acento naranja, número gigante en serif itálica + etiqueta con fondo de color («Instrucción 2 de 5»), caja tipo chat que escribe la instrucción con palabras resaltadas, subtítulos con la palabra clave resaltada.
 
-Las 5 instrucciones (ya son reglas del Estilo HyperFrames en `SKILL.md`):
+Las 5 instrucciones (en el catálogo de recursos de movimiento de `SKILL.md`, para escoger según el momento):
 1. **Revela el texto desde una máscara** (las palabras salen de atrás de un borde, no solo se encienden).
 2. **Encadena tus movimientos** (un elemento entra, empuja al siguiente y provoca una acción).
 3. **Haz que la cámara siga algo importante** (visor «REC · sigue la mano», el encuadre persigue el objeto).
