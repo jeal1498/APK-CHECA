@@ -56,9 +56,9 @@
 
   </style>
 
-  <div id="root" data-composition-id="10-checa" data-width="1080" data-height="1920" data-start="0" data-duration="6.028">
-    <div id="f10-checa-ground" class="clip P-ground" data-start="0" data-duration="6.028" data-track-index="0"></div>
-    <div id="f10-checa-stage" class="clip P-stage" data-start="0" data-duration="6.028" data-track-index="1">
+  <div id="root" data-composition-id="10-checa" data-width="1080" data-height="1920" data-start="0" data-duration="7.285">
+    <div id="f10-checa-ground" class="clip P-ground" data-start="0" data-duration="7.285" data-track-index="0"></div>
+    <div id="f10-checa-stage" class="clip P-stage" data-start="0" data-duration="7.285" data-track-index="1">
       <div class="P-glow"></div>
       <div id="f10-checa-tit" class="P-mask"><div>la app <em>checa</em></div></div>
       <div id="f10-checa-sub">hace la cuenta por ti</div>
@@ -76,17 +76,17 @@
     (function () {
       window.__timelines = window.__timelines || {};
       var tl = gsap.timeline({ paused: true });
-      var D = 6.028;
+      var D = 6.785;
       tl.fromTo("#f10-checa-tit > div", { yPercent: 105 }, { yPercent: 0, duration: 0.4, ease: "power3.out" }, 0.04000000000000001);
-      tl.fromTo("#f10-checa-sub", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, 0.76);
+      tl.fromTo("#f10-checa-sub", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, 0.72);
       tl.set("#f10-checa-p1, #f10-checa-p2", { opacity: 0 }, 0);
       tl.fromTo("#f10-checa-p0", { y: -500, opacity: 0, scale: .9 }, { y: 0, opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.3)" }, 1.15);
-      tl.fromTo("#f10-checa-p0 .cp-neta", { scale: 1 }, { scale: 1.12, duration: 0.15, yoyo: true, repeat: 1, ease: "power2.out" }, 3.4);
-      tl.set("#f10-checa-p0", { opacity: 0 }, 4.42); tl.set("#f10-checa-p1", { opacity: 1 }, 4.42);
-      tl.set("#f10-checa-p1", { opacity: 0 }, 5.12); tl.set("#f10-checa-p2", { opacity: 1 }, 5.12);
-      tl.fromTo("#f10-checa-pw", { scale: 1.06 }, { scale: 1, duration: 0.3, ease: "power3.out" }, 3.93);
-      tl.fromTo("#f10-checa-pw", { scale: 1.06 }, { scale: 1, duration: 0.3, ease: "power3.out" }, 4.42);
-      tl.fromTo("#f10-checa-pw", { scale: 1.06 }, { scale: 1, duration: 0.3, ease: "power3.out" }, 5.12);
+      tl.fromTo("#f10-checa-p0 .cp-neta", { scale: 1 }, { scale: 1.12, duration: 0.15, yoyo: true, repeat: 1, ease: "power2.out" }, 4.02);
+      tl.set("#f10-checa-p0", { opacity: 0 }, 4.98); tl.set("#f10-checa-p1", { opacity: 1 }, 4.98);
+      tl.set("#f10-checa-p1", { opacity: 0 }, 5.84); tl.set("#f10-checa-p2", { opacity: 1 }, 5.84);
+      tl.fromTo("#f10-checa-pw", { scale: 1.06 }, { scale: 1, duration: 0.3, ease: "power3.out" }, 4.5);
+      tl.fromTo("#f10-checa-pw", { scale: 1.06 }, { scale: 1, duration: 0.3, ease: "power3.out" }, 4.98);
+      tl.fromTo("#f10-checa-pw", { scale: 1.06 }, { scale: 1, duration: 0.3, ease: "power3.out" }, 5.84);
       tl.fromTo("#f10-checa-stage", { scale: 1 }, { scale: 1.04, duration: D - 0, ease: "none" }, 0);
 
       window.__timelines["10-checa"] = tl;

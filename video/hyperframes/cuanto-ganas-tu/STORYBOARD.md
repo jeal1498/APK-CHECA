@@ -13,7 +13,7 @@ Mismo diseño que checa-promo (`frame.md`): fondo negro, verde #22C55E, amarillo
 
 ## Frame 1 — Te paga
 
-- duration: 2.736s
+- duration: 2.475s
 - voiceover: "La plataforma te dice cuánto te paga…"
 - transition_in: cut
 - status: animated
@@ -24,7 +24,7 @@ Oferta genérica blanca ($85.00) cae; palabra gigante «te paga» sube desde má
 
 ## Frame 2 — Ganas tú
 
-- duration: 1.639s
+- duration: 1.665s
 - voiceover: "pero no cuánto ganas tú."
 - transition_in: crossfade
 - status: animated
@@ -35,7 +35,7 @@ Fondo claro: «te pagan» ≠ «ganas tú»; el signo ≠ entra empujando. Recur
 
 ## Frame 3 — A las carreras
 
-- duration: 4.695s
+- duration: 3.99s
 - voiceover: "Te avienta la tarifa, los minutos y los kilómetros a las carreras."
 - transition_in: crossfade
 - status: animated
@@ -46,7 +46,7 @@ Teléfono con la oferta; salen fichas $85 · 22 min · 9 km cuando la voz las di
 
 ## Frame 4 — Gasolina
 
-- duration: 2.057s
+- duration: 1.848s
 - voiceover: "Pero no te quita la gasolina,"
 - transition_in: cut
 - status: animated
@@ -57,7 +57,7 @@ Ticket: viaje $85.00 y renglón «− gasolina» con «?» rojo parpadeante. Rec
 
 ## Frame 5 — Por hora
 
-- duration: 3.154s
+- duration: 3.259s
 - voiceover: "no te dice cuánto ganas por hora contando la recogida,"
 - transition_in: cut
 - status: animated
@@ -68,7 +68,7 @@ Ficha grande «$/hora con recogida» con «?» y la recogida punteada en magenta
 
 ## Frame 6 — Meta
 
-- duration: 2.606s
+- duration: 2.24s
 - voiceover: "ni si ese viaje cumple tu meta."
 - transition_in: cut
 - status: animated
@@ -79,7 +79,7 @@ Panel «tu meta $150/h» con pastilla «¿cumple?» amarilla. Recurso: máscara.
 
 ## Frame 7 — De cabeza
 
-- duration: 3.154s
+- duration: 2.658s
 - voiceover: "¿Y esa cuenta? La haces de cabeza…"
 - transition_in: whoosh
 - status: animated
@@ -90,7 +90,7 @@ Cuentas (85 − 18 = ?, 85 ÷ 31 min…) flotando y encimándose. Recurso: encad
 
 ## Frame 8 — Tráfico
 
-- duration: 4.591s
+- duration: 4.695s
 - voiceover: "mientras cuidas el tráfico, la moto, el semáforo y que nadie se te cierre."
 - transition_in: cut
 - status: animated
@@ -101,7 +101,7 @@ Cuentas (85 − 18 = ?, 85 ÷ 31 min…) flotando y encimándose. Recurso: encad
 
 ## Frame 9 — Segundos
 
-- duration: 2.057s
+- duration: 2.083s
 - voiceover: "¡Todo en unos cuantos segundos!"
 - transition_in: cut
 - status: animated
@@ -112,7 +112,7 @@ Reloj de 15 s que se vacía en rojo. Recurso: transformar (el reloj pasa al pop-
 
 ## Frame 10 — Checa
 
-- duration: 6.028s
+- duration: 6.785s
 - voiceover: "La app Checa hace la cuenta por ti: te dice cuánto te queda limpio en verde, amarillo o rojo."
 - transition_in: crossfade
 - status: animated
@@ -123,7 +123,7 @@ Pop-up real con neta; cambia verde/amarillo/rojo con la voz. Recurso: sincronía
 
 ## Frame 11 — Servicio
 
-- duration: 4.356s
+- duration: 4.33s
 - voiceover: "Tú solo ocúpate de manejar y de darle a tu pasaje el mejor servicio."
 - transition_in: crossfade
 - status: animated
@@ -134,7 +134,7 @@ Fondo verde, frase gigante + 5 estrellas que se encienden. Recurso: máscara.
 
 ## Frame 12 — CTA
 
-- duration: 4.527s
+- duration: 4.579s
 - voiceover: "Pruébala 7 días sin costo. Comenta la palabra CHECA."
 - transition_in: crossfade
 - status: animated

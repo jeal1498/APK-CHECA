@@ -33,9 +33,9 @@
 
   </style>
 
-  <div id="root" data-composition-id="09-segundos" data-width="1080" data-height="1920" data-start="0" data-duration="2.057">
-    <div id="f09-seg-ground" class="clip P-ground" data-start="0" data-duration="2.057" data-track-index="0"></div>
-    <div id="f09-seg-stage" class="clip P-stage" data-start="0" data-duration="2.057" data-track-index="1">
+  <div id="root" data-composition-id="09-segundos" data-width="1080" data-height="1920" data-start="0" data-duration="2.583">
+    <div id="f09-seg-ground" class="clip P-ground" data-start="0" data-duration="2.583" data-track-index="0"></div>
+    <div id="f09-seg-stage" class="clip P-stage" data-start="0" data-duration="2.583" data-track-index="1">
       <svg id="f09-seg-ring" viewBox="0 0 600 600"><circle cx="300" cy="300" r="260" fill="none" stroke="#1C201E" stroke-width="40"/>
         <circle id="f09-seg-arc" cx="300" cy="300" r="260" fill="none" stroke="#22C55E" stroke-width="40" stroke-linecap="round" transform="rotate(-90 300 300)"/></svg>
       <div id="f09-seg-n">15 s</div>
@@ -48,7 +48,7 @@
     (function () {
       window.__timelines = window.__timelines || {};
       var tl = gsap.timeline({ paused: true });
-      var D = 2.057;
+      var D = 2.083;
       var a = document.getElementById("f09-seg-arc"); var L = 2 * Math.PI * 260; a.style.strokeDasharray = L;
       var o = { s: 15 }; var n = document.getElementById("f09-seg-n");
       tl.fromTo(a, { strokeDashoffset: 0 }, { strokeDashoffset: L * 0.93, duration: D - 0.1, ease: "power1.in" }, 0.05);

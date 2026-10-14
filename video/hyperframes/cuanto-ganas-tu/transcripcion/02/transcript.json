@@ -2,31 +2,31 @@
   {
     "text": "Pero",
     "start": 0.09,
-    "end": 0.4,
+    "end": 0.36,
     "id": "w0"
   },
   {
     "text": "no",
-    "start": 0.46,
-    "end": 0.62,
+    "start": 0.43,
+    "end": 0.63,
     "id": "w1"
   },
   {
     "text": "cuanto",
-    "start": 0.66,
-    "end": 1.26,
+    "start": 0.63,
+    "end": 1.24,
     "id": "w2"
   },
   {
     "text": "ganas",
     "start": 1.26,
-    "end": 1.43,
+    "end": 1.48,
     "id": "w3"
   },
   {
     "text": "tú.",
-    "start": 1.43,
-    "end": 1.73,
+    "start": 1.48,
+    "end": 1.78,
     "id": "w4"
   }
 ]

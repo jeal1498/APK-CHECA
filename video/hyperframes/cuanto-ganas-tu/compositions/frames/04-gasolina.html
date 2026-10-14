@@ -38,9 +38,9 @@
 
   </style>
 
-  <div id="root" data-composition-id="04-gasolina" data-width="1080" data-height="1920" data-start="0" data-duration="2.057">
-    <div id="f04-gas-ground" class="clip P-ground" data-start="0" data-duration="2.057" data-track-index="0"></div>
-    <div id="f04-gas-stage" class="clip P-stage" data-start="0" data-duration="2.057" data-track-index="1">
+  <div id="root" data-composition-id="04-gasolina" data-width="1080" data-height="1920" data-start="0" data-duration="1.848">
+    <div id="f04-gas-ground" class="clip P-ground" data-start="0" data-duration="1.848" data-track-index="0"></div>
+    <div id="f04-gas-stage" class="clip P-stage" data-start="0" data-duration="1.848" data-track-index="1">
       <div id="f04-gas-t">
         <div class="f04-gas-row"><span>Viaje</span><b>$85.00</b></div>
         <div id="f04-gas-r2" class="f04-gas-row"><span>− Gasolina</span><b>$??</b></div>
@@ -58,7 +58,7 @@
     (function () {
       window.__timelines = window.__timelines || {};
       var tl = gsap.timeline({ paused: true });
-      var D = 2.057;
+      var D = 1.848;
       tl.fromTo("#f04-gas-t", { y: 80, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: "power3.out" }, 0);
       tl.fromTo("#f04-gas-r2", { x: -120, opacity: 0 }, { x: 0, opacity: 1, duration: 0.3, ease: "power3.out" }, 1.1300000000000001);
       tl.fromTo("#f04-gas-tit > div", { yPercent: 105 }, { yPercent: 0, duration: 0.35, ease: "power3.out" }, 1.18);

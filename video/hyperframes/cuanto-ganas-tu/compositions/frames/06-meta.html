@@ -34,9 +34,9 @@
 
   </style>
 
-  <div id="root" data-composition-id="06-meta" data-width="1080" data-height="1920" data-start="0" data-duration="2.606">
-    <div id="f06-meta-ground" class="clip P-ground" data-start="0" data-duration="2.606" data-track-index="0"></div>
-    <div id="f06-meta-stage" class="clip P-stage" data-start="0" data-duration="2.606" data-track-index="1">
+  <div id="root" data-composition-id="06-meta" data-width="1080" data-height="1920" data-start="0" data-duration="2.84">
+    <div id="f06-meta-ground" class="clip P-ground" data-start="0" data-duration="2.84" data-track-index="0"></div>
+    <div id="f06-meta-stage" class="clip P-stage" data-start="0" data-duration="2.84" data-track-index="1">
       <div class="P-glow"></div>
       <div id="f06-meta-p"><div class="k">Tu meta</div>
         <div class="f06-meta-m"><span>Por hora</span><b>$150/h</b></div>
@@ -52,7 +52,7 @@
     (function () {
       window.__timelines = window.__timelines || {};
       var tl = gsap.timeline({ paused: true });
-      var D = 2.606;
+      var D = 2.24;
       tl.fromTo("#f06-meta-p", { y: 120, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 0);
       tl.fromTo(".f06-meta-m", { x: -60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.3, stagger: 0.12, ease: "power3.out" }, 0.57);
       tl.fromTo("#f06-meta-pill", { y: 160, scale: .5, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.8)" }, 0.98);

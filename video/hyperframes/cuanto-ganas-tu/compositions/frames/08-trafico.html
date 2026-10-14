@@ -33,9 +33,9 @@
 
   </style>
 
-  <div id="root" data-composition-id="08-trafico" data-width="1080" data-height="1920" data-start="0" data-duration="4.591">
-    <div id="f08-trafico-ground" class="clip P-ground" data-start="0" data-duration="4.591" data-track-index="0"></div>
-    <div id="f08-trafico-stage" class="clip P-stage" data-start="0" data-duration="4.591" data-track-index="1">
+  <div id="root" data-composition-id="08-trafico" data-width="1080" data-height="1920" data-start="0" data-duration="4.695">
+    <div id="f08-trafico-ground" class="clip P-ground" data-start="0" data-duration="4.695" data-track-index="0"></div>
+    <div id="f08-trafico-stage" class="clip P-stage" data-start="0" data-duration="4.695" data-track-index="1">
       <div id="f08-trafico-i0" class="f08-trafico-ic" style="left:120px;top:380px"><svg viewBox="0 0 200 200"><path fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" d="M30 120 L45 75 Q50 62 64 62 L136 62 Q150 62 155 75 L170 120 Z M24 120 L176 120 L176 150 L24 150 Z"/><circle fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" cx="58" cy="152" r="16"/><circle fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" cx="142" cy="152" r="16"/></svg><span>tráfico</span></div>
       <div id="f08-trafico-i1" class="f08-trafico-ic" style="left:580px;top:380px"><svg viewBox="0 0 200 200"><circle fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" cx="50" cy="135" r="30"/><circle fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" cx="150" cy="135" r="30"/><path fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" d="M50 135 L88 95 L125 95 L150 135 M120 70 L138 70 L150 135 M80 95 L70 78 L100 78"/></svg><span>la moto</span></div>
       <div id="f08-trafico-i2" class="f08-trafico-ic" style="left:120px;top:860px"><svg viewBox="0 0 200 200"><rect fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" x="70" y="20" width="60" height="150" rx="18"/><circle cx="100" cy="52" r="15" fill="#F43F5E"/><circle cx="100" cy="95" r="15" fill="#FACC15"/><circle cx="100" cy="138" r="15" fill="#22C55E"/><path fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" d="M100 170 L100 190"/></svg><span>el semáforo</span></div>
@@ -49,21 +49,21 @@
     (function () {
       window.__timelines = window.__timelines || {};
       var tl = gsap.timeline({ paused: true });
-      var D = 4.591;
-      tl.fromTo("#f08-trafico-i0", { scale: .4, opacity: 0, rotation: 8 }, { scale: 1, opacity: 1, rotation: 0, duration: 0.35, ease: "back.out(1.7)" }, 0.75);
-      tl.fromTo("#f08-trafico-i1", { scale: .4, opacity: 0, rotation: -8 }, { scale: 1, opacity: 1, rotation: 0, duration: 0.35, ease: "back.out(1.7)" }, 1.42);
-      tl.fromTo("#f08-trafico-i2", { scale: .4, opacity: 0, rotation: 8 }, { scale: 1, opacity: 1, rotation: 0, duration: 0.35, ease: "back.out(1.7)" }, 2.05);
-      tl.fromTo("#f08-trafico-i3", { scale: .4, opacity: 0, rotation: -8 }, { scale: 1, opacity: 1, rotation: 0, duration: 0.35, ease: "back.out(1.7)" }, 2.87);
-      tl.to("#f08-trafico-stage", { x: 18, duration: 0.05, ease: "none" }, 3.47);
-      tl.to("#f08-trafico-stage", { x: -16, duration: 0.05, ease: "none" }, 3.52);
-      tl.to("#f08-trafico-stage", { x: 12, duration: 0.05, ease: "none" }, 3.57);
-      tl.to("#f08-trafico-stage", { x: -8, duration: 0.05, ease: "none" }, 3.62);
-      tl.to("#f08-trafico-stage", { x: 4, duration: 0.05, ease: "none" }, 3.67);
-      tl.to("#f08-trafico-stage", { x: 0, duration: 0.05, ease: "none" }, 3.72);
-      tl.to("#f08-trafico-stage", { scale: 1.1, transformOrigin: "310px 590px", duration: 0.5, ease: "power2.inOut" }, 0.75);
-      tl.to("#f08-trafico-stage", { scale: 1.1, transformOrigin: "770px 590px", duration: 0.5, ease: "power2.inOut" }, 1.42);
-      tl.to("#f08-trafico-stage", { scale: 1.1, transformOrigin: "310px 1070px", duration: 0.5, ease: "power2.inOut" }, 2.05);
-      tl.to("#f08-trafico-stage", { scale: 1.1, transformOrigin: "770px 1070px", duration: 0.5, ease: "power2.inOut" }, 2.87);
+      var D = 4.695;
+      tl.fromTo("#f08-trafico-i0", { scale: .4, opacity: 0, rotation: 8 }, { scale: 1, opacity: 1, rotation: 0, duration: 0.35, ease: "back.out(1.7)" }, 0.8);
+      tl.fromTo("#f08-trafico-i1", { scale: .4, opacity: 0, rotation: -8 }, { scale: 1, opacity: 1, rotation: 0, duration: 0.35, ease: "back.out(1.7)" }, 1.52);
+      tl.fromTo("#f08-trafico-i2", { scale: .4, opacity: 0, rotation: 8 }, { scale: 1, opacity: 1, rotation: 0, duration: 0.35, ease: "back.out(1.7)" }, 2.16);
+      tl.fromTo("#f08-trafico-i3", { scale: .4, opacity: 0, rotation: -8 }, { scale: 1, opacity: 1, rotation: 0, duration: 0.35, ease: "back.out(1.7)" }, 3.06);
+      tl.to("#f08-trafico-stage", { x: 18, duration: 0.05, ease: "none" }, 3.76);
+      tl.to("#f08-trafico-stage", { x: -16, duration: 0.05, ease: "none" }, 3.81);
+      tl.to("#f08-trafico-stage", { x: 12, duration: 0.05, ease: "none" }, 3.86);
+      tl.to("#f08-trafico-stage", { x: -8, duration: 0.05, ease: "none" }, 3.91);
+      tl.to("#f08-trafico-stage", { x: 4, duration: 0.05, ease: "none" }, 3.96);
+      tl.to("#f08-trafico-stage", { x: 0, duration: 0.05, ease: "none" }, 4.01);
+      tl.to("#f08-trafico-stage", { scale: 1.1, transformOrigin: "310px 590px", duration: 0.5, ease: "power2.inOut" }, 0.8);
+      tl.to("#f08-trafico-stage", { scale: 1.1, transformOrigin: "770px 590px", duration: 0.5, ease: "power2.inOut" }, 1.52);
+      tl.to("#f08-trafico-stage", { scale: 1.1, transformOrigin: "310px 1070px", duration: 0.5, ease: "power2.inOut" }, 2.16);
+      tl.to("#f08-trafico-stage", { scale: 1.1, transformOrigin: "770px 1070px", duration: 0.5, ease: "power2.inOut" }, 3.06);
 
       window.__timelines["08-trafico"] = tl;
     })();
