@@ -12,29 +12,31 @@ Sin link en la bio (TikTok pide constancia del SAT para cuenta de empresa): a qu
 
 **Hora sugerida:** 8:00 pm (cuando muchos conductores ya terminaron turno o están en pausa). Ajústala según tus estadísticas después de la primera semana.
 
+**Publicado:** al subir un video, marcarlo con ✅ y la fecha en la tabla. Al preguntar «qué toca hoy», dar el primero sin ✅.
+
 **Dónde:** TikTok, Instagram Reels, YouTube Shorts y tu página de Facebook. El de beta testers también en grupos de Facebook y WhatsApp de conductores.
 
-| # | Fecha | Tipo | Archivo (video + portada) |
-|---|---|---|---|
-| 01 | mar 14 oct | Campaña beta | `01_2026-10-14_beta-testers` |
-| 02 | mié 15 oct | Venta | `02_2026-10-15_trabajar-mucho-sin-lana` |
-| 03 | jue 16 oct | Consejo | `03_2026-10-16_seguridad-de-noche` |
-| 04 | vie 17 oct | Venta | `04_2026-10-17_recogidas-lejanas` |
-| 05 | sáb 18 oct | Consejo | `05_2026-10-18_cansancio-y-salud` |
-| 06 | dom 19 oct | Venta | `06_2026-10-19_gasolina-cara` |
-| 07 | lun 20 oct | Consejo | `07_2026-10-20_pasajeros-y-cancelaciones` |
-| 08 | mar 21 oct | Venta | `08_2026-10-21_decidir-en-segundos` |
-| 09 | mié 22 oct | Consejo | `09_2026-10-22_cuenta-desactivada` |
-| 10 | jue 23 oct | Venta | `10_2026-10-23_mejores-horas` |
-| 11 | vie 24 oct | Consejo | `11_2026-10-24_ingreso-inestable` |
-| 12 | sáb 25 oct | Venta | `12_2026-10-25_comision-y-tarifas` |
-| 13 | dom 26 oct | Consejo | `13_2026-10-26_multas-y-papeles` |
-| 14 | lun 27 oct | Venta | `14_2026-10-27_miedo-a-rechazar` |
-| 15 | mar 28 oct | Venta | `15_2026-10-28_desgaste-y-renta` |
+| # | Fecha | Tipo | Archivo (video + portada) | Publicado |
+|---|---|---|---|---|
+| 01 | mar 14 oct | Campaña beta | `01_2026-10-14_beta-testers` | ✅ 14 oct |
+| 02 | mié 15 oct | Venta | `02_2026-10-15_trabajar-mucho-sin-lana` | |
+| 03 | jue 16 oct | Consejo | `03_2026-10-16_seguridad-de-noche` | |
+| 04 | vie 17 oct | Venta | `04_2026-10-17_recogidas-lejanas` | |
+| 05 | sáb 18 oct | Consejo | `05_2026-10-18_cansancio-y-salud` | |
+| 06 | dom 19 oct | Venta | `06_2026-10-19_gasolina-cara` | |
+| 07 | lun 20 oct | Consejo | `07_2026-10-20_pasajeros-y-cancelaciones` | |
+| 08 | mar 21 oct | Venta | `08_2026-10-21_decidir-en-segundos` | |
+| 09 | mié 22 oct | Consejo | `09_2026-10-22_cuenta-desactivada` | |
+| 10 | jue 23 oct | Venta | `10_2026-10-23_mejores-horas` | |
+| 11 | vie 24 oct | Consejo | `11_2026-10-24_ingreso-inestable` | |
+| 12 | sáb 25 oct | Venta | `12_2026-10-25_comision-y-tarifas` | |
+| 13 | dom 26 oct | Consejo | `13_2026-10-26_multas-y-papeles` | |
+| 14 | lun 27 oct | Venta | `14_2026-10-27_miedo-a-rechazar` | |
+| 15 | mar 28 oct | Venta | `15_2026-10-28_desgaste-y-renta` | |
 
 ---
 
-## 01 · mar 14 oct · Campaña beta
+## 01 · mar 14 oct · Campaña beta · ✅ publicado
 Video: `marketing/publicar/01_2026-10-14_beta-testers.mp4` · Portada: `01_2026-10-14_beta-testers.jpg`
 
 Compañeros, hice una app para saber si un viaje conviene antes de aceptarlo: te dice cuánto te queda limpio después de gasolina y el pago por kilómetro.
