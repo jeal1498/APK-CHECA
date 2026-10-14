@@ -113,7 +113,7 @@ c = "f02-ganas"
 F["02-ganas"] = frame(2, c, f"""
     #{c}-a {{ top: 420px; height: 190px; }} #{c}-a > div {{ font-size: 160px; color: #8A938E; text-decoration: line-through; text-decoration-thickness: 10px; }}
     #{c}-neq {{ position: absolute; left: 0; right: 0; top: 640px; text-align: center; font-size: 260px; font-weight: 800; color: #F43F5E; line-height: 1; }}
-    #{c}-b {{ top: 930px; height: 300px; }} #{c}-b > div {{ font-size: 270px; color: #0A0D0B; }}
+    #{c}-b {{ top: 930px; height: 300px; }} #{c}-b > div {{ font-size: 220px; color: #0A0D0B; }}
     #{c}-q {{ position: absolute; left: 0; right: 0; top: 1260px; text-align: center; font-family: 'Fira Code', monospace; font-weight: 700; font-size: 64px; color: #16A34A; }}
 """, f"""      <div id="{c}-a" class="P-mask"><div>te pagan</div></div>
       <div id="{c}-neq">≠</div>
