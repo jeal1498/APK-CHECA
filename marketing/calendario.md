@@ -20,7 +20,7 @@ Sin link en la bio (TikTok pide constancia del SAT para cuenta de empresa): a qu
 |---|---|---|---|---|
 | 01 | mar 14 oct | Campaña beta | `01_2026-10-14_beta-testers` | ✅ 14 oct |
 | 02 | mié 15 oct | Venta | `02_2026-10-15_trabajar-mucho-sin-lana` | ✅ 15 oct |
-| 03 | jue 16 oct | Consejo | `03_2026-10-16_seguridad-de-noche` | |
+| 03 | jue 16 oct | Consejo | `03_2026-10-16_seguridad-de-noche` ✅ 15 oct |
 | 04 | vie 17 oct | Venta | `04_2026-10-17_recogidas-lejanas` | |
 | 05 | sáb 18 oct | Consejo | `05_2026-10-18_cansancio-y-salud` | |
 | 06 | dom 19 oct | Venta | `06_2026-10-19_gasolina-cara` | |
@@ -53,7 +53,7 @@ Doce horas al volante y la lana no aparece 😩
 Comenta «CHECA» y te mando la app que hace esa cuenta por ti (7 días gratis, solo Android).
 #conductores #choferes #uber #didi #checaapp
 
-## 03 · jue 16 oct · Consejo
+## 03 · jue 16 oct · Consejo · ✅ publicado
 Video: `marketing/publicar/03_2026-10-16_seguridad-de-noche.mp4` · Portada: `03_2026-10-16_seguridad-de-noche.jpg`
 
 Manejar de noche sin pasar sustos 🌙
