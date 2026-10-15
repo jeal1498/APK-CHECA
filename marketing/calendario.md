@@ -19,7 +19,7 @@ Sin link en la bio (TikTok pide constancia del SAT para cuenta de empresa): a qu
 | # | Fecha | Tipo | Archivo (video + portada) | Publicado |
 |---|---|---|---|---|
 | 01 | mar 14 oct | Campaña beta | `01_2026-10-14_beta-testers` | ✅ 14 oct |
-| 02 | mié 15 oct | Venta | `02_2026-10-15_trabajar-mucho-sin-lana` | |
+| 02 | mié 15 oct | Venta | `02_2026-10-15_trabajar-mucho-sin-lana` | ✅ 15 oct |
 | 03 | jue 16 oct | Consejo | `03_2026-10-16_seguridad-de-noche` | |
 | 04 | vie 17 oct | Venta | `04_2026-10-17_recogidas-lejanas` | |
 | 05 | sáb 18 oct | Consejo | `05_2026-10-18_cansancio-y-salud` | |
@@ -44,7 +44,7 @@ Compañeros, hice una app para saber si un viaje conviene antes de aceptarlo: te
 Busco 50 conductores que la usen gratis por 3 meses y me den su opinión. Si la compartes con un amigo, les doy 1 mes más a cada uno.
 Comenta «YO» o mándame mensaje y te paso el acceso. Funciona en teléfonos Android, con Uber y DiDi; te paso el acceso y una guía corta para instalarla.
 
-## 02 · mié 15 oct · Venta
+## 02 · mié 15 oct · Venta · ✅ publicado
 Video: `marketing/publicar/02_2026-10-15_trabajar-mucho-sin-lana.mp4` · Portada: `02_2026-10-15_trabajar-mucho-sin-lana.jpg`
 
 Doce horas al volante y la lana no aparece 😩
