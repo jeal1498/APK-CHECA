@@ -1,0 +1,853 @@
+{
+  "bgm": {
+    "path": "assets/audio/bgm.mp3",
+    "source": "host",
+    "volume": 0.12
+  },
+  "voices": [
+    {
+      "frame": 1,
+      "path": "assets/voice/01.wav",
+      "duration_s": 3.251,
+      "words": [
+        {
+          "id": "w0",
+          "text": "Tienes",
+          "start": 0.0,
+          "end": 0.325
+        },
+        {
+          "id": "w1",
+          "text": "unos",
+          "start": 0.383,
+          "end": 0.534
+        },
+        {
+          "id": "w2",
+          "text": "segundos",
+          "start": 0.557,
+          "end": 0.987
+        },
+        {
+          "id": "w3",
+          "text": "para",
+          "start": 1.033,
+          "end": 1.184
+        },
+        {
+          "id": "w4",
+          "text": "decidir",
+          "start": 1.231,
+          "end": 1.637
+        },
+        {
+          "id": "w5",
+          "text": "si",
+          "start": 1.683,
+          "end": 1.765
+        },
+        {
+          "id": "w6",
+          "text": "ese",
+          "start": 1.811,
+          "end": 1.95
+        },
+        {
+          "id": "w7",
+          "text": "viaje",
+          "start": 1.997,
+          "end": 2.31
+        },
+        {
+          "id": "w8",
+          "text": "vale",
+          "start": 2.368,
+          "end": 2.589
+        },
+        {
+          "id": "w9",
+          "text": "la",
+          "start": 2.635,
+          "end": 2.717
+        },
+        {
+          "id": "w10",
+          "text": "pena.",
+          "start": 2.775,
+          "end": 3.251
+        }
+      ]
+    },
+    {
+      "frame": 2,
+      "path": "assets/voice/02.wav",
+      "duration_s": 2.74,
+      "words": [
+        {
+          "id": "w0",
+          "text": "No",
+          "start": 0.0,
+          "end": 0.244
+        },
+        {
+          "id": "w1",
+          "text": "hay",
+          "start": 0.267,
+          "end": 0.372
+        },
+        {
+          "id": "w2",
+          "text": "tiempo",
+          "start": 0.418,
+          "end": 0.72
+        },
+        {
+          "id": "w3",
+          "text": "de",
+          "start": 0.755,
+          "end": 0.813
+        },
+        {
+          "id": "w4",
+          "text": "hacer",
+          "start": 0.848,
+          "end": 1.045
+        },
+        {
+          "id": "w5",
+          "text": "la",
+          "start": 1.091,
+          "end": 1.161
+        },
+        {
+          "id": "w6",
+          "text": "cuenta",
+          "start": 1.219,
+          "end": 1.509
+        },
+        {
+          "id": "w7",
+          "text": "mientras",
+          "start": 1.556,
+          "end": 1.916
+        },
+        {
+          "id": "w8",
+          "text": "manejas.",
+          "start": 1.974,
+          "end": 2.74
+        }
+      ]
+    },
+    {
+      "frame": 3,
+      "path": "assets/voice/03.wav",
+      "duration_s": 3.297,
+      "words": [
+        {
+          "id": "w0",
+          "text": "Por",
+          "start": 0.0,
+          "end": 0.209
+        },
+        {
+          "id": "w1",
+          "text": "eso",
+          "start": 0.267,
+          "end": 0.406
+        },
+        {
+          "id": "w2",
+          "text": "existe",
+          "start": 0.453,
+          "end": 0.801
+        },
+        {
+          "id": "w3",
+          "text": "la",
+          "start": 0.859,
+          "end": 0.94
+        },
+        {
+          "id": "w4",
+          "text": "app",
+          "start": 0.975,
+          "end": 1.103
+        },
+        {
+          "id": "w5",
+          "text": "Checa.",
+          "start": 1.173,
+          "end": 1.567
+        },
+        {
+          "id": "w6",
+          "text": "Mira",
+          "start": 1.683,
+          "end": 1.904
+        },
+        {
+          "id": "w7",
+          "text": "qué",
+          "start": 1.962,
+          "end": 2.055
+        },
+        {
+          "id": "w8",
+          "text": "hace",
+          "start": 2.09,
+          "end": 2.276
+        },
+        {
+          "id": "w9",
+          "text": "con",
+          "start": 2.322,
+          "end": 2.415
+        },
+        {
+          "id": "w10",
+          "text": "una",
+          "start": 2.473,
+          "end": 2.577
+        },
+        {
+          "id": "w11",
+          "text": "oferta.",
+          "start": 2.612,
+          "end": 3.297
+        }
+      ]
+    },
+    {
+      "frame": 4,
+      "path": "assets/voice/04.wav",
+      "duration_s": 3.251,
+      "words": [
+        {
+          "id": "w0",
+          "text": "Lee",
+          "start": 0.0,
+          "end": 0.221
+        },
+        {
+          "id": "w1",
+          "text": "la",
+          "start": 0.267,
+          "end": 0.337
+        },
+        {
+          "id": "w2",
+          "text": "oferta",
+          "start": 0.36,
+          "end": 0.708
+        },
+        {
+          "id": "w3",
+          "text": "por",
+          "start": 0.755,
+          "end": 0.894
+        },
+        {
+          "id": "w4",
+          "text": "ti",
+          "start": 0.964,
+          "end": 1.115
+        },
+        {
+          "id": "w5",
+          "text": "y",
+          "start": 1.161,
+          "end": 1.219
+        },
+        {
+          "id": "w6",
+          "text": "te",
+          "start": 1.312,
+          "end": 1.393
+        },
+        {
+          "id": "w7",
+          "text": "dice",
+          "start": 1.44,
+          "end": 1.683
+        },
+        {
+          "id": "w8",
+          "text": "cuánto",
+          "start": 1.753,
+          "end": 2.067
+        },
+        {
+          "id": "w9",
+          "text": "te",
+          "start": 2.125,
+          "end": 2.194
+        },
+        {
+          "id": "w10",
+          "text": "queda",
+          "start": 2.241,
+          "end": 2.461
+        },
+        {
+          "id": "w11",
+          "text": "limpio.",
+          "start": 2.519,
+          "end": 3.251
+        }
+      ]
+    },
+    {
+      "frame": 5,
+      "path": "assets/voice/05.wav",
+      "duration_s": 2.647,
+      "words": [
+        {
+          "id": "w0",
+          "text": "Esta",
+          "start": 0.0,
+          "end": 0.302
+        },
+        {
+          "id": "w1",
+          "text": "se",
+          "start": 0.348,
+          "end": 0.43
+        },
+        {
+          "id": "w2",
+          "text": "ve",
+          "start": 0.476,
+          "end": 0.557
+        },
+        {
+          "id": "w3",
+          "text": "bien,",
+          "start": 0.604,
+          "end": 0.836
+        },
+        {
+          "id": "w4",
+          "text": "pero",
+          "start": 0.859,
+          "end": 1.022
+        },
+        {
+          "id": "w5",
+          "text": "no",
+          "start": 1.057,
+          "end": 1.126
+        },
+        {
+          "id": "w6",
+          "text": "te",
+          "start": 1.173,
+          "end": 1.242
+        },
+        {
+          "id": "w7",
+          "text": "conviene.",
+          "start": 1.277,
+          "end": 1.788
+        },
+        {
+          "id": "w8",
+          "text": "Rojo.",
+          "start": 1.939,
+          "end": 2.647
+        }
+      ]
+    },
+    {
+      "frame": 6,
+      "path": "assets/voice/06.wav",
+      "duration_s": 2.554,
+      "words": [
+        {
+          "id": "w0",
+          "text": "Esta",
+          "start": 0.0,
+          "end": 0.279
+        },
+        {
+          "id": "w1",
+          "text": "paga",
+          "start": 0.337,
+          "end": 0.557
+        },
+        {
+          "id": "w2",
+          "text": "menos,",
+          "start": 0.615,
+          "end": 0.929
+        },
+        {
+          "id": "w3",
+          "text": "pero",
+          "start": 0.952,
+          "end": 1.115
+        },
+        {
+          "id": "w4",
+          "text": "rinde",
+          "start": 1.173,
+          "end": 1.428
+        },
+        {
+          "id": "w5",
+          "text": "más.",
+          "start": 1.474,
+          "end": 1.765
+        },
+        {
+          "id": "w6",
+          "text": "Verde.",
+          "start": 1.834,
+          "end": 2.554
+        }
+      ]
+    },
+    {
+      "frame": 7,
+      "path": "assets/voice/07.wav",
+      "duration_s": 3.808,
+      "words": [
+        {
+          "id": "w0",
+          "text": "Tú",
+          "start": 0.0,
+          "end": 0.197
+        },
+        {
+          "id": "w1",
+          "text": "pones",
+          "start": 0.255,
+          "end": 0.557
+        },
+        {
+          "id": "w2",
+          "text": "la",
+          "start": 0.627,
+          "end": 0.697
+        },
+        {
+          "id": "w3",
+          "text": "vara:",
+          "start": 0.743,
+          "end": 1.103
+        },
+        {
+          "id": "w4",
+          "text": "cuánto",
+          "start": 1.161,
+          "end": 1.474
+        },
+        {
+          "id": "w5",
+          "text": "quieres",
+          "start": 1.533,
+          "end": 1.788
+        },
+        {
+          "id": "w6",
+          "text": "ganar",
+          "start": 1.823,
+          "end": 2.032
+        },
+        {
+          "id": "w7",
+          "text": "por",
+          "start": 2.078,
+          "end": 2.206
+        },
+        {
+          "id": "w8",
+          "text": "kilómetro",
+          "start": 2.264,
+          "end": 2.844
+        },
+        {
+          "id": "w9",
+          "text": "y",
+          "start": 2.902,
+          "end": 2.961
+        },
+        {
+          "id": "w10",
+          "text": "por",
+          "start": 3.053,
+          "end": 3.216
+        },
+        {
+          "id": "w11",
+          "text": "hora.",
+          "start": 3.251,
+          "end": 3.808
+        }
+      ]
+    },
+    {
+      "frame": 8,
+      "path": "assets/voice/08.wav",
+      "duration_s": 3.669,
+      "words": [
+        {
+          "id": "w0",
+          "text": "Y",
+          "start": 0.0,
+          "end": 0.093
+        },
+        {
+          "id": "w1",
+          "text": "te",
+          "start": 0.186,
+          "end": 0.244
+        },
+        {
+          "id": "w2",
+          "text": "lo",
+          "start": 0.29,
+          "end": 0.372
+        },
+        {
+          "id": "w3",
+          "text": "dice",
+          "start": 0.418,
+          "end": 0.673
+        },
+        {
+          "id": "w4",
+          "text": "en",
+          "start": 0.708,
+          "end": 0.755
+        },
+        {
+          "id": "w5",
+          "text": "voz",
+          "start": 0.801,
+          "end": 0.964
+        },
+        {
+          "id": "w6",
+          "text": "alta:",
+          "start": 1.033,
+          "end": 1.358
+        },
+        {
+          "id": "w7",
+          "text": "aceptar,",
+          "start": 1.474,
+          "end": 2.032
+        },
+        {
+          "id": "w8",
+          "text": "considerar",
+          "start": 2.067,
+          "end": 2.635
+        },
+        {
+          "id": "w9",
+          "text": "o",
+          "start": 2.752,
+          "end": 2.81
+        },
+        {
+          "id": "w10",
+          "text": "rechazar.",
+          "start": 2.891,
+          "end": 3.669
+        }
+      ]
+    },
+    {
+      "frame": 9,
+      "path": "assets/voice/09.wav",
+      "duration_s": 3.344,
+      "words": [
+        {
+          "id": "w0",
+          "text": "Eso",
+          "start": 0.0,
+          "end": 0.302
+        },
+        {
+          "id": "w1",
+          "text": "sí:",
+          "start": 0.348,
+          "end": 0.615
+        },
+        {
+          "id": "w2",
+          "text": "Checa",
+          "start": 0.789,
+          "end": 1.091
+        },
+        {
+          "id": "w3",
+          "text": "no",
+          "start": 1.138,
+          "end": 1.207
+        },
+        {
+          "id": "w4",
+          "text": "acepta",
+          "start": 1.254,
+          "end": 1.567
+        },
+        {
+          "id": "w5",
+          "text": "viajes",
+          "start": 1.614,
+          "end": 1.927
+        },
+        {
+          "id": "w6",
+          "text": "por",
+          "start": 1.985,
+          "end": 2.101
+        },
+        {
+          "id": "w7",
+          "text": "ti.",
+          "start": 2.159,
+          "end": 2.403
+        },
+        {
+          "id": "w8",
+          "text": "Decides",
+          "start": 2.485,
+          "end": 2.902
+        },
+        {
+          "id": "w9",
+          "text": "tú.",
+          "start": 2.949,
+          "end": 3.344
+        }
+      ]
+    },
+    {
+      "frame": 10,
+      "path": "assets/voice/10.wav",
+      "duration_s": 3.204,
+      "words": [
+        {
+          "id": "w0",
+          "text": "Descarga",
+          "start": 0.0,
+          "end": 0.522
+        },
+        {
+          "id": "w1",
+          "text": "Checa",
+          "start": 0.569,
+          "end": 0.906
+        },
+        {
+          "id": "w2",
+          "text": "y",
+          "start": 0.964,
+          "end": 1.033
+        },
+        {
+          "id": "w3",
+          "text": "checa",
+          "start": 1.115,
+          "end": 1.358
+        },
+        {
+          "id": "w4",
+          "text": "cuánto",
+          "start": 1.393,
+          "end": 1.672
+        },
+        {
+          "id": "w5",
+          "text": "te",
+          "start": 1.73,
+          "end": 1.8
+        },
+        {
+          "id": "w6",
+          "text": "queda",
+          "start": 1.846,
+          "end": 2.067
+        },
+        {
+          "id": "w7",
+          "text": "de",
+          "start": 2.113,
+          "end": 2.183
+        },
+        {
+          "id": "w8",
+          "text": "cada",
+          "start": 2.229,
+          "end": 2.45
+        },
+        {
+          "id": "w9",
+          "text": "viaje.",
+          "start": 2.496,
+          "end": 3.204
+        }
+      ]
+    }
+  ],
+  "sfx": [
+    {
+      "frame": 1,
+      "file": "assets/sfx/impact-bass-1.mp3",
+      "offset_s": 0.0,
+      "duration_s": 2.12,
+      "volume": 0.5
+    },
+    {
+      "frame": 1,
+      "file": "assets/sfx/ping.mp3",
+      "offset_s": 0.13,
+      "duration_s": 1.32,
+      "volume": 0.3
+    },
+    {
+      "frame": 2,
+      "file": "assets/sfx/error.mp3",
+      "offset_s": 0.97,
+      "duration_s": 1.62,
+      "volume": 0.25
+    },
+    {
+      "frame": 2,
+      "file": "assets/sfx/glitch-1.mp3",
+      "offset_s": 1.72,
+      "duration_s": 2.64,
+      "volume": 0.2
+    },
+    {
+      "frame": 3,
+      "file": "assets/sfx/whoosh-short.mp3",
+      "offset_s": 1.43,
+      "duration_s": 0.57,
+      "volume": 0.3
+    },
+    {
+      "frame": 3,
+      "file": "assets/sfx/pop.mp3",
+      "offset_s": 1.84,
+      "duration_s": 0.72,
+      "volume": 0.4
+    },
+    {
+      "frame": 4,
+      "file": "assets/sfx/click-soft.mp3",
+      "offset_s": 0.0,
+      "duration_s": 0.37,
+      "volume": 0.4
+    },
+    {
+      "frame": 4,
+      "file": "assets/sfx/ping.mp3",
+      "offset_s": 1.99,
+      "duration_s": 1.32,
+      "volume": 0.35
+    },
+    {
+      "frame": 5,
+      "file": "assets/sfx/impact-bass-1.mp3",
+      "offset_s": 1.84,
+      "duration_s": 2.12,
+      "volume": 0.4
+    },
+    {
+      "frame": 5,
+      "file": "assets/sfx/error.mp3",
+      "offset_s": 1.69,
+      "duration_s": 1.62,
+      "volume": 0.25
+    },
+    {
+      "frame": 6,
+      "file": "assets/sfx/whoosh-short.mp3",
+      "offset_s": 0.09,
+      "duration_s": 0.57,
+      "volume": 0.3
+    },
+    {
+      "frame": 6,
+      "file": "assets/sfx/chime.mp3",
+      "offset_s": 1.73,
+      "duration_s": 2.54,
+      "volume": 0.4
+    },
+    {
+      "frame": 7,
+      "file": "assets/sfx/click.mp3",
+      "offset_s": 2.01,
+      "duration_s": 0.37,
+      "volume": 0.4
+    },
+    {
+      "frame": 7,
+      "file": "assets/sfx/click.mp3",
+      "offset_s": 3.0,
+      "duration_s": 0.37,
+      "volume": 0.4
+    },
+    {
+      "frame": 8,
+      "file": "assets/sfx/ping.mp3",
+      "offset_s": 1.22,
+      "duration_s": 1.32,
+      "volume": 0.4
+    },
+    {
+      "frame": 8,
+      "file": "assets/sfx/ping.mp3",
+      "offset_s": 1.82,
+      "duration_s": 1.32,
+      "volume": 0.35
+    },
+    {
+      "frame": 8,
+      "file": "assets/sfx/error.mp3",
+      "offset_s": 2.64,
+      "duration_s": 1.62,
+      "volume": 0.25
+    },
+    {
+      "frame": 9,
+      "file": "assets/sfx/pop.mp3",
+      "offset_s": 0.54,
+      "duration_s": 0.72,
+      "volume": 0.35
+    },
+    {
+      "frame": 9,
+      "file": "assets/sfx/click-soft.mp3",
+      "offset_s": 1.91,
+      "duration_s": 0.37,
+      "volume": 0.4
+    },
+    {
+      "frame": 10,
+      "file": "assets/sfx/pop.mp3",
+      "offset_s": 0.0,
+      "duration_s": 0.72,
+      "volume": 0.3
+    },
+    {
+      "frame": 10,
+      "file": "assets/sfx/chime.mp3",
+      "offset_s": 0.47,
+      "duration_s": 2.54,
+      "volume": 0.4
+    },
+    {
+      "frame": 10,
+      "file": "assets/sfx/sparkle.mp3",
+      "offset_s": 1.75,
+      "duration_s": 1.8,
+      "volume": 0.3
+    }
+  ]
+}

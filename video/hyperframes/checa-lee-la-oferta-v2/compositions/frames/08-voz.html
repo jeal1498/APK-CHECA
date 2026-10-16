@@ -1,0 +1,102 @@
+<template>
+  <style>
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Regular.ttf') format('truetype'); font-weight: 400; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Medium.ttf') format('truetype'); font-weight: 500 600; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Bold.ttf') format('truetype'); font-weight: 700 900; font-display: block; }
+    @font-face{ font-family: 'Fira Code'; src: url('assets/fonts/FiraCode.ttf') format('truetype'); font-weight: 300 700; font-display: block; }
+    #root { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; font-family: 'Fira Sans', sans-serif; color: #F1F5F2; }
+    .clip { position: absolute; }
+    .P-ground { inset: 0; background: #000; }
+    .P-stage { left: 0; top: 0; width: 1080px; height: 1600px; transform-origin: 50% 45%; }
+    .P-glow { position: absolute; left: 140px; top: 420px; width: 800px; height: 800px; border-radius: 50%; background: radial-gradient(circle, rgba(34,197,94,.20), rgba(34,197,94,0) 65%); }
+    .P-mask { position: absolute; left: 0; right: 0; overflow: hidden; text-align: center; }
+    .P-mask > div { font-weight: 800; text-transform: lowercase; letter-spacing: -.04em; line-height: 1.02; white-space: nowrap; }
+    .P-ej { position: absolute; left: 0; right: 0; top: 1500px; text-align: center; font-family: 'Fira Code', monospace; font-size: 26px; letter-spacing: .12em; text-transform: uppercase; color: #6B736F; }
+    .P-num { font-family: 'Fira Code', monospace; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .P-card { position: absolute; width: 620px; border-radius: 36px; background: #F4F5F4; color: #111; padding: 48px 52px 44px; box-shadow: 0 30px 80px rgba(0,0,0,.7); }
+    .P-card .k { font-family: 'Fira Code', monospace; font-weight: 500; font-size: 28px; letter-spacing: .14em; text-transform: uppercase; color: #5C635F; }
+    .P-card .f { font-family: 'Fira Code', monospace; font-weight: 700; font-size: 112px; letter-spacing: -.03em; line-height: 1; margin-top: 22px; }
+    .P-card .r { display: flex; align-items: center; gap: 22px; font-size: 40px; font-weight: 500; margin-top: 28px; color: #222; }
+    .P-card .d { width: 20px; height: 20px; border-radius: 50%; background: #111; flex: none; }
+    .P-card .s { width: 20px; height: 20px; background: #111; flex: none; }
+    .P-card .b { margin-top: 38px; height: 104px; border-radius: 20px; background: #111; color: #F4F5F4; display: flex; align-items: center; justify-content: center; font-size: 44px; font-weight: 700; }
+
+    #f08-voz-ground { background: #000; }
+
+    #f08-voz-pw .cp { --u: 1; width: calc(860px * var(--u)); border-radius: calc(40px * var(--u)); background: #181C1A; border: calc(3px * var(--u)) solid #2E3532; overflow: hidden; box-shadow: 0 calc(24px * var(--u)) calc(60px * var(--u)) rgba(0,0,0,.6); font-family: "Fira Sans", sans-serif; color: #F2F5F3; }
+    #f08-voz-pw .cp.cp-oro { border: calc(10px * var(--u)) solid #E8B84A; }
+    #f08-voz-pw .cp-banda { height: calc(100px * var(--u)); display: flex; align-items: center; justify-content: space-between; padding: 0 calc(34px * var(--u)); color: #08130C; }
+    #f08-voz-pw .cp-verde .cp-banda { background: #22C55E; }
+    #f08-voz-pw .cp-amarillo .cp-banda { background: #F5B70A; }
+    #f08-voz-pw .cp-rojo .cp-banda { background: #EF4444; color: #fff; }
+    #f08-voz-pw .cp-apagada .cp-banda { opacity: .5; }
+    #f08-voz-pw .cp-lado { width: calc(190px * var(--u)); display: flex; align-items: center; gap: calc(8px * var(--u)); }
+    #f08-voz-pw .cp-lado.der { justify-content: flex-end; }
+    #f08-voz-pw .cp-app { background: #222826; color: #fff; border-radius: 999px; padding: calc(6px * var(--u)) calc(16px * var(--u)); font-size: calc(26px * var(--u)); font-weight: 700; }
+    #f08-voz-pw .cp-accion { font-size: calc(50px * var(--u)); font-weight: 700; letter-spacing: calc(5px * var(--u)); }
+    #f08-voz-pw .cp-cuerpo { padding: calc(34px * var(--u)) calc(30px * var(--u)) calc(30px * var(--u)); text-align: center; }
+    #f08-voz-pw .cp-neta { font-family: "Fira Code", monospace; font-weight: 700; font-size: calc(124px * var(--u)); line-height: 1; }
+    #f08-voz-pw .cp-neta small { font-size: .4em; color: #B4BCB7; }
+    #f08-voz-pw .cp-linea { font-size: calc(38px * var(--u)); color: #B4BCB7; margin-top: calc(22px * var(--u)); }
+    #f08-voz-pw .cp-fichas { display: flex; gap: calc(20px * var(--u)); margin-top: calc(40px * var(--u)); }
+    #f08-voz-pw .cp-ficha { flex: 1; height: calc(156px * var(--u)); border-radius: calc(28px * var(--u)); background: #181C1A; border: calc(3px * var(--u)) solid transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    #f08-voz-pw .cp-ficha b { font-family: "Fira Code", monospace; font-weight: 700; font-size: calc(48px * var(--u)); white-space: nowrap; }
+    #f08-voz-pw .cp-ficha span { font-size: calc(28px * var(--u)); color: #7D8781; margin-top: calc(4px * var(--u)); }
+    #f08-voz-pw .cp-ok b { color: #22C55E; }
+    #f08-voz-pw .cp-mal { background: #381818; border-color: #EF4444; }
+    #f08-voz-pw .cp-mal b { color: #EF4444; }
+
+    #f08-voz-eye { position: absolute; left: 330px; top: 420px; width: 420px; height: 420px; color: #F1F5F2; }
+    #f08-voz-sp { position: absolute; left: 330px; top: 420px; width: 420px; height: 420px; color: #22C55E; }
+    #f08-voz-tit { top: 900px; height: 150px; } #f08-voz-tit > div { font-size: 124px; } #f08-voz-tit em { font-style: normal; color: #22C55E; }
+    #f08-voz-pw { position: absolute; left: 153px; top: 620px; width: 774px; height: 580px; }
+
+  </style>
+
+  <div id="root" data-composition-id="08-voz" data-width="1080" data-height="1920" data-start="0" data-duration="3.819">
+    <div id="f08-voz-ground" class="clip P-ground" data-start="0" data-duration="3.819" data-track-index="0"></div>
+    <div id="f08-voz-stage" class="clip P-stage" data-start="0" data-duration="3.819" data-track-index="1">
+      <div class="P-glow"></div>
+      <div id="f08-voz-eye"><svg viewBox="0 0 200 200"><path fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" d="M16 100 Q100 14 184 100 Q100 186 16 100 Z"/><circle fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" cx="100" cy="100" r="30"/><path d="M36 176 L164 24" stroke="#F43F5E" stroke-width="10" stroke-linecap="round"/></svg></div>
+      <div id="f08-voz-sp"><svg viewBox="0 0 220 200"><path fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" d="M30 78 L72 78 L124 36 L124 164 L72 122 L30 122 Z"/><path class="w1" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" d="M148 72 Q176 100 148 128"/><path class="w2" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" d="M166 48 Q212 100 166 152"/></svg></div>
+      <div id="f08-voz-tit" class="P-mask"><div>en <em>voz alta</em></div></div>
+      <div id="f08-voz-pw">
+        <div id="f08-voz-p0" class="cp cp-verde" style="position:absolute;left:0;top:0;--u:0.9"><div class="cp-banda"><div class="cp-lado"><span class="cp-app">UBER</span></div><div class="cp-accion">ACEPTAR</div><div class="cp-lado der"><svg width="44" height="44" viewBox="0 0 24 24"><path d="M6 6 L18 18 M18 6 L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div></div><div class="cp-cuerpo"><div class="cp-neta">$80<small>&nbsp;netos</small></div><div class="cp-linea">Viaje $96&nbsp;·&nbsp;Gasolina −$16</div><div class="cp-fichas"><div class="cp-ficha cp-ok"><b>$339/h</b><span>por hora</span></div><div class="cp-ficha cp-ok"><b>$12.0/km</b><span>por km</span></div><div class="cp-ficha "><b>17 min</b><span>8 km total</span></div></div></div></div>
+        <div id="f08-voz-p1" class="cp cp-amarillo" style="position:absolute;left:0;top:0;--u:0.9"><div class="cp-banda"><div class="cp-lado"><span class="cp-app">UBER</span></div><div class="cp-accion">CONSIDERAR</div><div class="cp-lado der"><svg width="44" height="44" viewBox="0 0 24 24"><path d="M6 6 L18 18 M18 6 L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div></div><div class="cp-cuerpo"><div class="cp-neta">$72<small>&nbsp;netos</small></div><div class="cp-linea">Viaje $100&nbsp;·&nbsp;Gasolina −$28</div><div class="cp-fichas"><div class="cp-ficha cp-ok"><b>$171/h</b><span>por hora</span></div><div class="cp-ficha cp-mal"><b>$7.1/km</b><span>por km</span></div><div class="cp-ficha "><b>35 min</b><span>14 km total</span></div></div></div></div>
+        <div id="f08-voz-p2" class="cp cp-rojo" style="position:absolute;left:0;top:0;--u:0.9"><div class="cp-banda"><div class="cp-lado"><span class="cp-app">UBER</span></div><div class="cp-accion">RECHAZAR</div><div class="cp-lado der"><svg width="44" height="44" viewBox="0 0 24 24"><path d="M6 6 L18 18 M18 6 L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div></div><div class="cp-cuerpo"><div class="cp-neta">$100<small>&nbsp;netos</small></div><div class="cp-linea">Viaje $180&nbsp;·&nbsp;Gasolina −$80</div><div class="cp-fichas"><div class="cp-ficha cp-mal"><b>$144/h</b><span>por hora</span></div><div class="cp-ficha cp-mal"><b>$4.5/km</b><span>por km</span></div><div class="cp-ficha "><b>75 min</b><span>40 km total</span></div></div></div></div>
+      </div>
+      <div class="P-ej">Números de ejemplo</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      var D = 3.819;
+      tl.fromTo("#f08-voz-eye", {"scale": 0.5, "opacity": 0, "rotation": -10}, {"scale": 1, "opacity": 1, "rotation": 0, "duration": 0.4, "ease": "back.out(1.7)"}, 0);
+      tl.set("#f08-voz-sp", {"opacity": 0}, 0);
+      tl.set("#f08-voz-pw", {"opacity": 0}, 0);
+      tl.to("#f08-voz-eye", {"opacity": 0, "scale": 0.6, "duration": 0.25}, 0.551);
+      tl.fromTo("#f08-voz-sp", {"opacity": 0, "scale": 0.6}, {"opacity": 1, "scale": 1, "duration": 0.35, "ease": "back.out(2)"}, 0.551);
+      tl.fromTo("#f08-voz-tit > div", {"yPercent": 220}, {"yPercent": 0, "duration": 0.4, "ease": "power3.out"}, 0.6010000000000001);
+      tl.fromTo("#f08-voz-sp .w1", {"opacity": 0.25}, {"opacity": 1, "duration": 0.2, "yoyo": true, "repeat": 3, "ease": "none"}, 0.551);
+      tl.fromTo("#f08-voz-sp .w2", {"opacity": 0.25}, {"opacity": 1, "duration": 0.2, "yoyo": true, "repeat": 3, "ease": "none"}, 0.671);
+      tl.to("#f08-voz-tit", {"opacity": 0, "duration": 0.2}, 1.174);
+      tl.to("#f08-voz-sp", {"y": -330, "scale": 0.7, "duration": 0.45, "ease": "power3.inOut"}, 1.174);
+      tl.set("#f08-voz-pw", {"opacity": 1}, 1.224);
+      tl.fromTo("#f08-voz-p0", {"y": -700, "opacity": 0, "scale": 0.92}, {"y": 0, "opacity": 1, "scale": 1, "duration": 0.5, "ease": "back.out(1.3)"}, 1.224);
+      tl.set("#f08-voz-p1, #f08-voz-p2", {"opacity": 0}, 0);
+      tl.set("#f08-voz-p0", {"opacity": 0}, 1.817);
+      tl.set("#f08-voz-p1", {"opacity": 1}, 1.817);
+      tl.set("#f08-voz-p1", {"opacity": 0}, 2.641);
+      tl.set("#f08-voz-p2", {"opacity": 1}, 2.641);
+      tl.fromTo("#f08-voz-pw", {"scale": 1.06}, {"scale": 1, "duration": 0.3, "ease": "power3.out"}, 1.817);
+      tl.fromTo("#f08-voz-pw", {"scale": 1.06}, {"scale": 1, "duration": 0.3, "ease": "power3.out"}, 2.641);
+      tl.fromTo("#f08-voz-stage", { scale: 1 }, { scale: 1.04, duration: D - 0, ease: "none" }, 0);
+
+      window.__timelines["08-voz"] = tl;
+    })();
+  </script>
+</template>

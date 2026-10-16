@@ -1,0 +1,1084 @@
+{
+  "total_duration_s": 35.115,
+  "width": 1080,
+  "height": 1920,
+  "groups": [
+    {
+      "id": "caption-group-0",
+      "frame": 1,
+      "start": 0,
+      "end": 1.033,
+      "text": "Tienes unos segundos",
+      "words": [
+        {
+          "id": "caption-word-0-0",
+          "text": "Tienes",
+          "start": 0,
+          "end": 0.325
+        },
+        {
+          "id": "caption-word-0-1",
+          "text": "unos",
+          "start": 0.383,
+          "end": 0.534
+        },
+        {
+          "id": "caption-word-0-2",
+          "text": "segundos",
+          "start": 0.557,
+          "end": 0.987
+        }
+      ]
+    },
+    {
+      "id": "caption-group-1",
+      "frame": 1,
+      "start": 1.033,
+      "end": 1.683,
+      "text": "para decidir",
+      "words": [
+        {
+          "id": "caption-word-1-0",
+          "text": "para",
+          "start": 1.033,
+          "end": 1.184
+        },
+        {
+          "id": "caption-word-1-1",
+          "text": "decidir",
+          "start": 1.231,
+          "end": 1.637
+        }
+      ]
+    },
+    {
+      "id": "caption-group-2",
+      "frame": 1,
+      "start": 1.683,
+      "end": 1.997,
+      "text": "si ese",
+      "words": [
+        {
+          "id": "caption-word-2-0",
+          "text": "si",
+          "start": 1.683,
+          "end": 1.765
+        },
+        {
+          "id": "caption-word-2-1",
+          "text": "ese",
+          "start": 1.811,
+          "end": 1.95
+        }
+      ]
+    },
+    {
+      "id": "caption-group-3",
+      "frame": 1,
+      "start": 1.997,
+      "end": 2.635,
+      "text": "viaje vale",
+      "words": [
+        {
+          "id": "caption-word-3-0",
+          "text": "viaje",
+          "start": 1.997,
+          "end": 2.31
+        },
+        {
+          "id": "caption-word-3-1",
+          "text": "vale",
+          "start": 2.368,
+          "end": 2.589
+        }
+      ]
+    },
+    {
+      "id": "caption-group-4",
+      "frame": 1,
+      "start": 2.635,
+      "end": 3.371,
+      "text": "la pena.",
+      "words": [
+        {
+          "id": "caption-word-4-0",
+          "text": "la",
+          "start": 2.635,
+          "end": 2.717
+        },
+        {
+          "id": "caption-word-4-1",
+          "text": "pena.",
+          "start": 2.775,
+          "end": 3.251
+        }
+      ]
+    },
+    {
+      "id": "caption-group-5",
+      "frame": 2,
+      "start": 3.401,
+      "end": 3.819,
+      "text": "No hay",
+      "words": [
+        {
+          "id": "caption-word-5-0",
+          "text": "No",
+          "start": 3.401,
+          "end": 3.645
+        },
+        {
+          "id": "caption-word-5-1",
+          "text": "hay",
+          "start": 3.668,
+          "end": 3.773
+        }
+      ]
+    },
+    {
+      "id": "caption-group-6",
+      "frame": 2,
+      "start": 3.819,
+      "end": 4.249,
+      "text": "tiempo de",
+      "words": [
+        {
+          "id": "caption-word-6-0",
+          "text": "tiempo",
+          "start": 3.819,
+          "end": 4.121
+        },
+        {
+          "id": "caption-word-6-1",
+          "text": "de",
+          "start": 4.156,
+          "end": 4.214
+        }
+      ]
+    },
+    {
+      "id": "caption-group-7",
+      "frame": 2,
+      "start": 4.249,
+      "end": 4.62,
+      "text": "hacer la",
+      "words": [
+        {
+          "id": "caption-word-7-0",
+          "text": "hacer",
+          "start": 4.249,
+          "end": 4.446
+        },
+        {
+          "id": "caption-word-7-1",
+          "text": "la",
+          "start": 4.492,
+          "end": 4.562
+        }
+      ]
+    },
+    {
+      "id": "caption-group-8",
+      "frame": 2,
+      "start": 4.62,
+      "end": 6.261,
+      "text": "cuenta mientras manejas.",
+      "words": [
+        {
+          "id": "caption-word-8-0",
+          "text": "cuenta",
+          "start": 4.62,
+          "end": 4.91
+        },
+        {
+          "id": "caption-word-8-1",
+          "text": "mientras",
+          "start": 4.957,
+          "end": 5.317
+        },
+        {
+          "id": "caption-word-8-2",
+          "text": "manejas.",
+          "start": 5.375,
+          "end": 6.141
+        }
+      ]
+    },
+    {
+      "id": "caption-group-9",
+      "frame": 3,
+      "start": 6.291,
+      "end": 6.744,
+      "text": "Por eso",
+      "words": [
+        {
+          "id": "caption-word-9-0",
+          "text": "Por",
+          "start": 6.291,
+          "end": 6.5
+        },
+        {
+          "id": "caption-word-9-1",
+          "text": "eso",
+          "start": 6.558,
+          "end": 6.697
+        }
+      ]
+    },
+    {
+      "id": "caption-group-10",
+      "frame": 3,
+      "start": 6.744,
+      "end": 7.266,
+      "text": "existe la",
+      "words": [
+        {
+          "id": "caption-word-10-0",
+          "text": "existe",
+          "start": 6.744,
+          "end": 7.092
+        },
+        {
+          "id": "caption-word-10-1",
+          "text": "la",
+          "start": 7.15,
+          "end": 7.231
+        }
+      ]
+    },
+    {
+      "id": "caption-group-11",
+      "frame": 3,
+      "start": 7.266,
+      "end": 7.974,
+      "text": "app Checa.",
+      "words": [
+        {
+          "id": "caption-word-11-0",
+          "text": "app",
+          "start": 7.266,
+          "end": 7.394
+        },
+        {
+          "id": "caption-word-11-1",
+          "text": "Checa.",
+          "start": 7.464,
+          "end": 7.858
+        }
+      ]
+    },
+    {
+      "id": "caption-group-12",
+      "frame": 3,
+      "start": 7.974,
+      "end": 8.381,
+      "text": "Mira qué",
+      "words": [
+        {
+          "id": "caption-word-12-0",
+          "text": "Mira",
+          "start": 7.974,
+          "end": 8.195
+        },
+        {
+          "id": "caption-word-12-1",
+          "text": "qué",
+          "start": 8.253,
+          "end": 8.346
+        }
+      ]
+    },
+    {
+      "id": "caption-group-13",
+      "frame": 3,
+      "start": 8.381,
+      "end": 8.764,
+      "text": "hace con",
+      "words": [
+        {
+          "id": "caption-word-13-0",
+          "text": "hace",
+          "start": 8.381,
+          "end": 8.567
+        },
+        {
+          "id": "caption-word-13-1",
+          "text": "con",
+          "start": 8.613,
+          "end": 8.706
+        }
+      ]
+    },
+    {
+      "id": "caption-group-14",
+      "frame": 3,
+      "start": 8.764,
+      "end": 9.708,
+      "text": "una oferta.",
+      "words": [
+        {
+          "id": "caption-word-14-0",
+          "text": "una",
+          "start": 8.764,
+          "end": 8.868
+        },
+        {
+          "id": "caption-word-14-1",
+          "text": "oferta.",
+          "start": 8.903,
+          "end": 9.588
+        }
+      ]
+    },
+    {
+      "id": "caption-group-15",
+      "frame": 4,
+      "start": 9.738,
+      "end": 10.098,
+      "text": "Lee la",
+      "words": [
+        {
+          "id": "caption-word-15-0",
+          "text": "Lee",
+          "start": 9.738,
+          "end": 9.959
+        },
+        {
+          "id": "caption-word-15-1",
+          "text": "la",
+          "start": 10.005,
+          "end": 10.075
+        }
+      ]
+    },
+    {
+      "id": "caption-group-16",
+      "frame": 4,
+      "start": 10.098,
+      "end": 10.702,
+      "text": "oferta por",
+      "words": [
+        {
+          "id": "caption-word-16-0",
+          "text": "oferta",
+          "start": 10.098,
+          "end": 10.446
+        },
+        {
+          "id": "caption-word-16-1",
+          "text": "por",
+          "start": 10.493,
+          "end": 10.632
+        }
+      ]
+    },
+    {
+      "id": "caption-group-17",
+      "frame": 4,
+      "start": 10.702,
+      "end": 11.05,
+      "text": "ti y",
+      "words": [
+        {
+          "id": "caption-word-17-0",
+          "text": "ti",
+          "start": 10.702,
+          "end": 10.853
+        },
+        {
+          "id": "caption-word-17-1",
+          "text": "y",
+          "start": 10.899,
+          "end": 10.957
+        }
+      ]
+    },
+    {
+      "id": "caption-group-18",
+      "frame": 4,
+      "start": 11.05,
+      "end": 11.491,
+      "text": "te dice",
+      "words": [
+        {
+          "id": "caption-word-18-0",
+          "text": "te",
+          "start": 11.05,
+          "end": 11.131
+        },
+        {
+          "id": "caption-word-18-1",
+          "text": "dice",
+          "start": 11.178,
+          "end": 11.421
+        }
+      ]
+    },
+    {
+      "id": "caption-group-19",
+      "frame": 4,
+      "start": 11.491,
+      "end": 11.979,
+      "text": "cuánto te",
+      "words": [
+        {
+          "id": "caption-word-19-0",
+          "text": "cuánto",
+          "start": 11.491,
+          "end": 11.805
+        },
+        {
+          "id": "caption-word-19-1",
+          "text": "te",
+          "start": 11.863,
+          "end": 11.932
+        }
+      ]
+    },
+    {
+      "id": "caption-group-20",
+      "frame": 4,
+      "start": 11.979,
+      "end": 13.109,
+      "text": "queda limpio.",
+      "words": [
+        {
+          "id": "caption-word-20-0",
+          "text": "queda",
+          "start": 11.979,
+          "end": 12.199
+        },
+        {
+          "id": "caption-word-20-1",
+          "text": "limpio.",
+          "start": 12.257,
+          "end": 12.989
+        }
+      ]
+    },
+    {
+      "id": "caption-group-21",
+      "frame": 5,
+      "start": 13.139,
+      "end": 13.615,
+      "text": "Esta se",
+      "words": [
+        {
+          "id": "caption-word-21-0",
+          "text": "Esta",
+          "start": 13.139,
+          "end": 13.441
+        },
+        {
+          "id": "caption-word-21-1",
+          "text": "se",
+          "start": 13.487,
+          "end": 13.569
+        }
+      ]
+    },
+    {
+      "id": "caption-group-22",
+      "frame": 5,
+      "start": 13.615,
+      "end": 13.998,
+      "text": "ve bien,",
+      "words": [
+        {
+          "id": "caption-word-22-0",
+          "text": "ve",
+          "start": 13.615,
+          "end": 13.696
+        },
+        {
+          "id": "caption-word-22-1",
+          "text": "bien,",
+          "start": 13.743,
+          "end": 13.975
+        }
+      ]
+    },
+    {
+      "id": "caption-group-23",
+      "frame": 5,
+      "start": 13.998,
+      "end": 14.312,
+      "text": "pero no",
+      "words": [
+        {
+          "id": "caption-word-23-0",
+          "text": "pero",
+          "start": 13.998,
+          "end": 14.161
+        },
+        {
+          "id": "caption-word-23-1",
+          "text": "no",
+          "start": 14.196,
+          "end": 14.265
+        }
+      ]
+    },
+    {
+      "id": "caption-group-24",
+      "frame": 5,
+      "start": 14.312,
+      "end": 15.047,
+      "text": "te conviene.",
+      "words": [
+        {
+          "id": "caption-word-24-0",
+          "text": "te",
+          "start": 14.312,
+          "end": 14.381
+        },
+        {
+          "id": "caption-word-24-1",
+          "text": "conviene.",
+          "start": 14.416,
+          "end": 14.927
+        }
+      ]
+    },
+    {
+      "id": "caption-group-25",
+      "frame": 5,
+      "start": 15.078,
+      "end": 15.906,
+      "text": "Rojo.",
+      "words": [
+        {
+          "id": "caption-word-25-0",
+          "text": "Rojo.",
+          "start": 15.078,
+          "end": 15.786
+        }
+      ]
+    },
+    {
+      "id": "caption-group-26",
+      "frame": 6,
+      "start": 15.936,
+      "end": 16.551,
+      "text": "Esta paga",
+      "words": [
+        {
+          "id": "caption-word-26-0",
+          "text": "Esta",
+          "start": 15.936,
+          "end": 16.215
+        },
+        {
+          "id": "caption-word-26-1",
+          "text": "paga",
+          "start": 16.273,
+          "end": 16.493
+        }
+      ]
+    },
+    {
+      "id": "caption-group-27",
+      "frame": 6,
+      "start": 16.551,
+      "end": 16.888,
+      "text": "menos,",
+      "words": [
+        {
+          "id": "caption-word-27-0",
+          "text": "menos,",
+          "start": 16.551,
+          "end": 16.865
+        }
+      ]
+    },
+    {
+      "id": "caption-group-28",
+      "frame": 6,
+      "start": 16.888,
+      "end": 17.41,
+      "text": "pero rinde",
+      "words": [
+        {
+          "id": "caption-word-28-0",
+          "text": "pero",
+          "start": 16.888,
+          "end": 17.051
+        },
+        {
+          "id": "caption-word-28-1",
+          "text": "rinde",
+          "start": 17.109,
+          "end": 17.364
+        }
+      ]
+    },
+    {
+      "id": "caption-group-29",
+      "frame": 6,
+      "start": 17.41,
+      "end": 17.77,
+      "text": "más.",
+      "words": [
+        {
+          "id": "caption-word-29-0",
+          "text": "más.",
+          "start": 17.41,
+          "end": 17.701
+        }
+      ]
+    },
+    {
+      "id": "caption-group-30",
+      "frame": 6,
+      "start": 17.77,
+      "end": 18.61,
+      "text": "Verde.",
+      "words": [
+        {
+          "id": "caption-word-30-0",
+          "text": "Verde.",
+          "start": 17.77,
+          "end": 18.49
+        }
+      ]
+    },
+    {
+      "id": "caption-group-31",
+      "frame": 7,
+      "start": 18.64,
+      "end": 19.267,
+      "text": "Tú pones",
+      "words": [
+        {
+          "id": "caption-word-31-0",
+          "text": "Tú",
+          "start": 18.64,
+          "end": 18.837
+        },
+        {
+          "id": "caption-word-31-1",
+          "text": "pones",
+          "start": 18.895,
+          "end": 19.197
+        }
+      ]
+    },
+    {
+      "id": "caption-group-32",
+      "frame": 7,
+      "start": 19.267,
+      "end": 19.801,
+      "text": "la vara:",
+      "words": [
+        {
+          "id": "caption-word-32-0",
+          "text": "la",
+          "start": 19.267,
+          "end": 19.337
+        },
+        {
+          "id": "caption-word-32-1",
+          "text": "vara:",
+          "start": 19.383,
+          "end": 19.743
+        }
+      ]
+    },
+    {
+      "id": "caption-group-33",
+      "frame": 7,
+      "start": 19.801,
+      "end": 20.463,
+      "text": "cuánto quieres",
+      "words": [
+        {
+          "id": "caption-word-33-0",
+          "text": "cuánto",
+          "start": 19.801,
+          "end": 20.114
+        },
+        {
+          "id": "caption-word-33-1",
+          "text": "quieres",
+          "start": 20.173,
+          "end": 20.428
+        }
+      ]
+    },
+    {
+      "id": "caption-group-34",
+      "frame": 7,
+      "start": 20.463,
+      "end": 21.542,
+      "text": "ganar por kilómetro",
+      "words": [
+        {
+          "id": "caption-word-34-0",
+          "text": "ganar",
+          "start": 20.463,
+          "end": 20.672
+        },
+        {
+          "id": "caption-word-34-1",
+          "text": "por",
+          "start": 20.718,
+          "end": 20.846
+        },
+        {
+          "id": "caption-word-34-2",
+          "text": "kilómetro",
+          "start": 20.904,
+          "end": 21.484
+        }
+      ]
+    },
+    {
+      "id": "caption-group-35",
+      "frame": 7,
+      "start": 21.542,
+      "end": 22.568,
+      "text": "y por hora.",
+      "words": [
+        {
+          "id": "caption-word-35-0",
+          "text": "y",
+          "start": 21.542,
+          "end": 21.601
+        },
+        {
+          "id": "caption-word-35-1",
+          "text": "por",
+          "start": 21.693,
+          "end": 21.856
+        },
+        {
+          "id": "caption-word-35-2",
+          "text": "hora.",
+          "start": 21.891,
+          "end": 22.448
+        }
+      ]
+    },
+    {
+      "id": "caption-group-36",
+      "frame": 8,
+      "start": 22.598,
+      "end": 22.888,
+      "text": "Y te",
+      "words": [
+        {
+          "id": "caption-word-36-0",
+          "text": "Y",
+          "start": 22.598,
+          "end": 22.691
+        },
+        {
+          "id": "caption-word-36-1",
+          "text": "te",
+          "start": 22.784,
+          "end": 22.842
+        }
+      ]
+    },
+    {
+      "id": "caption-group-37",
+      "frame": 8,
+      "start": 22.888,
+      "end": 23.306,
+      "text": "lo dice",
+      "words": [
+        {
+          "id": "caption-word-37-0",
+          "text": "lo",
+          "start": 22.888,
+          "end": 22.97
+        },
+        {
+          "id": "caption-word-37-1",
+          "text": "dice",
+          "start": 23.016,
+          "end": 23.271
+        }
+      ]
+    },
+    {
+      "id": "caption-group-38",
+      "frame": 8,
+      "start": 23.306,
+      "end": 23.631,
+      "text": "en voz",
+      "words": [
+        {
+          "id": "caption-word-38-0",
+          "text": "en",
+          "start": 23.306,
+          "end": 23.353
+        },
+        {
+          "id": "caption-word-38-1",
+          "text": "voz",
+          "start": 23.399,
+          "end": 23.562
+        }
+      ]
+    },
+    {
+      "id": "caption-group-39",
+      "frame": 8,
+      "start": 23.631,
+      "end": 24.072,
+      "text": "alta:",
+      "words": [
+        {
+          "id": "caption-word-39-0",
+          "text": "alta:",
+          "start": 23.631,
+          "end": 23.956
+        }
+      ]
+    },
+    {
+      "id": "caption-group-40",
+      "frame": 8,
+      "start": 24.072,
+      "end": 24.665,
+      "text": "aceptar,",
+      "words": [
+        {
+          "id": "caption-word-40-0",
+          "text": "aceptar,",
+          "start": 24.072,
+          "end": 24.63
+        }
+      ]
+    },
+    {
+      "id": "caption-group-41",
+      "frame": 8,
+      "start": 24.665,
+      "end": 26.387,
+      "text": "considerar o rechazar.",
+      "words": [
+        {
+          "id": "caption-word-41-0",
+          "text": "considerar",
+          "start": 24.665,
+          "end": 25.233
+        },
+        {
+          "id": "caption-word-41-1",
+          "text": "o",
+          "start": 25.35,
+          "end": 25.408
+        },
+        {
+          "id": "caption-word-41-2",
+          "text": "rechazar.",
+          "start": 25.489,
+          "end": 26.267
+        }
+      ]
+    },
+    {
+      "id": "caption-group-42",
+      "frame": 9,
+      "start": 26.417,
+      "end": 27.152,
+      "text": "Eso sí:",
+      "words": [
+        {
+          "id": "caption-word-42-0",
+          "text": "Eso",
+          "start": 26.417,
+          "end": 26.719
+        },
+        {
+          "id": "caption-word-42-1",
+          "text": "sí:",
+          "start": 26.765,
+          "end": 27.032
+        }
+      ]
+    },
+    {
+      "id": "caption-group-43",
+      "frame": 9,
+      "start": 27.206,
+      "end": 27.671,
+      "text": "Checa no",
+      "words": [
+        {
+          "id": "caption-word-43-0",
+          "text": "Checa",
+          "start": 27.206,
+          "end": 27.508
+        },
+        {
+          "id": "caption-word-43-1",
+          "text": "no",
+          "start": 27.555,
+          "end": 27.624
+        }
+      ]
+    },
+    {
+      "id": "caption-group-44",
+      "frame": 9,
+      "start": 27.671,
+      "end": 28.402,
+      "text": "acepta viajes",
+      "words": [
+        {
+          "id": "caption-word-44-0",
+          "text": "acepta",
+          "start": 27.671,
+          "end": 27.984
+        },
+        {
+          "id": "caption-word-44-1",
+          "text": "viajes",
+          "start": 28.031,
+          "end": 28.344
+        }
+      ]
+    },
+    {
+      "id": "caption-group-45",
+      "frame": 9,
+      "start": 28.402,
+      "end": 28.902,
+      "text": "por ti.",
+      "words": [
+        {
+          "id": "caption-word-45-0",
+          "text": "por",
+          "start": 28.402,
+          "end": 28.518
+        },
+        {
+          "id": "caption-word-45-1",
+          "text": "ti.",
+          "start": 28.576,
+          "end": 28.82
+        }
+      ]
+    },
+    {
+      "id": "caption-group-46",
+      "frame": 9,
+      "start": 28.902,
+      "end": 29.881,
+      "text": "Decides tú.",
+      "words": [
+        {
+          "id": "caption-word-46-0",
+          "text": "Decides",
+          "start": 28.902,
+          "end": 29.319
+        },
+        {
+          "id": "caption-word-46-1",
+          "text": "tú.",
+          "start": 29.366,
+          "end": 29.761
+        }
+      ]
+    },
+    {
+      "id": "caption-group-47",
+      "frame": 10,
+      "start": 29.911,
+      "end": 31.026,
+      "text": "Descarga Checa y",
+      "words": [
+        {
+          "id": "caption-word-47-0",
+          "text": "Descarga",
+          "start": 29.911,
+          "end": 30.433
+        },
+        {
+          "id": "caption-word-47-1",
+          "text": "Checa",
+          "start": 30.48,
+          "end": 30.817
+        },
+        {
+          "id": "caption-word-47-2",
+          "text": "y",
+          "start": 30.875,
+          "end": 30.944
+        }
+      ]
+    },
+    {
+      "id": "caption-group-48",
+      "frame": 10,
+      "start": 31.026,
+      "end": 31.641,
+      "text": "checa cuánto",
+      "words": [
+        {
+          "id": "caption-word-48-0",
+          "text": "checa",
+          "start": 31.026,
+          "end": 31.269
+        },
+        {
+          "id": "caption-word-48-1",
+          "text": "cuánto",
+          "start": 31.304,
+          "end": 31.583
+        }
+      ]
+    },
+    {
+      "id": "caption-group-49",
+      "frame": 10,
+      "start": 31.641,
+      "end": 32.024,
+      "text": "te queda",
+      "words": [
+        {
+          "id": "caption-word-49-0",
+          "text": "te",
+          "start": 31.641,
+          "end": 31.711
+        },
+        {
+          "id": "caption-word-49-1",
+          "text": "queda",
+          "start": 31.757,
+          "end": 31.978
+        }
+      ]
+    },
+    {
+      "id": "caption-group-50",
+      "frame": 10,
+      "start": 32.024,
+      "end": 33.235,
+      "text": "de cada viaje.",
+      "words": [
+        {
+          "id": "caption-word-50-0",
+          "text": "de",
+          "start": 32.024,
+          "end": 32.094
+        },
+        {
+          "id": "caption-word-50-1",
+          "text": "cada",
+          "start": 32.14,
+          "end": 32.361
+        },
+        {
+          "id": "caption-word-50-2",
+          "text": "viaje.",
+          "start": 32.407,
+          "end": 33.115
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+<template>
+  <style>
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Regular.ttf') format('truetype'); font-weight: 400; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Medium.ttf') format('truetype'); font-weight: 500 600; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Bold.ttf') format('truetype'); font-weight: 700 900; font-display: block; }
+    @font-face{ font-family: 'Fira Code'; src: url('assets/fonts/FiraCode.ttf') format('truetype'); font-weight: 300 700; font-display: block; }
+    #root { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; font-family: 'Fira Sans', sans-serif; color: #F1F5F2; }
+    .clip { position: absolute; }
+    .P-ground { inset: 0; background: #000; }
+    .P-stage { left: 0; top: 0; width: 1080px; height: 1600px; transform-origin: 50% 45%; }
+    .P-glow { position: absolute; left: 140px; top: 420px; width: 800px; height: 800px; border-radius: 50%; background: radial-gradient(circle, rgba(34,197,94,.20), rgba(34,197,94,0) 65%); }
+    .P-mask { position: absolute; left: 0; right: 0; overflow: hidden; text-align: center; }
+    .P-mask > div { font-weight: 800; text-transform: lowercase; letter-spacing: -.04em; line-height: 1.02; white-space: nowrap; }
+    .P-ej { position: absolute; left: 0; right: 0; top: 1500px; text-align: center; font-family: 'Fira Code', monospace; font-size: 26px; letter-spacing: .12em; text-transform: uppercase; color: #6B736F; }
+    .P-num { font-family: 'Fira Code', monospace; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .P-card { position: absolute; width: 620px; border-radius: 36px; background: #F4F5F4; color: #111; padding: 48px 52px 44px; box-shadow: 0 30px 80px rgba(0,0,0,.7); }
+    .P-card .k { font-family: 'Fira Code', monospace; font-weight: 500; font-size: 28px; letter-spacing: .14em; text-transform: uppercase; color: #5C635F; }
+    .P-card .f { font-family: 'Fira Code', monospace; font-weight: 700; font-size: 112px; letter-spacing: -.03em; line-height: 1; margin-top: 22px; }
+    .P-card .r { display: flex; align-items: center; gap: 22px; font-size: 40px; font-weight: 500; margin-top: 28px; color: #222; }
+    .P-card .d { width: 20px; height: 20px; border-radius: 50%; background: #111; flex: none; }
+    .P-card .s { width: 20px; height: 20px; background: #111; flex: none; }
+    .P-card .b { margin-top: 38px; height: 104px; border-radius: 20px; background: #111; color: #F4F5F4; display: flex; align-items: center; justify-content: center; font-size: 44px; font-weight: 700; }
+
+    #f01-reloj-ground { background: #000; }
+
+    #f01-reloj-l1 { top: 140px; height: 200px; } #f01-reloj-l1 > div { font-size: 170px; color: #F1F5F2; }
+    #f01-reloj-road { position: absolute; left: 340px; top: 600px; width: 400px; height: 900px; background: #0F1211; border-left: 6px solid #2A2E2C; border-right: 6px solid #2A2E2C; overflow: hidden; }
+    #f01-reloj-lane { position: absolute; left: 187px; top: -160px; width: 26px; height: 1300px; background: repeating-linear-gradient(180deg, #F1F5F2 0 80px, transparent 80px 160px); opacity: .45; }
+    #f01-reloj-car { position: absolute; left: 350px; top: 1060px; width: 380px; height: 380px; color: #F1F5F2; }
+    #f01-reloj-card { left: 348px; top: 640px; transform: scale(.62); transform-origin: 0 0; }
+    #f01-reloj-ring { position: absolute; left: 790px; top: 700px; width: 240px; height: 240px; }
+    #f01-reloj-n { position: absolute; left: 790px; top: 700px; width: 240px; height: 240px; display: flex; align-items: center; justify-content: center; font-family: 'Fira Code', monospace; font-weight: 700; font-size: 68px; }
+
+  </style>
+
+  <div id="root" data-composition-id="01-reloj" data-width="1080" data-height="1920" data-start="0" data-duration="3.401">
+    <div id="f01-reloj-ground" class="clip P-ground" data-start="0" data-duration="3.401" data-track-index="0"></div>
+    <div id="f01-reloj-stage" class="clip P-stage" data-start="0" data-duration="3.401" data-track-index="1">
+      <div id="f01-reloj-l1" class="P-mask"><div>¿la aceptas?</div></div>
+      <div id="f01-reloj-road"><div id="f01-reloj-lane"></div></div>
+      <div id="f01-reloj-car"><svg viewBox="0 0 200 200"><path fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" d="M30 120 L45 75 Q50 62 64 62 L136 62 Q150 62 155 75 L170 120 Z M24 120 L176 120 L176 150 L24 150 Z"/><circle fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" cx="58" cy="152" r="16"/><circle fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" cx="142" cy="152" r="16"/></svg></div>
+      <div id="f01-reloj-card" class="P-card"><div class="k">Nueva solicitud</div><div class="f">$180.00</div><div class="r"><span class="d"></span>A 8 min (3 km)</div><div class="r"><span class="s"></span>Viaje: 67 min (37 km)</div><div class="b">Aceptar</div></div>
+      <svg id="f01-reloj-ring" viewBox="0 0 600 600"><circle cx="300" cy="300" r="260" fill="none" stroke="#1C201E" stroke-width="44"/>
+        <circle id="f01-reloj-arc" cx="300" cy="300" r="260" fill="none" stroke="#FACC15" stroke-width="44" stroke-linecap="round" transform="rotate(-90 300 300)"/></svg>
+      <div id="f01-reloj-n">15 s</div>
+      <div class="P-ej">Números de ejemplo</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      var D = 3.401;
+      tl.fromTo("#f01-reloj-lane", {"y": 0}, {"y": 480, "duration": 4.6, "ease": "none"}, 0);
+      tl.fromTo("#f01-reloj-l1 > div", {"yPercent": 220}, {"yPercent": 0, "duration": 0.35, "ease": "power3.out"}, 0.05);
+      tl.fromTo("#f01-reloj-card", {"y": -900, "opacity": 0}, {"y": 0, "opacity": 1, "duration": 0.45, "ease": "power4.out"}, 0.1);
+      tl.fromTo("#f01-reloj-car", {"y": 0}, {"y": 22, "duration": 0.1, "yoyo": true, "repeat": 1, "ease": "power2.out"}, 0.5);
+      tl.to("#f01-reloj-stage", {"x": 8, "duration": 0.05, "ease": "none"}, 0.5);
+      tl.to("#f01-reloj-stage", {"x": -6.8, "duration": 0.05, "ease": "none"}, 0.55);
+      tl.to("#f01-reloj-stage", {"x": 4.8, "duration": 0.05, "ease": "none"}, 0.6);
+      tl.to("#f01-reloj-stage", {"x": -3.2, "duration": 0.05, "ease": "none"}, 0.65);
+      tl.to("#f01-reloj-stage", {"x": 1.6, "duration": 0.05, "ease": "none"}, 0.7);
+      tl.to("#f01-reloj-stage", {"x": 0, "duration": 0.05, "ease": "none"}, 0.75);
+      tl.fromTo("#f01-reloj-ring", {"opacity": 0, "scale": 0.4, "transformOrigin": "50% 50%"}, {"opacity": 1, "scale": 1, "duration": 0.35, "ease": "back.out(1.8)"}, 0.133);
+      tl.fromTo("#f01-reloj-n", {"opacity": 0}, {"opacity": 1, "duration": 0.25}, 0.133);
+      var a = document.getElementById("f01-reloj-arc"); var L = 2 * Math.PI * 260; a.style.strokeDasharray = L;
+      var o = { s: 15 }; var n = document.getElementById("f01-reloj-n");
+      tl.fromTo(a, { strokeDashoffset: 0 }, { strokeDashoffset: L * 0.55, duration: D - 0.133, ease: "none" }, 0.133);
+      tl.to(a, { stroke: "#F43F5E", duration: 0.6 }, 0.807);
+      tl.to(o, { s: 8, duration: D - 0.133, ease: "none", onUpdate: function () { n.textContent = Math.ceil(o.s) + " s"; } }, 0.133);
+      tl.fromTo("#f01-reloj-stage", { scale: 1 }, { scale: 1.05, duration: D - 0, ease: "none" }, 0);
+
+      window.__timelines["01-reloj"] = tl;
+    })();
+  </script>
+</template>
