@@ -1,5 +1,6 @@
-nombre=Karen (propietaria)
-equipo=lalolopezxd@gmail.com
-tipo=Fundador
-vence=Sin vencimiento
-codigo=99991231F-MEYCIQDFkRCoOr4hG0og6tP7XNh2waLGGrKO4ZCLozeCg0kSdwIhAOgiMmvopq4ELX5iMDoQFMN901rog8Oq8cNcZgBpzBf5
+nombre=Beta tester 1
+equipo=lufercab@gmail.com
+tipo=Normal
+plan=todo
+vence=2027-01-13
+codigo=20270113-MEQCIGI-0WbIfwp7nlzdbeQWrAVYABCXrOuct_MpRG-t2M3GAiAt2Der-vwVf-EwLedzRk3eQDaL8S_2JcDdv7pIJe6s7A
