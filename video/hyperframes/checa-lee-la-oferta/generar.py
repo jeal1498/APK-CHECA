@@ -166,7 +166,7 @@ F["01-gancho"] = frame(1, c, """
       <div id="§-pill"><span>te quedan <b>$100</b></span></div>
       <div class="P-ej">Números de ejemplo</div>""",
     ft("#§-cw", {"y": -900, "rotation": 8, "opacity": 0}, {"y": 0, "rotation": -3, "opacity": 1, "duration": 0.6, "ease": "circ.out"}, 0)
-    + mask_in("#§-l1 > div", t(1, "buen"))
+    + mask_in("#§-l1 > div", 0.3)
     + to("#§-card .f", {"color": "#16A34A", "scale": 1.08, "transformOrigin": "0% 50%", "duration": 0.25, "ease": "power2.out"}, t(1, "billete"))
     + mask_in("#§-l2 > div", t(1, "sales"), 0.4)
     + to("#§-card .f", {"color": "#F43F5E", "duration": 0.2}, t(1, "sales") + 0.1)
