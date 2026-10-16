@@ -22,13 +22,17 @@ object Licencia {
         "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEUHR2OkZBiVYP2xodleS7qMig+4Yga4+hpFUjOLP805Gh4P46PmFHJnyAqwGq+O5CKOXVuHdTPNr4V6cXIetR/Q=="
     const val DIAS_PRUEBA = 7
     const val PERMANENTE = 99991231
+    /** Beta gratis: hasta esta fecha (AAAAMMDD) todos tienen todo incluido, sin licencia. */
+    const val BETA_HASTA = 20270131
 
     /** pagada: con código válido; si no, está en prueba (o vencida si diasRestantes = 0). */
     data class Estado(
         val activa: Boolean, val pagada: Boolean, val diasRestantes: Int, val vence: Int,
         val fundador: Boolean = false,
         /** Plan de 1 mes: 1 equipo, sin comparador de 2 ofertas ni pronóstico/semana en Mejores horas. */
-        val basico: Boolean = false
+        val basico: Boolean = false,
+        /** Beta gratis: todo incluido para todos hasta [BETA_HASTA]. */
+        val beta: Boolean = false
     )
 
     data class Codigo(val vence: Int, val fundador: Boolean, val basico: Boolean = false)
@@ -73,7 +77,9 @@ object Licencia {
             .maxByOrNull { it.vence }
         val vence = cod?.vence ?: 0
         val e = if (vence >= hoy) {
-            Estado(true, true, 0, vence, cod?.fundador == true, cod?.basico == true)
+            Estado(true, true, 0, vence, cod?.fundador == true, cod?.basico == true && hoy > BETA_HASTA, hoy <= BETA_HASTA)
+        } else if (hoy <= BETA_HASTA) {
+            Estado(true, false, diasBeta(hoy), vence, beta = true)
         } else {
             var inicio = s.getLong("prueba", 0L)
             if (inicio == 0L) {
@@ -87,6 +93,12 @@ object Licencia {
         cache = t to e
         return e
     }
+
+    /** Días que quedan de la beta gratis (contando hoy). */
+    private fun diasBeta(hoy: Int): Int = try {
+        val f = SimpleDateFormat("yyyyMMdd", Locale.US)
+        maxOf(1, ((f.parse(BETA_HASTA.toString())!!.time - f.parse(hoy.toString())!!.time) / 86_400_000L).toInt() + 1)
+    } catch (_: Exception) { 1 }
 
     fun activa(ctx: Context): Boolean = estado(ctx).activa
 

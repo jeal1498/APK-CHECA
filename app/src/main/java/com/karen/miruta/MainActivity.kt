@@ -82,6 +82,7 @@ class MainActivity : Activity() {
     // Inicio
     private lateinit var tarjetaPermiso: View
     private lateinit var tarjetaLicencia: View
+    private lateinit var botonPaquetesInicio: View
     private lateinit var tarjetaActualizacion: View
     private lateinit var actTexto: TextView
     private lateinit var licTitulo: TextView
@@ -322,7 +323,8 @@ class MainActivity : Activity() {
         lic.addView(licTitulo)
         licTexto = texto("", Tema.T_TEXTO, cTexto, false).apply { setLineSpacing(0f, 1.2f) }
         lic.addView(licTexto, margenArriba(Tema.S1))
-        lic.addView(boton("Ver paquetes", cVerde, Color.BLACK) { irAPaquetes() }, margenArriba(Tema.S2))
+        botonPaquetesInicio = boton("Ver paquetes", cVerde, Color.BLACK) { irAPaquetes() }
+        lic.addView(botonPaquetesInicio, margenArriba(Tema.S2))
         tarjetaLicencia = lic
         col.addView(lic, margenTarjeta())
 
@@ -1551,7 +1553,11 @@ class MainActivity : Activity() {
     private fun pintarLicencia() {
         val e = Licencia.estado(this)
         tarjetaLicencia.visibility = if (e.pagada) View.GONE else View.VISIBLE
-        if (e.activa && !e.pagada) {
+        if (e.beta && !e.pagada) {
+            licTitulo.text = "Beta gratis · todo incluido"
+            licTitulo.setTextColor(cVerde)
+            licTexto.text = "Usa Checa sin costo hasta el ${Licencia.fechaBonita(Licencia.BETA_HASTA)}. Gracias por probarla."
+        } else if (e.activa && !e.pagada) {
             licTitulo.text = "Prueba gratis: ${e.diasRestantes} ${if (e.diasRestantes == 1) "día" else "días"}"
             licTitulo.setTextColor(cVerde)
             licTexto.text = "Úsala en tu turno. Para seguir después de la prueba, activa tu licencia."
@@ -1568,8 +1574,10 @@ class MainActivity : Activity() {
         notaComparador?.visibility = if (e.basico) View.VISIBLE else View.GONE
         // Con licencia sin vencimiento (fundadores) no hay nada que comprar.
         if (::paquetesVista.isInitialized) {
-            paquetesVista.visibility = if (e.pagada && e.vence >= Licencia.PERMANENTE) View.GONE else View.VISIBLE
+            paquetesVista.visibility = if (e.beta || (e.pagada && e.vence >= Licencia.PERMANENTE)) View.GONE else View.VISIBLE
         }
+        // En la beta no hay nada que comprar: se oculta el botón de paquetes de Inicio.
+        botonPaquetesInicio.visibility = if (e.beta) View.GONE else View.VISIBLE
         pintarCuenta()
     }
 
@@ -1713,7 +1721,9 @@ class MainActivity : Activity() {
                 }
                 c.addView(t, margenArriba(Tema.S3))
                 if (!Licencia.estado(this).pagada) {
-                    c.addView(texto("Tienes ${Licencia.DIAS_PRUEBA} días gratis con todo incluido.", Tema.T_TEXTO, cTenue, false)
+                    val aviso = if (Licencia.estado(this).beta) "Checa es gratis con todo incluido durante la beta."
+                        else "Tienes ${Licencia.DIAS_PRUEBA} días gratis con todo incluido."
+                    c.addView(texto(aviso, Tema.T_TEXTO, cTenue, false)
                         .apply { gravity = Gravity.CENTER }, margenArriba(Tema.S2))
                 }
                 principal("Empezar") { pintarGuia(1) }
@@ -1953,6 +1963,7 @@ class MainActivity : Activity() {
             cuerpo.addView(texto("Tu cuenta ${Cuenta.correo(this)} todavía no tiene licencia.", Tema.T_TEXTO, cTexto2, false)
                 .apply { setLineSpacing(0f, 1.2f) })
             cuerpo.addView(texto(
+                if (e.beta && !e.pagada) "Beta gratis: todo incluido" else
                 if (e.activa && !e.pagada) "Prueba gratis: quedan ${e.diasRestantes} días" else
                     if (e.pagada) "Este equipo ya tiene licencia con código" else "Tu prueba gratis terminó",
                 Tema.T_SUB, if (e.activa) cVerde else cAmarillo, true
@@ -2063,6 +2074,7 @@ class MainActivity : Activity() {
                 "Llevas más de ${Cuenta.DIAS_SIN_RED} días sin revisar tu licencia. Abre Checa con internet.",
                 Tema.T_TEXTO, cAmarillo, false
             ).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S2))
+            e.beta -> {}
             Cuenta.licencia(this) == null -> {
                 cuentaCaja.addView(boton("Ver paquetes", cVerde, Color.BLACK) { irAPaquetes() }, margenArriba(Tema.S2))
                 cuentaCaja.addView(boton("Ya pagué: revisar mi licencia", cTarjeta2, cTexto) {
@@ -2154,6 +2166,7 @@ class MainActivity : Activity() {
             e.fundador -> "★ Miembro fundador"
             e.pagada && e.basico -> "Plan Básico"
             e.pagada -> "Licencia activa"
+            e.beta -> "Beta gratis"
             e.activa -> "Prueba gratis"
             else -> "Sin licencia"
         }
@@ -2167,11 +2180,12 @@ class MainActivity : Activity() {
         val sub = when {
             sinFin -> "Activa · sin vencimiento"
             e.pagada -> "Vence el ${Licencia.fechaBonita(e.vence)} · ${quedanDias(quedan)}"
+            e.beta -> "Todo incluido gratis hasta el ${Licencia.fechaBonita(Licencia.BETA_HASTA)}"
             e.activa -> "Todo incluido · ${quedanDias(quedan)}"
             else -> "Elige un paquete para volver a ver los pop-ups"
         }
         c.addView(texto(sub, Tema.T_TEXTO, cTexto2, false), margenArriba(4))
-        if (!e.pagada && e.activa) {
+        if (!e.pagada && e.activa && !e.beta) {
             // Barra de la prueba: lo que queda de los 7 días.
             val barra = FrameLayout(this).apply { background = redondo(cTarjeta2, 3) }
             val lleno = View(this).apply { background = redondo(cAmarillo, 3) }
