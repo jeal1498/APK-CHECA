@@ -12,6 +12,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.text.SpannableString
@@ -32,6 +33,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
     private var ultima: Oferta? = null
     private var firmaVista: String? = null
     private var lpActual: WindowManager.LayoutParams? = null
+    private var areaActual: Rect? = null
     private var temporizador = false
     private val cerrar = Runnable { temporizador = false; ocultar() }
 
@@ -79,13 +81,14 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         lp.x = area.left + (area.width() - ancho) / 2
         lp.y = area.top + area.height() * prefs.posicion / 100
         lpActual = lp
+        areaActual = area
         if (actual is FrameLayout) {
             // Ya hay ventana: se cambia el contenido sin quitarla (sin parpadeo).
             actual.removeAllViews()
             actual.addView(v, ajuste())
             try { wm.updateViewLayout(actual, lp) } catch (_: Exception) { }
         } else {
-            val caja = FrameLayout(ctx).apply { addView(v, ajuste()) }
+            val caja = CajaArrastrable(ctx).apply { addView(v, ajuste()) }
             try {
                 wm.addView(caja, lp)
                 vista = caja
@@ -105,6 +108,67 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
             handler.postDelayed(cerrar, prefs.duracionSeg * 1000L)
             temporizador = true
         }
+    }
+
+    /**
+     * Ventana del pop-up: se arrastra con el dedo hacia arriba o abajo y la posición
+     * se guarda (la misma que el deslizador de Ajustes). Los toques en la ✕ siguen igual.
+     */
+    private inner class CajaArrastrable(c: Context) : FrameLayout(c) {
+        private var inicioY = 0f
+        private var inicioLpY = 0
+        private var arrastrando = false
+
+        override fun onInterceptTouchEvent(e: MotionEvent): Boolean {
+            when (e.actionMasked) {
+                MotionEvent.ACTION_DOWN -> {
+                    inicioY = e.rawY
+                    inicioLpY = lpActual?.y ?: 0
+                    arrastrando = false
+                }
+                MotionEvent.ACTION_MOVE -> if (!arrastrando && Math.abs(e.rawY - inicioY) > dp(10)) {
+                    arrastrando = true
+                    handler.removeCallbacks(cerrar)
+                }
+            }
+            return arrastrando
+        }
+
+        override fun onTouchEvent(e: MotionEvent): Boolean {
+            when (e.actionMasked) {
+                MotionEvent.ACTION_DOWN -> {
+                    inicioY = e.rawY
+                    inicioLpY = lpActual?.y ?: 0
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    val lp = lpActual ?: return true
+                    val area = areaActual ?: return true
+                    arrastrando = true
+                    val maxY = area.bottom - dp(48)
+                    lp.y = (inicioLpY + (e.rawY - inicioY)).toInt().coerceIn(area.top, maxOf(area.top, maxY))
+                    try { wm.updateViewLayout(this, lp) } catch (_: Exception) { }
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    if (arrastrando) guardarPosicion()
+                    arrastrando = false
+                    handler.removeCallbacks(cerrar)
+                    handler.postDelayed(cerrar, prefs.duracionSeg * 1000L)
+                    temporizador = true
+                }
+            }
+            return true
+        }
+    }
+
+    /** Guarda dónde quedó el pop-up como % de la altura de su zona. */
+    private fun guardarPosicion() {
+        val lp = lpActual ?: return
+        val area = areaActual ?: return
+        if (area.height() <= 0) return
+        val pct = ((lp.y - area.top) * 100 / area.height()).coerceIn(0, 85)
+        prefs.posicion = pct
+        // La firma termina con la posición: se actualiza para no rehacer el pop-up por moverlo.
+        firmaVista = firmaVista?.replaceAfterLast('|', pct.toString())
     }
 
     fun ocultar() {

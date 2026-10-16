@@ -175,6 +175,21 @@ object Soporte {
             "Accesibilidad: ${if (servicioActivo(ctx)) "sí" else "no"} · Lectura: ${if (CapturaService.corriendo) "sí" else "no"} · Plan: $plan"
     }
 
+    /** Abre el chat con el borrador de una opinión sobre Checa (con permiso para publicarla o no). */
+    fun opinion(ctx: Context) {
+        val texto = "Hola, te cuento cómo me ha ido con Checa:\n\n\n\n" +
+            "¿Puedes usar mi opinión en tu página? (sí/no): \n\n— Datos de mi equipo —\n" + resumen(ctx)
+        try {
+            ctx.startActivity(
+                Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/$WHATSAPP?text=" + Uri.encode(texto)))
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+        } catch (_: Exception) {
+            val i = Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, texto)
+            ctx.startActivity(Intent.createChooser(i, "Enviar opinión").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        }
+    }
+
     /** Abre el chat de soporte con el mensaje ya armado. */
     fun escribir(ctx: Context, motivo: String, extra: String? = null) {
         val texto = buildString {

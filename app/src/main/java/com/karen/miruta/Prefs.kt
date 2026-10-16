@@ -138,6 +138,39 @@ class Prefs(context: Context) {
         sp.edit().putString("caps", nuevas.joinToString(SEP)).apply()
     }
 
+    /** Meta de ganancia neta del día en pesos (0 = sin meta). */
+    var metaDia: Float
+        get() = sp.getFloat("metaDia", 0f)
+        set(v) { sp.edit().putFloat("metaDia", v).apply() }
+
+    /** Avisar con una notificación al abrir Uber o DiDi si la lectura está apagada. */
+    var avisarApertura: Boolean
+        get() = sp.getBoolean("avisoApertura", true)
+        set(v) { sp.edit().putBoolean("avisoApertura", v).apply() }
+
+    /** Cuándo se avisó por última vez al abrir Uber/DiDi (para no repetirlo cada rato). */
+    var ultimoAvisoApertura: Long
+        get() = sp.getLong("ultAvisoApertura", 0L)
+        set(v) { sp.edit().putLong("ultAvisoApertura", v).apply() }
+
+    /** Pedir opinión: cuándo volver a preguntar, cuántas veces se ha preguntado y si ya la dio. */
+    var resenaProxima: Long
+        get() = sp.getLong("resenaProx", 0L)
+        set(v) { sp.edit().putLong("resenaProx", v).apply() }
+
+    var resenaPedida: Int
+        get() = sp.getInt("resenaPedida", 0)
+        set(v) { sp.edit().putInt("resenaPedida", v).apply() }
+
+    var resenaHecha: Boolean
+        get() = sp.getBoolean("resenaHecha", false)
+        set(v) { sp.edit().putBoolean("resenaHecha", v).apply() }
+
+    /** Último aviso de fin de beta mostrado en ventana: 30 o 7 (días que quedaban). */
+    var avisoFinBeta: Int
+        get() = sp.getInt("avisoFinBeta", 0)
+        set(v) { sp.edit().putInt("avisoFinBeta", v).apply() }
+
     /** Último texto leído de una oferta (siempre se guarda): sirve para «Una oferta se leyó mal». */
     var ultimaLectura: String
         get() = sp.getString("ultima", "") ?: ""

@@ -99,7 +99,10 @@ class CapturaService : Service() {
             r.surface, null, handler
         )
         corriendo = true
-        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(ID_AVISO)
+        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).apply {
+            cancel(ID_AVISO)
+            cancel(3) // aviso «Checa no está leyendo» de RutaService
+        }
         handler?.postDelayed(ciclo, INTERVALO_MS)
         return START_NOT_STICKY
     }

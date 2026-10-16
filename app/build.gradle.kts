@@ -11,8 +11,8 @@ android {
         applicationId = "com.karen.miruta"
         minSdk = 26
         targetSdk = 34
-        versionCode = 44
-        versionName = "6.4"
+        versionCode = 45
+        versionName = "6.5"
     }
 
     signingConfigs {
@@ -45,6 +45,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.core:core:1.13.1")
     implementation("com.google.mlkit:text-recognition:16.0.1")
     // Iniciar sesión con Google (licencia ligada a la cuenta)
     implementation("androidx.credentials:credentials:1.3.0")

@@ -167,12 +167,47 @@ class RutaService : AccessibilityService() {
             }
         }
         if (nombreApp(pkg) == null) return
+        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) avisarApertura()
         if (pendiente) return
         pendiente = true
         handler.postDelayed({
             pendiente = false
             analizar()
         }, 300)
+    }
+
+    /**
+     * Al abrir Uber o DiDi con la lectura apagada, avisa con una notificación. Android pide
+     * permiso de captura cada vez, así que no se puede iniciar sola: un toque en el aviso lo hace.
+     */
+    private fun avisarApertura() {
+        try {
+            if (!prefs.avisarApertura || CapturaService.corriendo || !Licencia.activa(this)) return
+            val ahora = System.currentTimeMillis()
+            if (ahora - prefs.ultimoAvisoApertura < 10 * 60_000L) return
+            prefs.ultimoAvisoApertura = ahora
+            val nm = getSystemService(android.content.Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
+            nm.createNotificationChannel(
+                android.app.NotificationChannel("avisos", "Avisos de Checa", android.app.NotificationManager.IMPORTANCE_HIGH)
+            )
+            val abrir = android.content.Intent(this, MainActivity::class.java)
+                .putExtra(MainActivity.EXTRA_AUTO_INICIAR, true)
+                .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            val pi = android.app.PendingIntent.getActivity(
+                this, 4, abrir, android.app.PendingIntent.FLAG_IMMUTABLE or android.app.PendingIntent.FLAG_UPDATE_CURRENT
+            )
+            nm.notify(
+                3,
+                android.app.Notification.Builder(this, "avisos")
+                    .setContentTitle("Checa no está leyendo")
+                    .setContentText("Toca para iniciar la lectura y ver el pop-up de cada oferta.")
+                    .setSmallIcon(R.drawable.ic_notif)
+                    .setContentIntent(pi)
+                    .setAutoCancel(true)
+                    .setTimeoutAfter(2 * 60_000L)
+                    .build()
+            )
+        } catch (_: Exception) { }
     }
 
     override fun onInterrupt() {}

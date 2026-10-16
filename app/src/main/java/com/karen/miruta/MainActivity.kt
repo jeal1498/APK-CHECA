@@ -82,7 +82,7 @@ class MainActivity : Activity() {
     // Inicio
     private lateinit var tarjetaPermiso: View
     private lateinit var tarjetaLicencia: View
-    private lateinit var botonPaquetesInicio: View
+    private lateinit var botonPaquetesInicio: TextView
     private lateinit var tarjetaActualizacion: View
     private lateinit var actTexto: TextView
     private lateinit var licTitulo: TextView
@@ -93,6 +93,7 @@ class MainActivity : Activity() {
     private lateinit var statRojo: TextView
     private lateinit var hoyEtiqueta: TextView
     private lateinit var barraHoy: LinearLayout
+    private lateinit var jornadaCaja: LinearLayout
 
     // Ajustes
     private lateinit var vistaPrevia: FrameLayout
@@ -105,10 +106,15 @@ class MainActivity : Activity() {
     private val cajasCompartir = ArrayList<LinearLayout>()
     private var cajaInvitado: LinearLayout? = null
     private var dialogoAct: Dialog? = null
+    private var dialogoAviso: Dialog? = null
     private val insignias = ArrayList<TextView>()
     private var notaComparador: TextView? = null
     /** Se abrió Mercado Pago: al volver a la app se busca la licencia. */
     private var esperandoPago = false
+    /** Se abrió desde el aviso «Checa no está leyendo»: iniciar la lectura y volver a Uber/DiDi. */
+    private var autoIniciar = false
+    private var desdeAviso = false
+    private var volverAtras = false
 
     private val refresco = object : Runnable {
         override fun run() {
@@ -141,7 +147,14 @@ class MainActivity : Activity() {
         }
         setContentView(raiz)
         mostrarPestana(savedInstanceState?.getInt("tab") ?: 0, false)
-        if (savedInstanceState == null && !guiaSiHaceFalta()) bienvenidaSiHaceFalta()
+        autoIniciar = savedInstanceState == null && intent?.getBooleanExtra(EXTRA_AUTO_INICIAR, false) == true
+        if (savedInstanceState == null && !autoIniciar && !guiaSiHaceFalta()) bienvenidaSiHaceFalta()
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        if (intent.getBooleanExtra(EXTRA_AUTO_INICIAR, false)) autoIniciar = true
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -152,12 +165,21 @@ class MainActivity : Activity() {
     override fun onResume() {
         super.onResume()
         actualizarEstado()
+        if (autoIniciar) {
+            autoIniciar = false
+            if (!CapturaService.corriendo) {
+                desdeAviso = true
+                iniciarCaptura()
+            }
+        }
         // Volvió de Accesibilidad con el permiso activado: la guía pasa sola al paso de metas.
         if (guia?.isShowing == true && guiaPaso == 1) {
             if (servicioActivo()) handler.postDelayed({ if (guiaPaso == 1) pintarGuia(2) }, 600) else pintarGuia(1)
         }
         actualizarResumen()
         handler.post(refresco)
+        // Espera un momento para que, si hay una versión nueva, ese aviso salga primero.
+        handler.postDelayed({ avisosEnVentana() }, 1500)
         Actualizacion.revisar(this) { v, _ -> pintarActualizacion(v, true) }
         if (esperandoPago && Cuenta.conectada(this)) {
             Cuenta.revisarAhora(this) { r ->
@@ -368,6 +390,11 @@ class MainActivity : Activity() {
         }
         col.addView(filaSem, margenTarjeta())
 
+        // --- Mi día: viajes aceptados, meta, gasolina de la semana y resumen para compartir ---
+        jornadaCaja = tarjeta()
+        col.addView(jornadaCaja, margenTarjeta())
+        pintarJornada()
+
         // --- Mejores horas ---
         val mh = tarjeta()
         mh.addView(cabeceraTarjeta(Icono.RELOJ, "Mejores horas", "Hoy, hora por hora · últimos 30 días", false).first)
@@ -470,6 +497,7 @@ class MainActivity : Activity() {
     private fun actualizarResumen() {
         if (!::statVerde.isInitialized) return
         pintarMejoresHoras()
+        pintarJornada()
         val regs = Historial.deHoy(this)
         statVerde.text = regs.count { it.nivel == Oferta.VERDE }.toString()
         statAmarillo.text = regs.count { it.nivel == Oferta.AMARILLO }.toString()
@@ -1154,6 +1182,11 @@ class MainActivity : Activity() {
         val av = tarjeta()
         av.addView(interruptor("Vibrar", "1 corta: conviene · 2 cortas: regular · 1 larga: no", prefs.vibrar) { prefs.vibrar = it })
         av.addView(separador())
+        av.addView(interruptor(
+            "Avisarme al abrir Uber o DiDi", "Si la lectura está apagada, sale un aviso para iniciarla con un toque",
+            prefs.avisarApertura
+        ) { prefs.avisarApertura = it })
+        av.addView(separador())
         av.addView(interruptor("Sonido", "Avisa con sonido cada oferta", prefs.sonido) { prefs.sonido = it })
         av.addView(separador())
         av.addView(interruptor("Decirlo con voz", "«Aceptar» · «Considerar» · «Rechazar» (apagado: tonos)", prefs.voz) { prefs.voz = it })
@@ -1330,6 +1363,215 @@ class MainActivity : Activity() {
         ver.addView(botonBuscarAct, margenArriba(Tema.S2))
         col.addView(ver, margenTarjeta())
         return scroll(col).also { cuentaScroll = it }
+    }
+
+    // =====================================================================
+    // Avisos en ventana: fin de la beta y opinión
+    // =====================================================================
+
+    private fun avisosEnVentana() {
+        if (isFinishing || isDestroyed) return
+        val ocupado = guia?.isShowing == true || dialogoCuenta?.isShowing == true ||
+            dialogoAct?.isShowing == true || dialogoAviso?.isShowing == true
+        if (ocupado) return
+        val e = Licencia.estado(this)
+        if (e.beta && !e.pagada) {
+            val umbral = when {
+                e.diasRestantes <= 7 -> 7
+                e.diasRestantes <= DIAS_AVISO_FIN_BETA -> DIAS_AVISO_FIN_BETA
+                else -> 0
+            }
+            if (umbral > 0 && (prefs.avisoFinBeta == 0 || prefs.avisoFinBeta > umbral)) {
+                prefs.avisoFinBeta = umbral
+                dialogoFinBeta(e.diasRestantes)
+                return
+            }
+        }
+        pedirOpinionSiToca()
+    }
+
+    private fun dialogoFinBeta(dias: Int) {
+        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        cuerpo.addView(texto(
+            "La beta gratis termina el ${Licencia.fechaBonita(Licencia.BETA_HASTA)} (quedan $dias ${if (dias == 1) "día" else "días"}). " +
+                "Después, Checa se paga con paquetes desde $99 al mes.",
+            Tema.T_TEXTO, cTexto2, false
+        ).apply { setLineSpacing(0f, 1.2f) })
+        cuerpo.addView(texto(
+            "Como la probaste en la beta, tendrás precio de fundador. " +
+                if (Cuenta.conectada(this)) "Tu cuenta ya está registrada." else "Entra con tu cuenta de Google para asegurarlo.",
+            Tema.T_TEXTO, cVerde, true
+        ).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
+        if (!Cuenta.conectada(this)) {
+            cuerpo.addView(boton("Entrar con Google", cVerde, Color.BLACK) {
+                dialogoAviso?.dismiss()
+                entrarConGoogle()
+            }, margenArriba(Tema.S2))
+        }
+        cuerpo.addView(boton("Entendido", cTarjeta2, cTexto) { dialogoAviso?.dismiss() }, margenArriba(Tema.S1))
+        dialogoAviso = hoja("Se acerca el fin de la beta", cAmarillo, cuerpo)
+    }
+
+    /** Pide la opinión una vez por semana (máx. 3) a quien ya lleva 7 días y varias ofertas leídas. */
+    private fun pedirOpinionSiToca() {
+        if (prefs.resenaHecha || prefs.resenaPedida >= 3) return
+        val ahora = System.currentTimeMillis()
+        if (ahora < prefs.resenaProxima) return
+        val instalada = try { packageManager.getPackageInfo(packageName, 0).firstInstallTime } catch (_: Exception) { ahora }
+        if (ahora - instalada < DIAS_PARA_OPINION * 86_400_000L) return
+        if (Historial.todos(this).size < OFERTAS_PARA_OPINION) return
+        prefs.resenaPedida += 1
+        prefs.resenaProxima = ahora + 7 * 86_400_000L
+        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        cuerpo.addView(texto(
+            "Ya llevas una semana con Checa. Tu opinión ayuda a otros conductores a decidir si les sirve.",
+            Tema.T_TEXTO, cTexto2, false
+        ).apply { setLineSpacing(0f, 1.2f) })
+        cuerpo.addView(boton("Sí, me sirve: contar mi opinión", cVerde, Color.BLACK) {
+            prefs.resenaHecha = true
+            dialogoAviso?.dismiss()
+            Soporte.opinion(this)
+        }, margenArriba(Tema.S2))
+        cuerpo.addView(boton("Tengo un problema", cTarjeta2, cTexto) {
+            dialogoAviso?.dismiss()
+            mostrarDiagnostico()
+        }, margenArriba(Tema.S1))
+        cuerpo.addView(boton("Después", cTarjeta2, cTexto) { dialogoAviso?.dismiss() }, margenArriba(Tema.S1))
+        dialogoAviso = hoja("¿Te está sirviendo Checa?", null, cuerpo)
+    }
+
+    // =====================================================================
+    // Mi día: viajes aceptados, meta y resumen
+    // =====================================================================
+
+    private fun gasolinaDe(km: Double): Double =
+        if (prefs.kmPorLitro > 0) km / prefs.kmPorLitro * prefs.precioLitro else 0.0
+
+    private fun pintarJornada() {
+        if (!::jornadaCaja.isInitialized) return
+        val c = jornadaCaja
+        c.removeAllViews()
+        val hoy = Jornada.totales(Jornada.deHoy(this))
+        val sem = Jornada.totales(Jornada.deSemana(this))
+        val meta = prefs.metaDia.toDouble()
+        c.addView(cabeceraTarjeta(
+            Icono.TENDENCIA, "Mi día",
+            if (hoy.viajes == 0) "Marca los viajes que aceptas para llevar tu cuenta"
+            else "${hoy.viajes} ${if (hoy.viajes == 1) "viaje" else "viajes"} · gasolina ${dinero(hoy.gasolina, 0)}",
+            false
+        ).first)
+        val cifra = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.BOTTOM }
+        cifra.addView(numero(dinero(hoy.neta, 0), Tema.T_NUMERO, cVerde))
+        cifra.addView(
+            texto(if (meta > 0) "  de ${dinero(meta, 0)}" else "  netos hoy", Tema.T_TEXTO, cTexto2, false),
+            LinearLayout.LayoutParams(-2, -2).apply { bottomMargin = dp(4) }
+        )
+        c.addView(cifra, margenArriba(Tema.S2))
+        if (meta > 0) {
+            val avance = (hoy.neta / meta).coerceIn(0.0, 1.0)
+            val barra = FrameLayout(this).apply { background = redondo(cTarjeta2, 3) }
+            val lleno = View(this).apply { background = redondo(cVerde, 3) }
+            barra.addView(lleno, FrameLayout.LayoutParams(0, -1))
+            barra.post { lleno.layoutParams = FrameLayout.LayoutParams((barra.width * avance).toInt(), -1) }
+            c.addView(barra, LinearLayout.LayoutParams(-1, dp(6)).apply { topMargin = dp(Tema.S1) })
+            c.addView(texto(
+                if (hoy.neta >= meta) "¡Meta cumplida!" else "Te faltan ${dinero(meta - hoy.neta, 0)} para tu meta",
+                Tema.T_NOTA, if (hoy.neta >= meta) cVerde else cTexto2, false
+            ), margenArriba(Tema.S1))
+        }
+        c.addView(texto(
+            "Esta semana: ${dinero(sem.neta, 0)} netos · gasolina ${dinero(sem.gasolina, 0)} · ${sem.viajes} viajes",
+            Tema.T_NOTA, cTenue, false
+        ), margenArriba(Tema.S1))
+        c.addView(dosBotones(
+            boton("Registrar viaje", cVerde, Color.BLACK) { dialogoRegistrarViaje() },
+            boton(if (meta > 0) "Cambiar meta" else "Poner meta", cTarjeta2, cTexto) { dialogoMeta() }
+        ), margenArriba(Tema.S2))
+        c.addView(dosBotones(
+            boton("Compartir mi día", cTarjeta2, cTexto) { Resumen.compartir(this, false) },
+            boton("Compartir mi semana", cTarjeta2, cTexto) { Resumen.compartir(this, true) }
+        ), margenArriba(Tema.S1))
+    }
+
+    private fun dosBotones(a: View, b: View) = LinearLayout(this).apply {
+        orientation = LinearLayout.HORIZONTAL
+        addView(a, LinearLayout.LayoutParams(0, -2, 1f))
+        addView(b, LinearLayout.LayoutParams(0, -2, 1f).apply { leftMargin = dp(Tema.S1) })
+    }
+
+    /** Lista las últimas ofertas de hoy para marcar cuáles se aceptaron. */
+    private fun dialogoRegistrarViaje() {
+        val regs = Historial.deHoy(this).sortedByDescending { it.hora }.take(10)
+        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        if (regs.isEmpty()) {
+            cuerpo.addView(texto(
+                "Aún no hay ofertas hoy. Cuando te lleguen, aquí marcas las que aceptaste.",
+                Tema.T_TEXTO, cTexto2, false
+            ).apply { setLineSpacing(0f, 1.2f) })
+            hoja("¿Cuáles aceptaste?", null, cuerpo)
+            return
+        }
+        cuerpo.addView(texto("Toca las ofertas que aceptaste. Sirven para tu meta, tu gasolina y tu resumen.",
+            Tema.T_NOTA, cTenue, false).apply { setLineSpacing(0f, 1.2f) })
+        val horaFmt = SimpleDateFormat("HH:mm", Locale.US)
+        regs.forEach { r ->
+            val marca = icono(Icono.OK, cVerde, 20).apply {
+                visibility = if (Jornada.registrado(this@MainActivity, r.hora)) View.VISIBLE else View.INVISIBLE
+            }
+            val fila = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                background = ripple(cTarjeta, Tema.R_BOTON)
+                setPadding(dp(Tema.S2), dp(12), dp(Tema.S2), dp(12))
+                isClickable = true
+            }
+            val neta = r.tarifa - gasolinaDe(r.km)
+            val textos = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+            textos.addView(texto("${horaFmt.format(Date(r.hora))} · ${r.app}", Tema.T_TEXTO, cTexto, true))
+            textos.addView(
+                texto("${dinero(r.tarifa, 0)} · ${num1(r.km)} km · neta ${dinero(neta, 0)}", Tema.T_NOTA, cTexto2, false),
+                LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(2) }
+            )
+            fila.addView(textos, LinearLayout.LayoutParams(0, -2, 1f))
+            fila.addView(marca, LinearLayout.LayoutParams(dp(20), dp(20)))
+            fila.setOnClickListener {
+                if (Jornada.registrado(this, r.hora)) {
+                    Jornada.quitar(this, r.hora)
+                    marca.visibility = View.INVISIBLE
+                } else {
+                    Jornada.registrar(this, r, prefs)
+                    marca.visibility = View.VISIBLE
+                }
+                pintarJornada()
+            }
+            cuerpo.addView(fila, margenArriba(Tema.S1))
+        }
+        hoja("¿Cuáles aceptaste?", null, cuerpo)
+    }
+
+    private fun dialogoMeta() {
+        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        cuerpo.addView(texto("¿Cuánto quieres ganar neto hoy, después de gasolina?", Tema.T_TEXTO, cTexto2, false)
+            .apply { setLineSpacing(0f, 1.2f) })
+        var nueva = prefs.metaDia
+        cuerpo.addView(
+            campo(if (prefs.metaDia > 0) num(prefs.metaDia) else "") { v -> nueva = v },
+            LinearLayout.LayoutParams(-1, dp(Tema.ALTO_TOQUE)).apply { topMargin = dp(Tema.S2) }
+        )
+        var dialogo: Dialog? = null
+        cuerpo.addView(boton("Guardar meta", cVerde, Color.BLACK) {
+            prefs.metaDia = nueva
+            pintarJornada()
+            dialogo?.dismiss()
+        }, margenArriba(Tema.S2))
+        if (prefs.metaDia > 0) {
+            cuerpo.addView(boton("Quitar meta", cTarjeta2, cTexto) {
+                prefs.metaDia = 0f
+                pintarJornada()
+                dialogo?.dismiss()
+            }, margenArriba(Tema.S1))
+        }
+        dialogo = hoja("Meta del día", null, cuerpo)
     }
 
     // =====================================================================
@@ -1666,7 +1908,14 @@ class MainActivity : Activity() {
     private fun pintarLicencia() {
         val e = Licencia.estado(this)
         tarjetaLicencia.visibility = if (e.pagada) View.GONE else View.VISIBLE
-        if (e.beta && !e.pagada) {
+        val finBeta = e.beta && !e.pagada && e.diasRestantes <= DIAS_AVISO_FIN_BETA
+        if (finBeta) {
+            licTitulo.text = "La beta gratis termina en ${e.diasRestantes} ${if (e.diasRestantes == 1) "día" else "días"}"
+            licTitulo.setTextColor(cAmarillo)
+            licTexto.text = "El ${Licencia.fechaBonita(Licencia.BETA_HASTA)} Checa empieza a cobrar. " +
+                "Quienes la probaron en la beta tendrán precio de fundador." +
+                (if (Cuenta.conectada(this)) " Tu cuenta ya está registrada." else " Entra con tu cuenta de Google para asegurarlo.")
+        } else if (e.beta && !e.pagada) {
             licTitulo.text = "Beta gratis · todo incluido"
             licTitulo.setTextColor(cVerde)
             licTexto.text = "Usa Checa sin costo hasta el ${Licencia.fechaBonita(Licencia.BETA_HASTA)}. Gracias por probarla."
@@ -1690,7 +1939,15 @@ class MainActivity : Activity() {
             paquetesVista.visibility = if (e.beta || (e.pagada && e.vence >= Licencia.PERMANENTE)) View.GONE else View.VISIBLE
         }
         // En la beta no hay nada que comprar: se oculta el botón de paquetes de Inicio.
-        botonPaquetesInicio.visibility = if (e.beta) View.GONE else View.VISIBLE
+        if (e.beta) {
+            botonPaquetesInicio.text = "Entrar con Google"
+            botonPaquetesInicio.setOnClickListener { entrarConGoogle() }
+            botonPaquetesInicio.visibility = if (finBeta && !Cuenta.conectada(this)) View.VISIBLE else View.GONE
+        } else {
+            botonPaquetesInicio.text = "Ver paquetes"
+            botonPaquetesInicio.setOnClickListener { irAPaquetes() }
+            botonPaquetesInicio.visibility = View.VISIBLE
+        }
         pintarCuenta()
     }
 
@@ -2430,6 +2687,8 @@ class MainActivity : Activity() {
     }
 
     private fun iniciarCaptura() {
+        val volver = desdeAviso
+        desdeAviso = false
         if (!Licencia.activa(this)) {
             Toast.makeText(this, "Elige un paquete para seguir usando Checa", Toast.LENGTH_LONG).show()
             irAPaquetes()
@@ -2445,6 +2704,7 @@ class MainActivity : Activity() {
         ) {
             requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 7)
         }
+        volverAtras = volver
         val mpm = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
         @Suppress("DEPRECATION")
         startActivityForResult(mpm.createScreenCaptureIntent(), REQ_CAPTURA)
@@ -2455,6 +2715,8 @@ class MainActivity : Activity() {
         @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode != REQ_CAPTURA) return
+        val volver = volverAtras
+        volverAtras = false
         if (resultCode != RESULT_OK || data == null) {
             Toast.makeText(this, "No se dio permiso de grabar pantalla", Toast.LENGTH_SHORT).show()
             return
@@ -2464,6 +2726,8 @@ class MainActivity : Activity() {
             .putExtra(CapturaService.EXTRA_DATOS, data)
         startForegroundService(i)
         handler.postDelayed({ actualizarEstado() }, 800)
+        // Si vino del aviso al abrir Uber/DiDi, regresa a la app de manejo.
+        if (volver) moveTaskToBack(true)
     }
 
     // =====================================================================
@@ -2674,5 +2938,12 @@ class MainActivity : Activity() {
 
     companion object {
         private const val REQ_CAPTURA = 42
+        /** La notificación «Checa no está leyendo» abre la app pidiendo iniciar la lectura. */
+        const val EXTRA_AUTO_INICIAR = "auto_iniciar"
+        /** Desde cuántos días antes de que acabe la beta se avisa del cobro. */
+        private const val DIAS_AVISO_FIN_BETA = 30
+        /** Días de uso y ofertas leídas antes de pedir la opinión. */
+        private const val DIAS_PARA_OPINION = 7
+        private const val OFERTAS_PARA_OPINION = 10
     }
 }
