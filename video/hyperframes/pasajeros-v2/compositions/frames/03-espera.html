@@ -1,0 +1,64 @@
+<template>
+  <style>
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Regular.ttf') format('truetype'); font-weight: 400; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Medium.ttf') format('truetype'); font-weight: 500 600; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Bold.ttf') format('truetype'); font-weight: 700 900; font-display: block; }
+    @font-face{ font-family: 'Fira Code'; src: url('assets/fonts/FiraCode.ttf') format('truetype'); font-weight: 300 700; font-display: block; }
+    #root { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; font-family: 'Fira Sans', sans-serif; color: #F1F5F2; }
+    .clip { position: absolute; }
+    .P-ground { inset: 0; background: #0D0D0D; }
+    .P-stage { left: 0; top: 0; width: 1080px; height: 1600px; transform-origin: 50% 45%; }
+    .P-glow { position: absolute; left: 140px; top: 420px; width: 800px; height: 800px; border-radius: 50%; background: radial-gradient(circle, rgba(34,197,94,.20), rgba(34,197,94,0) 65%); }
+    .P-mask { position: absolute; left: 0; right: 0; overflow: hidden; text-align: center; }
+    .P-mask > div { font-weight: 800; text-transform: lowercase; letter-spacing: -.04em; line-height: 1.02; white-space: nowrap; }
+    .P-ej { position: absolute; left: 0; right: 0; top: 1500px; text-align: center; font-family: 'Fira Code', monospace; font-size: 26px; letter-spacing: .12em; text-transform: uppercase; color: #6B736F; }
+    .P-num { font-family: 'Fira Code', monospace; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .P-card { position: absolute; width: 620px; border-radius: 36px; background: #F4F5F4; color: #111; padding: 48px 52px 44px; box-shadow: 0 30px 80px rgba(0,0,0,.7); }
+    .P-card .k { font-family: 'Fira Code', monospace; font-weight: 500; font-size: 28px; letter-spacing: .14em; text-transform: uppercase; color: #5C635F; }
+    .P-card .f { font-family: 'Fira Code', monospace; font-weight: 700; font-size: 112px; letter-spacing: -.03em; line-height: 1; margin-top: 22px; }
+    .P-card .r { display: flex; align-items: center; gap: 22px; font-size: 40px; font-weight: 500; margin-top: 28px; color: #222; }
+    .P-card .d { width: 20px; height: 20px; border-radius: 50%; background: #111; flex: none; }
+    .P-card .s { width: 20px; height: 20px; background: #111; flex: none; }
+    .P-card .b { margin-top: 38px; height: 104px; border-radius: 20px; background: #111; color: #F4F5F4; display: flex; align-items: center; justify-content: center; font-size: 44px; font-weight: 700; }
+
+    #f03-espera-ground { background: #0D0D0D; }
+
+    #f03-espera-chip { position: absolute; left: 440px; top: 200px; width: 200px; height: 200px; border-radius: 50%; border: 8px solid #22C55E; display: flex; align-items: center; justify-content: center; font-family: 'Fira Code', monospace; font-weight: 700; font-size: 130px; color: #22C55E; }
+    #f03-espera-card { position: absolute; left: 130px; top: 520px; width: 820px; height: 800px; border-radius: 44px; background: #151918; border: 3px solid #2A2E2C; box-shadow: 0 30px 80px rgba(0,0,0,.6); }
+    #f03-espera-card .h { position: absolute; left: 0; right: 0; top: 44px; text-align: center; font-family: 'Fira Code', monospace; font-size: 34px; letter-spacing: .16em; color: #8A938E; text-transform: uppercase; }
+    #f03-espera-hg { position: absolute; left: 300px; top: 140px; width: 220px; height: 400px; }
+    #f03-espera-bar { position: absolute; left: 80px; right: 80px; top: 620px; height: 34px; border-radius: 17px; background: #2A2E2C; overflow: hidden; } #f03-espera-fill { height: 100%; width: 0%; background: #FACC15; }
+    #f03-espera-card .l { position: absolute; left: 0; right: 0; top: 690px; text-align: center; font-size: 46px; font-weight: 600; color: #AFB7B2; }
+
+  </style>
+
+  <div id="root" data-composition-id="03-espera" data-width="1080" data-height="1920" data-start="0" data-duration="3.354">
+    <div id="f03-espera-ground" class="clip P-ground" data-start="0" data-duration="3.354" data-track-index="0"></div>
+    <div id="f03-espera-stage" class="clip P-stage" data-start="0" data-duration="3.354" data-track-index="1">
+      <div id="f03-espera-chip">1</div>
+      <div id="f03-espera-card"><div class="h">Reglas de espera</div>
+        <svg id="f03-espera-hg" viewBox="0 0 120 220" fill="none" stroke="#F1F5F2" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 10 H106 M14 210 H106"/><path d="M22 10 C22 80 60 90 60 110 C60 130 22 140 22 210 M98 10 C98 80 60 90 60 110 C60 130 98 140 98 210"/>
+          <path id="f03-espera-top" d="M34 24 H86 C80 60 64 80 60 100 C56 80 40 60 34 24 Z" fill="#FACC15" stroke="none"/>
+          <path id="f03-espera-bot" d="M60 120 L96 200 H24 Z" fill="#FACC15" stroke="none" opacity="0"/></svg>
+        <div id="f03-espera-bar"><div id="f03-espera-fill"></div></div><div class="l">tiempo de espera de tu app</div></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      var D = 3.354;
+      tl.fromTo("#f03-espera-chip", {"scale": 0, "opacity": 0}, {"scale": 1, "opacity": 1, "duration": 0.35, "ease": "back.out(2)"}, 0.0);
+      tl.fromTo("#f03-espera-card", {"y": 100, "opacity": 0}, {"y": 0, "opacity": 1, "duration": 0.45, "ease": "power3.out"}, 0.15);
+      tl.to("#f03-espera-top", {"scaleY": 0.05, "transformOrigin": "50% 100%", "duration": 2.4, "ease": "none"}, 0.145);
+      tl.to("#f03-espera-bot", {"opacity": 1, "duration": 0.3}, 0.145);
+      tl.fromTo("#f03-espera-fill", {"width": "0%"}, {"width": "100%", "duration": 2.6, "ease": "none"}, 1.201);
+      tl.fromTo("#f03-espera-stage", { scale: 1 }, { scale: 1.04, duration: D - 0, ease: "none" }, 0);
+
+      window.__timelines["03-espera"] = tl;
+    })();
+  </script>
+</template>

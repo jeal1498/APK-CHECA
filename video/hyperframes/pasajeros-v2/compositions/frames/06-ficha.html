@@ -1,0 +1,64 @@
+<template>
+  <style>
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Regular.ttf') format('truetype'); font-weight: 400; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Medium.ttf') format('truetype'); font-weight: 500 600; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Bold.ttf') format('truetype'); font-weight: 700 900; font-display: block; }
+    @font-face{ font-family: 'Fira Code'; src: url('assets/fonts/FiraCode.ttf') format('truetype'); font-weight: 300 700; font-display: block; }
+    #root { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; font-family: 'Fira Sans', sans-serif; color: #F1F5F2; }
+    .clip { position: absolute; }
+    .P-ground { inset: 0; background: #0D0D0D; }
+    .P-stage { left: 0; top: 0; width: 1080px; height: 1600px; transform-origin: 50% 45%; }
+    .P-glow { position: absolute; left: 140px; top: 420px; width: 800px; height: 800px; border-radius: 50%; background: radial-gradient(circle, rgba(34,197,94,.20), rgba(34,197,94,0) 65%); }
+    .P-mask { position: absolute; left: 0; right: 0; overflow: hidden; text-align: center; }
+    .P-mask > div { font-weight: 800; text-transform: lowercase; letter-spacing: -.04em; line-height: 1.02; white-space: nowrap; }
+    .P-ej { position: absolute; left: 0; right: 0; top: 1500px; text-align: center; font-family: 'Fira Code', monospace; font-size: 26px; letter-spacing: .12em; text-transform: uppercase; color: #6B736F; }
+    .P-num { font-family: 'Fira Code', monospace; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .P-card { position: absolute; width: 620px; border-radius: 36px; background: #F4F5F4; color: #111; padding: 48px 52px 44px; box-shadow: 0 30px 80px rgba(0,0,0,.7); }
+    .P-card .k { font-family: 'Fira Code', monospace; font-weight: 500; font-size: 28px; letter-spacing: .14em; text-transform: uppercase; color: #5C635F; }
+    .P-card .f { font-family: 'Fira Code', monospace; font-weight: 700; font-size: 112px; letter-spacing: -.03em; line-height: 1; margin-top: 22px; }
+    .P-card .r { display: flex; align-items: center; gap: 22px; font-size: 40px; font-weight: 500; margin-top: 28px; color: #222; }
+    .P-card .d { width: 20px; height: 20px; border-radius: 50%; background: #111; flex: none; }
+    .P-card .s { width: 20px; height: 20px; background: #111; flex: none; }
+    .P-card .b { margin-top: 38px; height: 104px; border-radius: 20px; background: #111; color: #F4F5F4; display: flex; align-items: center; justify-content: center; font-size: 44px; font-weight: 700; }
+
+    #f06-ficha-ground { background: #0D0D0D; }
+
+    #f06-ficha-chip { position: absolute; left: 440px; top: 190px; width: 200px; height: 200px; border-radius: 50%; border: 8px solid #22C55E; display: flex; align-items: center; justify-content: center; font-family: 'Fira Code', monospace; font-weight: 700; font-size: 130px; color: #22C55E; }
+    #f06-ficha-card { position: absolute; left: 140px; top: 470px; width: 800px; height: 640px; border-radius: 44px; background: #151918; border: 3px solid #2A2E2C; box-shadow: 0 30px 80px rgba(0,0,0,.6); }
+    .f06-ficha-r { position: absolute; left: 60px; right: 60px; height: 150px; border-radius: 28px; background: #1B201E; border: 3px solid #2A2E2C; display: flex; align-items: center; justify-content: space-between; padding: 0 44px; font-size: 54px; font-weight: 600; color: #AFB7B2; }
+    .f06-ficha-r svg { width: 84px; height: 84px; opacity: 0; }
+    #f06-ficha-r1 { top: 70px; } #f06-ficha-r2 { top: 270px; }
+    #f06-ficha-lk { position: absolute; left: 340px; top: 1180px; width: 400px; height: 400px; }
+
+  </style>
+
+  <div id="root" data-composition-id="06-ficha" data-width="1080" data-height="1920" data-start="0" data-duration="3.308">
+    <div id="f06-ficha-ground" class="clip P-ground" data-start="0" data-duration="3.308" data-track-index="0"></div>
+    <div id="f06-ficha-stage" class="clip P-stage" data-start="0" data-duration="3.308" data-track-index="1">
+      <div id="f06-ficha-chip">3</div>
+      <div id="f06-ficha-card"><div id="f06-ficha-r1" class="f06-ficha-r"><span>Nombre</span><svg id="f06-ficha-k1" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M7 12.5 L10.5 16 L17 8.5"/></svg></div>
+        <div id="f06-ficha-r2" class="f06-ficha-r"><span>Destino</span><svg id="f06-ficha-k2" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M7 12.5 L10.5 16 L17 8.5"/></svg></div></div>
+      <svg id="f06-ficha-lk" viewBox="0 0 200 200" fill="none" stroke="#F1F5F2" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="40" y="88" width="120" height="96" rx="16"/><g id="f06-ficha-sh"><path d="M64 88 V62 C64 26 136 26 136 62 V88"/></g></svg>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      var D = 3.308;
+      tl.fromTo("#f06-ficha-chip", {"scale": 0, "opacity": 0}, {"scale": 1, "opacity": 1, "duration": 0.35, "ease": "back.out(2)"}, 0.0);
+      tl.fromTo("#f06-ficha-card", {"y": 100, "opacity": 0}, {"y": 0, "opacity": 1, "duration": 0.45, "ease": "power3.out"}, 0.1);
+      tl.fromTo("#f06-ficha-lk", {"y": 80, "opacity": 0}, {"y": 0, "opacity": 1, "duration": 0.4, "ease": "power3.out"}, 0.2);
+      tl.fromTo("#f06-ficha-k1", {"scale": 0, "opacity": 0}, {"scale": 1, "opacity": 1, "duration": 0.3, "ease": "back.out(2)"}, 0.272);
+      tl.fromTo("#f06-ficha-k2", {"scale": 0, "opacity": 0}, {"scale": 1, "opacity": 1, "duration": 0.3, "ease": "back.out(2)"}, 0.911);
+      tl.to("#f06-ficha-sh", {"y": -34, "rotation": -22, "svgOrigin": "64 88", "duration": 0.4, "ease": "back.out(2)"}, 2.351);
+      tl.to("#f06-ficha-lk", {"stroke": "#22C55E", "duration": 0.3}, 2.351);
+      tl.fromTo("#f06-ficha-stage", { scale: 1 }, { scale: 1.04, duration: D - 0, ease: "none" }, 0);
+
+      window.__timelines["06-ficha"] = tl;
+    })();
+  </script>
+</template>
