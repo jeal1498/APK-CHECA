@@ -111,7 +111,7 @@ object Resumen {
         c.drawText("Checa: te dice si cada oferta de Uber o DiDi conviene.", 72f, 1170f, p)
         p.color = Tema.VERDE
         p.typeface = Fuentes.media
-        c.drawText("Pruébala 7 días gratis · jeal1498.github.io/checa-web", 72f, 1240f, p)
+        c.drawText("Gratis durante la beta · jeal1498.github.io/checa-web", 72f, 1240f, p)
         return bmp
     }
 }

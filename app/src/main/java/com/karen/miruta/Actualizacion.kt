@@ -97,7 +97,7 @@ object Actualizacion {
     fun textoCompartir(codigo: String?): String {
         val link = WEB + "?" + (if (codigo != null) "ref=$codigo&" else "") + "utm_source=app&utm_campaign=compartir"
         val base = "Te recomiendo Checa: en cada oferta de Uber o DiDi te dice cuánto te queda después de gasolina " +
-            "y si conviene aceptarla. Pruébala 7 días gratis (Android): $link"
+            "y si conviene aceptarla. Es gratis durante la beta (Android): $link"
         return if (codigo == null) base
         else "$base\n\nUsa mi código $codigo: si pagas un paquete, los dos ganamos 1 mes gratis."
     }

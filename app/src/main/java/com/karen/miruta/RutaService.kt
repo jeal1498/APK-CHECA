@@ -23,6 +23,7 @@ class RutaService : AccessibilityService() {
     private val popups = HashMap<String, Popup>()
     private val activas = LinkedHashMap<String, Pair<Oferta, Rect?>>()
     private val ultimaFirma = HashMap<String, Pair<String, Long>>()
+    private val ultimoAviso = HashMap<String, Long>()
 
     override fun onServiceConnected() {
         super.onServiceConnected()
@@ -167,7 +168,7 @@ class RutaService : AccessibilityService() {
             }
         }
         if (nombreApp(pkg) == null) return
-        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) avisarApertura()
+        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) avisarApertura(nombreApp(pkg) ?: "?")
         if (pendiente) return
         pendiente = true
         handler.postDelayed({
@@ -180,12 +181,13 @@ class RutaService : AccessibilityService() {
      * Al abrir Uber o DiDi con la lectura apagada, avisa con una notificación. Android pide
      * permiso de captura cada vez, así que no se puede iniciar sola: un toque en el aviso lo hace.
      */
-    private fun avisarApertura() {
+    private fun avisarApertura(app: String) {
         try {
             if (!prefs.avisarApertura || CapturaService.corriendo || !Licencia.activa(this)) return
+            // El límite es por app: abrir DiDi no debe callar el aviso de Uber.
             val ahora = System.currentTimeMillis()
-            if (ahora - prefs.ultimoAvisoApertura < 10 * 60_000L) return
-            prefs.ultimoAvisoApertura = ahora
+            if (ahora - (ultimoAviso[app] ?: 0L) < 3 * 60_000L) return
+            ultimoAviso[app] = ahora
             val nm = getSystemService(android.content.Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
             nm.createNotificationChannel(
                 android.app.NotificationChannel("avisos", "Avisos de Checa", android.app.NotificationManager.IMPORTANCE_HIGH)
