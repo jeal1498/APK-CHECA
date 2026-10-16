@@ -58,7 +58,7 @@ Misma idea que cada video de CHECA, con otro gancho y otras palabras (reglas en 
 | 01 | — | Campaña beta | (video original de CHECA) | ✅ | ✅ |
 | 18 | — | Venta | (video original de CHECA) | ✅ | ✅ |
 | 05 | — | Consejo | `05 - Cansancio y salud` | ✅ | ✅ |
-| 19 | sáb 17 oct | Venta | `19 - Checa lee la oferta` |  | |
+| 19 | sáb 17 oct | Venta | `19 - Checa lee la oferta` | ✅ | |
 | 06 | dom 18 oct | Venta | `06 - Gasolina cara` | ✅ | |
 | 07 | lun 19 oct | Consejo | `07 - Pasajeros y cancelaciones` |  | |
 | 08 | mar 20 oct | Venta | `08 - Decidir en segundos` |  | |
