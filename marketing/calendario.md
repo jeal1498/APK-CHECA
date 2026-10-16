@@ -22,7 +22,7 @@ Sin link en la bio (TikTok pide constancia del SAT para cuenta de empresa): a qu
 | 02 | mié 15 oct | Venta | `02_2026-10-15_trabajar-mucho-sin-lana` | ✅ |
 | 03 | jue 16 oct | Consejo | `03_2026-10-16_seguridad-de-noche` | ✅ |
 | 04 | vie 17 oct | Venta | `04_2026-10-17_recogidas-lejanas` | ✅ 15 oct |
-| 05 | sáb 18 oct | Consejo | `05_2026-10-18_cansancio-y-salud` | |
+| 05 | sáb 18 oct | Consejo | `05_2026-10-18_cansancio-y-salud` | ✅ |
 | 06 | dom 19 oct | Venta | `06_2026-10-19_gasolina-cara` | |
 | 07 | lun 20 oct | Consejo | `07_2026-10-20_pasajeros-y-cancelaciones` | |
 | 08 | mar 21 oct | Venta | `08_2026-10-21_decidir-en-segundos` | |
@@ -71,7 +71,7 @@ Las recogidas lejanas en Uber y DiDi se comen tu gasolina y tu ganancia por kil�
 Comenta «CHECA» y te mando la app que te muestra los km totales antes de aceptar (7 días gratis, solo Android).
 #choferes #uber #didi #kilometraje #checaapp
 
-## 05 · sáb 18 oct · Consejo
+## 05 · sáb 18 oct · Consejo · ✅ publicado
 Video: `marketing/publicar/05_2026-10-18_cansancio-y-salud.mp4` · Portada: `05_2026-10-18_cansancio-y-salud.jpg`
 
 Tu cuerpo también es tu herramienta de trabajo 💪
