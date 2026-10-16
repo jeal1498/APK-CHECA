@@ -12,7 +12,7 @@ Cada video de la cuenta de **Checa** tiene una **v2** para la cuenta **personal*
 ---
 
 ## 05 · Cansancio y salud (v2, optimizado para retención)
-v1: `05_2026-10-18_cansancio-y-salud.mp4` · v2: `05_2026-10-18_cansancio-y-salud_v2.mp4`
+v1: `05_2026-10-18_cansancio-y-salud.mp4` · v2: `05_2026-10-18_cansancio-y-salud_v2.mp4` (34 s, estilo HyperFrames, proyecto `video/hyperframes/salud-v2/`)
 
 **Voz limpia (sin etiquetas, para ElevenLabs):** Seis de la tarde. La espalda ya no da más y te faltan horas. [Corte] Al carro le haces servicio. A tu cuerpo, casi nunca. [Corte] Te dejo 4 hábitos. El cuarto puede evitarte un accidente. [Corte] Uno: cada dos horas, bájate y camina cinco minutos. [Corte] Dos: agua a la mano. Si no la ves, no la tomas. [Corte] Tres, el más fácil: pega la espalda al respaldo antes de arrancar. [Corte] Cuatro, el que no se negocia: [Corte] Si bostezas o se te cierran los ojos, orilla y descansa. [Corte] Ninguna oferta vale más que llegar bien a casa. [Corte] Mándaselo a quien maneja de más. Sígueme para más.
 

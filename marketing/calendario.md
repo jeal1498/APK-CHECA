@@ -80,6 +80,8 @@ Tu cuerpo también es tu herramienta de trabajo 💪
 Guárdalo y mándaselo a quien se la vive al volante.
 #conductores #salud #choferes #consejosdeconductor #checaapp
 
+**v2 (cuenta personal de Eduardo):** `marketing/publicar/05_2026-10-18_cansancio-y-salud_v2.mp4` · portada `05_2026-10-18_cansancio-y-salud_v2.jpg` · guion y texto en `marketing/guiones-v2.md`.
+
 ## 06 · dom 19 oct · Venta
 Video: `marketing/publicar/06_2026-10-19_gasolina-cara.mp4` · Portada: `06_2026-10-19_gasolina-cara.jpg`
 
