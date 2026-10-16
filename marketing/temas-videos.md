@@ -6,7 +6,7 @@ Miedos y problemas del conductor de plataformas, en el orden en que se van a tra
 |---|---|---|---|---|
 | 1 | 2 | Trabajar mucho y no ver el dinero ✅ `marketing/CHECA/15-10 - Trabajar mucho sin lana/video.mp4` (`SinLana1Volt.tsx`; versión 3D: `sin-lana.mp4`) | «12 horas y la lana no aparece» | Sí, es su promesa central |
 | 2 | 3 | Gasolina cara que se come la ganancia ✅ `marketing/CHECA/19-10 - Gasolina cara/video.mp4` (`Gasolina1Volt.tsx`, guion de Gemini) | «La gasolina se lleva todo» | Sí (neta después de gasolina) |
-| 3 | 6 | Recogidas lejanas, kilómetros que nadie paga ✅ anuncio de 23 s: `marketing/videos/recogida.mp4` (`Recogida.tsx`, ciudad de noche); v2 de 30 s con guion de Gemini: `marketing/videos/recogida2.mp4` (`Recogida2.tsx`) | «Me mandan a recoger a 6 km» | Sí (km totales, filtro de recogida) |
+| 3 | 6 | Recogidas lejanas, kilómetros que nadie paga ✅ video final en `marketing/CHECA/17-10 - Recogidas lejanas/` (las pruebas 3D `Recogida.tsx` y `Recogida2.tsx` se borraron del repo el 16 oct; siguen en el historial de git) | «Me mandan a recoger a 6 km» | Sí (km totales, filtro de recogida) |
 | 4 | 10 | Horas muertas, no saber a qué hora salir ✅ `marketing/CHECA/23-10 - Mejores horas/video.mp4` (`Horas1Volt.tsx`, guion de Gemini) | «Hoy no cae nada» | Sí (Mejores horas) |
 | 5 | 11 | Decidir en segundos sin poder hacer la cuenta ✅ `marketing/CHECA/21-10 - Decidir en segundos/video.mp4` (`Decidir1Volt.tsx`, guion de Gemini) | «Acepto sin pensar porque se va» | Sí (pop-up y voz) |
 | 6 | 5 | Tarifas bajas y comisión alta ✅ `marketing/CHECA/25-10 - Comisión y tarifas/video.mp4` (`Comision1Volt.tsx`, guion de Gemini) | «La app se queda con todo» | Parcial (elegir mejores viajes) |

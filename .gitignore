@@ -6,3 +6,10 @@ local.properties
 .idea/
 __pycache__/
 video/public/beta/
+
+# Video (HyperFrames / Remotion): nada pesado ni temporal al repo
+node_modules/
+renders/
+.hyperframes/
+audio_engine_meta.json
+video/out/
