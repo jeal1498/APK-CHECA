@@ -7,12 +7,12 @@ Cada video de la cuenta de **Checa** tiene una **v2** para la cuenta **personal*
 - Tono de conductor a conductor, en «tú». Sin anécdotas personales inventadas; «yo» solo en llamadas como «sígueme».
 - Cierre personal: «sígueme» en lugar de «síguenos». Sin logo de Checa a menos que Eduardo lo pida.
 - Mismas reglas de siempre: sin ciudad ni país, sin prometer lo que no podamos garantizar, sin preguntas que la voz se contesta sola.
-- Se guarda aquí el guion; texto de publicación v2 debajo. Carpeta del video: `marketing/PERSONAL/NN_fecha_tema/` (`video.mp4`, `portada.jpg`, `copy.txt`).
+- Se guarda aquí el guion; texto de publicación v2 debajo. Carpeta del video: `marketing/PERSONAL/DD-MM - Nombre del video/` (`video.mp4`, `portada.jpg`, `copy.txt`).
 
 ---
 
 ## 05 · Cansancio y salud (v2, optimizado para retención)
-v1: `05_2026-10-18_cansancio-y-salud.mp4` · v2: `05_2026-10-18_cansancio-y-salud_v2.mp4` (34 s, estilo HyperFrames, proyecto `video/hyperframes/salud-v2/`)
+v1: `marketing/CHECA/18-10 - Cansancio y salud/` · v2: `marketing/PERSONAL/18-10 - Cansancio y salud/` (34 s, estilo HyperFrames, proyecto `video/hyperframes/salud-v2/`)
 
 **Voz limpia (sin etiquetas, para ElevenLabs):** Seis de la tarde. La espalda ya no da más y te faltan horas. [Corte] Al carro le haces servicio. A tu cuerpo, casi nunca. [Corte] Te dejo 4 hábitos. El cuarto puede evitarte un accidente. [Corte] Uno: cada dos horas, bájate y camina cinco minutos. [Corte] Dos: agua a la mano. Si no la ves, no la tomas. [Corte] Tres, el más fácil: pega la espalda al respaldo antes de arrancar. [Corte] Cuatro, el que no se negocia: [Corte] Si bostezas o se te cierran los ojos, orilla y descansa. [Corte] Ninguna oferta vale más que llegar bien a casa. [Corte] Mándaselo a quien maneja de más. Sígueme para más.
 
