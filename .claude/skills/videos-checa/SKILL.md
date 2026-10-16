@@ -5,6 +5,8 @@ description: Hacer videos cortos de Checa (TikTok, Reels, Shorts) con narrador d
 
 # Videos de Checa
 
+> **Prioridad entre conversaciones (Eduardo, 16 oct 2026):** esta skill se cambia desde la conversación **principal** (guiones, carpetas, v2). La **secundaria** solo hace cambios puntuales y no debe revertir estas reglas; si algo choca, gana lo que dice esta skill.
+
 ## ⭐ Cómo se hacen los guiones (Eduardo, 16 oct 2026: «me gusta más como está hoy en día»; vale para v1 y v2 y para cualquier estilo)
 Actúa como experto en contenido viral y retención. Cada vez que entregues o generes un guion, en la misma respuesta y sin textos largos:
 1. **Auditoría previa** de la versión base (la v1 publicada o el borrador): 4–5 viñetas con áreas de oportunidad y los puntos donde el ritmo decae (lo plano, lo repetitivo, lo que llega tarde, promesas que no se cumplen, el cierre).
@@ -13,7 +15,7 @@ Actúa como experto en contenido viral y retención. Cada vez que entregues o ge
 4. **Guion optimizado** en tabla `Corte · Tiempo · Voz · En pantalla/sonido · Técnica`, con la técnica entre corchetes y su función: `[Hook Inicial]`, `[Micro-hook]`, `[Open Loop]`, `[Re-enganche visual]`, `[Giro]`, `[Cambio de ritmo]`, `[Pausa dramática]`, `[Payoff del Open Loop]`, `[Giro emocional]`, `[CTA específico]`, `[Loop de repetición]`.
 5. **Voz limpia**: un párrafo sin corchetes con `[Corte]` entre líneas. Es lo único que va a ElevenLabs; las etiquetas son solo para Eduardo.
 6. **Ajustes de honestidad** (una línea) y **texto de publicación** (fórmula del calendario).
-7. Cierra preguntando si lo aprueba o lo pasa por Gemini. Con su «aprobado» haces voz y video; no esperes a Gemini si no lo pide.
+7. Cierra preguntando si lo aprueba. **Ya no se pasa por Gemini** (Eduardo, 16 oct 2026): con su «aprobado» haces voz y video.
 8. **Entrega siempre también la v2** (ver abajo), con el mismo formato.
 Guárdalos en `marketing/guiones-gemini.md` (v1) y `marketing/guiones-v2.md` (v2) con la columna «Técnica». Ejemplo completo del formato: `marketing/guiones-v2.md` (18-10 Cansancio y salud). Esto reemplaza la columna 🪝 y el formato viejo de «corte · voz · en pantalla».
 
@@ -34,7 +36,7 @@ Referencia: `marketing/CHECA/SIN FECHA - Cómo funciona Checa (HyperFrames)/vide
 3. **Una sola hoja de cuadros** (`snapshot` con 6–8 tiempos) y **un solo render**.
 
 **Proceso (cada video nuevo):**
-1. Guion: con el formato de «Cómo se hacen los guiones» (arriba), v1 y v2 → Eduardo lo aprueba (o lo pasa por Gemini) → guárdalo en `marketing/guiones-gemini.md` y `marketing/guiones-v2.md`.
+1. Guion: con el formato de «Cómo se hacen los guiones» (arriba), v1 y v2 → Eduardo lo aprueba directo (sin Gemini) → guárdalo en `marketing/guiones-gemini.md` y `marketing/guiones-v2.md`.
 2. Copia el proyecto: `cp -r video/hyperframes/checa-promo video/hyperframes/<tema>` y borra `compositions/frames/*`, `assets/voice`, `transcripcion`, `renders`, `.hyperframes/artifacts`, `index.html`, `audio_meta.json`, `audio_engine_meta.json`. Se quedan: `frame.md` (diseño ya corregido), `assets/checa-popup.html`, `assets/logo-7eb355dc.svg`, `assets/fonts/` (Fira de la app), `.hyperframes/caption-skin.html` (subtítulos con buen contraste), `alinear.py`.
 3. Escribe `SCRIPT.md` (una línea por escena, verbatim) y `STORYBOARD.md` corto: frontmatter (`format: 1080x1920`, `music: none`, `mode: autonomous`) + por escena `src`, `voiceover`, `transition_in`, `sfx` (de la librería: chime, click, click-soft, error, glitch-1/2/3, impact-bass-1/2, key-press, notification, ping, pop, riser, sparkle, typing, whoosh, whoosh-cinematic, whoosh-short) y 2–3 líneas de qué pasa. Sin blueprints ni Video direction largos.
 4. Música propia: `python3 -I video/scripts/elevenlabs.py musica <proy>/assets/audio bgm "<prompt>" <seg>` y `audio_meta.json` inicial `{"bgm":{"path":"assets/audio/bgm.mp3","source":"host"},"voices":[],"sfx":[]}`.
@@ -94,14 +96,14 @@ Desde el anuncio «Recogidas lejanas» Eduardo pidió el estilo 1Volt (2D, line-
 - **Más colores**: cada escena tiene su color de trazo y tinte de fondo (`TONO`: naranja, rosa, azul, morado, verde, amarillo, rojo, magenta, cian), además de cian/magenta/amarillo con significado.
 - **Subtítulos para redes** (`Subs`): abajo en y≈1500, Inter 800 de 70 px con contorno negro, 1–3 palabras, rebote al entrar y palabras clave a color (`CLAVE`). La frase clave va en y≈1270.
 - Render **sin** `--gl=swangle`: `npx remotion render <Id> out/x.mp4 --browser-executable=$B --log=error` (~1 min para 30 s).
-- **Guiones de Gemini**: Eduardo puede corregir los guiones con Gemini. Guarda cada guion final que te pase en `marketing/guiones-gemini.md` (corrido + tabla, con el archivo del video) antes de generar la voz. Cada `[Corte]` es una línea de voz y una escena.
+- **Guiones aprobados** (ya no pasan por Gemini; el archivo conserva ese nombre): guarda cada guion final aprobado en `marketing/guiones-gemini.md` (corrido + tabla, con el archivo del video) antes de generar la voz. Cada `[Corte]` es una línea de voz y una escena.
 - **Cambios cada 3 s** (Eduardo lo pidió para retener la atención): envuelve `<Escena />` en `<Toma esc={esc}>` (`video/src/Checa/Toma.tsx`), que cambia el encuadre (zoom ±6 % y desplazamiento, con un destello suave) cada 3 s dentro de las escenas largas. Además, cada `[Corte]` es una escena nueva; si una línea de voz pasa de ~4 s, divide la escena en dos dibujos.
 - **Checa es una app**: en la voz di «la app Checa» cuando pueda confundirse con Uber/DiDi («la app» a secas = la plataforma).
 - **Ahorro de tokens**: reutiliza la plantilla y cambia solo escenas, textos y cifras; revisa como máximo una tira de 4 cuadros antes del render; no rehagas la voz si el texto no cambió.
 
 ### Proceso actual (cada video)
 1. Entrega el guion del siguiente tema de `marketing/temas-videos.md` con el formato de «Cómo se hacen los guiones» (auditoría, hook, hooks intermedios, guion con etiquetas, voz limpia) y su v2; ~70–90 palabras, frases de ~3 s, y la cuenta de cada cifra.
-2. Eduardo lo aprueba o trae la versión corregida con Gemini: **guárdala primero** en `marketing/guiones-gemini.md` (corrido + tabla + archivo del video + ajustes que hiciste).
+2. Eduardo lo aprueba (o pide cambios): **guárdalo primero** en `marketing/guiones-gemini.md` (corrido + tabla + archivo del video + ajustes que hiciste).
 3. Revisa honestidad antes de grabar: «la app Checa» cuando pueda confundirse; «números de ejemplo» en pantalla si la voz no lo dice; nada que no podamos garantizar (cobros de cancelación, «menos de un segundo», bloqueos, ciudad o país en hashtags). Avisa cada ajuste.
 4. Voz Fernando Martínez (1 línea por `[Corte]`), escena 1Volt a partir del video anterior (`<Nombre>1Volt.tsx`, `<Toma>` incluida), 1 tira de ~6 cuadros, render, carpeta `marketing/CHECA/DD-MM - Nombre del video/` (`video.mp4`, `portada.jpg`, `copy.txt`) + entrada en `marketing/videos/calendario.md`, marca el tema en `temas-videos.md`, commit `[skip ci]` y push a `main` y a la rama de trabajo.
 
