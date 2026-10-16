@@ -64,6 +64,8 @@ object Cuenta {
     fun nombre(ctx: Context): String = sp(ctx).getString("nombre", null) ?: ""
     fun equipoQuitado(ctx: Context) = sp(ctx).getBoolean("quitado", false)
     fun tieneLicenciaGuardada(ctx: Context) = sp(ctx).getString("lic_firma", null) != null
+    /** Precio de fundador (40 % menos): la cuenta se creó durante la beta (lo decide mp-pago). */
+    fun precioBeta(ctx: Context) = sp(ctx).getBoolean("precio_beta", false)
 
     fun bienvenidaVista(ctx: Context) = sp(ctx).getBoolean("bienvenida", false)
 
@@ -242,6 +244,7 @@ object Cuenta {
         val e = s.edit()
         if (s.getString("correo", null) != correo) {
             e.remove("lic_firma").remove("lic_vence").remove("lic_f").remove("lic_eq").remove("equipos").remove("quitado")
+                .remove("precio_beta")
         }
         e.putString("correo", correo)
             .putString("acceso", j.getString("access_token"))
@@ -302,6 +305,7 @@ object Cuenta {
         }
         e.commit()
         sincronizarInvitacion(ctx, t)
+        sincronizarPrecio(ctx, t)
         return Resultado.Ok
     }
 
@@ -370,6 +374,14 @@ object Cuenta {
         }
         e.apply()
         return res
+    }
+
+    /** Pregunta a mp-pago si la cuenta tiene precio de fundador (si falla, se queda lo último guardado). */
+    private fun sincronizarPrecio(ctx: Context, t: String) {
+        try {
+            val r = JSONObject(pedir("POST", "/functions/v1/mp-pago", t, "{\"consulta\":true}"))
+            sp(ctx).edit().putBoolean("precio_beta", r.optBoolean("beta", false)).apply()
+        } catch (_: Exception) { }
     }
 
     /** Descarga el código propio, aplica uno pendiente y recuerda con qué código entró la cuenta. */

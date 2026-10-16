@@ -169,3 +169,7 @@ revoke all on function public.mi_invitacion() from public, anon;
 grant execute on function public.mi_codigo() to authenticated;
 grant execute on function public.usar_codigo(text) to authenticated;
 grant execute on function public.mi_invitacion() to authenticated;
+
+-- Precio de fundador (40 % menos) para quien usó la beta: se marca en cada pago con ese precio
+-- (mp-pago decide quién califica; ver supabase/functions/_shared/planes.ts).
+alter table public.pagos add column if not exists precio_beta boolean not null default false;

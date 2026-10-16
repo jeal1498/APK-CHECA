@@ -1248,7 +1248,7 @@ class MainActivity : Activity() {
             Tema.T_NOTA, cTenue, false
         ).apply { setLineSpacing(0f, 1.2f) }, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(Tema.S1) })
         paq.addView(tarjetaPaquete(
-            "1m", "1 MES", "Plan Básico", "$99", "Para probar todo en tu día a día.",
+            "1m", "1 MES", "Plan Básico", "$99", "$59", "Para probar todo en tu día a día.",
             listOf(
                 "Pop-up con semáforo, ganancia neta, $/\u2060hora, $/\u2060km y dinámica ⚡",
                 "Filtros inteligentes y aviso por voz o vibración",
@@ -1258,7 +1258,7 @@ class MainActivity : Activity() {
             ), false
         ), margenTarjeta())
         paq.addView(tarjetaPaquete(
-            "6m", "6 MESES", "Plan Estratega", "$399", "Equivale a $66.50 al mes · Ahorras 33 %",
+            "6m", "6 MESES", "Plan Estratega", "$399", "$239", "Equivale a $66.50 al mes · Ahorras 33 %",
             listOf(
                 "Todo lo del Plan Básico, más:",
                 "Uber y DiDi al mismo tiempo: Checa marca cuál conviene más",
@@ -1268,7 +1268,7 @@ class MainActivity : Activity() {
             ), true
         ), margenTarjeta())
         paq.addView(tarjetaPaquete(
-            "12m", "1 AÑO", "Plan Pro", "$899", "Equivale a $74.90 al mes",
+            "12m", "1 AÑO", "Plan Pro", "$899", "$539", "Equivale a $74.90 al mes",
             listOf(
                 "Todo lo del Plan Estratega",
                 "2 equipos (teléfono + tablet)",
@@ -1398,7 +1398,8 @@ class MainActivity : Activity() {
             Tema.T_TEXTO, cTexto2, false
         ).apply { setLineSpacing(0f, 1.2f) })
         cuerpo.addView(texto(
-            "Como la probaste en la beta, tendrás precio de fundador. " +
+            "Como la probaste en la beta, tendrás precio de fundador: 40 % menos de por vida " +
+                "(paga antes del 28 de febrero y renueva a tiempo). " +
                 if (Cuenta.conectada(this)) "Tu cuenta ya está registrada." else "Entra con tu cuenta de Google para asegurarlo.",
             Tema.T_TEXTO, cVerde, true
         ).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
@@ -1840,7 +1841,7 @@ class MainActivity : Activity() {
     }
 
     private fun tarjetaPaquete(
-        plan: String, duracion: String, nombre: String, precio: String, sub: String,
+        plan: String, duracion: String, nombre: String, precio: String, precioFundador: String, sub: String,
         beneficios: List<String>, destacado: Boolean
     ): View {
         val t = tarjeta()
@@ -1861,8 +1862,19 @@ class MainActivity : Activity() {
             background = redondo(cVerde, 50)
         })
         t.addView(cab)
-        t.addView(texto("$precio MXN", Tema.T_NUMERO, cTexto, true), margenArriba(4))
-        t.addView(texto(sub, Tema.T_NOTA, if (destacado) cVerde else cTenue, destacado), margenArriba(2))
+        val vPrecio = texto("$precio MXN", Tema.T_NUMERO, cTexto, true)
+        val vSub = texto(sub, Tema.T_NOTA, if (destacado) cVerde else cTenue, destacado)
+        t.addView(vPrecio, margenArriba(4))
+        t.addView(vSub, margenArriba(2))
+        // Precio de fundador (40 % menos) si la cuenta usó la beta; el cobro real lo decide mp-pago.
+        val pintar = {
+            val f = Cuenta.precioBeta(this)
+            vPrecio.text = if (f) "$precioFundador MXN" else "$precio MXN"
+            vSub.text = if (f) "Precio de fundador: 40 % menos · antes $precio" else sub
+            vSub.setTextColor(if (f) DORADO else if (destacado) cVerde else cTenue)
+        }
+        pintarPrecios.add(pintar)
+        pintar()
         beneficios.forEach { b ->
             val fila = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
             fila.addView(icono(Icono.OK, if (destacado) cVerde else cTexto2, 16), LinearLayout.LayoutParams(dp(16), dp(16)).apply {
@@ -1905,6 +1917,9 @@ class MainActivity : Activity() {
     // Licencia
     // =====================================================================
 
+    /** Repinta el precio de cada paquete (normal o de fundador). */
+    private val pintarPrecios = mutableListOf<() -> Unit>()
+
     private fun pintarLicencia() {
         val e = Licencia.estado(this)
         tarjetaLicencia.visibility = if (e.pagada) View.GONE else View.VISIBLE
@@ -1913,7 +1928,7 @@ class MainActivity : Activity() {
             licTitulo.text = "La beta gratis termina en ${e.diasRestantes} ${if (e.diasRestantes == 1) "día" else "días"}"
             licTitulo.setTextColor(cAmarillo)
             licTexto.text = "El ${Licencia.fechaBonita(Licencia.BETA_HASTA)} Checa empieza a cobrar. " +
-                "Quienes la probaron en la beta tendrán precio de fundador." +
+                "Quienes la probaron en la beta tendrán precio de fundador: 40 % menos de por vida." +
                 (if (Cuenta.conectada(this)) " Tu cuenta ya está registrada." else " Entra con tu cuenta de Google para asegurarlo.")
         } else if (e.beta && !e.pagada) {
             licTitulo.text = "Beta gratis · todo incluido"
@@ -1933,6 +1948,7 @@ class MainActivity : Activity() {
             licTexto.text = "Renueva tu paquete para volver a ver los pop-ups."
         }
         insignias.forEach { it.visibility = if (e.fundador) View.VISIBLE else View.GONE }
+        pintarPrecios.forEach { it() }
         notaComparador?.visibility = if (e.basico) View.VISIBLE else View.GONE
         // Con licencia sin vencimiento (fundadores) no hay nada que comprar.
         if (::paquetesVista.isInitialized) {

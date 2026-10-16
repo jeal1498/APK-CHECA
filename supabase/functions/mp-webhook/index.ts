@@ -1,7 +1,7 @@
 // Aviso de Mercado Pago. Consulta el pago directo en Mercado Pago (así no se puede falsificar)
 // y, si está aprobado, extiende y firma la licencia de la cuenta en la tabla `licencias`.
 import { createHmac, createSign } from "node:crypto";
-import { PLANES } from "../_shared/planes.ts";
+import { MARCA_BETA, PLANES } from "../_shared/planes.ts";
 
 const SUPA = Deno.env.get("SUPABASE_URL")!;
 const SERVICIO = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -103,9 +103,12 @@ Deno.serve(async (req) => {
   const pago = await r.json();
   if (pago.status !== "approved") return new Response("sin aprobar");
 
-  const [correo, plan] = String(pago.external_reference ?? "").split("|");
+  const [correo, plan, marca] = String(pago.external_reference ?? "").split("|");
   const p = PLANES[plan];
-  if (!correo || !p || pago.currency_id !== "MXN" || Number(pago.transaction_amount) < p.precio) {
+  // El external_reference lo pone mp-pago en el servidor: «PF» = precio de fundador (beta).
+  const precioBeta = marca === MARCA_BETA;
+  const minimo = p ? (precioBeta ? p.precioBeta : p.precio) : 0;
+  if (!correo || !p || pago.currency_id !== "MXN" || Number(pago.transaction_amount) < minimo) {
     console.error("pago con datos raros", id, pago.external_reference, pago.transaction_amount);
     return new Response("ignorado");
   }
@@ -114,7 +117,7 @@ Deno.serve(async (req) => {
   const nuevo = await db("pagos", {
     method: "POST",
     headers: { Prefer: "resolution=ignore-duplicates,return=representation" },
-    body: JSON.stringify({ id, correo, plan, monto: pago.transaction_amount }),
+    body: JSON.stringify({ id, correo, plan, monto: pago.transaction_amount, precio_beta: precioBeta }),
   });
   if (!nuevo.ok) return new Response("error al anotar", { status: 500 });
   if ((await nuevo.json()).length === 0) return new Response("ya aplicado");
