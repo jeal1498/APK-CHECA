@@ -1,6 +1,6 @@
-# Guiones corregidos por Gemini
+# Guiones de CHECA
 
-Guiones finales que Eduardo trae de Gemini, en el orden en que se hicieron. `[Corte]` = cambio de toma (una línea de voz por corte). Los números van con letra en la voz; en pantalla, con cifra.
+Guiones aprobados por Eduardo (hasta el 16 oct 2026 pasaban por Gemini; desde entonces los aprueba directo), en el orden en que se hicieron. `[Corte]` = cambio de toma (una línea de voz por corte). Los números van con letra en la voz; en pantalla, con cifra.
 
 ---
 

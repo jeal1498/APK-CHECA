@@ -6,7 +6,7 @@ Una publicación al día, alternando videos de **venta** (llevan a la prueba gra
 1. Gancho en la 1.ª línea (lo único que se ve sin tocar «más»).
 2. 1–2 frases con palabras que la gente busca («chofer de Uber», «gasolina DiDi», «conviene el viaje»).
 3. Una pregunta para comentar 👇.
-4. Llamada: venta → «Comenta CHECA y te mando la app (7 días gratis, solo Android)»; consejo → «Guárdalo y compártelo».
+4. Llamada: venta → «Descarga CHECA y checa cuánto te queda de cada viaje (solo Android)»; consejo → «Guárdalo y compártelo». (Los videos ya publicados conservan su texto.)
 5. 4–5 hashtags.
 Sin link en la bio (TikTok pide constancia del SAT para cuenta de empresa): a quien comente «CHECA» se le manda por mensaje directo `jeal1498.github.io/checa-web/?utm_source=tiktok` (y a quien comente «YO», `jeal1498.github.io/checa-web/instalar/?desde=tiktok` + pedirle su Gmail para la beta).
 
@@ -201,7 +201,7 @@ Comenta «CHECA» y te mando la app por mensaje (solo Android).
 
 # PERSONAL · cuenta personal de Eduardo (versiones v2)
 
-Misma idea que cada video de CHECA, con otro gancho y otras palabras (reglas y guiones en `marketing/guiones-v2.md`). Van en el mismo orden que CHECA y se marcan con ✅ al subirlos.
+Misma idea que cada video de CHECA, con otro gancho y otras palabras (reglas y guiones en `marketing/guiones-personal.md`). Van en el mismo orden que CHECA y se marcan con ✅ al subirlos.
 
 | # | Tipo | Carpeta en `marketing/PERSONAL/` | Publicado |
 |---|---|---|---|

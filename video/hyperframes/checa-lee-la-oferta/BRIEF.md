@@ -25,7 +25,7 @@ Eduardo quiere ver «de lo que es capaz HyperFrames»: seguir el proceso complet
 
 - Voz: **Fernando Martínez** (ElevenLabs `dlGxemPxFMTY7iXagmOj`, velocidad 1.0). Se queda igual que el video anterior.
 - Pop-up: el mismo tipo de pop-up de la app (franja del semáforo con ACEPTAR / CONSIDERAR / RECHAZAR, neta grande, «Viaje $x · Gasolina −$y», 3 fichas).
-- Guion: verbatim (VO_MODE: verbatim), el corregido con Gemini (`marketing/guiones-gemini.md`, «Cómo funciona Checa»).
+- Guion: verbatim (VO_MODE: verbatim), el corregido con Gemini (`marketing/guiones-checa.md`, «Cómo funciona Checa»).
 
 ## Notes
 
