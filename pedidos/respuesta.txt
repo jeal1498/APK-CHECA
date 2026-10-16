@@ -1,6 +1,6 @@
-nombre=Beta tester 1
-equipo=lufercab@gmail.com
+nombre=Beta tester 2
+equipo=javiiramp@gmail.com
 tipo=Normal
 plan=todo
 vence=2027-01-13
-codigo=20270113-MEQCIGI-0WbIfwp7nlzdbeQWrAVYABCXrOuct_MpRG-t2M3GAiAt2Der-vwVf-EwLedzRk3eQDaL8S_2JcDdv7pIJe6s7A
+codigo=20270113-MEUCIHGvK5Jy6s44vwTvr9FPJaWW2pW4-MfUalDQ7IcDaUihAiEA63qd8yejNX9rO8QsyA7mYCFsHFczaoC_N9AGuu3XRWQ
