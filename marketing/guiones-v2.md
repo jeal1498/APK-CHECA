@@ -11,26 +11,29 @@ Cada video de la cuenta de **Checa** tiene una **v2** para la cuenta **personal*
 
 ---
 
-## 05 · Cansancio y salud (v2)
+## 05 · Cansancio y salud (v2, optimizado para retención)
 v1: `05_2026-10-18_cansancio-y-salud.mp4` · v2: `05_2026-10-18_cansancio-y-salud_v2.mp4`
 
-A media tarde ya te duele la espalda… y aún te faltan horas. [Corte] Al carro le haces servicio. A tu cuerpo, casi nunca. [Corte] Estos 4 hábitos te ayudan a aguantar el turno. [Corte] Uno: cada dos horas, bájate y camina cinco minutos. [Corte] Dos: deja el agua a la mano. Si no la ves, no la tomas. [Corte] Tres: pega la espalda al respaldo antes de arrancar. [Corte] Cuatro: si bostezas o se te cierran los ojos, orilla y descansa. [Corte] Ninguna oferta vale más que llegar bien a casa. [Corte] Mándaselo a un compañero y sígueme para más consejos entre conductores.
+**Voz limpia (sin etiquetas, para ElevenLabs):** Seis de la tarde. La espalda ya no da más y te faltan horas. [Corte] Al carro le haces servicio. A tu cuerpo, casi nunca. [Corte] Te dejo 4 hábitos. El cuarto puede evitarte un accidente. [Corte] Uno: cada dos horas, bájate y camina cinco minutos. [Corte] Dos: agua a la mano. Si no la ves, no la tomas. [Corte] Tres, el más fácil: pega la espalda al respaldo antes de arrancar. [Corte] Cuatro, el que no se negocia: [Corte] Si bostezas o se te cierran los ojos, orilla y descansa. [Corte] Ninguna oferta vale más que llegar bien a casa. [Corte] Mándaselo a quien maneja de más. Sígueme para más.
 
-| Corte | Tiempo | Voz | En pantalla | 🪝 Gancho |
+| Corte | Tiempo | Voz | En pantalla / sonido | Técnica |
 |---|---|---|---|---|
-| 1 | 0:00–0:03 | A media tarde ya te duele la espalda… y aún te faltan horas. | TARDE · te faltan horas, columna con puntos rojos | Pérdida |
-| 2 | 0:03–0:06 | Al carro le haces servicio. A tu cuerpo, casi nunca. | Llave de servicio vs. conductor line-art | Contraste |
-| 3 | 0:06–0:09 | Estos 4 hábitos te ayudan a aguantar el turno. | 4 gigante | Beneficio |
-| 4 | 0:09–0:12 | Uno: cada dos horas, bájate y camina cinco minutos. | Reloj 2 h y figura caminando | Bucle abierto (faltan 3) |
-| 5 | 0:12–0:15 | Dos: deja el agua a la mano. Si no la ves, no la tomas. | Botella al alcance ✓ | Giro |
-| 6 | 0:15–0:18 | Tres: pega la espalda al respaldo antes de arrancar. | Asiento con ángulo ✓ | Control |
-| 7 | 0:18–0:21 | Cuatro: si bostezas o se te cierran los ojos, orilla y descansa. | Ojo cerrándose y ALTO parpadeando | Tensión |
-| 8 | 0:21–0:24 | Ninguna oferta vale más que llegar bien a casa. | Casa con la luz encendida | Valor |
-| 9 | 0:24–0:27 | Mándaselo a un compañero y sígueme para más consejos entre conductores. | Compartir + Seguir (sin logo) | Llamada |
+| 1 | 0:00–0:03 | Seis de la tarde. La espalda ya no da más y te faltan horas. | Texto «6 PM · TE FALTAN HORAS», columna con puntos rojos; impact-bass | [Hook Inicial: dolor reconocible, voz + texto + imagen a la vez] |
+| 2 | 0:03–0:06 | Al carro le haces servicio. A tu cuerpo, casi nunca. | Llave de servicio vs. conductor; whoosh | [Micro-hook: contraste que incomoda] |
+| 3 | 0:06–0:09 | Te dejo 4 hábitos. El cuarto puede evitarte un accidente. | «4» gigante, el último círculo parpadea en rojo | [Open Loop: el #4 se paga hasta el final] |
+| 4 | 0:09–0:12 | Uno: cada dos horas, bájate y camina cinco minutos. | Reloj 2 h, figura caminando; ping | [Re-enganche visual: reloj que corre y figura que se mueve] |
+| 5 | 0:12–0:15 | Dos: agua a la mano. Si no la ves, no la tomas. | Botella aparece al alcance ✓ | [Giro: frase corta y memorable] |
+| 6 | 0:15–0:18 | Tres, el más fácil: pega la espalda al respaldo antes de arrancar. | Asiento con ángulo ✓; click | [Cambio de ritmo: «el más fácil» marca que viene lo difícil] |
+| 7 | 0:18–0:20 | Cuatro, el que no se negocia: | Pantalla negra, «4» rojo, silencio de medio segundo | [Pausa dramática: tensión antes del payoff] |
+| 8 | 0:20–0:24 | Si bostezas o se te cierran los ojos, orilla y descansa. | Ojo cerrándose, ALTO parpadeando; impact-bass | [Payoff del Open Loop + Re-enganche visual: destello rojo] |
+| 9 | 0:24–0:27 | Ninguna oferta vale más que llegar bien a casa. | Casa con la luz encendida; música baja | [Giro emocional: valor que se queda] |
+| 10 | 0:27–0:30 | Mándaselo a quien maneja de más. Sígueme para más. | Compartir + Seguir; la columna del inicio queda verde y vuelve a «6 PM» | [CTA específico + Loop de repetición: el final empata con el inicio] |
+
+**Ajustes de honestidad:** «puede evitarte un accidente» (no «evita»); sin cifras ni promesas médicas.
 
 **Texto de publicación (v2):**
 Al carro le haces servicio, ¿y a tu cuerpo? 🚗💪
-4 hábitos para aguantar el turno de chofer en Uber y DiDi sin acabar con la espalda hecha polvo.
+4 hábitos para aguantar el turno de chofer en Uber y DiDi. El cuarto es el que no se negocia.
 ¿Cuál de los 4 se te hace más difícil? 👇
-Guárdalo y mándaselo a un compañero.
+Guárdalo y mándaselo a quien maneja de más.
 #choferuber #choferdidi #conductores #salud #consejosdeconductor
