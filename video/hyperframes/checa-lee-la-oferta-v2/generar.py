@@ -306,19 +306,20 @@ F["05-rojo"] = frame(5, c, popcss(c) + """
 # 6 — Verde: Otro, de noventa y seis pesos, te deja ochenta en diecisiete minutos. Verde.
 c = "f06-verde"
 F["06-verde"] = frame(6, c, popcss(c) + """
-    .§-m { box-sizing: border-box; position: absolute; top: 300px; width: 470px; height: 560px; border-radius: 36px; background: #101312; border: 4px solid #2A2E2C; padding: 40px 36px; }
+    .§-m { box-sizing: border-box; position: absolute; top: 220px; width: 470px; height: 660px; border-radius: 36px; background: #101312; border: 4px solid #2A2E2C; padding: 44px 40px 40px; display: flex; flex-direction: column; align-items: flex-start; }
     #§-mA { left: 50px; } #§-mB { left: 560px; }
-    .§-m .k { font-family: 'Fira Code', monospace; font-size: 30px; letter-spacing: .14em; text-transform: uppercase; color: #8A938E; }
-    .§-m .f { font-family: 'Fira Code', monospace; font-weight: 700; font-size: 110px; margin-top: 20px; }
-    .§-m .q { font-size: 40px; font-weight: 600; color: #AFB7B2; margin-top: 18px; }
-    .§-m .n { font-family: 'Fira Code', monospace; font-weight: 700; font-size: 96px; margin-top: 6px; }
-    .§-m .t { display: inline-block; font-family: 'Fira Code', monospace; font-weight: 700; font-size: 52px; margin-top: 28px; padding: 10px 24px; border-radius: 16px; border: 4px solid; }
+    .§-m .k { font-family: 'Fira Code', monospace; font-size: 30px; line-height: 1; letter-spacing: .14em; text-transform: uppercase; color: #8A938E; }
+    .§-m .f { font-family: 'Fira Code', monospace; font-weight: 700; font-size: 120px; line-height: 1; margin-top: 24px; }
+    .§-m .sep { align-self: stretch; height: 3px; background: #2A2E2C; margin: 32px 0 28px; }
+    .§-m .q { font-size: 38px; line-height: 1; font-weight: 600; color: #AFB7B2; }
+    .§-m .n { font-family: 'Fira Code', monospace; font-weight: 700; font-size: 112px; line-height: 1; margin-top: 14px; }
+    .§-m .t { margin-top: auto; font-family: 'Fira Code', monospace; font-weight: 700; font-size: 54px; line-height: 1; padding: 14px 28px; border-radius: 20px; border: 4px solid; }
     #§-mA .n { color: #F43F5E; } #§-mA .t { color: #F43F5E; border-color: #F43F5E; }
     #§-mB .n { color: #22C55E; } #§-mB .t { color: #22C55E; border-color: #22C55E; }
     #§-pw { position: absolute; left: 205px; top: 930px; width: 671px; height: 520px; }
 """, f"""      <div class="P-glow"></div>
-      <div id="§-mA" class="§-m"><div class="k">viaje a</div><div class="f">$180</div><div class="q">te quedan</div><div class="n">$100</div><div class="t">75 min</div></div>
-      <div id="§-mB" class="§-m"><div class="k">viaje b</div><div class="f" id="§-fB">$96</div><div class="q">te quedan</div><div class="n" id="§-nB">$80</div><div class="t" id="§-tB">17 min</div></div>
+      <div id="§-mA" class="§-m"><div class="k">viaje a</div><div class="f">$180</div><div class="sep"></div><div class="q">te quedan</div><div class="n">$100</div><div class="t">75 min</div></div>
+      <div id="§-mB" class="§-m"><div class="k">viaje b</div><div class="f" id="§-fB">$96</div><div class="sep"></div><div class="q">te quedan</div><div class="n" id="§-nB">$80</div><div class="t" id="§-tB">17 min</div></div>
       <div id="§-pw">{pop(c, 0, *VERDE, u=0.78)}</div>
       <div class="P-ej">Números de ejemplo</div>""",
     ft("#§-mA", {"y": 60, "opacity": 0}, {"y": 0, "opacity": 1, "duration": 0.35, "ease": "power3.out"}, 0)
