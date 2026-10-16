@@ -1,0 +1,61 @@
+<template>
+  <style>
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Regular.ttf') format('truetype'); font-weight: 400; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Medium.ttf') format('truetype'); font-weight: 500 600; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Bold.ttf') format('truetype'); font-weight: 700 900; font-display: block; }
+    @font-face{ font-family: 'Fira Code'; src: url('assets/fonts/FiraCode.ttf') format('truetype'); font-weight: 300 700; font-display: block; }
+    #root { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; font-family: 'Fira Sans', sans-serif; color: #F1F5F2; }
+    .clip { position: absolute; }
+    .P-ground { inset: 0; background: #000; }
+    .P-stage { left: 0; top: 0; width: 1080px; height: 1600px; transform-origin: 50% 45%; }
+    .P-kick { position: absolute; left: 0; right: 0; top: 150px; text-align: center; font-family: 'Fira Code', monospace; font-weight: 500; font-size: 32px; letter-spacing: .16em; text-transform: uppercase; color: #22C55E; }
+    .P-kick:before { content: ""; display: block; width: 36px; height: 2px; background: currentColor; margin: 0 auto 18px; }
+    .P-mask { position: absolute; left: 0; right: 0; overflow: hidden; text-align: center; }
+    .P-mask > div { font-weight: 800; text-transform: lowercase; letter-spacing: -.04em; line-height: 1.02; white-space: nowrap; }
+    .P-ej { position: absolute; left: 0; right: 0; top: 1500px; text-align: center; font-family: 'Fira Code', monospace; font-size: 26px; letter-spacing: .12em; text-transform: uppercase; color: #6B736F; }
+    .P-card { position: absolute; width: 620px; border-radius: 36px; background: #F4F5F4; color: #111; padding: 48px 52px 44px; box-shadow: 0 30px 80px rgba(0,0,0,.7); }
+    .P-card .k { font-family: 'Fira Code', monospace; font-weight: 500; font-size: 28px; letter-spacing: .14em; text-transform: uppercase; color: #5C635F; }
+    .P-card .f { font-family: 'Fira Code', monospace; font-weight: 700; font-size: 112px; letter-spacing: -.03em; line-height: 1; margin-top: 22px; }
+    .P-card .r { display: flex; align-items: center; gap: 22px; font-size: 40px; font-weight: 500; margin-top: 28px; color: #222; }
+    .P-card .d { width: 20px; height: 20px; border-radius: 50%; background: #111; flex: none; }
+    .P-card .s { width: 20px; height: 20px; background: #111; flex: none; }
+    .P-card .b { margin-top: 38px; height: 104px; border-radius: 20px; background: #111; color: #F4F5F4; display: flex; align-items: center; justify-content: center; font-size: 44px; font-weight: 700; }
+
+    #f10-sigueme-ground { background: #000; }
+
+    #f10-sigueme-pl { position: absolute; left: 410px; top: 220px; width: 260px; height: 260px; }
+    #f10-sigueme-l1 { top: 540px; height: 170px; } #f10-sigueme-l1 > div { font-size: 150px; color: #F1F5F2; }
+    #f10-sigueme-l2 { top: 700px; height: 130px; } #f10-sigueme-l2 > div { font-size: 100px; color: #AFB7B2; }
+    #f10-sigueme-l3 { top: 810px; height: 190px; } #f10-sigueme-l3 > div { font-size: 170px; color: #FACC15; }
+    #f10-sigueme-pill { position: absolute; left: 190px; top: 1120px; width: 700px; height: 150px; border-radius: 75px; background: #22C55E; color: #04120A; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 74px; letter-spacing: -.01em; }
+
+  </style>
+
+  <div id="root" data-composition-id="10-sigueme" data-width="1080" data-height="1920" data-start="0" data-duration="3.483">
+    <div id="f10-sigueme-ground" class="clip P-ground" data-start="0" data-duration="3.483" data-track-index="0"></div>
+    <div id="f10-sigueme-stage" class="clip P-stage" data-start="0" data-duration="3.483" data-track-index="1">
+      <div id="f10-sigueme-pl"><svg viewBox="0 0 24 24" width="260" height="260" fill="none" stroke="#22C55E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg></div>
+      <div id="f10-sigueme-l1" class="P-mask"><div>mándaselo</div></div>
+      <div id="f10-sigueme-l2" class="P-mask"><div>a quien maneja</div></div>
+      <div id="f10-sigueme-l3" class="P-mask"><div>de más</div></div>
+      <div id="f10-sigueme-pill">+ Seguir</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      var D = 2.983;
+      tl.fromTo("#f10-sigueme-pl", {"x": -300, "y": 300, "rotation": -40, "opacity": 0}, {"x": 0, "y": 0, "rotation": 0, "opacity": 1, "duration": 0.5, "ease": "power3.out"}, 0.0);
+      tl.fromTo("#f10-sigueme-l1 > div", {"yPercent": 220}, {"yPercent": 0, "duration": 0.35, "ease": "power3.out"}, 0.05);
+      tl.fromTo("#f10-sigueme-l2 > div", {"yPercent": 220}, {"yPercent": 0, "duration": 0.3, "ease": "power3.out"}, 0.465);
+      tl.fromTo("#f10-sigueme-l3 > div", {"yPercent": 220}, {"yPercent": 0, "duration": 0.4, "ease": "power3.out"}, 1.011);
+      tl.fromTo("#f10-sigueme-pill", {"scale": 0, "rotation": -6}, {"scale": 1, "rotation": 0, "duration": 0.4, "ease": "back.out(2)"}, 1.518);
+      tl.to("#f10-sigueme-pill", {"scale": 1.06, "duration": 0.2, "repeat": 1, "yoyo": true}, 2.468);
+
+      window.__timelines["10-sigueme"] = tl;
+    })();
+  </script>
+</template>

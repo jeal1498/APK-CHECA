@@ -686,6 +686,73 @@
           "end": 2.833
         }
       ]
+    },
+    {
+      "frame": 11,
+      "path": "assets/voice/11.wav",
+      "duration_s": 3.251,
+      "words": [
+        {
+          "id": "w0",
+          "text": "Descarga",
+          "start": 0.0,
+          "end": 0.546
+        },
+        {
+          "id": "w1",
+          "text": "Checa",
+          "start": 0.592,
+          "end": 0.929
+        },
+        {
+          "id": "w2",
+          "text": "y",
+          "start": 0.998,
+          "end": 1.057
+        },
+        {
+          "id": "w3",
+          "text": "checa",
+          "start": 1.149,
+          "end": 1.382
+        },
+        {
+          "id": "w4",
+          "text": "cuánto",
+          "start": 1.428,
+          "end": 1.695
+        },
+        {
+          "id": "w5",
+          "text": "te",
+          "start": 1.753,
+          "end": 1.823
+        },
+        {
+          "id": "w6",
+          "text": "queda",
+          "start": 1.869,
+          "end": 2.09
+        },
+        {
+          "id": "w7",
+          "text": "de",
+          "start": 2.148,
+          "end": 2.206
+        },
+        {
+          "id": "w8",
+          "text": "cada",
+          "start": 2.276,
+          "end": 2.531
+        },
+        {
+          "id": "w9",
+          "text": "viaje.",
+          "start": 2.577,
+          "end": 3.251
+        }
+      ]
     }
   ],
   "sfx": [
@@ -835,6 +902,27 @@
       "offset_s": 1.47,
       "duration_s": 1.8,
       "volume": 0.4
+    },
+    {
+      "frame": 11,
+      "file": "assets/sfx/pop.mp3",
+      "offset_s": 0.0,
+      "duration_s": 0.72,
+      "volume": 0.3
+    },
+    {
+      "frame": 11,
+      "file": "assets/sfx/chime.mp3",
+      "offset_s": 0.49,
+      "duration_s": 2.54,
+      "volume": 0.4
+    },
+    {
+      "frame": 11,
+      "file": "assets/sfx/sparkle.mp3",
+      "offset_s": 1.77,
+      "duration_s": 1.8,
+      "volume": 0.3
     }
   ]
 }

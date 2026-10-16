@@ -13,3 +13,4 @@ Guion aprobado por Eduardo el 16 oct 2026 (`marketing/guiones-personal.md`). Una
     Si bostezas o se te cierran los ojos, orilla y descansa.
     Ninguna oferta vale más que llegar bien a casa.
     Mándaselo a quien maneja de más. Sígueme para más.
+    Descarga Checa y checa cuánto te queda de cada viaje.
