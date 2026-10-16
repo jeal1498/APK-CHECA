@@ -67,6 +67,9 @@ Reglas de marca: el pop-up sale siempre de `assets/checa-popup.html` sin redise�
 - Si Eduardo manda su propia respuesta (p. ej. un mensaje de WhatsApp) como base: conserva el orden de sus ideas, pasa el «yo» a «tú» y cambia lo que no podamos garantizar («no hay bloqueo» → «Checa no toca Uber ni DiDi, tú decides»).
 - Evita preguntas que la voz se contesta sola y los «no es X, es Y».
 
+## Versión v2 para la cuenta personal de Eduardo (16 oct 2026)
+Eduardo sube cada video a la cuenta de Checa y una **v2** a su TikTok personal. **De ahora en adelante, al entregar el guion de un video, entrega también el guion v2** en `marketing/guiones-v2.md` (reglas y formato en ese archivo): mismo tema y datos, otro gancho y otras palabras, cierre «sígueme», sin logo de Checa salvo que él lo pida, con su texto de publicación. La v2 se rehace completa (voz, escenas, render) como `NN_fecha_tema_v2.mp4` + `.jpg` (portada distinta de la v1). Empezó con el video 05 (Cansancio y salud).
+
 ## Estilo «1Volt a color» (Remotion; sigue vigente, más barato)
 
 Desde el anuncio «Recogidas lejanas» Eduardo pidió el estilo 1Volt (2D, line-art en SVG; desde el 14 oct prefiere el Estilo HyperFrames de arriba) porque el 3D gasta demasiados tokens y tiempo (render por software). El 3D le gusta mucho, pero queda **en pausa**: no lo uses salvo que él lo pida.
