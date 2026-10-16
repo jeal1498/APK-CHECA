@@ -1,6 +1,6 @@
 ---
 format: 1080x1920
-duration: 30.51s
+duration: 31.28s
 message: "La gasolina se come tu ganancia: Checa hace la resta antes de que aceptes"
 audience: conductores de Uber y DiDi (cuenta personal de Eduardo)
 mode: autonomous
@@ -101,7 +101,7 @@ Estilo Checa (negro OLED, verde #22C55E, amarillo #FACC15, rojo #F43F5E, Fira Sa
 
 ## Frame 9 — Cierre estándar
 
-- duration: 5.158s
+- duration: 5.933s
 - voiceover: "Descarga Checa y checa cuánto te queda de cada viaje."
 - transition_in: crossfade
 - status: animated

@@ -562,67 +562,67 @@
     {
       "frame": 9,
       "path": "assets/voice/09.wav",
-      "duration_s": 3.158,
+      "duration_s": 3.933,
       "words": [
         {
           "id": "w0",
           "text": "Descarga",
           "start": 0.0,
-          "end": 0.546
+          "end": 0.615
         },
         {
           "id": "w1",
           "text": "Checa",
-          "start": 0.592,
-          "end": 0.848
+          "start": 0.662,
+          "end": 1.115
         },
         {
           "id": "w2",
           "text": "y",
-          "start": 0.894,
-          "end": 0.929
+          "start": 1.599,
+          "end": 1.703
         },
         {
           "id": "w3",
           "text": "checa",
-          "start": 1.01,
-          "end": 1.289
+          "start": 1.785,
+          "end": 2.052
         },
         {
           "id": "w4",
           "text": "cuánto",
-          "start": 1.335,
-          "end": 1.649
+          "start": 2.098,
+          "end": 2.47
         },
         {
           "id": "w5",
           "text": "te",
-          "start": 1.707,
-          "end": 1.776
+          "start": 2.539,
+          "end": 2.609
         },
         {
           "id": "w6",
           "text": "queda",
-          "start": 1.834,
-          "end": 2.043
+          "start": 2.667,
+          "end": 2.888
         },
         {
           "id": "w7",
           "text": "de",
-          "start": 2.09,
-          "end": 2.159
+          "start": 2.934,
+          "end": 3.004
         },
         {
           "id": "w8",
           "text": "cada",
-          "start": 2.218,
-          "end": 2.45
+          "start": 3.05,
+          "end": 3.259
         },
         {
           "id": "w9",
           "text": "viaje.",
-          "start": 2.485,
-          "end": 3.158
+          "start": 3.306,
+          "end": 3.967
         }
       ]
     }
@@ -736,14 +736,14 @@
     {
       "frame": 9,
       "file": "assets/sfx/chime.mp3",
-      "offset_s": 0.49,
+      "offset_s": 0.56,
       "duration_s": 2.54,
       "volume": 0.4
     },
     {
       "frame": 9,
       "file": "assets/sfx/sparkle.mp3",
-      "offset_s": 1.73,
+      "offset_s": 2.57,
       "duration_s": 1.8,
       "volume": 0.3
     }

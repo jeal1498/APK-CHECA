@@ -1,5 +1,5 @@
 {
-  "total_duration_s": 30.507,
+  "total_duration_s": 31.282,
   "width": 1080,
   "height": 1920,
   "groups": [
@@ -856,95 +856,104 @@
       "id": "caption-group-39",
       "frame": 9,
       "start": 25.349,
-      "end": 26.359,
-      "text": "Descarga Checa y",
+      "end": 26.584,
+      "text": "Descarga Checa",
       "words": [
         {
           "id": "caption-word-39-0",
           "text": "Descarga",
           "start": 25.349,
-          "end": 25.895
+          "end": 25.964
         },
         {
           "id": "caption-word-39-1",
           "text": "Checa",
-          "start": 25.941,
-          "end": 26.197
-        },
-        {
-          "id": "caption-word-39-2",
-          "text": "y",
-          "start": 26.243,
-          "end": 26.278
+          "start": 26.011,
+          "end": 26.464
         }
       ]
     },
     {
       "id": "caption-group-40",
       "frame": 9,
-      "start": 26.359,
-      "end": 27.056,
-      "text": "checa cuánto",
+      "start": 26.948,
+      "end": 27.447,
+      "text": "y checa",
       "words": [
         {
           "id": "caption-word-40-0",
-          "text": "checa",
-          "start": 26.359,
-          "end": 26.638
+          "text": "y",
+          "start": 26.948,
+          "end": 27.052
         },
         {
           "id": "caption-word-40-1",
-          "text": "cuánto",
-          "start": 26.684,
-          "end": 26.998
+          "text": "checa",
+          "start": 27.134,
+          "end": 27.401
         }
       ]
     },
     {
       "id": "caption-group-41",
       "frame": 9,
-      "start": 27.056,
-      "end": 27.439,
-      "text": "te queda",
+      "start": 27.447,
+      "end": 28.016,
+      "text": "cuánto te",
       "words": [
         {
           "id": "caption-word-41-0",
-          "text": "te",
-          "start": 27.056,
-          "end": 27.125
+          "text": "cuánto",
+          "start": 27.447,
+          "end": 27.819
         },
         {
           "id": "caption-word-41-1",
-          "text": "queda",
-          "start": 27.183,
-          "end": 27.392
+          "text": "te",
+          "start": 27.888,
+          "end": 27.958
         }
       ]
     },
     {
       "id": "caption-group-42",
       "frame": 9,
-      "start": 27.439,
-      "end": 28.627,
-      "text": "de cada viaje.",
+      "start": 28.016,
+      "end": 28.399,
+      "text": "queda de",
       "words": [
         {
           "id": "caption-word-42-0",
-          "text": "de",
-          "start": 27.439,
-          "end": 27.508
+          "text": "queda",
+          "start": 28.016,
+          "end": 28.237
         },
         {
           "id": "caption-word-42-1",
+          "text": "de",
+          "start": 28.283,
+          "end": 28.353
+        }
+      ]
+    },
+    {
+      "id": "caption-group-43",
+      "frame": 9,
+      "start": 28.399,
+      "end": 29.436,
+      "text": "cada viaje.",
+      "words": [
+        {
+          "id": "caption-word-43-0",
           "text": "cada",
-          "start": 27.567,
-          "end": 27.799
+          "start": 28.399,
+          "end": 28.608
         },
         {
-          "id": "caption-word-42-2",
+          "id": "caption-word-43-1",
           "text": "viaje.",
-          "start": 27.834,
-          "end": 28.507
+          "start": 28.655,
+          "end": 29.316
         }
       ]
     }
