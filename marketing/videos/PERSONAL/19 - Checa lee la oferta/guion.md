@@ -1,6 +1,6 @@
 # Guion · 19 - Checa lee la oferta (PERSONAL, v2)
 
-## Checa lee la oferta (v2) · pendiente de aprobación (2.ª versión: sin cuentas en la voz)
+## Checa lee la oferta (v2) · aprobado por Eduardo (16 oct 2026; 2.ª versión: sin cuentas en la voz)
 v1: `marketing/videos/CHECA/19 - Checa lee la oferta/` · v2: `marketing/videos/PERSONAL/19 - Checa lee la oferta/`
 
 **Auditoría:**
