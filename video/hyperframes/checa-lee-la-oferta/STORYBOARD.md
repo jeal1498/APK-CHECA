@@ -112,8 +112,8 @@ Objeción resuelta: un dedo toca «Aceptar» en la oferta; el pop-up de Checa so
 
 ## Frame 10 — CTA
 
-- duration: 6.441s
-- voiceover: "Comenta Checa y te mando la app, para que checes cuánto te queda de cada viaje."
+- duration: 6.127s
+- voiceover: "Comenta Checa y te mando la app, para que cheques cuánto te queda de cada viaje."
 - transition_in: crossfade
 - status: animated
 - src: compositions/frames/10-cta.html

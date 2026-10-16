@@ -425,7 +425,7 @@ F["09-decides"] = frame(9, c, popcss(c) + """
     + to("#§-stage", {"scale": 1.08, "transformOrigin": "560px 1250px", "duration": 0.5, "ease": "power2.inOut"}, t(9, "viajes"))
     + to("#§-stage", {"scale": 1.0, "transformOrigin": "540px 650px", "duration": 0.6, "ease": "power2.inOut"}, t(9, "solo")))
 
-# 10 — CTA: Comenta Checa y te mando la app, para que checes cuánto te queda de cada viaje.
+# 10 — CTA: Comenta Checa y te mando la app, para que cheques cuánto te queda de cada viaje.
 c = "f10-cta"
 LOGO = """<svg id="§-mark" viewBox="0 0 22 38" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <defs><filter id="§-gb" x="-150%" y="-150%" width="400%" height="400%"><feGaussianBlur stdDeviation="2.4" /></filter></defs>
