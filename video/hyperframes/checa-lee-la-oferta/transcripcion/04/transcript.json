@@ -1,0 +1,98 @@
+[
+  {
+    "text": "Le",
+    "start": 0.03,
+    "end": 0.13,
+    "id": "w0"
+  },
+  {
+    "text": "la",
+    "start": 0.13,
+    "end": 0.26,
+    "id": "w1"
+  },
+  {
+    "text": "oferta",
+    "start": 0.26,
+    "end": 0.66,
+    "id": "w2"
+  },
+  {
+    "text": "por",
+    "start": 0.66,
+    "end": 0.86,
+    "id": "w3"
+  },
+  {
+    "text": "ti",
+    "start": 0.86,
+    "end": 0.99,
+    "id": "w4"
+  },
+  {
+    "text": "y",
+    "start": 0.99,
+    "end": 1.05,
+    "id": "w5"
+  },
+  {
+    "text": "te",
+    "start": 1.05,
+    "end": 1.12,
+    "id": "w6"
+  },
+  {
+    "text": "dice",
+    "start": 1.18,
+    "end": 1.45,
+    "id": "w7"
+  },
+  {
+    "text": "cuánto",
+    "start": 1.45,
+    "end": 1.85,
+    "id": "w8"
+  },
+  {
+    "text": "te",
+    "start": 1.85,
+    "end": 1.98,
+    "id": "w9"
+  },
+  {
+    "text": "queda",
+    "start": 1.98,
+    "end": 2.32,
+    "id": "w10"
+  },
+  {
+    "text": "limpio",
+    "start": 2.32,
+    "end": 2.76,
+    "id": "w11"
+  },
+  {
+    "text": "ya",
+    "start": 2.86,
+    "end": 2.97,
+    "id": "w12"
+  },
+  {
+    "text": "sin",
+    "start": 2.97,
+    "end": 3.17,
+    "id": "w13"
+  },
+  {
+    "text": "la",
+    "start": 3.17,
+    "end": 3.3,
+    "id": "w14"
+  },
+  {
+    "text": "gasolina.",
+    "start": 3.3,
+    "end": 3.85,
+    "id": "w15"
+  }
+]

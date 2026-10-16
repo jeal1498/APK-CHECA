@@ -1,0 +1,92 @@
+[
+  {
+    "text": "Yni",
+    "start": 0.04,
+    "end": 0.21,
+    "id": "w0"
+  },
+  {
+    "text": "miras",
+    "start": 0.21,
+    "end": 0.57,
+    "id": "w1"
+  },
+  {
+    "text": "la",
+    "start": 0.57,
+    "end": 0.7,
+    "id": "w2"
+  },
+  {
+    "text": "pantalla,",
+    "start": 0.74,
+    "end": 1.45,
+    "id": "w3"
+  },
+  {
+    "text": "la",
+    "start": 1.45,
+    "end": 1.53,
+    "id": "w4"
+  },
+  {
+    "text": "app",
+    "start": 1.58,
+    "end": 1.73,
+    "id": "w5"
+  },
+  {
+    "text": "te",
+    "start": 1.84,
+    "end": 1.91,
+    "id": "w6"
+  },
+  {
+    "text": "dice",
+    "start": 1.91,
+    "end": 2.17,
+    "id": "w7"
+  },
+  {
+    "text": "en",
+    "start": 2.17,
+    "end": 2.3,
+    "id": "w8"
+  },
+  {
+    "text": "voz",
+    "start": 2.3,
+    "end": 2.5,
+    "id": "w9"
+  },
+  {
+    "text": "alta",
+    "start": 2.5,
+    "end": 2.8,
+    "id": "w10"
+  },
+  {
+    "text": "aceptar,",
+    "start": 2.8,
+    "end": 3.6,
+    "id": "w11"
+  },
+  {
+    "text": "considerar",
+    "start": 3.6,
+    "end": 4.22,
+    "id": "w12"
+  },
+  {
+    "text": "o",
+    "start": 4.22,
+    "end": 4.28,
+    "id": "w13"
+  },
+  {
+    "text": "rechazar.",
+    "start": 4.28,
+    "end": 4.82,
+    "id": "w14"
+  }
+]

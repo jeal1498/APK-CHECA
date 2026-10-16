@@ -1,0 +1,104 @@
+[
+  {
+    "text": "Aceptas",
+    "start": 0.04,
+    "end": 0.46,
+    "id": "w0"
+  },
+  {
+    "text": "un",
+    "start": 0.49,
+    "end": 0.63,
+    "id": "w1"
+  },
+  {
+    "text": "viaje",
+    "start": 0.63,
+    "end": 0.98,
+    "id": "w2"
+  },
+  {
+    "text": "porque",
+    "start": 0.98,
+    "end": 1.4,
+    "id": "w3"
+  },
+  {
+    "text": "se",
+    "start": 1.4,
+    "end": 1.54,
+    "id": "w4"
+  },
+  {
+    "text": "ve",
+    "start": 1.54,
+    "end": 1.68,
+    "id": "w5"
+  },
+  {
+    "text": "buen",
+    "start": 1.68,
+    "end": 1.96,
+    "id": "w6"
+  },
+  {
+    "text": "billete",
+    "start": 1.96,
+    "end": 2.26,
+    "id": "w7"
+  },
+  {
+    "text": "y",
+    "start": 2.26,
+    "end": 2.53,
+    "id": "w8"
+  },
+  {
+    "text": "a",
+    "start": 2.53,
+    "end": 2.58,
+    "id": "w9"
+  },
+  {
+    "text": "la",
+    "start": 2.58,
+    "end": 2.69,
+    "id": "w10"
+  },
+  {
+    "text": "hora",
+    "start": 2.69,
+    "end": 2.91,
+    "id": "w11"
+  },
+  {
+    "text": "de",
+    "start": 2.91,
+    "end": 3.02,
+    "id": "w12"
+  },
+  {
+    "text": "la",
+    "start": 3.02,
+    "end": 3.13,
+    "id": "w13"
+  },
+  {
+    "text": "verdad",
+    "start": 3.13,
+    "end": 3.48,
+    "id": "w14"
+  },
+  {
+    "text": "sales",
+    "start": 3.52,
+    "end": 3.95,
+    "id": "w15"
+  },
+  {
+    "text": "perdiendo.",
+    "start": 4.03,
+    "end": 4.56,
+    "id": "w16"
+  }
+]

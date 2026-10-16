@@ -1,0 +1,98 @@
+[
+  {
+    "text": "Ojo,",
+    "start": 0.03,
+    "end": 0.34,
+    "id": "w0"
+  },
+  {
+    "text": "Checa",
+    "start": 0.35,
+    "end": 0.7,
+    "id": "w1"
+  },
+  {
+    "text": "no",
+    "start": 0.7,
+    "end": 0.84,
+    "id": "w2"
+  },
+  {
+    "text": "acepta",
+    "start": 0.84,
+    "end": 1.2,
+    "id": "w3"
+  },
+  {
+    "text": "los",
+    "start": 1.27,
+    "end": 1.48,
+    "id": "w4"
+  },
+  {
+    "text": "viajes",
+    "start": 1.48,
+    "end": 1.9,
+    "id": "w5"
+  },
+  {
+    "text": "por",
+    "start": 1.9,
+    "end": 2.11,
+    "id": "w6"
+  },
+  {
+    "text": "ti,",
+    "start": 2.11,
+    "end": 2.47,
+    "id": "w7"
+  },
+  {
+    "text": "solo",
+    "start": 2.47,
+    "end": 2.74,
+    "id": "w8"
+  },
+  {
+    "text": "te",
+    "start": 2.74,
+    "end": 2.87,
+    "id": "w9"
+  },
+  {
+    "text": "dice",
+    "start": 2.87,
+    "end": 3.14,
+    "id": "w10"
+  },
+  {
+    "text": "cuál",
+    "start": 3.14,
+    "end": 3.41,
+    "id": "w11"
+  },
+  {
+    "text": "conviene",
+    "start": 3.41,
+    "end": 3.95,
+    "id": "w12"
+  },
+  {
+    "text": "y",
+    "start": 3.95,
+    "end": 4.02,
+    "id": "w13"
+  },
+  {
+    "text": "cuál",
+    "start": 4.02,
+    "end": 4.29,
+    "id": "w14"
+  },
+  {
+    "text": "no.",
+    "start": 4.29,
+    "end": 4.51,
+    "id": "w15"
+  }
+]

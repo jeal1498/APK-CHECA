@@ -1,50 +1,76 @@
 {
-  "provider": "elevenlabs",
-  "speed": "1.0",
   "lines": [
     {
       "id": "01",
-      "text": "Aceptas un viaje porque se ve buen billete… y a la hora de la verdad sales perdiendo."
+      "sfx": [
+        "whoosh-short",
+        "impact-bass-1"
+      ]
     },
     {
       "id": "02",
-      "text": "Casi siempre pasa igual: la oferta te cae manejando y no hay tiempo de calcular."
+      "sfx": [
+        "ping",
+        "riser"
+      ]
     },
     {
       "id": "03",
-      "text": "Para eso existe la app Checa. Mira qué hace con esa oferta."
+      "sfx": [
+        "notification",
+        "whoosh-short"
+      ]
     },
     {
       "id": "04",
-      "text": "Lee la oferta por ti y te dice cuánto te queda limpio, ya sin la gasolina."
+      "sfx": [
+        "click-soft",
+        "impact-bass-1"
+      ]
     },
     {
       "id": "05",
-      "text": "Ciento ochenta se ven bien, pero te quedan cien en una hora y cuarto. Rojo."
+      "sfx": [
+        "error",
+        "glitch-1"
+      ]
     },
     {
       "id": "06",
-      "text": "Otro, de noventa y seis pesos, te deja ochenta en diecisiete minutos. Verde."
+      "sfx": [
+        "chime",
+        "sparkle"
+      ]
     },
     {
       "id": "07",
-      "text": "Tú pones la vara: cuánto quieres ganar por kilómetro y por hora."
+      "sfx": [
+        "click",
+        "key-press"
+      ]
     },
     {
       "id": "08",
-      "text": "Y ni miras la pantalla: la app te dice en voz alta aceptar, considerar o rechazar."
+      "sfx": [
+        "notification",
+        "pop"
+      ]
     },
     {
       "id": "09",
-      "text": "Ojo: Checa no acepta los viajes por ti, solo te dice cuál conviene y cuál no."
+      "sfx": [
+        "pop",
+        "click-soft"
+      ]
     },
     {
       "id": "10",
-      "text": "Descarga Checa y checa cuánto te queda de cada viaje."
+      "sfx": [
+        "chime"
+      ]
     }
   ],
   "bgm": {
     "mode": "none"
-  },
-  "voice": "dlGxemPxFMTY7iXagmOj"
+  }
 }

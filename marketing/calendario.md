@@ -179,6 +179,15 @@ Tarifa, minutos y kilómetros: la cuenta de gasolina y recogida de cada viaje de
 Comenta «CHECA» y te mando la app que hace esa cuenta por ti (7 días gratis, solo Android).
 #choferes #uber #didi #conductoresdeapp #checaapp
 
+## 19 · por definir · Venta
+Video: `marketing/publicar/19_checa-lee-la-oferta.mp4` · Portada: `19_checa-lee-la-oferta.jpg`
+
+Ese viaje que se ve buen billete… a lo mejor te deja perdiendo 😣
+La app Checa lee la oferta de Uber o DiDi por ti y te dice cuánto te queda ya descontando la gasolina, mientras tú sigues viendo el camino.
+¿Lo aceptarías? 👇
+Descarga CHECA y checa cuánto te queda de cada viaje (solo Android).
+#choferes #uber #didi #conductoresdeapp #checaapp
+
 ---
 
 **Nota:** mientras corra la campaña de beta (50 accesos gratis por 3 meses), los videos de venta dicen «7 días gratis». Si alguien pregunta, los primeros 50 que comenten «YO» entran a la beta de 3 meses; los demás tienen la prueba de 7 días.

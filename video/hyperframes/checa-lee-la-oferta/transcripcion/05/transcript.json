@@ -1,0 +1,86 @@
+[
+  {
+    "text": "180",
+    "start": 0.04,
+    "end": 0.64,
+    "id": "w0"
+  },
+  {
+    "text": "se",
+    "start": 0.64,
+    "end": 0.78,
+    "id": "w1"
+  },
+  {
+    "text": "ven",
+    "start": 0.78,
+    "end": 0.99,
+    "id": "w2"
+  },
+  {
+    "text": "bien,",
+    "start": 0.99,
+    "end": 1.35,
+    "id": "w3"
+  },
+  {
+    "text": "pero",
+    "start": 1.45,
+    "end": 1.59,
+    "id": "w4"
+  },
+  {
+    "text": "te",
+    "start": 1.59,
+    "end": 1.66,
+    "id": "w5"
+  },
+  {
+    "text": "quedan",
+    "start": 1.66,
+    "end": 1.88,
+    "id": "w6"
+  },
+  {
+    "text": "100",
+    "start": 1.88,
+    "end": 2.24,
+    "id": "w7"
+  },
+  {
+    "text": "en",
+    "start": 2.24,
+    "end": 2.38,
+    "id": "w8"
+  },
+  {
+    "text": "una",
+    "start": 2.38,
+    "end": 2.59,
+    "id": "w9"
+  },
+  {
+    "text": "hora",
+    "start": 2.59,
+    "end": 2.8,
+    "id": "w10"
+  },
+  {
+    "text": "y",
+    "start": 2.91,
+    "end": 2.99,
+    "id": "w11"
+  },
+  {
+    "text": "cuarto",
+    "start": 2.99,
+    "end": 3.68,
+    "id": "w12"
+  },
+  {
+    "text": "rojo.",
+    "start": 3.68,
+    "end": 4.16,
+    "id": "w13"
+  }
+]

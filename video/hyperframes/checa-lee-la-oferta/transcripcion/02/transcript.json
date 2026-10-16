@@ -1,0 +1,92 @@
+[
+  {
+    "text": "Casi",
+    "start": 0.06,
+    "end": 0.25,
+    "id": "w0"
+  },
+  {
+    "text": "siempre",
+    "start": 0.25,
+    "end": 0.7,
+    "id": "w1"
+  },
+  {
+    "text": "pasa",
+    "start": 0.7,
+    "end": 0.95,
+    "id": "w2"
+  },
+  {
+    "text": "igual,",
+    "start": 0.96,
+    "end": 1.42,
+    "id": "w3"
+  },
+  {
+    "text": "la",
+    "start": 1.42,
+    "end": 1.54,
+    "id": "w4"
+  },
+  {
+    "text": "oferta",
+    "start": 1.54,
+    "end": 1.9,
+    "id": "w5"
+  },
+  {
+    "text": "te",
+    "start": 1.9,
+    "end": 1.97,
+    "id": "w6"
+  },
+  {
+    "text": "cae",
+    "start": 2.02,
+    "end": 2.2,
+    "id": "w7"
+  },
+  {
+    "text": "manejando",
+    "start": 2.2,
+    "end": 2.76,
+    "id": "w8"
+  },
+  {
+    "text": "y",
+    "start": 2.76,
+    "end": 2.83,
+    "id": "w9"
+  },
+  {
+    "text": "no",
+    "start": 2.83,
+    "end": 2.94,
+    "id": "w10"
+  },
+  {
+    "text": "hay",
+    "start": 2.94,
+    "end": 3.13,
+    "id": "w11"
+  },
+  {
+    "text": "tiempo",
+    "start": 3.13,
+    "end": 3.51,
+    "id": "w12"
+  },
+  {
+    "text": "de",
+    "start": 3.51,
+    "end": 3.63,
+    "id": "w13"
+  },
+  {
+    "text": "calcular.",
+    "start": 3.63,
+    "end": 4.16,
+    "id": "w14"
+  }
+]

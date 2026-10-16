@@ -1,0 +1,68 @@
+[
+  {
+    "text": "Tú",
+    "start": 0.1,
+    "end": 0.18,
+    "id": "w0"
+  },
+  {
+    "text": "pones",
+    "start": 0.18,
+    "end": 0.63,
+    "id": "w1"
+  },
+  {
+    "text": "la",
+    "start": 0.63,
+    "end": 0.81,
+    "id": "w2"
+  },
+  {
+    "text": "vara.¿Cuánto",
+    "start": 0.81,
+    "end": 1.63,
+    "id": "w3"
+  },
+  {
+    "text": "quieres",
+    "start": 1.63,
+    "end": 1.96,
+    "id": "w4"
+  },
+  {
+    "text": "ganar",
+    "start": 1.96,
+    "end": 2.19,
+    "id": "w5"
+  },
+  {
+    "text": "por",
+    "start": 2.19,
+    "end": 2.33,
+    "id": "w6"
+  },
+  {
+    "text": "kilómetro",
+    "start": 2.33,
+    "end": 2.78,
+    "id": "w7"
+  },
+  {
+    "text": "y",
+    "start": 2.78,
+    "end": 2.87,
+    "id": "w8"
+  },
+  {
+    "text": "por",
+    "start": 2.87,
+    "end": 2.99,
+    "id": "w9"
+  },
+  {
+    "text": "hora?",
+    "start": 3.03,
+    "end": 3.42,
+    "id": "w10"
+  }
+]
