@@ -1,6 +1,6 @@
 ---
 name: videos-checa
-description: Hacer videos cortos de Checa (TikTok, Reels, Shorts) con narrador de IA, en «Estilo HyperFrames» (el favorito de Eduardo desde el 14 oct 2026, plantilla checa-promo, proceso económico sin agentes y catálogo de recursos de movimiento para escoger según el momento) o en «1Volt a color» (Remotion 2D, line-art en SVG que se dibuja solo, letra mono, una idea por pantalla, colores por escena, subtítulos para redes y cambio de toma cada 3 s; el 3D queda en pausa). Los guiones se entregan con auditoría de retención, hooks y etiquetas entre corchetes, y siempre con su v2 para la cuenta personal de Eduardo; se guardan en marketing/guiones/guiones-checa.md y marketing/guiones/guiones-personal.md. Cada video va en marketing/CHECA/DD-MM - Nombre/ (y la v2 en marketing/PERSONAL/). Úsala cuando Eduardo pida un video, un guion para video, el siguiente tema de marketing/guiones/temas-videos.md, cambiar la voz o la música de un video, o un video sin que él salga a cuadro.
+description: Hacer videos cortos de Checa (TikTok, Reels, Shorts) con narrador de IA, en «Estilo HyperFrames» (el favorito de Eduardo desde el 14 oct 2026, plantilla checa-promo, proceso económico sin agentes y catálogo de recursos de movimiento para escoger según el momento) o en «1Volt a color» (Remotion 2D, line-art en SVG que se dibuja solo, letra mono, una idea por pantalla, colores por escena, subtítulos para redes y cambio de toma cada 3 s; el 3D queda en pausa). Los guiones se trabajan con auditoría de retención, hooks y etiquetas (en los archivos), pero en el chat se muestran solo de corrido y limpios; siempre con su v2 para la cuenta personal de Eduardo; se guardan en marketing/guiones/guiones-checa.md y marketing/guiones/guiones-personal.md. Cada video va en marketing/CHECA/DD-MM - Nombre/ (y la v2 en marketing/PERSONAL/). Úsala cuando Eduardo pida un video, un guion para video, el siguiente tema de marketing/guiones/temas-videos.md, cambiar la voz o la música de un video, o un video sin que él salga a cuadro.
 ---
 
 # Videos de Checa
@@ -8,16 +8,18 @@ description: Hacer videos cortos de Checa (TikTok, Reels, Shorts) con narrador d
 > **Prioridad entre conversaciones (Eduardo, 16 oct 2026):** esta skill se cambia desde la conversación **principal** (guiones, carpetas, v2). La **secundaria** solo hace cambios puntuales y no debe revertir estas reglas; si algo choca, gana lo que dice esta skill.
 
 ## ⭐ Cómo se hacen los guiones (Eduardo, 16 oct 2026: «me gusta más como está hoy en día»; vale para v1 y v2 y para cualquier estilo)
-Actúa como experto en contenido viral y retención. Cada vez que entregues o generes un guion, en la misma respuesta y sin textos largos:
+**Lo que se responde en el chat (Eduardo, 16 oct 2026): SOLO el guion de voz, limpio y de corrido en un párrafo**, sin `[Corte]`, sin etiquetas, sin tablas, sin auditoría, sin ajustes de honestidad, sin texto de publicación, sin saludo ni pregunta final. Eduardo lo escucha con la lectura en voz alta del chat y cualquier otra cosa se la lee también. El trabajo de abajo (auditoría, hooks, tabla con técnicas, honestidad, texto de publicación) **se hace igual, pero se guarda en los archivos** (`marketing/guiones/guiones-checa.md` o `guiones-personal.md`, y el `copy.txt` de la carpeta). Si él pide ver la tabla, la auditoría o el texto de publicación, se lo das. Si pide cambios, respondes otra vez solo con el guion corregido. Su «aprobado» (o «dale») es la señal para hacer voz y video.
+
+Actúa como experto en contenido viral y retención. Para cada guion que generes (el análisis va a los archivos, no al chat):
 1. **Auditoría previa** de la versión base (la v1 publicada o el borrador): 4–5 viñetas con áreas de oportunidad y los puntos donde el ritmo decae (lo plano, lo repetitivo, lo que llega tarde, promesas que no se cumplen, el cierre).
 2. **Hook inicial (0–3 s)**: voz + texto en pantalla + imagen a la vez, con la vivencia del conductor en sus propias palabras.
 3. **Hooks intermedios**, uno cada ~4–5 s: open loops, giros, cambios de ritmo, re-enganches visuales, pausa dramática antes del payoff, CTA específico y un cierre que enlaza con el inicio (loop de repetición).
 4. **Guion optimizado** en tabla `Corte · Tiempo · Voz · En pantalla/sonido · Técnica`, con la técnica entre corchetes y su función: `[Hook Inicial]`, `[Micro-hook]`, `[Open Loop]`, `[Re-enganche visual]`, `[Giro]`, `[Cambio de ritmo]`, `[Pausa dramática]`, `[Payoff del Open Loop]`, `[Giro emocional]`, `[CTA específico]`, `[Loop de repetición]`.
-5. **Voz limpia**: un párrafo sin corchetes con `[Corte]` entre líneas. Es lo único que va a ElevenLabs; las etiquetas son solo para Eduardo.
+5. **Voz limpia**: el guion de corrido, sin corchetes ni `[Corte]`. Es **lo único que se muestra en el chat** y lo único que va a ElevenLabs (una línea de voz por escena, según la tabla del archivo); las etiquetas son solo para el archivo.
 6. **Ajustes de honestidad** (una línea) y **texto de publicación** (fórmula del calendario).
-7. Cierra preguntando si lo aprueba. **Ya no se pasa por Gemini** (Eduardo, 16 oct 2026): con su «aprobado» haces voz y video.
+7. **Ya no se pasa por Gemini** (Eduardo, 16 oct 2026). No cierres con preguntas; con su «aprobado» haces voz y video.
 8. **El último corte es el cierre estándar** (ver «Cierre estándar de TODOS los videos» más abajo), en v1 y v2.
-9. **Entrega siempre también la v2** (ver abajo), con el mismo formato.
+9. **Prepara siempre también la v2** (ver abajo). En el chat, si ambos van juntos, primero el guion de la v1 y luego el de la v2, cada uno de corrido y separados solo por una línea que diga «Versión 2» (o «Versión 1»).
 Guárdalos en `marketing/guiones/guiones-checa.md` (v1) y `marketing/guiones/guiones-personal.md` (v2) con la columna «Técnica». Ejemplo completo del formato: `marketing/guiones/guiones-personal.md` (18-10 Cansancio y salud). Esto reemplaza la columna 🪝 y el formato viejo de «corte · voz · en pantalla».
 
 ### Dónde se guarda cada video
