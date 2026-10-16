@@ -1,6 +1,6 @@
 # Calendario de publicaciones
 
-Una publicación al día, alternando videos de **venta** (llevan a la prueba gratis) y de **consejo** (para ganar confianza, guardados y compartidos). Cada archivo está en `marketing/publicar/` con el mismo número: el `.mp4` es el video y el `.jpg` su portada.
+Una publicación al día, alternando videos de **venta** (llevan a la prueba gratis) y de **consejo** (para ganar confianza, guardados y compartidos). Hay **dos cuentas**: **CHECA** (`marketing/CHECA/`) y **PERSONAL** de Eduardo (`marketing/PERSONAL/`, las versiones v2). En las dos, cada video tiene su carpeta `NN_fecha_tema/` con `video.mp4`, `portada.jpg` y `copy.txt` (el texto de la publicación, listo para pegar). Este calendario vive en `marketing/videos/`.
 
 **Fórmula de cada texto** (TikTok funciona como buscador; el texto no repite el guion porque el video ya trae subtítulos):
 1. Gancho en la 1.ª línea (lo único que se ve sin tocar «más»).
@@ -12,11 +12,13 @@ Sin link en la bio (TikTok pide constancia del SAT para cuenta de empresa): a qu
 
 **Hora sugerida:** 8:00 pm (cuando muchos conductores ya terminaron turno o están en pausa). Ajústala según tus estadísticas después de la primera semana.
 
-**Publicado:** al subir un video, marcarlo con ✅ y la fecha en la tabla. Al preguntar «qué toca hoy», dar el primero sin ✅.
+**Publicado:** al subir un video, marcarlo con ✅ y la fecha en la tabla de su cuenta. Al preguntar «qué toca hoy», dar el primero sin ✅ de **CHECA** y, si ya tiene v2, también el de **PERSONAL**, con sus links y su texto.
 
 **Dónde:** TikTok, Instagram Reels, YouTube Shorts y tu página de Facebook. El de beta testers también en grupos de Facebook y WhatsApp de conductores.
 
-| # | Fecha | Tipo | Archivo (video + portada) | Publicado |
+# CHECA · cuenta de Checa
+
+| # | Fecha | Tipo | Carpeta en `marketing/CHECA/` | Publicado |
 |---|---|---|---|---|
 | 01 | mar 14 oct | Campaña beta | `01_2026-10-14_beta-testers` | ✅ 14 oct |
 | 02 | mié 15 oct | Venta | `02_2026-10-15_trabajar-mucho-sin-lana` | ✅ |
@@ -33,19 +35,21 @@ Sin link en la bio (TikTok pide constancia del SAT para cuenta de empresa): a qu
 | 13 | dom 26 oct | Consejo | `13_2026-10-26_multas-y-papeles` | |
 | 14 | lun 27 oct | Venta | `14_2026-10-27_miedo-a-rechazar` | |
 | 15 | mar 28 oct | Venta | `15_2026-10-28_desgaste-y-renta` | |
+| 16 | sin fecha | Explicativo | `16_como-funciona-checa` | |
+| 17 | sin fecha | Explicativo | `17_como-funciona-checa-hyperframes` | |
 | 18 | por definir | Venta | `18_cuanto-ganas-tu` | |
 
 ---
 
 ## 01 · mar 14 oct · Campaña beta · ✅ publicado
-Video: `marketing/publicar/01_2026-10-14_beta-testers.mp4` · Portada: `01_2026-10-14_beta-testers.jpg`
+Carpeta: `marketing/CHECA/01_2026-10-14_beta-testers/` (video.mp4 · portada.jpg · copy.txt)
 
 Compañeros, hice una app para saber si un viaje conviene antes de aceptarlo: te dice cuánto te queda limpio después de gasolina y el pago por kilómetro.
 Busco 50 conductores que la usen gratis por 3 meses y me den su opinión. Si la compartes con un amigo, les doy 1 mes más a cada uno.
 Comenta «YO» o mándame mensaje y te paso el acceso. Funciona en teléfonos Android, con Uber y DiDi; te paso el acceso y una guía corta para instalarla.
 
 ## 02 · mié 15 oct · Venta · ✅ publicado
-Video: `marketing/publicar/02_2026-10-15_trabajar-mucho-sin-lana.mp4` · Portada: `02_2026-10-15_trabajar-mucho-sin-lana.jpg`
+Carpeta: `marketing/CHECA/02_2026-10-15_trabajar-mucho-sin-lana/` (video.mp4 · portada.jpg · copy.txt)
 
 Doce horas al volante y la lana no aparece 😩
 ¿Cuánto gana de verdad un chofer de Uber o DiDi? Haz la cuenta de lo que se va en gasolina y en recogidas que nadie te paga.
@@ -54,7 +58,7 @@ Comenta «CHECA» y te mando la app que hace esa cuenta por ti (7 días gratis, 
 #conductores #choferes #uber #didi #checaapp
 
 ## 03 · jue 16 oct · Consejo · ✅ publicado
-Video: `marketing/publicar/03_2026-10-16_seguridad-de-noche.mp4` · Portada: `03_2026-10-16_seguridad-de-noche.jpg`
+Carpeta: `marketing/CHECA/03_2026-10-16_seguridad-de-noche/` (video.mp4 · portada.jpg · copy.txt)
 
 Manejar de noche sin pasar sustos 🌙
 5 consejos de seguridad para choferes de Uber y DiDi en el turno nocturno.
@@ -63,7 +67,7 @@ Guárdalo y compártelo en tu grupo de choferes.
 #conductores #seguridadvial #choferes #consejosdeconductor #checaapp
 
 ## 04 · vie 17 oct · Venta · ✅ publicado
-Video: `marketing/publicar/04_2026-10-17_recogidas-lejanas.mp4` · Portada: `04_2026-10-17_recogidas-lejanas.jpg`
+Carpeta: `marketing/CHECA/04_2026-10-17_recogidas-lejanas/` (video.mp4 · portada.jpg · copy.txt)
 
 6 km para recoger… y nadie te los paga 🚗💸
 Las recogidas lejanas en Uber y DiDi se comen tu gasolina y tu ganancia por kilómetro.
@@ -72,7 +76,7 @@ Comenta «CHECA» y te mando la app que te muestra los km totales antes de acept
 #choferes #uber #didi #kilometraje #checaapp
 
 ## 05 · sáb 18 oct · Consejo · ✅ publicado
-Video: `marketing/publicar/05_2026-10-18_cansancio-y-salud.mp4` · Portada: `05_2026-10-18_cansancio-y-salud.jpg`
+Carpeta: `marketing/CHECA/05_2026-10-18_cansancio-y-salud/` (video.mp4 · portada.jpg · copy.txt)
 
 Tu cuerpo también es tu herramienta de trabajo 💪
 4 tips de salud para aguantar el turno de chofer: espalda, descanso, comida y agua.
@@ -80,10 +84,8 @@ Tu cuerpo también es tu herramienta de trabajo 💪
 Guárdalo y mándaselo a quien se la vive al volante.
 #conductores #salud #choferes #consejosdeconductor #checaapp
 
-**v2 (cuenta personal de Eduardo):** `marketing/publicar/05_2026-10-18_cansancio-y-salud_v2.mp4` · portada `05_2026-10-18_cansancio-y-salud_v2.jpg` · guion y texto en `marketing/guiones-v2.md`.
-
 ## 06 · dom 19 oct · Venta
-Video: `marketing/publicar/06_2026-10-19_gasolina-cara.mp4` · Portada: `06_2026-10-19_gasolina-cara.jpg`
+Carpeta: `marketing/CHECA/06_2026-10-19_gasolina-cara/` (video.mp4 · portada.jpg · copy.txt)
 
 De cada $90 que cobras, la gasolina se lleva $30 ⛽
 ¿Cuánto gastas de gasolina en Uber o DiDi? Saca tu ganancia neta por viaje, no solo la tarifa.
@@ -92,7 +94,7 @@ Comenta «CHECA» y te mando la app que te dice cuánto te queda limpio antes de
 #conductoresdeapp #gasolina #uber #didi #checaapp
 
 ## 07 · lun 20 oct · Consejo
-Video: `marketing/publicar/07_2026-10-20_pasajeros-y-cancelaciones.mp4` · Portada: `07_2026-10-20_pasajeros-y-cancelaciones.jpg`
+Carpeta: `marketing/CHECA/07_2026-10-20_pasajeros-y-cancelaciones/` (video.mp4 · portada.jpg · copy.txt)
 
 Cancelaciones, esperas y pasajeros pesados 😤
 4 tips para choferes de Uber y DiDi para que no te pase tan seguido.
@@ -101,7 +103,7 @@ Guárdalo y compártelo con un compañero.
 #choferes #conductores #uber #didi #checaapp
 
 ## 08 · mar 21 oct · Venta
-Video: `marketing/publicar/08_2026-10-21_decidir-en-segundos.mp4` · Portada: `08_2026-10-21_decidir-en-segundos.jpg`
+Carpeta: `marketing/CHECA/08_2026-10-21_decidir-en-segundos/` (video.mp4 · portada.jpg · copy.txt)
 
 Tienes unos segundos para decidir si aceptas el viaje ⏱️
 ¿Conviene o no conviene? No da tiempo de sacar el pago por km ni la ganancia por hora.
@@ -110,7 +112,7 @@ Comenta «CHECA» y te mando la app que te lo dice en voz alta: aceptar, conside
 #conductoresdeapp #uber #didi #choferes #checaapp
 
 ## 09 · mié 22 oct · Consejo
-Video: `marketing/publicar/09_2026-10-22_cuenta-desactivada.mp4` · Portada: `09_2026-10-22_cuenta-desactivada.jpg`
+Carpeta: `marketing/CHECA/09_2026-10-22_cuenta-desactivada/` (video.mp4 · portada.jpg · copy.txt)
 
 Que una cuenta desactivada no te agarre desprevenido 🚫
 Qué hacer si te desactivan la cuenta de Uber o DiDi: guarda pruebas, papeles al día y apela por el canal oficial.
@@ -119,7 +121,7 @@ Guárdalo y compártelo con un compañero.
 #conductoresdeapp #choferes #uber #didi #checaapp
 
 ## 10 · jue 23 oct · Venta
-Video: `marketing/publicar/10_2026-10-23_mejores-horas.mp4` · Portada: `10_2026-10-23_mejores-horas.jpg`
+Carpeta: `marketing/CHECA/10_2026-10-23_mejores-horas/` (video.mp4 · portada.jpg · copy.txt)
 
 ¿A qué hora te conviene salir a trabajar? 🕐
 Las mejores horas para manejar en Uber y DiDi cambian según tu zona y tus ofertas.
@@ -128,7 +130,7 @@ Comenta «CHECA» y te mando la app que te arma un semáforo con tus mejores hor
 #conductores #uber #didi #mejoreshoras #checaapp
 
 ## 11 · vie 24 oct · Consejo
-Video: `marketing/publicar/11_2026-10-24_ingreso-inestable.mp4` · Portada: `11_2026-10-24_ingreso-inestable.jpg`
+Carpeta: `marketing/CHECA/11_2026-10-24_ingreso-inestable/` (video.mp4 · portada.jpg · copy.txt)
 
 Un día bien y tres mal 📉
 4 tips de dinero para choferes con ingreso variable: fondo de emergencia, sobres y medir en netos.
@@ -137,7 +139,7 @@ Guárdalo para cuando lo necesites.
 #conductores #finanzaspersonales #choferes #ahorro #checaapp
 
 ## 12 · sáb 25 oct · Venta
-Video: `marketing/publicar/12_2026-10-25_comision-y-tarifas.mp4` · Portada: `12_2026-10-25_comision-y-tarifas.jpg`
+Carpeta: `marketing/CHECA/12_2026-10-25_comision-y-tarifas/` (video.mp4 · portada.jpg · copy.txt)
 
 Dos ofertas de $100… y una te deja $12 más 🤔
 Con la comisión de Uber y DiDi, no todos los viajes del mismo precio te dejan lo mismo. En 20 viajes son $240 extra.
@@ -146,7 +148,7 @@ Comenta «CHECA» y te mando la app que te marca cuál conviene (7 días gratis,
 #conductores #uber #didi #comision #checaapp
 
 ## 13 · dom 26 oct · Consejo
-Video: `marketing/publicar/13_2026-10-26_multas-y-papeles.mp4` · Portada: `13_2026-10-26_multas-y-papeles.jpg`
+Carpeta: `marketing/CHECA/13_2026-10-26_multas-y-papeles/` (video.mp4 · portada.jpg · copy.txt)
 
 ¿Te paró tránsito? Esto te conviene saber 👮
 Multas y papeles para choferes de app: documentos vigentes, boleta por escrito y pago solo en canales oficiales.
@@ -155,7 +157,7 @@ Guárdalo y compártelo en tu grupo.
 #conductores #transito #choferes #consejosdeconductor #checaapp
 
 ## 14 · lun 27 oct · Venta
-Video: `marketing/publicar/14_2026-10-27_miedo-a-rechazar.mp4` · Portada: `14_2026-10-27_miedo-a-rechazar.jpg`
+Carpeta: `marketing/CHECA/14_2026-10-27_miedo-a-rechazar/` (video.mp4 · portada.jpg · copy.txt)
 
 ¿Te da miedo rechazar viajes? 😬
 Rechazar en Uber o DiDi está bien si es el viaje que de verdad no conviene. Checa solo lee la oferta; el botón siempre lo tocas tú.
@@ -164,7 +166,7 @@ Comenta «CHECA» y te mando la app (7 días gratis, solo Android).
 #choferes #uber #didi #conductoresdeapp #checaapp
 
 ## 15 · mar 28 oct · Venta
-Video: `marketing/publicar/15_2026-10-28_desgaste-y-renta.mp4` · Portada: `15_2026-10-28_desgaste-y-renta.jpg`
+Carpeta: `marketing/CHECA/15_2026-10-28_desgaste-y-renta/` (video.mp4 · portada.jpg · copy.txt)
 
 Si rentas carro, empiezas el día debiendo 🚘
 Renta, desgaste y kilómetros: cuánto le cuesta de verdad a un chofer de Uber o DiDi cada km.
@@ -173,7 +175,7 @@ Comenta «CHECA» y te mando la app que te muestra los km reales de cada oferta 
 #conductores #rentadeauto #uber #didi #checaapp
 
 ## 18 · por definir · Venta
-Video: `marketing/publicar/18_cuanto-ganas-tu.mp4` · Portada: `18_cuanto-ganas-tu.jpg`
+Carpeta: `marketing/CHECA/18_cuanto-ganas-tu/` (video.mp4 · portada.jpg · copy.txt)
 
 La app te dice cuánto te paga… pero no cuánto ganas tú 🤔
 Tarifa, minutos y kilómetros: la cuenta de gasolina y recogida de cada viaje de Uber o DiDi la haces tú, de cabeza y manejando.
@@ -193,3 +195,22 @@ Descarga CHECA y checa cuánto te queda de cada viaje (solo Android).
 ---
 
 **Nota:** mientras corra la campaña de beta (50 accesos gratis por 3 meses), los videos de venta dicen «7 días gratis». Si alguien pregunta, los primeros 50 que comenten «YO» entran a la beta de 3 meses; los demás tienen la prueba de 7 días.
+
+---
+
+# PERSONAL · cuenta personal de Eduardo (versiones v2)
+
+Misma idea que cada video de CHECA, con otro gancho y otras palabras (reglas y guiones en `marketing/guiones-v2.md`). Van en el mismo orden que CHECA y se marcan con ✅ al subirlos.
+
+| # | Tipo | Carpeta en `marketing/PERSONAL/` | Publicado |
+|---|---|---|---|
+| 05 | Consejo | `05_2026-10-18_cansancio-y-salud` | |
+
+## 05 · Consejo (v2)
+Carpeta: `marketing/PERSONAL/05_2026-10-18_cansancio-y-salud/` (video.mp4 · portada.jpg · copy.txt)
+
+Al carro le haces servicio, ¿y a tu cuerpo? 🚗💪
+4 hábitos para aguantar el turno de chofer en Uber y DiDi. El cuarto es el que no se negocia.
+¿Cuál de los 4 se te hace más difícil? 👇
+Guárdalo y mándaselo a quien maneja de más.
+#choferuber #choferdidi #conductores #salud #consejosdeconductor

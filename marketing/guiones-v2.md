@@ -7,7 +7,7 @@ Cada video de la cuenta de **Checa** tiene una **v2** para la cuenta **personal*
 - Tono de conductor a conductor, en «tú». Sin anécdotas personales inventadas; «yo» solo en llamadas como «sígueme».
 - Cierre personal: «sígueme» en lugar de «síguenos». Sin logo de Checa a menos que Eduardo lo pida.
 - Mismas reglas de siempre: sin ciudad ni país, sin prometer lo que no podamos garantizar, sin preguntas que la voz se contesta sola.
-- Se guarda aquí el guion; texto de publicación v2 debajo. Archivo del video: `marketing/publicar/NN_fecha_tema_v2.mp4` (+ `.jpg`).
+- Se guarda aquí el guion; texto de publicación v2 debajo. Carpeta del video: `marketing/PERSONAL/NN_fecha_tema/` (`video.mp4`, `portada.jpg`, `copy.txt`).
 
 ---
 
