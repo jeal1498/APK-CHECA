@@ -1,0 +1,5 @@
+nombre=Beta tester 1
+whatsapp=-
+correo=Lufercab@gmail.com
+tipo=Normal
+dias=90
