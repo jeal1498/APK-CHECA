@@ -1,6 +1,6 @@
 # Página web como funnel · Paso 1: el público
 
-Fecha: 13 oct 2026. Fuentes: `.agents/product-marketing.md`, `marketing/temas-videos.md`, guiones de Gemini y notas de prensa de 2026 (abajo).
+Fecha: 13 oct 2026. Fuentes: `.agents/product-marketing.md`, `marketing/guiones/temas-videos.md`, guiones de Gemini y notas de prensa de 2026 (abajo).
 Regla de la página: **no nombrar a ninguna competencia**.
 
 ## Plan completo (orden aprobado)
