@@ -1,0 +1,5 @@
+nombre=Beta tester 2
+whatsapp=-
+correo=javiiramp@gmail.com
+tipo=Normal
+dias=90
