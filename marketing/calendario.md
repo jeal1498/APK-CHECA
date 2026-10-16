@@ -187,7 +187,7 @@ Video: `marketing/publicar/19_checa-lee-la-oferta.mp4` · Portada: `19_checa-lee
 Ese viaje que se ve buen billete… a lo mejor te deja perdiendo 😣
 La app Checa lee la oferta de Uber o DiDi por ti y te dice cuánto te queda ya descontando la gasolina, mientras tú sigues viendo el camino.
 ¿Lo aceptarías? 👇
-Descarga CHECA y checa cuánto te queda de cada viaje (solo Android).
+Comenta «CHECA» y te mando la app por mensaje (solo Android).
 #choferes #uber #didi #conductoresdeapp #checaapp
 
 ---

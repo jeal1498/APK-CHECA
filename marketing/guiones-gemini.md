@@ -293,9 +293,9 @@ Ajustes: «La app Checa» en el corte 7a (para que no se confunda con el verbo);
 ---
 
 ## Checa lee la oferta por ti (respuesta a un amigo, HyperFrames, gancho + re-ganchos)
-Video: `marketing/publicar/19_checa-lee-la-oferta.mp4` (proyecto `video/hyperframes/checa-lee-la-oferta/`, 9:16, ~48 s). Versión corregida por Eduardo (16 oct 2026). CTA sin «7 días gratis»: manda a descargar.
+Video: `marketing/publicar/19_checa-lee-la-oferta.mp4` (proyecto `video/hyperframes/checa-lee-la-oferta/`, 9:16, ~47 s). Versión corregida por Eduardo (16 oct 2026). CTA sin «7 días gratis»: comentan CHECA y Eduardo manda la app por DM (cambio del 16 oct: antes decía «Descarga Checa…»).
 
-Aceptas un viaje porque se ve buen billete… y a la hora de la verdad sales perdiendo. [Corte] Casi siempre pasa igual: la oferta te cae manejando y no hay tiempo de calcular. [Corte] Para eso existe la app Checa. Mira qué hace con esa oferta. [Corte] Lee la oferta por ti y te dice cuánto te queda limpio, ya sin la gasolina. [Corte] Ciento ochenta se ven bien, pero te quedan cien en una hora y cuarto. Rojo. [Corte] Otro, de noventa y seis pesos, te deja ochenta en diecisiete minutos. Verde. [Corte] Tú pones la vara: cuánto quieres ganar por kilómetro y por hora. [Corte] Y ni miras la pantalla: la app te dice en voz alta aceptar, considerar o rechazar. [Corte] Ojo: Checa no acepta los viajes por ti, solo te dice cuál conviene y cuál no. [Corte] Descarga Checa y checa cuánto te queda de cada viaje.
+Aceptas un viaje porque se ve buen billete… y a la hora de la verdad sales perdiendo. [Corte] Casi siempre pasa igual: la oferta te cae manejando y no hay tiempo de calcular. [Corte] Para eso existe la app Checa. Mira qué hace con esa oferta. [Corte] Lee la oferta por ti y te dice cuánto te queda limpio, ya sin la gasolina. [Corte] Ciento ochenta se ven bien, pero te quedan cien en una hora y cuarto. Rojo. [Corte] Otro, de noventa y seis pesos, te deja ochenta en diecisiete minutos. Verde. [Corte] Tú pones la vara: cuánto quieres ganar por kilómetro y por hora. [Corte] Y ni miras la pantalla: la app te dice en voz alta aceptar, considerar o rechazar. [Corte] Ojo: Checa no acepta los viajes por ti, solo te dice cuál conviene y cuál no. [Corte] Comenta Checa y te mando la app, para que checes cuánto te queda de cada viaje.
 
 | Corte | Tiempo | Voz | En pantalla | 🪝 Gancho |
 |---|---|---|---|---|
@@ -308,8 +308,8 @@ Aceptas un viaje porque se ve buen billete… y a la hora de la verdad sales per
 | 7 | 0:29–0:34 | Tú pones la vara: cuánto quieres ganar por kilómetro y por hora. | Panel de metas con −/+ ($8/km, $150/h) | Control |
 | 8 | 0:34–0:39 | Y ni miras la pantalla: la app te dice en voz alta aceptar, considerar o rechazar. | Semáforo: ACEPTAR · CONSIDERAR · RECHAZAR con cada palabra | Beneficio |
 | 9 | 0:39–0:44 | Ojo: Checa no acepta los viajes por ti, solo te dice cuál conviene y cuál no. | Un dedo toca «Aceptar» en la plataforma; Checa solo avisa | Objeción resuelta |
-| 10 | 0:44–0:48 | Descarga Checa y checa cuánto te queda de cada viaje. | Logo semáforo + «Descarga Checa · Solo Android» | CTA |
+| 10 | 0:44–0:49 | Comenta Checa y te mando la app, para que checes cuánto te queda de cada viaje. | Logo semáforo + «Comenta CHECA» + @checa.driver (TikTok de Checa) + @Eduardoalv9802 (Eduardo) + jeal1498.github.io/checa-web | CTA |
 
 La cuenta (gasolina $2/km; metas $8/km y $150/h; el km total incluye la recogida): rojo = $180, 40 km, 75 min → $4.50/km, $144/h, gasolina −$80, netos $100. Verde = $96, 8 km, 17 min → $12.00/km, $339/h, gasolina −$16, netos $80.
 
-Ajustes: «voz alta» → «en voz alta» (más natural al hablar); MAYÚSCULAS de Eduardo solo en pantalla, en la voz va normal para que ElevenLabs no deletree «CHECA»; «Números de ejemplo» en pantalla en los cortes 4–6; oferta genérica sin logos; sin «7 días gratis».
+Ajustes: «voz alta» → «en voz alta» (más natural al hablar); MAYÚSCULAS de Eduardo solo en pantalla, en la voz va normal para que ElevenLabs no deletree «CHECA»; «Números de ejemplo» en pantalla en los cortes 4–6; oferta genérica sin logos; sin «7 días gratis». Corte 10: la pantalla final lleva las cuentas de TikTok (@checa.driver y @Eduardoalv9802) y el link de la web; «Checa» normal en la voz (no «CHECA»).

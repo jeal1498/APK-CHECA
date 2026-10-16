@@ -863,67 +863,103 @@
     {
       "frame": 10,
       "path": "assets/voice/10.wav",
-      "duration_s": 3.239,
+      "duration_s": 4.441,
       "words": [
         {
           "id": "w0",
-          "text": "Descarga",
-          "start": 0.04,
-          "end": 0.5
+          "text": "Comenta",
+          "start": 0.09,
+          "end": 0.45
         },
         {
           "id": "w1",
           "text": "Checa",
-          "start": 0.55,
-          "end": 0.85
+          "start": 0.5,
+          "end": 0.81
         },
         {
           "id": "w2",
           "text": "y",
-          "start": 0.92,
-          "end": 0.93
+          "start": 0.87,
+          "end": 0.91
         },
         {
           "id": "w3",
-          "text": "checa",
-          "start": 0.93,
-          "end": 1.26
+          "text": "te",
+          "start": 0.91,
+          "end": 1.05
         },
         {
           "id": "w4",
-          "text": "cuánto",
-          "start": 1.26,
-          "end": 1.66
+          "text": "mando",
+          "start": 1.05,
+          "end": 1.4
         },
         {
           "id": "w5",
-          "text": "te",
-          "start": 1.66,
-          "end": 1.79
+          "text": "la",
+          "start": 1.4,
+          "end": 1.54
         },
         {
           "id": "w6",
-          "text": "queda",
-          "start": 1.79,
-          "end": 2.13
+          "text": "app,",
+          "start": 1.54,
+          "end": 1.74
         },
         {
           "id": "w7",
-          "text": "de",
-          "start": 2.13,
-          "end": 2.21
+          "text": "para",
+          "start": 1.84,
+          "end": 2.01
         },
         {
           "id": "w8",
-          "text": "cada",
-          "start": 2.26,
-          "end": 2.53
+          "text": "que",
+          "start": 2.03,
+          "end": 2.19
         },
         {
           "id": "w9",
+          "text": "checes",
+          "start": 2.19,
+          "end": 2.54
+        },
+        {
+          "id": "w10",
+          "text": "cuánto",
+          "start": 2.54,
+          "end": 2.93
+        },
+        {
+          "id": "w11",
+          "text": "te",
+          "start": 2.93,
+          "end": 3.06
+        },
+        {
+          "id": "w12",
+          "text": "queda",
+          "start": 3.06,
+          "end": 3.39
+        },
+        {
+          "id": "w13",
+          "text": "de",
+          "start": 3.39,
+          "end": 3.52
+        },
+        {
+          "id": "w14",
+          "text": "cada",
+          "start": 3.52,
+          "end": 3.79
+        },
+        {
+          "id": "w15",
           "text": "viaje.",
-          "start": 2.53,
-          "end": 3
+          "start": 3.79,
+          "end": 4.16
         }
       ]
     }

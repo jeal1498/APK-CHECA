@@ -47,7 +47,7 @@ Referencia: `marketing/publicar/17_como-funciona-checa-hyperframes.mp4` (40 s, 9
 | `10-mejor` | Dos pop-ups (Uber/DiDi), el mejor con borde dorado |
 | `11-horas` | Cuadrícula de horas con colores de semáforo |
 | `12-resultado` | Fondo verde, frase que se tacha y frase gigante |
-| `13-cta` | Logo semáforo que se arma + «checa» + pastilla «Descarga Checa · Solo Android» (sin prueba gratis por ahora) |
+| `13-cta` | Logo semáforo que se arma + «checa» + pastilla «Comenta CHECA» + cuentas de TikTok y link de la web (sin prueba gratis por ahora) |
 
 **Catálogo de recursos de movimiento (Eduardo, 14 oct 2026).** Vienen de un video de referencia que le gustó mucho (`referencia/README.md` → *Referencia 8*, cuadros en `cuadros8.jpg`) y evitan que el video «parezca PowerPoint». **No son obligatorios ni hay cuota**: para cada momento del guion escoge el que mejor cuente esa idea (o ninguno, si la escena ya funciona). Si Eduardo manda otra referencia que le guste, agrégala aquí como recurso nuevo:
 1. **Revelar el texto desde una máscara**: las palabras suben desde atrás de un borde (contenedor con `overflow:hidden` y el texto en `yPercent: 100 → 0`, línea por línea, con stagger), en lugar de solo aparecer con opacidad. Para títulos, frases clave y la frase final.
@@ -61,7 +61,7 @@ Al presentar el `STORYBOARD.md`, anota en cada escena qué recurso escogiste y p
 Reglas de marca: el pop-up sale siempre de `assets/checa-popup.html` sin rediseñar; ningún texto es solo un monto; «Números de ejemplo» donde haya cifras; las cifras de ejemplo deben cuadrar (neta = viaje − gasolina, gasolina ≈ $2/km); oferta genérica sin logos de Uber/DiDi; sin ciudad ni país.
 
 ## CTA y ganchos (Eduardo, 16 oct 2026; valen para cualquier estilo)
-- **CTA de cierre (venta): por ahora no hay prueba de 7 días.** No decir «7 días gratis», «sin costo» ni precios. La voz manda a descargar: «Descarga Checa y checa cuánto te queda de cada viaje.» En pantalla: logo + «Descarga Checa · Solo Android». El texto de la publicación igual («Descarga CHECA»); el medio (link o comentario) lo define Eduardo, no inventes un link en la bio. Si vuelve la prueba o hay otra oferta, él lo avisa y se actualiza aquí.
+- **CTA de cierre (venta; Eduardo, 16 oct 2026): por ahora no hay prueba de 7 días.** No decir «7 días gratis», «sin costo» ni precios. Eduardo manda la app por DM a quien comente: la voz dice «Comenta Checa y te mando la app, para que checes cuánto te queda de cada viaje.» (en la voz «Checa» normal, no «CHECA», para que no la deletree). **Pantalla final** (que dure ≥ 2 s después de la voz: `PAD_FIN = 2.0`): logo + pastilla «Comenta CHECA» + «y te mando la app» + TikTok de Checa **@checa.driver** («síguenos en tiktok») + TikTok de Eduardo **@Eduardoalv9802** («creador de checa», por si comparten el video) + link de descarga **jeal1498.github.io/checa-web** («solo Android»). Todo por encima de y≈1450; ejemplo en `video/hyperframes/checa-lee-la-oferta/generar.py` (escena 10). El texto de la publicación: «Comenta CHECA y te mando la app». No hay link en la bio de TikTok. Si vuelve la prueba o hay otra oferta, él lo avisa y se actualiza aquí.
 - **Gancho contundente en 0–3 s** (voz + texto en pantalla + imagen a la vez), sacado de la vivencia del conductor con sus propias palabras, no un resumen. Base aprobada para el video 19: «Aceptas un viaje porque se ve buen billete… y a la hora de la verdad sales perdiendo» con el texto «SE VEÍA BUENO. PERDISTE.».
 - **Re-ganchos cada 4–5 s** para que la retención no dependa solo del inicio: cada corte lleva uno (pérdida, tensión, bucle abierto como «mira qué hace», cifra que duele, giro, contraste, control como «tú pones la vara», beneficio, objeción resuelta) y un sonido que lo marca (`impact-bass`, `ping`, `whoosh`). Al presentar el guion, agrega una columna 🪝 con el tipo de gancho de cada corte.
 - Si Eduardo manda su propia respuesta (p. ej. un mensaje de WhatsApp) como base: conserva el orden de sus ideas, pasa el «yo» a «tú» y cambia lo que no podamos garantizar («no hay bloqueo» → «Checa no toca Uber ni DiDi, tú decides»).
@@ -136,7 +136,7 @@ Componentes reutilizables: `Trazo`, `Cota`, `Numero`, `Etiqueta`, `Frase`, `Subs
   5. Fondo negro con un brillo rojo suave al centro. Nada importante debajo de y≈1700 ni pegado a la derecha (ahí van los botones de TikTok). Las cifras deben cuadrar con el video.
   - Render (sin Remotion): `/opt/pw-browsers/chromium-1194/chrome-linux/chrome --headless --no-sandbox --disable-gpu --hide-scrollbars --window-size=1080,1920 --screenshot=p.png file://$PWD/portada.html` → `ffmpeg -i p.png -q:v 3 marketing/publicar/NN_tema.jpg`. Revísala con Read antes de mandarla.
 - *(Antes)* composición `Portada` (`video/src/Checa/Portada.tsx`, props `titulo` con `|` para alternar color por línea, `sub`, `color`, `etiqueta`, `fondo` opcional). Render: `npx remotion still Portada out.png --props '{...}'` y pásala a JPG (`ffmpeg -q:v 3`). Guarda la portada junto a su video en `marketing/publicar/NN_fecha_tema.jpg`.
-- **Textos y calendario**: `marketing/calendario.md` (fecha, tipo y texto de cada publicación). Sigue la **fórmula** de arriba del calendario: gancho, 1–2 frases con palabras de búsqueda, pregunta, «Descarga CHECA» (venta, sin «7 días gratis») o «Guárdalo» (consejo) y 4–5 hashtags. No pegar el guion completo. Sin ciudad ni país, sin #ubermexico, sin «link en el perfil» (no hay link en la bio de TikTok). Agrega el de cada video nuevo.
+- **Textos y calendario**: `marketing/calendario.md` (fecha, tipo y texto de cada publicación). Sigue la **fórmula** de arriba del calendario: gancho, 1–2 frases con palabras de búsqueda, pregunta, «Comenta CHECA y te mando la app» (venta, sin «7 días gratis»; Eduardo la manda por DM) o «Guárdalo» (consejo) y 4–5 hashtags. No pegar el guion completo. Sin ciudad ni país, sin #ubermexico, sin «link en el perfil» (no hay link en la bio de TikTok). Agrega el de cada video nuevo.
 
 ### Videos con clips de Eduardo (él a cuadro)
 Cuando Eduardo mande sus propios clips para unir (p. ej. la campaña de beta testers, `marketing/publicar/01_2026-10-14_beta-testers.mp4`, código `video/src/Checa/Beta.tsx`):
@@ -158,7 +158,7 @@ Después de varias pruebas, Eduardo aprobó este estilo y **le gustan las 8 vist
 - **Capas en pantalla (estilo @pixelmente):** etiquetas cortas en MAYÚSCULAS dentro de **recuadros neón** con letra pixel **Silkscreen** (`OFERTA · $80`, `8 KM · PAGADOS`, `6 KM · SIN PAGO`), apiladas arriba sobre una franja oscura; **número gigante** en Silkscreen negrita que cuenta o se **tacha** (amarillo → magenta); **subtítulos** abajo (y≈1500) blancos en Inter negrita con **la palabra clave en amarillo**.
 - **Colores con significado:** magenta = lo malo, lo que no te pagan, el número que duele; cian = lo que sí te pagan o la solución; amarillo = dinero, la oferta y la palabra clave. Verde/amarillo/rojo de semáforo solo dentro del pop-up de Checa.
 - **Pop-up de Checa idéntico a la app** (`Popup` con `exacto`) cuando sale el teléfono.
-- **Cierre:** fondo de atardecer + recuadro neón con la frase final + logo Checa (+ «Descarga Checa · Solo Android» y la pregunta en los videos completos).
+- **Cierre:** fondo de atardecer + recuadro neón con la frase final + logo Checa (+ «Comenta CHECA» y la pregunta en los videos completos).
 - Música calmada (`public/musica-calma.mp3`, volumen 0.14), efectos muy suaves; narrador Fernando Martínez a velocidad 1.0; volumen final −14 LUFS.
 
 ### Las 8 vistas (todas aprobadas)
@@ -194,7 +194,7 @@ Ejemplo de combinación para 40 s (solo ejemplo, no plantilla fija): 5 (gancho) 
 
 Preséntalo como tabla: segundos · 🎙️ voz · 🖥️ en pantalla · 🎥 vista (1–8). Agrega «La cuenta» con cada cifra, el color del pop-up si sale, los principios de psicología y 2 ganchos alternativos.
 
-Formato narrativo (de las referencias): escena cotidiana del conductor que intriga o contradice lo que cree → descartar la respuesta obvia → mecanismo con una imagen concreta y su número → giro («y lo que casi nadie se imagina…») → consejo concreto → cierre que regresa a él («en tu próxima oferta…») + llamada a descargar («Descarga Checa y checa cuánto te queda de cada viaje», sin «7 días gratis») + pregunta. **40 s**, 7–8 líneas de voz.
+Formato narrativo (de las referencias): escena cotidiana del conductor que intriga o contradice lo que cree → descartar la respuesta obvia → mecanismo con una imagen concreta y su número → giro («y lo que casi nadie se imagina…») → consejo concreto → cierre que regresa a él («en tu próxima oferta…») + llamada a comentar («Comenta Checa y te mando la app, para que checes cuánto te queda de cada viaje», sin «7 días gratis») + pregunta. **40 s**, 7–8 líneas de voz.
 
 Reglas:
 - Narrador que le habla al conductor de **tú**. Nada de «yo».

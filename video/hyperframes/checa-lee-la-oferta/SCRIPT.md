@@ -64,4 +64,4 @@
 
 **Delivery:** natural, ritmo de TikTok.
 
-    Descarga Checa y checa cuánto te queda de cada viaje.
+    Comenta Checa y te mando la app, para que checes cuánto te queda de cada viaje.

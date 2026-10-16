@@ -1,6 +1,6 @@
 ---
 format: 1080x1920
-duration: 45s
+duration: 47s
 message: "Checa lee la oferta por ti y te dice cuánto te queda limpio, tú decides"
 audience: conductores de Uber y DiDi
 mode: autonomous
@@ -9,7 +9,7 @@ music: none
 
 ## Video direction
 
-Mismo diseño que checa-promo (`frame.md`): fondo negro, verde #22C55E, amarillo #FACC15, rojo #F43F5E, Fira Sans / Fira Code. Pop-up de `assets/checa-popup.html` sin rediseñar. «Números de ejemplo» donde haya cifras. Oferta genérica sin logos. Gancho en 0–3 s y un re-gancho en cada corte, marcado con un sonido. CTA sin «7 días gratis»: «Descarga Checa».
+Mismo diseño que checa-promo (`frame.md`): fondo negro, verde #22C55E, amarillo #FACC15, rojo #F43F5E, Fira Sans / Fira Code. Pop-up de `assets/checa-popup.html` sin rediseñar. «Números de ejemplo» donde haya cifras. Oferta genérica sin logos. Gancho en 0–3 s y un re-gancho en cada corte, marcado con un sonido. CTA sin «7 días gratis»: «Comenta CHECA» (Eduardo manda la app por DM) con cuentas y link al final.
 
 ## Frame 1 — Gancho
 
@@ -112,11 +112,11 @@ Objeción resuelta: un dedo toca «Aceptar» en la oferta; el pop-up de Checa so
 
 ## Frame 10 — CTA
 
-- duration: 4.239s
-- voiceover: "Descarga Checa y checa cuánto te queda de cada viaje."
+- duration: 6.441s
+- voiceover: "Comenta Checa y te mando la app, para que checes cuánto te queda de cada viaje."
 - transition_in: crossfade
 - status: animated
 - src: compositions/frames/10-cta.html
 - sfx: chime
 
-Logo semáforo que se arma, «checa» y pastilla «Descarga CHECA · solo Android». Recurso: transformar (el logo se arma desde las 3 luces).
+Logo semáforo que se arma, «checa», pastilla «Comenta CHECA», cuentas de TikTok (@checa.driver y @Eduardoalv9802) y el link de la web. Recurso: transformar (el logo se arma desde las 3 luces).

@@ -5,7 +5,7 @@ import json, re
 m = json.load(open("audio_meta.json"))
 V = {v["frame"]: v for v in m["voices"]}
 N = len(V)
-PAD, PAD_FIN = 0.15, 1.0
+PAD, PAD_FIN = 0.15, 2.0
 LEAD = 0.25  # las entradas se adelantan a la palabra para que se vean completas cuando la voz la dice
 
 
@@ -425,7 +425,7 @@ F["09-decides"] = frame(9, c, popcss(c) + """
     + to("#§-stage", {"scale": 1.08, "transformOrigin": "560px 1250px", "duration": 0.5, "ease": "power2.inOut"}, t(9, "viajes"))
     + to("#§-stage", {"scale": 1.0, "transformOrigin": "540px 650px", "duration": 0.6, "ease": "power2.inOut"}, t(9, "solo")))
 
-# 10 — CTA: Descarga Checa y checa cuánto te queda de cada viaje.
+# 10 — CTA: Comenta Checa y te mando la app, para que checes cuánto te queda de cada viaje.
 c = "f10-cta"
 LOGO = """<svg id="§-mark" viewBox="0 0 22 38" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <defs><filter id="§-gb" x="-150%" y="-150%" width="400%" height="400%"><feGaussianBlur stdDeviation="2.4" /></filter></defs>
@@ -436,25 +436,33 @@ LOGO = """<svg id="§-mark" viewBox="0 0 22 38" xmlns="http://www.w3.org/2000/sv
           <circle id="§-green" cx="11" cy="28.5" r="4.2" fill="#22C55E" />
         </svg>"""
 F["10-cta"] = frame(10, c, """
-    #§-bloom { position: absolute; left: -10px; top: 60px; width: 1100px; height: 1100px; border-radius: 50%; background: radial-gradient(circle at 50% 50%, rgba(34,197,94,0.42) 0%, rgba(34,197,94,0.16) 34%, rgba(34,197,94,0) 68%); }
-    #§-lock { position: absolute; left: 103px; top: 300px; width: 874px; height: 397px; }
+    #§-bloom { position: absolute; left: -10px; top: 20px; width: 1100px; height: 1100px; border-radius: 50%; background: radial-gradient(circle at 50% 50%, rgba(34,197,94,0.42) 0%, rgba(34,197,94,0.16) 34%, rgba(34,197,94,0) 68%); }
+    #§-lock { position: absolute; left: 103px; top: 150px; width: 874px; height: 397px; }
     #§-mark { position: absolute; left: 0; top: 0; width: 230px; height: 397px; z-index: 2; overflow: visible; }
     #§-wm { position: absolute; left: 274px; top: 0; width: 600px; height: 397px; overflow: hidden; z-index: 1; }
     #§-word { position: absolute; left: 0; top: 78px; font-size: 220px; line-height: 1; font-weight: 700; letter-spacing: -0.03em; color: #FFFFFF; white-space: nowrap; }
-    #§-pill { position: absolute; left: 0; right: 0; top: 820px; margin: 0 auto; width: 860px; height: 130px; border-radius: 65px; background: #22C55E; display: flex; align-items: center; justify-content: center; gap: 22px; font-size: 62px; font-weight: 700; letter-spacing: -0.01em; color: #000; white-space: nowrap; }
+    #§-pill { position: absolute; left: 0; right: 0; top: 620px; margin: 0 auto; width: 860px; height: 130px; border-radius: 65px; background: #22C55E; display: flex; align-items: center; justify-content: center; gap: 22px; font-size: 62px; font-weight: 700; letter-spacing: -0.01em; color: #000; white-space: nowrap; }
     #§-pill b { font-family: 'Fira Code', monospace; }
-    #§-sub { position: absolute; left: 0; right: 0; top: 1010px; text-align: center; font-size: 56px; font-weight: 600; color: #F1F5F2; line-height: 1.25; }
+    #§-sub { position: absolute; left: 0; right: 0; top: 790px; text-align: center; font-size: 54px; font-weight: 600; color: #F1F5F2; }
     #§-sub em { font-style: normal; color: #22C55E; }
-    #§-and { position: absolute; left: 0; right: 0; top: 1220px; text-align: center; font-family: 'Fira Code', monospace; font-weight: 500; font-size: 32px; letter-spacing: .16em; text-transform: uppercase; color: #8A938E; }
+    .§-row { position: absolute; left: 0; right: 0; text-align: center; }
+    .§-row .l { font-family: 'Fira Code', monospace; font-weight: 500; font-size: 28px; letter-spacing: .16em; text-transform: uppercase; color: #8A938E; }
+    .§-row .h { font-weight: 800; letter-spacing: -.02em; color: #F1F5F2; margin-top: 8px; line-height: 1.05; }
+    .§-row .h i { font-style: normal; color: #22C55E; }
+    #§-rA { top: 930px; } #§-rA .h { font-size: 84px; }
+    #§-rB { top: 1110px; } #§-rB .h { font-size: 64px; }
+    #§-rC { top: 1270px; } #§-rC .h { font-family: 'Fira Code', monospace; font-weight: 700; font-size: 40px; letter-spacing: 0; color: #22C55E; }
     #§-black { position: absolute; inset: 0; background: #000; opacity: 0; }
 """, f"""      <div id="§-bloom"></div>
       <div id="§-lock">
         <div id="§-wm"><div id="§-word">checa</div></div>
         {LOGO}
       </div>
-      <div id="§-pill"><span id="§-w1">Descarga</span><b id="§-w2">CHECA</b></div>
-      <div id="§-sub"><span id="§-s1">y <em>checa</em> cuánto te queda</span><br><span id="§-s2">de cada viaje</span></div>
-      <div id="§-and">solo Android</div>
+      <div id="§-pill"><span id="§-w1">Comenta</span><b id="§-w2">CHECA</b></div>
+      <div id="§-sub"><span id="§-s1">y te mando la <em>app</em></span></div>
+      <div id="§-rA" class="§-row"><div class="l">síguenos en tiktok</div><div class="h"><i>@</i>checa.driver</div></div>
+      <div id="§-rB" class="§-row"><div class="l">creador de checa</div><div class="h"><i>@</i>Eduardoalv9802</div></div>
+      <div id="§-rC" class="§-row"><div class="l">descarga en la web · solo Android</div><div class="h">jeal1498.github.io/checa-web</div></div>
       <div id="§-black"></div>""",
     """      var body = document.getElementById("§-body"); var len = body.getTotalLength() * 1.05; body.style.strokeDasharray = String(len);
 """
@@ -466,14 +474,15 @@ F["10-cta"] = frame(10, c, """
     + ft("#§-glow", {"opacity": 0}, {"opacity": 0.7, "duration": 0.3}, 0.4)
     + ft("#§-mark", {"x": 322}, {"x": 0, "duration": 0.45, "ease": "power3.inOut"}, 0.35)
     + ft("#§-word", {"x": -620}, {"x": 0, "duration": 0.45, "ease": "power3.inOut"}, 0.35)
-    + ft("#§-pill", {"y": 90, "opacity": 0, "scale": 0.92}, {"y": 0, "opacity": 1, "scale": 1, "duration": 0.4, "ease": "power3.out"}, 0.15)
-    + ft("#§-w1", {"y": 30, "opacity": 0}, {"y": 0, "opacity": 1, "duration": 0.3, "ease": "power3.out"}, 0.2)
+    + ft("#§-pill", {"y": 90, "opacity": 0, "scale": 0.92}, {"y": 0, "opacity": 1, "scale": 1, "duration": 0.4, "ease": "power3.out"}, 0.1)
+    + ft("#§-w1", {"y": 30, "opacity": 0}, {"y": 0, "opacity": 1, "duration": 0.3, "ease": "power3.out"}, 0.15)
     + ft("#§-w2", {"y": 30, "opacity": 0}, {"y": 0, "opacity": 1, "duration": 0.3, "ease": "power3.out"}, t(10, "checa"))
     + to("#§-w2", {"scale": 1.12, "duration": 0.14, "ease": "power2.out"}, round(t(10, "checa") + 0.2, 3))
     + to("#§-w2", {"scale": 1, "duration": 0.25, "ease": "power2.inOut"}, round(t(10, "checa") + 0.35, 3))
-    + ft("#§-s1", {"y": 30, "opacity": 0}, {"y": 0, "opacity": 1, "duration": 0.3, "ease": "power3.out"}, t(10, "checa", 1))
-    + ft("#§-s2", {"y": 30, "opacity": 0}, {"y": 0, "opacity": 1, "duration": 0.3, "ease": "power3.out"}, te(10, "de"))
-    + ft("#§-and", {"opacity": 0}, {"opacity": 1, "duration": 0.3}, t(10, "viaje"))
+    + ft("#§-s1", {"y": 30, "opacity": 0}, {"y": 0, "opacity": 1, "duration": 0.3, "ease": "power3.out"}, te(10, "y"))
+    + ft("#§-rA", {"y": 40, "opacity": 0}, {"y": 0, "opacity": 1, "duration": 0.35, "ease": "power3.out"}, t(10, "para"))
+    + ft("#§-rB", {"y": 40, "opacity": 0}, {"y": 0, "opacity": 1, "duration": 0.35, "ease": "power3.out"}, t(10, "cuánto"))
+    + ft("#§-rC", {"y": 40, "opacity": 0}, {"y": 0, "opacity": 1, "duration": 0.35, "ease": "power3.out"}, t(10, "queda"))
     + '      tl.fromTo("#§-black", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.in" }, D - 0.4);\n')
 
 for k, html in F.items():
