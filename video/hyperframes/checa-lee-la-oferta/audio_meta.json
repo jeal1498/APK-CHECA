@@ -1,0 +1,22 @@
+{
+  "bgm": {
+    "path": "assets/audio/bgm.mp3",
+    "source": "host"
+  },
+  "bgm_pending": false,
+  "voices": [
+    {
+      "frame": 2,
+      "path": "assets/voice/02.wav",
+      "duration_s": 4.441,
+      "words": []
+    },
+    {
+      "frame": 5,
+      "path": "assets/voice/05.wav",
+      "duration_s": 4.598,
+      "words": []
+    }
+  ],
+  "sfx": []
+}
