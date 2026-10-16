@@ -4,7 +4,7 @@ import json, os, subprocess
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__) or ".", "..", "..", ".."))
 EL = os.path.join(ROOT, "video", "scripts", "elevenlabs.py")
 LINES = [l.strip() for l in open("SCRIPT.md", encoding="utf-8") if l.startswith("    ")]
-PAD, PAD_FIN, LEAD = 0.15, 1.0, 0.25
+PAD, PAD_FIN, LEAD = 0.15, 2.0, 0.25
 os.makedirs("assets/voice", exist_ok=True)
 V = []
 for n, txt in enumerate(LINES, 1):
@@ -41,18 +41,19 @@ SFX = [  # (frame, archivo, segundo dentro de la escena, volumen)
     (8, "glitch-1", at(8, "cierran"), .3), (8, "impact-bass-1", at(8, "orilla"), .4),
     (9, "whoosh-short", at(9, "vale"), .3), (9, "chime", at(9, "casa", 0, -0.1), .4),
     (10, "pop", 0.0, .35), (10, "sparkle", at(10, "sígueme"), .4),
+    (11, "pop", 0.0, .3), (11, "chime", at(11, "checa", 0, -0.1), .4), (11, "sparkle", at(11, "queda", 0, -0.1), .3),
 ]
 def fdur(f):
     return round(float(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", f"assets/sfx/{f}.mp3"]).strip()), 2)
 meta = {"bgm": {"path": "assets/audio/bgm.mp3", "source": "host", "volume": 0.12}, "voices": V,
         "sfx": [{"frame": n, "file": f"assets/sfx/{f}.mp3", "offset_s": o, "duration_s": fdur(f), "volume": vol} for n, f, o, vol in SFX]}
 json.dump(meta, open("audio_meta.json", "w"), ensure_ascii=False, indent=2)
-TRANS = {1: "cut", 2: "crossfade", 3: "crossfade", 4: "cut", 5: "cut", 6: "cut", 7: "cut", 8: "cut", 9: "crossfade", 10: "crossfade"}
-NOM = {1: "Seis de la tarde", 2: "Servicio", 3: "Cuatro hábitos", 4: "Uno · caminar", 5: "Dos · agua", 6: "Tres · respaldo", 7: "Cuatro", 8: "Orilla y descansa", 9: "A casa", 10: "Cierre"}
-tecnica = {1: "Hook Inicial", 2: "Micro-hook (contraste)", 3: "Open Loop", 4: "Re-enganche visual", 5: "Giro", 6: "Cambio de ritmo", 7: "Pausa dramática", 8: "Payoff + re-enganche", 9: "Giro emocional", 10: "CTA + loop"}
+TRANS = {1: "cut", 2: "crossfade", 3: "crossfade", 4: "cut", 5: "cut", 6: "cut", 7: "cut", 8: "cut", 9: "crossfade", 10: "crossfade", 11: "crossfade"}
+NOM = {1: "Seis de la tarde", 2: "Servicio", 3: "Cuatro hábitos", 4: "Uno · caminar", 5: "Dos · agua", 6: "Tres · respaldo", 7: "Cuatro", 8: "Orilla y descansa", 9: "A casa", 10: "Sígueme", 11: "Cierre estándar"}
+tecnica = {1: "Hook Inicial", 2: "Micro-hook (contraste)", 3: "Open Loop", 4: "Re-enganche visual", 5: "Giro", 6: "Cambio de ritmo", 7: "Pausa dramática", 8: "Payoff + re-enganche", 9: "Giro emocional", 10: "CTA específico", 11: "CTA estándar"}
 D = {n: round(V[n - 1]["duration_s"] + (PAD_FIN if n == len(V) else PAD), 3) for n in range(1, len(V) + 1)}
 tot = round(sum(D.values()), 2)
-nom = {f"{n:02d}": f"{n:02d}-{k}" for n, k in {1: "tarde", 2: "servicio", 3: "habitos", 4: "uno", 5: "dos", 6: "tres", 7: "cuatro", 8: "orilla", 9: "casa", 10: "cierre"}.items()}
+nom = {f"{n:02d}": f"{n:02d}-{k}" for n, k in {1: "tarde", 2: "servicio", 3: "habitos", 4: "uno", 5: "dos", 6: "tres", 7: "cuatro", 8: "orilla", 9: "casa", 10: "sigueme", 11: "cierre"}.items()}
 sb = f"""---
 format: 1080x1920
 duration: {tot}s

@@ -1,6 +1,6 @@
 ---
 format: 1080x1920
-duration: 33.97s
+duration: 38.38s
 message: "Cuatro hábitos para aguantar el turno sin acabar con la espalda"
 audience: conductores de Uber y DiDi (cuenta personal de Eduardo)
 mode: autonomous
@@ -110,14 +110,25 @@ Estilo Checa (negro OLED, verde #22C55E, amarillo #FACC15, rojo #F43F5E, Fira Sa
 
 [Giro emocional]
 
-## Frame 10 — Cierre
+## Frame 10 — Sígueme
 
-- duration: 3.833s
+- duration: 2.983s
 - voiceover: "Mándaselo a quien maneja de más. Sígueme para más."
 - transition_in: crossfade
 - status: animated
-- src: compositions/frames/10-cierre.html
+- src: compositions/frames/10-sigueme.html
 - sfx: pop, sparkle
 
-[CTA + loop]
+[CTA específico]
+
+## Frame 11 — Cierre estándar
+
+- duration: 5.251s
+- voiceover: "Descarga Checa y checa cuánto te queda de cada viaje."
+- transition_in: crossfade
+- status: animated
+- src: compositions/frames/11-cierre.html
+- sfx: chime, pop, sparkle
+
+[CTA estándar]
 

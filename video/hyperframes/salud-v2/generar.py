@@ -3,7 +3,7 @@ import json, re
 
 m = json.load(open("audio_meta.json"))
 V = {v["frame"]: v for v in m["voices"]}
-PAD, PAD_FIN = 0.15, 1.0
+PAD, PAD_FIN = 0.15, 2.0
 LEAD = 0.25
 N = len(V)
 
@@ -341,33 +341,82 @@ F["09-casa"] = frame(9, "f09-casa", """
 
 # 10 — Mándaselo a quien maneja de más. Sígueme para más.
 PLANE = '<svg viewBox="0 0 24 24" width="260" height="260" fill="none" stroke="#22C55E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>'
-F["10-cierre"] = frame(10, "f10-cierre", """
+F["10-sigueme"] = frame(10, "f10-sigueme", """
     #§-pl { position: absolute; left: 410px; top: 220px; width: 260px; height: 260px; }
     #§-l1 { top: 540px; height: 170px; } #§-l1 > div { font-size: 150px; color: #F1F5F2; }
     #§-l2 { top: 700px; height: 130px; } #§-l2 > div { font-size: 100px; color: #AFB7B2; }
     #§-l3 { top: 810px; height: 190px; } #§-l3 > div { font-size: 170px; color: #FACC15; }
     #§-pill { position: absolute; left: 190px; top: 1120px; width: 700px; height: 150px; border-radius: 75px; background: #22C55E; color: #04120A; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 74px; letter-spacing: -.01em; }
-    #§-end { position: absolute; inset: 0; opacity: 0; background: #000; }
-    #§-pm { top: 170px; height: 290px; opacity: 0; } #§-pm > div { font-family: 'Fira Code', monospace; font-weight: 700; font-size: 250px; text-transform: none; letter-spacing: -.05em; word-spacing: -.3em; color: #FACC15; }
-""" + SPINE_CSS, """      <div id="§-pl">""" + PLANE + """</div>
+""", """      <div id="§-pl">""" + PLANE + """</div>
       <div id="§-l1" class="P-mask"><div>mándaselo</div></div>
       <div id="§-l2" class="P-mask"><div>a quien maneja</div></div>
       <div id="§-l3" class="P-mask"><div>de más</div></div>
-      <div id="§-pill">+ Seguir</div>
-      <div id="§-end"></div>
-      <div id="§-pm" class="P-mask"><div>6 PM</div></div>
-""" + SPINE_HTML,
+      <div id="§-pill">+ Seguir</div>""",
     FT("#§-pl", {"x": -300, "y": 300, "rotation": -40, "opacity": 0}, {"x": 0, "y": 0, "rotation": 0, "opacity": 1, "duration": 0.5, "ease": "power3.out"}, 0.0)
     + mask("#§-l1 > div", 0.05, 0.35)
     + mask("#§-l2 > div", t(10, "quien", 0, -0.15), 0.3)
     + mask("#§-l3 > div", t(10, "de", 0, -0.15), 0.4)
     + FT("#§-pill", {"scale": 0, "rotation": -6}, {"scale": 1, "rotation": 0, "duration": 0.4, "ease": "back.out(2)"}, t(10, "sígueme", 0, -0.2))
-    + TO("#§-pill", {"scale": 1.06, "duration": 0.2, "repeat": 1, "yoyo": True}, round(tend(10, "para") + 0.1, 3))
-    + "".join(SET(f"#§-v{i}", {"backgroundColor": GREEN, "opacity": 0}, 0) for i in range(8))
-    + TO("#§-end", {"opacity": 1, "duration": 0.3, "ease": "power2.in"}, round(V[10]["duration_s"] - 0.05, 3))
-    + mask("#§-pm > div", round(V[10]["duration_s"] + 0.1, 3), 0.3)
-    + TO("#§-pm", {"opacity": 1, "duration": 0.01}, round(V[10]["duration_s"] + 0.1, 3))
-    + FT("#§-v0,#§-v1,#§-v2,#§-v3,#§-v4,#§-v5,#§-v6,#§-v7", {"scaleX": 0.3, "opacity": 0}, {"scaleX": 1, "opacity": 1, "duration": 0.3, "stagger": 0.04, "ease": "back.out(1.6)"}, round(V[10]["duration_s"] + 0.05, 3)))
+    + TO("#§-pill", {"scale": 1.06, "duration": 0.2, "repeat": 1, "yoyo": True}, round(tend(10, "para") + 0.1, 3)))
+
+# 11 — Cierre estándar: Descarga Checa y checa cuánto te queda de cada viaje.
+LOGO = """<svg id="§-mark" viewBox="0 0 22 38" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs><filter id="§-gb" x="-150%" y="-150%" width="400%" height="400%"><feGaussianBlur stdDeviation="2.4" /></filter></defs>
+          <path id="§-body" d="M 7 1 L 15 1 Q 21 1 21 7 L 21 31 Q 21 37 15 37 L 7 37 Q 1 37 1 31 L 1 7 Q 1 1 7 1 Z" fill="#111413" fill-opacity="0" stroke="#AFB7B2" stroke-width="0.9" stroke-linejoin="round" />
+          <circle id="§-glow" cx="11" cy="28.5" r="6" fill="#22C55E" filter="url(#§-gb)" opacity="0" />
+          <circle id="§-red" cx="11" cy="9.5" r="4.2" fill="#F43F5E" />
+          <circle id="§-yellow" cx="11" cy="19" r="4.2" fill="#FACC15" />
+          <circle id="§-green" cx="11" cy="28.5" r="4.2" fill="#22C55E" />
+        </svg>"""
+F["11-cierre"] = frame(11, "f11-cierre", """
+    #§-bloom { position: absolute; left: -10px; top: 20px; width: 1100px; height: 1100px; border-radius: 50%; background: radial-gradient(circle at 50% 50%, rgba(34,197,94,0.42) 0%, rgba(34,197,94,0.16) 34%, rgba(34,197,94,0) 68%); }
+    #§-lock { position: absolute; left: 103px; top: 150px; width: 874px; height: 397px; }
+    #§-mark { position: absolute; left: 0; top: 0; width: 230px; height: 397px; z-index: 2; overflow: visible; }
+    #§-wm { position: absolute; left: 274px; top: 0; width: 600px; height: 397px; overflow: hidden; z-index: 1; }
+    #§-word { position: absolute; left: 0; top: 78px; font-size: 220px; line-height: 1; font-weight: 700; letter-spacing: -0.03em; color: #FFFFFF; white-space: nowrap; }
+    #§-pill { position: absolute; left: 0; right: 0; top: 620px; margin: 0 auto; width: 860px; height: 130px; border-radius: 65px; background: #22C55E; display: flex; align-items: center; justify-content: center; gap: 22px; font-size: 62px; font-weight: 700; letter-spacing: -0.01em; color: #000; white-space: nowrap; }
+    #§-pill b { font-family: 'Fira Code', monospace; }
+    #§-sub { position: absolute; left: 0; right: 0; top: 790px; text-align: center; font-size: 54px; font-weight: 600; color: #F1F5F2; }
+    #§-sub em { font-style: normal; color: #22C55E; }
+    .§-row { position: absolute; left: 0; right: 0; text-align: center; }
+    .§-row .l { font-family: 'Fira Code', monospace; font-weight: 500; font-size: 28px; letter-spacing: .16em; text-transform: uppercase; color: #8A938E; }
+    .§-row .h { font-weight: 800; letter-spacing: -.02em; color: #F1F5F2; margin-top: 8px; line-height: 1.05; }
+    .§-row .h i { font-style: normal; color: #22C55E; }
+    #§-rA { top: 930px; } #§-rA .h { font-size: 84px; }
+    #§-rB { top: 1110px; } #§-rB .h { font-size: 64px; }
+    #§-rC { top: 1270px; } #§-rC .h { font-family: 'Fira Code', monospace; font-weight: 700; font-size: 40px; letter-spacing: 0; color: #22C55E; }
+    #§-black { position: absolute; inset: 0; background: #000; opacity: 0; }
+""", f"""      <div id="§-bloom"></div>
+      <div id="§-lock">
+        <div id="§-wm"><div id="§-word">checa</div></div>
+        {LOGO}
+      </div>
+      <div id="§-pill"><span id="§-w1">Descarga</span><b id="§-w2">CHECA</b></div>
+      <div id="§-sub"><span id="§-s1">y checa cuánto te <em>queda</em></span></div>
+      <div id="§-rA" class="§-row"><div class="l">síguenos en tiktok</div><div class="h"><i>@</i>checa.driver</div></div>
+      <div id="§-rB" class="§-row"><div class="l">creador de checa</div><div class="h"><i>@</i>Eduardoalv9802</div></div>
+      <div id="§-rC" class="§-row"><div class="l">descarga en la web · solo Android</div><div class="h">jeal1498.github.io/checa-web</div></div>
+      <div id="§-black"></div>""",
+    """      var body = document.getElementById("§-body"); var len = body.getTotalLength() * 1.05; body.style.strokeDasharray = String(len);
+"""
+    + FT("#§-bloom", {"opacity": 0, "scale": 0.7}, {"opacity": 0.8, "scale": 1, "duration": 0.6, "ease": "power2.out"}, 0)
+    + '      tl.fromTo(body, { strokeDashoffset: len }, { strokeDashoffset: 0, duration: 0.3, ease: "power2.out" }, 0);\n'
+    + '      tl.to(body, { attr: { "fill-opacity": 1 }, duration: 0.2, ease: "power1.out" }, 0.2);\n'
+    + "".join(FT(f"#§-{k}", {"scale": 0, "opacity": 0, "transformOrigin": "50% 50%"}, {"scale": 1, "opacity": 1, "duration": 0.25, "ease": "back.out(2)"}, at)
+              for k, at in [("red", 0.12), ("yellow", 0.2), ("green", 0.28)])
+    + FT("#§-glow", {"opacity": 0}, {"opacity": 0.7, "duration": 0.3}, 0.4)
+    + FT("#§-mark", {"x": 322}, {"x": 0, "duration": 0.45, "ease": "power3.inOut"}, 0.35)
+    + FT("#§-word", {"x": -620}, {"x": 0, "duration": 0.45, "ease": "power3.inOut"}, 0.35)
+    + FT("#§-pill", {"y": 90, "opacity": 0, "scale": 0.92}, {"y": 0, "opacity": 1, "scale": 1, "duration": 0.4, "ease": "power3.out"}, 0.1)
+    + FT("#§-w1", {"y": 30, "opacity": 0}, {"y": 0, "opacity": 1, "duration": 0.3, "ease": "power3.out"}, 0.15)
+    + FT("#§-w2", {"y": 30, "opacity": 0}, {"y": 0, "opacity": 1, "duration": 0.3, "ease": "power3.out"}, t(11, "checa"))
+    + TO("#§-w2", {"scale": 1.12, "duration": 0.14, "ease": "power2.out"}, round(t(11, "checa") + 0.2, 3))
+    + TO("#§-w2", {"scale": 1, "duration": 0.25, "ease": "power2.inOut"}, round(t(11, "checa") + 0.35, 3))
+    + FT("#§-s1", {"y": 30, "opacity": 0}, {"y": 0, "opacity": 1, "duration": 0.3, "ease": "power3.out"}, tend(11, "checa", 0))
+    + FT("#§-rA", {"y": 40, "opacity": 0}, {"y": 0, "opacity": 1, "duration": 0.35, "ease": "power3.out"}, t(11, "cuánto"))
+    + FT("#§-rB", {"y": 40, "opacity": 0}, {"y": 0, "opacity": 1, "duration": 0.35, "ease": "power3.out"}, t(11, "queda"))
+    + FT("#§-rC", {"y": 40, "opacity": 0}, {"y": 0, "opacity": 1, "duration": 0.35, "ease": "power3.out"}, t(11, "viaje"))
+    + '      tl.fromTo("#§-black", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.in" }, D - 0.4);\n')
 
 for k, html in F.items():
     old = re.search(r'data-composition-id="([^"]+)"', html).group(1)

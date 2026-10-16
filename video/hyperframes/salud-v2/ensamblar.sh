@@ -9,7 +9,7 @@ node $S/captions.mjs build --storyboard ./STORYBOARD.md --audio-meta ./audio_met
 python3 -I - <<'PY'
 import json, re
 g = json.load(open('caption_groups.json')); groups = g if isinstance(g, list) else g.get('groups', g)
-tot = round(sum(v['duration_s'] for v in json.load(open('audio_meta.json'))['voices']) + 0.15 * 9 + 1.0, 2)
+tot = float(re.search(r'(?m)^duration: ([0-9.]+)s', open('STORYBOARD.md', encoding='utf-8').read()).group(1))
 tpl = open('estilo-captions.txt', encoding='utf-8').read()
 new = re.sub(r'var GROUPS = \[.*?\];\n', lambda m: 'var GROUPS = ' + json.dumps(groups, ensure_ascii=False, separators=(',', ':')) + ';\n', tpl, count=1, flags=re.S).replace('40.607', str(tot))
 open('compositions/captions.html', 'w', encoding='utf-8').write(new)

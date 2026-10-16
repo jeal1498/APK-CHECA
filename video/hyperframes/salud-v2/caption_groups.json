@@ -1,5 +1,5 @@
 {
-  "total_duration_s": 33.974,
+  "total_duration_s": 38.375,
   "width": 1080,
   "height": 1920,
   "groups": [
@@ -1062,6 +1062,102 @@
           "text": "más.",
           "start": 32.544,
           "end": 32.974
+        }
+      ]
+    },
+    {
+      "id": "caption-group-50",
+      "frame": 11,
+      "start": 33.124,
+      "end": 34.273,
+      "text": "Descarga Checa y",
+      "words": [
+        {
+          "id": "caption-word-50-0",
+          "text": "Descarga",
+          "start": 33.124,
+          "end": 33.67
+        },
+        {
+          "id": "caption-word-50-1",
+          "text": "Checa",
+          "start": 33.716,
+          "end": 34.053
+        },
+        {
+          "id": "caption-word-50-2",
+          "text": "y",
+          "start": 34.122,
+          "end": 34.181
+        }
+      ]
+    },
+    {
+      "id": "caption-group-51",
+      "frame": 11,
+      "start": 34.273,
+      "end": 34.877,
+      "text": "checa cuánto",
+      "words": [
+        {
+          "id": "caption-word-51-0",
+          "text": "checa",
+          "start": 34.273,
+          "end": 34.506
+        },
+        {
+          "id": "caption-word-51-1",
+          "text": "cuánto",
+          "start": 34.552,
+          "end": 34.819
+        }
+      ]
+    },
+    {
+      "id": "caption-group-52",
+      "frame": 11,
+      "start": 34.877,
+      "end": 35.272,
+      "text": "te queda",
+      "words": [
+        {
+          "id": "caption-word-52-0",
+          "text": "te",
+          "start": 34.877,
+          "end": 34.947
+        },
+        {
+          "id": "caption-word-52-1",
+          "text": "queda",
+          "start": 34.993,
+          "end": 35.214
+        }
+      ]
+    },
+    {
+      "id": "caption-group-53",
+      "frame": 11,
+      "start": 35.272,
+      "end": 36.495,
+      "text": "de cada viaje.",
+      "words": [
+        {
+          "id": "caption-word-53-0",
+          "text": "de",
+          "start": 35.272,
+          "end": 35.33
+        },
+        {
+          "id": "caption-word-53-1",
+          "text": "cada",
+          "start": 35.4,
+          "end": 35.655
+        },
+        {
+          "id": "caption-word-53-2",
+          "text": "viaje.",
+          "start": 35.701,
+          "end": 36.375
         }
       ]
     }
