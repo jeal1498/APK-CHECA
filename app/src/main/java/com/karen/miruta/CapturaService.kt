@@ -43,6 +43,7 @@ class CapturaService : Service() {
     private lateinit var prefs: Prefs
     @Volatile private var procesando = false
     private var ultimaCaptura = 0
+    private var ultimaGuardada = 0
     private var capAncho = 0
     private var capAlto = 0
     private var divididaHasta = 0L
@@ -84,7 +85,7 @@ class CapturaService : Service() {
         ocr = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
 
         p.registerCallback(object : MediaProjection.Callback() {
-            override fun onStop() { detener() }
+            override fun onStop() { detener(avisar = true) }
         }, handler)
 
         val dm = medidasReales()
@@ -98,6 +99,7 @@ class CapturaService : Service() {
             r.surface, null, handler
         )
         corriendo = true
+        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(ID_AVISO)
         handler?.postDelayed(ciclo, INTERVALO_MS)
         return START_NOT_STICKY
     }
@@ -239,7 +241,13 @@ class CapturaService : Service() {
                 prefs.guardarCaptura("[${app ?: "pantalla"} · lectura de pantalla]\n" + lineas.joinToString("\n"))
             }
         }
-        val oferta = Parser.analizar(lineas) ?: return
+        val oferta = Parser.analizar(lineas)
+        if (lineas.any { it.contains("min", ignoreCase = true) } && lineas.hashCode() != ultimaGuardada) {
+            ultimaGuardada = lineas.hashCode()
+            prefs.ultimaLectura = "[${app ?: "pantalla"}]\n" + lineas.take(40).joinToString("\n") + "\n\nCheca entendió: " +
+                (oferta?.let { "tarifa \$${it.tarifa}, ${it.km} km, ${it.min} min" } ?: "nada (no reconoció la oferta)")
+        }
+        if (oferta == null) return
         val servicio = RutaService.instancia ?: return
         if (app != null) servicio.mostrarOferta(oferta, app, zona) else servicio.mostrarOferta(oferta)
     }
@@ -271,7 +279,31 @@ class CapturaService : Service() {
         }
     }
 
-    private fun detener() {
+    /** Avisa que la lectura se cortó sola (no la detuvo el usuario) para que la reactive. */
+    private fun avisarDetenida() {
+        try {
+            val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            nm.createNotificationChannel(
+                NotificationChannel(CANAL_AVISO, "Avisos de Checa", NotificationManager.IMPORTANCE_HIGH)
+            )
+            val abrirPi = PendingIntent.getActivity(
+                this, 3, Intent(this, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE
+            )
+            nm.notify(
+                ID_AVISO,
+                Notification.Builder(this, CANAL_AVISO)
+                    .setContentTitle("Checa dejó de leer")
+                    .setContentText("Ya no verás pop-ups. Toca para volver a iniciar la lectura.")
+                    .setSmallIcon(R.drawable.ic_notif)
+                    .setContentIntent(abrirPi)
+                    .setAutoCancel(true)
+                    .build()
+            )
+        } catch (_: Exception) { }
+    }
+
+    private fun detener(avisar: Boolean = false) {
+        val estabaLeyendo = corriendo
         corriendo = false
         handler?.removeCallbacksAndMessages(null)
         try { display?.release() } catch (_: Exception) { }
@@ -287,6 +319,7 @@ class CapturaService : Service() {
         display = null
         lector = null
         stopForeground(STOP_FOREGROUND_REMOVE)
+        if (avisar && estabaLeyendo) avisarDetenida()
         stopSelf()
     }
 
@@ -301,6 +334,8 @@ class CapturaService : Service() {
         const val EXTRA_DATOS = "datos"
         const val ACCION_DETENER = "detener"
         private const val CANAL = "lectura"
+        private const val CANAL_AVISO = "avisos"
+        private const val ID_AVISO = 2
         private const val INTERVALO_MS = 1000L
         private val tramoTexto = Regex("""\d\s?min\s*\(""", RegexOption.IGNORE_CASE)
         private val soloMonto = Regex("""^\$\s?[\d,]+(?:\.\d{1,2})?$""")

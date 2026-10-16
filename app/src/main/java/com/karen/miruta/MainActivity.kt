@@ -1267,6 +1267,21 @@ class MainActivity : Activity() {
         pasos.addView(boton("Ver la guía de inicio", cTarjeta2, cTexto) { mostrarGuia() }, margenArriba(Tema.S2))
         col.addView(pasos, margenTarjeta())
 
+        // --- Ayuda ---
+        col.addView(etiqueta("AYUDA"))
+        val ayuda = tarjeta()
+        ayuda.addView(texto(
+            "Casi todo se resuelve aquí. Si no, escríbeme: respondo fuera de mis turnos.",
+            Tema.T_TEXTO, cTexto2, false
+        ).apply { setLineSpacing(0f, 1.2f) })
+        ayuda.addView(boton("Diagnóstico de problemas", cVerde, Color.BLACK) { mostrarDiagnostico() }, margenArriba(Tema.S2))
+        ayuda.addView(boton("Preguntas frecuentes", cTarjeta2, cTexto) { mostrarPreguntas() }, margenArriba(Tema.S1))
+        ayuda.addView(boton("Una oferta se leyó mal", cTarjeta2, cTexto) { reportarLecturaMala() }, margenArriba(Tema.S1))
+        ayuda.addView(boton("Escribir a soporte", cTarjeta2, cTexto) {
+            Soporte.escribir(this, "tengo una duda")
+        }, margenArriba(Tema.S1))
+        col.addView(ayuda, margenTarjeta())
+
         // --- Permisos ---
         col.addView(etiqueta("PERMISOS"))
         val perm = tarjeta()
@@ -1315,6 +1330,104 @@ class MainActivity : Activity() {
         ver.addView(botonBuscarAct, margenArriba(Tema.S2))
         col.addView(ver, margenTarjeta())
         return scroll(col).also { cuentaScroll = it }
+    }
+
+    // =====================================================================
+    // Ayuda: preguntas frecuentes, diagnóstico y soporte
+    // =====================================================================
+
+    private fun hacerAccion(a: Soporte.Accion) {
+        try {
+            when (a) {
+                Soporte.Accion.ACCESIBILIDAD -> abrirAccesibilidad()
+                Soporte.Accion.INFO_APP -> abrirInfoApp()
+                Soporte.Accion.BATERIA -> startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
+                Soporte.Accion.NOTIFICACIONES -> startActivity(
+                    Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+                )
+                Soporte.Accion.PAQUETES -> irAPaquetes()
+                Soporte.Accion.PAUSAR -> pausarLector()
+                Soporte.Accion.SOPORTE -> Soporte.escribir(this, "tengo una duda")
+                Soporte.Accion.NINGUNA -> {}
+            }
+        } catch (_: Exception) {
+            abrirInfoApp()
+        }
+    }
+
+    private fun mostrarPreguntas() {
+        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        Soporte.preguntas.forEach { p ->
+            val caja = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                background = redondo(cTarjeta, Tema.R_TARJETA)
+                setPadding(dp(Tema.S2), dp(12), dp(Tema.S2), dp(12))
+            }
+            val cabecera = texto("+  ${p.pregunta}", Tema.T_TEXTO, cTexto, true)
+            val respuesta = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; visibility = View.GONE }
+            respuesta.addView(texto(p.respuesta, Tema.T_TEXTO, cTexto2, false).apply { setLineSpacing(0f, 1.2f) })
+            if (p.accion != Soporte.Accion.NINGUNA) {
+                respuesta.addView(boton(p.accion.texto, cTarjeta2, cTexto) { hacerAccion(p.accion) }, margenArriba(Tema.S1))
+            }
+            caja.addView(cabecera)
+            caja.addView(respuesta, margenArriba(Tema.S1))
+            caja.setOnClickListener {
+                val abrir = respuesta.visibility != View.VISIBLE
+                respuesta.visibility = if (abrir) View.VISIBLE else View.GONE
+                cabecera.text = (if (abrir) "−  " else "+  ") + p.pregunta
+            }
+            cuerpo.addView(caja, margenTarjeta())
+        }
+        cuerpo.addView(boton("Escribir a soporte", cVerde, Color.BLACK) {
+            Soporte.escribir(this, "tengo una duda")
+        })
+        hoja("Preguntas frecuentes", null, cuerpo)
+    }
+
+    private fun mostrarDiagnostico() {
+        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        val revisiones = Soporte.diagnosticar(this)
+        val fallas = revisiones.count { !it.ok }
+        cuerpo.addView(texto(
+            if (fallas == 0) "Todo se ve bien. Si aun así no sale el pop-up, abre Uber o DiDi con una oferta en pantalla y escríbeme."
+            else if (fallas == 1) "Encontré 1 cosa por arreglar:" else "Encontré $fallas cosas por arreglar:",
+            Tema.T_TEXTO, if (fallas == 0) cVerde else cAmarillo, true
+        ).apply { setLineSpacing(0f, 1.2f) })
+        var dialogo: Dialog? = null
+        revisiones.forEach { r ->
+            val fila = tarjeta()
+            val cab = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
+            cab.addView(
+                icono(if (r.ok) Icono.OK else Icono.ALERTA, if (r.ok) cVerde else cAmarillo, 20),
+                LinearLayout.LayoutParams(dp(20), dp(20)).apply { rightMargin = dp(12) }
+            )
+            cab.addView(texto(r.titulo, Tema.T_TEXTO, cTexto, true), LinearLayout.LayoutParams(0, -2, 1f))
+            fila.addView(cab)
+            fila.addView(texto(r.detalle, Tema.T_NOTA, cTexto2, false).apply { setLineSpacing(0f, 1.2f) }, margenArriba(4))
+            if (r.accion != Soporte.Accion.NINGUNA) {
+                fila.addView(boton(r.accion.texto, cVerde, Color.BLACK) { hacerAccion(r.accion) }, margenArriba(Tema.S1))
+            }
+            cuerpo.addView(fila, margenArriba(Tema.S1))
+        }
+        cuerpo.addView(boton("Revisar de nuevo", cTarjeta2, cTexto) {
+            dialogo?.dismiss()
+            mostrarDiagnostico()
+        }, margenArriba(Tema.S2))
+        cuerpo.addView(boton("Escribir a soporte", cTarjeta2, cTexto) {
+            val detalle = revisiones.joinToString("\n") { (if (it.ok) "✔ " else "✘ ") + it.titulo + ": " + it.detalle }
+            Soporte.escribir(this, "el diagnóstico encontró problemas", detalle)
+        }, margenArriba(Tema.S1))
+        dialogo = hoja("Diagnóstico de problemas", null, cuerpo)
+    }
+
+    /** Manda a soporte el último texto que leyó Checa, para mejorar la lectura. */
+    private fun reportarLecturaMala() {
+        val ultima = prefs.ultimaLectura
+        if (ultima.isBlank()) {
+            Toast.makeText(this, "Aún no se ha leído ninguna oferta. Cuando te llegue una, vuelve aquí.", Toast.LENGTH_LONG).show()
+            return
+        }
+        Soporte.escribir(this, "una oferta se leyó mal. Esto fue lo último que leyó Checa:", ultima)
     }
 
     // =====================================================================

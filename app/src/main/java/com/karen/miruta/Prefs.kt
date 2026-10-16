@@ -138,7 +138,12 @@ class Prefs(context: Context) {
         sp.edit().putString("caps", nuevas.joinToString(SEP)).apply()
     }
 
-    fun capturas(): String = sp.getString("caps", "") ?: ""
+    /** Último texto leído de una oferta (siempre se guarda): sirve para «Una oferta se leyó mal». */
+    var ultimaLectura: String
+        get() = sp.getString("ultima", "") ?: ""
+        set(v) { sp.edit().putString("ultima", v).apply() }
+
+    fun capturas(): String =sp.getString("caps", "") ?: ""
 
     fun borrarCapturas() { sp.edit().remove("caps").apply() }
 
