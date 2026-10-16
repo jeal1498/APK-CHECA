@@ -67,6 +67,18 @@ Reglas de marca: el pop-up sale siempre de `assets/checa-popup.html` sin redise�
 - Si Eduardo manda su propia respuesta (p. ej. un mensaje de WhatsApp) como base: conserva el orden de sus ideas, pasa el «yo» a «tú» y cambia lo que no podamos garantizar («no hay bloqueo» → «Checa no toca Uber ni DiDi, tú decides»).
 - Evita preguntas que la voz se contesta sola y los «no es X, es Y».
 
+## Formato de entrega de TODO guion (Eduardo, 16 oct 2026; v1 y v2)
+Actúa como experto en contenido viral y retención. Cada vez que entregues o generes un guion, en la misma respuesta:
+1. **Auditoría previa** (breve) de la versión base: áreas de oportunidad y puntos donde el ritmo decae (lo plano, lo repetitivo, lo que llega tarde).
+2. **Hook inicial** que capte en los primeros 3 s (voz + texto + imagen a la vez).
+3. **Hooks intermedios** repartidos de principio a fin: open loops, giros, preguntas, frases de cambio de ritmo, re-enganches visuales (uno cada ~4–5 s).
+4. **Guion optimizado** con la técnica marcada entre corchetes en cada corte, con su función: `[Hook Inicial]`, `[Micro-hook / Open Loop]`, `[Re-enganche visual]`, `[Giro]`, `[Pausa dramática]`, `[Payoff del Open Loop]`, `[CTA]`, `[Loop de repetición]`.
+Las etiquetas son solo para Eduardo: entrega también la **voz limpia** (sin corchetes) para ElevenLabs. Esto reemplaza la columna 🪝 de más abajo. Al guardar en `guiones-v2.md` / `guiones-gemini.md`, deja la tabla con la columna «Técnica».
+
+## Versión v2 para la cuenta personal de Eduardo (16 oct 2026)
+Eduardo sube cada video a la cuenta de Checa y una **v2** a su TikTok personal. **De ahora en adelante, al entregar el guion de un video, entrega también el guion v2** en `marketing/guiones-v2.md` (reglas y formato en ese archivo): mismo tema y datos, otro gancho y otras palabras, cierre «sígueme», sin logo de Checa salvo que él lo pida, con su texto de publicación. La v2 se rehace completa (voz, escenas, render) como `NN_fecha_tema_v2.mp4` + `.jpg` (portada distinta de la v1). Empezó con el video 05 (Cansancio y salud).
+**Atajo v2 (probado con `video/hyperframes/salud-v2/`, ~35 s, sin agentes):** copia ese proyecto, cambia `SCRIPT.md` (una línea de voz por escena) y las escenas en `generar.py` (usa `t(n, "palabra")` para sincronizar con la voz; texto en máscara, sin logo) y corre **`./ensamblar.sh`**: pide la voz de Fernando a `video/scripts/elevenlabs.py` (con tiempos por palabra, sin Whisper), arma `audio_meta.json` y `STORYBOARD.md`, escenas, subtítulos con el estilo de `estilo-captions.txt`, `index.html`, transiciones y mezcla. Luego `npx hyperframes@0.8.154 check`, `snapshot --at ...`, `render --quality high --output renders/video.mp4` (~1.5 min) y portada con `portada/portada.html` (estilo curiosidad). Lecciones: las máscaras de texto parten de `yPercent: 220` (con 105 se asoma un pedazo); texto en máscara máx. ~950 px de ancho; no rotar las tarjetas con texto (el chequeo las marca como superpuestas). Si ElevenLabs responde 401 `quota_exceeded`, es la cuota de créditos de la clave «Claudio»: avisar a Eduardo.
+
 ## Estilo «1Volt a color» (Remotion; sigue vigente, más barato)
 
 Desde el anuncio «Recogidas lejanas» Eduardo pidió el estilo 1Volt (2D, line-art en SVG; desde el 14 oct prefiere el Estilo HyperFrames de arriba) porque el 3D gasta demasiados tokens y tiempo (render por software). El 3D le gusta mucho, pero queda **en pausa**: no lo uses salvo que él lo pida.

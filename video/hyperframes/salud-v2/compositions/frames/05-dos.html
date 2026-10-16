@@ -1,0 +1,79 @@
+<template>
+  <style>
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Regular.ttf') format('truetype'); font-weight: 400; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Medium.ttf') format('truetype'); font-weight: 500 600; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Bold.ttf') format('truetype'); font-weight: 700 900; font-display: block; }
+    @font-face{ font-family: 'Fira Code'; src: url('assets/fonts/FiraCode.ttf') format('truetype'); font-weight: 300 700; font-display: block; }
+    #root { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; font-family: 'Fira Sans', sans-serif; color: #F1F5F2; }
+    .clip { position: absolute; }
+    .P-ground { inset: 0; background: #000; }
+    .P-stage { left: 0; top: 0; width: 1080px; height: 1600px; transform-origin: 50% 45%; }
+    .P-kick { position: absolute; left: 0; right: 0; top: 150px; text-align: center; font-family: 'Fira Code', monospace; font-weight: 500; font-size: 32px; letter-spacing: .16em; text-transform: uppercase; color: #22C55E; }
+    .P-kick:before { content: ""; display: block; width: 36px; height: 2px; background: currentColor; margin: 0 auto 18px; }
+    .P-mask { position: absolute; left: 0; right: 0; overflow: hidden; text-align: center; }
+    .P-mask > div { font-weight: 800; text-transform: lowercase; letter-spacing: -.04em; line-height: 1.02; white-space: nowrap; }
+    .P-ej { position: absolute; left: 0; right: 0; top: 1500px; text-align: center; font-family: 'Fira Code', monospace; font-size: 26px; letter-spacing: .12em; text-transform: uppercase; color: #6B736F; }
+    .P-card { position: absolute; width: 620px; border-radius: 36px; background: #F4F5F4; color: #111; padding: 48px 52px 44px; box-shadow: 0 30px 80px rgba(0,0,0,.7); }
+    .P-card .k { font-family: 'Fira Code', monospace; font-weight: 500; font-size: 28px; letter-spacing: .14em; text-transform: uppercase; color: #5C635F; }
+    .P-card .f { font-family: 'Fira Code', monospace; font-weight: 700; font-size: 112px; letter-spacing: -.03em; line-height: 1; margin-top: 22px; }
+    .P-card .r { display: flex; align-items: center; gap: 22px; font-size: 40px; font-weight: 500; margin-top: 28px; color: #222; }
+    .P-card .d { width: 20px; height: 20px; border-radius: 50%; background: #111; flex: none; }
+    .P-card .s { width: 20px; height: 20px; background: #111; flex: none; }
+    .P-card .b { margin-top: 38px; height: 104px; border-radius: 20px; background: #111; color: #F4F5F4; display: flex; align-items: center; justify-content: center; font-size: 44px; font-weight: 700; }
+
+    #f05-dos-ground { background: #000; }
+
+    #f05-dos-ring { position: absolute; left: 270px; top: 330px; width: 540px; height: 540px; border-radius: 50%; border: 6px dashed #22C55E; opacity: 0; }
+    #f05-dos-bt { position: absolute; left: 430px; top: 300px; width: 220px; }
+    #f05-dos-cap { position: absolute; left: 60px; top: 0; width: 100px; height: 60px; border-radius: 14px 14px 6px 6px; background: #F1F5F2; }
+    #f05-dos-neck { position: absolute; left: 40px; top: 52px; width: 140px; height: 60px; border: 8px solid #F1F5F2; border-bottom: none; border-radius: 30px 30px 0 0; }
+    #f05-dos-body { position: absolute; left: 0; top: 108px; width: 220px; height: 440px; border: 8px solid #F1F5F2; border-radius: 40px 40px 56px 56px; overflow: hidden; background: #0B0D0C; }
+    #f05-dos-wat { position: absolute; left: 0; right: 0; bottom: 0; height: 0%; background: #38BDF8; }
+    #f05-dos-eye { position: absolute; left: 390px; top: 420px; opacity: 0; }
+    #f05-dos-t1 { top: 980px; height: 160px; } #f05-dos-t1 > div { font-size: 130px; color: #22C55E; }
+    #f05-dos-t2 { top: 980px; height: 130px; } #f05-dos-t2 > div { font-size: 100px; color: #AFB7B2; }
+    #f05-dos-t3 { top: 1110px; height: 190px; } #f05-dos-t3 > div { font-size: 150px; color: #F43F5E; }
+
+  </style>
+
+  <div id="root" data-composition-id="05-dos" data-width="1080" data-height="1920" data-start="0" data-duration="3.401">
+    <div id="f05-dos-ground" class="clip P-ground" data-start="0" data-duration="3.401" data-track-index="0"></div>
+    <div id="f05-dos-stage" class="clip P-stage" data-start="0" data-duration="3.401" data-track-index="1">
+      <div class="P-kick">hábito 2 / 4</div>
+      <div id="f05-dos-ring"></div>
+      <div id="f05-dos-bt"><div id="f05-dos-cap"></div><div id="f05-dos-neck"></div><div id="f05-dos-body"><div id="f05-dos-wat"></div></div></div>
+      <div id="f05-dos-eye"><svg viewBox="0 0 24 24" width="300" height="300" fill="none" stroke="#F43F5E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3.2"/><path d="M3 21L21 3" stroke-width="2.2"/></svg></div>
+      <div id="f05-dos-t1" class="P-mask"><div>a la mano</div></div>
+      <div id="f05-dos-t2" class="P-mask"><div>no la ves…</div></div>
+      <div id="f05-dos-t3" class="P-mask"><div>no la tomas</div></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      var D = 3.401;
+      tl.fromTo("#f05-dos-bt", {"y": 140, "opacity": 0}, {"y": 0, "opacity": 1, "duration": 0.4, "ease": "power3.out"}, 0.0);
+      tl.fromTo("#f05-dos-wat", {"height": "0%"}, {"height": "82%", "duration": 0.8, "ease": "power2.out"}, 0.307);
+      tl.fromTo("#f05-dos-ring", {"scale": 0.7, "opacity": 0}, {"scale": 1, "opacity": 1, "duration": 0.4, "ease": "back.out(1.6)"}, 0.888);
+      tl.fromTo("#f05-dos-t1 > div", {"yPercent": 220}, {"yPercent": 0, "duration": 0.35, "ease": "power3.out"}, 0.988);
+      tl.to("#f05-dos-t1 > div", {"yPercent": -110, "duration": 0.22, "ease": "power2.in"}, 1.356);
+      tl.to("#f05-dos-ring", {"opacity": 0, "duration": 0.2}, 1.386);
+      tl.to("#f05-dos-bt", {"opacity": 0.18, "y": 90, "duration": 0.35, "ease": "power2.in"}, 1.642);
+      tl.fromTo("#f05-dos-eye", {"scale": 0.2, "opacity": 0, "rotation": -15}, {"scale": 1, "opacity": 1, "rotation": 0, "duration": 0.35, "ease": "back.out(2)"}, 1.642);
+      tl.fromTo("#f05-dos-t2 > div", {"yPercent": 220}, {"yPercent": 0, "duration": 0.3, "ease": "power3.out"}, 1.792);
+      tl.fromTo("#f05-dos-t3 > div", {"yPercent": 220}, {"yPercent": 0, "duration": 0.4, "ease": "power3.out"}, 2.068);
+      tl.to("#f05-dos-stage", { x: 10, duration: 0.05, ease: "none" }, 2.419);
+      tl.to("#f05-dos-stage", { x: -8.5, duration: 0.05, ease: "none" }, 2.469);
+      tl.to("#f05-dos-stage", { x: 6.0, duration: 0.05, ease: "none" }, 2.519);
+      tl.to("#f05-dos-stage", { x: -4.0, duration: 0.05, ease: "none" }, 2.569);
+      tl.to("#f05-dos-stage", { x: 2.0, duration: 0.05, ease: "none" }, 2.619);
+      tl.to("#f05-dos-stage", { x: 0, duration: 0.05, ease: "none" }, 2.669);
+      tl.fromTo("#f05-dos-stage", { scale: 1 }, { scale: 1.05, duration: D - 0, ease: "none" }, 0);
+
+      window.__timelines["05-dos"] = tl;
+    })();
+  </script>
+</template>

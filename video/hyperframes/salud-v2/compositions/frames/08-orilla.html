@@ -1,0 +1,74 @@
+<template>
+  <style>
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Regular.ttf') format('truetype'); font-weight: 400; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Medium.ttf') format('truetype'); font-weight: 500 600; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Bold.ttf') format('truetype'); font-weight: 700 900; font-display: block; }
+    @font-face{ font-family: 'Fira Code'; src: url('assets/fonts/FiraCode.ttf') format('truetype'); font-weight: 300 700; font-display: block; }
+    #root { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; font-family: 'Fira Sans', sans-serif; color: #F1F5F2; }
+    .clip { position: absolute; }
+    .P-ground { inset: 0; background: #000; }
+    .P-stage { left: 0; top: 0; width: 1080px; height: 1600px; transform-origin: 50% 45%; }
+    .P-kick { position: absolute; left: 0; right: 0; top: 150px; text-align: center; font-family: 'Fira Code', monospace; font-weight: 500; font-size: 32px; letter-spacing: .16em; text-transform: uppercase; color: #22C55E; }
+    .P-kick:before { content: ""; display: block; width: 36px; height: 2px; background: currentColor; margin: 0 auto 18px; }
+    .P-mask { position: absolute; left: 0; right: 0; overflow: hidden; text-align: center; }
+    .P-mask > div { font-weight: 800; text-transform: lowercase; letter-spacing: -.04em; line-height: 1.02; white-space: nowrap; }
+    .P-ej { position: absolute; left: 0; right: 0; top: 1500px; text-align: center; font-family: 'Fira Code', monospace; font-size: 26px; letter-spacing: .12em; text-transform: uppercase; color: #6B736F; }
+    .P-card { position: absolute; width: 620px; border-radius: 36px; background: #F4F5F4; color: #111; padding: 48px 52px 44px; box-shadow: 0 30px 80px rgba(0,0,0,.7); }
+    .P-card .k { font-family: 'Fira Code', monospace; font-weight: 500; font-size: 28px; letter-spacing: .14em; text-transform: uppercase; color: #5C635F; }
+    .P-card .f { font-family: 'Fira Code', monospace; font-weight: 700; font-size: 112px; letter-spacing: -.03em; line-height: 1; margin-top: 22px; }
+    .P-card .r { display: flex; align-items: center; gap: 22px; font-size: 40px; font-weight: 500; margin-top: 28px; color: #222; }
+    .P-card .d { width: 20px; height: 20px; border-radius: 50%; background: #111; flex: none; }
+    .P-card .s { width: 20px; height: 20px; background: #111; flex: none; }
+    .P-card .b { margin-top: 38px; height: 104px; border-radius: 20px; background: #111; color: #F4F5F4; display: flex; align-items: center; justify-content: center; font-size: 44px; font-weight: 700; }
+
+    #f08-orilla-ground { background: #000; }
+
+    #f08-orilla-eye { position: absolute; left: 190px; top: 190px; width: 700px; height: 460px; }
+    #f08-orilla-oct { position: absolute; left: 330px; top: 700px; width: 420px; height: 420px; clip-path: polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%); background: #F43F5E; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 128px; letter-spacing: .02em; color: #fff; opacity: 0; }
+    #f08-orilla-tx { top: 1220px; height: 160px; } #f08-orilla-tx > div { font-size: 104px; color: #F1F5F2; } #f08-orilla-tx em { font-style: normal; color: #22C55E; }
+
+  </style>
+
+  <div id="root" data-composition-id="08-orilla" data-width="1080" data-height="1920" data-start="0" data-duration="4.179">
+    <div id="f08-orilla-ground" class="clip P-ground" data-start="0" data-duration="4.179" data-track-index="0"></div>
+    <div id="f08-orilla-stage" class="clip P-stage" data-start="0" data-duration="4.179" data-track-index="1">
+      <svg id="f08-orilla-eye" viewBox="0 0 600 400">
+        <defs><clipPath id="f08-orilla-clip"><path d="M30 200 Q300 -20 570 200 Q300 420 30 200 Z"/></clipPath></defs>
+        <g clip-path="url(#f08-orilla-clip)">
+          <rect x="0" y="0" width="600" height="400" fill="#F1F5F2"/>
+          <circle cx="300" cy="200" r="104" fill="#1E3A5F"/><circle cx="300" cy="200" r="48" fill="#06080A"/>
+          <rect id="f08-orilla-lid" x="0" y="-410" width="600" height="410" fill="#3A403D"/>
+        </g>
+        <path id="f08-orilla-out" d="M30 200 Q300 -20 570 200 Q300 420 30 200 Z" fill="none" stroke="#F1F5F2" stroke-width="14" stroke-linejoin="round"/>
+      </svg>
+      <div id="f08-orilla-oct">ALTO</div>
+      <div id="f08-orilla-tx" class="P-mask"><div>orilla y <em>descansa</em></div></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      var D = 3.679;
+      tl.fromTo("#f08-orilla-eye", {"scale": 0.7, "opacity": 0}, {"scale": 1, "opacity": 1, "duration": 0.4, "ease": "back.out(1.6)"}, 0.0);
+      tl.fromTo("#f08-orilla-lid", { y: 0 }, { y: 150, duration: 0.25, repeat: 1, yoyo: true, ease: "sine.inOut" }, 0.282);
+      tl.to("#f08-orilla-lid", {"y": 410, "duration": 0.7, "ease": "power2.inOut"}, 1.131);
+      tl.to("#f08-orilla-out", {"stroke": "#F43F5E", "duration": 0.3}, 1.588);
+      tl.to("#f08-orilla-eye", {"scale": 0.72, "y": -60, "opacity": 0.45, "duration": 0.3, "ease": "power2.out"}, 2.059);
+      tl.fromTo("#f08-orilla-oct", {"scale": 0.2, "opacity": 0, "rotation": -25}, {"scale": 1, "opacity": 1, "rotation": 0, "duration": 0.35, "ease": "back.out(2.2)"}, 2.059);
+      tl.to("#f08-orilla-oct", { opacity: 0.55, duration: 0.14, repeat: 3, yoyo: true, ease: "none" }, 2.459);
+      tl.fromTo("#f08-orilla-tx > div", {"yPercent": 220}, {"yPercent": 0, "duration": 0.35, "ease": "power3.out"}, 2.109);
+      tl.to("#f08-orilla-stage", { x: 16, duration: 0.05, ease: "none" }, 2.059);
+      tl.to("#f08-orilla-stage", { x: -13.6, duration: 0.05, ease: "none" }, 2.109);
+      tl.to("#f08-orilla-stage", { x: 9.6, duration: 0.05, ease: "none" }, 2.159);
+      tl.to("#f08-orilla-stage", { x: -6.4, duration: 0.05, ease: "none" }, 2.209);
+      tl.to("#f08-orilla-stage", { x: 3.2, duration: 0.05, ease: "none" }, 2.259);
+      tl.to("#f08-orilla-stage", { x: 0, duration: 0.05, ease: "none" }, 2.309);
+      tl.fromTo("#f08-orilla-stage", { scale: 1 }, { scale: 1.04, duration: D - 0, ease: "none" }, 0);
+
+      window.__timelines["08-orilla"] = tl;
+    })();
+  </script>
+</template>
