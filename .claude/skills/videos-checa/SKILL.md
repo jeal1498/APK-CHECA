@@ -135,6 +135,8 @@ Serie de 14 temas completa en 1Volt (octubre 2026).
 
 **Estilo HyperFrames, video 18**: «Cuánto ganas tú» `marketing/videos/CHECA/18 - Cuánto ganas tú/video.mp4` (41 s; responde de forma abierta al comentario «la app ya te da esa información»; proyecto `video/hyperframes/cuanto-ganas-tu/`).
 
+**Tutorial con capturas, video 20** (16 oct 2026): «Cómo instalar Checa» `marketing/videos/CHECA/20 - Cómo instalar Checa/video.mp4` (4:04). Para tutoriales a partir de una grabación de pantalla de Eduardo: Eduardo prefiere **capturas fijas** de los momentos exactos (no el video corrido), con zoom al botón, señalamiento que aparece con su palabra y un «toque» cuando la voz dice la acción, voz de Fernando y datos personales difuminados. Antes de armarlo, mapear la grabación segundo a segundo (hojas de cuadros a 1 fps) y no fiarse de los tiempos de lo que dice Eduardo (su voz va antes o después de los toques). Código en `video/tutorial-instalar/build.py`.
+
 **HyperFrames** (desde el 13 oct 2026, skill `hyperframes`): «Cómo funciona Checa» `marketing/videos/CHECA/17 - Cómo funciona Checa/ (la versión vieja, video 16, se borró)video.mp4` (47 s, estilo nuevo, proyecto `video/hyperframes/checa-como-funciona/` borrado del repo el 16 oct 2026; sigue en el historial).
 
 **Estado al 13 oct 2026:** calendario del 14 al 28 de octubre en `marketing/plan/calendario.md` (1 al día a las 8 pm, beta primero y luego venta/consejo alternados). Pendiente: publicar según el calendario, juntar opiniones de los beta testers (con permiso) para testimonios en `.agents/product-marketing.md`, y si hay nuevos temas, agregarlos a `marketing/plan/temas.md`, al calendario (número siguiente) y a esta tabla.

@@ -1,0 +1,53 @@
+Hola. Te voy a enseñar a instalar Checa en tu celular Android, paso por paso. Ve a tu ritmo, y si te pierdes, pausa el video.
+Paso uno. Entra a la página oficial de Checa y toca el botón verde que dice Descargar.
+La descarga empieza sola. Arriba te sale un aviso que dice Descargando archivo. Espera a que termine.
+Paso dos. Cuando termine, toca los tres puntitos de arriba, y luego Descargas.
+Toca el archivo de Checa.
+Luego toca Instalar.
+Si te sale que la app se bloqueó, no te asustes. Es normal. Toca Entendido.
+Después toca Listo. Esto pasa porque Checa todavía no está en la Play Store.
+Paso tres. Hay que apagar Play Protect. Abre la Play Store y toca tu foto, arriba a la derecha.
+Toca Play Protect.
+Arriba a la derecha, toca el engranaje.
+Apaga la primera opción.
+Si te pregunta, toca Desactivar, y confirma con tu huella.
+Listo, las dos opciones quedan apagadas.
+Paso cuatro. Regresa a Descargas y toca otra vez el archivo de Checa.
+Toca Instalar y espera a que termine.
+Ahora toca Abrir.
+Paso cinco. Toca Continuar con Google.
+Elige tu cuenta.
+Espera a que cargue, y toca Empezar.
+Paso seis. Checa necesita un permiso para leer las ofertas en tu pantalla. Toca Abrir Accesibilidad.
+Baja hasta el final de la lista y toca Checa, lector de ofertas.
+Toca el interruptor. Te va a salir que se le negó el acceso. Es normal. Toca Cerrar.
+Paso siete. Sal a la pantalla de inicio y deja presionado el ícono de Checa.
+Toca Información de la app.
+Arriba, toca Eliminar restricción.
+Toca Eliminar, y confirma con tu código o tu huella.
+Paso ocho. Regresa a Checa, lector de ofertas, y toca el interruptor.
+Toca Aceptar.
+Listo, ya está activo. Checa solo lee la pantalla de Uber y de DiDi. Nada más.
+Paso nueve. Regresa a Checa y elige cuánto quieres ganar como mínimo, por kilómetro y por hora.
+Con los botones de más y menos cambias la cantidad. Tú pones tu meta.
+Toca Siguiente.
+Paso diez. Pon cuántos kilómetros rinde tu auto con un litro, y cuánto pagas por litro de gasolina.
+Así Checa sabe cuánto te cuesta cada kilómetro. Toca Siguiente.
+Así se verá el aviso sobre cada oferta. Toca Empezar a leer ofertas.
+Paso once. Este es el más importante. Android te pregunta si Checa puede grabar tu pantalla.
+Elige Toda la pantalla. Te lo va a pedir cada vez que actives Checa, y sin este permiso no funciona.
+Revisa que esté marcada Toda la pantalla, y toca Permitir.
+Si te pide notificaciones, toca Permitir también.
+Y listo. Checa ya está leyendo tus ofertas.
+Paso doce. En Ajustes, toca Probar en pantalla para ver el aviso en vivo.
+Más abajo, en Avisos, activa Decirlo con voz. Checa te dirá en voz alta: Aceptar, Considerar o Rechazar.
+Aquí eliges qué apps quieres que lea: Uber, DiDi, o las dos.
+Paso trece. En Filtros, elige hasta cuántos kilómetros manejas para recoger al pasajero.
+Y cuánto tiempo máximo quieres que dure el viaje.
+En Cuenta ves tu usuario y los celulares donde usas Checa.
+Paso catorce. En Inicio, toca Ver toda la semana.
+Cada hora se pinta de un color: verde si conviene, amarillo si más o menos, y rojo si es mejor no salir.
+Ahorita está vacío porque la app es nueva. Se va llenando con tus viajes.
+Cuando termines de trabajar, toca Detener.
+Y eso es todo. Si te atoras en algún paso, en Ajustes hay una sección de Ayuda.
+Descarga Checa y checa cuánto te queda de cada viaje.

@@ -38,6 +38,7 @@ Sin link en la bio (TikTok pide constancia del SAT para cuenta de empresa): a qu
 | 17 | sin fecha | Explicativo | `17 - Cómo funciona Checa` | |
 | 18 | por definir | Venta | `18 - Cuánto ganas tú` | |
 | 19 | por definir | Venta | `19 - Checa lee la oferta` | |
+| 20 | por definir | Tutorial | `20 - Cómo instalar Checa` | |
 
 ---
 
