@@ -1,0 +1,65 @@
+<template>
+  <style>
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Regular.ttf') format('truetype'); font-weight: 400; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Medium.ttf') format('truetype'); font-weight: 500 600; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Bold.ttf') format('truetype'); font-weight: 700 900; font-display: block; }
+    @font-face{ font-family: 'Fira Code'; src: url('assets/fonts/FiraCode.ttf') format('truetype'); font-weight: 300 700; font-display: block; }
+    #root { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; font-family: 'Fira Sans', sans-serif; color: #F1F5F2; }
+    .clip { position: absolute; }
+    .P-ground { inset: 0; background: #000; }
+    .P-stage { left: 0; top: 0; width: 1080px; height: 1600px; transform-origin: 50% 45%; }
+    .P-kick { position: absolute; left: 0; right: 0; top: 150px; text-align: center; font-family: 'Fira Code', monospace; font-weight: 500; font-size: 32px; letter-spacing: .16em; text-transform: uppercase; color: #22C55E; }
+    .P-kick:before { content: ""; display: block; width: 36px; height: 2px; background: currentColor; margin: 0 auto 18px; }
+    .P-mask { position: absolute; left: 0; right: 0; overflow: hidden; text-align: center; }
+    .P-mask > div { font-weight: 800; text-transform: lowercase; letter-spacing: -.04em; line-height: 1.02; white-space: nowrap; }
+    .P-ej { position: absolute; left: 0; right: 0; top: 1500px; text-align: center; font-family: 'Fira Code', monospace; font-size: 26px; letter-spacing: .12em; text-transform: uppercase; color: #6B736F; }
+    .P-card { position: absolute; width: 620px; border-radius: 36px; background: #F4F5F4; color: #111; padding: 48px 52px 44px; box-shadow: 0 30px 80px rgba(0,0,0,.7); }
+    .P-card .k { font-family: 'Fira Code', monospace; font-weight: 500; font-size: 28px; letter-spacing: .14em; text-transform: uppercase; color: #5C635F; }
+    .P-card .f { font-family: 'Fira Code', monospace; font-weight: 700; font-size: 112px; letter-spacing: -.03em; line-height: 1; margin-top: 22px; }
+    .P-card .r { display: flex; align-items: center; gap: 22px; font-size: 40px; font-weight: 500; margin-top: 28px; color: #222; }
+    .P-card .d { width: 20px; height: 20px; border-radius: 50%; background: #111; flex: none; }
+    .P-card .s { width: 20px; height: 20px; background: #111; flex: none; }
+    .P-card .b { margin-top: 38px; height: 104px; border-radius: 20px; background: #111; color: #F4F5F4; display: flex; align-items: center; justify-content: center; font-size: 44px; font-weight: 700; }
+
+    #f07-cuatro-ground { background: #000; }
+
+    #f07-cuatro-glow { position: absolute; left: 140px; top: 300px; width: 800px; height: 800px; border-radius: 50%; background: radial-gradient(circle, rgba(244,63,94,.34), rgba(244,63,94,0) 65%); }
+    #f07-cuatro-n { position: absolute; left: 0; right: 0; top: 260px; text-align: center; font-family: 'Fira Code', monospace; font-weight: 700; font-size: 760px; line-height: 1; color: #F43F5E; letter-spacing: -.06em; }
+    #f07-cuatro-tx { top: 1150px; height: 150px; } #f07-cuatro-tx > div { font-size: 130px; color: #F1F5F2; } #f07-cuatro-tx em { font-style: normal; color: #F43F5E; }
+    #f07-cuatro-bar { position: absolute; left: 340px; top: 1110px; width: 400px; height: 8px; background: #F43F5E; transform-origin: 50% 50%; }
+
+  </style>
+
+  <div id="root" data-composition-id="07-cuatro" data-width="1080" data-height="1920" data-start="0" data-duration="2.193">
+    <div id="f07-cuatro-ground" class="clip P-ground" data-start="0" data-duration="2.193" data-track-index="0"></div>
+    <div id="f07-cuatro-stage" class="clip P-stage" data-start="0" data-duration="2.193" data-track-index="1">
+      <div id="f07-cuatro-glow"></div>
+      <div class="P-kick" style="color:#F43F5E">hábito 4 / 4</div>
+      <div id="f07-cuatro-n">4</div>
+      <div id="f07-cuatro-bar"></div>
+      <div id="f07-cuatro-tx" class="P-mask"><div><em>no</em> se negocia</div></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      var D = 2.193;
+      tl.fromTo("#f07-cuatro-n", {"scale": 3, "opacity": 0}, {"scale": 1, "opacity": 1, "duration": 0.28, "ease": "power4.out"}, 0.0);
+      tl.fromTo("#f07-cuatro-glow", {"opacity": 0}, {"opacity": 1, "duration": 0.4}, 0.0);
+      tl.fromTo("#f07-cuatro-bar", {"scaleX": 0}, {"scaleX": 1, "duration": 0.35, "ease": "power3.out"}, 0.748);
+      tl.fromTo("#f07-cuatro-tx > div", {"yPercent": 220}, {"yPercent": 0, "duration": 0.35, "ease": "power3.out"}, 0.848);
+      tl.to("#f07-cuatro-stage", { x: 20, duration: 0.05, ease: "none" }, 0.18);
+      tl.to("#f07-cuatro-stage", { x: -17.0, duration: 0.05, ease: "none" }, 0.23);
+      tl.to("#f07-cuatro-stage", { x: 12.0, duration: 0.05, ease: "none" }, 0.28);
+      tl.to("#f07-cuatro-stage", { x: -8.0, duration: 0.05, ease: "none" }, 0.33);
+      tl.to("#f07-cuatro-stage", { x: 4.0, duration: 0.05, ease: "none" }, 0.38);
+      tl.to("#f07-cuatro-stage", { x: 0, duration: 0.05, ease: "none" }, 0.43);
+      tl.fromTo("#f07-cuatro-stage", { scale: 1 }, { scale: 1.06, duration: D - 0.3, ease: "none" }, 0.3);
+
+      window.__timelines["07-cuatro"] = tl;
+    })();
+  </script>
+</template>
