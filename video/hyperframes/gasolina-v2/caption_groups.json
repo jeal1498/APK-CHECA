@@ -1,0 +1,952 @@
+{
+  "total_duration_s": 30.507,
+  "width": 1080,
+  "height": 1920,
+  "groups": [
+    {
+      "id": "caption-group-0",
+      "frame": 1,
+      "start": 0,
+      "end": 0.882,
+      "text": "Cargas gasolina",
+      "words": [
+        {
+          "id": "caption-word-0-0",
+          "text": "Cargas",
+          "start": 0,
+          "end": 0.383
+        },
+        {
+          "id": "caption-word-0-1",
+          "text": "gasolina",
+          "start": 0.43,
+          "end": 0.848
+        }
+      ]
+    },
+    {
+      "id": "caption-group-1",
+      "frame": 1,
+      "start": 0.882,
+      "end": 1.393,
+      "text": "el lunes",
+      "words": [
+        {
+          "id": "caption-word-1-0",
+          "text": "el",
+          "start": 0.882,
+          "end": 0.94
+        },
+        {
+          "id": "caption-word-1-1",
+          "text": "lunes",
+          "start": 0.964,
+          "end": 1.312
+        }
+      ]
+    },
+    {
+      "id": "caption-group-2",
+      "frame": 1,
+      "start": 1.393,
+      "end": 1.602,
+      "text": "y el",
+      "words": [
+        {
+          "id": "caption-word-2-0",
+          "text": "y",
+          "start": 1.393,
+          "end": 1.428
+        },
+        {
+          "id": "caption-word-2-1",
+          "text": "el",
+          "start": 1.498,
+          "end": 1.556
+        }
+      ]
+    },
+    {
+      "id": "caption-group-3",
+      "frame": 1,
+      "start": 1.602,
+      "end": 2.159,
+      "text": "jueves ya",
+      "words": [
+        {
+          "id": "caption-word-3-0",
+          "text": "jueves",
+          "start": 1.602,
+          "end": 1.985
+        },
+        {
+          "id": "caption-word-3-1",
+          "text": "ya",
+          "start": 2.043,
+          "end": 2.136
+        }
+      ]
+    },
+    {
+      "id": "caption-group-4",
+      "frame": 1,
+      "start": 2.159,
+      "end": 2.543,
+      "text": "andas en",
+      "words": [
+        {
+          "id": "caption-word-4-0",
+          "text": "andas",
+          "start": 2.159,
+          "end": 2.403
+        },
+        {
+          "id": "caption-word-4-1",
+          "text": "en",
+          "start": 2.461,
+          "end": 2.508
+        }
+      ]
+    },
+    {
+      "id": "caption-group-5",
+      "frame": 1,
+      "start": 2.543,
+      "end": 3.557,
+      "text": "la reserva.",
+      "words": [
+        {
+          "id": "caption-word-5-0",
+          "text": "la",
+          "start": 2.543,
+          "end": 2.601
+        },
+        {
+          "id": "caption-word-5-1",
+          "text": "reserva.",
+          "start": 2.659,
+          "end": 3.437
+        }
+      ]
+    },
+    {
+      "id": "caption-group-6",
+      "frame": 2,
+      "start": 3.587,
+      "end": 4.388,
+      "text": "Cada kilómetro",
+      "words": [
+        {
+          "id": "caption-word-6-0",
+          "text": "Cada",
+          "start": 3.587,
+          "end": 3.877
+        },
+        {
+          "id": "caption-word-6-1",
+          "text": "kilómetro",
+          "start": 3.912,
+          "end": 4.342
+        }
+      ]
+    },
+    {
+      "id": "caption-group-7",
+      "frame": 2,
+      "start": 4.388,
+      "end": 4.852,
+      "text": "te cuesta",
+      "words": [
+        {
+          "id": "caption-word-7-0",
+          "text": "te",
+          "start": 4.388,
+          "end": 4.446
+        },
+        {
+          "id": "caption-word-7-1",
+          "text": "cuesta",
+          "start": 4.493,
+          "end": 4.794
+        }
+      ]
+    },
+    {
+      "id": "caption-group-8",
+      "frame": 2,
+      "start": 4.852,
+      "end": 5.154,
+      "text": "más o",
+      "words": [
+        {
+          "id": "caption-word-8-0",
+          "text": "más",
+          "start": 4.852,
+          "end": 5.015
+        },
+        {
+          "id": "caption-word-8-1",
+          "text": "o",
+          "start": 5.085,
+          "end": 5.108
+        }
+      ]
+    },
+    {
+      "id": "caption-group-9",
+      "frame": 2,
+      "start": 5.154,
+      "end": 5.7,
+      "text": "menos dos",
+      "words": [
+        {
+          "id": "caption-word-9-0",
+          "text": "menos",
+          "start": 5.154,
+          "end": 5.433
+        },
+        {
+          "id": "caption-word-9-1",
+          "text": "dos",
+          "start": 5.479,
+          "end": 5.63
+        }
+      ]
+    },
+    {
+      "id": "caption-group-10",
+      "frame": 2,
+      "start": 5.7,
+      "end": 6.13,
+      "text": "pesos de",
+      "words": [
+        {
+          "id": "caption-word-10-0",
+          "text": "pesos",
+          "start": 5.7,
+          "end": 5.979
+        },
+        {
+          "id": "caption-word-10-1",
+          "text": "de",
+          "start": 6.025,
+          "end": 6.083
+        }
+      ]
+    },
+    {
+      "id": "caption-group-11",
+      "frame": 2,
+      "start": 6.13,
+      "end": 7.376,
+      "text": "pura gasolina.",
+      "words": [
+        {
+          "id": "caption-word-11-0",
+          "text": "pura",
+          "start": 6.13,
+          "end": 6.35
+        },
+        {
+          "id": "caption-word-11-1",
+          "text": "gasolina.",
+          "start": 6.397,
+          "end": 7.256
+        }
+      ]
+    },
+    {
+      "id": "caption-group-12",
+      "frame": 3,
+      "start": 7.406,
+      "end": 7.998,
+      "text": "Imagina un",
+      "words": [
+        {
+          "id": "caption-word-12-0",
+          "text": "Imagina",
+          "start": 7.406,
+          "end": 7.87
+        },
+        {
+          "id": "caption-word-12-1",
+          "text": "un",
+          "start": 7.905,
+          "end": 7.952
+        }
+      ]
+    },
+    {
+      "id": "caption-group-13",
+      "frame": 3,
+      "start": 7.998,
+      "end": 8.428,
+      "text": "viaje que",
+      "words": [
+        {
+          "id": "caption-word-13-0",
+          "text": "viaje",
+          "start": 7.998,
+          "end": 8.242
+        },
+        {
+          "id": "caption-word-13-1",
+          "text": "que",
+          "start": 8.3,
+          "end": 8.37
+        }
+      ]
+    },
+    {
+      "id": "caption-group-14",
+      "frame": 3,
+      "start": 8.428,
+      "end": 9.987,
+      "text": "paga noventa pesos.",
+      "words": [
+        {
+          "id": "caption-word-14-0",
+          "text": "paga",
+          "start": 8.428,
+          "end": 8.671
+        },
+        {
+          "id": "caption-word-14-1",
+          "text": "noventa",
+          "start": 8.718,
+          "end": 9.113
+        },
+        {
+          "id": "caption-word-14-2",
+          "text": "pesos.",
+          "start": 9.159,
+          "end": 9.867
+        }
+      ]
+    },
+    {
+      "id": "caption-group-15",
+      "frame": 4,
+      "start": 10.017,
+      "end": 10.47,
+      "text": "Entre la",
+      "words": [
+        {
+          "id": "caption-word-15-0",
+          "text": "Entre",
+          "start": 10.017,
+          "end": 10.33
+        },
+        {
+          "id": "caption-word-15-1",
+          "text": "la",
+          "start": 10.365,
+          "end": 10.423
+        }
+      ]
+    },
+    {
+      "id": "caption-group-16",
+      "frame": 4,
+      "start": 10.47,
+      "end": 11.085,
+      "text": "recogida y",
+      "words": [
+        {
+          "id": "caption-word-16-0",
+          "text": "recogida",
+          "start": 10.47,
+          "end": 10.957
+        },
+        {
+          "id": "caption-word-16-1",
+          "text": "y",
+          "start": 11.015,
+          "end": 11.05
+        }
+      ]
+    },
+    {
+      "id": "caption-group-17",
+      "frame": 4,
+      "start": 11.085,
+      "end": 11.666,
+      "text": "el viaje,",
+      "words": [
+        {
+          "id": "caption-word-17-0",
+          "text": "el",
+          "start": 11.085,
+          "end": 11.143
+        },
+        {
+          "id": "caption-word-17-1",
+          "text": "viaje,",
+          "start": 11.201,
+          "end": 11.584
+        }
+      ]
+    },
+    {
+      "id": "caption-group-18",
+      "frame": 4,
+      "start": 11.666,
+      "end": 12.316,
+      "text": "la gasolina",
+      "words": [
+        {
+          "id": "caption-word-18-0",
+          "text": "la",
+          "start": 11.666,
+          "end": 11.758
+        },
+        {
+          "id": "caption-word-18-1",
+          "text": "gasolina",
+          "start": 11.805,
+          "end": 12.258
+        }
+      ]
+    },
+    {
+      "id": "caption-group-19",
+      "frame": 4,
+      "start": 12.316,
+      "end": 13.574,
+      "text": "se lleva treinta.",
+      "words": [
+        {
+          "id": "caption-word-19-0",
+          "text": "se",
+          "start": 12.316,
+          "end": 12.397
+        },
+        {
+          "id": "caption-word-19-1",
+          "text": "lleva",
+          "start": 12.42,
+          "end": 12.687
+        },
+        {
+          "id": "caption-word-19-2",
+          "text": "treinta.",
+          "start": 12.734,
+          "end": 13.454
+        }
+      ]
+    },
+    {
+      "id": "caption-group-20",
+      "frame": 5,
+      "start": 13.604,
+      "end": 15.024,
+      "text": "Te quedan sesenta.",
+      "words": [
+        {
+          "id": "caption-word-20-0",
+          "text": "Te",
+          "start": 13.604,
+          "end": 13.778
+        },
+        {
+          "id": "caption-word-20-1",
+          "text": "quedan",
+          "start": 13.836,
+          "end": 14.126
+        },
+        {
+          "id": "caption-word-20-2",
+          "text": "sesenta.",
+          "start": 14.196,
+          "end": 14.904
+        }
+      ]
+    },
+    {
+      "id": "caption-group-21",
+      "frame": 6,
+      "start": 15.054,
+      "end": 15.565,
+      "text": "Un tercio",
+      "words": [
+        {
+          "id": "caption-word-21-0",
+          "text": "Un",
+          "start": 15.054,
+          "end": 15.193
+        },
+        {
+          "id": "caption-word-21-1",
+          "text": "tercio",
+          "start": 15.251,
+          "end": 15.53
+        }
+      ]
+    },
+    {
+      "id": "caption-group-22",
+      "frame": 6,
+      "start": 15.565,
+      "end": 15.809,
+      "text": "de tu",
+      "words": [
+        {
+          "id": "caption-word-22-0",
+          "text": "de",
+          "start": 15.565,
+          "end": 15.634
+        },
+        {
+          "id": "caption-word-22-1",
+          "text": "tu",
+          "start": 15.669,
+          "end": 15.762
+        }
+      ]
+    },
+    {
+      "id": "caption-group-23",
+      "frame": 6,
+      "start": 15.809,
+      "end": 16.285,
+      "text": "viaje se",
+      "words": [
+        {
+          "id": "caption-word-23-0",
+          "text": "viaje",
+          "start": 15.809,
+          "end": 16.087
+        },
+        {
+          "id": "caption-word-23-1",
+          "text": "se",
+          "start": 16.134,
+          "end": 16.215
+        }
+      ]
+    },
+    {
+      "id": "caption-group-24",
+      "frame": 6,
+      "start": 16.285,
+      "end": 16.621,
+      "text": "fue al",
+      "words": [
+        {
+          "id": "caption-word-24-0",
+          "text": "fue",
+          "start": 16.285,
+          "end": 16.436
+        },
+        {
+          "id": "caption-word-24-1",
+          "text": "al",
+          "start": 16.482,
+          "end": 16.552
+        }
+      ]
+    },
+    {
+      "id": "caption-group-25",
+      "frame": 6,
+      "start": 16.621,
+      "end": 17.225,
+      "text": "tanque y",
+      "words": [
+        {
+          "id": "caption-word-25-0",
+          "text": "tanque",
+          "start": 16.621,
+          "end": 16.993
+        },
+        {
+          "id": "caption-word-25-1",
+          "text": "y",
+          "start": 17.074,
+          "end": 17.144
+        }
+      ]
+    },
+    {
+      "id": "caption-group-26",
+      "frame": 6,
+      "start": 17.225,
+      "end": 18.285,
+      "text": "ni lo notaste.",
+      "words": [
+        {
+          "id": "caption-word-26-0",
+          "text": "ni",
+          "start": 17.225,
+          "end": 17.306
+        },
+        {
+          "id": "caption-word-26-1",
+          "text": "lo",
+          "start": 17.364,
+          "end": 17.434
+        },
+        {
+          "id": "caption-word-26-2",
+          "text": "notaste.",
+          "start": 17.48,
+          "end": 18.165
+        }
+      ]
+    },
+    {
+      "id": "caption-group-27",
+      "frame": 7,
+      "start": 18.315,
+      "end": 18.721,
+      "text": "La app",
+      "words": [
+        {
+          "id": "caption-word-27-0",
+          "text": "La",
+          "start": 18.315,
+          "end": 18.536
+        },
+        {
+          "id": "caption-word-27-1",
+          "text": "app",
+          "start": 18.57,
+          "end": 18.652
+        }
+      ]
+    },
+    {
+      "id": "caption-group-28",
+      "frame": 7,
+      "start": 18.721,
+      "end": 19.476,
+      "text": "Checa hace",
+      "words": [
+        {
+          "id": "caption-word-28-0",
+          "text": "Checa",
+          "start": 18.721,
+          "end": 19.07
+        },
+        {
+          "id": "caption-word-28-1",
+          "text": "hace",
+          "start": 19.116,
+          "end": 19.43
+        }
+      ]
+    },
+    {
+      "id": "caption-group-29",
+      "frame": 7,
+      "start": 19.476,
+      "end": 20.068,
+      "text": "esa resta",
+      "words": [
+        {
+          "id": "caption-word-29-0",
+          "text": "esa",
+          "start": 19.476,
+          "end": 19.65
+        },
+        {
+          "id": "caption-word-29-1",
+          "text": "resta",
+          "start": 19.72,
+          "end": 20.033
+        }
+      ]
+    },
+    {
+      "id": "caption-group-30",
+      "frame": 7,
+      "start": 20.068,
+      "end": 20.463,
+      "text": "antes de",
+      "words": [
+        {
+          "id": "caption-word-30-0",
+          "text": "antes",
+          "start": 20.068,
+          "end": 20.324
+        },
+        {
+          "id": "caption-word-30-1",
+          "text": "de",
+          "start": 20.347,
+          "end": 20.405
+        }
+      ]
+    },
+    {
+      "id": "caption-group-31",
+      "frame": 7,
+      "start": 20.463,
+      "end": 21.101,
+      "text": "que aceptes",
+      "words": [
+        {
+          "id": "caption-word-31-0",
+          "text": "que",
+          "start": 20.463,
+          "end": 20.533
+        },
+        {
+          "id": "caption-word-31-1",
+          "text": "aceptes",
+          "start": 20.556,
+          "end": 21.009
+        }
+      ]
+    },
+    {
+      "id": "caption-group-32",
+      "frame": 7,
+      "start": 21.101,
+      "end": 21.345,
+      "text": "y te",
+      "words": [
+        {
+          "id": "caption-word-32-0",
+          "text": "y",
+          "start": 21.101,
+          "end": 21.159
+        },
+        {
+          "id": "caption-word-32-1",
+          "text": "te",
+          "start": 21.229,
+          "end": 21.299
+        }
+      ]
+    },
+    {
+      "id": "caption-group-33",
+      "frame": 7,
+      "start": 21.345,
+      "end": 21.717,
+      "text": "dice si",
+      "words": [
+        {
+          "id": "caption-word-33-0",
+          "text": "dice",
+          "start": 21.345,
+          "end": 21.566
+        },
+        {
+          "id": "caption-word-33-1",
+          "text": "si",
+          "start": 21.612,
+          "end": 21.682
+        }
+      ]
+    },
+    {
+      "id": "caption-group-34",
+      "frame": 7,
+      "start": 21.717,
+      "end": 22.986,
+      "text": "el viaje conviene.",
+      "words": [
+        {
+          "id": "caption-word-34-0",
+          "text": "el",
+          "start": 21.717,
+          "end": 21.763
+        },
+        {
+          "id": "caption-word-34-1",
+          "text": "viaje",
+          "start": 21.821,
+          "end": 22.111
+        },
+        {
+          "id": "caption-word-34-2",
+          "text": "conviene.",
+          "start": 22.158,
+          "end": 22.866
+        }
+      ]
+    },
+    {
+      "id": "caption-group-35",
+      "frame": 8,
+      "start": 23.016,
+      "end": 23.422,
+      "text": "Así la",
+      "words": [
+        {
+          "id": "caption-word-35-0",
+          "text": "Así",
+          "start": 23.016,
+          "end": 23.271
+        },
+        {
+          "id": "caption-word-35-1",
+          "text": "la",
+          "start": 23.329,
+          "end": 23.376
+        }
+      ]
+    },
+    {
+      "id": "caption-group-36",
+      "frame": 8,
+      "start": 23.422,
+      "end": 24.061,
+      "text": "gasolina no",
+      "words": [
+        {
+          "id": "caption-word-36-0",
+          "text": "gasolina",
+          "start": 23.422,
+          "end": 23.84
+        },
+        {
+          "id": "caption-word-36-1",
+          "text": "no",
+          "start": 23.922,
+          "end": 24.014
+        }
+      ]
+    },
+    {
+      "id": "caption-group-37",
+      "frame": 8,
+      "start": 24.061,
+      "end": 24.444,
+      "text": "se come",
+      "words": [
+        {
+          "id": "caption-word-37-0",
+          "text": "se",
+          "start": 24.061,
+          "end": 24.142
+        },
+        {
+          "id": "caption-word-37-1",
+          "text": "come",
+          "start": 24.189,
+          "end": 24.409
+        }
+      ]
+    },
+    {
+      "id": "caption-group-38",
+      "frame": 8,
+      "start": 24.444,
+      "end": 25.319,
+      "text": "tu ganancia.",
+      "words": [
+        {
+          "id": "caption-word-38-0",
+          "text": "tu",
+          "start": 24.444,
+          "end": 24.525
+        },
+        {
+          "id": "caption-word-38-1",
+          "text": "ganancia.",
+          "start": 24.572,
+          "end": 25.199
+        }
+      ]
+    },
+    {
+      "id": "caption-group-39",
+      "frame": 9,
+      "start": 25.349,
+      "end": 26.359,
+      "text": "Descarga Checa y",
+      "words": [
+        {
+          "id": "caption-word-39-0",
+          "text": "Descarga",
+          "start": 25.349,
+          "end": 25.895
+        },
+        {
+          "id": "caption-word-39-1",
+          "text": "Checa",
+          "start": 25.941,
+          "end": 26.197
+        },
+        {
+          "id": "caption-word-39-2",
+          "text": "y",
+          "start": 26.243,
+          "end": 26.278
+        }
+      ]
+    },
+    {
+      "id": "caption-group-40",
+      "frame": 9,
+      "start": 26.359,
+      "end": 27.056,
+      "text": "checa cuánto",
+      "words": [
+        {
+          "id": "caption-word-40-0",
+          "text": "checa",
+          "start": 26.359,
+          "end": 26.638
+        },
+        {
+          "id": "caption-word-40-1",
+          "text": "cuánto",
+          "start": 26.684,
+          "end": 26.998
+        }
+      ]
+    },
+    {
+      "id": "caption-group-41",
+      "frame": 9,
+      "start": 27.056,
+      "end": 27.439,
+      "text": "te queda",
+      "words": [
+        {
+          "id": "caption-word-41-0",
+          "text": "te",
+          "start": 27.056,
+          "end": 27.125
+        },
+        {
+          "id": "caption-word-41-1",
+          "text": "queda",
+          "start": 27.183,
+          "end": 27.392
+        }
+      ]
+    },
+    {
+      "id": "caption-group-42",
+      "frame": 9,
+      "start": 27.439,
+      "end": 28.627,
+      "text": "de cada viaje.",
+      "words": [
+        {
+          "id": "caption-word-42-0",
+          "text": "de",
+          "start": 27.439,
+          "end": 27.508
+        },
+        {
+          "id": "caption-word-42-1",
+          "text": "cada",
+          "start": 27.567,
+          "end": 27.799
+        },
+        {
+          "id": "caption-word-42-2",
+          "text": "viaje.",
+          "start": 27.834,
+          "end": 28.507
+        }
+      ]
+    }
+  ]
+}

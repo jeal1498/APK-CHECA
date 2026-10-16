@@ -1,0 +1,70 @@
+<template>
+  <style>
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Regular.ttf') format('truetype'); font-weight: 400; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Medium.ttf') format('truetype'); font-weight: 500 600; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Bold.ttf') format('truetype'); font-weight: 700 900; font-display: block; }
+    @font-face{ font-family: 'Fira Code'; src: url('assets/fonts/FiraCode.ttf') format('truetype'); font-weight: 300 700; font-display: block; }
+    #root { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; font-family: 'Fira Sans', sans-serif; color: #F1F5F2; }
+    .clip { position: absolute; }
+    .P-ground { inset: 0; background: #0D0D0D; }
+    .P-stage { left: 0; top: 0; width: 1080px; height: 1600px; transform-origin: 50% 45%; }
+    .P-glow { position: absolute; left: 140px; top: 420px; width: 800px; height: 800px; border-radius: 50%; background: radial-gradient(circle, rgba(34,197,94,.20), rgba(34,197,94,0) 65%); }
+    .P-mask { position: absolute; left: 0; right: 0; overflow: hidden; text-align: center; }
+    .P-mask > div { font-weight: 800; text-transform: lowercase; letter-spacing: -.04em; line-height: 1.02; white-space: nowrap; }
+    .P-ej { position: absolute; left: 0; right: 0; top: 1500px; text-align: center; font-family: 'Fira Code', monospace; font-size: 26px; letter-spacing: .12em; text-transform: uppercase; color: #6B736F; }
+    .P-num { font-family: 'Fira Code', monospace; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .P-card { position: absolute; width: 620px; border-radius: 36px; background: #F4F5F4; color: #111; padding: 48px 52px 44px; box-shadow: 0 30px 80px rgba(0,0,0,.7); }
+    .P-card .k { font-family: 'Fira Code', monospace; font-weight: 500; font-size: 28px; letter-spacing: .14em; text-transform: uppercase; color: #5C635F; }
+    .P-card .f { font-family: 'Fira Code', monospace; font-weight: 700; font-size: 112px; letter-spacing: -.03em; line-height: 1; margin-top: 22px; }
+    .P-card .r { display: flex; align-items: center; gap: 22px; font-size: 40px; font-weight: 500; margin-top: 28px; color: #222; }
+    .P-card .d { width: 20px; height: 20px; border-radius: 50%; background: #111; flex: none; }
+    .P-card .s { width: 20px; height: 20px; background: #111; flex: none; }
+    .P-card .b { margin-top: 38px; height: 104px; border-radius: 20px; background: #111; color: #F4F5F4; display: flex; align-items: center; justify-content: center; font-size: 44px; font-weight: 700; }
+
+    #f04-pierde-ground { background: #0D0D0D; }
+
+    #f04-pierde-tot { position: absolute; left: 0; right: 0; top: 300px; text-align: center; font-family: 'Fira Code', monospace; font-size: 44px; letter-spacing: .14em; color: #8A938E; text-transform: uppercase; }
+    #f04-pierde-bar { position: absolute; left: 90px; top: 400px; width: 900px; height: 150px; display: flex; gap: 14px; }
+    .f04-pierde-seg { flex: 1; border-radius: 24px; background: #22C55E; display: flex; align-items: center; justify-content: center; font-family: 'Fira Code', monospace; font-weight: 700; font-size: 64px; color: #04120A; }
+    #f04-pierde-blk { position: absolute; left: 290px; top: 760px; width: 500px; height: 400px; border-radius: 36px; background: #1A0F12; border: 4px solid #F43F5E; box-shadow: 0 0 70px rgba(244,63,94,.4); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    #f04-pierde-blk .k { font-size: 36px; line-height: 1; letter-spacing: .14em; color: #AFB7B2; text-transform: uppercase; font-family: 'Fira Code', monospace; }
+    #f04-pierde-blk .v { font-family: 'Fira Code', monospace; font-weight: 700; font-size: 190px; line-height: 1; color: #F43F5E; margin-top: 16px; }
+    #f04-pierde-flash { position: absolute; inset: 0; background: #F43F5E; opacity: 0; }
+
+  </style>
+
+  <div id="root" data-composition-id="04-pierde" data-width="1080" data-height="1920" data-start="0" data-duration="3.587">
+    <div id="f04-pierde-ground" class="clip P-ground" data-start="0" data-duration="3.587" data-track-index="0"></div>
+    <div id="f04-pierde-stage" class="clip P-stage" data-start="0" data-duration="3.587" data-track-index="1">
+      <div id="f04-pierde-flash"></div>
+      <div id="f04-pierde-tot">viaje $90</div>
+      <div id="f04-pierde-bar"><div class="f04-pierde-seg" id="f04-pierde-s1">$30</div><div class="f04-pierde-seg" id="f04-pierde-s2">$30</div><div class="f04-pierde-seg" id="f04-pierde-s3">$30</div></div>
+      <div id="f04-pierde-blk"><div class="k">gasolina</div><div class="v">−$30</div></div>
+      <div class="P-ej">Números de ejemplo</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      var D = 3.587;
+      tl.fromTo("#f04-pierde-bar", {"scaleX": 0.2, "opacity": 0, "transformOrigin": "50% 50%"}, {"scaleX": 1, "opacity": 1, "duration": 0.4, "ease": "power3.out"}, 0);
+      tl.fromTo("#f04-pierde-tot", {"opacity": 0}, {"opacity": 1, "duration": 0.3}, 0.1);
+      tl.set("#f04-pierde-blk", {"opacity": 0}, 0);
+      tl.to("#f04-pierde-s3", {"backgroundColor": "#F43F5E", "color": "#fff", "duration": 0.2}, 1.538);
+      tl.fromTo("#f04-pierde-blk", {"y": -380, "scale": 0.5, "opacity": 0}, {"y": 0, "scale": 1, "opacity": 1, "duration": 0.5, "ease": "back.out(1.5)"}, 2.153);
+      tl.fromTo("#f04-pierde-flash", {"opacity": 0.3}, {"opacity": 0, "duration": 0.45, "ease": "power2.out", "immediateRender": false}, 2.467);
+      tl.to("#f04-pierde-stage", {"x": 14, "duration": 0.05, "ease": "none"}, 2.467);
+      tl.to("#f04-pierde-stage", {"x": -11.9, "duration": 0.05, "ease": "none"}, 2.517);
+      tl.to("#f04-pierde-stage", {"x": 8.4, "duration": 0.05, "ease": "none"}, 2.567);
+      tl.to("#f04-pierde-stage", {"x": -5.6000000000000005, "duration": 0.05, "ease": "none"}, 2.617);
+      tl.to("#f04-pierde-stage", {"x": 2.8000000000000003, "duration": 0.05, "ease": "none"}, 2.667);
+      tl.to("#f04-pierde-stage", {"x": 0, "duration": 0.05, "ease": "none"}, 2.717);
+      tl.fromTo("#f04-pierde-stage", { scale: 1 }, { scale: 1.04, duration: D - 0, ease: "none" }, 0);
+
+      window.__timelines["04-pierde"] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,751 @@
+{
+  "bgm": {
+    "path": "assets/audio/bgm.mp3",
+    "source": "host",
+    "volume": 0.12
+  },
+  "voices": [
+    {
+      "frame": 1,
+      "path": "assets/voice/01.wav",
+      "duration_s": 3.437,
+      "words": [
+        {
+          "id": "w0",
+          "text": "Cargas",
+          "start": 0.0,
+          "end": 0.383
+        },
+        {
+          "id": "w1",
+          "text": "gasolina",
+          "start": 0.43,
+          "end": 0.848
+        },
+        {
+          "id": "w2",
+          "text": "el",
+          "start": 0.882,
+          "end": 0.94
+        },
+        {
+          "id": "w3",
+          "text": "lunes",
+          "start": 0.964,
+          "end": 1.312
+        },
+        {
+          "id": "w4",
+          "text": "y",
+          "start": 1.393,
+          "end": 1.428
+        },
+        {
+          "id": "w5",
+          "text": "el",
+          "start": 1.498,
+          "end": 1.556
+        },
+        {
+          "id": "w6",
+          "text": "jueves",
+          "start": 1.602,
+          "end": 1.985
+        },
+        {
+          "id": "w7",
+          "text": "ya",
+          "start": 2.043,
+          "end": 2.136
+        },
+        {
+          "id": "w8",
+          "text": "andas",
+          "start": 2.159,
+          "end": 2.403
+        },
+        {
+          "id": "w9",
+          "text": "en",
+          "start": 2.461,
+          "end": 2.508
+        },
+        {
+          "id": "w10",
+          "text": "la",
+          "start": 2.543,
+          "end": 2.601
+        },
+        {
+          "id": "w11",
+          "text": "reserva.",
+          "start": 2.659,
+          "end": 3.437
+        }
+      ]
+    },
+    {
+      "frame": 2,
+      "path": "assets/voice/02.wav",
+      "duration_s": 3.669,
+      "words": [
+        {
+          "id": "w0",
+          "text": "Cada",
+          "start": 0.0,
+          "end": 0.29
+        },
+        {
+          "id": "w1",
+          "text": "kilómetro",
+          "start": 0.325,
+          "end": 0.755
+        },
+        {
+          "id": "w2",
+          "text": "te",
+          "start": 0.801,
+          "end": 0.859
+        },
+        {
+          "id": "w3",
+          "text": "cuesta",
+          "start": 0.906,
+          "end": 1.207
+        },
+        {
+          "id": "w4",
+          "text": "más",
+          "start": 1.265,
+          "end": 1.428
+        },
+        {
+          "id": "w5",
+          "text": "o",
+          "start": 1.498,
+          "end": 1.521
+        },
+        {
+          "id": "w6",
+          "text": "menos",
+          "start": 1.567,
+          "end": 1.846
+        },
+        {
+          "id": "w7",
+          "text": "dos",
+          "start": 1.892,
+          "end": 2.043
+        },
+        {
+          "id": "w8",
+          "text": "pesos",
+          "start": 2.113,
+          "end": 2.392
+        },
+        {
+          "id": "w9",
+          "text": "de",
+          "start": 2.438,
+          "end": 2.496
+        },
+        {
+          "id": "w10",
+          "text": "pura",
+          "start": 2.543,
+          "end": 2.763
+        },
+        {
+          "id": "w11",
+          "text": "gasolina.",
+          "start": 2.81,
+          "end": 3.669
+        }
+      ]
+    },
+    {
+      "frame": 3,
+      "path": "assets/voice/03.wav",
+      "duration_s": 2.461,
+      "words": [
+        {
+          "id": "w0",
+          "text": "Imagina",
+          "start": 0.0,
+          "end": 0.464
+        },
+        {
+          "id": "w1",
+          "text": "un",
+          "start": 0.499,
+          "end": 0.546
+        },
+        {
+          "id": "w2",
+          "text": "viaje",
+          "start": 0.592,
+          "end": 0.836
+        },
+        {
+          "id": "w3",
+          "text": "que",
+          "start": 0.894,
+          "end": 0.964
+        },
+        {
+          "id": "w4",
+          "text": "paga",
+          "start": 1.022,
+          "end": 1.265
+        },
+        {
+          "id": "w5",
+          "text": "noventa",
+          "start": 1.312,
+          "end": 1.707
+        },
+        {
+          "id": "w6",
+          "text": "pesos.",
+          "start": 1.753,
+          "end": 2.461
+        }
+      ]
+    },
+    {
+      "frame": 4,
+      "path": "assets/voice/04.wav",
+      "duration_s": 3.437,
+      "words": [
+        {
+          "id": "w0",
+          "text": "Entre",
+          "start": 0.0,
+          "end": 0.313
+        },
+        {
+          "id": "w1",
+          "text": "la",
+          "start": 0.348,
+          "end": 0.406
+        },
+        {
+          "id": "w2",
+          "text": "recogida",
+          "start": 0.453,
+          "end": 0.94
+        },
+        {
+          "id": "w3",
+          "text": "y",
+          "start": 0.998,
+          "end": 1.033
+        },
+        {
+          "id": "w4",
+          "text": "el",
+          "start": 1.068,
+          "end": 1.126
+        },
+        {
+          "id": "w5",
+          "text": "viaje,",
+          "start": 1.184,
+          "end": 1.567
+        },
+        {
+          "id": "w6",
+          "text": "la",
+          "start": 1.649,
+          "end": 1.741
+        },
+        {
+          "id": "w7",
+          "text": "gasolina",
+          "start": 1.788,
+          "end": 2.241
+        },
+        {
+          "id": "w8",
+          "text": "se",
+          "start": 2.299,
+          "end": 2.38
+        },
+        {
+          "id": "w9",
+          "text": "lleva",
+          "start": 2.403,
+          "end": 2.67
+        },
+        {
+          "id": "w10",
+          "text": "treinta.",
+          "start": 2.717,
+          "end": 3.437
+        }
+      ]
+    },
+    {
+      "frame": 5,
+      "path": "assets/voice/05.wav",
+      "duration_s": 1.3,
+      "words": [
+        {
+          "id": "w0",
+          "text": "Te",
+          "start": 0.0,
+          "end": 0.174
+        },
+        {
+          "id": "w1",
+          "text": "quedan",
+          "start": 0.232,
+          "end": 0.522
+        },
+        {
+          "id": "w2",
+          "text": "sesenta.",
+          "start": 0.592,
+          "end": 1.3
+        }
+      ]
+    },
+    {
+      "frame": 6,
+      "path": "assets/voice/06.wav",
+      "duration_s": 3.111,
+      "words": [
+        {
+          "id": "w0",
+          "text": "Un",
+          "start": 0.0,
+          "end": 0.139
+        },
+        {
+          "id": "w1",
+          "text": "tercio",
+          "start": 0.197,
+          "end": 0.476
+        },
+        {
+          "id": "w2",
+          "text": "de",
+          "start": 0.511,
+          "end": 0.58
+        },
+        {
+          "id": "w3",
+          "text": "tu",
+          "start": 0.615,
+          "end": 0.708
+        },
+        {
+          "id": "w4",
+          "text": "viaje",
+          "start": 0.755,
+          "end": 1.033
+        },
+        {
+          "id": "w5",
+          "text": "se",
+          "start": 1.08,
+          "end": 1.161
+        },
+        {
+          "id": "w6",
+          "text": "fue",
+          "start": 1.231,
+          "end": 1.382
+        },
+        {
+          "id": "w7",
+          "text": "al",
+          "start": 1.428,
+          "end": 1.498
+        },
+        {
+          "id": "w8",
+          "text": "tanque",
+          "start": 1.567,
+          "end": 1.939
+        },
+        {
+          "id": "w9",
+          "text": "y",
+          "start": 2.02,
+          "end": 2.09
+        },
+        {
+          "id": "w10",
+          "text": "ni",
+          "start": 2.171,
+          "end": 2.252
+        },
+        {
+          "id": "w11",
+          "text": "lo",
+          "start": 2.31,
+          "end": 2.38
+        },
+        {
+          "id": "w12",
+          "text": "notaste.",
+          "start": 2.426,
+          "end": 3.111
+        }
+      ]
+    },
+    {
+      "frame": 7,
+      "path": "assets/voice/07.wav",
+      "duration_s": 4.551,
+      "words": [
+        {
+          "id": "w0",
+          "text": "La",
+          "start": 0.0,
+          "end": 0.221
+        },
+        {
+          "id": "w1",
+          "text": "app",
+          "start": 0.255,
+          "end": 0.337
+        },
+        {
+          "id": "w2",
+          "text": "Checa",
+          "start": 0.406,
+          "end": 0.755
+        },
+        {
+          "id": "w3",
+          "text": "hace",
+          "start": 0.801,
+          "end": 1.115
+        },
+        {
+          "id": "w4",
+          "text": "esa",
+          "start": 1.161,
+          "end": 1.335
+        },
+        {
+          "id": "w5",
+          "text": "resta",
+          "start": 1.405,
+          "end": 1.718
+        },
+        {
+          "id": "w6",
+          "text": "antes",
+          "start": 1.753,
+          "end": 2.009
+        },
+        {
+          "id": "w7",
+          "text": "de",
+          "start": 2.032,
+          "end": 2.09
+        },
+        {
+          "id": "w8",
+          "text": "que",
+          "start": 2.148,
+          "end": 2.218
+        },
+        {
+          "id": "w9",
+          "text": "aceptes",
+          "start": 2.241,
+          "end": 2.694
+        },
+        {
+          "id": "w10",
+          "text": "y",
+          "start": 2.786,
+          "end": 2.844
+        },
+        {
+          "id": "w11",
+          "text": "te",
+          "start": 2.914,
+          "end": 2.984
+        },
+        {
+          "id": "w12",
+          "text": "dice",
+          "start": 3.03,
+          "end": 3.251
+        },
+        {
+          "id": "w13",
+          "text": "si",
+          "start": 3.297,
+          "end": 3.367
+        },
+        {
+          "id": "w14",
+          "text": "el",
+          "start": 3.402,
+          "end": 3.448
+        },
+        {
+          "id": "w15",
+          "text": "viaje",
+          "start": 3.506,
+          "end": 3.796
+        },
+        {
+          "id": "w16",
+          "text": "conviene.",
+          "start": 3.843,
+          "end": 4.551
+        }
+      ]
+    },
+    {
+      "frame": 8,
+      "path": "assets/voice/08.wav",
+      "duration_s": 2.183,
+      "words": [
+        {
+          "id": "w0",
+          "text": "Así",
+          "start": 0.0,
+          "end": 0.255
+        },
+        {
+          "id": "w1",
+          "text": "la",
+          "start": 0.313,
+          "end": 0.36
+        },
+        {
+          "id": "w2",
+          "text": "gasolina",
+          "start": 0.406,
+          "end": 0.824
+        },
+        {
+          "id": "w3",
+          "text": "no",
+          "start": 0.906,
+          "end": 0.998
+        },
+        {
+          "id": "w4",
+          "text": "se",
+          "start": 1.045,
+          "end": 1.126
+        },
+        {
+          "id": "w5",
+          "text": "come",
+          "start": 1.173,
+          "end": 1.393
+        },
+        {
+          "id": "w6",
+          "text": "tu",
+          "start": 1.428,
+          "end": 1.509
+        },
+        {
+          "id": "w7",
+          "text": "ganancia.",
+          "start": 1.556,
+          "end": 2.183
+        }
+      ]
+    },
+    {
+      "frame": 9,
+      "path": "assets/voice/09.wav",
+      "duration_s": 3.158,
+      "words": [
+        {
+          "id": "w0",
+          "text": "Descarga",
+          "start": 0.0,
+          "end": 0.546
+        },
+        {
+          "id": "w1",
+          "text": "Checa",
+          "start": 0.592,
+          "end": 0.848
+        },
+        {
+          "id": "w2",
+          "text": "y",
+          "start": 0.894,
+          "end": 0.929
+        },
+        {
+          "id": "w3",
+          "text": "checa",
+          "start": 1.01,
+          "end": 1.289
+        },
+        {
+          "id": "w4",
+          "text": "cuánto",
+          "start": 1.335,
+          "end": 1.649
+        },
+        {
+          "id": "w5",
+          "text": "te",
+          "start": 1.707,
+          "end": 1.776
+        },
+        {
+          "id": "w6",
+          "text": "queda",
+          "start": 1.834,
+          "end": 2.043
+        },
+        {
+          "id": "w7",
+          "text": "de",
+          "start": 2.09,
+          "end": 2.159
+        },
+        {
+          "id": "w8",
+          "text": "cada",
+          "start": 2.218,
+          "end": 2.45
+        },
+        {
+          "id": "w9",
+          "text": "viaje.",
+          "start": 2.485,
+          "end": 3.158
+        }
+      ]
+    }
+  ],
+  "sfx": [
+    {
+      "frame": 1,
+      "file": "assets/sfx/impact-bass-1.mp3",
+      "offset_s": 0.0,
+      "duration_s": 2.12,
+      "volume": 0.5
+    },
+    {
+      "frame": 1,
+      "file": "assets/sfx/error.mp3",
+      "offset_s": 2.41,
+      "duration_s": 1.62,
+      "volume": 0.25
+    },
+    {
+      "frame": 2,
+      "file": "assets/sfx/click-soft.mp3",
+      "offset_s": 1.64,
+      "duration_s": 0.37,
+      "volume": 0.4
+    },
+    {
+      "frame": 2,
+      "file": "assets/sfx/ping.mp3",
+      "offset_s": 2.29,
+      "duration_s": 1.32,
+      "volume": 0.3
+    },
+    {
+      "frame": 3,
+      "file": "assets/sfx/whoosh-short.mp3",
+      "offset_s": 0.0,
+      "duration_s": 0.57,
+      "volume": 0.3
+    },
+    {
+      "frame": 3,
+      "file": "assets/sfx/pop.mp3",
+      "offset_s": 1.06,
+      "duration_s": 0.72,
+      "volume": 0.35
+    },
+    {
+      "frame": 4,
+      "file": "assets/sfx/glitch-1.mp3",
+      "offset_s": 2.15,
+      "duration_s": 2.64,
+      "volume": 0.3
+    },
+    {
+      "frame": 4,
+      "file": "assets/sfx/impact-bass-1.mp3",
+      "offset_s": 2.47,
+      "duration_s": 2.12,
+      "volume": 0.4
+    },
+    {
+      "frame": 5,
+      "file": "assets/sfx/ping.mp3",
+      "offset_s": 0.1,
+      "duration_s": 1.32,
+      "volume": 0.3
+    },
+    {
+      "frame": 6,
+      "file": "assets/sfx/whoosh-short.mp3",
+      "offset_s": 0.98,
+      "duration_s": 0.57,
+      "volume": 0.3
+    },
+    {
+      "frame": 6,
+      "file": "assets/sfx/error.mp3",
+      "offset_s": 1.32,
+      "duration_s": 1.62,
+      "volume": 0.25
+    },
+    {
+      "frame": 7,
+      "file": "assets/sfx/whoosh-short.mp3",
+      "offset_s": 0.55,
+      "duration_s": 0.57,
+      "volume": 0.3
+    },
+    {
+      "frame": 7,
+      "file": "assets/sfx/pop.mp3",
+      "offset_s": 1.16,
+      "duration_s": 0.72,
+      "volume": 0.4
+    },
+    {
+      "frame": 8,
+      "file": "assets/sfx/chime.mp3",
+      "offset_s": 1.46,
+      "duration_s": 2.54,
+      "volume": 0.4
+    },
+    {
+      "frame": 9,
+      "file": "assets/sfx/pop.mp3",
+      "offset_s": 0.0,
+      "duration_s": 0.72,
+      "volume": 0.3
+    },
+    {
+      "frame": 9,
+      "file": "assets/sfx/chime.mp3",
+      "offset_s": 0.49,
+      "duration_s": 2.54,
+      "volume": 0.4
+    },
+    {
+      "frame": 9,
+      "file": "assets/sfx/sparkle.mp3",
+      "offset_s": 1.73,
+      "duration_s": 1.8,
+      "volume": 0.3
+    }
+  ]
+}

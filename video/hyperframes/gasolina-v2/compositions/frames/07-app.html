@@ -1,0 +1,87 @@
+<template>
+  <style>
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Regular.ttf') format('truetype'); font-weight: 400; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Medium.ttf') format('truetype'); font-weight: 500 600; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Bold.ttf') format('truetype'); font-weight: 700 900; font-display: block; }
+    @font-face{ font-family: 'Fira Code'; src: url('assets/fonts/FiraCode.ttf') format('truetype'); font-weight: 300 700; font-display: block; }
+    #root { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; font-family: 'Fira Sans', sans-serif; color: #F1F5F2; }
+    .clip { position: absolute; }
+    .P-ground { inset: 0; background: #0D0D0D; }
+    .P-stage { left: 0; top: 0; width: 1080px; height: 1600px; transform-origin: 50% 45%; }
+    .P-glow { position: absolute; left: 140px; top: 420px; width: 800px; height: 800px; border-radius: 50%; background: radial-gradient(circle, rgba(34,197,94,.20), rgba(34,197,94,0) 65%); }
+    .P-mask { position: absolute; left: 0; right: 0; overflow: hidden; text-align: center; }
+    .P-mask > div { font-weight: 800; text-transform: lowercase; letter-spacing: -.04em; line-height: 1.02; white-space: nowrap; }
+    .P-ej { position: absolute; left: 0; right: 0; top: 1500px; text-align: center; font-family: 'Fira Code', monospace; font-size: 26px; letter-spacing: .12em; text-transform: uppercase; color: #6B736F; }
+    .P-num { font-family: 'Fira Code', monospace; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .P-card { position: absolute; width: 620px; border-radius: 36px; background: #F4F5F4; color: #111; padding: 48px 52px 44px; box-shadow: 0 30px 80px rgba(0,0,0,.7); }
+    .P-card .k { font-family: 'Fira Code', monospace; font-weight: 500; font-size: 28px; letter-spacing: .14em; text-transform: uppercase; color: #5C635F; }
+    .P-card .f { font-family: 'Fira Code', monospace; font-weight: 700; font-size: 112px; letter-spacing: -.03em; line-height: 1; margin-top: 22px; }
+    .P-card .r { display: flex; align-items: center; gap: 22px; font-size: 40px; font-weight: 500; margin-top: 28px; color: #222; }
+    .P-card .d { width: 20px; height: 20px; border-radius: 50%; background: #111; flex: none; }
+    .P-card .s { width: 20px; height: 20px; background: #111; flex: none; }
+    .P-card .b { margin-top: 38px; height: 104px; border-radius: 20px; background: #111; color: #F4F5F4; display: flex; align-items: center; justify-content: center; font-size: 44px; font-weight: 700; }
+
+    #f07-app-ground { background: #0D0D0D; }
+
+    #f07-app-pw .cp { --u: 1; width: calc(860px * var(--u)); border-radius: calc(40px * var(--u)); background: #181C1A; border: calc(3px * var(--u)) solid #2E3532; overflow: hidden; box-shadow: 0 calc(24px * var(--u)) calc(60px * var(--u)) rgba(0,0,0,.6); font-family: "Fira Sans", sans-serif; color: #F2F5F3; }
+    #f07-app-pw .cp.cp-oro { border: calc(10px * var(--u)) solid #E8B84A; }
+    #f07-app-pw .cp-banda { height: calc(100px * var(--u)); display: flex; align-items: center; justify-content: space-between; padding: 0 calc(34px * var(--u)); color: #08130C; }
+    #f07-app-pw .cp-verde .cp-banda { background: #22C55E; }
+    #f07-app-pw .cp-amarillo .cp-banda { background: #F5B70A; }
+    #f07-app-pw .cp-rojo .cp-banda { background: #EF4444; color: #fff; }
+    #f07-app-pw .cp-apagada .cp-banda { opacity: .5; }
+    #f07-app-pw .cp-lado { width: calc(190px * var(--u)); display: flex; align-items: center; gap: calc(8px * var(--u)); }
+    #f07-app-pw .cp-lado.der { justify-content: flex-end; }
+    #f07-app-pw .cp-app { background: #222826; color: #fff; border-radius: 999px; padding: calc(6px * var(--u)) calc(16px * var(--u)); font-size: calc(26px * var(--u)); font-weight: 700; }
+    #f07-app-pw .cp-accion { font-size: calc(50px * var(--u)); font-weight: 700; letter-spacing: calc(5px * var(--u)); }
+    #f07-app-pw .cp-cuerpo { padding: calc(34px * var(--u)) calc(30px * var(--u)) calc(30px * var(--u)); text-align: center; }
+    #f07-app-pw .cp-neta { font-family: "Fira Code", monospace; font-weight: 700; font-size: calc(124px * var(--u)); line-height: 1; }
+    #f07-app-pw .cp-neta small { font-size: .4em; color: #B4BCB7; }
+    #f07-app-pw .cp-linea { font-size: calc(38px * var(--u)); color: #B4BCB7; margin-top: calc(22px * var(--u)); }
+    #f07-app-pw .cp-fichas { display: flex; gap: calc(20px * var(--u)); margin-top: calc(40px * var(--u)); }
+    #f07-app-pw .cp-ficha { flex: 1; height: calc(156px * var(--u)); border-radius: calc(28px * var(--u)); background: #181C1A; border: calc(3px * var(--u)) solid transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    #f07-app-pw .cp-ficha b { font-family: "Fira Code", monospace; font-weight: 700; font-size: calc(48px * var(--u)); white-space: nowrap; }
+    #f07-app-pw .cp-ficha span { font-size: calc(28px * var(--u)); color: #7D8781; margin-top: calc(4px * var(--u)); }
+    #f07-app-pw .cp-ok b { color: #22C55E; }
+    #f07-app-pw .cp-mal { background: #381818; border-color: #EF4444; }
+    #f07-app-pw .cp-mal b { color: #EF4444; }
+
+    #f07-app-tit { top: 110px; height: 160px; } #f07-app-tit > div { font-size: 118px; } #f07-app-tit em { font-style: normal; color: #22C55E; }
+    #f07-app-phone { position: absolute; left: 290px; top: 330px; width: 500px; height: 1000px; border-radius: 64px; background: #0B0D0C; border: 6px solid #2A2E2C; overflow: hidden; }
+    #f07-app-map { position: absolute; inset: 0; background: repeating-linear-gradient(0deg, #141816 0 2px, transparent 2px 90px), repeating-linear-gradient(90deg, #141816 0 2px, transparent 2px 90px); }
+    #f07-app-card { left: 20px; top: 380px; transform: scale(.74); transform-origin: 0 0; }
+    #f07-app-scan { position: absolute; left: 0; right: 0; top: 0; height: 10px; background: #22C55E; box-shadow: 0 0 40px 14px rgba(34,197,94,.55); opacity: 0; }
+    #f07-app-pw { position: absolute; left: 303px; top: 560px; width: 473px; height: 380px; }
+
+  </style>
+
+  <div id="root" data-composition-id="07-app" data-width="1080" data-height="1920" data-start="0" data-duration="4.701">
+    <div id="f07-app-ground" class="clip P-ground" data-start="0" data-duration="4.701" data-track-index="0"></div>
+    <div id="f07-app-stage" class="clip P-stage" data-start="0" data-duration="4.701" data-track-index="1">
+      <div class="P-glow"></div>
+      <div id="f07-app-tit" class="P-mask"><div>la app <em>checa</em></div></div>
+      <div id="f07-app-phone"><div id="f07-app-map"></div><div id="f07-app-card" class="P-card" data-layout-allow-overlap><div class="k">Nueva solicitud</div><div class="f">$90.00</div><div class="r"><span class="d"></span>A 8 min (5 km)</div><div class="r"><span class="s"></span>Viaje: 25 min (10 km)</div><div class="b">Aceptar</div></div><div id="f07-app-scan"></div></div>
+      <div id="f07-app-pw" data-layout-allow-overlap><div id="f07-app-p0" class="cp cp-amarillo" style="position:absolute;left:0;top:0;--u:0.55"><div class="cp-banda"><div class="cp-lado"><span class="cp-app">UBER</span></div><div class="cp-accion">CONSIDERAR</div><div class="cp-lado der"><svg width="44" height="44" viewBox="0 0 24 24"><path d="M6 6 L18 18 M18 6 L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div></div><div class="cp-cuerpo"><div class="cp-neta">$60<small>&nbsp;netos</small></div><div class="cp-linea">Viaje $90&nbsp;·&nbsp;Gasolina −$30</div><div class="cp-fichas"><div class="cp-ficha cp-ok"><b>$164/h</b><span>por hora</span></div><div class="cp-ficha cp-mal"><b>$6.0/km</b><span>por km</span></div><div class="cp-ficha "><b>33 min</b><span>15 km total</span></div></div></div></div></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      var D = 4.701;
+      tl.fromTo("#f07-app-phone", {"y": 900}, {"y": 0, "duration": 0.5, "ease": "power3.out"}, 0);
+      tl.fromTo("#f07-app-tit > div", {"yPercent": 220}, {"yPercent": 0, "duration": 0.4, "ease": "power3.out"}, -0.095);
+      tl.fromTo("#f07-app-scan", {"y": 0, "opacity": 1}, {"y": 990, "opacity": 1, "duration": 0.7, "ease": "power1.inOut"}, 0.551);
+      tl.to("#f07-app-scan", {"opacity": 0, "duration": 0.15}, 1.251);
+      tl.fromTo("#f07-app-card", {"boxShadow": "0 30px 80px rgba(0,0,0,.7)"}, {"boxShadow": "0 0 0 8px #22C55E", "duration": 0.2, "yoyo": true, "repeat": 1}, 0.801);
+      tl.fromTo("#f07-app-pw", {"y": -600, "opacity": 0, "scale": 0.9}, {"y": 0, "opacity": 1, "scale": 1, "duration": 0.5, "ease": "back.out(1.3)"}, 1.155);
+      tl.to("#f07-app-phone", {"y": 12, "duration": 0.1, "yoyo": true, "repeat": 1, "ease": "power2.out"}, 1.535);
+      tl.fromTo("#f07-app-stage", { scale: 1 }, { scale: 1.05, duration: D - 0, ease: "none" }, 0);
+      tl.to("#f07-app-pw", {"scale": 1.06, "duration": 0.15, "yoyo": true, "repeat": 1}, 3.593);
+
+      window.__timelines["07-app"] = tl;
+    })();
+  </script>
+</template>
