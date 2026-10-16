@@ -19,7 +19,7 @@
 **Precio por día:** Básico $3.30, Estratega $2.20, Pro $2.46. Frase: «Con un viaje malo que evites a la semana, el Estratega ya se pagó». Sin cupones ni descuentos para nuevos clientes.
 
 ## Campaña actual: beta testers (octubre 2026)
-- Video: `marketing/CHECA/01_2026-10-14_beta-testers/video.mp4` (se publica el 14 oct; calendario en `marketing/videos/calendario.md`) (Eduardo a cuadro, conductor que hizo la app).
+- Video: `marketing/CHECA/14-10 - Beta testers/video.mp4` (se publica el 14 oct; calendario en `marketing/videos/calendario.md`) (Eduardo a cuadro, conductor que hizo la app).
 - Oferta: **50 accesos gratis por 3 meses** a cambio de feedback; **+1 mes gratis para ambos** si lo comparten con un amigo.
 - Canal: grupos de Facebook y WhatsApp de conductores. Llamada: «comenta YO o mándame mensaje privado».
 - Meta: primeros usuarios reales, opiniones y testimonios para el lanzamiento de pago. Al terminar los 3 meses, ofrecerles el plan de fundador.

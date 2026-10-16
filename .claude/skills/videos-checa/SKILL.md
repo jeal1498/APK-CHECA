@@ -1,13 +1,32 @@
 ---
 name: videos-checa
-description: Hacer videos cortos de Checa (TikTok, Reels, Shorts) con narrador de IA, en «Estilo HyperFrames» (el favorito de Eduardo desde el 14 oct 2026, plantilla checa-promo, proceso económico sin agentes y catálogo de recursos de movimiento para escoger según el momento) o en «1Volt a color» (Remotion 2D, line-art en SVG que se dibuja solo, letra mono, una idea por pantalla, colores por escena, subtítulos para redes y cambio de toma cada 3 s; el 3D queda en pausa). Guarda los guiones de Gemini en marketing/guiones-gemini.md. Úsala cuando Eduardo pida un video, un guion para video, el siguiente tema de marketing/temas-videos.md, cambiar la voz o la música de un video, o un video sin que él salga a cuadro.
+description: Hacer videos cortos de Checa (TikTok, Reels, Shorts) con narrador de IA, en «Estilo HyperFrames» (el favorito de Eduardo desde el 14 oct 2026, plantilla checa-promo, proceso económico sin agentes y catálogo de recursos de movimiento para escoger según el momento) o en «1Volt a color» (Remotion 2D, line-art en SVG que se dibuja solo, letra mono, una idea por pantalla, colores por escena, subtítulos para redes y cambio de toma cada 3 s; el 3D queda en pausa). Los guiones se entregan con auditoría de retención, hooks y etiquetas entre corchetes, y siempre con su v2 para la cuenta personal de Eduardo; se guardan en marketing/guiones-gemini.md y marketing/guiones-v2.md. Cada video va en marketing/CHECA/DD-MM - Nombre/ (y la v2 en marketing/PERSONAL/). Úsala cuando Eduardo pida un video, un guion para video, el siguiente tema de marketing/temas-videos.md, cambiar la voz o la música de un video, o un video sin que él salga a cuadro.
 ---
 
 # Videos de Checa
 
+## ⭐ Cómo se hacen los guiones (Eduardo, 16 oct 2026: «me gusta más como está hoy en día»; vale para v1 y v2 y para cualquier estilo)
+Actúa como experto en contenido viral y retención. Cada vez que entregues o generes un guion, en la misma respuesta y sin textos largos:
+1. **Auditoría previa** de la versión base (la v1 publicada o el borrador): 4–5 viñetas con áreas de oportunidad y los puntos donde el ritmo decae (lo plano, lo repetitivo, lo que llega tarde, promesas que no se cumplen, el cierre).
+2. **Hook inicial (0–3 s)**: voz + texto en pantalla + imagen a la vez, con la vivencia del conductor en sus propias palabras.
+3. **Hooks intermedios**, uno cada ~4–5 s: open loops, giros, cambios de ritmo, re-enganches visuales, pausa dramática antes del payoff, CTA específico y un cierre que enlaza con el inicio (loop de repetición).
+4. **Guion optimizado** en tabla `Corte · Tiempo · Voz · En pantalla/sonido · Técnica`, con la técnica entre corchetes y su función: `[Hook Inicial]`, `[Micro-hook]`, `[Open Loop]`, `[Re-enganche visual]`, `[Giro]`, `[Cambio de ritmo]`, `[Pausa dramática]`, `[Payoff del Open Loop]`, `[Giro emocional]`, `[CTA específico]`, `[Loop de repetición]`.
+5. **Voz limpia**: un párrafo sin corchetes con `[Corte]` entre líneas. Es lo único que va a ElevenLabs; las etiquetas son solo para Eduardo.
+6. **Ajustes de honestidad** (una línea) y **texto de publicación** (fórmula del calendario).
+7. Cierra preguntando si lo aprueba o lo pasa por Gemini. Con su «aprobado» haces voz y video; no esperes a Gemini si no lo pide.
+8. **Entrega siempre también la v2** (ver abajo), con el mismo formato.
+Guárdalos en `marketing/guiones-gemini.md` (v1) y `marketing/guiones-v2.md` (v2) con la columna «Técnica». Ejemplo completo del formato: `marketing/guiones-v2.md` (18-10 Cansancio y salud). Esto reemplaza la columna 🪝 y el formato viejo de «corte · voz · en pantalla».
+
+### Dónde se guarda cada video
+``marketing/CHECA/DD-MM - Nombre del video/`` para la cuenta de Checa y ``marketing/PERSONAL/DD-MM - Nombre del video/`` para la personal, cada carpeta con `video.mp4`, `portada.jpg` y `copy.txt`. El nombre empieza con el **día de publicación del calendario** (`DD-MM`, p. ej. `16-10 - Seguridad de noche`; no se puede usar `/` en carpetas) para que se ordenen por fecha; los que no tienen fecha van como `SIN FECHA - Nombre`. Calendario y textos: `marketing/videos/calendario.md`.
+
+### Versión v2 para la cuenta personal de Eduardo (16 oct 2026)
+Eduardo sube cada video a la cuenta de Checa y una **v2** a su TikTok personal. **De ahora en adelante, al entregar el guion de un video, entrega también el guion v2** en `marketing/guiones-v2.md` (reglas y formato en ese archivo): mismo tema y datos, otro gancho y otras palabras, cierre «sígueme», sin logo de Checa salvo que él lo pida, con su texto de publicación. La v2 se rehace completa (voz, escenas, render) en `marketing/PERSONAL/DD-MM - Nombre del video/` (misma estructura), con portada distinta de la v1. Empezó con el video 05 (Cansancio y salud).
+**Atajo v2 (probado con `video/hyperframes/salud-v2/`, ~35 s, sin agentes):** copia ese proyecto, cambia `SCRIPT.md` (una línea de voz por escena) y las escenas en `generar.py` (usa `t(n, "palabra")` para sincronizar con la voz; texto en máscara, sin logo) y corre **`./ensamblar.sh`**: pide la voz de Fernando a `video/scripts/elevenlabs.py` (con tiempos por palabra, sin Whisper), arma `audio_meta.json` y `STORYBOARD.md`, escenas, subtítulos con el estilo de `estilo-captions.txt`, `index.html`, transiciones y mezcla. Luego `npx hyperframes@0.8.154 check`, `snapshot --at ...`, `render --quality high --output renders/video.mp4` (~1.5 min) y portada con `portada/portada.html` (estilo curiosidad). Lecciones: las máscaras de texto parten de `yPercent: 220` (con 105 se asoma un pedazo); texto en máscara máx. ~950 px de ancho; no rotar las tarjetas con texto (el chequeo las marca como superpuestas). Si ElevenLabs responde 401 `quota_exceeded`, es la cuota de créditos de la clave «Claudio»: avisar a Eduardo.
+
 ## ⭐ Estilo HyperFrames (favorito de Eduardo, 14 oct 2026) — proceso ECONÓMICO
 
-Referencia: `marketing/CHECA/17_como-funciona-checa-hyperframes/video.mp4` (40 s, 9:16), proyecto **`video/hyperframes/checa-promo/`**. A Eduardo le gustó mucho. La primera vez costó ~1.7 M tokens (proceso completo de HyperFrames con 13 agentes); **no repetir eso**. Meta: **~150–300 mil tokens por video**.
+Referencia: `marketing/CHECA/SIN FECHA - Cómo funciona Checa (HyperFrames)/video.mp4` (40 s, 9:16), proyecto **`video/hyperframes/checa-promo/`**. A Eduardo le gustó mucho. La primera vez costó ~1.7 M tokens (proceso completo de HyperFrames con 13 agentes); **no repetir eso**. Meta: **~150–300 mil tokens por video**.
 
 **Reglas de ahorro (obligatorias):**
 1. **No correr el proceso completo de HyperFrames** (`/hyperframes` → intent, captura de la web, `build-frame`, leer las guías de story/visual/motion, `frame-packets`). Todo eso ya está hecho en `checa-promo`. No leer las skills `hyperframes-*` salvo que algo falle.
@@ -15,7 +34,7 @@ Referencia: `marketing/CHECA/17_como-funciona-checa-hyperframes/video.mp4` (40 s
 3. **Una sola hoja de cuadros** (`snapshot` con 6–8 tiempos) y **un solo render**.
 
 **Proceso (cada video nuevo):**
-1. Guion: igual que siempre (propones → Eduardo lo pasa por Gemini → guárdalo en `marketing/guiones-gemini.md`).
+1. Guion: con el formato de «Cómo se hacen los guiones» (arriba), v1 y v2 → Eduardo lo aprueba (o lo pasa por Gemini) → guárdalo en `marketing/guiones-gemini.md` y `marketing/guiones-v2.md`.
 2. Copia el proyecto: `cp -r video/hyperframes/checa-promo video/hyperframes/<tema>` y borra `compositions/frames/*`, `assets/voice`, `transcripcion`, `renders`, `.hyperframes/artifacts`, `index.html`, `audio_meta.json`, `audio_engine_meta.json`. Se quedan: `frame.md` (diseño ya corregido), `assets/checa-popup.html`, `assets/logo-7eb355dc.svg`, `assets/fonts/` (Fira de la app), `.hyperframes/caption-skin.html` (subtítulos con buen contraste), `alinear.py`.
 3. Escribe `SCRIPT.md` (una línea por escena, verbatim) y `STORYBOARD.md` corto: frontmatter (`format: 1080x1920`, `music: none`, `mode: autonomous`) + por escena `src`, `voiceover`, `transition_in`, `sfx` (de la librería: chime, click, click-soft, error, glitch-1/2/3, impact-bass-1/2, key-press, notification, ping, pop, riser, sparkle, typing, whoosh, whoosh-cinematic, whoosh-short) y 2–3 líneas de qué pasa. Sin blueprints ni Video direction largos.
 4. Música propia: `python3 -I video/scripts/elevenlabs.py musica <proy>/assets/audio bgm "<prompt>" <seg>` y `audio_meta.json` inicial `{"bgm":{"path":"assets/audio/bgm.mp3","source":"host"},"voices":[],"sfx":[]}`.
@@ -23,7 +42,7 @@ Referencia: `marketing/CHECA/17_como-funciona-checa-hyperframes/video.mp4` (40 s
 6. Transcripción en **español** (la del motor sale en inglés): por cada `assets/voice/NN.wav`, `npx hyperframes transcribe assets/voice/NN.wav --language es --model small --json -d transcripcion/NN`. Luego `sync-durations`, `fetch-sfx` y **al final** `python3 -I alinear.py` (fetch-sfx vuelve a meter las palabras mal; alinear siempre después).
 7. Escenas: copia la más parecida de la biblioteca a `compositions/frames/NN-nombre.html`, cambia el id de la composición, `data-duration` (= duración de la voz de esa línea) y textos/cifras; ajusta los tiempos de entrada a las palabras (`audio_meta.json` → `voices[].words`). El `data-composition-id` debe ser **igual al nombre del archivo** (`07-cabeza`), o `assemble-index` falla; los ids de los elementos internos sí van sin dígito al inicio (`f07-…`). Una pista (`data-track-index`) por clip, sin traslapes.
 8. Ensamble: `captions.mjs build`, `assemble-index.mjs`, `transitions.mjs inject` + `verify`, agrega `data-audio-group="voiceover"` a cada `<audio id="el-…-voice">` y corre `hyperframes-audio/scripts/carve.mjs --comp ./index.html` (baja la música cuando habla). Si `captions.html` vuelve a salir con placa clara, copia los colores de `checa-promo/compositions/captions.html` (placa negra, pendiente #8A938E, actual #04120A sobre #22C55E, dicha #F1F5F2).
-9. `npx hyperframes check` → `snapshot` (una hoja) → `render --quality high --output renders/video.mp4` → copia a `marketing/CHECA/NN_fecha_tema/` (`video.mp4`, `portada.jpg`, `copy.txt`). `.gitignore` del proyecto: `.hyperframes/`, `renders/`, `audio_engine_meta.json`. Commit `[skip ci]`, push a `main` y a la rama.
+9. `npx hyperframes check` → `snapshot` (una hoja) → `render --quality high --output renders/video.mp4` → copia a `marketing/CHECA/DD-MM - Nombre del video/` (`video.mp4`, `portada.jpg`, `copy.txt`). `.gitignore` del proyecto: `.hyperframes/`, `renders/`, `audio_engine_meta.json`. Commit `[skip ci]`, push a `main` y a la rama.
 
 **Atajo probado (video 18, `video/hyperframes/cuanto-ganas-tu/`)**: en lugar de copiar escena por escena, copia ese proyecto y edita su `generar.py`. Arma las 12 escenas desde `audio_meta.json`, con `t(n, "palabra")` para sincronizar, la oferta genérica, el pop-up real, íconos line-art, el reloj y el CTA de `13-cta`. Lecciones:
 - **Sincronía con la voz**: cada texto entra **0.25 s antes** de su palabra (`LEAD`) y la máscara dura **0.3 s**. Si entra justo en la palabra, Eduardo lo siente atrasado.
@@ -63,83 +82,71 @@ Reglas de marca: el pop-up sale siempre de `assets/checa-popup.html` sin redise�
 ## CTA y ganchos (Eduardo, 16 oct 2026; valen para cualquier estilo)
 - **CTA de cierre (venta; Eduardo, 16 oct 2026): por ahora no hay prueba de 7 días.** No decir «7 días gratis», «sin costo» ni precios. Eduardo manda la app por DM a quien comente: la voz dice «Comenta Checa y te mando la app, para que checes cuánto te queda de cada viaje.» (en la voz «Checa» normal, no «CHECA», para que no la deletree). **Pantalla final** (que dure ≥ 2 s después de la voz: `PAD_FIN = 2.0`): logo + pastilla «Comenta CHECA» + «y te mando la app» + TikTok de Checa **@checa.driver** («síguenos en tiktok») + TikTok de Eduardo **@Eduardoalv9802** («creador de checa», por si comparten el video) + link de descarga **jeal1498.github.io/checa-web** («solo Android»). Todo por encima de y≈1450; ejemplo en `video/hyperframes/checa-lee-la-oferta/generar.py` (escena 10). El texto de la publicación: «Comenta CHECA y te mando la app». No hay link en la bio de TikTok. Si vuelve la prueba o hay otra oferta, él lo avisa y se actualiza aquí.
 - **Gancho contundente en 0–3 s** (voz + texto en pantalla + imagen a la vez), sacado de la vivencia del conductor con sus propias palabras, no un resumen. Base aprobada para el video 19: «Aceptas un viaje porque se ve buen billete… y a la hora de la verdad sales perdiendo» con el texto «SE VEÍA BUENO. PERDISTE.».
-- **Re-ganchos cada 4–5 s** para que la retención no dependa solo del inicio: cada corte lleva uno (pérdida, tensión, bucle abierto como «mira qué hace», cifra que duele, giro, contraste, control como «tú pones la vara», beneficio, objeción resuelta) y un sonido que lo marca (`impact-bass`, `ping`, `whoosh`). Al presentar el guion, agrega una columna 🪝 con el tipo de gancho de cada corte.
+- **Re-ganchos cada 4–5 s** para que la retención no dependa solo del inicio: cada corte lleva uno (pérdida, tensión, bucle abierto como «mira qué hace», cifra que duele, giro, contraste, control como «tú pones la vara», beneficio, objeción resuelta) y un sonido que lo marca (`impact-bass`, `ping`, `whoosh`). Las técnicas se marcan entre corchetes en la columna «Técnica» (ver «Cómo se hacen los guiones»).
 - Si Eduardo manda su propia respuesta (p. ej. un mensaje de WhatsApp) como base: conserva el orden de sus ideas, pasa el «yo» a «tú» y cambia lo que no podamos garantizar («no hay bloqueo» → «Checa no toca Uber ni DiDi, tú decides»).
 - Evita preguntas que la voz se contesta sola y los «no es X, es Y».
-
-## Formato de entrega de TODO guion (Eduardo, 16 oct 2026; v1 y v2)
-Actúa como experto en contenido viral y retención. Cada vez que entregues o generes un guion, en la misma respuesta:
-1. **Auditoría previa** (breve) de la versión base: áreas de oportunidad y puntos donde el ritmo decae (lo plano, lo repetitivo, lo que llega tarde).
-2. **Hook inicial** que capte en los primeros 3 s (voz + texto + imagen a la vez).
-3. **Hooks intermedios** repartidos de principio a fin: open loops, giros, preguntas, frases de cambio de ritmo, re-enganches visuales (uno cada ~4–5 s).
-4. **Guion optimizado** con la técnica marcada entre corchetes en cada corte, con su función: `[Hook Inicial]`, `[Micro-hook / Open Loop]`, `[Re-enganche visual]`, `[Giro]`, `[Pausa dramática]`, `[Payoff del Open Loop]`, `[CTA]`, `[Loop de repetición]`.
-Las etiquetas son solo para Eduardo: entrega también la **voz limpia** (sin corchetes) para ElevenLabs. Esto reemplaza la columna 🪝 de más abajo. Al guardar en `guiones-v2.md` / `guiones-gemini.md`, deja la tabla con la columna «Técnica».
-
-## Versión v2 para la cuenta personal de Eduardo (16 oct 2026)
-Eduardo sube cada video a la cuenta de Checa y una **v2** a su TikTok personal. **De ahora en adelante, al entregar el guion de un video, entrega también el guion v2** en `marketing/guiones-v2.md` (reglas y formato en ese archivo): mismo tema y datos, otro gancho y otras palabras, cierre «sígueme», sin logo de Checa salvo que él lo pida, con su texto de publicación. La v2 se rehace completa (voz, escenas, render) en `marketing/PERSONAL/NN_fecha_tema/` (misma estructura), con portada distinta de la v1. Empezó con el video 05 (Cansancio y salud).
-**Atajo v2 (probado con `video/hyperframes/salud-v2/`, ~35 s, sin agentes):** copia ese proyecto, cambia `SCRIPT.md` (una línea de voz por escena) y las escenas en `generar.py` (usa `t(n, "palabra")` para sincronizar con la voz; texto en máscara, sin logo) y corre **`./ensamblar.sh`**: pide la voz de Fernando a `video/scripts/elevenlabs.py` (con tiempos por palabra, sin Whisper), arma `audio_meta.json` y `STORYBOARD.md`, escenas, subtítulos con el estilo de `estilo-captions.txt`, `index.html`, transiciones y mezcla. Luego `npx hyperframes@0.8.154 check`, `snapshot --at ...`, `render --quality high --output renders/video.mp4` (~1.5 min) y portada con `portada/portada.html` (estilo curiosidad). Lecciones: las máscaras de texto parten de `yPercent: 220` (con 105 se asoma un pedazo); texto en máscara máx. ~950 px de ancho; no rotar las tarjetas con texto (el chequeo las marca como superpuestas). Si ElevenLabs responde 401 `quota_exceeded`, es la cuota de créditos de la clave «Claudio»: avisar a Eduardo.
 
 ## Estilo «1Volt a color» (Remotion; sigue vigente, más barato)
 
 Desde el anuncio «Recogidas lejanas» Eduardo pidió el estilo 1Volt (2D, line-art en SVG; desde el 14 oct prefiere el Estilo HyperFrames de arriba) porque el 3D gasta demasiados tokens y tiempo (render por software). El 3D le gusta mucho, pero queda **en pausa**: no lo uses salvo que él lo pida.
 
-- Plantilla: **`video/src/Checa/Recogida1Volt.tsx`** (`marketing/CHECA/04_2026-10-17_recogidas-lejanas/video.mp4`). Una idea por pantalla: trazos que se dibujan solos (`Trazo`), cotas punteadas (`Cota`), rejilla de puntos, ticket con la cuenta, número gigante en Fira Code, frase clave en MAYÚSCULAS espaciadas con una línea chica debajo, ícono tachado, pop-up exacto (`POPUP`) y cierre con logo.
+- Plantilla: **`video/src/Checa/Recogida1Volt.tsx`** (`marketing/CHECA/17-10 - Recogidas lejanas/video.mp4`). Una idea por pantalla: trazos que se dibujan solos (`Trazo`), cotas punteadas (`Cota`), rejilla de puntos, ticket con la cuenta, número gigante en Fira Code, frase clave en MAYÚSCULAS espaciadas con una línea chica debajo, ícono tachado, pop-up exacto (`POPUP`) y cierre con logo.
 - **Más colores**: cada escena tiene su color de trazo y tinte de fondo (`TONO`: naranja, rosa, azul, morado, verde, amarillo, rojo, magenta, cian), además de cian/magenta/amarillo con significado.
 - **Subtítulos para redes** (`Subs`): abajo en y≈1500, Inter 800 de 70 px con contorno negro, 1–3 palabras, rebote al entrar y palabras clave a color (`CLAVE`). La frase clave va en y≈1270.
 - Render **sin** `--gl=swangle`: `npx remotion render <Id> out/x.mp4 --browser-executable=$B --log=error` (~1 min para 30 s).
-- **Guiones de Gemini**: Eduardo corrige los guiones con Gemini. Guarda cada guion final que te pase en `marketing/guiones-gemini.md` (corrido + tabla, con el archivo del video) antes de generar la voz. Cada `[Corte]` es una línea de voz y una escena.
+- **Guiones de Gemini**: Eduardo puede corregir los guiones con Gemini. Guarda cada guion final que te pase en `marketing/guiones-gemini.md` (corrido + tabla, con el archivo del video) antes de generar la voz. Cada `[Corte]` es una línea de voz y una escena.
 - **Cambios cada 3 s** (Eduardo lo pidió para retener la atención): envuelve `<Escena />` en `<Toma esc={esc}>` (`video/src/Checa/Toma.tsx`), que cambia el encuadre (zoom ±6 % y desplazamiento, con un destello suave) cada 3 s dentro de las escenas largas. Además, cada `[Corte]` es una escena nueva; si una línea de voz pasa de ~4 s, divide la escena en dos dibujos.
 - **Checa es una app**: en la voz di «la app Checa» cuando pueda confundirse con Uber/DiDi («la app» a secas = la plataforma).
 - **Ahorro de tokens**: reutiliza la plantilla y cambia solo escenas, textos y cifras; revisa como máximo una tira de 4 cuadros antes del render; no rehagas la voz si el texto no cambió.
 
 ### Proceso actual (cada video)
-1. Propón el guion del siguiente tema de `marketing/temas-videos.md` en tabla (corte · voz · en pantalla), ~70 palabras, frases de ~3 s, y la cuenta de cada cifra.
-2. Eduardo lo pasa a Gemini y trae la versión corregida: **guárdala primero** en `marketing/guiones-gemini.md` (corrido + tabla + archivo del video + ajustes que hiciste).
+1. Entrega el guion del siguiente tema de `marketing/temas-videos.md` con el formato de «Cómo se hacen los guiones» (auditoría, hook, hooks intermedios, guion con etiquetas, voz limpia) y su v2; ~70–90 palabras, frases de ~3 s, y la cuenta de cada cifra.
+2. Eduardo lo aprueba o trae la versión corregida con Gemini: **guárdala primero** en `marketing/guiones-gemini.md` (corrido + tabla + archivo del video + ajustes que hiciste).
 3. Revisa honestidad antes de grabar: «la app Checa» cuando pueda confundirse; «números de ejemplo» en pantalla si la voz no lo dice; nada que no podamos garantizar (cobros de cancelación, «menos de un segundo», bloqueos, ciudad o país en hashtags). Avisa cada ajuste.
-4. Voz Fernando Martínez (1 línea por `[Corte]`), escena 1Volt a partir del video anterior (`<Nombre>1Volt.tsx`, `<Toma>` incluida), 1 tira de ~6 cuadros, render, carpeta `marketing/CHECA/NN_fecha_tema/` (`video.mp4`, `portada.jpg`, `copy.txt`) + entrada en `marketing/videos/calendario.md`, marca el tema en `temas-videos.md`, commit `[skip ci]` y push a `main` y a la rama de trabajo.
+4. Voz Fernando Martínez (1 línea por `[Corte]`), escena 1Volt a partir del video anterior (`<Nombre>1Volt.tsx`, `<Toma>` incluida), 1 tira de ~6 cuadros, render, carpeta `marketing/CHECA/DD-MM - Nombre del video/` (`video.mp4`, `portada.jpg`, `copy.txt`) + entrada en `marketing/videos/calendario.md`, marca el tema en `temas-videos.md`, commit `[skip ci]` y push a `main` y a la rama de trabajo.
 
-### Videos hechos (1Volt salvo que se indique; listos en `marketing/CHECA/<NN_fecha_tema>/` con su portada y copy)
+### Videos hechos (1Volt salvo que se indique; listos en `marketing/CHECA/DD-MM - Nombre del video/` con su portada y copy)
 | Tema | Video | Código |
 |---|---|---|
-| 1 Trabajar mucho y no ver el dinero | `02_2026-10-15_trabajar-mucho-sin-lana.mp4` (+ `sin-lana.mp4` en 3D) | `SinLana1Volt.tsx` |
-| 2 Gasolina cara | `06_2026-10-19_gasolina-cara.mp4` | `Gasolina1Volt.tsx` |
-| 3 Recogidas lejanas | `04_2026-10-17_recogidas-lejanas.mp4` (+ `recogida.mp4`, `recogida2.mp4` en 3D) | `Recogida1Volt.tsx` |
-| 4 Horas muertas | `10_2026-10-23_mejores-horas.mp4` | `Horas1Volt.tsx` |
-| 5 Decidir en segundos | `08_2026-10-21_decidir-en-segundos.mp4` | `Decidir1Volt.tsx` |
-| 6 Comisión alta | `12_2026-10-25_comision-y-tarifas.mp4` | `Comision1Volt.tsx` |
-| 7 Miedo a rechazar | `14_2026-10-27_miedo-a-rechazar.mp4` | `Rechazar1Volt.tsx` |
-| 8 Desgaste / renta | `15_2026-10-28_desgaste-y-renta.mp4` | `Desgaste1Volt.tsx` |
-| 9 Inseguridad (valor) | `03_2026-10-16_seguridad-de-noche.mp4` | `Seguridad1Volt.tsx` |
-| 10 Bloqueo (valor) | `09_2026-10-22_cuenta-desactivada.mp4` | `Bloqueo1Volt.tsx` |
-| 11 Pasajeros problemáticos (valor) | `07_2026-10-20_pasajeros-y-cancelaciones.mp4` | `Pasajeros1Volt.tsx` |
-| 12 Cansancio y salud (valor) | `05_2026-10-18_cansancio-y-salud.mp4` | `Salud1Volt.tsx` |
-| 13 Ingreso inestable (valor) | `11_2026-10-24_ingreso-inestable.mp4` | `Ingreso1Volt.tsx` |
-| 14 Multas y papeles (valor) | `13_2026-10-26_multas-y-papeles.mp4` | `Multas1Volt.tsx` |
-| Campaña beta testers (clips de Eduardo) | `01_2026-10-14_beta-testers.mp4` | `Beta.tsx` |
+| 1 Trabajar mucho y no ver el dinero | `15-10 - Trabajar mucho sin lana.mp4` (+ `sin-lana.mp4` en 3D) | `SinLana1Volt.tsx` |
+| 2 Gasolina cara | `19-10 - Gasolina cara.mp4` | `Gasolina1Volt.tsx` |
+| 3 Recogidas lejanas | `17-10 - Recogidas lejanas.mp4` (+ `recogida.mp4`, `recogida2.mp4` en 3D) | `Recogida1Volt.tsx` |
+| 4 Horas muertas | `23-10 - Mejores horas.mp4` | `Horas1Volt.tsx` |
+| 5 Decidir en segundos | `21-10 - Decidir en segundos.mp4` | `Decidir1Volt.tsx` |
+| 6 Comisión alta | `25-10 - Comisión y tarifas.mp4` | `Comision1Volt.tsx` |
+| 7 Miedo a rechazar | `27-10 - Miedo a rechazar.mp4` | `Rechazar1Volt.tsx` |
+| 8 Desgaste / renta | `28-10 - Desgaste y renta.mp4` | `Desgaste1Volt.tsx` |
+| 9 Inseguridad (valor) | `16-10 - Seguridad de noche.mp4` | `Seguridad1Volt.tsx` |
+| 10 Bloqueo (valor) | `22-10 - Cuenta desactivada.mp4` | `Bloqueo1Volt.tsx` |
+| 11 Pasajeros problemáticos (valor) | `20-10 - Pasajeros y cancelaciones.mp4` | `Pasajeros1Volt.tsx` |
+| 12 Cansancio y salud (valor) | `18-10 - Cansancio y salud.mp4` | `Salud1Volt.tsx` |
+| 13 Ingreso inestable (valor) | `24-10 - Ingreso inestable.mp4` | `Ingreso1Volt.tsx` |
+| 14 Multas y papeles (valor) | `26-10 - Multas y papeles.mp4` | `Multas1Volt.tsx` |
+| Campaña beta testers (clips de Eduardo) | `14-10 - Beta testers.mp4` | `Beta.tsx` |
 
 Serie de 14 temas completa en 1Volt (octubre 2026).
 
-**Estilo HyperFrames, video 18**: «Cuánto ganas tú» `18_cuanto-ganas-tu.mp4` (41 s; responde de forma abierta al comentario «la app ya te da esa información»; proyecto `video/hyperframes/cuanto-ganas-tu/`).
+**Estilo HyperFrames, video 18**: «Cuánto ganas tú» `SIN FECHA - Cuánto ganas tú.mp4` (41 s; responde de forma abierta al comentario «la app ya te da esa información»; proyecto `video/hyperframes/cuanto-ganas-tu/`).
 
-**HyperFrames** (desde el 13 oct 2026, skill `hyperframes`): «Cómo funciona Checa» `16_como-funciona-checa.mp4` (47 s, estilo nuevo, proyecto `video/hyperframes/checa-como-funciona/`, `generar.py` arma la composición desde los tiempos de la voz).
+**HyperFrames** (desde el 13 oct 2026, skill `hyperframes`): «Cómo funciona Checa» `SIN FECHA - Cómo funciona Checa.mp4` (47 s, estilo nuevo, proyecto `video/hyperframes/checa-como-funciona/`, `generar.py` arma la composición desde los tiempos de la voz).
 
 **Estado al 13 oct 2026:** calendario del 14 al 28 de octubre en `marketing/videos/calendario.md` (1 al día a las 8 pm, beta primero y luego venta/consejo alternados). Pendiente: publicar según el calendario, juntar opiniones de los beta testers (con permiso) para testimonios en `.agents/product-marketing.md`, y si hay nuevos temas, agregarlos a `temas-videos.md`, al calendario (número siguiente) y a esta tabla.
 
 Componentes reutilizables: `Trazo`, `Cota`, `Numero`, `Etiqueta`, `Frase`, `Subs`, `Fondo` (en cada archivo), `Num` y `Palomita`/`Tache` (Seguridad, Bloqueo, Pasajeros), pop-ups exactos (`Popup` de `ui.tsx`), `Toma` (cambio cada 3 s). Los videos de valor (9–14) cierran con logo + «+ Seguir», sin prueba gratis.
 
 ### Portadas y textos para publicar
-- **Portadas: estilo curiosidad (obligatorio desde el 14 oct 2026; a Eduardo le encantó).** Plantilla: `video/hyperframes/cuanto-ganas-tu/portada/portada.html` (referencia `marketing/CHECA/18_cuanto-ganas-tu/portada.jpg`). Copia la carpeta `portada/` al proyecto nuevo y cambia solo los textos y el objeto. Reglas:
+- **Portadas: estilo curiosidad (obligatorio desde el 14 oct 2026; a Eduardo le encantó).** Plantilla: `video/hyperframes/cuanto-ganas-tu/portada/portada.html` (referencia `marketing/CHECA/SIN FECHA - Cuánto ganas tú/portada.jpg`). Copia la carpeta `portada/` al proyecto nuevo y cambia solo los textos y el objeto. Reglas:
   1. **Título arriba en 2 líneas**, MAYÚSCULAS, Fira Sans 800: la 1ª en blanco y la 2ª más grande en amarillo #FACC15. Es una promesa que da curiosidad («LO QUE LA APP / NO TE DICE»), no un resumen del video.
   2. **Un objeto concreto al centro**, ladeado unos −4°: la oferta genérica blanca, el pop-up, un ticket, el tablero, etc. Sin logos de Uber/DiDi.
   3. **La respuesta escondida**: una etiqueta roja #F43F5E con la cifra o la palabra clave **borrosa** (`filter: blur(14px)`), p. ej. «Te quedan ▒▒», más un «?» rojo gigante que se asoma por una esquina del objeto. Lo borroso es lo que obliga a ver el video.
   4. **Pregunta corta abajo** en gris #AFB7B2 con la palabra clave en blanco («¿Cuánto **ganas tú** de verdad?»).
   5. Fondo negro con un brillo rojo suave al centro. Nada importante debajo de y≈1700 ni pegado a la derecha (ahí van los botones de TikTok). Las cifras deben cuadrar con el video.
-  - Render (sin Remotion): `/opt/pw-browsers/chromium-1194/chrome-linux/chrome --headless --no-sandbox --disable-gpu --hide-scrollbars --window-size=1080,1920 --screenshot=p.png file://$PWD/portada.html` → `ffmpeg -i p.png -q:v 3 marketing/CHECA/NN_fecha_tema/portada.jpg` (la v2, en `marketing/PERSONAL/…`). Revísala con Read antes de mandarla.
-- *(Antes)* composición `Portada` (`video/src/Checa/Portada.tsx`, props `titulo` con `|` para alternar color por línea, `sub`, `color`, `etiqueta`, `fondo` opcional). Render: `npx remotion still Portada out.png --props '{...}'` y pásala a JPG (`ffmpeg -q:v 3`). Guarda la portada junto a su video en `marketing/CHECA/NN_fecha_tema/portada.jpg` (y la de la v2 en `marketing/PERSONAL/NN_fecha_tema/portada.jpg`).
+  - Render (sin Remotion): `/opt/pw-browsers/chromium-1194/chrome-linux/chrome --headless --no-sandbox --disable-gpu --hide-scrollbars --window-size=1080,1920 --screenshot=p.png file://$PWD/portada.html` → `ffmpeg -i p.png -q:v 3 marketing/CHECA/DD-MM - Nombre del video/portada.jpg` (la v2, en `marketing/PERSONAL/…`). Revísala con Read antes de mandarla.
+- *(Antes)* composición `Portada` (`video/src/Checa/Portada.tsx`, props `titulo` con `|` para alternar color por línea, `sub`, `color`, `etiqueta`, `fondo` opcional). Render: `npx remotion still Portada out.png --props '{...}'` y pásala a JPG (`ffmpeg -q:v 3`). Guarda la portada junto a su video en `marketing/CHECA/DD-MM - Nombre del video/portada.jpg` (y la de la v2 en `marketing/PERSONAL/DD-MM - Nombre del video/portada.jpg`).
 - **Textos y calendario**: `marketing/videos/calendario.md` (fecha, tipo y texto de cada publicación). Sigue la **fórmula** de arriba del calendario: gancho, 1–2 frases con palabras de búsqueda, pregunta, «Comenta CHECA y te mando la app» (venta, sin «7 días gratis»; Eduardo la manda por DM) o «Guárdalo» (consejo) y 4–5 hashtags. No pegar el guion completo. Sin ciudad ni país, sin #ubermexico, sin «link en el perfil» (no hay link en la bio de TikTok). Agrega el de cada video nuevo.
 
 ### Videos con clips de Eduardo (él a cuadro)
-Cuando Eduardo mande sus propios clips para unir (p. ej. la campaña de beta testers, `marketing/CHECA/01_2026-10-14_beta-testers/video.mp4`, código `video/src/Checa/Beta.tsx`):
+Cuando Eduardo mande sus propios clips para unir (p. ej. la campaña de beta testers, `marketing/CHECA/14-10 - Beta testers/video.mp4`, código `video/src/Checa/Beta.tsx`):
 1. Copia los clips a una carpeta temporal y extrae audio: `ffmpeg -i clip.mp4 -ac 1 -ar 16000 clip.wav`.
 2. Transcribe con `video/scripts/transcribir.py` (faster-whisper `small`, lee el wav con numpy porque la versión de `av` no acepta archivos). Con el texto identificas qué clip es cuál aunque los nombres no digan el orden.
 3. Revisa orientación con una hoja de cuadros (`ffmpeg -ss 2 -frames:v 1`); ffmpeg ya aplica la rotación del teléfono.
@@ -192,7 +199,7 @@ Ejemplo de combinación para 40 s (solo ejemplo, no plantilla fija): 5 (gancho) 
 
 ## 1. Guion (pedir aprobación antes de gastar créditos)
 
-Preséntalo como tabla: segundos · 🎙️ voz · 🖥️ en pantalla · 🎥 vista (1–8). Agrega «La cuenta» con cada cifra, el color del pop-up si sale, los principios de psicología y 2 ganchos alternativos.
+Preséntalo con el formato de «Cómo se hacen los guiones» (arriba) y agrega la columna 🎥 vista (1–8) a la tabla. Agrega «La cuenta» con cada cifra, el color del pop-up si sale, los principios de psicología y 2 ganchos alternativos.
 
 Formato narrativo (de las referencias): escena cotidiana del conductor que intriga o contradice lo que cree → descartar la respuesta obvia → mecanismo con una imagen concreta y su número → giro («y lo que casi nadie se imagina…») → consejo concreto → cierre que regresa a él («en tu próxima oferta…») + llamada a comentar («Comenta Checa y te mando la app, para que checes cuánto te queda de cada viaje», sin «7 días gratis») + pregunta. **40 s**, 7–8 líneas de voz.
 
@@ -252,4 +259,4 @@ Revisa: textos encimados con el pin o los edificios, la cámara metida en un edi
 `video/out/` está en `.gitignore`; se versionan el código, `public/<video>/` y la copia en `marketing/videos/`.
 
 ## Video de la web (VSL)
-El inicio de la web usa `checa-web/media/vsl.mp4`: el video de beta (`01_2026-10-14_beta-testers.mp4`) recortado a 26.9 s (clips c1–c4 de `lineasBeta.ts`, sin c5–c7 ni la tarjeta «Comenta YO»), 720×1280, CRF 28, con fundido final. Se rehízo con ffmpeg: `-t 26.9 -vf "scale=720:1280,fade=t=out:st=26.3:d=0.6" -af "afade=t=out:st=26.3:d=0.6"`.
+El inicio de la web usa `checa-web/media/vsl.mp4`: el video de beta (`14-10 - Beta testers.mp4`) recortado a 26.9 s (clips c1–c4 de `lineasBeta.ts`, sin c5–c7 ni la tarjeta «Comenta YO»), 720×1280, CRF 28, con fundido final. Se rehízo con ffmpeg: `-t 26.9 -vf "scale=720:1280,fade=t=out:st=26.3:d=0.6" -af "afade=t=out:st=26.3:d=0.6"`.
