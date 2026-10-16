@@ -1,7 +1,7 @@
 # SCRIPT — checa-lee-la-oferta-v2 (video 19 v2, cuenta personal)
 
 **Voice:** Fernando Martínez (ElevenLabs `dlGxemPxFMTY7iXagmOj`, eleven_multilingual_v2, es), velocidad 1.0.
-Guion aprobado por Eduardo el 16 oct 2026 (`marketing/guiones/guiones-personal.md`), con el cierre estándar (línea 10). Una línea por escena.
+Guion aprobado por Eduardo el 16 oct 2026 (`marketing/videos/PERSONAL/NN - Nombre/guion.md`), con el cierre estándar (línea 10). Una línea por escena.
 
     Tienes unos segundos para decidir si ese viaje vale la pena.
     No hay tiempo de hacer la cuenta mientras manejas.

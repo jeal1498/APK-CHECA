@@ -2,7 +2,7 @@
 
 **Voice:** Fernando Martínez (ElevenLabs `dlGxemPxFMTY7iXagmOj`, eleven_multilingual_v2, es)
 **Voice settings:** stability 0.4 · similarity 0.8 · style 0.35 · speed 1.0
-**Voice direction:** Conductor a conductor: claro, cercano. Verbatim del guion corregido por Eduardo (`marketing/guiones/guiones-checa.md`, «Checa lee la oferta por ti»).
+**Voice direction:** Conductor a conductor: claro, cercano. Verbatim del guion corregido por Eduardo (`marketing/videos/CHECA/NN - Nombre/guion.md`, «Checa lee la oferta por ti»).
 
 ---
 

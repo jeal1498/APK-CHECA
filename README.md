@@ -10,7 +10,7 @@ App Android para conductores de Uber y DiDi: lee cada oferta y muestra un pop-up
 | `.github/workflows/` | Compilar APK, generar licencias, reporte diario, subir a Supabase, publicar el APK en la web. |
 | `pedidos/`, `clientes.md` | Generador de licencias (lo usa `licencia.yml`). |
 | `reportes/` | Reporte diario de la web y la app (lo escribe `reporte-web.yml`). |
-| `marketing/` | Videos listos (`CHECA/`, `PERSONAL/`), `guiones/` (guiones, temas y calendario), `web/` y `marca/` (logos, voz, catálogo de WhatsApp). |
+| `marketing/` | `videos/` (`CHECA/` y `PERSONAL/`: una carpeta por video `NN - Nombre` con video, portada, copy, dm y guion), `plan/` (calendario, temas y reglas de las v2), `marca/` y `web/`. |
 | `video/` | Proyectos para hacer los videos (Remotion y HyperFrames). |
 | `docs/` | Documentación que no hace falta cargar siempre (p. ej. historial de versiones). |
 | `.claude/skills/` | Skills que usa Claude (las que se borraron por no usarse están listadas en `docs/skills-borradas.md`). |

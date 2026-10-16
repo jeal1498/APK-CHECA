@@ -1,7 +1,7 @@
 # SCRIPT — salud-v2 (video 05 v2, cuenta personal)
 
 **Voice:** Fernando Martínez (ElevenLabs `dlGxemPxFMTY7iXagmOj`, eleven_multilingual_v2, es), velocidad 1.0.
-Guion aprobado por Eduardo el 16 oct 2026 (`marketing/guiones/guiones-personal.md`). Una línea por escena.
+Guion aprobado por Eduardo el 16 oct 2026 (`marketing/videos/PERSONAL/NN - Nombre/guion.md`). Una línea por escena.
 
     Seis de la tarde. La espalda ya no da más y te faltan horas.
     Al carro le haces servicio. A tu cuerpo, casi nunca.
