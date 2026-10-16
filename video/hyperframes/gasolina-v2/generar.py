@@ -299,9 +299,9 @@ F["07-app"] = frame(7, c, popcss(c) + """
     #§-tit { top: 110px; height: 160px; } #§-tit > div { font-size: 118px; } #§-tit em { font-style: normal; color: #22C55E; }
     #§-phone { position: absolute; left: 290px; top: 330px; width: 500px; height: 1000px; border-radius: 64px; background: #0B0D0C; border: 6px solid #2A2E2C; overflow: hidden; }
     #§-map { position: absolute; inset: 0; background: repeating-linear-gradient(0deg, #141816 0 2px, transparent 2px 90px), repeating-linear-gradient(90deg, #141816 0 2px, transparent 2px 90px); }
-    #§-card { left: 20px; top: 380px; transform: scale(.74); transform-origin: 0 0; }
+    #§-card { left: 20px; top: 440px; transform: scale(.74); transform-origin: 0 0; }
     #§-scan { position: absolute; left: 0; right: 0; top: 0; height: 10px; background: #22C55E; box-shadow: 0 0 40px 14px rgba(34,197,94,.55); opacity: 0; }
-    #§-pw { position: absolute; left: 303px; top: 560px; width: 473px; height: 380px; }
+    #§-pw { position: absolute; left: 303px; top: 372px; width: 473px; height: 330px; }
 """, f"""      <div class="P-glow"></div>
       <div id="§-tit" class="P-mask"><div>la app <em>checa</em></div></div>
       <div id="§-phone"><div id="§-map"></div><div id="§-card" class="P-card" data-layout-allow-overlap>{CARD90}</div><div id="§-scan"></div></div>
