@@ -1,4 +1,4 @@
-# Guion · 06 - Gasolina cara (PERSONAL, v2) · guion aprobado (16 oct 2026)
+# Guion · 06 - Gasolina cara (PERSONAL, v2) · guion, tabla y video aprobados (16 oct 2026)
 
 v1: `marketing/videos/CHECA/06 - Gasolina cara/` · v2: esta carpeta.
 
