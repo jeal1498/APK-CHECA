@@ -8,7 +8,7 @@ Una publicación al día, alternando videos de **venta** (llevan a la prueba gra
 3. Una pregunta para comentar 👇.
 4. Llamada: venta → «Descarga CHECA y checa cuánto te queda de cada viaje (solo Android)»; consejo → «Guárdalo y compártelo». (Los videos ya publicados conservan su texto.)
 5. 4–5 hashtags.
-Sin link en la bio (TikTok pide constancia del SAT para cuenta de empresa): a quien comente «CHECA» se le manda por mensaje directo `jeal1498.github.io/checa-web/?utm_source=tiktok` (y a quien comente «YO», `jeal1498.github.io/checa-web/instalar/?desde=tiktok` + pedirle su Gmail para la beta).
+Sin link en la bio (TikTok pide constancia del SAT para cuenta de empresa): a quien comente «CHECA» se le manda por mensaje directo el texto de **`dm.txt`** de la carpeta de ese video (trae su link con etiqueta `utm_campaign`, así el reporte cuenta las descargas de cada video) (y a quien comente «YO», `jeal1498.github.io/checa-web/instalar/?desde=tiktok` + pedirle su Gmail para la beta).
 
 **Hora sugerida:** 8:00 pm (cuando muchos conductores ya terminaron turno o están en pausa). Ajústala según tus estadísticas después de la primera semana.
 
@@ -215,3 +215,10 @@ Al carro le haces servicio, ¿y a tu cuerpo? 🚗💪
 ¿Cuál de los 4 se te hace más difícil? 👇
 Guárdalo y mándaselo a quien maneja de más.
 #choferuber #choferdidi #conductores #salud #consejosdeconductor
+
+# Medición semanal (qué videos venden)
+
+Cada domingo: Eduardo anota de las estadísticas de TikTok **vistas**, **% que lo vio completo** y **comentarios «CHECA»** de cada video publicado; Claude llena **visitas** y **descargas** con `reportes/web.md` (tabla por fuente y campaña: `tiktok` / `tiktok-personal` + la etiqueta del video). En 2–3 semanas se ve qué temas repetir.
+
+| Semana | Cuenta | Video (etiqueta) | Vistas | % completo | Comentarios «CHECA» | Visitas web | Descargas |
+|---|---|---|---|---|---|---|---|
