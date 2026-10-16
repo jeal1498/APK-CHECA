@@ -18,28 +18,28 @@ Sin link en la bio (TikTok pide constancia del SAT para cuenta de empresa): a qu
 
 # CHECA · cuenta de Checa
 
-| # | Fecha | Tipo | Carpeta en `marketing/videos/CHECA/` | Publicado |
-|---|---|---|---|---|
-| 01 | — | Campaña beta | `01 - Beta testers` | ✅ (solo en PERSONAL) |
-| 02 | — | Venta | `02 - Trabajar mucho sin lana` | ✅ |
-| 03 | — | Consejo | `03 - Seguridad de noche` | ✅ |
-| 04 | — | Venta | `04 - Recogidas lejanas` | ✅ |
-| 05 | — | Consejo | `05 - Cansancio y salud` | ✅ 16 oct |
-| — | — | Ayuda | «¿Android no te deja instalarla?» (fuera de calendario, sin carpeta) | ✅ |
-| 06 | sáb 17 oct | Venta | `06 - Gasolina cara` | |
-| 07 | dom 18 oct | Consejo | `07 - Pasajeros y cancelaciones` | |
-| 08 | lun 19 oct | Venta | `08 - Decidir en segundos` | |
-| 09 | mar 20 oct | Consejo | `09 - Cuenta desactivada` | |
-| 10 | mié 21 oct | Venta | `10 - Mejores horas` | |
-| 11 | jue 22 oct | Consejo | `11 - Ingreso inestable` | |
-| 12 | vie 23 oct | Venta | `12 - Comisión y tarifas` | |
-| 13 | sáb 24 oct | Consejo | `13 - Multas y papeles` | |
-| 14 | dom 25 oct | Venta | `14 - Miedo a rechazar` | |
-| 15 | lun 26 oct | Venta | `15 - Desgaste y renta` | |
-| 19 | mar 27 oct | Venta | `19 - Checa lee la oferta` | |
-| 17 | mié 28 oct | Explicativo | `17 - Cómo funciona Checa` | |
-| 18 | por definir | Venta | `18 - Cuánto ganas tú` | (ya está en PERSONAL) |
-| 20 | por definir | Tutorial | `20 - Cómo instalar Checa` | |
+| # | Fecha | Tipo | Carpeta en `marketing/videos/CHECA/` | Hecho | Publicado |
+|---|---|---|---|---|---|
+| 01 | — | Campaña beta | `01 - Beta testers` | ✅ | ✅ (solo en PERSONAL) |
+| 02 | — | Venta | `02 - Trabajar mucho sin lana` | ✅ | ✅ |
+| 03 | — | Consejo | `03 - Seguridad de noche` | ✅ | ✅ |
+| 04 | — | Venta | `04 - Recogidas lejanas` | ✅ | ✅ |
+| 05 | — | Consejo | `05 - Cansancio y salud` | ✅ | ✅ 16 oct |
+| — | — | Ayuda | «¿Android no te deja instalarla?» (fuera de calendario, sin carpeta) | ✅ | ✅ |
+| 06 | sáb 17 oct | Venta | `06 - Gasolina cara` |  | |
+| 07 | dom 18 oct | Consejo | `07 - Pasajeros y cancelaciones` |  | |
+| 08 | lun 19 oct | Venta | `08 - Decidir en segundos` |  | |
+| 09 | mar 20 oct | Consejo | `09 - Cuenta desactivada` |  | |
+| 10 | mié 21 oct | Venta | `10 - Mejores horas` |  | |
+| 11 | jue 22 oct | Consejo | `11 - Ingreso inestable` |  | |
+| 12 | vie 23 oct | Venta | `12 - Comisión y tarifas` |  | |
+| 13 | sáb 24 oct | Consejo | `13 - Multas y papeles` |  | |
+| 14 | dom 25 oct | Venta | `14 - Miedo a rechazar` |  | |
+| 15 | lun 26 oct | Venta | `15 - Desgaste y renta` |  | |
+| 19 | mar 27 oct | Venta | `19 - Checa lee la oferta` |  | |
+| 17 | mié 28 oct | Explicativo | `17 - Cómo funciona Checa` |  | |
+| 18 | por definir | Venta | `18 - Cuánto ganas tú` |  | (ya está en PERSONAL) |
+| 20 | por definir | Tutorial | `20 - Cómo instalar Checa` |  | |
 
 ---
 
@@ -53,22 +53,22 @@ Sin link en la bio (TikTok pide constancia del SAT para cuenta de empresa): a qu
 
 Misma idea que cada video de CHECA, con otro gancho y otras palabras (reglas en `marketing/plan/reglas-v2.md`; cada guion en el `guion.md` de su carpeta). Un video diario, un día detrás de CHECA con el mismo tema (el 19 abre la serie); se marcan con ✅ al subirlos.
 
-| # | Fecha | Tipo | Carpeta en `marketing/videos/PERSONAL/` | Publicado |
-|---|---|---|---|---|
-| 01 | — | Campaña beta | (video original de CHECA) | ✅ |
-| 18 | — | Venta | (video original de CHECA) | ✅ |
-| 05 | — | Consejo | `05 - Cansancio y salud` | ✅ |
-| 19 | sáb 17 oct | Venta | `19 - Checa lee la oferta` | |
-| 06 | dom 18 oct | Venta | `06 - Gasolina cara` | |
-| 07 | lun 19 oct | Consejo | `07 - Pasajeros y cancelaciones` | |
-| 08 | mar 20 oct | Venta | `08 - Decidir en segundos` | |
-| 09 | mié 21 oct | Consejo | `09 - Cuenta desactivada` | |
-| 10 | jue 22 oct | Venta | `10 - Mejores horas` | |
-| 11 | vie 23 oct | Consejo | `11 - Ingreso inestable` | |
-| 12 | sáb 24 oct | Venta | `12 - Comisión y tarifas` | |
-| 13 | dom 25 oct | Consejo | `13 - Multas y papeles` | |
-| 14 | lun 26 oct | Venta | `14 - Miedo a rechazar` | |
-| 15 | mar 27 oct | Venta | `15 - Desgaste y renta` | |
+| # | Fecha | Tipo | Carpeta en `marketing/videos/PERSONAL/` | Hecho | Publicado |
+|---|---|---|---|---|---|
+| 01 | — | Campaña beta | (video original de CHECA) | ✅ | ✅ |
+| 18 | — | Venta | (video original de CHECA) | ✅ | ✅ |
+| 05 | — | Consejo | `05 - Cansancio y salud` | ✅ | ✅ |
+| 19 | sáb 17 oct | Venta | `19 - Checa lee la oferta` |  | |
+| 06 | dom 18 oct | Venta | `06 - Gasolina cara` |  | |
+| 07 | lun 19 oct | Consejo | `07 - Pasajeros y cancelaciones` |  | |
+| 08 | mar 20 oct | Venta | `08 - Decidir en segundos` |  | |
+| 09 | mié 21 oct | Consejo | `09 - Cuenta desactivada` |  | |
+| 10 | jue 22 oct | Venta | `10 - Mejores horas` |  | |
+| 11 | vie 23 oct | Consejo | `11 - Ingreso inestable` |  | |
+| 12 | sáb 24 oct | Venta | `12 - Comisión y tarifas` |  | |
+| 13 | dom 25 oct | Consejo | `13 - Multas y papeles` |  | |
+| 14 | lun 26 oct | Venta | `14 - Miedo a rechazar` |  | |
+| 15 | mar 27 oct | Venta | `15 - Desgaste y renta` |  | |
 
 # Medición semanal (qué videos venden)
 
