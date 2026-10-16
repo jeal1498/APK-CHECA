@@ -7,14 +7,15 @@ description: Hacer videos cortos de Checa (TikTok, Reels, Shorts) con narrador d
 
 > **Prioridad entre conversaciones (Eduardo, 16 oct 2026):** esta skill se cambia desde la conversación **principal** (guiones, carpetas, v2). La **secundaria** solo hace cambios puntuales y no debe revertir estas reglas; si algo choca, gana lo que dice esta skill.
 
-## ⭐ Flujo de cada video, con una aprobación por etapa (Eduardo, 16 oct 2026)
-Una etapa a la vez; **no pases a la siguiente sin su «aprobado»** y no adelantes archivos de etapas futuras (copy, dm, portada):
+## ⭐ Flujo de cada video, con una aprobación por etapa (Eduardo, 16 oct 2026; orden cambiado el mismo día)
+Una etapa a la vez; **no pases a la siguiente sin su «aprobado»** y no adelantes archivos de etapas futuras (copy, dm):
 1. **Guion** según las instrucciones de abajo. En el chat, solo el texto limpio y de corrido.
 2. **Tabla de animaciones y gráficos HTML por toma** (se muestra en el chat para aprobarla).
-3. **Video** (versión de prueba desde `renders/` con `SendUserFile`; se commitea una sola vez, ya aprobado).
-4. **Portada** (estilo curiosidad).
-5. **Copy** (`copy.txt`; el `dm.txt` se crea junto con el copy).
-6. Con el copy aprobado el video se da por **hecho** (no por publicado). «Hecho» y «Publicado» son columnas distintas en `marketing/plan/calendario.md`; «Publicado» solo lo marca Eduardo al subirlo.
+3. **Portada** (estilo curiosidad). **Va antes que el video.**
+4. **Video** (versión de prueba desde `renders/` con `SendUserFile`; no se commitea todavía).
+5. Con **portada y video aprobados**: pon la portada como **primer cuadro** del video con `video/scripts/portada_primer_cuadro.sh <video.mp4> <portada.jpg> <salida.mp4>` (0.2 s, para que TikTok la tome de portada), manda esa versión a Eduardo y, ya aprobada, **commitea el `video.mp4` (con la portada incluida) y la `portada.jpg` una sola vez**.
+6. **Copy** (`copy.txt`; el `dm.txt` se crea junto con el copy).
+7. Con el copy aprobado el video se da por **hecho** (no por publicado). «Hecho» y «Publicado» son columnas distintas en `marketing/plan/calendario.md`; «Publicado» solo lo marca Eduardo al subirlo.
 
 ## ⭐ Cómo se hacen los guiones (Eduardo, 16 oct 2026: «me gusta más como está hoy en día»; vale para v1 y v2 y para cualquier estilo)
 **Confirmado por Eduardo (16 oct 2026, «2»): en el chat solo el guion limpio; la auditoría, los hooks y las propuestas visuales por toma van en el `guion.md` y se muestran únicamente si él los pide.** Lo que se responde en el chat (Eduardo, 16 oct 2026): SOLO el guion de voz, limpio y de corrido en un párrafo**, sin `[Corte]`, sin etiquetas, sin tablas, sin auditoría, sin ajustes de honestidad, sin texto de publicación, sin saludo ni pregunta final. Eduardo lo escucha con la lectura en voz alta del chat y cualquier otra cosa se la lee también. El trabajo de abajo (auditoría, hooks, tabla con técnicas, honestidad, texto de publicación) **se hace igual, pero se guarda en los archivos** (`guion.md` de la carpeta del video (`marketing/videos/CHECA/…` o `marketing/videos/PERSONAL/…`), y el `copy.txt` de la carpeta). Si él pide ver la tabla, la auditoría o el texto de publicación, se lo das. Si pide cambios, respondes otra vez solo con el guion corregido. Su «aprobado» (o «dale») es la señal para hacer voz y video.
