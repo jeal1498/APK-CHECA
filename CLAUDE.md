@@ -42,6 +42,10 @@ Contexto para continuar el proyecto en una conversación nueva.
 | `Actualizacion.kt` | Lee `checa-web/descargar/version.json` (cada 6 h, en `onResume`) y compara con `versionName`. Si hay nueva: tarjeta en Inicio + ventana una vez por versión → abre `instalar/?desde=app` (baja el APK). Botón «Buscar actualización» en Cuenta. También `compartir()`: texto con link `?utm_source=app&utm_campaign=compartir` (tarjeta «Comparte Checa» en Inicio y Cuenta). |
 | (Invita a un amigo, 6.2) | En `Cuenta.kt`: `mi_codigo` (RPC, p. ej. LALO-7K2), `usarCodigo()` (RPC `usar_codigo`; sin sesión queda pendiente) y `premios` de `licencias` → ventana «¡Ganaste 1 mes!». `MainActivity.onWindowFocusChanged` lee `CHECA-REF:CODIGO` del portapapeles (lo deja la web al tocar Descargar si llegó con `?ref=`), máx. 3 veces. Tarjeta «Invita a un amigo» con el código y «¿Te invitó alguien?» (antes del primer pago). `mp-webhook`: en el **primer pago** de un invitado da +30 días a los dos (sin vencimiento no cambia). Tablas `codigos` e `invitaciones`. |
 | `Cuenta.kt` | Inicio de sesión con Google y licencia en Supabase (ver *Ideas propuestas y pendientes*). |
+| `Licencia.kt` | Licencia sin internet (códigos de equipo), estado combinado con la de cuenta y `BETA_HASTA` (beta gratis). Ver *Licencias y venta*. |
+| `Jornada.kt` | «Mi día» (v45): viajes que el conductor marca como aceptados (`viajes.txt`), meta del día y gasolina de la semana. |
+| `Resumen.kt` | Imagen del resumen del día para compartir (FileProvider). |
+| `Soporte.kt` | Ajustes → Ayuda (v44): diagnóstico, preguntas frecuentes, «Una oferta se leyó mal» y soporte por WhatsApp. |
 | `MainActivity.kt` | UI con tema oscuro. Barra inferior: Inicio · Filtros · **botón circular central** (▶ verde iniciar / ■ rojo detener) · Ajustes · Cuenta. |
 
 ### Reglas del lector (Parser), calibradas con capturas reales
@@ -59,7 +63,8 @@ Contexto para continuar el proyecto en una conversación nueva.
 
 ## Pantallas
 - **Inicio** (sin encabezado desde v25): aviso de permiso (solo si falta), tarjetas 🟢/🟡/🔴 del día que se pueden tocar para ver el detalle de cada grupo, **Mejores horas** (solo hoy: cajas «Ahora» y «Lo mejor que viene», 24 cuadros de 1 h deslizables que empiezan en la hora actual, color semáforo según la meta por km: verde ≥ meta, amarillo ≥ 85 %, rojo abajo, gris < 3 ofertas; «Ver toda la semana ›» abre ventana con mejor/peor día, 3 mejores momentos, tabla 7×24 y detalle al tocar: $/km, ofertas, % verdes, Uber vs DiDi). Se diseñó primero como maqueta en un artifact y **Filtros inteligentes** (sin desplegar: cada fila con su monto o fichas y ON/OFF).
-- **Ajustes**: Pop-up (vista previa en vivo, tamaño, tiempo, posición), Gasolina (mostrar neta, km/l = 12 y $/l = 24 por defecto; su auto es un Cavalier 2020), Dos ofertas a la vez (criterio), Avisos, Apps (Uber/DiDi), Cómo usarla, Permisos, Diagnóstico y versión.
+- **Inicio** también tiene **Mi día** (v45), aviso de actualización y «Comparte Checa» / «Invita a un amigo». **Cuenta** es pestaña propia desde v34.
+- **Ajustes**: Pop-up (vista previa en vivo, tamaño, tiempo, posición; también se arrastra), Gasolina (mostrar neta, km/l = 12 y $/l = 24 por defecto; su auto es un Cavalier 2020), Dos ofertas a la vez (criterio), Avisos, Apps (Uber/DiDi), Cómo usarla, Permisos, Diagnóstico, Apps de banco (Pausar lector, v29), Ayuda (v44) y versión.
 - Ella pidió **quitar**: los KPI (ofertas, promedios, mejor), el botón "Ver ofertas de hoy", la tarjeta de estado de la lectura y los botones A−/A+ del pop-up.
 
 ## Instalación en el teléfono (problemas que ya salieron)
@@ -69,7 +74,7 @@ Contexto para continuar el proyecto en una conversación nueva.
 - Lectura de pantalla: elegir **Pantalla completa** → Empezar. Después de reiniciar el teléfono hay que volver a iniciarla.
 
 ## Licencias y venta (v21+)
-- `Licencia.kt`: sin internet. Código de equipo = SHA-256 de ANDROID_ID (8 hex, `A1B2-C3D4`). Activación `AAAAMMDD[F]-firma` (ECDSA P-256 de `LV|EQUIPO|AAAAMMDD[|F]`). `99991231` = sin vencimiento, `F` = ⭐ Miembro fundador. 7 días de prueba. Sin licencia, `RutaService.mostrarOferta` no muestra nada.
+- `Licencia.kt`: sin internet. Código de equipo = SHA-256 de ANDROID_ID (8 hex, `A1B2-C3D4`). Activación `AAAAMMDD[F]-firma` (ECDSA P-256 de `LV|EQUIPO|AAAAMMDD[|F]`). `99991231` = sin vencimiento, `F` = ⭐ Miembro fundador. 7 días de prueba, **pero durante la beta (hasta `Licencia.BETA_HASTA` = 31 ene 2027) todos tienen todo sin licencia** y los paquetes están ocultos; la prueba y los paquetes vuelven al terminar. Sin licencia, `RutaService.mostrarOferta` no muestra nada.
 - La llave privada está en el secreto `LICENCIA_PRIVADA` (no se puede leer) y **también en `licencia_privada.pem` en la raíz del repo**: se le explicó el riesgo y **ella decidió no borrarlo por ahora** (se le recomendó guardar una copia fuera del repo). La pública está en `Licencia.kt`.
 - **Para generar un código cuando ella lo pida** (nombre, WhatsApp, equipo, Fundador/Normal, días; 0 = sin vencimiento). Ella **autorizó** este método. La app de Claude no puede disparar Actions (403), así que se hace con un push:
   1. Crear `pedidos/pedido.txt` con líneas `nombre=…`, `whatsapp=…`, `correo=cliente@gmail.com` (**preferido desde v31**: licencia por cuenta, el cliente solo toca «Ya pagué: revisar mi licencia» en Ajustes → Cuenta; no hay código que pasarle) **o** `equipo=A1B2-C3D4` (método viejo, código por equipo), `tipo=Fundador|Normal`, `dias=30`. Commit (sin `[skip ci]`) y `git push origin HEAD:main`.
@@ -78,11 +83,11 @@ Contexto para continuar el proyecto en una conversación nueva.
   - Ese push no compila APK (`build.yml` ignora `pedidos/**`, `clientes.md` y `CLAUDE.md`).
 - Insignia dorada **⭐ Miembro fundador** en Inicio y Ajustes si la licencia trae `F`. Eduardo tiene licencia de fundador sin vencimiento en su celular (05E7-8598) y su tablet (4817-F84C). **No** usar esos equipos para pruebas.
 - Probado de punta a punta desde una conversación nueva (pedido → código → activado en la tablet).
-- Precios: Ruta Rentable cobra $129/mes. Propuesta: $99/mes o $899/año; fundadores (primeros 50) $49/mes de por vida.
+- Precios: Ruta Rentable cobra $129/mes. Los vigentes están en *Paquetes* (la propuesta vieja de $49/mes para fundadores no se aplicó).
 - El repo ya es **privado** (la API pública da 404; usar las herramientas de GitHub MCP para revisar Actions).
 
 ## Paquetes (v34, 5.3)
-- Estrategia de señuelo (la armó con Gemini): **1 mes $99** (Plan Básico, «el feo») · **6 meses $399** (Plan Estratega, estrella, borde verde «Más popular») · **1 año $899** (Plan Pro, señuelo). Tarjetas en la pestaña Cuenta; «Lo quiero» abre WhatsApp con paquete + correo (o código de equipo).
+- Estrategia de señuelo (la armó con Gemini): **1 mes $99** (Plan Básico, «el feo») · **6 meses $399** (Plan Estratega, estrella, borde verde «Más popular») · **1 año $899** (Plan Pro, señuelo). Tarjetas en la pestaña Cuenta; desde v36 se pagan con Mercado Pago (ver abajo); ocultas durante la beta.
 - Básico = licencia de cuenta con `max_equipos = 1`, firmada como `LV|correo|fecha[|F]|B`. Limita: 1 equipo (trigger de Supabase), un pop-up a la vez sin ⭐ comparador, y en Mejores horas sin «lo mejor que viene» ni semana. Todo lo demás (neta, filtros, pop-up ajustable) va en los 3. La prueba de 7 días, los códigos de equipo y las licencias ya existentes traen todo.
 - Pedido: agregar `plan=1 mes|6 meses|1 año` en `pedidos/pedido.txt` (pone los días solo: 30/180/365; `dias=` lo sobreescribe). El plan de 1 mes solo aplica con `correo=`.
 
@@ -104,7 +109,7 @@ Contexto para continuar el proyecto en una conversación nueva.
   - Dependencias nuevas: `androidx.credentials:credentials(+play-services-auth):1.3.0`, `googleid:1.1.1`; permiso INTERNET; regla R8 para `androidx.credentials.playservices`.
 - ⚠️ `licencia_privada.pem` sigue en la raíz del repo por decisión de ella (ver *Licencias y venta*). No borrarlo sin que lo pida.
 - **No** integrar el bloqueo de zonas por palabras de la dirección: se explicó y ella decidió no hacerlo.
-- Aún no se han hecho: arranque automático al abrir Uber/DiDi, meta del día, pop-up arrastrable, respaldo o exportación del historial.
+- Aún no se han hecho: arranque automático real al abrir Uber/DiDi (desde v45 solo hay un aviso, porque Android pide el permiso de captura cada vez) y respaldo o exportación del historial. Meta del día y pop-up arrastrable ya están (v45).
 - **Pendientes de la web/venta** (13 oct 2026): testimonios reales de beta testers (lugar marcado en `index.html`), capturas reales en `/instalar/`, cerrar `/beta/` al llenarse (bloque comentado en `beta/index.html`), VSL propio de 60–90 s (guion propuesto: gancho, problema, demo, confianza, oferta, «toca Descargar»), pruebas A/B con ~1,000 visitas/mes (`marketing/web/05-cro.md`), publicar en Play Store. Probar «Invita a un amigo» de punta a punta con un pago real (no probado aún).
 - Pantalla dividida en tablet probada y correcta en v20 (dos pop-ups sólidos, ⭐ con borde dorado, sin mezclar ofertas). Si vuelve el parpadeo, pedir Diagnóstico.
 
