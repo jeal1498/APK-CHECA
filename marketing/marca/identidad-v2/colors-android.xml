@@ -1,0 +1,11 @@
+<!-- Paleta Checa v2. Copiar a app/src/main/res/values/ cuando se aplique a la app. -->
+<resources>
+    <color name="asfalto">#0C0C10</color>
+    <color name="tablero">#16161C</color>
+    <color name="humo">#3A3A45</color>
+    <color name="hueso">#F4F4EF</color>
+    <color name="gris_texto">#A3A3AD</color>
+    <color name="aceptar">#22C55E</color>
+    <color name="considerar">#FACC15</color>
+    <color name="rechazar">#EF4444</color>
+</resources>

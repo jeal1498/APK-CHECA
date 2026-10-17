@@ -1,0 +1,19 @@
+:root {
+  --asfalto: #0C0C10;
+  --tablero: #16161C;
+  --humo: #3A3A45;
+  --hueso: #F4F4EF;
+  --gris-texto: #A3A3AD;
+  --aceptar: #22C55E;
+  --considerar: #FACC15;
+  --rechazar: #EF4444;
+  --texto-sobre-aceptar: #04210F;
+  --texto-sobre-considerar: #2B2200;
+  --texto-sobre-rechazar: #1F0000;
+  --fuente-titulos: 'Bricolage Grotesque', 'Arial Black', sans-serif;
+  --fuente-texto: 'DM Sans', Arial, sans-serif;
+  --fuente-datos: 'JetBrains Mono', 'Courier New', monospace;
+  --radio-tarjeta: 28px;
+  --radio-chica: 20px;
+  --curva: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
