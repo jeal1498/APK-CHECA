@@ -1,0 +1,40 @@
+<template>
+  <style>
+    @font-face{ font-family: 'Bricolage Grotesque'; font-weight: 800; font-display: block; src: url('assets/fonts/bricolage-grotesque-latin-800-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'DM Sans'; font-weight: 400; font-display: block; src: url('assets/fonts/dm-sans-latin-400-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'DM Sans'; font-weight: 700; font-display: block; src: url('assets/fonts/dm-sans-latin-700-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'JetBrains Mono'; font-weight: 500; font-display: block; src: url('assets/fonts/jetbrains-mono-latin-500-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'JetBrains Mono'; font-weight: 700; font-display: block; src: url('assets/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+    #root { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; font-family: 'DM Sans', Arial, sans-serif; color: #F4F4EF; }
+    .clip { position: absolute; }
+    .G { inset: 0; background: #0C0C10; }
+    .etq { position: absolute; left: 0; right: 0; text-align: center; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 28px; letter-spacing: .12em; text-transform: uppercase; color: #A3A3AD; }
+    .mask { position: absolute; left: 0; right: 0; overflow: hidden; text-align: center; }
+    .mask > div { font-family: 'Bricolage Grotesque', 'Arial Black', sans-serif; font-weight: 800; letter-spacing: -0.045em; line-height: 1; white-space: nowrap; }
+    
+  </style>
+
+  <div id="root" data-composition-id="e08-reloj" data-width="1080" data-height="1920" data-start="0" data-duration="2.983">
+    <div id="e08-reloj-g" class="clip G" data-start="0" data-duration="2.983" data-track-index="0"></div>
+    <div id="e08-reloj-rg" class="clip" style="left:330px;top:260px;width:420px;height:420px" data-start="0" data-duration="2.983" data-track-index="1"><svg width="420" height="420" viewBox="0 0 420 420" aria-hidden="true"><circle cx="210" cy="210" r="170" fill="none" stroke="#3A3A45" stroke-width="26"/><circle id="e08-reloj-rp" cx="210" cy="210" r="170" fill="none" stroke="#FACC15" stroke-width="26" stroke-linecap="round" stroke-dasharray="1068" stroke-dashoffset="1068" transform="rotate(-90 210 210)"/></svg><div id="e08-reloj-tx" style="position:absolute;left:0;right:0;top:150px;text-align:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:112px">0:00</div></div>
+    <div id="e08-reloj-ok" class="clip" style="left:465px;top:760px;width:150px;height:150px;border-radius:50%;background:#22C55E;opacity:0" data-start="0" data-duration="2.983" data-track-index="2"><svg width="150" height="150" viewBox="0 0 24 24" fill="none" stroke="#04210F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path id="e08-reloj-ck" d="M6.5 12.5l4 4L17.5 8" stroke-dasharray="16" stroke-dashoffset="16"/></svg></div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      var D = 2.983;
+      var seg = { v: 0 };
+      tl.to("#e08-reloj-rp", { strokeDashoffset: 0, duration: 1.84, ease: "none" }, 0.1);
+      tl.to(seg, { v: 3, duration: 1.84, ease: "none", onUpdate: function () { document.getElementById("e08-reloj-tx").textContent = "0:0" + Math.min(3, Math.floor(seg.v)); } }, 0.1);
+      tl.to("#e08-reloj-rp", { stroke: "#22C55E", duration: 0.2 }, 1.94);
+      tl.fromTo("#e08-reloj-ok", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power4.out" }, 1.94);
+      tl.to("#e08-reloj-ck", { strokeDashoffset: 0, duration: 0.3, ease: "power2.out" }, 2.09);
+
+      window.__timelines["e08-reloj"] = tl;
+    })();
+  </script>
+</template>

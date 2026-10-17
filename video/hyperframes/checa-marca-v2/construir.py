@@ -213,7 +213,188 @@ def esc_cierre(sc, e, nombre):
     return marco(nombre, D, "", inner, js)
 
 
-TIPOS = {"gancho": esc_gancho, "numero": esc_numero, "popup": esc_popup, "estados": esc_estados, "cierre": esc_cierre}
+# ---------- escenas adicionales (v2 del 08, 17 oct 2026) ----------
+def pal(sc, k, defecto=None):
+    """Segundo en que entra algo ligado a una palabra (0.25 s antes, para que se sienta sincronizado)."""
+    w = sc["words"]
+    if isinstance(k, int):
+        i = k
+    else:
+        n = re.sub(r"[^\w]", "", k.lower())
+        i = next((j for j, x in enumerate(w) if re.sub(r"[^\w]", "", x[0].lower()).startswith(n)), None)
+        assert i is not None, f"No encuentro «{k}» en la línea {sc['n']}: {[x[0] for x in w]}"
+    return max(0, round(w[min(i, len(w) - 1)][1] - 0.25, 2))
+
+
+ICONOS = {
+    "gas": '<path d="M5 20V5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v15M4 20h11M14 9h2.5a1.5 1.5 0 0 1 1.5 1.5V16a1.5 1.5 0 0 0 3 0V8l-3-3M7 8h5"/>',
+    "hora": '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    "km": '<circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8.5 18H15a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h6.5"/>',
+    "dinero": '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>',
+    "voz": '<path d="M4 9v6h4l5 4V5L8 9H4zM16.5 9a4 4 0 0 1 0 6M19 6.5a8 8 0 0 1 0 11"/>',
+}
+
+
+def ic(nombre, px, color="#F4F4EF"):
+    return f'<svg width="{px}" height="{px}" viewBox="0 0 24 24" fill="none" stroke="{color}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{ICONOS[nombre]}</svg>'
+
+
+OF_CSS = """.of { position: relative; width: 640px; height: 420px; border-radius: 28px; background: #16161C; border: 2px solid #3A3A45; box-shadow: 0 30px 60px rgba(0,0,0,.6); }
+    .of .l { position: absolute; left: 40px; top: 30px; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 24px; letter-spacing: .14em; color: #A3A3AD; }
+    .of .f { position: absolute; left: 36px; top: 64px; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 150px; letter-spacing: -.05em; line-height: 1; }
+    .of .d { position: absolute; left: 40px; top: 214px; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 28px; color: #C9C9D1; line-height: 1.5; }
+    .of .b { position: absolute; left: 40px; top: 318px; background: #22C55E; color: #04210F; border-radius: 999px; padding: 10px 36px; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 38px; letter-spacing: .06em; }"""
+
+
+def oferta():
+    return '<div class="of"><div class="l">NUEVA OFERTA</div><div class="f">$120</div><div class="d">5 min (1.8 km)<br>18 min (9 km)</div><div class="b">ACEPTAR</div></div>'
+
+
+def logo_svg(n, w, h):
+    return f'<svg width="{w}" height="{h}" viewBox="0 0 60 100" aria-hidden="true"><rect x="6" y="2" width="48" height="96" rx="20" fill="#222826" stroke="#3A423F" stroke-width="1.6"/><circle cx="30" cy="26" r="9" fill="#4A2222"/><circle cx="30" cy="50" r="9" fill="#4A3C16"/><circle cx="30" cy="74" r="12" fill="#1D3A27"/><circle id="{n}-lr" cx="30" cy="26" r="9" fill="#EF4444" opacity="0"/><circle id="{n}-la" cx="30" cy="50" r="9" fill="#FACC15" opacity="0"/><circle id="{n}-lv" cx="30" cy="74" r="12" fill="#22C55E" opacity="0"/><path id="{n}-lk" d="M24 74.5l4.5 4.5L36.5 69" fill="none" stroke="#04210F" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="20" stroke-dashoffset="20"/></svg>'
+
+
+def js_logo(n, t0=0.0):
+    return f"""      tl.set("#{n}-lr", {{ opacity: 1 }}, {t0 + 0.1}); tl.set("#{n}-lr", {{ opacity: 0 }}, {t0 + 0.4});
+      tl.set("#{n}-la", {{ opacity: 1 }}, {t0 + 0.4}); tl.set("#{n}-la", {{ opacity: 0 }}, {t0 + 0.7});
+      tl.set("#{n}-lv", {{ opacity: 1 }}, {t0 + 0.7});
+      tl.to("#{n}-lk", {{ strokeDashoffset: 0, duration: 0.3, ease: "power2.out" }}, {t0 + 0.9});
+"""
+
+
+def clip(i, idd, style, html, D, extra=""):
+    return f'    <div id="{idd}" class="clip" style="{style}" data-start="0" data-duration="{D}" data-track-index="{i}"{extra}>{html}</div>\n'
+
+
+def esc_hook(sc, e, n):
+    D = sc["dur"]; tap = pal(sc, e.get("tap", "pensarlo")); cae = pal(sc, e.get("cae", "perdiste"))
+    inner = clip(1, f"{n}-btn", "left:230px;top:330px;width:620px;height:150px;border-radius:999px;background:#22C55E;color:#04210F;display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:76px;letter-spacing:.06em", "ACEPTAR", D)
+    inner += clip(2, f"{n}-rip", "left:490px;top:355px;width:100px;height:100px;border-radius:50%;border:6px solid #F4F4EF;opacity:0", "", D)
+    inner += clip(3, f"{n}-card", "left:140px;top:640px;width:800px;height:300px;border-radius:28px;background:#EF4444;color:#1F0000;display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:92px;letter-spacing:-.04em;white-space:nowrap;opacity:0", "Perdiste dinero", D)
+    js = f"""      tl.fromTo("#{n}-btn", {{ opacity: 0, y: -40 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: "power4.out" }}, 0);
+      tl.to("#{n}-btn", {{ scale: 0.94, duration: 0.1 }}, {tap}); tl.to("#{n}-btn", {{ scale: 1, duration: 0.2 }}, {round(tap + 0.1, 2)});
+      tl.fromTo("#{n}-rip", {{ scale: 0.3, opacity: 0.9 }}, {{ scale: 2.4, opacity: 0, duration: 0.5, ease: "power2.out" }}, {tap});
+      tl.fromTo("#{n}-card", {{ y: 120, opacity: 0 }}, {{ y: 0, opacity: 1, duration: 0.35, ease: "power4.out" }}, {cae});
+      tl.to("#{n}-card", {{ x: 14, duration: 0.05, yoyo: true, repeat: 5 }}, {round(cae + 0.35, 2)});
+"""
+    return marco(n, D, "", inner, js)
+
+
+def esc_anillo(sc, e, n):
+    D = sc["dur"]
+    inner = clip(1, f"{n}-of", "left:220px;top:250px;width:640px;height:420px", oferta(), D)
+    inner += clip(2, f"{n}-ring", "left:390px;top:740px;width:300px;height:300px", f'<svg width="300" height="300" viewBox="0 0 300 300" aria-hidden="true"><circle cx="150" cy="150" r="120" fill="none" stroke="#3A3A45" stroke-width="22"/><circle id="{n}-rp" cx="150" cy="150" r="120" fill="none" stroke="#EF4444" stroke-width="22" stroke-linecap="round" stroke-dasharray="754" stroke-dashoffset="0" transform="rotate(-90 150 150)"/></svg>', D)
+    inner += f'    <div class="etq clip" style="top:1090px" data-start="0" data-duration="{D}" data-track-index="3">Números de ejemplo</div>\n'
+    js = f"""      tl.fromTo("#{n}-of", {{ opacity: 0, y: 60 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: "power4.out" }}, 0);
+      tl.fromTo("#{n}-ring", {{ opacity: 0 }}, {{ opacity: 1, duration: 0.3 }}, 0.3);
+      tl.to("#{n}-rp", {{ strokeDashoffset: 754, duration: {round(D - 0.8, 2)}, ease: "none" }}, 0.4);
+      tl.to("#{n}-of", {{ opacity: 0.35, duration: {round(D - 1.2, 2)}, ease: "none" }}, 0.8);
+"""
+    return marco(n, D, OF_CSS, inner, js)
+
+
+def esc_datos(sc, e, n):
+    D = sc["dur"]
+    filas = [("dinero", "Tarifa", "tarifa"), ("km", "Kilómetros", "kil"), ("hora", "Minutos de recogida", "minutos")]
+    inner, js = "", ""
+    for i, (ico, txt, pw) in enumerate(filas):
+        inner += clip(i + 1, f"{n}-r{i}", f"left:140px;top:{250 + i * 150}px;width:800px;height:120px;border-radius:28px;background:#16161C;border:2px solid #3A3A45;display:flex;align-items:center;gap:28px;padding-left:40px;box-sizing:border-box;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:56px;letter-spacing:-.03em", ic(ico, 64) + f"<span>{txt}</span>", D)
+        js += f'      tl.fromTo("#{n}-r{i}", {{ x: -80, opacity: 0 }}, {{ x: 0, opacity: 1, duration: 0.35, ease: "power4.out" }}, {pal(sc, pw)});\n'
+    inner += clip(4, f"{n}-g", "left:140px;top:730px;width:800px;height:220px;border-radius:28px;background:#3A1414;border:3px solid #EF4444;box-sizing:border-box;padding:34px 40px", ic("gas", 70, "#EF4444") + "<span style=\"position:absolute;left:140px;top:30px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:64px;letter-spacing:-.03em\">Gasolina</span>" + f'<div style="position:absolute;left:40px;right:40px;top:150px;height:26px;border-radius:13px;background:#3A3A45"><div style="width:8%;height:100%;border-radius:13px;background:#EF4444"></div></div>', D)
+    t = pal(sc, "gasolina")
+    js += f'      tl.fromTo("#{n}-g", {{ y: 60, opacity: 0 }}, {{ y: 0, opacity: 1, duration: 0.4, ease: "power4.out" }}, {t});\n      tl.to("#{n}-g", {{ opacity: 0.45, duration: 0.18, yoyo: true, repeat: 5 }}, {round(t + 0.5, 2)});\n'
+    return marco(n, D, "", inner, js)
+
+
+def esc_logo(sc, e, n):
+    D = sc["dur"]
+    inner = clip(1, f"{n}-lgw", "left:420px;top:240px", logo_svg(n, 240, 400), D)
+    inner += f'    <div id="{n}-nom" class="mask clip" style="top:690px;height:200px" data-start="0" data-duration="{D}" data-track-index="2"><div style="font-size:180px">Checa</div></div>\n'
+    js = f'      tl.fromTo("#{n}-lgw", {{ opacity: 0, y: 40 }}, {{ opacity: 1, y: 0, duration: 0.3, ease: "power4.out" }}, 0);\n' + js_logo(n, 0.0)
+    js += f'      tl.fromTo("#{n}-nom > div", {{ yPercent: 120 }}, {{ yPercent: 0, duration: 0.45, ease: "power4.out" }}, 1.2);\n'
+    return marco(n, D, "", inner, js)
+
+
+def esc_escaneo(sc, e, n):
+    D = sc["dur"]; ts, tp, tg, tn = pal(sc, "lee"), pal(sc, "cuánto"), pal(sc, "gasolina"), pal(sc, "descontada")
+    inner = clip(1, f"{n}-of", "left:220px;top:230px;width:640px;height:420px", oferta(), D)
+    inner += clip(2, f"{n}-sc", "left:200px;top:230px;width:680px;height:8px;border-radius:4px;background:#22C55E;box-shadow:0 0 30px #22C55E;opacity:0", "", D)
+    fila = "position:absolute;left:44px;right:44px;display:flex;justify-content:space-between;align-items:baseline;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.03em"
+    panel = (f'<div id="{n}-v" style="{fila};top:36px;font-size:56px"><span>Viaje</span><span style="font-family:\'JetBrains Mono\',monospace;font-size:52px">$120</span></div>'
+             f'<div id="{n}-ga" style="{fila};top:118px;font-size:56px;color:#EF4444"><span>Gasolina</span><span style="font-family:\'JetBrains Mono\',monospace;font-size:52px">−$22</span></div>'
+             f'<div style="position:absolute;left:44px;right:44px;top:208px;height:3px;background:#3A3A45"></div>'
+             f'<div id="{n}-ne" style="{fila};top:228px;font-size:64px;color:#22C55E"><span>Te quedan</span><span id="{n}-nn" style="font-size:120px">$98</span></div>')
+    inner += clip(3, f"{n}-pn", "left:140px;top:700px;width:800px;height:370px;border-radius:28px;background:#16161C;border:2px solid #3A3A45", panel, D)
+    inner += f'    <div class="etq clip" style="top:1100px" data-start="0" data-duration="{D}" data-track-index="4">Números de ejemplo</div>\n'
+    js = f"""      tl.fromTo("#{n}-of", {{ opacity: 0, y: 40 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: "power4.out" }}, 0);
+      tl.fromTo("#{n}-sc", {{ opacity: 1, y: 0 }}, {{ opacity: 1, y: 410, duration: 1.1, ease: "power1.inOut" }}, {ts});
+      tl.to("#{n}-sc", {{ opacity: 0, duration: 0.2 }}, {round(ts + 1.1, 2)});
+      tl.fromTo("#{n}-pn", {{ opacity: 0, y: 50 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: "power4.out" }}, {tp});
+      tl.set("#{n}-ga", {{ opacity: 0 }}, 0); tl.set("#{n}-ne", {{ opacity: 0 }}, 0);
+      tl.fromTo("#{n}-ga", {{ opacity: 0, x: -40 }}, {{ opacity: 1, x: 0, duration: 0.35, ease: "power4.out" }}, {tg});
+      tl.fromTo("#{n}-ne", {{ opacity: 0, y: 30 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: "power4.out" }}, {tn});
+      var num = {{ v: 120 }};
+      tl.fromTo(num, {{ v: 120 }}, {{ v: 98, duration: 0.6, ease: "power2.out", onUpdate: function () {{ document.getElementById("{n}-nn").textContent = "$" + Math.round(num.v); }} }}, {tn});
+"""
+    return marco(n, D, OF_CSS, inner, js)
+
+
+def esc_voz(sc, e, n):
+    D = sc["dur"]; ta, tc, tr = pal(sc, "aceptar"), pal(sc, "considerar"), pal(sc, "rechazar")
+    inner = clip(1, f"{n}-sp", "left:465px;top:230px", ic("voz", 150), D)
+    barras, js = "", ""
+    for i in range(15):
+        amp = 60 + (i * 53) % 120; dur = round(0.25 + ((i * 7) % 5) * 0.04, 2); rep = int(D / dur)
+        barras += f'<div id="{n}-b{i}" style="position:absolute;left:{i * 52}px;top:{110 - 20}px;width:28px;height:40px;border-radius:14px;background:#F4F4EF"></div>'
+        js += f'      tl.fromTo("#{n}-b{i}", {{ height: 40, y: 0 }}, {{ height: {amp}, y: {-(amp - 40) // 2}, duration: {dur}, yoyo: true, repeat: {rep}, ease: "sine.inOut" }}, 0);\n'
+    inner += clip(2, f"{n}-bars", "left:162px;top:480px;width:756px;height:220px", barras, D)
+    pills = [("ACEPTAR", "#22C55E", "#04210F", ta), ("CONSIDERAR", "#FACC15", "#2B2200", tc), ("RECHAZAR", "#EF4444", "#1F0000", tr)]
+    for i, (txt, bg, fg, t) in enumerate(pills):
+        inner += clip(3 + i, f"{n}-p{i}", f"left:260px;top:{770 + i * 120}px;width:560px;height:96px;border-radius:999px;background:{bg};color:{fg};display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:50px;letter-spacing:.08em;opacity:.22", txt, D)
+        js += f'      tl.to("#{n}-p{i}", {{ opacity: 1, scale: 1.06, duration: 0.2 }}, {t}); tl.to("#{n}-p{i}", {{ scale: 1, duration: 0.2 }}, {round(t + 0.25, 2)});\n'
+        js += f'      tl.to("#{n}-bars > div", {{ backgroundColor: "{bg}", duration: 0.15 }}, {t});\n'
+    js += f'      tl.fromTo("#{n}-sp", {{ opacity: 0, y: 20 }}, {{ opacity: 1, y: 0, duration: 0.3 }}, 0);\n'
+    return marco(n, D, "", inner, js)
+
+
+def esc_popup_oferta(sc, e, n):
+    D = sc["dur"]; validar_popup(e["popup"])
+    inner = clip(1, f"{n}-p", "left:273px;top:220px", popup(e["popup"], 0.62), D)
+    inner += clip(2, f"{n}-of", "left:220px;top:690px;width:640px;height:420px", oferta(), D)
+    inner += f'    <div class="etq clip" style="top:1120px" data-start="0" data-duration="{D}" data-track-index="3">Números de ejemplo</div>\n'
+    js = f"""      tl.fromTo("#{n}-of", {{ opacity: 0, y: 40 }}, {{ opacity: 1, y: 0, duration: 0.3, ease: "power4.out" }}, 0);
+      tl.fromTo("#{n}-p", {{ y: -70, opacity: 0 }}, {{ y: 0, opacity: 1, duration: 0.45, ease: "power4.out" }}, {pal(sc, e.get("entra", 0))});
+"""
+    return marco(n, D, css_popup() + "\n    " + OF_CSS, inner, js)
+
+
+def esc_reloj(sc, e, n):
+    D = sc["dur"]; t1 = pal(sc, "hecha"); t0 = 0.1; t1 = max(t1, t0 + 1.2)
+    inner = clip(1, f"{n}-rg", "left:330px;top:260px;width:420px;height:420px", f'<svg width="420" height="420" viewBox="0 0 420 420" aria-hidden="true"><circle cx="210" cy="210" r="170" fill="none" stroke="#3A3A45" stroke-width="26"/><circle id="{n}-rp" cx="210" cy="210" r="170" fill="none" stroke="#FACC15" stroke-width="26" stroke-linecap="round" stroke-dasharray="1068" stroke-dashoffset="1068" transform="rotate(-90 210 210)"/></svg><div id="{n}-tx" style="position:absolute;left:0;right:0;top:150px;text-align:center;font-family:\'JetBrains Mono\',monospace;font-weight:700;font-size:112px">0:00</div>', D)
+    inner += clip(2, f"{n}-ok", "left:465px;top:760px;width:150px;height:150px;border-radius:50%;background:#22C55E;opacity:0", '<svg width="150" height="150" viewBox="0 0 24 24" fill="none" stroke="#04210F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path id="' + n + '-ck" d="M6.5 12.5l4 4L17.5 8" stroke-dasharray="16" stroke-dashoffset="16"/></svg>', D)
+    js = f"""      var seg = {{ v: 0 }};
+      tl.to("#{n}-rp", {{ strokeDashoffset: 0, duration: {round(t1 - t0, 2)}, ease: "none" }}, {t0});
+      tl.to(seg, {{ v: 3, duration: {round(t1 - t0, 2)}, ease: "none", onUpdate: function () {{ document.getElementById("{n}-tx").textContent = "0:0" + Math.min(3, Math.floor(seg.v)); }} }}, {t0});
+      tl.to("#{n}-rp", {{ stroke: "#22C55E", duration: 0.2 }}, {round(t1, 2)});
+      tl.fromTo("#{n}-ok", {{ opacity: 0, scale: 0.6 }}, {{ opacity: 1, scale: 1, duration: 0.3, ease: "power4.out" }}, {round(t1, 2)});
+      tl.to("#{n}-ck", {{ strokeDashoffset: 0, duration: 0.3, ease: "power2.out" }}, {round(t1 + 0.15, 2)});
+"""
+    return marco(n, D, "", inner, js)
+
+
+def esc_seguir(sc, e, n):
+    D = sc["dur"]
+    inner = f'    <div class="etq clip" style="top:330px" data-start="0" data-duration="{D}" data-track-index="1">creador de Checa</div>\n'
+    inner += clip(2, f"{n}-u", "left:0;right:0;top:400px;text-align:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:64px", "@Eduardoalv9802", D)
+    inner += clip(3, f"{n}-bt", "left:300px;top:580px;width:480px;height:140px;border-radius:999px;background:#F4F4EF;color:#0C0C10;display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:66px;letter-spacing:-.02em", "+ Seguir", D)
+    js = f"""      tl.fromTo("#{n}-u", {{ opacity: 0, y: 30 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: "power4.out" }}, 0);
+      tl.fromTo("#{n}-bt", {{ opacity: 0, y: 40 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: "power4.out" }}, 0.25);
+      tl.to("#{n}-bt", {{ scale: 1.06, duration: 0.4, yoyo: true, repeat: {max(1, int(D / 0.4) - 2)}, ease: "sine.inOut" }}, 0.8);
+"""
+    return marco(n, D, "", inner, js)
+
+
+TIPOS = {"hook": esc_hook, "anillo": esc_anillo, "datos": esc_datos, "logo": esc_logo, "escaneo": esc_escaneo, "voz": esc_voz, "popup_oferta": esc_popup_oferta, "reloj": esc_reloj, "seguir": esc_seguir, "gancho": esc_gancho, "numero": esc_numero, "popup": esc_popup, "estados": esc_estados, "cierre": esc_cierre}
 
 
 # ---------- subtítulos ----------

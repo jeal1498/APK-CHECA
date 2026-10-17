@@ -1,3 +1,4 @@
 .hyperframes/
 renders/
 audio_engine_meta.json
+node_modules/

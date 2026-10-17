@@ -1,0 +1,40 @@
+<template>
+  <style>
+    @font-face{ font-family: 'Bricolage Grotesque'; font-weight: 800; font-display: block; src: url('assets/fonts/bricolage-grotesque-latin-800-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'DM Sans'; font-weight: 400; font-display: block; src: url('assets/fonts/dm-sans-latin-400-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'DM Sans'; font-weight: 700; font-display: block; src: url('assets/fonts/dm-sans-latin-700-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'JetBrains Mono'; font-weight: 500; font-display: block; src: url('assets/fonts/jetbrains-mono-latin-500-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'JetBrains Mono'; font-weight: 700; font-display: block; src: url('assets/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+    #root { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; font-family: 'DM Sans', Arial, sans-serif; color: #F4F4EF; }
+    .clip { position: absolute; }
+    .G { inset: 0; background: #0C0C10; }
+    .etq { position: absolute; left: 0; right: 0; text-align: center; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 28px; letter-spacing: .12em; text-transform: uppercase; color: #A3A3AD; }
+    .mask { position: absolute; left: 0; right: 0; overflow: hidden; text-align: center; }
+    .mask > div { font-family: 'Bricolage Grotesque', 'Arial Black', sans-serif; font-weight: 800; letter-spacing: -0.045em; line-height: 1; white-space: nowrap; }
+    
+  </style>
+
+  <div id="root" data-composition-id="e04-logo" data-width="1080" data-height="1920" data-start="0" data-duration="2.472">
+    <div id="e04-logo-g" class="clip G" data-start="0" data-duration="2.472" data-track-index="0"></div>
+    <div id="e04-logo-lgw" class="clip" style="left:420px;top:240px" data-start="0" data-duration="2.472" data-track-index="1"><svg width="240" height="400" viewBox="0 0 60 100" aria-hidden="true"><rect x="6" y="2" width="48" height="96" rx="20" fill="#222826" stroke="#3A423F" stroke-width="1.6"/><circle cx="30" cy="26" r="9" fill="#4A2222"/><circle cx="30" cy="50" r="9" fill="#4A3C16"/><circle cx="30" cy="74" r="12" fill="#1D3A27"/><circle id="e04-logo-lr" cx="30" cy="26" r="9" fill="#EF4444" opacity="0"/><circle id="e04-logo-la" cx="30" cy="50" r="9" fill="#FACC15" opacity="0"/><circle id="e04-logo-lv" cx="30" cy="74" r="12" fill="#22C55E" opacity="0"/><path id="e04-logo-lk" d="M24 74.5l4.5 4.5L36.5 69" fill="none" stroke="#04210F" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="20" stroke-dashoffset="20"/></svg></div>
+    <div id="e04-logo-nom" class="mask clip" style="top:690px;height:200px" data-start="0" data-duration="2.472" data-track-index="2"><div style="font-size:180px">Checa</div></div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      var D = 2.472;
+      tl.fromTo("#e04-logo-lgw", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.3, ease: "power4.out" }, 0);
+      tl.set("#e04-logo-lr", { opacity: 1 }, 0.1); tl.set("#e04-logo-lr", { opacity: 0 }, 0.4);
+      tl.set("#e04-logo-la", { opacity: 1 }, 0.4); tl.set("#e04-logo-la", { opacity: 0 }, 0.7);
+      tl.set("#e04-logo-lv", { opacity: 1 }, 0.7);
+      tl.to("#e04-logo-lk", { strokeDashoffset: 0, duration: 0.3, ease: "power2.out" }, 0.9);
+      tl.fromTo("#e04-logo-nom > div", { yPercent: 120 }, { yPercent: 0, duration: 0.45, ease: "power4.out" }, 1.2);
+
+      window.__timelines["e04-logo"] = tl;
+    })();
+  </script>
+</template>
