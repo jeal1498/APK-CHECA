@@ -1364,14 +1364,7 @@ class MainActivity : Activity() {
             "Quedan solo en tu teléfono. Si una oferta se lee mal, compártelas", prefs.diagnostico
         ) { prefs.diagnostico = it })
         diag.addView(boton("Ver / compartir capturas", cTarjeta2, cTexto) { verCapturas() }, margenArriba(Tema.S2))
-        diag.addView(boton("Compartir fotos de ofertas", cTarjeta2, cTexto) {
-            if (Fotos.lista(this).isEmpty()) Toast.makeText(this, "Aún no hay fotos.", Toast.LENGTH_SHORT).show()
-            else Fotos.compartir(this)
-        }, margenArriba(Tema.S1))
-        diag.addView(boton("Borrar fotos", cTarjeta2, cTexto) {
-            Fotos.borrar(this)
-            Toast.makeText(this, "Fotos borradas.", Toast.LENGTH_SHORT).show()
-        }, margenArriba(Tema.S1))
+        diag.addView(boton("Revisar y elegir fotos", cTarjeta2, cTexto) { gestorFotos() }, margenArriba(Tema.S1))
         diag.addView(boton("Borrar historial de ofertas", Tema.ROJO_SUAVE, cRojo) {
             AlertDialog.Builder(this)
                 .setMessage("¿Borrar todo el historial de ofertas?")
@@ -2871,6 +2864,116 @@ class MainActivity : Activity() {
         if (v % 1f == 0f) v.toInt().toString() else String.format(Locale.US, "%.1f", v)
 
     private fun num1(v: Double): String = String.format(Locale.US, "%.1f", v)
+
+    /** Las fotos nunca se envían solas: aquí se ven, se eligen las que se comparten y se borran las demás. */
+    private fun gestorFotos() {
+        if (Fotos.lista(this).isEmpty()) {
+            Toast.makeText(this, "Aún no hay fotos.", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val elegidas = HashSet<java.io.File>()
+        val d = Dialog(this, android.R.style.Theme_DeviceDefault_NoActionBar)
+        val raiz = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setBackgroundColor(cFondo) }
+        val cuerpo = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(16), dp(Tema.S3), dp(16), dp(Tema.S2))
+        }
+        val pie = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(16), dp(Tema.S1), dp(16), dp(Tema.S2))
+        }
+        raiz.addView(ScrollView(this).apply { isVerticalScrollBarEnabled = false; addView(cuerpo) },
+            LinearLayout.LayoutParams(-1, 0, 1f))
+        raiz.addView(pie)
+        d.setContentView(raiz)
+        d.window?.statusBarColor = cFondo
+        d.window?.navigationBarColor = cFondo
+
+        fun pintar() {
+            val fotos = Fotos.lista(this)
+            elegidas.retainAll(fotos.toSet())
+            if (fotos.isEmpty()) { d.dismiss(); return }
+            cuerpo.removeAllViews()
+            pie.removeAllViews()
+            cuerpo.addView(texto("Tus fotos de ofertas", 24f, cTexto, true))
+            cuerpo.addView(texto(
+                "Nada se envía solo. Toca una foto para verla grande y bórrala si tiene algo que no quieres compartir. " +
+                    "Marca con el círculo las que sí quieres mandar.",
+                Tema.T_NOTA, cTenue, false
+            ).apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S1))
+            val todas = elegidas.size == fotos.size
+            cuerpo.addView(texto(if (todas) "Quitar selección" else "Seleccionar todas", Tema.T_TEXTO, cVerde, true).apply {
+                minHeight = dp(Tema.ALTO_TOQUE)
+                gravity = Gravity.CENTER_VERTICAL
+                isClickable = true
+                setOnClickListener { if (todas) elegidas.clear() else elegidas.addAll(fotos); pintar() }
+            })
+            val lado = (resources.displayMetrics.widthPixels - dp(32) - dp(16)) / 3
+            fotos.chunked(3).forEach { grupo ->
+                val fila = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+                grupo.forEachIndexed { i, f ->
+                    val marcada = f in elegidas
+                    val celda = FrameLayout(this).apply {
+                        background = redondo(if (marcada) cVerde else cTarjeta2, 8)
+                        setPadding(dp(if (marcada) 3 else 0), dp(if (marcada) 3 else 0), dp(if (marcada) 3 else 0), dp(if (marcada) 3 else 0))
+                    }
+                    celda.addView(ImageView(this).apply {
+                        scaleType = ImageView.ScaleType.CENTER_CROP
+                        setImageBitmap(Fotos.miniatura(f, lado))
+                        isClickable = true
+                        setOnClickListener { verFoto(f) { pintar() } }
+                    }, FrameLayout.LayoutParams(-1, -1))
+                    celda.addView(texto(if (marcada) "✓" else "", Tema.T_TEXTO, Color.BLACK, true).apply {
+                        gravity = Gravity.CENTER
+                        background = if (marcada) punto(cVerde) else punto(0xB3000000.toInt())
+                        isClickable = true
+                        setOnClickListener { if (marcada) elegidas.remove(f) else elegidas.add(f); pintar() }
+                    }, FrameLayout.LayoutParams(dp(32), dp(32), Gravity.TOP or Gravity.END).apply { setMargins(0, dp(6), dp(6), 0) })
+                    fila.addView(celda, LinearLayout.LayoutParams(lado, (lado * 1.6f).toInt()).apply { if (i > 0) leftMargin = dp(8) })
+                }
+                cuerpo.addView(fila, margenArriba(8))
+            }
+            val n = elegidas.size
+            pie.addView(
+                if (n > 0) boton("Compartir ($n)", cVerde, Color.BLACK) { Fotos.compartir(this, elegidas.toList()) }
+                else boton("Elige las fotos que quieres compartir", cTarjeta2, cTenue) { },
+                LinearLayout.LayoutParams(-1, dp(52))
+            )
+            if (n > 0) pie.addView(boton("Borrar ($n)", Tema.ROJO_SUAVE, cRojo) {
+                AlertDialog.Builder(this)
+                    .setMessage("¿Borrar $n ${if (n == 1) "foto" else "fotos"}? No se puede deshacer.")
+                    .setPositiveButton("Borrar") { _, _ -> Fotos.borrar(elegidas.toList()); elegidas.clear(); pintar() }
+                    .setNegativeButton("Cancelar", null)
+                    .show()
+            }, margenArriba(Tema.S1))
+            pie.addView(texto("Cerrar", Tema.T_TEXTO, cTenue, false).apply {
+                typeface = fuenteMedia
+                gravity = Gravity.CENTER
+                minHeight = dp(Tema.ALTO_TOQUE)
+                isClickable = true
+                setOnClickListener { d.dismiss() }
+            }, margenArriba(4))
+        }
+        d.show()
+        pintar()
+    }
+
+    /** Foto grande para revisar lo que muestra antes de compartirla; se puede borrar desde aquí. */
+    private fun verFoto(f: java.io.File, alCambiar: () -> Unit) {
+        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        cuerpo.addView(ImageView(this).apply {
+            scaleType = ImageView.ScaleType.FIT_CENTER
+            setImageBitmap(Fotos.miniatura(f, 900))
+        }, LinearLayout.LayoutParams(-1, (resources.displayMetrics.heightPixels * 0.6f).toInt()))
+        var ventana: Dialog? = null
+        cuerpo.addView(boton("Borrar esta foto", Tema.ROJO_SUAVE, cRojo) {
+            Fotos.borrar(listOf(f))
+            ventana?.dismiss()
+            alCambiar()
+        }, margenArriba(Tema.S1))
+        cuerpo.addView(boton("Cerrar", cTarjeta2, cTexto) { ventana?.dismiss() }, margenArriba(Tema.S1))
+        ventana = hoja("Foto", null, cuerpo)
+    }
 
     private fun verCapturas() {
         val caps = prefs.capturas().ifBlank { "Aún no hay capturas." }

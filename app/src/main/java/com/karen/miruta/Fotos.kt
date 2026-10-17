@@ -43,8 +43,19 @@ object Fotos {
 
     fun borrar(ctx: Context) = lista(ctx).forEach { it.delete() }
 
-    fun compartir(ctx: Context) {
-        val fotos = lista(ctx)
+    fun borrar(fotos: Collection<File>) = fotos.forEach { it.delete() }
+
+    /** Miniatura liviana para la cuadrícula (o la foto casi completa si [lado] es grande). */
+    fun miniatura(f: File, lado: Int): Bitmap? = try {
+        val o = android.graphics.BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        android.graphics.BitmapFactory.decodeFile(f.path, o)
+        var m = 1
+        while (o.outWidth / (m * 2) >= lado) m *= 2
+        android.graphics.BitmapFactory.decodeFile(f.path, android.graphics.BitmapFactory.Options().apply { inSampleSize = m })
+    } catch (_: Exception) { null }
+
+    /** Comparte solo las fotos que el conductor eligió. */
+    fun compartir(ctx: Context, fotos: Collection<File>) {
         if (fotos.isEmpty()) return
         try {
             val uris = ArrayList(fotos.map { FileProvider.getUriForFile(ctx, ctx.packageName + ".fileprovider", it) })
