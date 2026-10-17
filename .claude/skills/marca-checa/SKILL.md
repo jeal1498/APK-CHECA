@@ -24,8 +24,8 @@ Antes de diseñar o escribir:
 - **Subtítulos de video:** máx. 2 líneas y 5 palabras; tercio medio-bajo (evitar 12 % arriba y 22 % abajo); sombra oscura; palabra por palabra a 150 ms. Verde = lo que ganas, amarillo = palabra a recordar, rojo = lo que pierdes, hueso = lo demás.
 - **Movimiento:** logo rojo → ámbar → verde → ✓ en 1.2 s; curva `cubic-bezier(.2,.8,.2,1)`, sin rebote; con «reducir movimiento», solo cortes.
 - **Uber y DiDi:** sin sus logos ni colores; pantallas genéricas. Aviso: «Checa es independiente y no está afiliada a Uber ni a DiDi». Números de ejemplo siempre marcados.
-- **Pantalla final de videos:** logo + «Descarga Checa» + `@checa.driver` + `@Eduardoalv9802` + `jeal1498.github.io/checa-web` (solo Android).
+- **Pantalla final de videos:** logo + «Descarga Checa» + `@checa.driver` + `@Eduardoalv9802` + `jeal1498.github.io/checa-web` (solo Android). En los videos que van **dentro de la web** el cierre va sin cuentas ni link (`"sin_redes": true`), porque la web no tiene salidas.
 
 ## Estado
-- Aprobada por Eduardo el 17 oct 2026. **Aún no se aplica** a la app Android (`Tema.kt`, pop-up, ícono) ni a la web. **Videos:** ya hay plantilla en marca v2, `video/hyperframes/checa-marca-v2/` (la vieja `checa-promo` queda como legado). Hasta aplicarla en la app y la web conviven con la marca anterior (verde y negro, `marketing/marca/logos/`). Al aplicarla, actualizar este estado.
-- Pendientes: PNG del logo, láminas exportadas a `checa-web/marca/laminas/`, fotografía y video real.
+- Aprobada por Eduardo el 17 oct 2026. **Ya se aplica a la web** (17 oct 2026, `checa-web`); **aún no** a la app Android (`Tema.kt`, pop-up, ícono). **Videos:** ya hay plantilla en marca v2, `video/hyperframes/checa-marca-v2/` (la vieja `checa-promo` queda como legado). Hasta aplicarla en la app conviven con la marca anterior (verde y negro, `marketing/marca/logos/`). Al aplicarla, actualizar este estado.
+- Pendientes (PNG del ícono ya hechos en `checa-web/marca/png/`): láminas exportadas a `checa-web/marca/laminas/`, fotografía y video real.
