@@ -12,11 +12,13 @@ Sustituye a `../checa-promo/` para los videos **nuevos** (17 oct 2026). `checa-p
 
 **Cómo usarla** (proceso de `videos-checa`, «Estilo HyperFrames»):
 1. `cp -r video/hyperframes/checa-marca-v2 video/hyperframes/<tema>` y cambia `meta.json` y `package.json` (nombre).
-2. Escribe `SCRIPT.md` y `STORYBOARD.md`; voz de Fernando con `--voice dlGxemPxFMTY7iXagmOj` (concurrencia 2).
-3. En cada escena declara las `@font-face` con `assets/fonts/*.woff2` (el popup y el logo no las traen) y respeta `frame.md`.
-4. `captions.mjs build`, ensamblar, `npx hyperframes@0.8.154 check` y render.
+2. Copia `ejemplo/SCRIPT.md` y `ejemplo/escenas.json` a la raíz y edítalos: una línea de voz por escena y un objeto por escena (tipos `gancho`, `numero`, `popup`, `estados`, `cierre`; el detalle está en la cabecera de `construir.py`).
+3. `python3 -I construir.py --render`: pide la voz de Fernando (solo las líneas que falten), calcula tiempos, genera escenas, subtítulos e `index.html`, corre `hyperframes check` y renderiza a `renders/video.mp4` (~25 s). Sin `--render` solo arma; con `--check` también valida.
+4. Para una escena que no encaja en esos tipos, escribe a mano `compositions/frames/eNN-<nombre>.html` siguiendo `frame.md` (declara las `@font-face` con `assets/fonts/*.woff2`) y agrega el nombre al index; `construir.py` borra y regenera `compositions/frames/*.html`, así que mejor añade un tipo nuevo al script.
+
+`construir.py` valida que la neta cuadre (viaje − gasolina), pone «Números de ejemplo», usa ids que empiezan con letra y exige el cierre estándar como última escena. No agrega música ni efectos de sonido todavía.
 
 La marca completa vive en `jeal1498/checa-web`, carpeta `marca/` (skill `marca-checa`).
 
 **Verificado (17 oct 2026):** los tres pop-ups y un subtítulo de ejemplo se renderizaron en Chromium con las fuentes de `assets/fonts/`: mismo tamaño, sin desbordes (la ficha «Rec. 6 km» exigió bajar los datos a 40 px).
-**Probada de punta a punta (17 oct 2026):** `prueba-marca-v2/` es un video de 13 s (4 escenas, voz de Fernando, subtítulos v2, pantalla final) hecho con esta plantilla: `check` sin errores y render en ~25 s. Se armó a mano (sin `captions.mjs` ni `armar.py`): los grupos de subtítulos se escribieron directo en `compositions/captions.html`. Sin música ni efectos de sonido todavía.
+**Probada de punta a punta (17 oct 2026):** `prueba-marca-v2/` es un video de 13 s (4 escenas, voz de Fernando, subtítulos v2, pantalla final) hecho con esta plantilla: `check` sin errores y render en ~25 s. Después se reprodujo con `construir.py` (mismo resultado visual, 9 subtítulos, 24 s de render).

@@ -37,25 +37,9 @@
 
   </style>
 
-  <div id="root" data-composition-id="02-popup" data-width="1080" data-height="1920" data-start="0" data-duration="2.89">
-    <div class="clip G" data-start="0" data-duration="2.89" data-track-index="0"></div>
-    <div id="pop" class="clip" style="left:110px;top:340px" data-start="0" data-duration="2.89" data-track-index="1"><div class="cp cp-verde">
-  <div class="cp-banda">
-    <div class="cp-lado"><span class="cp-app">UBER</span></div>
-    <div class="cp-accion">ACEPTAR</div>
-    <div class="cp-lado der"><svg width="44" height="44" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6 L18 18 M18 6 L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div>
-  </div>
-  <div class="cp-cuerpo">
-    <div class="cp-neta">$118<small>&nbsp;netos</small></div>
-    <div class="cp-linea">Viaje $150&nbsp;·&nbsp;Gasolina −$32</div>
-    <div class="cp-fichas">
-      <div class="cp-ficha cp-ok"><b>$321/h</b><span>por hora</span></div>
-      <div class="cp-ficha cp-ok"><b>$9.4/km</b><span>por km</span></div>
-      <div class="cp-ficha"><b>28 min</b><span>16 km total</span></div>
-    </div>
-  </div>
-</div>
-</div>
+  <div id="root" data-composition-id="e02-popup" data-width="1080" data-height="1920" data-start="0" data-duration="2.89">
+    <div id="e02-popup-g" class="clip G" data-start="0" data-duration="2.89" data-track-index="0"></div>
+    <div id="e02-popup-p" class="clip" style="left:110px;top:340px" data-start="0" data-duration="2.89" data-track-index="1"><div class="cp cp-verde" style="--u:1.0"><div class="cp-banda"><div class="cp-lado"><span class="cp-app">UBER</span></div><div class="cp-accion">ACEPTAR</div><div class="cp-lado der"><svg width="44" height="44" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6 L18 18 M18 6 L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div></div><div class="cp-cuerpo"><div class="cp-neta">$118<small>&nbsp;netos</small></div><div class="cp-linea">Viaje $150&nbsp;·&nbsp;Gasolina −$32</div><div class="cp-fichas"><div class="cp-ficha cp-ok"><b>$321/h</b><span>por hora</span></div><div class="cp-ficha cp-ok"><b>$9.4/km</b><span>por km</span></div><div class="cp-ficha"><b>28 min</b><span>16 km total</span></div></div></div></div></div>
     <div class="etq clip" style="top:1040px" data-start="0" data-duration="2.89" data-track-index="2">Números de ejemplo</div>
   </div>
 
@@ -65,10 +49,10 @@
       window.__timelines = window.__timelines || {};
       var tl = gsap.timeline({ paused: true });
       var D = 2.89;
-      tl.fromTo("#pop", { y: 90, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power4.out" }, 0.0);
-      tl.fromTo("#pop", { scale: 1 }, { scale: 1.04, duration: D, ease: "none" }, 0);
+      tl.fromTo("#e02-popup-p", { y: 90, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power4.out" }, 0);
+      tl.fromTo("#e02-popup-p", { scale: 1 }, { scale: 1.04, duration: D, ease: "none" }, 0);
 
-      window.__timelines["02-popup"] = tl;
+      window.__timelines["e02-popup"] = tl;
     })();
   </script>
 </template>
