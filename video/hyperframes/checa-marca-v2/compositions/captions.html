@@ -1,0 +1,231 @@
+<template id="captions-template" data-composition-id="captions" data-width="1080" data-height="1920">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+
+
+<style data-brand-tokens>
+@font-face{ font-family: 'Bricolage Grotesque'; font-weight: 800; font-display: block; src: url("assets/fonts/bricolage-grotesque-latin-800-normal.woff2") format('woff2'); }
+@font-face{ font-family: 'Bricolage Grotesque'; font-weight: 500; font-display: block; src: url("assets/fonts/bricolage-grotesque-latin-500-normal.woff2") format('woff2'); }
+@font-face{ font-family: 'DM Sans'; font-weight: 400; font-display: block; src: url("assets/fonts/dm-sans-latin-400-normal.woff2") format('woff2'); }
+@font-face{ font-family: 'DM Sans'; font-weight: 500; font-display: block; src: url("assets/fonts/dm-sans-latin-500-normal.woff2") format('woff2'); }
+@font-face{ font-family: 'DM Sans'; font-weight: 700; font-display: block; src: url("assets/fonts/dm-sans-latin-700-normal.woff2") format('woff2'); }
+@font-face{ font-family: 'JetBrains Mono'; font-weight: 500; font-display: block; src: url("assets/fonts/jetbrains-mono-latin-500-normal.woff2") format('woff2'); }
+@font-face{ font-family: 'JetBrains Mono'; font-weight: 700; font-display: block; src: url("assets/fonts/jetbrains-mono-latin-700-normal.woff2") format('woff2'); }
+      :root {
+      /* Marca Checa v2: fuente única en jeal1498/checa-web, carpeta marca/ */
+      --asfalto: #0C0C10;
+      --tablero: #16161C;
+      --humo: #3A3A45;
+      --hueso: #F4F4EF;
+      --aceptar: #22C55E;
+      --considerar: #FACC15;
+      --rechazar: #EF4444;
+      --cap-ink: #F4F4EF;
+      --cap-canvas: #0C0C10;
+      --cap-accent: #FACC15;
+      --cap-accent-2: #FACC15;
+      --font-display: "Bricolage Grotesque", "Arial Black", sans-serif;
+      --font-body: "DM Sans", Arial, sans-serif;
+      --font-mono: "JetBrains Mono", "Courier New", monospace;
+      --cap-band-top: 1160px;
+      --cap-band-height: 320px;
+      }
+    </style>
+
+<style>
+  #captions-root {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .caption-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    pointer-events: none;
+  }
+  /* the keep-out band, from captionBand(H) — frame content stays above it */
+  .caption-stage {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: var(--cap-band-top, 900px);
+    height: var(--cap-band-height, 180px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .caption-group {
+    /* every group is absolutely stacked over the SAME band — exactly one shown at a
+       time via opacity. Must be absolute: in-flow groups would lay out side-by-side. */
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+  }
+
+  /* Subtítulo v2: sin placa; sombra oscura para leerse sobre cualquier fondo */
+  .caption-pill {
+    max-width: 86%;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+  }
+  .caption-line {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.04em 0.3em;
+    font-family: "Bricolage Grotesque", "Arial Black", sans-serif;
+    font-weight: 800;
+    font-size: clamp(48px, 5.2vw, 64px);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    text-shadow: 0 2px 0 #0C0C10, 0 0 14px #0C0C10, 0 0 28px rgba(12,12,16,.8);
+  }
+
+  /* palabra por venir */
+  .caption-word {
+    display: inline-block;
+    padding: 0 0.08em;
+    color: #B6B6BE;
+  }
+  /* palabra activa: bloque amarillo calle con texto oscuro (estilo A de la lámina 6) */
+  .caption-word.is-active {
+    color: #14141A;
+    background: #FACC15;
+    border-radius: 0.18em;
+    box-shadow: 0 0 0 0.06em #FACC15;
+    text-shadow: none;
+  }
+  /* palabra ya dicha */
+  .caption-word.is-spoken {
+    color: #F4F4EF;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  /* optional per-word accents (dormant until a word-classer tags them) */
+  /* brand / key term — fire-orange ink, the cream-on-ink register's only inflection */
+  .caption-word.cap-brand {
+    color: #F4F4EF;
+  }
+  /* numerals / data — the IBM Plex Mono chrome voice, uppercase + tracked, recessed */
+  .caption-word.cap-num {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 800;
+    color: #F4F4EF;
+  }
+  /* cifras con color del semáforo: añadir cap-gana (verde) o cap-pierde (rojo) a la palabra */
+  .caption-word.cap-gana { color: #22C55E; }
+  .caption-word.cap-pierde { color: #EF4444; }
+  /* emphasis — a fire-orange hairline underline (no second hue; the lone accent again) */
+  .caption-word.cap-cta {
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-decoration-color: #FACC15;
+    text-underline-offset: 0.1em;
+  }
+
+  @media (max-aspect-ratio: 9/16) {
+    .caption-pill {
+      max-width: 90%;
+    }
+    .caption-line {
+      font-size: clamp(44px, 5.8vw, 60px);
+    }
+  }
+</style>
+
+<div
+  id="captions-root"
+  data-composition-id="captions"
+  data-timeline-locked
+  data-start="0"
+  data-duration="40.177"
+  data-fps="30"
+  data-width="1080"
+  data-height="1920"
+>
+  <div class="caption-layer" aria-hidden="true">
+    <div id="caption-stage" class="caption-stage"></div>
+  </div>
+</div>
+
+<script>
+  // captions.mjs injects the engine's scene-aware groups + real duration here.
+  var GROUPS = [];
+  var DURATION = 0;
+
+  (function () {
+    var stage = document.getElementById("caption-stage");
+
+    // build DOM: one .caption-group per group, .caption-word per word
+    GROUPS.forEach(function (group, g) {
+      var groupEl = document.createElement("div");
+      groupEl.className = "caption-group";
+      groupEl.id = "caption-group-" + g;
+      var pill = document.createElement("div");
+      pill.className = "caption-pill";
+      var line = document.createElement("div");
+      line.className = "caption-line";
+      (group.words || []).forEach(function (w, i) {
+        var span = document.createElement("span");
+        span.className = "caption-word";
+        span.id = "caption-word-" + g + "-" + i;
+        span.textContent = String(w.text);
+        line.appendChild(span);
+      });
+      pill.appendChild(line);
+      groupEl.appendChild(pill);
+      stage.appendChild(groupEl);
+    });
+
+    window.__timelines = window.__timelines || {};
+    var tl = gsap.timeline({ paused: true });
+
+    GROUPS.forEach(function (group, g) {
+      var groupEl = document.getElementById("caption-group-" + g);
+      var words = group.words || [];
+      var next = GROUPS[g + 1];
+      var isLast = g === GROUPS.length - 1;
+      var start = Math.max(0, Number(group.start));
+      var end = isLast ? DURATION : Math.min(Number(next.start), Number(group.end) + 0.3);
+      if (end <= start) end = start + 0.01;
+
+      // group on/off — exactly one group visible at a time
+      tl.set(groupEl, { opacity: 1 }, start);
+      tl.set(groupEl, { opacity: 0 }, end);
+
+      // 3-state karaoke via className SETS — seek-safe (gsap.set applies on the
+      // engine's frame-by-frame seek; .call callbacks would NOT fire).
+      words.forEach(function (w, i) {
+        var el = document.getElementById("caption-word-" + g + "-" + i);
+        var at = Math.max(start, Number(w.start));
+        tl.set(el, { className: "caption-word" }, start); // upcoming (also resets on reverse-seek)
+        tl.set(el, { className: "caption-word is-active" }, at); // current
+        tl.fromTo(el, { scale: 0.92 }, { scale: 1, duration: 0.1, ease: "power3.out" }, at);
+        if (i + 1 < words.length) {
+          var nextAt = Math.max(start, Number(words[i + 1].start));
+          tl.set(el, { className: "caption-word is-spoken" }, nextAt); // demote when next activates
+        }
+      });
+      if (words.length) {
+        var lastEl = document.getElementById("caption-word-" + g + "-" + (words.length - 1));
+        var lastSpoken = Math.min(end, Number(words[words.length - 1].end) + 0.1);
+        tl.set(lastEl, { className: "caption-word is-spoken" }, lastSpoken);
+      }
+    });
+
+    // full-span anchor so the sub-comp timeline spans the whole video
+    tl.to({}, { duration: DURATION }, 0);
+    window.__timelines["captions"] = tl;
+  })();
+</script>
+
+<style>
+  .caption-line { line-height: 1.1 !important; }
+</style>
+</template>

@@ -27,5 +27,5 @@ Antes de diseñar o escribir:
 - **Pantalla final de videos:** logo + «Descarga Checa» + `@checa.driver` + `@Eduardoalv9802` + `jeal1498.github.io/checa-web` (solo Android).
 
 ## Estado
-- Aprobada por Eduardo el 17 oct 2026. **Aún no se aplica** a la app Android (`Tema.kt`, pop-up, ícono), a la web ni a la plantilla de video `checa-promo`; hasta entonces conviven con la marca anterior (verde y negro, `marketing/marca/logos/`). Al aplicarla, actualizar este estado.
+- Aprobada por Eduardo el 17 oct 2026. **Aún no se aplica** a la app Android (`Tema.kt`, pop-up, ícono) ni a la web. **Videos:** ya hay plantilla en marca v2, `video/hyperframes/checa-marca-v2/` (la vieja `checa-promo` queda como legado). Hasta aplicarla en la app y la web conviven con la marca anterior (verde y negro, `marketing/marca/logos/`). Al aplicarla, actualizar este estado.
 - Pendientes: PNG del logo, láminas exportadas a `checa-web/marca/laminas/`, fotografía y video real.
