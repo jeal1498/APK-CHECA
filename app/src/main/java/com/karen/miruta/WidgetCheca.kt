@@ -35,9 +35,8 @@ class WidgetCheca : AppWidgetProvider() {
             val v = RemoteViews(ctx.packageName, R.layout.widget_checa)
             val flags = PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             if (CapturaService.corriendo) {
-                v.setInt(R.id.raiz, "setBackgroundResource", R.drawable.widget_encendido)
-                v.setInt(R.id.icono, "setColorFilter", Color.BLACK)
-                v.setTextColor(R.id.estado, Color.BLACK)
+                v.setImageViewResource(R.id.icono, R.drawable.widget_foco_on)
+                v.setTextColor(R.id.estado, Color.WHITE)
                 v.setTextViewText(R.id.estado, "Leyendo")
                 v.setOnClickPendingIntent(
                     R.id.raiz,
@@ -46,9 +45,8 @@ class WidgetCheca : AppWidgetProvider() {
                     )
                 )
             } else {
-                v.setInt(R.id.raiz, "setBackgroundResource", R.drawable.widget_apagado)
-                v.setInt(R.id.icono, "setColorFilter", Color.parseColor("#22C55E"))
-                v.setTextColor(R.id.estado, Color.parseColor("#9CA3AF"))
+                v.setImageViewResource(R.id.icono, R.drawable.widget_foco_off)
+                v.setTextColor(R.id.estado, Color.parseColor("#E6E6EC"))
                 v.setTextViewText(R.id.estado, "Apagado")
                 val abrir = Intent(ctx, MainActivity::class.java)
                     .putExtra(MainActivity.EXTRA_AUTO_INICIAR, true)
