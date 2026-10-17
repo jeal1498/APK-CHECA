@@ -156,7 +156,7 @@ class MainActivity : Activity() {
         mostrarPestana(savedInstanceState?.getInt("tab") ?: 0, false)
         autoIniciar = savedInstanceState == null && intent?.getBooleanExtra(EXTRA_AUTO_INICIAR, false) == true
         if (savedInstanceState == null && !autoIniciar && Cuenta.conectada(this)) {
-            if (!prefs.permisosVistos && faltanPermisos()) mostrarPermisos { } else guiaSiHaceFalta()
+            if (faltanPermisos()) mostrarPermisos() else guiaSiHaceFalta()
         }
     }
 
@@ -175,7 +175,9 @@ class MainActivity : Activity() {
         super.onResume()
         actualizarAcceso()
         if (Cuenta.ajustesAplicados(this)) refrescarFiltrosYAjustes()
+        // Sin los 3 permisos Checa no funciona bien: la pantalla vuelve a salir hasta completarlos.
         if (dialogoPermisos?.isShowing == true) pintarPermisos()
+        else if (Cuenta.conectada(this) && !autoIniciar && faltanPermisos()) mostrarPermisos()
         actualizarEstado()
         if (autoIniciar) {
             autoIniciar = false
@@ -2338,8 +2340,14 @@ class MainActivity : Activity() {
 
     private fun faltanPermisos() = !servicioActivo() || !permisoNotificaciones() || !permisoBateria()
 
-    private fun mostrarPermisos(alTerminar: () -> Unit) {
-        dialogoPermisos?.dismiss()
+    private var pidioNotificaciones = false
+
+    private fun mostrarPermisos(alTerminar: (() -> Unit)? = null) {
+        if (dialogoPermisos?.isShowing == true) {
+            if (alTerminar != null) permisosAlTerminar = alTerminar
+            pintarPermisos()
+            return
+        }
         permisosAlTerminar = alTerminar
         val d = Dialog(this, android.R.style.Theme_DeviceDefault_NoActionBar)
         val raiz = LinearLayout(this).apply {
@@ -2360,6 +2368,7 @@ class MainActivity : Activity() {
         }
         raiz.addView(permisosPie)
         d.setContentView(raiz)
+        d.setCancelable(false)
         d.window?.statusBarColor = cFondo
         d.window?.navigationBarColor = cFondo
         d.setOnDismissListener {
@@ -2381,7 +2390,7 @@ class MainActivity : Activity() {
         val c = permisosCuerpo
         c.addView(texto("Permisos de Checa", 28f, cTexto, true))
         c.addView(texto(
-            "Para leer las ofertas sin que Android te corte la lectura, Checa necesita estos permisos. " +
+            "Los tres primeros son necesarios para que Checa lea las ofertas y Android no corte la lectura. " +
                 "Solo lee Uber y DiDi; no toca nada ni acepta viajes por ti.",
             Tema.T_SUB, cTexto2, false
         ).apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S1))
@@ -2410,7 +2419,13 @@ class MainActivity : Activity() {
         if (Build.VERSION.SDK_INT >= 33) {
             fila("Notificaciones", "Para el aviso «Checa está leyendo» y para que Android no apague la lectura sin avisarte.",
                 permisoNotificaciones(), null, "Permitir notificaciones") {
-                requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 7)
+                if (!pidioNotificaciones) {
+                    pidioNotificaciones = true
+                    requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 7)
+                } else {
+                    // Si ya las negó, Android no vuelve a preguntar: se activan desde los ajustes de la app.
+                    startActivity(Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(Settings.EXTRA_APP_PACKAGE, packageName))
+                }
             }
         }
         fila("Batería sin restricciones", "El ahorro de batería puede detener la lectura mientras manejas.",
@@ -2433,23 +2448,24 @@ class MainActivity : Activity() {
         fila("Grabación de pantalla", "Android te lo pide cada vez que inicias la lectura. Elige «Pantalla completa» → Empezar.",
             false, "Al iniciar", null) { }
 
-        if (acc) {
+        val completo = acc && permisoNotificaciones() && permisoBateria()
+        if (completo) {
             permisosPie.addView(boton("▶  Iniciar lectura", cVerde, Color.BLACK) {
                 permisosAlTerminar = null
                 dialogoPermisos?.dismiss()
                 iniciarCaptura()
             }.apply { setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f) }, LinearLayout.LayoutParams(-1, dp(52)))
+            permisosPie.addView(texto("Continuar sin iniciar", Tema.T_TEXTO, cTenue, false).apply {
+                typeface = fuenteMedia
+                gravity = Gravity.CENTER
+                minHeight = dp(Tema.ALTO_TOQUE)
+                isClickable = true
+                setOnClickListener { dialogoPermisos?.dismiss() }
+            }, margenArriba(Tema.S1))
         } else {
-            permisosPie.addView(boton("Abrir Accesibilidad", cVerde, Color.BLACK) { abrirAccesibilidad() }
+            permisosPie.addView(boton("Completa los permisos para continuar", cTarjeta2, cTenue) { }
                 .apply { setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f) }, LinearLayout.LayoutParams(-1, dp(52)))
         }
-        permisosPie.addView(texto("Ahora no", Tema.T_TEXTO, cTenue, false).apply {
-            typeface = fuenteMedia
-            gravity = Gravity.CENTER
-            minHeight = dp(Tema.ALTO_TOQUE)
-            isClickable = true
-            setOnClickListener { dialogoPermisos?.dismiss() }
-        }, margenArriba(Tema.S1))
     }
 
     private fun actualizarAcceso() {
