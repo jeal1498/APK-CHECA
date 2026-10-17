@@ -44,6 +44,7 @@ Port de la skill `videos-karen` (repo `jeal1498/videos-karen-trujillo`) a la mar
   - `pasos` `{titulo, pasos[{texto, en?}]}`: línea punteada amarilla y una sola luz verde, la del último paso.
   - `numero` `{etiqueta, numero, texto?, ejemplo?}`: cifra grande con el color del nivel; «Números de ejemplo» por defecto.
   - `popup` `{popup: POPUP}`: el pop-up de la plantilla sin rediseñar (mismo formato que `construir.py`: `nivel`, `app`, `neta`, `viaje`, `gasolina`, `chips`).
+- **Efectos de sonido (oficiales, aprobados por Eduardo el 17 oct 2026; `checa-web/marca/sonido`):** `componer.py` los agrega solos desde `checa-marca-v2/assets/sfx/` (los copia a `public/sfx/`): `popup` → `popup-entra` + el sonido de su nivel (`aceptar` / `considerar` / `rechazar`), `numero` → `numero-sube`, pantalla final → `logo-semaforo` (una vez, volumen 0.4 porque Fernando habla encima). `dato`, `lista`, `comparar` y `pasos` no llevan; la raya de carretera tampoco. Una escena puede traer `"sfx": false` o `"sfx": [["sello", 1.2], ["popup-entra", "palabra", 0.4]]` (archivo, segundo dentro de la escena o palabra de la voz, volumen); `"sfx": false` en el spec los quita todos. Reglas: un sonido por evento visual, máximo 3 por escena, volumen 0.3 a 0.5 con voz. **Sin música** (descartada el 17 oct 2026).
 - **Transición (automática):** la raya de carretera punteada amarilla con una sola luz verde cruza la pantalla de izquierda a derecha en 0.3 s y deja la escena a su paso; al terminar regresa igual. Sin sonido. No hay otras transiciones; los zooms (`[[ini, fin, escala]]`) son discretos (1.0 ↔ 1.08).
 - `cierre` `{ini}`: pantalla final estándar (logo animado rojo → ámbar → verde → ✓, «Descarga Checa», «Solo Android», `@checa.driver`, `@Eduardoalv9802`, `jeal1498.github.io/checa-web`). `ini` = cuando Eduardo dice «Descarga Checa» (con su pausa de ~0.45 s antes de «y checa cuánto te queda…»).
 
@@ -61,6 +62,5 @@ Port de la skill `videos-karen` (repo `jeal1498/videos-karen-trujillo`) a la mar
 Una idea por escena, de 3 a 5 s, máximo 12 palabras; suman como máximo el 40 % del video; entran 0.2 s antes de la palabra clave; el contenido queda entre y=250 y y=1120 (los subtítulos ocupan y=1160 a 1480); sin cuenta animada en `numero` (el render por cuadros no ejecuta callbacks).
 
 ## Pendientes
-- Efectos de sonido: no hay en esta skill. Si se agregan, solo los oficiales de `checa-web/marca/sonido` y según sus reglas (un sonido por evento visual, máximo 3 por escena, volumen 0.3 a 0.5 con voz). Sin música.
 - Ajustar zona del rótulo según el encuadre de Eduardo (en el primer uso quedó bien).
 - Si Eduardo quiere un encuadre fijo como el de Karen (`encuadre.py`, ojos en el tercio superior), se porta de `videos-karen-trujillo`.

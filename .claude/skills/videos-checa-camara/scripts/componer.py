@@ -49,6 +49,22 @@ fin = lambda sel, t, y=24, d=0.35: J.append(f"tl.fromTo('{sel}',{{opacity:0,y:{y
 fout = lambda sel, t, d=0.25: J.append(f"tl.to('{sel}',{{opacity:0,duration:{d},ease:'power2.in'}},{q(t)});")
 ocupado = []   # (ini, fin, nombre) para avisar de empalmes
 
+# ---- efectos de sonido oficiales (checa-web/marca/sonido, copiados de la plantilla a public/sfx) ----
+# Un sonido por evento visual, máximo 3 por escena, volumen 0.3 a 0.5 con voz. La raya de carretera va sin sonido.
+NIVEL_SFX = {'verde': 'aceptar', 'amarillo': 'considerar', 'rojo': 'rechazar'}
+SFX = []   # (archivo, segundo en el video, volumen)
+def sfx(archivo, t, vol): SFX.append((archivo, round(t, 3), vol))
+def sfx_escena(e, base):
+    """Por defecto: popup → popup-entra + el sonido de su nivel · numero → numero-sube. Una escena puede traer "sfx": false
+    o "sfx": [["sello", 1.2], ["popup-entra", "palabra", 0.4]] (archivo, segundo dentro de la escena o palabra de la voz, volumen)."""
+    if 'sfx' in e:
+        for x in e['sfx'] or []:
+            sfx(x[0], wt(x[1], e['ini']) if isinstance(x[1], str) else e['ini'] + float(x[1]), float(x[2]) if len(x) > 2 else 0.45)
+    elif e['tipo'] == 'popup':
+        sfx('popup-entra', base, 0.4); sfx(NIVEL_SFX[e['popup'].get('nivel', 'verde')], base + 0.45, 0.45)
+    elif e['tipo'] == 'numero':
+        sfx('numero-sube', base + 0.08, 0.4)
+
 # ---- gancho (0–3 s): la pregunta que se hace el conductor, con sus palabras ----
 g = spec.get('gancho')
 if g:
@@ -83,6 +99,7 @@ for e in spec.get('escenas', []):
     if not 2.5 <= fin_ - ini <= 6: print(f'AVISO {c}: dura {fin_-ini:.1f} s (lo normal es 3 a 5 s)')
     ocupado.append((ini, fin_, c))
     base = ini + T + 0.2; items = []
+    if spec.get('sfx', True): sfx_escena(e, base)
     def part(cls, inner, t, style='', kind='fade'):
         k = len(items); items.append((t, kind)); return f'<div class="e-it {cls}" id="{c}-{k}" style="{style}">{inner}</div>'
     when = lambda it, i: anc(it['en']) - 0.1 if it.get('en') else base + 0.25*i
@@ -145,6 +162,7 @@ if cz:
     H.append(f'<div class="escena cierre-c clip" id="cz" data-layout-allow-occlusion data-start="{ini}" data-duration="{round(DUR-ini,2)}" data-track-index="4">{inner}</div>')
     H.append(f'<div class="barrido clip" id="cz-sw" data-layout-allow-occlusion data-start="{ini}" data-duration="{round(T+0.1,2)}" data-track-index="4"></div>')
     sweep('cz', ini, DUR, sale=False)
+    if spec.get('sfx', True): sfx('logo-semaforo', t0, 0.4)   # una vez por video; baja a 0.4 porque la voz de Fernando suena encima
     fin('#cz-lgw', t0, 30, 0.3); J.append(M.js_logo('cz', t0))
     fin('#cz-nom', t0 + 1.2, 30, 0.45); fin('#cz-pil', t0 + 1.3, 30, 0.4); fin('#cz-sa', t0 + 1.6, 0, 0.3)
     fin('#cz-cu', t0 + 2.1, 20, 0.4); fin('#cz-li', t0 + 2.6, 0, 0.4)
@@ -175,6 +193,14 @@ for gi, gr in enumerate(grupos):
         J.append(f"tl.set('#c{gi}w{i}',{{color:'{hecho}',backgroundColor:'rgba(250,204,21,0)',textShadow:'0 2px 0 #0C0C10, 0 0 14px #0C0C10',webkitTextStrokeWidth:'9px'}},{q(max(we, ws + 0.1))});")
     sub.append({'ini': round(s0, 2), 'fin': round(e0, 2), 'texto': ' '.join(t for t, _, _ in gr)})
 J.append(f"window.__timelines=window.__timelines||{{}};window.__timelines['{spec['id']}']=tl;")
+if SFX:
+    import shutil, subprocess
+    os.makedirs(f'{work}/public/sfx', exist_ok=True)
+    for i, (a, t, v) in enumerate(SFX):
+        shutil.copy(f'{TPL}/assets/sfx/{a}.mp3', f'{work}/public/sfx/{a}.mp3')
+        d = float(subprocess.run(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', f'{work}/public/sfx/{a}.mp3'], capture_output=True, text=True).stdout)
+        H.append(f'<audio id="el-sfx-{i}" src="sfx/{a}.mp3" data-start="{t}" data-duration="{round(d, 2)}" data-track-index="{30 + i}" data-volume="{v}"></audio>')
+    print(len(SFX), 'efectos de sonido:', ', '.join(f'{a}@{t:.1f}s' for a, t, _ in SFX))
 css = open(f'{SK}/plantillas/estilo.css').read() + POPCSS
 doc = f'''<!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=1080, height=1920">
