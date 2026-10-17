@@ -60,7 +60,7 @@ Misma idea que cada video de CHECA, con otro gancho y otras palabras (reglas en 
 | 05 | — | Consejo | `05 - Cansancio y salud` | ✅ | ✅ |
 | 19 | sáb 17 oct | Venta | `19 - Checa lee la oferta` | ✅ | |
 | 06 | dom 18 oct | Venta | `06 - Gasolina cara` | ✅ | |
-| 07 | lun 19 oct | Consejo | `07 - Pasajeros y cancelaciones` |  | |
+| 07 | lun 19 oct | Consejo | `07 - Pasajeros y cancelaciones` | ✅ | |
 | 08 | mar 20 oct | Venta | `08 - Decidir en segundos` |  | |
 | 09 | mié 21 oct | Consejo | `09 - Cuenta desactivada` |  | |
 | 10 | jue 22 oct | Venta | `10 - Mejores horas` |  | |
