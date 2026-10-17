@@ -19,4 +19,4 @@ Sustituye a `../checa-promo/` para los videos **nuevos** (17 oct 2026). `checa-p
 La marca completa vive en `jeal1498/checa-web`, carpeta `marca/` (skill `marca-checa`).
 
 **Verificado (17 oct 2026):** los tres pop-ups y un subtítulo de ejemplo se renderizaron en Chromium con las fuentes de `assets/fonts/`: mismo tamaño, sin desbordes (la ficha «Rec. 6 km» exigió bajar los datos a 40 px).
-**Pendiente de probar:** un render completo con esta plantilla (`captions.mjs build`, ensamble, `check` y render).
+**Probada de punta a punta (17 oct 2026):** `prueba-marca-v2/` es un video de 13 s (4 escenas, voz de Fernando, subtítulos v2, pantalla final) hecho con esta plantilla: `check` sin errores y render en ~25 s. Se armó a mano (sin `captions.mjs` ni `armar.py`): los grupos de subtítulos se escribieron directo en `compositions/captions.html`. Sin música ni efectos de sonido todavía.
