@@ -3,6 +3,11 @@ package com.karen.miruta
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
+import android.provider.Settings
+import androidx.core.content.FileProvider
+import java.io.File
+import java.io.FileOutputStream
 import android.os.Handler
 import android.os.Looper
 import org.json.JSONObject
@@ -18,6 +23,7 @@ object Actualizacion {
     private const val VERSION_JSON = WEB + "descargar/version.json"
     /** Página que baja el APK y explica cómo instalarlo encima. */
     const val URL_ACTUALIZAR = WEB + "instalar/?desde=app"
+    private const val APK = WEB + "descargar/Checa.apk"
     private const val CADA = 6 * 60 * 60 * 1000L
 
     private val principal = Handler(Looper.getMainLooper())
@@ -77,6 +83,73 @@ object Actualizacion {
             ctx.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(URL_ACTUALIZAR)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
         } catch (_: Exception) { }
     }
+
+    // ------------------------------------------------------------------
+    // Descarga e instalación dentro de la app (el usuario confirma en la ventana de Android)
+    // ------------------------------------------------------------------
+
+    /** Android pide un permiso, una sola vez, para que Checa pueda abrir el instalador. */
+    fun puedeInstalar(ctx: Context) = Build.VERSION.SDK_INT < 26 || ctx.packageManager.canRequestPackageInstalls()
+
+    fun pedirPermisoInstalar(ctx: Context) {
+        try {
+            ctx.startActivity(
+                Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:" + ctx.packageName))
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+        } catch (_: Exception) { }
+    }
+
+    /** Baja el APK de la web. [progreso] recibe 0–100 (o -1 si no se sabe); [listo], el archivo o null si falló. */
+    fun descargar(ctx: Context, progreso: (Int) -> Unit, listo: (File?) -> Unit) {
+        val app = ctx.applicationContext
+        Thread {
+            var archivo: File? = null
+            try {
+                val dir = File(app.cacheDir, "actualizacion").apply { mkdirs(); listFiles()?.forEach { it.delete() } }
+                val f = File(dir, "Checa.apk")
+                val con = URL(APK + "?t=" + System.currentTimeMillis()).openConnection() as HttpURLConnection
+                try {
+                    con.connectTimeout = 15_000
+                    con.readTimeout = 30_000
+                    con.useCaches = false
+                    if (con.responseCode == 200) {
+                        val total = con.contentLengthLong
+                        var hecho = 0L
+                        var ultimo = -2
+                        con.inputStream.use { ent ->
+                            FileOutputStream(f).use { sal ->
+                                val buf = ByteArray(32 * 1024)
+                                while (true) {
+                                    val n = ent.read(buf)
+                                    if (n < 0) break
+                                    sal.write(buf, 0, n)
+                                    hecho += n
+                                    val pct = if (total > 0) (hecho * 100 / total).toInt() else -1
+                                    if (pct != ultimo) { ultimo = pct; principal.post { progreso(pct) } }
+                                }
+                            }
+                        }
+                        // Que sea de verdad el APK de Checa antes de abrir el instalador.
+                        val info = app.packageManager.getPackageArchiveInfo(f.path, 0)
+                        if (info != null && info.packageName == app.packageName && f.length() > 1_000_000) archivo = f
+                    }
+                } finally { con.disconnect() }
+            } catch (_: Exception) { }
+            principal.post { listo(archivo) }
+        }.start()
+    }
+
+    /** Abre el instalador de Android con el APK descargado. */
+    fun instalar(ctx: Context, apk: File): Boolean = try {
+        val uri = FileProvider.getUriForFile(ctx, ctx.packageName + ".fileprovider", apk)
+        ctx.startActivity(
+            Intent(Intent.ACTION_VIEW)
+                .setDataAndType(uri, "application/vnd.android.package-archive")
+                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
+        )
+        true
+    } catch (_: Exception) { false }
 
     /** Compara "6.10" > "6.9" por partes numéricas. */
     fun esMayor(a: String, b: String): Boolean {

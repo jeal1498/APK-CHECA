@@ -174,6 +174,10 @@ class MainActivity : Activity() {
     override fun onResume() {
         super.onResume()
         actualizarAcceso()
+        if (pidioPermisoInstalar) {
+            pidioPermisoInstalar = false
+            if (Actualizacion.puedeInstalar(this)) actualizarApp()
+        }
         if (Cuenta.ajustesAplicados(this)) refrescarFiltrosYAjustes()
         // Sin los 3 permisos Checa no funciona bien: la pantalla vuelve a salir hasta completarlos.
         if (dialogoPermisos?.isShowing == true) pintarPermisos()
@@ -350,7 +354,7 @@ class MainActivity : Activity() {
         act.addView(cabeceraTarjeta(Icono.DESCARGA, "Hay una versión nueva", null, false).first)
         actTexto = texto("", Tema.T_TEXTO, cTexto, false).apply { setLineSpacing(0f, 1.2f) }
         act.addView(actTexto, margenArriba(Tema.S1))
-        act.addView(boton("Actualizar ahora", cVerde, Color.BLACK) { Actualizacion.abrirDescarga(this) }, margenArriba(Tema.S2))
+        act.addView(boton("Actualizar ahora", cVerde, Color.BLACK) { actualizarApp() }, margenArriba(Tema.S2))
         act.visibility = View.GONE
         tarjetaActualizacion = act
         col.addView(act, margenTarjeta())
@@ -1716,20 +1720,52 @@ class MainActivity : Activity() {
     private fun dialogoActualizacion(v: String) {
         val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         cuerpo.addView(texto(
-            "Ya está lista la versión $v de Checa. Toca «Actualizar», abre el archivo que se descarga y toca «Actualizar» o «Instalar».",
+            "Ya está lista la versión $v de Checa. Toca «Actualizar»: se descarga aquí mismo y Android te pide confirmar la instalación.",
             Tema.T_TEXTO, cTexto2, false
         ).apply { setLineSpacing(0f, 1.2f) })
         cuerpo.addView(texto("No pierdes tu cuenta, ajustes ni historial.", Tema.T_NOTA, cTenue, false), margenArriba(Tema.S1))
         cuerpo.addView(boton("Actualizar", cVerde, Color.BLACK) {
             dialogoAct?.dismiss()
-            Actualizacion.abrirDescarga(this)
+            actualizarApp()
         }, margenArriba(Tema.S2))
         cuerpo.addView(boton("Después", cTarjeta2, cTexto) { dialogoAct?.dismiss() }, margenArriba(Tema.S1))
         dialogoAct = hoja("Nueva versión", cVerde, cuerpo)
     }
 
+    private var descargandoApp = false
+    private var pidioPermisoInstalar = false
+
+    /** Descarga la versión nueva dentro de la app y abre el instalador de Android (el usuario confirma). */
+    private fun actualizarApp() {
+        if (descargandoApp) return
+        if (!Actualizacion.puedeInstalar(this)) {
+            pidioPermisoInstalar = true
+            Toast.makeText(this, "Activa «Permitir de esta fuente» para Checa y regresa.", Toast.LENGTH_LONG).show()
+            Actualizacion.pedirPermisoInstalar(this)
+            return
+        }
+        descargandoApp = true
+        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        val avance = texto("Descargando… 0 %", Tema.T_TEXTO, cTexto2, false)
+        cuerpo.addView(avance)
+        cuerpo.addView(texto("No cierres la app. Al terminar, Android te pedirá tocar «Instalar».", Tema.T_NOTA, cTenue, false)
+            .apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
+        val d = hoja("Actualizando Checa", cVerde, cuerpo)
+        d.setCancelable(false)
+        Actualizacion.descargar(this, { pct ->
+            avance.text = if (pct >= 0) "Descargando… $pct %" else "Descargando…"
+        }) { apk ->
+            descargandoApp = false
+            d.dismiss()
+            if (apk == null || !Actualizacion.instalar(this, apk)) {
+                Toast.makeText(this, "No se pudo descargar aquí. Te abro la página para bajarla.", Toast.LENGTH_LONG).show()
+                Actualizacion.abrirDescarga(this)
+            }
+        }
+    }
+
     private fun buscarActualizacion() {
-        Actualizacion.pendiente(this)?.let { Actualizacion.abrirDescarga(this); return }
+        Actualizacion.pendiente(this)?.let { actualizarApp(); return }
         botonBuscarAct?.text = "Buscando…"
         Actualizacion.revisar(this, forzar = true) { v, ok ->
             pintarActualizacion(v, false)
