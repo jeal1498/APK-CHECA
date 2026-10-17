@@ -23,7 +23,7 @@ escenas.json: lista con un objeto por línea, en el mismo orden. Tipos:
 Efectos de sonido oficiales (assets/sfx, de checa-web/marca/sonido): se agregan solos según el tipo de escena:
   popup → popup-entra y el sonido de su nivel (aceptar / considerar / rechazar) · estados → el sonido de cada nivel
   numero → numero-sube · cierre y logo → logo-semaforo. Las demás escenas no llevan sonido por defecto.
-  Para cambiarlo, una escena puede traer "sfx": false  o  "sfx": [["sello", 1.2], ["popup-entra", 0.0, 0.4]]  (archivo, segundo dentro
+  Para cambiarlo, una escena puede traer "sfx": false  o  "sfx": [["sello", 1.2], ["popup-entra", 0.0, 0.4]]  (archivo, segundo —o palabra de la voz— dentro
   de la escena y, opcional, volumen). Reglas: un sonido por evento visual, máximo 3 por escena, volumen 0.3 a 0.5 con voz.
 
 Marca: jeal1498/checa-web, carpeta marca/ (skill marca-checa). Reglas: ningún texto es solo un monto,
@@ -410,7 +410,7 @@ def sfx_escena(sc, e):
     if "sfx" in e:
         if not e["sfx"]:
             return []
-        return [(x[0], float(x[1]), float(x[2]) if len(x) > 2 else 0.45) for x in e["sfx"]]
+        return [(x[0], pal(sc, x[1]) if isinstance(x[1], str) else float(x[1]), float(x[2]) if len(x) > 2 else 0.45) for x in e["sfx"]]
     tipo = e["tipo"]
     if tipo == "popup":
         return [("popup-entra", 0.0, 0.4), (NIVEL_SFX[e["popup"].get("nivel", "verde")], 0.45, 0.45)]
