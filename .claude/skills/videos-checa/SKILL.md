@@ -302,5 +302,8 @@ Revisa: textos encimados con el pin o los edificios, la cámara metida en un edi
 
 `video/out/` está en `.gitignore`; se versionan el código, `public/<video>/` y la copia en `marketing/videos/CHECA/`.
 
-## Video de la web (VSL)
-El inicio de la web usa `checa-web/media/vsl.mp4`: el video de beta (`marketing/videos/CHECA/01 - Beta testers/video.mp4`) recortado a 26.9 s (clips c1–c4 de `lineasBeta.ts`, sin c5–c7 ni la tarjeta «Comenta YO»), 720×1280, CRF 28, con fundido final. Se rehízo con ffmpeg: `-t 26.9 -vf "scale=720:1280,fade=t=out:st=26.3:d=0.6" -af "afade=t=out:st=26.3:d=0.6"`.
+## Videos de la web (actualizado 17 oct 2026)
+La web (`checa-web`) usa dos videos propios, ambos en marca v2 y sin salidas (nada de TikTok ni cuentas en pantalla; el cierre usa `"sin_redes": true` o la tarjeta «fin» con ayuda por WhatsApp). Se cargan al tocar el póster; 720×1280, CRF 25–27, `+faststart`.
+- **Inicio (VSL):** `checa-web/media/vsl-oferta.mp4` (35 s) = guion «Checa lee la oferta» (`hyperframes/checa-lee-la-oferta-v2/`) con su misma voz, armado con la plantilla `hyperframes/checa-marca-v2/`. Fuente y cómo regenerarlo: `video/hyperframes/checa-oferta-web/README.md`. Sustituyó (17 oct) al clip de beta de Eduardo (`vsl.mp4`, 26.9 s), que sigue en el historial de `checa-web`.
+- **/instalar/:** `checa-web/media/instalar.mp4` (3:03) = el tutorial de Eduardo (`marketing/videos/CHECA/20 - Cómo instalar Checa`) rehecho en marca v2 con las capturas de su grabación original (Drive, tiene datos personales: nunca al repo). Fuente y pasos: `video/tutorial-instalar/README-v2.md`, `build-v2.py` y `armar-v2.sh`.
+- La plantilla `checa-marca-v2/construir.py` ahora tiene los tipos `paso`, `listo` y `fin` (tutoriales), el cierre `sin_redes` y los ganchos ajustan la letra al ancho (antes se cortaban líneas largas). Para renderizar aquí: `setsid nohup python3 -I construir.py --render > build.log 2>&1 < /dev/null &` y esperar; si el proceso padre termina, el render se cancela.

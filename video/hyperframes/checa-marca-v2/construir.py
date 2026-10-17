@@ -16,6 +16,11 @@ escenas.json: lista con un objeto por línea, en el mismo orden. Tipos:
   {"tipo": "estados", "popups": [POPUP, POPUP, POPUP], "en_palabra": [0, 1, 3], "texto": "Tú decides.", "texto_en": 4}
       Tres pop-ups del mismo tamaño que se reemplazan en el mismo lugar.
   {"tipo": "cierre"}   (pantalla final estándar: logo animado, Descarga Checa, cuentas y link)
+      {"tipo": "cierre", "sin_redes": true}: igual pero sin cuentas ni link (videos de la web).
+  {"tipo": "paso", "n": 2, "de": 5, "icono": "archivo|escudo|candado|interruptor|play", "titulo": "Abre el archivo",
+   "chips": [["Más detalles", 9], ["Instalar de todos modos", 13]]}   (paso de un tutorial; cada chip entra en la palabra N de la línea)
+  {"tipo": "listo"}   (palomita verde y «Listo.»)
+  {"tipo": "fin"}   (logo + «¿Te atoraste? Escríbenos por WhatsApp»; puede ser la última escena en lugar del cierre)
   POPUP = {"nivel": "verde|amarillo|rojo", "app": "UBER", "neta": 118, "viaje": 150, "gasolina": 32,
            "chips": [["$321/h", "por hora", "ok"], ["$9.4/km", "por km", "ok"], ["28 min", "16 km total", ""]]}
           (chip: "ok" cumple, "mal" no cumple, "" neutro). Las cifras deben cuadrar: neta = viaje − gasolina.
@@ -152,8 +157,9 @@ def esc_gancho(sc, e, nombre):
     inicio, k = [], 0
     for l in lineas:
         inicio.append(min(k, len(w) - 1)); k += len(l.split())
-    alto = 176
-    inner = "".join(f'    <div id="{nombre}-q{i}" class="mask clip" style="top:{300 + i * alto}px;height:{alto}px" data-start="0" data-duration="{D}" data-track-index="{i + 1}"><div style="font-size:170px;{"color:#FACC15;" if i == res else ""}">{l}</div></div>\n' for i, l in enumerate(lineas))
+    size = min(170, int(1000 / (max(len(l) for l in lineas) * 0.54)))
+    alto = int(size * 1.04); alt_m = int(size * 1.3)
+    inner = "".join(f'    <div id="{nombre}-q{i}" class="mask clip" style="top:{300 + i * alto}px;height:{alt_m}px" data-start="0" data-duration="{D}" data-track-index="{i + 1}"><div style="font-size:{size}px;{"color:#FACC15;" if i == res else ""}">{l}</div></div>\n' for i, l in enumerate(lineas))
     y = 300 + len(lineas) * alto + 40
     inner += f'    <svg id="{nombre}-raya" class="clip" style="left:0;top:{y}px" width="1080" height="120" viewBox="0 0 1080 120" data-start="0" data-duration="{D}" data-track-index="9" aria-hidden="true"><defs><clipPath id="{nombre}-rc"><rect id="{nombre}-rcr" x="0" y="0" width="0" height="120"/></clipPath></defs><g clip-path="url(#{nombre}-rc)"><path d="M-20 90C220 90 300 20 540 28C780 36 860 100 1100 70" fill="none" stroke="#FACC15" stroke-width="8" stroke-dasharray="2 22" stroke-linecap="round"/><circle cx="540" cy="28" r="14" fill="#22C55E"/></g></svg>'
     js = "".join(f'      tl.fromTo("#{nombre}-q{i} > div", {{ yPercent: 120 }}, {{ yPercent: 0, duration: 0.45, ease: "power4.out" }}, {max(0, round(w[inicio[i]][1] - 0.05, 2))});\n' for i in range(len(lineas)))
@@ -217,6 +223,9 @@ def esc_cierre(sc, e, nombre):
       tl.fromTo("#{n}-cu", {{ opacity: 0, y: 20 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: "power4.out" }}, 2.1);
       tl.fromTo("#{n}-li", {{ opacity: 0 }}, {{ opacity: 1, duration: 0.4 }}, 2.6);
 """
+    if e.get("sin_redes"):  # versión para la web: sin cuentas ni link (la web no tiene salidas)
+        inner = "\n".join(l for l in inner.split("\n") if f'id="{nombre}-cu"' not in l and f'id="{nombre}-li"' not in l)
+        js = "".join(l for l in js.splitlines(True) if f'#{n}-cu' not in l and f'#{n}-li' not in l)
     return marco(nombre, D, "", inner, js)
 
 
@@ -435,7 +444,60 @@ def juntar_sfx(T, escenas):
     return out
 
 
-TIPOS = {"hook": esc_hook, "anillo": esc_anillo, "datos": esc_datos, "logo": esc_logo, "escaneo": esc_escaneo, "voz": esc_voz, "popup_oferta": esc_popup_oferta, "reloj": esc_reloj, "seguir": esc_seguir, "gancho": esc_gancho, "numero": esc_numero, "popup": esc_popup, "estados": esc_estados, "cierre": esc_cierre}
+
+PASOS_IC = {
+    "archivo": '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 11v6m0 0l-2.5-2.5M12 17l2.5-2.5"/>',
+    "escudo": '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',
+    "candado": '<rect x="5" y="11" width="14" height="9" rx="3"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+    "interruptor": '<rect x="3" y="8" width="18" height="8" rx="4"/><circle cx="16.5" cy="12" r="2"/>',
+    "play": '<circle cx="12" cy="12" r="9"/><path d="M10 8.5l5 3.5-5 3.5z"/>',
+    "check": '<path d="M4.5 12.5l5 5L19.5 6.5"/>',
+}
+
+
+def esc_paso(sc, e, n):
+    D = sc["dur"]; k = e["n"]; total = e.get("de", 5)
+    segs = "".join(f'<div style="width:150px;height:14px;border-radius:999px;background:{"#F4F4EF" if i < k else "#3A3A45"}"></div>' for i in range(total))
+    inner = clip(1, f"{n}-pg", "left:137px;top:250px;display:flex;gap:14px", segs, D)
+    inner += f'    <div id="{n}-et" class="etq clip" style="top:305px" data-start="0" data-duration="{D}" data-track-index="2">PASO {k} DE {total}</div>\n'
+    ico = f'<svg width="190" height="190" viewBox="0 0 24 24" fill="none" stroke="#F4F4EF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{PASOS_IC[e["icono"]]}</svg>'
+    inner += clip(3, f"{n}-ic", "left:400px;top:360px;width:280px;height:280px;border-radius:50%;background:#16161C;border:2px solid #3A3A45;display:flex;align-items:center;justify-content:center", ico, D)
+    size = min(96, int(1000 / (len(e["titulo"]) * 0.54)))
+    inner += f'    <div id="{n}-ti" class="mask clip" style="top:665px;height:{int(size*1.3)}px" data-start="0" data-duration="{D}" data-track-index="4"><div style="font-size:{size}px">{e["titulo"]}</div></div>\n'
+    js = f'      tl.fromTo("#{n}-ic", {{ opacity: 0, scale: 0.85 }}, {{ opacity: 1, scale: 1, duration: 0.35, ease: "power4.out" }}, 0);\n'
+    js += f'      tl.fromTo("#{n}-ti > div", {{ yPercent: 120 }}, {{ yPercent: 0, duration: 0.45, ease: "power4.out" }}, 0.15);\n'
+    y = 665 + int(size * 1.3) + 24
+    for i, (txt, cuando) in enumerate(e.get("chips", [])):
+        t = pal(sc, cuando)
+        inner += clip(5 + i, f"{n}-c{i}", f"left:0;right:0;top:{y + i * 98}px;text-align:center", f'<span style="display:inline-block;background:#16161C;border:2px solid #3A3A45;border-radius:999px;padding:12px 34px;font-family:\'JetBrains Mono\',monospace;font-weight:700;font-size:38px;color:#F4F4EF">{txt}</span>', D)
+        js += f'      tl.fromTo("#{n}-c{i}", {{ opacity: 0, y: 24 }}, {{ opacity: 1, y: 0, duration: 0.35, ease: "power4.out" }}, {t});\n'
+    return marco(n, D, "", inner, js)
+
+
+def esc_listo(sc, e, n):
+    D = sc["dur"]
+    ico = f'<svg width="260" height="260" viewBox="0 0 24 24" fill="none" stroke="#04210F" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{PASOS_IC["check"]}</svg>'
+    inner = clip(1, f"{n}-ok", "left:340px;top:330px;width:400px;height:400px;border-radius:50%;background:#22C55E;display:flex;align-items:center;justify-content:center", ico, D)
+    inner += f'    <div id="{n}-ti" class="mask clip" style="top:790px;height:190px" data-start="0" data-duration="{D}" data-track-index="2"><div style="font-size:150px">Listo.</div></div>\n'
+    js = f'      tl.fromTo("#{n}-ok", {{ opacity: 0, scale: 0.6 }}, {{ opacity: 1, scale: 1, duration: 0.4, ease: "power4.out" }}, 0);\n'
+    js += f'      tl.fromTo("#{n}-ti > div", {{ yPercent: 120 }}, {{ yPercent: 0, duration: 0.45, ease: "power4.out" }}, 0.2);\n'
+    return marco(n, D, "", inner, js)
+
+
+def esc_fin(sc, e, n):
+    D = sc["dur"]
+    inner = clip(1, f"{n}-lgw", "left:450px;top:260px", logo_svg(n, 180, 300), D)
+    inner += f'    <div id="{n}-nom" class="mask clip" style="top:600px;height:170px" data-start="0" data-duration="{D}" data-track-index="2"><div style="font-size:140px">Checa</div></div>\n'
+    inner += clip(3, f"{n}-q", "left:0;right:0;top:830px;text-align:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:30px;letter-spacing:.12em;text-transform:uppercase;color:#A3A3AD", "¿Te atoraste?", D)
+    inner += clip(4, f"{n}-pil", "left:190px;top:900px;width:700px;height:100px;border-radius:999px;background:#F4F4EF;color:#0C0C10;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;font-weight:700;font-size:44px", "Escríbenos por WhatsApp", D)
+    js = f'      tl.fromTo("#{n}-lgw", {{ opacity: 0, y: 40 }}, {{ opacity: 1, y: 0, duration: 0.3, ease: "power4.out" }}, 0);\n' + js_logo(n, 0.0)
+    js += f'      tl.fromTo("#{n}-nom > div", {{ yPercent: 120 }}, {{ yPercent: 0, duration: 0.45, ease: "power4.out" }}, 1.2);\n'
+    js += f'      tl.fromTo("#{n}-q", {{ opacity: 0 }}, {{ opacity: 1, duration: 0.3 }}, 1.5);\n'
+    js += f'      tl.fromTo("#{n}-pil", {{ opacity: 0, y: 30 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: "power4.out" }}, 1.7);\n'
+    return marco(n, D, "", inner, js)
+
+
+TIPOS = {"hook": esc_hook, "anillo": esc_anillo, "datos": esc_datos, "logo": esc_logo, "escaneo": esc_escaneo, "voz": esc_voz, "popup_oferta": esc_popup_oferta, "reloj": esc_reloj, "seguir": esc_seguir, "gancho": esc_gancho, "numero": esc_numero, "popup": esc_popup, "estados": esc_estados, "cierre": esc_cierre, "paso": esc_paso, "listo": esc_listo, "fin": esc_fin}
 
 
 # ---------- subtítulos ----------
@@ -521,7 +583,7 @@ def main():
     lineas = leer_guion()
     escenas = json.load(open("escenas.json", encoding="utf-8"))
     assert len(lineas) == len(escenas), f"SCRIPT.md tiene {len(lineas)} líneas y escenas.json {len(escenas)} escenas"
-    assert escenas[-1]["tipo"] == "cierre", "La última escena debe ser el cierre estándar"
+    assert escenas[-1]["tipo"] in ("cierre", "fin")
     T = tiempos(lineas)
     json.dump(T, open("tiempos.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     os.makedirs("compositions/frames", exist_ok=True)
