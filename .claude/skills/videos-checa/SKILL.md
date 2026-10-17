@@ -7,6 +7,8 @@ description: Hacer videos cortos de Checa (TikTok, Reels, Shorts) con narrador d
 
 > **Prioridad entre conversaciones (Eduardo, 16 oct 2026):** esta skill se cambia desde la conversación **principal** (guiones, carpetas, v2). La **secundaria** solo hace cambios puntuales y no debe revertir estas reglas; si algo choca, gana lo que dice esta skill.
 
+> **Videos con Eduardo a cámara (17 oct 2026):** usa la skill `videos-checa-camara` (gancho, subtítulos v2, escenas gráficas que acompañan el guion con la raya de carretera como transición y pantalla final estándar). Esta skill sigue siendo para los videos con narrador de IA, sin su cara.
+
 ## ⭐ Marca v2 en los videos (Eduardo, 17 oct 2026)
 La identidad nueva vive en **`jeal1498/checa-web`, carpeta `marca/`** (usa la skill **`marca-checa`**; clona ese repo si no está en `/home/user/checa-web`). **Aplica a lo visual de todo video nuevo** y gana sobre lo que dicen más abajo de colores y estilo:
 - **Colores:** fondo asfalto `#0C0C10`, tarjetas `#16161C`, texto hueso `#F4F4EF`. El color solo decide: verde `#22C55E` (gana/conviene), amarillo `#FACC15` (palabra a recordar), rojo `#EF4444` (pierdes). Reemplaza el «Dark Mode / Neon UI, fondo #0D0D0D con neones rosa, azul…» de la tabla de animaciones (4b) y la «placa negra y verde» de los subtítulos.

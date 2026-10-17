@@ -1,0 +1,20 @@
+{
+ "id": "checa-camara-ejemplo",
+ "duracion": 58,
+ "colores": {"perdiste": "rojo", "netos": "verde", "decides": "amarillo"},
+ "gancho": {"texto": "Se veía buen billete y perdiste", "resalta": "perdiste", "ini": 0.3, "fin": 3.4},
+ "nametag": {"nombre": "Eduardo", "detalle": "Conductor y creador de Checa", "ini": 3.7, "fin": 6.6},
+ "escenas": [
+  {"id": "e1", "tipo": "popup", "ini": 8.0, "fin": 12.5,
+   "popup": {"nivel": "rojo", "app": "APP", "neta": 88, "viaje": 150, "gasolina": 62,
+             "chips": [["$140/h", "por hora", "mal"], ["$5.5/km", "por km", "mal"], ["38 min", "27 km total", ""]]}},
+  {"id": "e2", "tipo": "comparar", "ini": 20.0, "fin": 24.5,
+   "a": {"etiqueta": "Se veía bueno", "texto": "$150 de tarifa"},
+   "b": {"etiqueta": "Te quedó", "texto": "$88 netos", "nivel": "rojo"}, "b_en": ["netos", 20]},
+  {"id": "e3", "tipo": "pasos", "ini": 30.0, "fin": 35.0, "titulo": "Antes de aceptar",
+   "pasos": [{"texto": "Mira la oferta", "en": ["mira", 30]}, {"texto": "Checa lo que te queda", "en": ["checa", 31]}, {"texto": "Tú decides", "en": ["decides", 33]}]},
+  {"id": "e4", "tipo": "numero", "ini": 42.0, "fin": 46.0, "etiqueta": "te quedan", "numero": "$88", "nivel": "rojo", "texto": "de un viaje de $150"}
+ ],
+ "cierre": {"ini": 52.0},
+ "zooms": []
+}
