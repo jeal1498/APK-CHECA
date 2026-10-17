@@ -47,6 +47,8 @@ class CapturaService : Service() {
     private var capAncho = 0
     private var capAlto = 0
     private var divididaHasta = 0L
+    private var leyoOferta = false
+    private var appFoto: String? = null
 
     private val ciclo = object : Runnable {
         override fun run() {
@@ -166,6 +168,8 @@ class CapturaService : Service() {
                     val y = (b.exactCenterY() * escalaY).toInt()
                     tapado.none { it.contains(x, y) }
                 }
+                leyoOferta = false
+                appFoto = null
                 val zonas = RutaService.instancia?.zonasApps().orEmpty()
                 if (zonas.isEmpty()) {
                     // No sabemos dónde está cada app. En horizontal con dos ofertas
@@ -182,6 +186,10 @@ class CapturaService : Service() {
                         grupos.getOrPut(z) { ArrayList() }.add(l)
                     }
                     for ((z, ls) in grupos) procesarGrupo(ls, z.app, z.rect)
+                }
+                // Diagnóstico: foto de la pantalla con una oferta (leída o no) para revisarla después.
+                if (prefs.diagnostico && todas.any { tramoTexto.containsMatchIn(it.text) }) {
+                    Fotos.guardar(this, bmp, appFoto, leyoOferta)
                 }
             }
             .addOnCompleteListener {
@@ -251,6 +259,8 @@ class CapturaService : Service() {
                 (oferta?.let { "tarifa \$${it.tarifa}, ${it.km} km, ${it.min} min" } ?: "nada (no reconoció la oferta)")
         }
         if (oferta == null) return
+        leyoOferta = true
+        appFoto = app
         val servicio = RutaService.instancia ?: return
         if (app != null) servicio.mostrarOferta(oferta, app, zona) else servicio.mostrarOferta(oferta)
     }

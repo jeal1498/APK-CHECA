@@ -129,7 +129,7 @@ class Prefs(context: Context) {
         set(v) { sp.edit().putInt("vol", v).apply() }
 
     var diagnostico: Boolean
-        get() = sp.getBoolean("diag", false)
+        get() = sp.getBoolean("diag", true)
         set(v) { sp.edit().putBoolean("diag", v).apply() }
 
     fun guardarCaptura(texto: String) {

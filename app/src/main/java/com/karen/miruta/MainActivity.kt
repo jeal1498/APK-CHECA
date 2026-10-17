@@ -1343,10 +1343,18 @@ class MainActivity : Activity() {
         col.addView(etiqueta("DIAGNÓSTICO"))
         val diag = tarjeta()
         diag.addView(interruptor(
-            "Guardar texto de pantalla",
-            "Si una oferta se lee mal, actívalo y comparte las capturas", prefs.diagnostico
+            "Guardar texto y fotos de ofertas",
+            "Quedan solo en tu teléfono. Si una oferta se lee mal, compártelas", prefs.diagnostico
         ) { prefs.diagnostico = it })
         diag.addView(boton("Ver / compartir capturas", cTarjeta2, cTexto) { verCapturas() }, margenArriba(Tema.S2))
+        diag.addView(boton("Compartir fotos de ofertas", cTarjeta2, cTexto) {
+            if (Fotos.lista(this).isEmpty()) Toast.makeText(this, "Aún no hay fotos.", Toast.LENGTH_SHORT).show()
+            else Fotos.compartir(this)
+        }, margenArriba(Tema.S1))
+        diag.addView(boton("Borrar fotos", cTarjeta2, cTexto) {
+            Fotos.borrar(this)
+            Toast.makeText(this, "Fotos borradas.", Toast.LENGTH_SHORT).show()
+        }, margenArriba(Tema.S1))
         diag.addView(boton("Borrar historial de ofertas", Tema.ROJO_SUAVE, cRojo) {
             AlertDialog.Builder(this)
                 .setMessage("¿Borrar todo el historial de ofertas?")
