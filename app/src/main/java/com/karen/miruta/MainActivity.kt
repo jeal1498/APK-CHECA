@@ -155,7 +155,9 @@ class MainActivity : Activity() {
         actualizarAcceso()
         mostrarPestana(savedInstanceState?.getInt("tab") ?: 0, false)
         autoIniciar = savedInstanceState == null && intent?.getBooleanExtra(EXTRA_AUTO_INICIAR, false) == true
-        if (savedInstanceState == null && !autoIniciar && Cuenta.conectada(this)) guiaSiHaceFalta()
+        if (savedInstanceState == null && !autoIniciar && Cuenta.conectada(this)) {
+            if (!prefs.permisosVistos && faltanPermisos()) mostrarPermisos { } else guiaSiHaceFalta()
+        }
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -173,6 +175,7 @@ class MainActivity : Activity() {
         super.onResume()
         actualizarAcceso()
         if (Cuenta.ajustesAplicados(this)) refrescarFiltrosYAjustes()
+        if (dialogoPermisos?.isShowing == true) pintarPermisos()
         actualizarEstado()
         if (autoIniciar) {
             autoIniciar = false
@@ -2316,6 +2319,139 @@ class MainActivity : Activity() {
         }
     }
 
+    // =====================================================================
+    // Permisos: se piden todos juntos después de entrar con Google
+    // =====================================================================
+
+    private var dialogoPermisos: Dialog? = null
+    private var permisosAlTerminar: (() -> Unit)? = null
+    private lateinit var permisosCuerpo: LinearLayout
+    private lateinit var permisosPie: LinearLayout
+
+    private fun permisoNotificaciones() = Build.VERSION.SDK_INT < 33 ||
+        checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+
+    private fun permisoBateria() =
+        (getSystemService(Context.POWER_SERVICE) as android.os.PowerManager).isIgnoringBatteryOptimizations(packageName)
+
+    private fun esXiaomi() = Build.MANUFACTURER.lowercase().let { it.contains("xiaomi") || it.contains("redmi") || it.contains("poco") }
+
+    private fun faltanPermisos() = !servicioActivo() || !permisoNotificaciones() || !permisoBateria()
+
+    private fun mostrarPermisos(alTerminar: () -> Unit) {
+        dialogoPermisos?.dismiss()
+        permisosAlTerminar = alTerminar
+        val d = Dialog(this, android.R.style.Theme_DeviceDefault_NoActionBar)
+        val raiz = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setBackgroundColor(cFondo)
+        }
+        permisosCuerpo = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(20), dp(Tema.S3), dp(20), dp(Tema.S2))
+        }
+        raiz.addView(ScrollView(this).apply {
+            isVerticalScrollBarEnabled = false
+            addView(permisosCuerpo)
+        }, LinearLayout.LayoutParams(-1, 0, 1f))
+        permisosPie = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(20), dp(Tema.S2), dp(20), dp(Tema.S3))
+        }
+        raiz.addView(permisosPie)
+        d.setContentView(raiz)
+        d.window?.statusBarColor = cFondo
+        d.window?.navigationBarColor = cFondo
+        d.setOnDismissListener {
+            prefs.permisosVistos = true
+            dialogoPermisos = null
+            val seguir = permisosAlTerminar
+            permisosAlTerminar = null
+            seguir?.invoke()
+        }
+        dialogoPermisos = d
+        d.show()
+        pintarPermisos()
+    }
+
+    private fun pintarPermisos() {
+        if (dialogoPermisos == null) return
+        permisosCuerpo.removeAllViews()
+        permisosPie.removeAllViews()
+        val c = permisosCuerpo
+        c.addView(texto("Permisos de Checa", 28f, cTexto, true))
+        c.addView(texto(
+            "Para leer las ofertas sin que Android te corte la lectura, Checa necesita estos permisos. " +
+                "Solo lee Uber y DiDi; no toca nada ni acepta viajes por ti.",
+            Tema.T_SUB, cTexto2, false
+        ).apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S1))
+
+        fun fila(titulo: String, desc: String, listo: Boolean, etiqueta: String?, textoBoton: String?, accion: () -> Unit) {
+            val t = tarjeta()
+            val cab = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
+            cab.addView(texto(titulo, Tema.T_SUB, cTexto, false).apply { typeface = fuenteMedia }, LinearLayout.LayoutParams(0, -2, 1f))
+            val txt = etiqueta ?: if (listo) "Listo" else "Falta"
+            cab.addView(texto(txt, Tema.T_NOTA, if (listo) cVerde else cAmarillo, true).apply {
+                setPadding(dp(10), dp(4), dp(10), dp(4))
+                background = redondo(if (listo) Tema.VERDE_SUAVE else Tema.AMARILLO_SUAVE, 50)
+            })
+            t.addView(cab)
+            t.addView(texto(desc, Tema.T_NOTA, cTenue, false).apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S1))
+            if (!listo && textoBoton != null) t.addView(boton(textoBoton, cTarjeta2, cTexto) { accion() }, margenArriba(12))
+            c.addView(t, margenArriba(Tema.ENTRE_TARJETAS))
+        }
+
+        val acc = servicioActivo()
+        fila("Lector de ofertas (Accesibilidad)",
+            "Busca «Checa – lector de ofertas» y actívalo. Si Android dice «Controlado por ajustes restringidos», " +
+                "abre Información de la app, toca ⋮ → «Permitir configuración restringida» y vuelve a intentar.",
+            acc, null, "Abrir Accesibilidad") { abrirAccesibilidad() }
+        if (!acc) c.addView(boton("Información de la app", cTarjeta2, cTexto) { abrirInfoApp() }, margenArriba(Tema.S1))
+        if (Build.VERSION.SDK_INT >= 33) {
+            fila("Notificaciones", "Para el aviso «Checa está leyendo» y para que Android no apague la lectura sin avisarte.",
+                permisoNotificaciones(), null, "Permitir notificaciones") {
+                requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 7)
+            }
+        }
+        fila("Batería sin restricciones", "El ahorro de batería puede detener la lectura mientras manejas.",
+            permisoBateria(), null, "Quitar restricción") {
+            try {
+                startActivity(Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:$packageName")))
+            } catch (_: Exception) {
+                try { startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)) } catch (_: Exception) { abrirInfoApp() }
+            }
+        }
+        if (esXiaomi()) {
+            fila("Inicio automático (Xiaomi)", "Tu teléfono cierra las apps en segundo plano. Activa «Inicio automático» para Checa.",
+                false, "Recomendado", "Abrir") {
+                try {
+                    startActivity(Intent().setClassName("com.miui.securitycenter",
+                        "com.miui.permcenter.autostart.AutoStartManagementActivity"))
+                } catch (_: Exception) { abrirInfoApp() }
+            }
+        }
+        fila("Grabación de pantalla", "Android te lo pide cada vez que inicias la lectura. Elige «Pantalla completa» → Empezar.",
+            false, "Al iniciar", null) { }
+
+        if (acc) {
+            permisosPie.addView(boton("▶  Iniciar lectura", cVerde, Color.BLACK) {
+                permisosAlTerminar = null
+                dialogoPermisos?.dismiss()
+                iniciarCaptura()
+            }.apply { setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f) }, LinearLayout.LayoutParams(-1, dp(52)))
+        } else {
+            permisosPie.addView(boton("Abrir Accesibilidad", cVerde, Color.BLACK) { abrirAccesibilidad() }
+                .apply { setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f) }, LinearLayout.LayoutParams(-1, dp(52)))
+        }
+        permisosPie.addView(texto("Ahora no", Tema.T_TEXTO, cTenue, false).apply {
+            typeface = fuenteMedia
+            gravity = Gravity.CENTER
+            minHeight = dp(Tema.ALTO_TOQUE)
+            isClickable = true
+            setOnClickListener { dialogoPermisos?.dismiss() }
+        }, margenArriba(Tema.S1))
+    }
+
     private fun actualizarAcceso() {
         acceso?.visibility = if (Cuenta.conectada(this)) View.GONE else View.VISIBLE
     }
@@ -2341,9 +2477,11 @@ class MainActivity : Activity() {
         when (r) {
             is Cuenta.Resultado.Error -> if (r.mensaje.isNotEmpty()) Toast.makeText(this, r.mensaje, Toast.LENGTH_LONG).show()
             is Cuenta.Resultado.Limite -> dialogoLimite(r.equipos)
-            is Cuenta.Resultado.Ok ->
-                // Cuenta nueva sin lector activado: primero la guía de 5 pasos.
-                if (!prefs.guiaVista && !servicioActivo()) mostrarGuia() else dialogoBienvenidaCuenta()
+            is Cuenta.Resultado.Ok -> {
+                // Después de entrar: permisos; luego, si es cuenta nueva sin lector, la guía de 5 pasos.
+                val seguir = { if (!prefs.guiaVista && !servicioActivo()) mostrarGuia() else dialogoBienvenidaCuenta() }
+                if (faltanPermisos()) mostrarPermisos(seguir) else seguir()
+            }
         }
     }
 

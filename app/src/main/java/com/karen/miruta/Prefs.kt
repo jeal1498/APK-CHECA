@@ -15,6 +15,11 @@ class Prefs(context: Context) {
         get() = sp.getFloat("minHora", 150f)
         set(v) { sp.edit().putFloat("minHora", v).apply() }
 
+    /** Ya se le mostró la pantalla de permisos en este equipo. */
+    var permisosVistos: Boolean
+        get() = sp.getBoolean("permisosVistos", false)
+        set(v) { sp.edit().putBoolean("permisosVistos", v).apply() }
+
     /** Ya vio (u omitió) la guía de primer uso. */
     var guiaVista: Boolean
         get() = sp.getBoolean("guiaVista", false)
