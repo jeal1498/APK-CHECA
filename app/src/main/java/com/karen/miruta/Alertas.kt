@@ -22,6 +22,7 @@ class Alertas(private val ctx: Context, private val prefs: Prefs) {
         @Volatile private var tts: TextToSpeech? = null
         @Volatile private var listo = false
         @Volatile private var pendiente: Pair<String, Float>? = null
+        @Volatile private var actual: android.media.MediaPlayer? = null
     }
 
     fun avisar(nivel: Int) {
@@ -38,6 +39,7 @@ class Alertas(private val ctx: Context, private val prefs: Prefs) {
             else -> "Rechazar"
         }
         val vol = prefs.volumen / 100f
+        if (reproducir(nivel, vol)) return
         val t = tts
         if (t != null && listo) {
             hablar(t, frase, vol)
@@ -63,6 +65,34 @@ class Alertas(private val ctx: Context, private val prefs: Prefs) {
                 pendiente = null
             }
         }
+    }
+
+    /** Voz de Fernando (grabada en res/raw). Devuelve false si falla, para usar la voz del teléfono. */
+    private fun reproducir(nivel: Int, vol: Float): Boolean {
+        val id = when (nivel) {
+            Oferta.VERDE -> R.raw.voz_aceptar
+            Oferta.AMARILLO -> R.raw.voz_considerar
+            else -> R.raw.voz_rechazar
+        }
+        return try {
+            synchronized(Alertas::class.java) {
+                try { actual?.release() } catch (_: Exception) { }
+                val mp = android.media.MediaPlayer()
+                mp.setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ASSISTANCE_NAVIGATION_GUIDANCE)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                        .build()
+                )
+                ctx.resources.openRawResourceFd(id).use { mp.setDataSource(it.fileDescriptor, it.startOffset, it.length) }
+                mp.setVolume(vol, vol)
+                mp.setOnCompletionListener { m -> try { m.release() } catch (_: Exception) { } }
+                mp.setOnPreparedListener { it.start() }
+                mp.prepareAsync()
+                actual = mp
+            }
+            true
+        } catch (_: Exception) { false }
     }
 
     private fun hablar(t: TextToSpeech, frase: String, vol: Float) {
