@@ -17,7 +17,14 @@
    "archivo": "clips/c3.mp4",
    "words": "clips/w3.json",
    "ini": 0.0,
-   "fin": 8.11
+   "fin": 8.11,
+   "quitar": [
+    [
+     2.95,
+     4.4
+    ]
+   ],
+   "fundido_corte": 0.08
   },
   {
    "archivo": "clips/c4.mp4",

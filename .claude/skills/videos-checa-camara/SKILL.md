@@ -50,6 +50,7 @@ Port de la skill `videos-karen` (repo `jeal1498/videos-karen-trujillo`) a la mar
 ## Lecciones
 - **Subtítulos sobre ropa clara o mapas:** llevan contorno asfalto (`-webkit-text-stroke` 9 px, apagado en la palabra activa) porque el hueso se pierde sobre una camiseta blanca. `hyperframes check` aún marca el contraste de la palabra por venir; lo que manda es verlo sobre cuadros reales.
 - **Ver el resultado antes de renderizar:** `scripts/vista_previa.js` captura gancho, escenas y subtítulos sin fondo para componerlos sobre cuadros de `input-video.mp4`.
+- **Pausas largas de Eduardo:** `quitar: [[a, b]]` en `plan.json` elimina un tramo del clip y une las orillas con un fundido de 0.08 s (más largo se ve doble la imagen si la cámara se movió). Escoge a y b donde ya no hable y la imagen casi no cambie (se compara cuadro a cuadro entre candidatos); deja unos 0.5 s de pausa natural. Todo lo posterior se recorre solo: subtítulos, escena y pantalla final.
 - **Cortar una frase sin dejar rastro:** `fin_en_silencio` en `plan.json` busca el instante más callado; el último subtítulo de un clip cortado lleva punto para no pegarse con el siguiente clip.
 - **Cifras largas** en `numero` bajan de tamaño solas para no pegarse a los bordes.
 - **Una toma real vale más que una escena:** si Eduardo tiene una demostración en pantalla, se deja sin tapar y los subtítulos van debajo del pop-up (banda y=1160–1480). Es decisión suya si aparecen logos o calles en ella.
