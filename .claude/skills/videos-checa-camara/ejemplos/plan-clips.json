@@ -1,0 +1,44 @@
+{
+ "lufs": -14,
+ "clips": [
+  {
+   "archivo": "clips/c1.mp4",
+   "words": "clips/w1.json",
+   "ini": 0.9,
+   "fin": 5.15
+  },
+  {
+   "archivo": "clips/c2.mp4",
+   "words": "clips/w2.json",
+   "ini": 0.0,
+   "fin": 3.31
+  },
+  {
+   "archivo": "clips/c3.mp4",
+   "words": "clips/w3.json",
+   "ini": 0.0,
+   "fin": 8.11
+  },
+  {
+   "archivo": "clips/c4.mp4",
+   "words": "clips/w4.json",
+   "ini": 0.0,
+   "fin_en_silencio": [
+    2.4,
+    2.7
+   ]
+  },
+  {
+   "archivo": "clips/c5.mp4",
+   "words": "clips/w5.json",
+   "ini": 0.0,
+   "fin": 5.27
+  }
+ ],
+ "cierre": {
+  "voz": "voz/99.mp3",
+  "json": "voz/99.json",
+  "ini_voz": 0.5,
+  "pad_fin": 2.0
+ }
+}

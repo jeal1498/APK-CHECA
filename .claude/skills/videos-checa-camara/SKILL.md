@@ -24,6 +24,8 @@ Port de la skill `videos-karen` (repo `jeal1498/videos-karen-trujillo`) a la mar
 
 ## Pasos técnicos (`SK=.claude/skills/videos-checa-camara`)
 1. `bash $SK/scripts/preparar.sh <original.mp4> <trabajo>` (trabajo en el scratchpad, no en el repo): re-codifica a 1080×1920, voz a −14 LUFS, copia fuentes y gsap, transcribe con Whisper (`words.json`).
+   **Si Eduardo manda varios clips cortos** (lo habitual): transcribe cada uno con `transcribir.py <clip> w<N>.json`, escribe un `plan.json` (ejemplo en `ejemplos/plan-clips.json`) con lo que se conserva de cada clip y corre `python3 $SK/scripts/unir_clips.py <trabajo> plan.json`: recorta, une con corte directo, nivela, genera `public/input-video.mp4`, `words.json` y `union.json` (de ahí salen los tiempos del spec). Copia a mano las fuentes y `gsap.min.js` a `<trabajo>/public/` si no corriste `preparar.sh`.
+   **Cierre estándar:** `python3 -I video/scripts/cierre_con_pausa.py <trabajo>/voz 99` (voz de Fernando con su pausa) y pásalo en `plan.json` → `cierre`; `unir_clips.py` lo agrega al volumen de Eduardo, sobre el último cuadro congelado, y sus palabras entran a los subtítulos. Pon `cierre.ini` del spec en `cierre_ini` de `union.json`.
 2. Revisa la transcripción y corrige palabras dudosas con `ajustes` (`{"16.46": "checa"}`) o `correcciones`.
 3. Escribe `spec.json` (copia `ejemplos/spec-escenas.json`). Los tiempos se anclan a palabras: `["decides", 30]` = primera «decides» después de 30 s.
 4. `python3 -I $SK/scripts/componer.py <trabajo> spec.json` → `public/index.html`. Lee los `AVISO` (empalmes, escenas fuera de 3 a 5 s, más del 40 %).
@@ -44,6 +46,14 @@ Port de la skill `videos-karen` (repo `jeal1498/videos-karen-trujillo`) a la mar
   - `popup` `{popup: POPUP}`: el pop-up de la plantilla sin rediseñar (mismo formato que `construir.py`: `nivel`, `app`, `neta`, `viaje`, `gasolina`, `chips`).
 - **Transición (automática):** la raya de carretera punteada amarilla con una sola luz verde cruza la pantalla de izquierda a derecha en 0.3 s y deja la escena a su paso; al terminar regresa igual. Sin sonido. No hay otras transiciones; los zooms (`[[ini, fin, escala]]`) son discretos (1.0 ↔ 1.08).
 - `cierre` `{ini}`: pantalla final estándar (logo animado rojo → ámbar → verde → ✓, «Descarga Checa», «Solo Android», `@checa.driver`, `@Eduardoalv9802`, `jeal1498.github.io/checa-web`). `ini` = cuando Eduardo dice «Descarga Checa» (con su pausa de ~0.45 s antes de «y checa cuánto te queda…»).
+
+## Lecciones
+- **Subtítulos sobre ropa clara o mapas:** llevan contorno asfalto (`-webkit-text-stroke` 9 px, apagado en la palabra activa) porque el hueso se pierde sobre una camiseta blanca. `hyperframes check` aún marca el contraste de la palabra por venir; lo que manda es verlo sobre cuadros reales.
+- **Ver el resultado antes de renderizar:** `scripts/vista_previa.js` captura gancho, escenas y subtítulos sin fondo para componerlos sobre cuadros de `input-video.mp4`.
+- **Cortar una frase sin dejar rastro:** `fin_en_silencio` en `plan.json` busca el instante más callado; el último subtítulo de un clip cortado lleva punto para no pegarse con el siguiente clip.
+- **Cifras largas** en `numero` bajan de tamaño solas para no pegarse a los bordes.
+- **Una toma real vale más que una escena:** si Eduardo tiene una demostración en pantalla, se deja sin tapar y los subtítulos van debajo del pop-up (banda y=1160–1480). Es decisión suya si aparecen logos o calles en ella.
+- `elevenlabs.py` no necesita el paquete `elevenlabs` de pip (usa urllib); solo la clave `ELEVENLABS_API_KEY`.
 
 ## Reglas de las escenas
 Una idea por escena, de 3 a 5 s, máximo 12 palabras; suman como máximo el 40 % del video; entran 0.2 s antes de la palabra clave; el contenido queda entre y=250 y y=1120 (los subtítulos ocupan y=1160 a 1480); sin cuenta animada en `numero` (el render por cuadros no ejecuta callbacks).

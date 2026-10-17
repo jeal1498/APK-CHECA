@@ -9,7 +9,7 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
 /* subtítulos: sin placa, sombra oscura, palabra por palabra (activa en amarillo) */
 .cap{position:absolute;left:0;right:0;top:1160px;height:320px;display:flex;align-items:center;justify-content:center}
 .cap .ln{max-width:86%;display:flex;flex-wrap:wrap;justify-content:center;gap:.04em .3em;font:800 62px/1.08 "Bricolage Grotesque","Arial Black",sans-serif;letter-spacing:-.03em;text-shadow:0 2px 0 #0C0C10,0 0 14px #0C0C10,0 0 28px rgba(12,12,16,.8)}
-.cap .w{display:inline-block;padding:0 .08em;border-radius:.18em;color:#B6B6BE}
+.cap .w{display:inline-block;padding:0 .08em;border-radius:.18em;color:#B6B6BE;-webkit-text-stroke:9px #0C0C10;paint-order:stroke fill}   /* contorno asfalto: se lee sobre una camiseta blanca o un mapa claro */
 /* gancho y rótulo */
 .gancho{position:absolute;left:60px;right:60px;top:260px;background:#16161C;border:3px solid #3A3A45;border-radius:28px;padding:30px 38px;font:800 64px/1.08 "Bricolage Grotesque","Arial Black",sans-serif;letter-spacing:-.03em;text-align:center}
 .gancho em{font-style:normal;color:#FACC15}

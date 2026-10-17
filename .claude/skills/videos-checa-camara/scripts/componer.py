@@ -113,7 +113,8 @@ for e in spec.get('escenas', []):
             body += part('e-pas', esc(it['texto']), when(it, i + 1) + 0.05, f'top:{y-30:.0f}px')
     elif tipo == 'numero':
         body += part('e-etq', esc(e['etiqueta']), base, 'text-align:center')
-        body += part('e-big', esc(e['numero']), base + 0.08, f'color:{col(nv)}')
+        fs = min(360, int(880 / (len(e['numero']) * 0.5)))   # una cifra larga como «$13.05» baja de tamaño para no pegarse a los bordes
+        body += part('e-big', esc(e['numero']), base + 0.08, f'color:{col(nv)};font-size:{fs}px')
         if e.get('texto'): body += part('e-sub', br(e['texto']), base + 0.3)
         if e.get('ejemplo', True): body += part('e-pie', 'Números de ejemplo', base + 0.35)
     elif tipo == 'popup':
@@ -170,8 +171,8 @@ for gi, gr in enumerate(grupos):
     J.append(f"tl.fromTo('#c{gi} .ln',{{opacity:0,y:10}},{{opacity:1,y:0,duration:0.15,ease:'power2.out'}},{q(s0)});")
     for i, (t, ws, we) in enumerate(gr):
         nv = CL.get(norm(t)); hecho = col(nv) if nv else '#F4F4EF'   # activa = bloque amarillo con texto oscuro (estilo A); dicha = hueso, o verde/rojo si es cifra o pérdida
-        J.append(f"tl.set('#c{gi}w{i}',{{color:'#14141A',backgroundColor:'#FACC15',textShadow:'none'}},{q(ws)});")
-        J.append(f"tl.set('#c{gi}w{i}',{{color:'{hecho}',backgroundColor:'rgba(250,204,21,0)',textShadow:'0 2px 0 #0C0C10, 0 0 14px #0C0C10'}},{q(max(we, ws + 0.1))});")
+        J.append(f"tl.set('#c{gi}w{i}',{{color:'#14141A',backgroundColor:'#FACC15',textShadow:'none',webkitTextStrokeWidth:'0px'}},{q(ws)});")
+        J.append(f"tl.set('#c{gi}w{i}',{{color:'{hecho}',backgroundColor:'rgba(250,204,21,0)',textShadow:'0 2px 0 #0C0C10, 0 0 14px #0C0C10',webkitTextStrokeWidth:'9px'}},{q(max(we, ws + 0.1))});")
     sub.append({'ini': round(s0, 2), 'fin': round(e0, 2), 'texto': ' '.join(t for t, _, _ in gr)})
 J.append(f"window.__timelines=window.__timelines||{{}};window.__timelines['{spec['id']}']=tl;")
 css = open(f'{SK}/plantillas/estilo.css').read() + POPCSS
