@@ -1,0 +1,67 @@
+<template>
+  <style>
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Regular.ttf') format('truetype'); font-weight: 400; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Medium.ttf') format('truetype'); font-weight: 500 600; font-display: block; }
+    @font-face{ font-family: 'Fira Sans'; src: url('assets/fonts/FiraSans-Bold.ttf') format('truetype'); font-weight: 700 900; font-display: block; }
+    @font-face{ font-family: 'Fira Code'; src: url('assets/fonts/FiraCode.ttf') format('truetype'); font-weight: 300 700; font-display: block; }
+    #root { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; font-family: 'Fira Sans', sans-serif; color: #F1F5F2; }
+    .clip { position: absolute; }
+    .P-ground { inset: 0; background: #0D0D0D; }
+    .P-stage { left: 0; top: 0; width: 1080px; height: 1600px; transform-origin: 50% 45%; }
+    .P-glow { position: absolute; left: 140px; top: 420px; width: 800px; height: 800px; border-radius: 50%; background: radial-gradient(circle, rgba(34,197,94,.20), rgba(34,197,94,0) 65%); }
+    .P-mask { position: absolute; left: 0; right: 0; overflow: hidden; text-align: center; }
+    .P-mask > div { font-weight: 800; text-transform: lowercase; letter-spacing: -.04em; line-height: 1.02; white-space: nowrap; }
+    .P-ej { position: absolute; left: 0; right: 0; top: 1500px; text-align: center; font-family: 'Fira Code', monospace; font-size: 26px; letter-spacing: .12em; text-transform: uppercase; color: #6B736F; }
+    .P-num { font-family: 'Fira Code', monospace; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .P-card { position: absolute; width: 620px; border-radius: 36px; background: #F4F5F4; color: #111; padding: 48px 52px 44px; box-shadow: 0 30px 80px rgba(0,0,0,.7); }
+    .P-card .k { font-family: 'Fira Code', monospace; font-weight: 500; font-size: 28px; letter-spacing: .14em; text-transform: uppercase; color: #5C635F; }
+    .P-card .f { font-family: 'Fira Code', monospace; font-weight: 700; font-size: 112px; letter-spacing: -.03em; line-height: 1; margin-top: 22px; }
+    .P-card .r { display: flex; align-items: center; gap: 22px; font-size: 40px; font-weight: 500; margin-top: 28px; color: #222; }
+    .P-card .d { width: 20px; height: 20px; border-radius: 50%; background: #111; flex: none; }
+    .P-card .s { width: 20px; height: 20px; background: #111; flex: none; }
+    .P-card .b { margin-top: 38px; height: 104px; border-radius: 20px; background: #111; color: #F4F5F4; display: flex; align-items: center; justify-content: center; font-size: 44px; font-weight: 700; }
+
+    #f05-captura-ground { background: #0D0D0D; }
+
+    #f05-captura-chip { position: absolute; left: 440px; top: 190px; width: 200px; height: 200px; border-radius: 50%; border: 8px solid #22C55E; display: flex; align-items: center; justify-content: center; font-family: 'Fira Code', monospace; font-weight: 700; font-size: 130px; color: #22C55E; }
+    #f05-captura-shot { position: absolute; left: 290px; top: 470px; width: 500px; height: 520px; border-radius: 36px; background: #F4F5F4; color: #111; padding: 44px 40px; box-shadow: 0 30px 80px rgba(0,0,0,.7); transform-origin: 50% 100%; }
+    #f05-captura-shot .k { font-family: 'Fira Code', monospace; font-size: 28px; letter-spacing: .14em; color: #5C635F; text-transform: uppercase; }
+    #f05-captura-shot .t { margin-top: 26px; height: 96px; border-radius: 20px; background: #F43F5E; color: #fff; display: flex; align-items: center; justify-content: center; font-family: 'Fira Code', monospace; font-weight: 700; font-size: 46px; }
+    #f05-captura-shot .ln { margin-top: 26px; height: 22px; border-radius: 11px; background: #D5D9D7; }
+    #f05-captura-fol { position: absolute; left: 240px; top: 1100px; width: 600px; height: 330px; border-radius: 32px; background: #151918; border: 4px solid #22C55E; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 36px; font-size: 66px; font-weight: 700; color: #22C55E; box-shadow: 0 0 60px rgba(34,197,94,.25); }
+    #f05-captura-ok { position: absolute; left: 440px; top: 1130px; width: 200px; height: 200px; opacity: 0; }
+    #f05-captura-flash { position: absolute; inset: 0; background: #F4F5F4; opacity: 0; }
+
+  </style>
+
+  <div id="root" data-composition-id="05-captura" data-width="1080" data-height="1920" data-start="0" data-duration="4.887">
+    <div id="f05-captura-ground" class="clip P-ground" data-start="0" data-duration="4.887" data-track-index="0"></div>
+    <div id="f05-captura-stage" class="clip P-stage" data-start="0" data-duration="4.887" data-track-index="1">
+      <div id="f05-captura-flash"></div>
+      <div id="f05-captura-chip">2</div>
+      <div id="f05-captura-shot"><div class="k">Nueva solicitud</div><div class="t">CANCELADO</div><div class="ln"></div><div class="ln" style="width:70%"></div><div class="ln" style="width:85%"></div></div>
+      <div id="f05-captura-fol">Reportar</div>
+      <svg id="f05-captura-ok" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M7 12.5 L10.5 16 L17 8.5"/></svg>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      var D = 4.887;
+      tl.fromTo("#f05-captura-chip", {"scale": 0, "opacity": 0}, {"scale": 1, "opacity": 1, "duration": 0.35, "ease": "back.out(2)"}, 0.0);
+      tl.fromTo("#f05-captura-shot", {"y": 100, "opacity": 0}, {"y": 0, "opacity": 1, "duration": 0.4, "ease": "power3.out"}, 0.609);
+      tl.fromTo("#f05-captura-fol", {"y": 120, "opacity": 0}, {"y": 0, "opacity": 1, "duration": 0.4, "ease": "power3.out"}, 0.609);
+      tl.fromTo("#f05-captura-flash", {"opacity": 0.6}, {"opacity": 0, "duration": 0.35, "ease": "power2.out", "immediateRender": false}, 1.677);
+      tl.to("#f05-captura-shot", {"y": 620, "scale": 0.35, "opacity": 0.0, "duration": 0.6, "ease": "power2.in"}, 2.908);
+      tl.to("#f05-captura-fol", {"scale": 1.06, "duration": 0.15, "yoyo": true, "repeat": 1}, 3.408);
+      tl.fromTo("#f05-captura-ok", {"scale": 0, "opacity": 0}, {"scale": 1, "opacity": 1, "duration": 0.35, "ease": "back.out(2)"}, 3.848);
+      tl.set("#f05-captura-fol", {"color": "#22C55E"}, 0);
+      tl.fromTo("#f05-captura-stage", { scale: 1 }, { scale: 1.04, duration: D - 0, ease: "none" }, 0);
+
+      window.__timelines["05-captura"] = tl;
+    })();
+  </script>
+</template>

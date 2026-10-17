@@ -27,6 +27,21 @@ Llegas al punto de recogida y el pasajero ya canceló. Ahí te quedas, con el ca
 | 10 | 0:31–0:34 | Mándaselo a un compañero que maneje de noche. Sígueme para más. | Avión de papel, «+ Seguir» | [CTA específico: a quién y qué hace después] |
 | 11 | 0:34–0:39 | Descarga Checa y checa cuánto te queda de cada viaje. | Cierre estándar: logo, «Descarga CHECA», @checa.driver, @Eduardoalv9802 y el link | [Cierre estándar: eslogan + cuentas + link] |
 
+## Animaciones y gráficos HTML por toma (Dark Mode / Neon UI, fondo #0D0D0D)
+| Toma / frase | Componente HTML/UI | Efecto/animación CSS | Objetivo visual |
+|---|---|---|---|
+| 1 · 0:00 «el pasajero ya canceló… sin un peso» | Pin de recogida en mapa oscuro + tarjeta «CANCELADO» rosa + contador «Ganado: $0» | Pin cae y rebota; tarjeta con glow rosa y sacudida; contador baja a $0 | Dolor reconocible en 1 s |
+| 2 · 0:04 «4 jugadas… la cuarta te cuida» | «4» gigante con 4 círculos | Círculos se encienden uno a uno; el 4.º parpadea en rojo | Open loop: hay que llegar al 4 |
+| 3 · 0:08 «cuánto espera tu app» | Reloj de arena + tarjeta «Reglas de espera» | Arena cae; barra de tiempo que se llena en amarillo | Concepto de tiempo de espera |
+| 4 · 0:11 «cancela tú y checa si te toca cobro» | Botón «Cancelar viaje» + chip «¿te toca cobro?» | Botón pasa a verde con ✓; chip hace pop | La acción es tuya; sin prometer cobro |
+| 5 · 0:15 «captura y reporte, en ese momento» | Captura de pantalla que cae en carpeta «Reportar» | Flash blanco, captura se encoge y entra; sello ✓ verde | Hábito concreto y rápido |
+| 6 · 0:19 «nombre y destino, antes de los seguros» | Ficha de usuario con 2 filas y candado | Filas se marcan ✓ en verde; candado se abre al final | Verificar antes de abrir |
+| 7 · 0:22 «Cuatro, la que no se negocia:» | Pantalla negra, «4» rojo | Medio segundo de silencio; «4» late | Pausa dramática |
+| 8 · 0:24 «no discutas… lugar seguro y cancela» | Globo de diálogo tachado + pin verde «Lugar seguro» | Tachado en rosa; pin cae en verde; destello | Payoff: salir sin pelear |
+| 9 · 0:29 «Ningún viaje vale una pelea» | Casa con ventana encendida | Luz amarilla se enciende; música baja | Cierre emocional |
+| 10 · 0:31 «Mándaselo… Sígueme» | Avión de papel + botón «+ Seguir» | Avión vuela al borde; botón pulsa | CTA claro |
+| 11 · 0:34 «Descarga Checa…» | Cierre estándar | Logo, pastilla «Descarga CHECA», @checa.driver, @Eduardoalv9802, link; pausa 0.45 s | Cierre de marca |
+
 **Ajustes de honestidad:** «checa si te toca cobro» (el cobro por cancelación depende de cada app; no se promete); sin cifras habladas; «Ningún viaje vale una pelea» es consejo, no promesa.
 
 **Texto de publicación (v2):**
