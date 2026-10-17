@@ -10,7 +10,7 @@ import android.graphics.Color
 import android.widget.RemoteViews
 
 /**
- * Widget de la pantalla de inicio: enciende o apaga la lectura de pantalla.
+ * Widget (1x1) de la pantalla de inicio: enciende o apaga la lectura de pantalla.
  * Apagar es directo. Encender abre Checa, que pide el permiso de captura (Android lo exige
  * cada vez) y regresa a la app anterior.
  */
@@ -37,9 +37,8 @@ class WidgetCheca : AppWidgetProvider() {
             if (CapturaService.corriendo) {
                 v.setInt(R.id.raiz, "setBackgroundResource", R.drawable.widget_encendido)
                 v.setInt(R.id.icono, "setColorFilter", Color.BLACK)
-                v.setTextColor(R.id.titulo, Color.BLACK)
                 v.setTextColor(R.id.estado, Color.BLACK)
-                v.setTextViewText(R.id.estado, "Leyendo · toca para apagar")
+                v.setTextViewText(R.id.estado, "Leyendo")
                 v.setOnClickPendingIntent(
                     R.id.raiz,
                     PendingIntent.getService(
@@ -49,9 +48,8 @@ class WidgetCheca : AppWidgetProvider() {
             } else {
                 v.setInt(R.id.raiz, "setBackgroundResource", R.drawable.widget_apagado)
                 v.setInt(R.id.icono, "setColorFilter", Color.parseColor("#22C55E"))
-                v.setTextColor(R.id.titulo, Color.WHITE)
                 v.setTextColor(R.id.estado, Color.parseColor("#9CA3AF"))
-                v.setTextViewText(R.id.estado, "Apagado · toca para encender")
+                v.setTextViewText(R.id.estado, "Apagado")
                 val abrir = Intent(ctx, MainActivity::class.java)
                     .putExtra(MainActivity.EXTRA_AUTO_INICIAR, true)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
