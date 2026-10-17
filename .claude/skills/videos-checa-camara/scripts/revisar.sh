@@ -17,9 +17,9 @@ LU=$(ffmpeg -nostats -i "$V" -af ebur128=peak=none -f null - 2>&1 | awk '/I:/ {v
 if [ -n "$LU" ]; then awk -v l="$LU" 'BEGIN{exit !(l>-17 && l<-11)}' && ok "volumen ${LU} LUFS" || av "volumen ${LU} LUFS (objetivo -14)"; fi
 SS=$(ffmpeg -nostats -i "$V" -i "$P" -filter_complex "[0:v]trim=end_frame=1,setpts=PTS-STARTPTS[a];[1:v]scale=1080:1920[b];[a][b]ssim" -f null - 2>&1 | grep -o 'All:[0-9.]*' | head -1 | cut -d: -f2)
 [ -n "$SS" ] && awk -v s="$SS" 'BEGIN{exit !(s>0.9)}' && ok "la portada es el primer cuadro (ssim $SS)" || av "el primer cuadro no parece la portada (ssim ${SS:-n/d})"
-grep -q "jeal1498.github.io/checa-web" "$C" && ok "copy con el link de descarga" || av "el copy no trae jeal1498.github.io/checa-web"
+DM="$(dirname "$C")/dm.txt"   # el link va en dm.txt (no hay link en la bio ni en el copy)
+grep -q "jeal1498.github.io/checa-web" "$C" "$DM" 2>/dev/null && ok "link de descarga en copy o dm.txt" || av "ni el copy ni dm.txt traen jeal1498.github.io/checa-web"
 if grep -qiE "7 días gratis|sin costo|gratis|garantiz|ruta rentable|\b[0-9]+ ?pesos\b" "$C"; then no "el copy tiene algo que Checa no dice por ahora (prueba gratis, sin costo, garantías, competencia, precios)"; else ok "copy sin frases prohibidas"; fi
-DM="$(dirname "$C")/dm.txt"
 if [ -f "$DM" ]; then grep -q "utm_source=" "$DM" && ok "dm.txt con utm_source" || av "dm.txt sin utm_source (el reporte diario no contaría las descargas)"; fi
 if [ -n "$SPEC" ]; then
   python3 - "$SPEC" <<'PY' || FAIL=1

@@ -19,8 +19,8 @@ Port de la skill `videos-karen` (repo `jeal1498/videos-karen-trujillo`) a la mar
 2. **Tabla de gráficos por toma** (chat): `Segundo · Frase que dice · Elemento en pantalla` (gancho, rótulo, escenas con su tipo, pantalla final). Se piensa con `plantillas/guion-escenas.md`.
 3. **Portada** (estilo marca v2: `video/hyperframes/checa-marca-v2/portada/portada.html`; va antes que el video).
 4. **Video:** versión de prueba con `SendUserFile` desde la carpeta de trabajo (no se commitea). Con portada y video aprobados: `video/scripts/portada_primer_cuadro.sh <video.mp4> <portada.jpg> <salida.mp4>`.
-5. **Copy** (`copy.txt` y `dm.txt` con el link y `utm_source=tiktok-personal`).
-6. **Hecho:** copiar a `marketing/videos/PERSONAL/NN - Nombre/` (`video.mp4`, `portada.jpg`, `copy.txt`, `dm.txt`, `guion.md`), una sola vez y ya aprobado. Commit con `[skip ci]` (si no, GitHub Actions compila el APK). «Hecho» no es «Publicado».
+5. **Copy** (`copy.txt` sin link y `dm.txt` con el link y su `utm_campaign`): `utm_source=tiktok-personal` en la cuenta de Eduardo y `utm_source=tiktok` en la CHECA oficial. Eduardo aprueba el copy antes de guardar.
+6. **Hecho:** copiar a `marketing/videos/PERSONAL/NN - Nombre/` (o `CHECA/` si va a la cuenta oficial; agrega su fila en `marketing/plan/calendario.md`) (`video.mp4`, `portada.jpg`, `copy.txt`, `dm.txt`, `guion.md`), una sola vez y ya aprobado. Commit con `[skip ci]` (si no, GitHub Actions compila el APK). «Hecho» no es «Publicado».
 
 ## Pasos técnicos (`SK=.claude/skills/videos-checa-camara`)
 1. `bash $SK/scripts/preparar.sh <original.mp4> <trabajo>` (trabajo en el scratchpad, no en el repo): re-codifica a 1080×1920, voz a −14 LUFS, copia fuentes y gsap, transcribe con Whisper (`words.json`).
@@ -52,6 +52,7 @@ Port de la skill `videos-karen` (repo `jeal1498/videos-karen-trujillo`) a la mar
 - **Ver el resultado antes de renderizar:** `scripts/vista_previa.js` captura gancho, escenas y subtítulos sin fondo para componerlos sobre cuadros de `input-video.mp4`.
 - **Pausas largas de Eduardo:** `quitar: [[a, b]]` en `plan.json` elimina un tramo del clip y une las orillas con un fundido de 0.08 s (más largo se ve doble la imagen si la cámara se movió). Escoge a y b donde ya no hable y la imagen casi no cambie (se compara cuadro a cuadro entre candidatos); deja unos 0.5 s de pausa natural. Todo lo posterior se recorre solo: subtítulos, escena y pantalla final.
 - **Cortar una frase sin dejar rastro:** `fin_en_silencio` en `plan.json` busca el instante más callado; el último subtítulo de un clip cortado lleva punto para no pegarse con el siguiente clip.
+- **Audita el guion antes de editar:** si repite una idea («si te conviene o no») se corta una de las dos; un video corto de otro ya hecho es carpeta nueva, no lo reemplaza.
 - **Cifras largas** en `numero` bajan de tamaño solas para no pegarse a los bordes.
 - **Una toma real vale más que una escena:** si Eduardo tiene una demostración en pantalla, se deja sin tapar y los subtítulos van debajo del pop-up (banda y=1160–1480). Es decisión suya si aparecen logos o calles en ella.
 - `elevenlabs.py` no necesita el paquete `elevenlabs` de pip (usa urllib); solo la clave `ELEVENLABS_API_KEY`.
