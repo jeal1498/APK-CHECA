@@ -3,7 +3,7 @@
  "duracion": 58,
  "colores": {"perdiste": "rojo", "netos": "verde", "decides": "amarillo"},
  "gancho": {"texto": "Se veía buen billete y perdiste", "resalta": "perdiste", "ini": 0.3, "fin": 3.4},
- "nametag": {"nombre": "Eduardo", "detalle": "Conductor y creador de Checa", "ini": 3.7, "fin": 6.6},
+ "nametag": {"nombre": "Eduardo", "detalle": "Creador de Checa", "ini": 3.7, "fin": 6.6},
  "escenas": [
   {"id": "e1", "tipo": "popup", "ini": 8.0, "fin": 12.5,
    "popup": {"nivel": "rojo", "app": "APP", "neta": 88, "viaje": 150, "gasolina": 62,
