@@ -40,6 +40,7 @@ Sin link en la bio (TikTok pide constancia del SAT para cuenta de empresa): a qu
 | 17 | mié 28 oct | Explicativo | `17 - Cómo funciona Checa` |  | |
 | 18 | por definir | Venta | `18 - Cuánto ganas tú` |  | (ya está en PERSONAL) |
 | 20 | por definir | Tutorial | `20 - Cómo instalar Checa` |  | |
+| 21 | sáb 17 oct | Campaña beta | `21 - Beta testers corto` | ✅ | |
 
 ---
 

@@ -5,7 +5,7 @@ description: Editar los videos de Eduardo a cámara (cuenta personal de TikTok @
 
 # Videos de Eduardo a cámara (marca Checa v2)
 
-Port de la skill `videos-karen` (repo `jeal1498/videos-karen-trujillo`) a la marca Checa. Misma mecánica: un `spec.json` + `words.json` (transcripción por palabra) → `componer.py` arma `public/index.html` de HyperFrames → `check` → render. **Estado (17 oct 2026):** probada con un video sintético (`check` sin errores, escenas revisadas en fotogramas y un render corto); falta el primer uso con un video real de Eduardo.
+Port de la skill `videos-karen` (repo `jeal1498/videos-karen-trujillo`) a la marca Checa. Misma mecánica: un `spec.json` + `words.json` (transcripción por palabra) → `componer.py` arma `public/index.html` de HyperFrames → `check` → render. **Estado (17 oct 2026):** probada con un video sintético (`check` sin errores, escenas revisadas en fotogramas y un render corto); primer uso real con 5 clips de Eduardo (17 oct 2026): `CHECA/21 - Beta testers corto`.
 
 ## Marca (manda `jeal1498/checa-web`, carpeta `marca/`; usa la skill `marca-checa`)
 - Asfalto `#0C0C10`, tablero `#16161C`, humo `#3A3A45`, hueso `#F4F4EF`. **El color solo decide:** verde `#22C55E` (lo que ganas), amarillo `#FACC15` (lo que recuerdas), rojo `#EF4444` (lo que pierdes).
@@ -61,5 +61,5 @@ Una idea por escena, de 3 a 5 s, máximo 12 palabras; suman como máximo el 40 %
 
 ## Pendientes
 - Efectos de sonido: no hay en esta skill. Si se agregan, solo los oficiales de `checa-web/marca/sonido` y según sus reglas (un sonido por evento visual, máximo 3 por escena, volumen 0.3 a 0.5 con voz). Sin música.
-- Primer uso con un video real de Eduardo; ajustar zona del rótulo según su encuadre.
+- Ajustar zona del rótulo según el encuadre de Eduardo (en el primer uso quedó bien).
 - Si Eduardo quiere un encuadre fijo como el de Karen (`encuadre.py`, ojos en el tercio superior), se porta de `videos-karen-trujillo`.
