@@ -2,3 +2,4 @@
 # El workflow reporte-web.yml escribe reportes/web.md (~30 s).
 dias=30
 pedido=2026-10-14 12:00
+# 2026-10-17-2315

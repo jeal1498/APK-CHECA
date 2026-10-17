@@ -49,6 +49,9 @@ jobs:
             echo "## Cuentas nuevas por día (inicio con Google)"
             q "select to_char(created_at at time zone 'America/Mexico_City','YYYY-MM-DD') as dia, count(*) as cuentas from auth.users where $WU group by 1 order by 1 desc limit 31" | tabla
             echo
+            echo "## Quiénes son (cuentas con Google)"
+            q "select u.email as correo, to_char(u.created_at at time zone 'America/Mexico_City','MM-DD HH24:MI') as registro, coalesce(to_char(u.last_sign_in_at at time zone 'America/Mexico_City','MM-DD HH24:MI'),'') as ultimo_acceso, (select count(*) from equipos e where e.correo = u.email) as equipos, coalesce((select l.vence::text from licencias l where l.correo = u.email),'sin licencia') as licencia_vence from auth.users u order by u.created_at desc limit 100" | tabla
+            echo
             echo "## Pagos por plan"
             q "select plan, count(*) as pagos, sum(monto) as ingresos from pagos where $W group by plan order by ingresos desc" | tabla
             echo
