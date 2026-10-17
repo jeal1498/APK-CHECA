@@ -1233,11 +1233,8 @@ class MainActivity : Activity() {
         col.addView(cuentaCaja, margenTarjeta())
         pintarCuenta()
 
-        col.addView(tarjetaCompartir(), margenTarjeta())
-        val invitado = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        cajaInvitado = invitado
-        col.addView(invitado, LinearLayout.LayoutParams(-1, -2))
-        pintarInvitar()
+        // «Invita a un amigo» y «¿Te invitó alguien?» ocultas en Cuenta (7.2). La tarjeta de
+        // Inicio sigue; para volver a mostrarlas: col.addView(tarjetaCompartir()) y cajaInvitado.
 
         // --- Paquetes ---
         val paq = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
