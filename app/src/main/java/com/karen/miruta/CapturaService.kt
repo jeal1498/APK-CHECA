@@ -101,6 +101,7 @@ class CapturaService : Service() {
             r.surface, null, handler
         )
         corriendo = true
+        WidgetCheca.actualizar(this)
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).apply {
             cancel(ID_AVISO)
             cancel(3) // aviso «Checa no está leyendo» de RutaService
@@ -318,6 +319,7 @@ class CapturaService : Service() {
     private fun detener(avisar: Boolean = false) {
         val estabaLeyendo = corriendo
         corriendo = false
+        WidgetCheca.actualizar(this)
         handler?.removeCallbacksAndMessages(null)
         try { display?.release() } catch (_: Exception) { }
         try { lector?.close() } catch (_: Exception) { }
@@ -339,6 +341,7 @@ class CapturaService : Service() {
     override fun onDestroy() {
         if (proyeccion != null) detener()
         corriendo = false
+        WidgetCheca.actualizar(this)
         super.onDestroy()
     }
 
