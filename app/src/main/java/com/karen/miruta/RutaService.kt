@@ -22,7 +22,7 @@ class RutaService : AccessibilityService() {
     /** Un pop-up por app, para que dos ofertas simultáneas no se pisen. */
     private val popups = HashMap<String, Popup>()
     private val activas = LinkedHashMap<String, Pair<Oferta, Rect?>>()
-    private val ultimaFirma = HashMap<String, Pair<String, Long>>()
+    private val ultimaFirma = HashMap<String, Pair<Oferta, Long>>()
     private val ultimoAviso = HashMap<String, Long>()
 
     override fun onServiceConnected() {
@@ -81,10 +81,14 @@ class RutaService : AccessibilityService() {
             val tramoTapado = a.recogidaMin > 0 && oferta.recogidaMin == 0.0
             if (mismosTramos || tramoTapado) return
         }
-        val firma = "${oferta.tarifa}|${oferta.km}|${oferta.min}"
+        // La misma oferta (con pequeñas variaciones del OCR) no vuelve a salir mientras siga en
+        // pantalla: cada vez que se ve de nuevo se renueva el plazo de 60 s. Así, al cerrar el
+        // pop-up con la ✕ o por tiempo, no reaparece (parpadeo).
         val ahora = System.currentTimeMillis()
-        ultimaFirma[clave]?.let { (f, t) -> if (f == firma && ahora - t < 60_000) return }
-        ultimaFirma[clave] = firma to ahora
+        ultimaFirma[clave]?.let { (o, t) ->
+            if (ahora - t < 60_000 && parecida(o, oferta)) { ultimaFirma[clave] = o to ahora; return }
+        }
+        ultimaFirma[clave] = oferta to ahora
 
         popups.getOrPut(clave) {
             Popup(this, prefs, WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY).also { p ->
@@ -108,6 +112,9 @@ class RutaService : AccessibilityService() {
         alertas?.avisar(nivel)
         Historial.registrar(this, oferta, app, nivel)
     }
+
+    private fun parecida(a: Oferta, b: Oferta) =
+        Math.abs(a.km - b.km) < 0.15 && Math.abs(a.min - b.min) < 1.1 && Math.abs(a.tarifa - b.tarifa) < 1.0
 
     /** Zonas que tapan los pop-ups visibles. */
     fun rectsPopups(): List<Rect> = popups.values.mapNotNull { it.rect() }
