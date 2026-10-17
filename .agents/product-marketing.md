@@ -1,7 +1,7 @@
 # Product Marketing Context — Checa
 
-**Document version:** v5
-**Last updated:** 2026-10-13
+**Document version:** v6
+**Last updated:** 2026-10-17
 
 ## Product Overview
 **One-liner:** Antes de aceptar, checa cuánto te queda. Checa te dice en un segundo si un viaje de Uber o DiDi conviene y cuánto te queda limpio después de gasolina.
@@ -112,7 +112,9 @@ B2C, una sola persona: el conductor que quiere ganar más por hora y gastar meno
 **Tone:** Directo, cercano, de compa conductor (tuteo).
 **Style:** Frases cortas, números concretos, cero rollo.
 **Personality:** Práctica, honesta, rápida, confiable, ahorradora.
-**Visual:** Fondo negro, verde #22C55E, amarillo #FACC15, rojo #F43F5E, dorado #E8B84A (fundador); Fira Sans / Fira Code.
+**Visual (marca v2, 17 oct 2026):** logo del semáforo con ✓; fondo asfalto #0C0C10 y hueso #F4F4EF; el color solo decide (aceptar #22C55E, considerar #FACC15, rechazar #EF4444); dorado #E8B84A solo para fundador; Bricolage Grotesque 800 / DM Sans / JetBrains Mono. Fuente única: repo `jeal1498/checa-web`, carpeta `marca/` (skill `marca-checa`). La app y la web aún usan la marca anterior (Fira Sans / Fira Code) hasta que se aplique la v2.
+**Tagline:** «Checa cuánto te queda.»
+**Nunca decir:** promesas de ganancia, tecnicismos (OCR, algoritmo), ciudad o país, nombres de competencia. Aviso: «Checa es independiente y no está afiliada a Uber ni a DiDi». Cifras de ejemplo siempre marcadas.
 
 ## Proof Points
 **Metrics:** Aún no hay (2026-10-12) (número de conductores, ofertas leídas, ahorro promedio).
@@ -137,6 +139,7 @@ Plan completo en `marketing/web/` (01 público → 06 medición). Título: «Ant
 
 ## Changelog
 *Newest first. One line per revision: what changed and why.*
+- v6 (2026-10-17) — Identidad de marca v2 (semáforo con ✓, asfalto y hueso, color = decisión); vive en `checa-web/marca/`.
 - v5 (2026-10-13) — Inicio como VSL con el video de Eduardo, beta en página propia, Invita a un amigo en la app 6.2 y aviso de actualización (6.1).
 - v4 (2026-10-13) — Web como funnel: garantía de lectura, bono de ayuda por WhatsApp, precio por día, título nuevo, sin competencia en público, medición con Supabase.
 - v3 (2026-10-13) — Campaña de beta testers (50 accesos, 3 meses, +1 mes por referido) y plan para juntar testimonios reales.

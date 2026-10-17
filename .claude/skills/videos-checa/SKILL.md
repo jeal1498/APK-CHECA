@@ -7,6 +7,18 @@ description: Hacer videos cortos de Checa (TikTok, Reels, Shorts) con narrador d
 
 > **Prioridad entre conversaciones (Eduardo, 16 oct 2026):** esta skill se cambia desde la conversación **principal** (guiones, carpetas, v2). La **secundaria** solo hace cambios puntuales y no debe revertir estas reglas; si algo choca, gana lo que dice esta skill.
 
+## ⭐ Marca v2 en los videos (Eduardo, 17 oct 2026)
+La identidad nueva vive en **`jeal1498/checa-web`, carpeta `marca/`** (usa la skill **`marca-checa`**; clona ese repo si no está en `/home/user/checa-web`). **Aplica a lo visual de todo video nuevo** y gana sobre lo que dicen más abajo de colores y estilo:
+- **Colores:** fondo asfalto `#0C0C10`, tarjetas `#16161C`, texto hueso `#F4F4EF`. El color solo decide: verde `#22C55E` (gana/conviene), amarillo `#FACC15` (palabra a recordar), rojo `#EF4444` (pierdes). Reemplaza el «Dark Mode / Neon UI, fondo #0D0D0D con neones rosa, azul…» de la tabla de animaciones (4b) y la «placa negra y verde» de los subtítulos.
+- **Letras:** Bricolage Grotesque 800 para títulos y números, DM Sans para texto y JetBrains Mono para datos (ya no Fira Code en videos nuevos).
+- **Logo:** el semáforo con ✓ (`checa-web/marca/logo-*.svg`, `semaforo*.svg`). Entra con la animación rojo → ámbar → verde → ✓ en 1.2 s.
+- **Subtítulos:** máx. 2 líneas y 5 palabras, tercio medio-bajo, sombra oscura, palabra por palabra a 150 ms; estilos A palabra activa (amarillo), B cifra con color del semáforo y C píldora (lámina 6 del artifact «Checa: identidad de marca»).
+- **Pantalla final:** logo nuevo + «Descarga Checa» + `@checa.driver` + `@Eduardoalv9802` + `jeal1498.github.io/checa-web` + «solo Android» (el contenido de siempre, con el diseño nuevo).
+- **Movimiento:** curva `cubic-bezier(.2,.8,.2,1)`, sin rebote; cambio de toma cada 3 s se mantiene.
+- **Pop-up:** los tres estados con el mismo tamaño; solo cambian color y datos.
+- **Lo que NO cambia:** flujo con una aprobación por etapa, formato de guiones, v2 para la cuenta personal, carpetas `NN - Nombre`, voz Fernando, cierre estándar, reglas de «números de ejemplo» y sin logos de Uber/DiDi.
+- **Pendiente (aún con la marca vieja):** la plantilla `video/hyperframes/checa-promo/` (`frame.md`, `assets/checa-popup.html`, `assets/logo-7eb355dc.svg`, `assets/fonts/` con Fira, `.hyperframes/caption-skin.html`) y los videos ya hechos. Migrarla cuando Eduardo lo pida; mientras no se migre, los videos nuevos usan la plantilla tal cual pero con textos, subtítulos y pantalla final en la marca v2 donde se pueda, y se avisa a Eduardo de la mezcla.
+
 ## ⭐ Flujo de cada video, con una aprobación por etapa (Eduardo, 16 oct 2026; orden cambiado el mismo día)
 Una etapa a la vez; **no pases a la siguiente sin su «aprobado»** y no adelantes archivos de etapas futuras (copy, dm):
 1. **Guion** según las instrucciones de abajo. En el chat, solo el texto limpio y de corrido.
