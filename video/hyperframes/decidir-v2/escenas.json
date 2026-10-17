@@ -1,13 +1,114 @@
 [
-  {"tipo": "hook"},
-  {"tipo": "anillo"},
-  {"tipo": "datos"},
-  {"tipo": "logo"},
-  {"tipo": "escaneo"},
-  {"tipo": "voz"},
-  {"tipo": "popup_oferta", "entra": 0, "popup": {"nivel": "verde", "app": "UBER", "neta": 98, "viaje": 120, "gasolina": 22,
-    "chips": [["$256/h", "por hora", "ok"], ["$9.1/km", "por km", "ok"], ["23 min", "10.8 km total", ""]]}},
-  {"tipo": "reloj"},
-  {"tipo": "seguir"},
-  {"tipo": "cierre"}
+ {
+  "tipo": "hook",
+  "sfx": [
+   [
+    "rechazar",
+    "perdiste",
+    0.4
+   ]
+  ]
+ },
+ {
+  "tipo": "anillo"
+ },
+ {
+  "tipo": "datos",
+  "sfx": [
+   [
+    "sello",
+    "gasolina",
+    0.35
+   ]
+  ]
+ },
+ {
+  "tipo": "logo"
+ },
+ {
+  "tipo": "escaneo",
+  "sfx": [
+   [
+    "numero-sube",
+    "descontada",
+    0.4
+   ]
+  ]
+ },
+ {
+  "tipo": "voz",
+  "sfx": [
+   [
+    "aceptar",
+    "aceptar",
+    0.35
+   ],
+   [
+    "considerar",
+    "considerar",
+    0.35
+   ],
+   [
+    "rechazar",
+    "rechazar",
+    0.35
+   ]
+  ]
+ },
+ {
+  "tipo": "popup_oferta",
+  "entra": 0,
+  "popup": {
+   "nivel": "verde",
+   "app": "UBER",
+   "neta": 98,
+   "viaje": 120,
+   "gasolina": 22,
+   "chips": [
+    [
+     "$256/h",
+     "por hora",
+     "ok"
+    ],
+    [
+     "$9.1/km",
+     "por km",
+     "ok"
+    ],
+    [
+     "23 min",
+     "10.8 km total",
+     ""
+    ]
+   ]
+  },
+  "sfx": [
+   [
+    "popup-entra",
+    0.0,
+    0.4
+   ],
+   [
+    "aceptar",
+    0.45,
+    0.4
+   ]
+  ]
+ },
+ {
+  "tipo": "reloj",
+  "sfx": [
+   [
+    "aceptar",
+    "hecha",
+    0.4
+   ]
+  ]
+ },
+ {
+  "tipo": "seguir"
+ },
+ {
+  "tipo": "cierre"
+ }
 ]

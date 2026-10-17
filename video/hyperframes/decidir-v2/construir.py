@@ -4,6 +4,7 @@ Uso (dentro de la carpeta del video, copiada de checa-marca-v2):
   python3 -I construir.py            # voz (si falta), tiempos, escenas, subtítulos e index.html
   python3 -I construir.py --check    # además corre `hyperframes check`
   python3 -I construir.py --render   # además renderiza a renders/video.mp4
+  python3 -I construir.py --sin-sfx  # sin efectos de sonido (por defecto se agregan los oficiales)
 
 SCRIPT.md: una línea de voz por escena, con 4 espacios al inicio.
 escenas.json: lista con un objeto por línea, en el mismo orden. Tipos:
@@ -18,6 +19,12 @@ escenas.json: lista con un objeto por línea, en el mismo orden. Tipos:
   POPUP = {"nivel": "verde|amarillo|rojo", "app": "UBER", "neta": 118, "viaje": 150, "gasolina": 32,
            "chips": [["$321/h", "por hora", "ok"], ["$9.4/km", "por km", "ok"], ["28 min", "16 km total", ""]]}
           (chip: "ok" cumple, "mal" no cumple, "" neutro). Las cifras deben cuadrar: neta = viaje − gasolina.
+
+Efectos de sonido oficiales (assets/sfx, de checa-web/marca/sonido): se agregan solos según el tipo de escena:
+  popup → popup-entra y el sonido de su nivel (aceptar / considerar / rechazar) · estados → el sonido de cada nivel
+  numero → numero-sube · cierre y logo → logo-semaforo. Las demás escenas no llevan sonido por defecto.
+  Para cambiarlo, una escena puede traer "sfx": false  o  "sfx": [["sello", 1.2], ["popup-entra", 0.0, 0.4]]  (archivo, segundo —o palabra de la voz— dentro
+  de la escena y, opcional, volumen). Reglas: un sonido por evento visual, máximo 3 por escena, volumen 0.3 a 0.5 con voz.
 
 Marca: jeal1498/checa-web, carpeta marca/ (skill marca-checa). Reglas: ningún texto es solo un monto,
 los tres pop-ups miden lo mismo, «Números de ejemplo» donde haya cifras, sin logos de Uber/DiDi.
@@ -394,6 +401,40 @@ def esc_seguir(sc, e, n):
     return marco(n, D, "", inner, js)
 
 
+# ---------- efectos de sonido ----------
+NIVEL_SFX = {"verde": "aceptar", "amarillo": "considerar", "rojo": "rechazar"}
+
+
+def sfx_escena(sc, e):
+    """Efectos de la escena: lista de (archivo, segundo dentro de la escena, volumen)."""
+    if "sfx" in e:
+        if not e["sfx"]:
+            return []
+        return [(x[0], pal(sc, x[1]) if isinstance(x[1], str) else float(x[1]), float(x[2]) if len(x) > 2 else 0.45) for x in e["sfx"]]
+    tipo = e["tipo"]
+    if tipo == "popup":
+        return [("popup-entra", 0.0, 0.4), (NIVEL_SFX[e["popup"].get("nivel", "verde")], 0.45, 0.45)]
+    if tipo == "estados":
+        w = sc["words"]  # mismos tiempos que esc_estados
+        tiempo = [0.0 if i == 0 else max(0, round(w[min(k, len(w) - 1)][1] - 0.05, 2)) for i, k in enumerate(e["en_palabra"])]
+        return [(NIVEL_SFX[p.get("nivel", "verde")], round(t0 + 0.15, 2), 0.45) for p, t0 in zip(e["popups"], tiempo)]
+    if tipo == "numero":
+        return [("numero-sube", 0.2, 0.4)]
+    if tipo in ("cierre", "logo"):
+        return [("logo-semaforo", 0.0, 0.5)]
+    return []
+
+
+def juntar_sfx(T, escenas):
+    out = []
+    for sc, e in zip(T["scenes"], escenas):
+        for archivo, seg, vol in sfx_escena(sc, e):
+            ruta = f"assets/sfx/{archivo}.mp3"
+            assert os.path.exists(ruta), f"Falta {ruta} (copiar los mp3 de checa-web/marca/sonido/mp3)"
+            out.append((ruta, round(sc["start"] + seg, 3), vol))
+    return out
+
+
 TIPOS = {"hook": esc_hook, "anillo": esc_anillo, "datos": esc_datos, "logo": esc_logo, "escaneo": esc_escaneo, "voz": esc_voz, "popup_oferta": esc_popup_oferta, "reloj": esc_reloj, "seguir": esc_seguir, "gancho": esc_gancho, "numero": esc_numero, "popup": esc_popup, "estados": esc_estados, "cierre": esc_cierre}
 
 
@@ -438,7 +479,7 @@ def armar_captions(T):
 
 
 # ---------- index ----------
-def armar_index(T, nombres):
+def armar_index(T, nombres, sfx=None):
     h = f"""<!doctype html>
 <html lang="es">
   <head>
@@ -460,6 +501,8 @@ def armar_index(T, nombres):
         h += f'''      <div id="el-{nm}" class="scene" data-composition-id="{nm}" data-composition-src="compositions/frames/{nm}.html" data-start="{sc["start"]}" data-duration="{sc["dur"]}" data-track-index="{n % 2}"></div>
       <audio id="el-{nm}-voice" data-audio-group="voiceover" src="assets/voice/{n:02d}.wav" data-start="{sc["start"]}" data-duration="{sc["voice"]}" data-track-index="10" data-volume="1"></audio>
 '''
+    for i, (ruta, t0, vol) in enumerate(sfx or []):
+        h += f'      <audio id="el-sfx-{i}" src="{ruta}" data-start="{t0}" data-duration="{probe(ruta)}" data-track-index="{30 + i}" data-volume="{vol}"></audio>\n'
     h += f'''      <div id="el-captions" class="scene" data-composition-id="captions" data-composition-src="compositions/captions.html" data-start="0" data-duration="{T['total']}" data-track-index="20" data-track-kind="captions"></div>
     </div>
     <script>
@@ -491,8 +534,9 @@ def main():
         nombres.append(nm)
         open(f"compositions/frames/{nm}.html", "w", encoding="utf-8").write(TIPOS[e["tipo"]](sc, e, nm))
     g = armar_captions(T)
-    armar_index(T, nombres)
-    print(f"{len(T['scenes'])} escenas, {len(g)} subtítulos, {T['total']} s")
+    sfx = [] if "--sin-sfx" in args else juntar_sfx(T, escenas)
+    armar_index(T, nombres, sfx)
+    print(f"{len(T['scenes'])} escenas, {len(g)} subtítulos, {len(sfx)} efectos de sonido, {T['total']} s")
     if "--check" in args or "--render" in args:
         subprocess.run(["npx", "--yes", "hyperframes@0.8.154", "check"], check=True)
     if "--render" in args:
