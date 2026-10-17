@@ -40,7 +40,7 @@ Sin link en la bio (TikTok pide constancia del SAT para cuenta de empresa): a qu
 | 17 | mié 28 oct | Explicativo | `17 - Cómo funciona Checa` |  | |
 | 18 | por definir | Venta | `18 - Cuánto ganas tú` |  | (ya está en PERSONAL) |
 | 20 | por definir | Tutorial | `20 - Cómo instalar Checa` |  | |
-| 21 | sáb 17 oct | Campaña beta | `21 - Beta testers corto` | ✅ | |
+| 21 | sáb 17 oct | Campaña beta | `21 - Beta testers corto` | ✅ |✅ 17 oct (sin efectos de sonido) |
 
 ---
 
@@ -59,7 +59,7 @@ Misma idea que cada video de CHECA, con otro gancho y otras palabras (reglas en 
 | 01 | — | Campaña beta | (video original de CHECA) | ✅ | ✅ |
 | 18 | — | Venta | (video original de CHECA) | ✅ | ✅ |
 | 05 | — | Consejo | `05 - Cansancio y salud` | ✅ | ✅ |
-| 19 | sáb 17 oct | Venta | `19 - Checa lee la oferta` | ✅ | |
+| 19 | sáb 17 oct | Venta | `19 - Checa lee la oferta` | ✅ |✅ 17 oct |
 | 06 | dom 18 oct | Venta | `06 - Gasolina cara` | ✅ | |
 | 07 | lun 19 oct | Consejo | `07 - Pasajeros y cancelaciones` | ✅ | |
 | 08 | mar 20 oct | Venta | `08 - Decidir en segundos` | ✅ | |
