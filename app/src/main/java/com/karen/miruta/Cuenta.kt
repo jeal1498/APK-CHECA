@@ -244,7 +244,7 @@ object Cuenta {
         val e = s.edit()
         if (s.getString("correo", null) != correo) {
             e.remove("lic_firma").remove("lic_vence").remove("lic_f").remove("lic_eq").remove("equipos").remove("quitado")
-                .remove("precio_beta")
+                .remove("precio_beta").remove("ajustes_hash")
         }
         e.putString("correo", correo)
             .putString("acceso", j.getString("access_token"))
@@ -306,7 +306,67 @@ object Cuenta {
         e.commit()
         sincronizarInvitacion(ctx, t)
         sincronizarPrecio(ctx, t)
+        try { sincronizarAjustes(ctx, t) } catch (_: Exception) { }
         return Resultado.Ok
+    }
+
+    // ------------------------------------------------------------------
+    // Ajustes en la cuenta (filtros, gasolina, pop-up, avisos…)
+    // ------------------------------------------------------------------
+
+    /** Texto estable de los ajustes, para saber si algo cambió. */
+    private fun canon(o: JSONObject): String =
+        o.keys().asSequence().sorted().joinToString(",") { k ->
+            val v = o.get(k)
+            k + "=" + if (v is Number) String.format(Locale.US, "%.4f", v.toDouble()) else v.toString()
+        }
+
+    private fun subirAjustes(ctx: Context, t: String, datos: JSONObject) {
+        val fila = JSONObject().put("correo", correo(ctx)).put("datos", datos).put("actualizado", isoAhora())
+        pedir("POST", "/rest/v1/ajustes", t, JSONArray().put(fila).toString(),
+            "resolution=merge-duplicates,return=minimal")
+        sp(ctx).edit().putString("ajustes_hash", canon(datos)).commit()
+    }
+
+    /**
+     * Primera vez en este equipo: se aplican los de la cuenta (o, si no hay, se suben los de aquí).
+     * Después: si cambiaron aquí se suben; si no, se aplican los de la cuenta por si cambiaron en otro equipo.
+     */
+    private fun sincronizarAjustes(ctx: Context, t: String) {
+        val prefs = Prefs(ctx)
+        val local = prefs.exportar()
+        val guardado = sp(ctx).getString("ajustes_hash", null)
+        val fila = JSONArray(pedir("GET", "/rest/v1/ajustes?select=datos", t, null))
+        if (fila.length() == 0) { subirAjustes(ctx, t, local); return }
+        val remoto = fila.getJSONObject(0).getJSONObject("datos")
+        val l = canon(local)
+        when {
+            guardado != null && l != guardado -> subirAjustes(ctx, t, local)
+            guardado == null || canon(remoto) != l -> {
+                prefs.importar(remoto)
+                sp(ctx).edit().putString("ajustes_hash", canon(prefs.exportar())).putBoolean("ajustes_nuevos", true).commit()
+            }
+        }
+    }
+
+    /** Sube los ajustes si cambiaron desde la última vez (se llama al salir de la app). */
+    fun subirAjustesSiCambio(ctx: Context) {
+        if (!conectada(ctx)) return
+        val app = ctx.applicationContext
+        Thread {
+            try {
+                val local = Prefs(app).exportar()
+                if (canon(local) != sp(app).getString("ajustes_hash", null)) subirAjustes(app, token(app), local)
+            } catch (_: Exception) { }
+        }.start()
+    }
+
+    /** true una sola vez si se aplicaron ajustes de la cuenta (la pantalla debe repintarse). */
+    fun ajustesAplicados(ctx: Context): Boolean {
+        val s = sp(ctx)
+        if (!s.getBoolean("ajustes_nuevos", false)) return false
+        s.edit().remove("ajustes_nuevos").commit()
+        return true
     }
 
     // ------------------------------------------------------------------

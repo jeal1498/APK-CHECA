@@ -180,7 +180,31 @@ class Prefs(context: Context) {
 
     fun borrarCapturas() { sp.edit().remove("caps").apply() }
 
+    /** Ajustes que viajan con la cuenta (los demás son de este equipo: guía, capturas, avisos). */
+    fun exportar(): org.json.JSONObject {
+        val o = org.json.JSONObject()
+        for (k in AJUSTES_FLOAT) if (sp.contains(k)) o.put(k, sp.getFloat(k, 0f).toDouble())
+        for (k in AJUSTES_INT) if (sp.contains(k)) o.put(k, sp.getInt(k, 0))
+        for (k in AJUSTES_BOOL) if (sp.contains(k)) o.put(k, sp.getBoolean(k, false))
+        return o
+    }
+
+    /** Aplica los ajustes guardados en la cuenta. */
+    fun importar(o: org.json.JSONObject) {
+        val e = sp.edit()
+        for (k in AJUSTES_FLOAT) if (o.has(k)) e.putFloat(k, o.getDouble(k).toFloat())
+        for (k in AJUSTES_INT) if (o.has(k)) e.putInt(k, o.getInt(k))
+        for (k in AJUSTES_BOOL) if (o.has(k)) e.putBoolean(k, o.getBoolean(k))
+        e.commit()
+    }
+
     companion object {
+        private val AJUSTES_FLOAT = listOf("minKm", "minHora", "recMaxV", "recMinV", "kml", "precioL", "metaDia")
+        private val AJUSTES_INT = listOf("durMaxV", "durMinV", "criterio", "tam", "dur", "pos", "vol")
+        private val AJUSTES_BOOL = listOf(
+            "fKm", "fHora", "fRecMax", "fRecMin", "fDurMax", "fDurMin", "neta", "uber", "didi",
+            "vib", "son", "voz", "avisoApertura"
+        )
         const val SEP = "\n\n==========\n\n"
         const val TAM_MIN = 10
         const val TAM_MAX = 40

@@ -173,3 +173,23 @@ grant execute on function public.mi_invitacion() to authenticated;
 -- Precio de fundador (40 % menos) para quien usó la beta: se marca en cada pago con ese precio
 -- (mp-pago decide quién califica; ver supabase/functions/_shared/planes.ts).
 alter table public.pagos add column if not exists precio_beta boolean not null default false;
+
+
+-- Ajustes de cada cuenta (filtros, gasolina, pop-up, avisos): viajan con el inicio de sesión.
+create table if not exists public.ajustes (
+  correo      text primary key,
+  datos       jsonb not null,
+  actualizado timestamptz not null default now()
+);
+alter table public.ajustes enable row level security;
+drop policy if exists "ver mis ajustes" on public.ajustes;
+drop policy if exists "agregar mis ajustes" on public.ajustes;
+drop policy if exists "actualizar mis ajustes" on public.ajustes;
+create policy "ver mis ajustes" on public.ajustes
+  for select to authenticated using (correo = lower(auth.jwt() ->> 'email'));
+create policy "agregar mis ajustes" on public.ajustes
+  for insert to authenticated with check (correo = lower(auth.jwt() ->> 'email'));
+create policy "actualizar mis ajustes" on public.ajustes
+  for update to authenticated
+  using (correo = lower(auth.jwt() ->> 'email'))
+  with check (correo = lower(auth.jwt() ->> 'email'));

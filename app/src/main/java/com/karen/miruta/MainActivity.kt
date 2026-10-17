@@ -115,6 +115,8 @@ class MainActivity : Activity() {
     private var autoIniciar = false
     private var desdeAviso = false
     private var volverAtras = false
+    /** Pantalla de acceso: tapa la app hasta que se entra con Google. */
+    private var acceso: View? = null
 
     private val refresco = object : Runnable {
         override fun run() {
@@ -145,10 +147,15 @@ class MainActivity : Activity() {
             addView(contenido, LinearLayout.LayoutParams(-1, 0, 1f))
             addView(barraNavegacion(), LinearLayout.LayoutParams(-1, dp(88)))
         }
-        setContentView(raiz)
+        acceso = pantallaAcceso()
+        setContentView(FrameLayout(this).apply {
+            addView(raiz, FrameLayout.LayoutParams(-1, -1))
+            addView(acceso, FrameLayout.LayoutParams(-1, -1))
+        })
+        actualizarAcceso()
         mostrarPestana(savedInstanceState?.getInt("tab") ?: 0, false)
         autoIniciar = savedInstanceState == null && intent?.getBooleanExtra(EXTRA_AUTO_INICIAR, false) == true
-        if (savedInstanceState == null && !autoIniciar && !guiaSiHaceFalta()) bienvenidaSiHaceFalta()
+        if (savedInstanceState == null && !autoIniciar && Cuenta.conectada(this)) guiaSiHaceFalta()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -164,6 +171,8 @@ class MainActivity : Activity() {
 
     override fun onResume() {
         super.onResume()
+        actualizarAcceso()
+        if (Cuenta.ajustesAplicados(this)) refrescarFiltrosYAjustes()
         actualizarEstado()
         if (autoIniciar) {
             autoIniciar = false
@@ -196,6 +205,7 @@ class MainActivity : Activity() {
             return
         }
         Cuenta.revisarSiToca(this) { r ->
+            if (Cuenta.ajustesAplicados(this)) refrescarFiltrosYAjustes()
             pintarLicencia()
             pintarCuenta()
             if (r is Cuenta.Resultado.Limite) dialogoLimite(r.equipos)
@@ -205,6 +215,7 @@ class MainActivity : Activity() {
     override fun onPause() {
         handler.removeCallbacks(refresco)
         popupPrueba?.ocultar()
+        Cuenta.subirAjustesSiCambio(this)
         super.onPause()
     }
 
@@ -2276,38 +2287,37 @@ class MainActivity : Activity() {
 
     private var dialogoCuenta: Dialog? = null
 
-    /** Pantalla de bienvenida la primera vez (si no hay licencia ni sesión). */
-    private fun bienvenidaSiHaceFalta() {
-        if (Cuenta.conectada(this) || Cuenta.bienvenidaVista(this) || Licencia.estado(this).pagada) return
-        val cuerpo = LinearLayout(this).apply {
+    /** Entrar con Google es obligatorio: esta pantalla tapa la app hasta que haya sesión. */
+    private fun pantallaAcceso(): View {
+        val col = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL
+            setPadding(dp(Tema.S3), dp(Tema.S3), dp(Tema.S3), dp(Tema.S3))
         }
-        cuerpo.addView(ImageView(this).apply { setImageResource(R.mipmap.ic_launcher) },
-            LinearLayout.LayoutParams(dp(72), dp(72)).apply { gravity = Gravity.CENTER_HORIZONTAL })
-        cuerpo.addView(texto("Checa", Tema.T_TITULO, cTexto, true).apply { gravity = Gravity.CENTER }, margenArriba(Tema.S1))
-        cuerpo.addView(texto("Lo que de verdad te deja cada viaje.", Tema.T_TEXTO, cTexto2, false).apply {
+        col.addView(ImageView(this).apply { setImageResource(R.mipmap.ic_launcher) },
+            LinearLayout.LayoutParams(dp(88), dp(88)).apply { gravity = Gravity.CENTER_HORIZONTAL })
+        col.addView(texto("Checa", Tema.T_TITULO, cTexto, true).apply { gravity = Gravity.CENTER }, margenArriba(Tema.S2))
+        col.addView(texto("Lo que de verdad te deja cada viaje.", Tema.T_TEXTO, cTexto2, false).apply {
             gravity = Gravity.CENTER
         }, margenArriba(4))
-        cuerpo.addView(boton("Continuar con Google", Color.WHITE, Color.BLACK) {
-            Cuenta.marcarBienvenida(this)
-            dialogoCuenta?.dismiss()
-            entrarConGoogle()
-        }, margenArriba(Tema.S3))
-        cuerpo.addView(texto(
-            "Tu licencia queda guardada en tu cuenta. Si cambias de celular o reinstalas, solo vuelves a entrar.",
+        col.addView(boton("Continuar con Google", Color.WHITE, Color.BLACK) { entrarConGoogle() }, margenArriba(Tema.S4))
+        col.addView(texto(
+            "Entra con tu cuenta para activar Checa. Tu licencia y tus ajustes (filtros, gasolina, pop-up) " +
+                "se guardan en ella: si cambias de celular o reinstalas, solo vuelves a entrar.",
             Tema.T_NOTA, cTenue, false
-        ).apply { gravity = Gravity.CENTER; setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
-        cuerpo.addView(texto("Ahora no", Tema.T_TEXTO, cTenue, true).apply {
-            gravity = Gravity.CENTER
-            minHeight = dp(Tema.ALTO_TOQUE)
+        ).apply { gravity = Gravity.CENTER; setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S2))
+        return ScrollView(this).apply {
+            setBackgroundColor(cFondo)
             isClickable = true
-            setOnClickListener {
-                Cuenta.marcarBienvenida(this@MainActivity)
-                dialogoCuenta?.dismiss()
-            }
-        }, margenArriba(4))
-        dialogoCuenta = hoja("Bienvenido", null, cuerpo)
+            isFillViewport = true
+            addView(FrameLayout(this@MainActivity).apply {
+                addView(col, FrameLayout.LayoutParams(minOf(resources.displayMetrics.widthPixels, dp(480)), -2, Gravity.CENTER))
+            }, ViewGroup.LayoutParams(-1, -1))
+        }
+    }
+
+    private fun actualizarAcceso() {
+        acceso?.visibility = if (Cuenta.conectada(this)) View.GONE else View.VISIBLE
     }
 
     private fun entrarConGoogle() {
@@ -2323,13 +2333,17 @@ class MainActivity : Activity() {
     }
 
     private fun mostrarResultadoCuenta(r: Cuenta.Resultado) {
+        actualizarAcceso()
+        if (Cuenta.ajustesAplicados(this)) refrescarFiltrosYAjustes()
         pintarLicencia()
         pintarCuenta()
         dialogoCuenta?.dismiss()
         when (r) {
             is Cuenta.Resultado.Error -> if (r.mensaje.isNotEmpty()) Toast.makeText(this, r.mensaje, Toast.LENGTH_LONG).show()
             is Cuenta.Resultado.Limite -> dialogoLimite(r.equipos)
-            is Cuenta.Resultado.Ok -> dialogoBienvenidaCuenta()
+            is Cuenta.Resultado.Ok ->
+                // Cuenta nueva sin lector activado: primero la guía de 5 pasos.
+                if (!prefs.guiaVista && !servicioActivo()) mostrarGuia() else dialogoBienvenidaCuenta()
         }
     }
 
@@ -2494,7 +2508,7 @@ class MainActivity : Activity() {
             isClickable = true
             setOnClickListener {
                 Toast.makeText(this@MainActivity, "Cerrando sesión…", Toast.LENGTH_SHORT).show()
-                Cuenta.cerrarSesion(this@MainActivity) { pintarLicencia(); pintarCuenta() }
+                Cuenta.cerrarSesion(this@MainActivity) { pintarLicencia(); pintarCuenta(); actualizarAcceso() }
             }
         }, margenArriba(Tema.S2))
     }
