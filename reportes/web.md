@@ -1,11 +1,11 @@
 # Reporte de Checa (web + app) · últimos 30 días
 
-Generado: 2026-10-17 15:59 UTC. Cuenta visitas únicas (una por pestaña).
+Generado: 2026-10-17 23:16 UTC. Cuenta visitas únicas (una por pestaña).
 
 ## Resumen
 | visitas | descargas | cuentas_nuevas | pagos | ingresos | licencias_activas |
 | --- | --- | --- | --- | --- | --- |
-| 233 | 97 | 8 | 0 | 0 | 3 |
+| 261 | 121 | 8 | 0 | 0 | 3 |
 
 # App
 
@@ -15,6 +15,18 @@ Generado: 2026-10-17 15:59 UTC. Cuenta visitas únicas (una por pestaña).
 | 2026-10-16 | 5 |
 | 2026-10-15 | 1 |
 | 2026-10-11 | 2 |
+
+## Quiénes son (cuentas con Google)
+| correo | registro | ultimo_acceso | equipos | licencia_vence |
+| --- | --- | --- | --- | --- |
+| wendellgarza.70344@gmail.com | 10-16 15:25 | 10-16 15:25 | 1 | sin licencia |
+| manuelneoss@gmail.com | 10-16 15:02 | 10-16 15:02 | 1 | sin licencia |
+| 2228265104z@gmail.com | 10-16 13:08 | 10-16 13:08 | 1 | sin licencia |
+| ivanmanuelzamoracortes240498@gmail.com | 10-16 09:33 | 10-16 09:33 | 1 | sin licencia |
+| edent402@gmail.com | 10-16 07:42 | 10-16 07:42 | 1 | sin licencia |
+| lufercab@gmail.com | 10-15 18:21 | 10-15 18:21 | 1 | 20270113 |
+| landingbot01@gmail.com | 10-11 15:23 | 10-11 19:46 | 0 | sin licencia |
+| lalolopezxd@gmail.com | 10-11 15:08 | 10-15 17:34 | 1 | 99991231 |
 
 ## Pagos por plan
 Sin datos todavía.
@@ -45,19 +57,19 @@ Sin datos todavía.
 ## Embudo
 | evento | visitas | veces |
 | --- | --- | --- |
-| visita | 233 | 395 |
-| descarga | 97 | 116 |
-| clic_descargar | 82 | 93 |
-| descarga_instalar | 27 | 46 |
-| video_play | 21 | 23 |
+| visita | 261 | 430 |
+| descarga | 121 | 142 |
+| clic_descargar | 85 | 96 |
+| descarga_instalar | 32 | 86 |
+| video_play | 30 | 32 |
 | beta_whatsapp | 8 | 8 |
-| whatsapp_ayuda | 5 | 5 |
+| whatsapp_ayuda | 6 | 6 |
 
 ## Por fuente (visitas → descargas)
 | fuente | campana | visitas | descargas |
 | --- | --- | --- | --- |
-| directo |  | 214 | 88 |
-| app | compartir | 7 | 6 |
+| directo |  | 241 | 111 |
+| app | compartir | 8 | 7 |
 | facebook | beta | 6 | 2 |
 | prueba |  | 3 | 1 |
 | tiktok |  | 3 | 1 |
@@ -66,17 +78,17 @@ Sin datos todavía.
 ## Por dispositivo
 | dispositivo | visitas | descargas |
 | --- | --- | --- |
-| android | 181 | 97 |
-| iphone | 36 | 0 |
+| android | 208 | 121 |
+| iphone | 37 | 0 |
 | pc | 16 | 0 |
 
 ## Qué botón lleva a descargar
 | boton | descargas |
 | --- | --- |
-| fijo | 53 |
+| fijo | 54 |
+| hero | 36 |
 | nav | 19 |
-| hero | 14 |
-| app | 14 |
+| app | 17 |
 | cierre | 11 |
 | Rhc | 2 |
 | RhcTAZ | 1 |
@@ -86,7 +98,7 @@ Sin datos todavía.
 ## Por día
 | dia | visitas | descargas |
 | --- | --- | --- |
-| 2026-10-17 | 23 | 13 |
+| 2026-10-17 | 51 | 37 |
 | 2026-10-16 | 69 | 46 |
 | 2026-10-15 | 125 | 34 |
 | 2026-10-14 | 2 | 0 |
