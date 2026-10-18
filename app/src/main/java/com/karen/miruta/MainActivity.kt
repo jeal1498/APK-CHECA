@@ -144,6 +144,7 @@ class MainActivity : Activity() {
             setBackgroundColor(cFondo)
             clipChildren = false
             addView(contenido, LinearLayout.LayoutParams(-1, 0, 1f))
+            // Barra de 56 dp + 32 dp arriba para la mitad del botón que sale de ella.
             addView(barraNavegacion(), LinearLayout.LayoutParams(-1, dp(88)))
         }
         acceso = pantallaAcceso()
@@ -273,18 +274,17 @@ class MainActivity : Activity() {
         barra.addView(pestana("Mis metas", Icono.FILTROS, 1), LinearLayout.LayoutParams(0, -1, 1f))
         etiquetaCircular = texto("", Tema.T_NOTA, cTenue, true).apply {
             gravity = Gravity.CENTER_HORIZONTAL or Gravity.BOTTOM
-            setPadding(0, 0, 0, dp(10))
+            setPadding(0, 0, 0, dp(6))
         }
         barra.addView(etiquetaCircular, LinearLayout.LayoutParams(dp(88), -1))
         barra.addView(pestana("Ajustes", Icono.AJUSTES, 2), LinearLayout.LayoutParams(0, -1, 1f))
         barra.addView(pestana("Cuenta", Icono.CUENTA, 3), LinearLayout.LayoutParams(0, -1, 1f))
-        marco.addView(barra, FrameLayout.LayoutParams(-1, dp(64), Gravity.BOTTOM))
+        marco.addView(barra, FrameLayout.LayoutParams(-1, dp(56), Gravity.BOTTOM))
 
         iconoCircular = Icono(Icono.PLAY, Tema.ASFALTO)
         botonCircular = ImageView(this).apply {
             setImageDrawable(iconoCircular)
             setPadding(dp(20), dp(20), dp(20), dp(20))
-            elevation = dp(8).toFloat()
             isClickable = true
             setOnClickListener {
                 animate().scaleX(0.9f).scaleY(0.9f).setDuration(80).withEndAction {
@@ -293,6 +293,7 @@ class MainActivity : Activity() {
                 alternarLectura()
             }
         }
+        // Centro del botón sobre la orilla de la barra: la mitad queda afuera (sin aro ni sombra).
         marco.addView(botonCircular, FrameLayout.LayoutParams(dp(64), dp(64), Gravity.TOP or Gravity.CENTER_HORIZONTAL))
         return marco
     }
@@ -302,7 +303,6 @@ class MainActivity : Activity() {
         GradientDrawable().apply {
             shape = GradientDrawable.OVAL
             setColor(color)
-            setStroke(dp(4), cFondo)
         },
         null
     )

@@ -120,7 +120,7 @@ class Prefs(context: Context) {
         set(v) { sp.edit().putBoolean("vib", v).apply() }
 
     var sonido: Boolean
-        get() = sp.getBoolean("son", false)
+        get() = sp.getBoolean("son", true)
         set(v) { sp.edit().putBoolean("son", v).apply() }
 
     /** true = dice "Aceptar / Considerar / Rechazar"; false = tonos. */
@@ -130,7 +130,7 @@ class Prefs(context: Context) {
 
     /** Volumen del sonido, 10–100. */
     var volumen: Int
-        get() = sp.getInt("vol", 80)
+        get() = sp.getInt("vol", 100)
         set(v) { sp.edit().putInt("vol", v).apply() }
 
     var diagnostico: Boolean
