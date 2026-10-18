@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #0C0C10; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #0C0C10; }
+      .scene { position: absolute; inset: 0; width: 100%; height: 100%; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="40.22" data-width="1080" data-height="1920">
+      <div id="el-e01-hook" class="scene" data-composition-id="e01-hook" data-composition-src="compositions/frames/e01-hook.html" data-start="0.0" data-duration="4.144" data-track-index="1"></div>
+      <audio id="el-e01-hook-voice" data-audio-group="voiceover" src="assets/voice/01.wav" data-start="0.0" data-duration="3.994" data-track-index="10" data-volume="1"></audio>
+      <div id="el-e02-tres" class="scene" data-composition-id="e02-tres" data-composition-src="compositions/frames/e02-tres.html" data-start="4.144" data-duration="3.401" data-track-index="0"></div>
+      <audio id="el-e02-tres-voice" data-audio-group="voiceover" src="assets/voice/02.wav" data-start="4.144" data-duration="3.251" data-track-index="10" data-volume="1"></audio>
+      <div id="el-e03-lee" class="scene" data-composition-id="e03-lee" data-composition-src="compositions/frames/e03-lee.html" data-start="7.545" data-duration="4.748" data-track-index="1"></div>
+      <audio id="el-e03-lee-voice" data-audio-group="voiceover" src="assets/voice/03.wav" data-start="7.545" data-duration="4.598" data-track-index="10" data-volume="1"></audio>
+      <div id="el-e04-filtros" class="scene" data-composition-id="e04-filtros" data-composition-src="compositions/frames/e04-filtros.html" data-start="12.293" data-duration="2.472" data-track-index="0"></div>
+      <audio id="el-e04-filtros-voice" data-audio-group="voiceover" src="assets/voice/04.wav" data-start="12.293" data-duration="2.322" data-track-index="10" data-volume="1"></audio>
+      <div id="el-e05-popup" class="scene" data-composition-id="e05-popup" data-composition-src="compositions/frames/e05-popup.html" data-start="14.765" data-duration="3.865" data-track-index="1"></div>
+      <audio id="el-e05-popup-voice" data-audio-group="voiceover" src="assets/voice/05.wav" data-start="14.765" data-duration="3.715" data-track-index="10" data-volume="1"></audio>
+      <div id="el-e06-metas" class="scene" data-composition-id="e06-metas" data-composition-src="compositions/frames/e06-metas.html" data-start="18.63" data-duration="4.097" data-track-index="0"></div>
+      <audio id="el-e06-metas-voice" data-audio-group="voiceover" src="assets/voice/06.wav" data-start="18.63" data-duration="3.947" data-track-index="10" data-volume="1"></audio>
+      <div id="el-e07-estados" class="scene" data-composition-id="e07-estados" data-composition-src="compositions/frames/e07-estados.html" data-start="22.727" data-duration="3.679" data-track-index="1"></div>
+      <audio id="el-e07-estados-voice" data-audio-group="voiceover" src="assets/voice/07.wav" data-start="22.727" data-duration="3.529" data-track-index="10" data-volume="1"></audio>
+      <div id="el-e08-ticket" class="scene" data-composition-id="e08-ticket" data-composition-src="compositions/frames/e08-ticket.html" data-start="26.406" data-duration="3.494" data-track-index="0"></div>
+      <audio id="el-e08-ticket-voice" data-audio-group="voiceover" src="assets/voice/08.wav" data-start="26.406" data-duration="3.344" data-track-index="10" data-volume="1"></audio>
+      <div id="el-e09-panelmetas" class="scene" data-composition-id="e09-panelmetas" data-composition-src="compositions/frames/e09-panelmetas.html" data-start="29.9" data-duration="2.565" data-track-index="1"></div>
+      <audio id="el-e09-panelmetas-voice" data-audio-group="voiceover" src="assets/voice/09.wav" data-start="29.9" data-duration="2.415" data-track-index="10" data-volume="1"></audio>
+      <div id="el-e10-seguir" class="scene" data-composition-id="e10-seguir" data-composition-src="compositions/frames/e10-seguir.html" data-start="32.465" data-duration="1.683" data-track-index="0"></div>
+      <audio id="el-e10-seguir-voice" data-audio-group="voiceover" src="assets/voice/10.wav" data-start="32.465" data-duration="1.533" data-track-index="10" data-volume="1"></audio>
+      <div id="el-e11-cierre" class="scene" data-composition-id="e11-cierre" data-composition-src="compositions/frames/e11-cierre.html" data-start="34.148" data-duration="6.072" data-track-index="1"></div>
+      <audio id="el-e11-cierre-voice" data-audio-group="voiceover" src="assets/voice/11.wav" data-start="34.148" data-duration="4.072" data-track-index="10" data-volume="1"></audio>
+      <audio id="el-sfx-0" src="assets/sfx/rechazar.mp3" data-start="3.04" data-duration="0.836" data-track-index="30" data-volume="0.4"></audio>
+      <audio id="el-sfx-1" src="assets/sfx/popup-entra.mp3" data-start="14.765" data-duration="0.34" data-track-index="31" data-volume="0.4"></audio>
+      <audio id="el-sfx-2" src="assets/sfx/rechazar.mp3" data-start="15.215" data-duration="0.836" data-track-index="32" data-volume="0.45"></audio>
+      <audio id="el-sfx-3" src="assets/sfx/aceptar.mp3" data-start="22.877" data-duration="0.731" data-track-index="33" data-volume="0.45"></audio>
+      <audio id="el-sfx-4" src="assets/sfx/considerar.mp3" data-start="24.217" data-duration="0.627" data-track-index="34" data-volume="0.45"></audio>
+      <audio id="el-sfx-5" src="assets/sfx/rechazar.mp3" data-start="25.667" data-duration="0.836" data-track-index="35" data-volume="0.45"></audio>
+      <audio id="el-sfx-6" src="assets/sfx/numero-sube.mp3" data-start="28.886" data-duration="0.94" data-track-index="36" data-volume="0.4"></audio>
+      <audio id="el-sfx-7" src="assets/sfx/logo-semaforo.mp3" data-start="34.148" data-duration="1.829" data-track-index="37" data-volume="0.5"></audio>
+      <div id="el-captions" class="scene" data-composition-id="captions" data-composition-src="compositions/captions.html" data-start="0" data-duration="40.22" data-track-index="20" data-track-kind="captions"></div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+      window.__timelines["main"].to({}, { duration: 40.22 }, 0);
+    </script>
+  </body>
+</html>

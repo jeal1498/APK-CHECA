@@ -199,6 +199,8 @@ def esc_estados(sc, e, nombre):
     if e.get("texto"):
         inner += f'    <div id="{nombre}-t" class="mask clip" style="top:960px;height:130px" data-start="0" data-duration="{D}" data-track-index="9"><div style="font-size:120px">{e["texto"]}</div></div>'
         js += f'      tl.fromTo("#{nombre}-t > div", {{ yPercent: 120 }}, {{ yPercent: 0, duration: 0.45, ease: "power4.out" }}, {max(0, round(w[min(e.get("texto_en", 0), len(w) - 1)][1] - 0.05, 2))});\n'
+    if e.get("ejemplo"):
+        inner += f'\n    <div class="etq clip" style="top:1060px" data-start="0" data-duration="{D}" data-track-index="10">Números de ejemplo</div>'
     return marco(nombre, D, css_popup(), inner, js)
 
 
@@ -286,7 +288,7 @@ def esc_hook(sc, e, n):
     D = sc["dur"]; tap = pal(sc, e.get("tap", "pensarlo")); cae = pal(sc, e.get("cae", "perdiste"))
     inner = clip(1, f"{n}-btn", "left:230px;top:330px;width:620px;height:150px;border-radius:999px;background:#22C55E;color:#04210F;display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:76px;letter-spacing:.06em", "ACEPTAR", D)
     inner += clip(2, f"{n}-rip", "left:490px;top:355px;width:100px;height:100px;border-radius:50%;border:6px solid #F4F4EF;opacity:0", "", D)
-    inner += clip(3, f"{n}-card", "left:140px;top:640px;width:800px;height:300px;border-radius:28px;background:#EF4444;color:#1F0000;display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:92px;letter-spacing:-.04em;white-space:nowrap;opacity:0", "Perdiste dinero", D)
+    inner += clip(3, f"{n}-card", "left:140px;top:640px;width:800px;height:300px;border-radius:28px;background:#EF4444;color:#1F0000;display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:92px;letter-spacing:-.04em;white-space:nowrap;opacity:0", e.get("card", "Perdiste dinero"), D)
     js = f"""      tl.fromTo("#{n}-btn", {{ opacity: 0, y: -40 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: "power4.out" }}, 0);
       tl.to("#{n}-btn", {{ scale: 0.94, duration: 0.1 }}, {tap}); tl.to("#{n}-btn", {{ scale: 1, duration: 0.2 }}, {round(tap + 0.1, 2)});
       tl.fromTo("#{n}-rip", {{ scale: 0.3, opacity: 0.9 }}, {{ scale: 2.4, opacity: 0, duration: 0.5, ease: "power2.out" }}, {tap});
@@ -298,14 +300,18 @@ def esc_hook(sc, e, n):
 
 def esc_anillo(sc, e, n):
     D = sc["dur"]
-    inner = clip(1, f"{n}-of", "left:220px;top:250px;width:640px;height:420px", oferta(), D)
+    inner = clip(1, f"{n}-of", "left:220px;top:250px;width:640px;height:420px", oferta2(**e["oferta"]) if e.get("oferta") else oferta(), D)
     inner += clip(2, f"{n}-ring", "left:390px;top:740px;width:300px;height:300px", f'<svg width="300" height="300" viewBox="0 0 300 300" aria-hidden="true"><circle cx="150" cy="150" r="120" fill="none" stroke="#3A3A45" stroke-width="22"/><circle id="{n}-rp" cx="150" cy="150" r="120" fill="none" stroke="#EF4444" stroke-width="22" stroke-linecap="round" stroke-dasharray="754" stroke-dashoffset="0" transform="rotate(-90 150 150)"/></svg>', D)
     inner += f'    <div class="etq clip" style="top:1090px" data-start="0" data-duration="{D}" data-track-index="3">Números de ejemplo</div>\n'
+    if e.get("texto"):
+        inner += f'    <div id="{n}-tx" class="mask clip" style="top:90px;height:150px" data-start="0" data-duration="{D}" data-track-index="4"><div style="font-size:112px;color:#FACC15">{e["texto"]}</div></div>\n'
     js = f"""      tl.fromTo("#{n}-of", {{ opacity: 0, y: 60 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: "power4.out" }}, 0);
       tl.fromTo("#{n}-ring", {{ opacity: 0 }}, {{ opacity: 1, duration: 0.3 }}, 0.3);
       tl.to("#{n}-rp", {{ strokeDashoffset: 754, duration: {round(D - 0.8, 2)}, ease: "none" }}, 0.4);
       tl.to("#{n}-of", {{ opacity: 0.35, duration: {round(D - 1.2, 2)}, ease: "none" }}, 0.8);
 """
+    if e.get("texto"):
+        js += f'      tl.fromTo("#{n}-tx > div", {{ yPercent: 120 }}, {{ yPercent: 0, duration: 0.45, ease: "power4.out" }}, 0.15);\n'
     return marco(n, D, OF_CSS, inner, js)
 
 
@@ -497,7 +503,109 @@ def esc_fin(sc, e, n):
     return marco(n, D, "", inner, js)
 
 
-TIPOS = {"hook": esc_hook, "anillo": esc_anillo, "datos": esc_datos, "logo": esc_logo, "escaneo": esc_escaneo, "voz": esc_voz, "popup_oferta": esc_popup_oferta, "reloj": esc_reloj, "seguir": esc_seguir, "gancho": esc_gancho, "numero": esc_numero, "popup": esc_popup, "estados": esc_estados, "cierre": esc_cierre, "paso": esc_paso, "listo": esc_listo, "fin": esc_fin}
+# ---------- escenas del video 22 (cómo calcula Checa, 18 oct 2026) ----------
+def oferta2(tarifa, rec, viaje):
+    return f'<div class="of"><div class="l">NUEVA OFERTA</div><div class="f">${tarifa}</div><div class="d">{rec}<br>{viaje}</div><div class="b">ACEPTAR</div></div>'
+
+
+FICHA = "border-radius:28px;background:#16161C;border:2px solid #3A3A45;box-sizing:border-box;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.03em"
+MONO = "font-family:'JetBrains Mono',monospace;font-weight:700"
+
+
+def esc_tres(sc, e, n):
+    """Logo y tres pasos numerados; el último lleva «?» hasta la palabra indicada."""
+    D = sc["dur"]; w = e.get("palabras", ["tres", "primero", "segundo", "último"])
+    inner = clip(1, f"{n}-lgw", "left:450px;top:150px", logo_svg(n, 180, 300), D)
+    js = f'      tl.fromTo("#{n}-lgw", {{ opacity: 0, y: 30 }}, {{ opacity: 1, y: 0, duration: 0.3, ease: "power4.out" }}, 0);\n' + js_logo(n, 0.0)
+    base = pal(sc, w[0])
+    for i in range(3):
+        t = round(base + 0.15 + i * 0.3, 2)
+        txt = "?" if i == 2 else str(i + 1)
+        col = "#FACC15" if i == 2 else "#F4F4EF"
+        inner += clip(2 + i, f"{n}-d{i}", f"left:{190 + i * 270}px;top:620px;width:200px;height:200px;border-radius:50%;background:#16161C;border:3px solid {col};color:{col};display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:130px", txt, D)
+        js += f'      tl.fromTo("#{n}-d{i}", {{ opacity: 0, scale: 0.6 }}, {{ opacity: 1, scale: 1, duration: 0.35, ease: "power4.out" }}, {t});\n'
+    inner += f'    <svg class="clip" style="left:0;top:860px" width="1080" height="60" viewBox="0 0 1080 60" data-start="0" data-duration="{D}" data-track-index="9" aria-hidden="true"><path d="M110 30H970" stroke="#FACC15" stroke-width="8" stroke-dasharray="2 22" stroke-linecap="round" fill="none"/></svg>\n'
+    return marco(n, D, "", inner, js)
+
+
+def esc_lee(sc, e, n):
+    """Oferta con línea de escaneo y tres fichas con los datos que se leen."""
+    D = sc["dur"]; o = e["oferta"]
+    inner = clip(1, f"{n}-of", "left:220px;top:230px;width:640px;height:420px", oferta2(o["tarifa"], o["rec"], o["viaje"]), D)
+    inner += clip(2, f"{n}-sc", "left:200px;top:230px;width:680px;height:8px;border-radius:4px;background:#22C55E;box-shadow:0 0 30px #22C55E;opacity:0", "", D)
+    fichas = e["fichas"]
+    js = f'      tl.fromTo("#{n}-of", {{ opacity: 0, y: 40 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: "power4.out" }}, 0);\n'
+    ts = pal(sc, fichas[0][2]) - 0.1
+    js += f'      tl.fromTo("#{n}-sc", {{ opacity: 1, y: 0 }}, {{ opacity: 1, y: 410, duration: 1.2, ease: "power1.inOut" }}, {max(0, round(ts, 2))});\n      tl.to("#{n}-sc", {{ opacity: 0, duration: 0.2 }}, {max(0, round(ts, 2)) + 1.2});\n'
+    for i, (a, b, pw) in enumerate(fichas):
+        inner += clip(3 + i, f"{n}-f{i}", f"left:{90 + i * 300}px;top:720px;width:280px;height:170px;{FICHA};display:flex;flex-direction:column;align-items:center;justify-content:center", f'<div style="font-size:64px">{a}</div><div style="{MONO};font-size:26px;letter-spacing:.12em;color:#A3A3AD;text-transform:uppercase">{b}</div>', D)
+        js += f'      tl.fromTo("#{n}-f{i}", {{ opacity: 0, y: 40 }}, {{ opacity: 1, y: 0, duration: 0.35, ease: "power4.out" }}, {pal(sc, pw)});\n'
+    inner += f'    <div class="etq clip" style="top:960px" data-start="0" data-duration="{D}" data-track-index="9">Números de ejemplo</div>\n'
+    return marco(n, D, OF_CSS, inner, js)
+
+
+def esc_filtros(sc, e, n):
+    """Dos filtros (recogida y duración) que se marcan con ✓."""
+    D = sc["dur"]; ft = e["filtros"]
+    inner, js = "", ""
+    for i, (nom, val, pw) in enumerate(ft):
+        t = pal(sc, pw)
+        inner += clip(1 + i, f"{n}-f{i}", f"left:110px;top:{300 + i * 250}px;width:860px;height:200px;{FICHA};padding:0 48px;display:flex;align-items:center;justify-content:space-between", f'<div><div style="{MONO};font-size:30px;letter-spacing:.12em;color:#A3A3AD;text-transform:uppercase">{nom}</div><div style="font-size:84px;line-height:1.1;margin-top:8px">{val}</div></div><div id="{n}-ok{i}" style="width:110px;height:110px;border-radius:50%;background:#22C55E;display:flex;align-items:center;justify-content:center;opacity:0"><svg width="76" height="76" viewBox="0 0 24 24" fill="none" stroke="#04210F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>', D)
+        js += f'      tl.fromTo("#{n}-f{i}", {{ opacity: 0, x: -60 }}, {{ opacity: 1, x: 0, duration: 0.4, ease: "power4.out" }}, {t});\n'
+        js += f'      tl.fromTo("#{n}-ok{i}", {{ opacity: 0, scale: 0.6 }}, {{ opacity: 1, scale: 1, duration: 0.3, ease: "power4.out" }}, {round(t + 0.5, 2)});\n'
+    inner += f'    <div class="etq clip" style="top:850px" data-start="0" data-duration="{D}" data-track-index="9">Tus filtros</div>\n'
+    return marco(n, D, "", inner, js)
+
+
+def esc_metas(sc, e, n):
+    """Dos fichas: lo que paga (grande) contra tu meta, con ✓ cuando se cumple."""
+    D = sc["dur"]; fs = e["fichas"]
+    inner, js = "", ""
+    for i, (val, unidad, meta, pw) in enumerate(fs):
+        t = pal(sc, pw)
+        inner += clip(1 + i, f"{n}-f{i}", f"left:110px;top:{290 + i * 330}px;width:860px;height:290px;{FICHA};padding:0 48px;display:flex;align-items:center;justify-content:space-between", f'<div><div style="font-size:140px;line-height:1">{val}<span style="font-size:56px;color:#A3A3AD">{unidad}</span></div><div style="{MONO};font-size:34px;color:#C9C9D1;margin-top:14px">tu meta {meta}</div></div><div id="{n}-ok{i}" style="width:120px;height:120px;border-radius:50%;background:#22C55E;display:flex;align-items:center;justify-content:center;opacity:0"><svg width="84" height="84" viewBox="0 0 24 24" fill="none" stroke="#04210F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>', D)
+        js += f'      tl.fromTo("#{n}-f{i}", {{ opacity: 0, y: 50 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: "power4.out" }}, {t});\n'
+        js += f'      tl.fromTo("#{n}-ok{i}", {{ opacity: 0, scale: 0.6 }}, {{ opacity: 1, scale: 1, duration: 0.3, ease: "power4.out" }}, {round(t + 0.55, 2)});\n'
+    inner += f'    <div class="etq clip" style="top:960px" data-start="0" data-duration="{D}" data-track-index="9">Números de ejemplo</div>\n'
+    return marco(n, D, "", inner, js)
+
+
+def esc_ticket(sc, e, n):
+    """Ticket: viaje − gasolina = te quedan (cuenta hasta el neto)."""
+    D = sc["dur"]; v, g = e["viaje"], e["gasolina"]; neta = v - g
+    tg, tn = pal(sc, e.get("gasolina_en", "gasolina")), pal(sc, e.get("neta_en", "queda"))
+    fila = f"position:absolute;left:44px;right:44px;display:flex;justify-content:space-between;align-items:baseline;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.03em"
+    panel = (f'<div style="{fila};top:40px;font-size:56px"><span>Viaje</span><span style="{MONO};font-size:52px">${v}</span></div>'
+             f'<div id="{n}-ga" style="{fila};top:130px;font-size:56px;color:#EF4444"><span>Gasolina</span><span style="{MONO};font-size:52px">−${g}</span></div>'
+             f'<div style="position:absolute;left:44px;right:44px;top:228px;height:3px;background:#3A3A45"></div>'
+             f'<div id="{n}-ne" style="{fila};top:250px;font-size:64px;color:#22C55E"><span>Te quedan</span><span id="{n}-nn" style="font-size:130px">${neta}</span></div>')
+    inner = clip(1, f"{n}-pn", f"left:110px;top:330px;width:860px;height:430px;{FICHA}", panel, D)
+    inner += f'    <div class="etq clip" style="top:830px" data-start="0" data-duration="{D}" data-track-index="2">Números de ejemplo</div>\n'
+    js = f"""      tl.fromTo("#{n}-pn", {{ opacity: 0, y: 50 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: "power4.out" }}, 0);
+      tl.set("#{n}-ga", {{ opacity: 0 }}, 0); tl.set("#{n}-ne", {{ opacity: 0 }}, 0);
+      tl.fromTo("#{n}-ga", {{ opacity: 0, x: -40 }}, {{ opacity: 1, x: 0, duration: 0.35, ease: "power4.out" }}, {tg});
+      tl.fromTo("#{n}-ne", {{ opacity: 0, y: 30 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: "power4.out" }}, {tn});
+      var num = {{ v: {v} }};
+      tl.fromTo(num, {{ v: {v} }}, {{ v: {neta}, duration: 0.6, ease: "power2.out", onUpdate: function () {{ document.getElementById("{n}-nn").textContent = "$" + Math.round(num.v); }} }}, {tn});
+"""
+    return marco(n, D, "", inner, js)
+
+
+def esc_panelmetas(sc, e, n):
+    """Panel de metas con −/+ : el valor sube al decir «pones»."""
+    D = sc["dur"]; t = pal(sc, e.get("cambia_en", "pones"))
+    inner, js = "", ""
+    for i, (nom, a, b) in enumerate(e["filas"]):
+        btn = lambda s: f'<div style="width:96px;height:96px;border-radius:50%;border:3px solid #3A3A45;display:flex;align-items:center;justify-content:center;font-size:64px;color:#F4F4EF">{s}</div>'
+        inner += clip(1 + i, f"{n}-r{i}", f"left:110px;top:{300 + i * 250}px;width:860px;height:210px;{FICHA};padding:0 40px;display:flex;align-items:center;justify-content:space-between", f'{btn("−")}<div style="text-align:center"><div style="{MONO};font-size:28px;letter-spacing:.12em;color:#A3A3AD;text-transform:uppercase">{nom}</div><div id="{n}-v{i}" style="font-size:100px;line-height:1.1">{a}</div></div><div id="{n}-m{i}">{btn("+")}</div>', D)
+        js += f'      tl.fromTo("#{n}-r{i}", {{ opacity: 0, y: 40 }}, {{ opacity: 1, y: 0, duration: 0.35, ease: "power4.out" }}, {i * 0.15});\n'
+        js += f'      tl.to("#{n}-m{i}", {{ scale: 1.2, duration: 0.15, yoyo: true, repeat: 1 }}, {t});\n'
+        js += f'      tl.call(function () {{ document.getElementById("{n}-v{i}").textContent = "{b}"; }}, null, {round(t + 0.15, 2)});\n'
+    inner += f'    <div class="etq clip" style="top:850px" data-start="0" data-duration="{D}" data-track-index="9">Tus metas</div>\n'
+    return marco(n, D, "", inner, js)
+
+
+TIPOS = {"hook": esc_hook, "anillo": esc_anillo, "datos": esc_datos, "logo": esc_logo, "escaneo": esc_escaneo, "voz": esc_voz, "popup_oferta": esc_popup_oferta, "reloj": esc_reloj, "seguir": esc_seguir, "gancho": esc_gancho, "numero": esc_numero, "popup": esc_popup, "estados": esc_estados, "cierre": esc_cierre, "paso": esc_paso, "listo": esc_listo, "fin": esc_fin, "tres": esc_tres, "lee": esc_lee, "filtros": esc_filtros, "metas": esc_metas, "ticket": esc_ticket, "panelmetas": esc_panelmetas}
 
 
 # ---------- subtítulos ----------

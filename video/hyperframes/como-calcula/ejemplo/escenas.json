@@ -1,0 +1,14 @@
+[
+  {"tipo": "gancho", "lineas": ["¿Aceptas", "viajes sin", "hacer la", "cuenta?"], "resalta": 3},
+  {"tipo": "popup", "ejemplo": true, "popup": {"nivel": "verde", "app": "UBER", "neta": 118, "viaje": 150, "gasolina": 32,
+    "chips": [["$321/h", "por hora", "ok"], ["$9.4/km", "por km", "ok"], ["28 min", "16 km total", ""]]}},
+  {"tipo": "estados", "en_palabra": [0, 1, 3], "texto": "Tú decides.", "texto_en": 4, "popups": [
+    {"nivel": "verde", "neta": 118, "viaje": 150, "gasolina": 32,
+     "chips": [["$321/h", "por hora", "ok"], ["$9.4/km", "por km", "ok"], ["28 min", "16 km total", ""]]},
+    {"nivel": "amarillo", "neta": 54, "viaje": 68, "gasolina": 14,
+     "chips": [["$171/h", "por hora", "ok"], ["$6.8/km", "por km", "mal"], ["18 min", "8 km total", ""]]},
+    {"nivel": "rojo", "neta": 21, "viaje": 34, "gasolina": 13,
+     "chips": [["$88/h", "por hora", "mal"], ["$4/km", "por km", "mal"], ["Rec. 6 km", "muy lejos", "mal"]]}
+  ]},
+  {"tipo": "cierre"}
+]

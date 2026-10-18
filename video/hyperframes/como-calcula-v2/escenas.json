@@ -1,0 +1,226 @@
+[
+ {
+  "tipo": "hook",
+  "tap": "bueno",
+  "cae": "cuenta",
+  "card": "¿Y la cuenta?",
+  "sfx": [
+   [
+    "rechazar",
+    "cuenta",
+    0.4
+   ]
+  ]
+ },
+ {
+  "tipo": "tres",
+  "palabras": [
+   "tres",
+   "antes",
+   "hace",
+   "pasos"
+  ]
+ },
+ {
+  "tipo": "lee",
+  "oferta": {
+   "tarifa": 100,
+   "rec": "6 min (2 km)",
+   "viaje": "19 min (6 km)"
+  },
+  "fichas": [
+   [
+    "$100",
+    "tarifa",
+    "tarifa"
+   ],
+   [
+    "8 km",
+    "kilómetros",
+    "kilómetros"
+   ],
+   [
+    "25 min",
+    "minutos",
+    "minutos"
+   ]
+  ]
+ },
+ {
+  "tipo": "filtros",
+  "filtros": [
+   [
+    "Recogida máx.",
+    "4 km",
+    "dos"
+   ],
+   [
+    "Duración máx.",
+    "20 min",
+    "filtros"
+   ]
+  ]
+ },
+ {
+  "tipo": "popup",
+  "ejemplo": true,
+  "popup": {
+   "nivel": "rojo",
+   "app": "UBER",
+   "neta": 80,
+   "viaje": 100,
+   "gasolina": 20,
+   "chips": [
+    [
+     "$240/h",
+     "por hora",
+     "ok"
+    ],
+    [
+     "$10.0/km",
+     "por km",
+     "ok"
+    ],
+    [
+     "Rec. 6 km",
+     "muy lejos",
+     "mal"
+    ]
+   ]
+  }
+ },
+ {
+  "tipo": "metas",
+  "fichas": [
+   [
+    "$12.5",
+    "/km",
+    "$10/km",
+    "kilómetro"
+   ],
+   [
+    "$240",
+    "/h",
+    "$200/h",
+    "hora"
+   ]
+  ]
+ },
+ {
+  "tipo": "estados",
+  "popups": [
+   {
+    "nivel": "verde",
+    "app": "UBER",
+    "neta": 118,
+    "viaje": 150,
+    "gasolina": 32,
+    "chips": [
+     [
+      "$321/h",
+      "por hora",
+      "ok"
+     ],
+     [
+      "$9.4/km",
+      "por km",
+      "ok"
+     ],
+     [
+      "28 min",
+      "16 km total",
+      ""
+     ]
+    ]
+   },
+   {
+    "nivel": "amarillo",
+    "app": "UBER",
+    "neta": 54,
+    "viaje": 68,
+    "gasolina": 14,
+    "chips": [
+     [
+      "$171/h",
+      "por hora",
+      "ok"
+     ],
+     [
+      "$6.8/km",
+      "por km",
+      "mal"
+     ],
+     [
+      "18 min",
+      "8 km total",
+      ""
+     ]
+    ]
+   },
+   {
+    "nivel": "rojo",
+    "app": "UBER",
+    "neta": 21,
+    "viaje": 34,
+    "gasolina": 13,
+    "chips": [
+     [
+      "$88/h",
+      "por hora",
+      "mal"
+     ],
+     [
+      "$4/km",
+      "por km",
+      "mal"
+     ],
+     [
+      "Rec. 6 km",
+      "muy lejos",
+      "mal"
+     ]
+    ]
+   }
+  ],
+  "en_palabra": [
+   2,
+   4,
+   6
+  ],
+  "ejemplo": true
+ },
+ {
+  "tipo": "ticket",
+  "viaje": 100,
+  "gasolina": 16,
+  "sfx": [
+   [
+    "numero-sube",
+    "queda",
+    0.4
+   ]
+  ]
+ },
+ {
+  "tipo": "panelmetas",
+  "filas": [
+   [
+    "Por km",
+    "$10",
+    "$12"
+   ],
+   [
+    "Por hora",
+    "$200",
+    "$220"
+   ]
+  ],
+  "cambia_en": "pones"
+ },
+ {
+  "tipo": "seguir"
+ },
+ {
+  "tipo": "cierre"
+ }
+]
