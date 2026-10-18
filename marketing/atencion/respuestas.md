@@ -1,0 +1,72 @@
+# Respuestas modelo
+
+Lo que más preguntan y cómo contestarlo. Datos sacados solo de CLAUDE.md; links solo de los
+dm.txt / copy.txt de cada video. Si falta algo, no se inventa: va a «Para Eduardo».
+
+## Links que sí se pueden usar
+
+| Para qué | Link |
+|---|---|
+| Descarga (general) | https://jeal1498.github.io/checa-web/ |
+| Descarga desde un video | el mismo + ?utm_source=tiktok&utm_campaign=<etiqueta del video> (cuenta de marca) o utm_source=tiktok-personal (cuenta personal). Está escrito en el dm.txt del video. |
+| Comentó «CHECA» | el dm.txt del video, tal cual |
+| Comentó «YO» (beta) | https://jeal1498.github.io/checa-web/instalar/?desde=tiktok + pedirle su Gmail |
+| Guía de instalación | https://jeal1498.github.io/checa-web/instalar/ |
+
+…/checa-web/beta/ ya **no** se usa.
+
+## Preguntas frecuentes
+
+**«¿Cómo la descargo?» / «Link directo» / «¿Cómo la consigo?»**
+> ¡Hola! Claro que sí, aquí está 👇
+> <link del dm.txt del video>
+> Es solo para Android. Si algo no le queda claro al instalarla, escríbame por aquí.
+
+**«Comento YO / quiero ser beta tester»**
+> ¡Hola! Bienvenido 🙌 Los primeros 50 entran a la beta con 3 meses gratis.
+> Mándeme su correo de Gmail y se lo activo, y aquí está la guía para instalarla:
+> https://jeal1498.github.io/checa-web/instalar/?desde=tiktok
+
+**«¿Qué hace la app?»**
+> Cuando le llega una oferta de Uber o DiDi, Checa le muestra encima cuánto le queda ya descontada
+> la gasolina, cuánto gana por hora y por km, y un semáforo: 🟢 conviene, 🟡 regular, 🔴 no conviene.
+> Si le llegan dos ofertas al mismo tiempo, le marca cuál conviene más. (Números de ejemplo.)
+
+**«¿Funciona en iPhone?»**
+> Por ahora solo Android. En iPhone todavía no se puede.
+
+**«¿Funciona con Uber y con DiDi?»**
+> Sí, con las dos. Checa es independiente, no está afiliada a Uber ni a DiDi.
+
+**«¿Funciona en tablet?»**
+> Sí. En tablet horizontal con pantalla dividida muestra un pop-up por app.
+
+**«¿Me pide contraseñas o tarjeta?»**
+> No. No le pide contraseñas de sus cuentas ni tarjeta para probarla. Solo entra con su cuenta de
+> Google para la licencia; la lectura de ofertas funciona sin internet.
+
+**«¿Es gratis?» (solo si pregunta si hoy se paga)**
+> Durante la beta está todo gratis hasta el 31 de enero de 2027, sin tarjeta.
+> Si pregunta **cuánto costará después**, no contestar: va a «Para Eduardo».
+
+**«Android no me deja instalarla»**
+> Es totalmente normal: como todavía no está en Play Store, Android pone sus candados.
+> En el aviso toque «Instalar de todos modos». Aquí está la guía con video:
+> https://jeal1498.github.io/checa-web/instalar/
+> Dígame en qué paso se queda y lo vemos.
+
+**«¿Qué datos usa / es seguro?»**
+> Solo lee las pantallas de Uber y DiDi para ver la oferta; no toca sus mensajes ni sus datos del banco.
+
+**«Ya la instalé, ¿y ahora?»**
+> Ábrala, entre con Google, déle los permisos y toque el botón verde para iniciar la lectura.
+> Cuénteme si ya le salió el pop-up con la primera oferta.
+
+## Nunca contestar solo — «Para Eduardo»
+
+- Precios, planes, descuentos, pagos o licencias (incluido «¿cuánto cuesta al terminar la prueba?»).
+- Fallas técnicas: no sale el pop-up, no instala, no lee la oferta, números raros.
+- Quejas o enojo.
+- Seguridad, legales, salud; colaboraciones o prensa.
+- «¿Eres un bot?».
+- Cualquier duda, por chica que sea.
