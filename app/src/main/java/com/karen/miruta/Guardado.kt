@@ -19,7 +19,7 @@ import java.util.concurrent.Executors
  * registro con su foto (solo la zona de la app) y el texto que leyó. Solo en el teléfono, se borran solos a
  * los [DIAS] días y las que no se pudieron leer se conservan antes que las leídas. Nada se envía solo.
  */
-object Registro {
+object Guardado {
     private const val DIAS = 7
     private const val MAX_LEIDAS = 20
     private const val MAX_NO_LEIDAS = 40

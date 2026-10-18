@@ -198,7 +198,7 @@ object Cuenta {
             val bienvenida = sp(app).getBoolean("bienvenida", false)
             sp(app).edit().clear().putBoolean("bienvenida", bienvenida).commit()
             // Otra persona puede entrar después en este equipo: se borra lo guardado de esta cuenta.
-            Registro.borrarTodo(app)
+            Guardado.borrarTodo(app)
             Historial.borrar(app)
             Prefs(app).borrarDiagnostico()
             Licencia.limpiarCache()

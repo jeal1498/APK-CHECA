@@ -48,7 +48,7 @@ Contexto para continuar el proyecto en una conversación nueva.
 | `Jornada.kt` | «Mi día» (v45): viajes que el conductor marca como aceptados (`viajes.txt`), meta del día y gasolina de la semana. |
 | `Resumen.kt` | Imagen del resumen del día para compartir (FileProvider). |
 | `Soporte.kt` | Ajustes → Ayuda (v44): diagnóstico, preguntas frecuentes, «Una oferta se leyó mal» y soporte por WhatsApp. `resumen()` lleva equipo, RAM, cuenta, permisos y última oferta. |
-| `Registro.kt` | «Ayuda con la lectura» (v59): con «Guardar pantallas de ofertas» (`prefs.diagnostico`), cada oferta distinta se guarda como `filesDir/diag/<fecha>-<App>-leida|noleida.{jpg,txt}` (foto recortada a la zona de la app, comprimida en segundo plano; texto leído). 7 días; se conservan antes las no leídas. Pantallas «Lo guardado», detalle con zoom (`Zoom.kt`) y reporte a soporte por WhatsApp. Aviso la primera vez; cerrar sesión borra todo. |
+| `Guardado.kt` | «Ayuda con la lectura» (v59): con «Guardar pantallas de ofertas» (`prefs.diagnostico`), cada oferta distinta se guarda como `filesDir/diag/<fecha>-<App>-leida|noleida.{jpg,txt}` (foto recortada a la zona de la app, comprimida en segundo plano; texto leído). 7 días; se conservan antes las no leídas. Pantallas «Lo guardado», detalle con zoom (`Zoom.kt`) y reporte a soporte por WhatsApp. Aviso la primera vez; cerrar sesión borra todo. |
 | `MainActivity.kt` | UI con tema oscuro. Barra inferior: Inicio · Filtros · **botón circular central** (▶ verde iniciar / ■ rojo detener) · Ajustes · Cuenta. |
 
 ### Reglas del lector (Parser), calibradas con capturas reales

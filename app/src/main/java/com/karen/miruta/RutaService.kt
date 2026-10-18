@@ -245,8 +245,8 @@ class RutaService : AccessibilityService() {
                 val leida = Parser.analizar(textos.toList())
                 if (prefs.diagnostico && textos.any { TRAMO.containsMatchIn(it) }) {
                     val firma = leida?.let { "${it.tarifa}|${it.km}|${it.min}" } ?: "?"
-                    if (Registro.esNueva(app, leida != null, firma)) {
-                        Registro.guardar(this, app, leida != null, textos.take(40).joinToString("\n") +
+                    if (Guardado.esNueva(app, leida != null, firma)) {
+                        Guardado.guardar(this, app, leida != null, textos.take(40).joinToString("\n") +
                             "\n\nCheca entendió (accesibilidad): " +
                             (leida?.let { "tarifa \$${it.tarifa}, ${it.km} km, ${it.min} min" } ?: "nada (no reconoció la oferta)"), null)
                     }

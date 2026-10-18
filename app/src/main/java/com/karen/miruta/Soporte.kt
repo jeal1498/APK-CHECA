@@ -193,7 +193,7 @@ object Soporte {
             "Cuenta: ${Cuenta.correo(ctx).ifEmpty { "sin sesión" }} · Plan: $plan\n" +
             "Accesibilidad: ${if (servicioActivo(ctx)) "sí" else "no"} · Lectura: ${if (CapturaService.corriendo) "sí" else "no"} · " +
             "Notificaciones: ${if (notif) "sí" else "no"} · Batería sin restricción: ${if (bateria) "sí" else "no"}\n" +
-            "Última oferta: ${if (ultima == 0L) "ninguna" else Registro.cuando(ultima)}"
+            "Última oferta: ${if (ultima == 0L) "ninguna" else Guardado.cuando(ultima)}"
     }
 
     /** Abre el chat con el borrador de una opinión sobre Checa (con permiso para publicarla o no). */

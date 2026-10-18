@@ -184,8 +184,8 @@ class MainActivity : Activity() {
         else if (Cuenta.conectada(this) && !autoIniciar && faltanPermisos()) mostrarPermisos()
         else if (Cuenta.conectada(this) && prefs.diagnostico && !prefs.diagAvisoVisto && guia?.isShowing != true &&
             dialogoCuenta?.isShowing != true) handler.postDelayed({ if (!isFinishing && !prefs.diagAvisoVisto) avisoDiagnostico() }, 1200)
-        Registro.borrarPendientes(this)
-        Registro.podar(this)
+        Guardado.borrarPendientes(this)
+        Guardado.podar(this)
         pintarDiag()
         pintarAyudaAbierta?.invoke()
         pintarCuenta()
@@ -1599,7 +1599,7 @@ class MainActivity : Activity() {
 
         val g2 = grupoFilas()
         filaMenu(g2, Icono.ALERTA, "Ayuda y soporte", "¿Algo falla? Revisa en un toque") { mostrarAyuda() }
-        val guardadas = Registro.lista(this)
+        val guardadas = Guardado.lista(this)
         val noLeidas = guardadas.count { !it.leida }
         filaMenu(g2, Icono.FILTROS, "Ayuda con la lectura",
             when {
@@ -1943,7 +1943,7 @@ class MainActivity : Activity() {
                 Toast.LENGTH_LONG).show()
             return
         }
-        val ultima = Registro.lista(this).take(1)
+        val ultima = Guardado.lista(this).take(1)
         if (ultima.isEmpty()) {
             Toast.makeText(this, "Aún no hay ofertas guardadas. Cuando te llegue una, vuelve aquí.", Toast.LENGTH_LONG).show()
             return
@@ -2906,7 +2906,7 @@ class MainActivity : Activity() {
         avisarPremios()
         val e = Licencia.estado(this)
         // Se llama cada 1.5 s (con el estado de la lectura): solo se vuelve a armar si algo cambió.
-        val guardadas = Registro.lista(this)
+        val guardadas = Guardado.lista(this)
         val firma = listOf(
             e, Cuenta.conectada(this), Cuenta.nombre(this), Cuenta.correo(this), Cuenta.equipos(this), Cuenta.maxEquipos(this),
             Cuenta.equipoQuitado(this), Cuenta.necesitaRevision(this), Cuenta.licencia(this) == null, Cuenta.precioBeta(this),
@@ -3159,7 +3159,7 @@ class MainActivity : Activity() {
             min < 1 -> "hace un momento"
             min < 60 -> "hace $min min"
             min < 24 * 60 -> "hace ${min / 60} h"
-            else -> Registro.cuando(ms)
+            else -> Guardado.cuando(ms)
         }
     }
 
@@ -3204,7 +3204,7 @@ class MainActivity : Activity() {
             handler.post { pintarDiag() }
         }, margenArriba(Tema.S1))
 
-        val items = Registro.lista(this)
+        val items = Guardado.lista(this)
         if (items.isEmpty()) {
             c.addView(texto(
                 if (prefs.diagnostico) "Aún no hay ofertas guardadas. Se guardan solas mientras Checa lee."
@@ -3217,7 +3217,7 @@ class MainActivity : Activity() {
             chips.addView(chipDiag("${items.size} ${if (items.size == 1) "oferta" else "ofertas"}", cTarjeta2, cTexto2))
             if (noLeidas > 0) chips.addView(chipDiag("$noLeidas no ${if (noLeidas == 1) "leída" else "leídas"}", Tema.AMARILLO_SUAVE, cAmarillo),
                 LinearLayout.LayoutParams(-2, -2).apply { leftMargin = dp(6) })
-            chips.addView(chipDiag(String.format(Locale.US, "%.1f MB", Registro.bytes(this) / 1_048_576.0), cTarjeta2, cTexto2),
+            chips.addView(chipDiag(String.format(Locale.US, "%.1f MB", Guardado.bytes(this) / 1_048_576.0), cTarjeta2, cTexto2),
                 LinearLayout.LayoutParams(-2, -2).apply { leftMargin = dp(6) })
             c.addView(chips, margenArriba(4))
         }
@@ -3237,7 +3237,7 @@ class MainActivity : Activity() {
                     AlertDialog.Builder(this@MainActivity)
                         .setMessage("¿Borrar las ${items.size} ofertas guardadas, con sus fotos y textos? No se puede deshacer.")
                         .setPositiveButton("Borrar") { _, _ ->
-                            Registro.borrarTodo(this@MainActivity)
+                            Guardado.borrarTodo(this@MainActivity)
                             prefs.borrarDiagnostico()
                             pintarDiag()
                         }
@@ -3310,18 +3310,18 @@ class MainActivity : Activity() {
         return Triple(d, cuerpo, pie)
     }
 
-    private fun chipLectura(it: Registro.Item) =
+    private fun chipLectura(it: Guardado.Item) =
         if (it.leida) chipDiag("Leída", Tema.VERDE_SUAVE, cVerde) else chipDiag("No la reconoció", Tema.AMARILLO_SUAVE, cAmarillo)
 
     /**
      * «Lo guardado»: una fila por oferta (foto, texto, hora y si se leyó). Las no leídas primero.
      * Elegir solo cambia la marca de esa fila; la lista no se vuelve a armar.
      */
-    private fun mostrarGuardado(preseleccion: Collection<String> = emptyList(), alEnviar: ((List<Registro.Item>) -> Unit)? = null) {
+    private fun mostrarGuardado(preseleccion: Collection<String> = emptyList(), alEnviar: ((List<Guardado.Item>) -> Unit)? = null) {
         val (d, cuerpo, pie) = ventanaCompleta("Lo guardado")
         val elegidos = LinkedHashSet<String>(preseleccion)
         val cargador = java.util.concurrent.Executors.newFixedThreadPool(2)
-        var todos = Registro.lista(this)
+        var todos = Guardado.lista(this)
         var filtro = if (todos.any { !it.leida }) 0 else 2
 
         val seg = LinearLayout(this).apply {
@@ -3350,9 +3350,9 @@ class MainActivity : Activity() {
             AlertDialog.Builder(this)
                 .setMessage("¿Borrar ${sel.size} ${if (sel.size == 1) "oferta" else "ofertas"} con su foto y texto? No se puede deshacer.")
                 .setPositiveButton("Borrar") { _, _ ->
-                    Registro.borrar(sel)
+                    Guardado.borrar(sel)
                     elegidos.clear()
-                    todos = Registro.lista(this)
+                    todos = Guardado.lista(this)
                     pintar()
                 }
                 .setNegativeButton("Cancelar", null)
@@ -3384,7 +3384,7 @@ class MainActivity : Activity() {
             }
         }
 
-        fun fila(it: Registro.Item): View {
+        fun fila(it: Guardado.Item): View {
             val f = LinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
                 setPadding(dp(10), dp(10), dp(10), dp(10))
@@ -3409,7 +3409,7 @@ class MainActivity : Activity() {
             f.addView(img, LinearLayout.LayoutParams(dp(54), dp(96)).apply { leftMargin = dp(10) })
             it.foto?.let { foto ->
                 cargador.execute {
-                    val bm = Registro.miniatura(foto, dp(54))
+                    val bm = Guardado.miniatura(foto, dp(54))
                     img.post { if (d.isShowing) img.setImageBitmap(bm) }
                 }
             } ?: img.setVisibility(View.GONE)
@@ -3428,7 +3428,7 @@ class MainActivity : Activity() {
                     pintarBarra()
                 }, alBorrar = {
                     elegidos.remove(it.base)
-                    todos = Registro.lista(this)
+                    todos = Guardado.lista(this)
                     pintar()
                 })
             }
@@ -3477,7 +3477,7 @@ class MainActivity : Activity() {
 
     /** Una oferta: foto completa con zoom y el texto que leyó Checa. */
     private fun mostrarDetalle(
-        it: Registro.Item, elegida: Boolean,
+        it: Guardado.Item, elegida: Boolean,
         alElegir: ((Boolean) -> Unit)? = null, alBorrar: (() -> Unit)? = null
     ) {
         val (d, cuerpo, pie) = ventanaCompleta(it.titulo())
@@ -3489,7 +3489,7 @@ class MainActivity : Activity() {
             }, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(6) })
             val foto = it.foto
             Thread {
-                val bm = Registro.miniatura(foto, 1200)
+                val bm = Guardado.miniatura(foto, 1200)
                 img.post { if (d.isShowing) img.setImageBitmap(bm) }
             }.start()
         }
@@ -3512,7 +3512,7 @@ class MainActivity : Activity() {
             AlertDialog.Builder(this)
                 .setMessage("¿Borrar esta oferta con su foto y texto?")
                 .setPositiveButton("Borrar") { _, _ ->
-                    Registro.borrar(it)
+                    Guardado.borrar(it)
                     d.dismiss()
                     alBorrar?.invoke() ?: pintarDiag()
                 }
@@ -3536,7 +3536,7 @@ class MainActivity : Activity() {
     }
 
     /** Reporte a soporte: motivo, ofertas elegidas y datos del equipo en un solo paso. */
-    private fun mostrarReporte(items: List<Registro.Item>) {
+    private fun mostrarReporte(items: List<Guardado.Item>) {
         val (d, cuerpo, pie) = ventanaCompleta("Reporte a soporte")
         val col = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
@@ -3625,8 +3625,8 @@ class MainActivity : Activity() {
                 }
                 append("\n— Datos de mi equipo —\n").append(Soporte.resumen(this@MainActivity))
             }
-            Registro.enviar(this, items, msj, Soporte.WHATSAPP)
-            if (borrarDespues) Registro.borrarDespues(this, items)
+            Guardado.enviar(this, items, msj, Soporte.WHATSAPP)
+            if (borrarDespues) Guardado.borrarDespues(this, items)
             reporteTexto = ""
             reporteMotivo = 0
             d.dismiss()

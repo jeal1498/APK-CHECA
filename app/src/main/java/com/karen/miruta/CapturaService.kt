@@ -257,12 +257,12 @@ class CapturaService : Service() {
             val firma = oferta?.let { "${it.tarifa}|${it.km}|${it.min}" } ?: "?"
             // Con el pop-up encima la oferta se ve tapada: eso no es una lectura fallida.
             val tapada = oferta == null && RutaService.instancia?.popupVisible(app) == true
-            if (!tapada && Registro.esNueva(app, oferta != null, firma)) {
+            if (!tapada && Guardado.esNueva(app, oferta != null, firma)) {
                 val b = bmpActual
-                val recorte = if (b == null) null else Registro.recortar(b, zona?.let {
+                val recorte = if (b == null) null else Guardado.recortar(b, zona?.let {
                     Rect((it.left / escX).toInt(), (it.top / escY).toInt(), (it.right / escX).toInt(), (it.bottom / escY).toInt())
                 })
-                Registro.guardar(this, app, oferta != null, texto, recorte)
+                Guardado.guardar(this, app, oferta != null, texto, recorte)
             }
         }
         if (oferta == null) return
