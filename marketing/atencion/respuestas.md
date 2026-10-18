@@ -70,3 +70,15 @@ dm.txt / copy.txt de cada video. Si falta algo, no se inventa: va a «Para Eduar
 - Seguridad, legales, salud; colaboraciones o prensa.
 - «¿Eres un bot?».
 - Cualquier duda, por chica que sea.
+
+## Presentación para TikTok (respuesta guardada)
+
+Sustituye a la que decía «aumentar tus ganancias hasta un 35 %»: la marca no permite promesas de ganancia.
+
+> ¡Hola! Gracias por escribir 🙌
+> Checa es una app para conductores de Uber y DiDi (solo Android). Cuando te llega una oferta te muestra encima cuánto te queda limpio ya descontada la gasolina, cuánto ganas por hora y por km, y un semáforo: 🟢 conviene, 🟡 regular, 🔴 no conviene. Si te caen dos ofertas a la vez, te marca cuál te conviene más.
+> No te pide contraseñas de tus cuentas ni tarjeta para probarla.
+> 👉 Descárgala aquí: https://jeal1498.github.io/checa-web/
+> Si algo no te queda claro al instalarla, escríbeme y te ayudo 🚗💨
+
+Números de ejemplo siempre marcados. Nada de porcentajes de ganancia.
