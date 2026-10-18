@@ -21,12 +21,14 @@ object Tema {
     val FONDO = ASFALTO
     val TARJETA = TABLERO
     val TARJETA2 = Color.rgb(34, 34, 42)     // #22222A controles dentro de tarjetas
+    val CAMPO = Color.rgb(30, 30, 37)        // #1E1E25 campos (nombre + dato) dentro de tarjetas
     val BORDE = Color.rgb(42, 42, 51)        // #2A2A33
     val TEXTO = HUESO
     val TEXTO2 = Color.rgb(207, 207, 212)    // #CFCFD4
     val TENUE = Color.rgb(163, 163, 173)     // #A3A3AD gris del texto
     val VERDE = Color.rgb(34, 197, 94)       // #22C55E aceptar
     val VERDE_SUAVE = Color.rgb(14, 42, 26)
+    val SOBRE_VERDE = Color.rgb(4, 33, 15)   // #04210F texto o ✓ sobre verde
     val AMARILLO = Color.rgb(250, 204, 21)   // #FACC15 considerar
     val AMARILLO_SUAVE = Color.rgb(46, 39, 8)
     val ROJO = Color.rgb(239, 68, 68)        // #EF4444 rechazar
@@ -236,6 +238,10 @@ class Icono(private val tipo: Int, color: Int) : Drawable() {
                 p.moveTo(4f, 20f); p.lineTo(20f, 20f)
                 c.drawPath(p, trazo)
             }
+            CELULAR -> {
+                c.drawRoundRect(android.graphics.RectF(6.5f, 2.5f, 17.5f, 21.5f), 2.5f, 2.5f, trazo)
+                c.drawLine(10.5f, 18f, 13.5f, 18f, trazo)
+            }
         }
         c.restore()
     }
@@ -264,5 +270,6 @@ class Icono(private val tipo: Int, color: Int) : Drawable() {
         const val CUENTA = 14
         const val COMPARTIR = 15
         const val DESCARGA = 16
+        const val CELULAR = 17
     }
 }

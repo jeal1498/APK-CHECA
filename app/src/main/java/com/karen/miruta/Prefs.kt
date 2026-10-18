@@ -56,7 +56,7 @@ class Prefs(context: Context) {
 
     /** Recogida en km. */
     var recogidaMaxKm: Float
-        get() = sp.getFloat("recMaxV", 2f)
+        get() = sp.getFloat("recMaxV", 2f).coerceAtMost(4f)  // 5 km ya no es opción (v62)
         set(v) { sp.edit().putFloat("recMaxV", v).apply() }
 
     var recogidaMinKm: Float
