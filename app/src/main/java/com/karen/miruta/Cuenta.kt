@@ -192,6 +192,10 @@ object Cuenta {
             try { pedir("DELETE", "/rest/v1/equipos?equipo=eq.$id", token(app), null) } catch (_: Exception) { }
             val bienvenida = sp(app).getBoolean("bienvenida", false)
             sp(app).edit().clear().putBoolean("bienvenida", bienvenida).commit()
+            // Otra persona puede entrar después en este equipo: se borra lo guardado de esta cuenta.
+            Registro.borrarTodo(app)
+            Historial.borrar(app)
+            Prefs(app).borrarDiagnostico()
             Licencia.limpiarCache()
             principal.post { listo() }
         }.start()

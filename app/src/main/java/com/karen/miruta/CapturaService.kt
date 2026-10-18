@@ -42,13 +42,14 @@ class CapturaService : Service() {
     private var ocr: TextRecognizer? = null
     private lateinit var prefs: Prefs
     @Volatile private var procesando = false
-    private var ultimaCaptura = 0
     private var ultimaGuardada = 0
     private var capAncho = 0
     private var capAlto = 0
     private var divididaHasta = 0L
-    private var leyoOferta = false
-    private var appFoto: String? = null
+    /** Imagen que se está analizando y su escala, para recortar la foto de «Lo guardado». */
+    private var bmpActual: Bitmap? = null
+    private var escX = 1f
+    private var escY = 1f
 
     private val ciclo = object : Runnable {
         override fun run() {
@@ -169,8 +170,9 @@ class CapturaService : Service() {
                     val y = (b.exactCenterY() * escalaY).toInt()
                     tapado.none { it.contains(x, y) }
                 }
-                leyoOferta = false
-                appFoto = null
+                bmpActual = bmp
+                escX = escalaX
+                escY = escalaY
                 val zonas = RutaService.instancia?.zonasApps().orEmpty()
                 if (zonas.isEmpty()) {
                     // No sabemos dónde está cada app. En horizontal con dos ofertas
@@ -188,12 +190,9 @@ class CapturaService : Service() {
                     }
                     for ((z, ls) in grupos) procesarGrupo(ls, z.app, z.rect)
                 }
-                // Diagnóstico: foto de la pantalla con una oferta (leída o no) para revisarla después.
-                if (prefs.diagnostico && todas.any { tramoTexto.containsMatchIn(it.text) }) {
-                    Fotos.guardar(this, bmp, appFoto, leyoOferta)
-                }
             }
             .addOnCompleteListener {
+                bmpActual = null
                 bmp.recycle()
                 procesando = false
             }
@@ -246,22 +245,27 @@ class CapturaService : Service() {
             .maxByOrNull { it.boundingBox?.height() ?: 0 }
         val lineas = (listOfNotNull(tarifa) + ordenadas.filter { it !== tarifa }).map { normalizar(it.text) }
 
-        if (prefs.diagnostico && lineas.any { it.contains("min", ignoreCase = true) }) {
-            val firma = lineas.hashCode()
-            if (firma != ultimaCaptura) {
-                ultimaCaptura = firma
-                prefs.guardarCaptura("[${app ?: "pantalla"} · lectura de pantalla]\n" + lineas.joinToString("\n"))
+        val oferta = Parser.analizar(lineas)
+        // «Guardar pantallas de ofertas»: texto y foto (solo la zona de la app) de cada oferta distinta.
+        if (prefs.diagnostico && lineas.any { tramoTexto.containsMatchIn(it) }) {
+            val texto = lineas.take(40).joinToString("\n") + "\n\nCheca entendió: " +
+                (oferta?.let { "tarifa \$${it.tarifa}, ${it.km} km, ${it.min} min" } ?: "nada (no reconoció la oferta)")
+            if (lineas.hashCode() != ultimaGuardada) {
+                ultimaGuardada = lineas.hashCode()
+                prefs.ultimaLectura = "[${app ?: "pantalla"}]\n" + texto
+            }
+            val firma = oferta?.let { "${it.tarifa}|${it.km}|${it.min}" } ?: "?"
+            // Con el pop-up encima la oferta se ve tapada: eso no es una lectura fallida.
+            val tapada = oferta == null && RutaService.instancia?.popupVisible(app) == true
+            if (!tapada && Registro.esNueva(app, oferta != null, firma)) {
+                val b = bmpActual
+                val recorte = if (b == null) null else Registro.recortar(b, zona?.let {
+                    Rect((it.left / escX).toInt(), (it.top / escY).toInt(), (it.right / escX).toInt(), (it.bottom / escY).toInt())
+                })
+                Registro.guardar(this, app, oferta != null, texto, recorte)
             }
         }
-        val oferta = Parser.analizar(lineas)
-        if (lineas.any { it.contains("min", ignoreCase = true) } && lineas.hashCode() != ultimaGuardada) {
-            ultimaGuardada = lineas.hashCode()
-            prefs.ultimaLectura = "[${app ?: "pantalla"}]\n" + lineas.take(40).joinToString("\n") + "\n\nCheca entendió: " +
-                (oferta?.let { "tarifa \$${it.tarifa}, ${it.km} km, ${it.min} min" } ?: "nada (no reconoció la oferta)")
-        }
         if (oferta == null) return
-        leyoOferta = true
-        appFoto = app
         val servicio = RutaService.instancia ?: return
         if (app != null) servicio.mostrarOferta(oferta, app, zona) else servicio.mostrarOferta(oferta)
     }

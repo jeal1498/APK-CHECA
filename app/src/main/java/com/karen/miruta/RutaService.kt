@@ -17,7 +17,6 @@ class RutaService : AccessibilityService() {
     private var appActual = ""
     private val handler = Handler(Looper.getMainLooper())
     private var pendiente = false
-    private var ultimaCaptura = 0
 
     /** Un pop-up por app, para que dos ofertas simultáneas no se pisen. */
     private val popups = HashMap<String, Popup>()
@@ -73,6 +72,7 @@ class RutaService : AccessibilityService() {
     /** Muestra la oferta de [app] sobre su [zona] (sin repetir la misma en 60 s). */
     fun mostrarOferta(oferta: Oferta, app: String, zona: Rect?) {
         if (!Licencia.activa(this) || !Cuenta.conectada(this)) return
+        prefs.ultimaOferta = System.currentTimeMillis()
         val clave = app.ifEmpty { "?" }
         // Con el pop-up encima, el lector ve la oferta tapada y lee otros montos.
         // Si los tramos son los mismos (o se perdió uno), es la misma oferta: no se toca.
@@ -115,6 +115,9 @@ class RutaService : AccessibilityService() {
 
     private fun parecida(a: Oferta, b: Oferta) =
         Math.abs(a.km - b.km) < 0.15 && Math.abs(a.min - b.min) < 1.1 && Math.abs(a.tarifa - b.tarifa) < 1.0
+
+    /** true si el pop-up de [app] está en pantalla (entonces tapa la oferta y el lector no la ve completa). */
+    fun popupVisible(app: String?): Boolean = popups[app ?: "?"]?.rect() != null
 
     /** Zonas que tapan los pop-ups visibles. */
     fun rectsPopups(): List<Rect> = popups.values.mapNotNull { it.rect() }
@@ -239,14 +242,16 @@ class RutaService : AccessibilityService() {
                 val textos = LinkedHashSet<String>()
                 recolectar(raiz, textos, 0)
                 if (textos.isEmpty()) continue
-                if (prefs.diagnostico) {
-                    val firma = textos.hashCode()
-                    if (firma != ultimaCaptura) {
-                        ultimaCaptura = firma
-                        prefs.guardarCaptura("[$app · accesibilidad]\n" + textos.joinToString("\n"))
+                val leida = Parser.analizar(textos.toList())
+                if (prefs.diagnostico && textos.any { TRAMO.containsMatchIn(it) }) {
+                    val firma = leida?.let { "${it.tarifa}|${it.km}|${it.min}" } ?: "?"
+                    if (Registro.esNueva(app, leida != null, firma)) {
+                        Registro.guardar(this, app, leida != null, textos.take(40).joinToString("\n") +
+                            "\n\nCheca entendió (accesibilidad): " +
+                            (leida?.let { "tarifa \$${it.tarifa}, ${it.km} km, ${it.min} min" } ?: "nada (no reconoció la oferta)"), null)
                     }
                 }
-                val oferta = Parser.analizar(textos.toList()) ?: continue
+                val oferta = leida ?: continue
                 val r = Rect()
                 w.getBoundsInScreen(r)
                 mostrarOferta(oferta, app, r)
@@ -264,6 +269,8 @@ class RutaService : AccessibilityService() {
     }
 
     companion object {
+        /** Un tramo «N min (X km)»: la pantalla tiene una oferta. */
+        private val TRAMO = Regex("""\d\s?min\s*\(""", RegexOption.IGNORE_CASE)
         @Volatile
         var instancia: RutaService? = null
     }

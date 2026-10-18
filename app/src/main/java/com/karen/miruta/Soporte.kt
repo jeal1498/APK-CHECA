@@ -12,7 +12,7 @@ import android.provider.Settings
 
 /** Ayuda: preguntas frecuentes, diagnóstico de problemas y mensaje de soporte por WhatsApp. */
 object Soporte {
-    private const val WHATSAPP = "529985214490"
+    const val WHATSAPP = "529985214490"
 
     /** Acción que puede ofrecer una respuesta o una revisión. */
     enum class Accion(val texto: String) {
@@ -80,8 +80,8 @@ object Soporte {
         ),
         Pregunta(
             "Una oferta se leyó mal",
-            "Ve a Ajustes → Ayuda → «Una oferta se leyó mal». Se manda por WhatsApp lo último que leyó Checa " +
-                "para que lo revise y mejore la lectura.",
+            "Ve a Ajustes → Ayuda con la lectura → «Enviar reporte a soporte». Eliges qué ofertas mandar, " +
+                "con su foto y lo que leyó Checa, y se envía por WhatsApp para mejorar la lectura.",
             Accion.SOPORTE
         ),
         Pregunta(
@@ -171,8 +171,20 @@ object Soporte {
             est.activa -> "prueba"
             else -> "sin licencia"
         }
-        return "Checa ${Actualizacion.instalada(ctx)} · Android ${Build.VERSION.RELEASE} · ${Build.MANUFACTURER} ${Build.MODEL}\n" +
-            "Accesibilidad: ${if (servicioActivo(ctx)) "sí" else "no"} · Lectura: ${if (CapturaService.corriendo) "sí" else "no"} · Plan: $plan"
+        val ram = try {
+            val mi = android.app.ActivityManager.MemoryInfo()
+            (ctx.getSystemService(Context.ACTIVITY_SERVICE) as android.app.ActivityManager).getMemoryInfo(mi)
+            String.format(java.util.Locale.US, "%.1f GB", mi.totalMem / 1_073_741_824.0)
+        } catch (_: Exception) { "?" }
+        val notif = Build.VERSION.SDK_INT < 33 ||
+            ctx.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+        val bateria = (ctx.getSystemService(Context.POWER_SERVICE) as PowerManager).isIgnoringBatteryOptimizations(ctx.packageName)
+        val ultima = Prefs(ctx).ultimaOferta
+        return "Checa ${Actualizacion.instalada(ctx)} · Android ${Build.VERSION.RELEASE} · ${Build.MANUFACTURER} ${Build.MODEL} · RAM $ram\n" +
+            "Cuenta: ${Cuenta.correo(ctx).ifEmpty { "sin sesión" }} · Plan: $plan\n" +
+            "Accesibilidad: ${if (servicioActivo(ctx)) "sí" else "no"} · Lectura: ${if (CapturaService.corriendo) "sí" else "no"} · " +
+            "Notificaciones: ${if (notif) "sí" else "no"} · Batería sin restricción: ${if (bateria) "sí" else "no"}\n" +
+            "Última oferta: ${if (ultima == 0L) "ninguna" else Registro.cuando(ultima)}"
     }
 
     /** Abre el chat con el borrador de una opinión sobre Checa (con permiso para publicarla o no). */

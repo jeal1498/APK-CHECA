@@ -47,7 +47,8 @@ Contexto para continuar el proyecto en una conversación nueva.
 | `Licencia.kt` | Licencia sin internet (códigos de equipo), estado combinado con la de cuenta y `BETA_HASTA` (beta gratis). Ver *Licencias y venta*. |
 | `Jornada.kt` | «Mi día» (v45): viajes que el conductor marca como aceptados (`viajes.txt`), meta del día y gasolina de la semana. |
 | `Resumen.kt` | Imagen del resumen del día para compartir (FileProvider). |
-| `Soporte.kt` | Ajustes → Ayuda (v44): diagnóstico, preguntas frecuentes, «Una oferta se leyó mal» y soporte por WhatsApp. |
+| `Soporte.kt` | Ajustes → Ayuda (v44): diagnóstico, preguntas frecuentes, «Una oferta se leyó mal» y soporte por WhatsApp. `resumen()` lleva equipo, RAM, cuenta, permisos y última oferta. |
+| `Registro.kt` | «Ayuda con la lectura» (v59): con «Guardar pantallas de ofertas» (`prefs.diagnostico`), cada oferta distinta se guarda como `filesDir/diag/<fecha>-<App>-leida|noleida.{jpg,txt}` (foto recortada a la zona de la app, comprimida en segundo plano; texto leído). 7 días; se conservan antes las no leídas. Pantallas «Lo guardado», detalle con zoom (`Zoom.kt`) y reporte a soporte por WhatsApp. Aviso la primera vez; cerrar sesión borra todo. |
 | `MainActivity.kt` | UI con tema oscuro. Barra inferior: Inicio · Filtros · **botón circular central** (▶ verde iniciar / ■ rojo detener) · Ajustes · Cuenta. |
 
 ### Reglas del lector (Parser), calibradas con capturas reales
@@ -118,7 +119,7 @@ Contexto para continuar el proyecto en una conversación nueva.
 - Pantalla dividida en tablet probada y correcta en v20 (dos pop-ups sólidos, ⭐ con borde dorado, sin mezclar ofertas). Si vuelve el parpadeo, pedir Diagnóstico.
 
 ## Versión actual y marketing
-- **Versión actual: v58 (7.8).** Historial completo en `docs/historial-versiones.md` (léelo solo si hace falta; agrega ahí cada versión nueva).
+- **Versión actual: v59 (7.9).** Historial completo en `docs/historial-versiones.md` (léelo solo si hace falta; agrega ahí cada versión nueva).
 - **Identidad de marca (v2, 17 oct 2026):** vive en el repo **`jeal1498/checa-web`**, carpeta `marca/` (https://jeal1498.github.io/checa-web/marca/): logo del semáforo con ✓ en SVG, `tokens.json`, `tokens.css`, `colors-android.xml` y README. **Cuando se pida la marca, clonar ese repo y leer ahí; no guardar copias aquí.** Resumen: asfalto `#0C0C10` y hueso `#F4F4EF`; el color solo decide (aceptar `#22C55E`, considerar `#FACC15`, rechazar `#EF4444`); letras Bricolage Grotesque 800 / DM Sans / JetBrains Mono; los tres pop-ups miden siempre lo mismo. **Ya se aplica a la web (17 oct 2026, `checa-web`); aún no a la app.** **Las portadas de video ya usan solo el estilo de la marca v2, de forma permanente** (plantilla `video/hyperframes/checa-marca-v2/portada/portada.html`, ver skill `videos-checa` → «Portadas»); nunca el estilo curiosidad anterior.
 - Marca anterior en `marketing/marca/`: `logos/` (perfil y portadas, con el verde y negro viejos), `catalogo-whatsapp/` y `voz-fernando.mp3`.
 - **Cuentas y link para los videos (16 oct 2026):** TikTok de Checa `@checa.driver`, TikTok de Eduardo `@Eduardoalv9802`, descarga `jeal1498.github.io/checa-web` (solo Android). **Cierre estándar de todos los videos** (CHECA y PERSONAL): voz «Descarga Checa y checa cuánto te queda de cada viaje» + pantalla final con logo, las dos cuentas y el link (detalle en la skill `videos-checa`).

@@ -137,11 +137,15 @@ class Prefs(context: Context) {
         get() = sp.getBoolean("diag", true)
         set(v) { sp.edit().putBoolean("diag", v).apply() }
 
-    fun guardarCaptura(texto: String) {
-        val previas = capturas().split(SEP).filter { it.isNotBlank() }
-        val nuevas = (listOf(texto) + previas).take(8)
-        sp.edit().putString("caps", nuevas.joinToString(SEP)).apply()
-    }
+    /** Ya vio el aviso de qué guarda «Guardar pantallas de ofertas». */
+    var diagAvisoVisto: Boolean
+        get() = sp.getBoolean("diagAviso", false)
+        set(v) { sp.edit().putBoolean("diagAviso", v).apply() }
+
+    /** Cuándo salió el último pop-up (para «Leyendo · última oferta hace 2 min»). */
+    var ultimaOferta: Long
+        get() = sp.getLong("ultOferta", 0L)
+        set(v) { sp.edit().putLong("ultOferta", v).apply() }
 
     /** Meta de ganancia neta del día en pesos (0 = sin meta). */
     var metaDia: Float
@@ -176,14 +180,13 @@ class Prefs(context: Context) {
         get() = sp.getInt("avisoFinBeta", 0)
         set(v) { sp.edit().putInt("avisoFinBeta", v).apply() }
 
-    /** Último texto leído de una oferta (siempre se guarda): sirve para «Una oferta se leyó mal». */
+    /** Último texto leído de una oferta (solo con «Guardar pantallas de ofertas»). */
     var ultimaLectura: String
         get() = sp.getString("ultima", "") ?: ""
         set(v) { sp.edit().putString("ultima", v).apply() }
 
-    fun capturas(): String =sp.getString("caps", "") ?: ""
-
-    fun borrarCapturas() { sp.edit().remove("caps").apply() }
+    /** Borra lo leído que queda en ajustes (al borrar todo lo guardado o cerrar sesión). */
+    fun borrarDiagnostico() { sp.edit().remove("caps").remove("ultima").remove("ultOferta").apply() }
 
     /** Ajustes que viajan con la cuenta (los demás son de este equipo: guía, capturas, avisos). */
     fun exportar(): org.json.JSONObject {

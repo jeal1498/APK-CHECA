@@ -182,6 +182,11 @@ class MainActivity : Activity() {
         // Sin los 3 permisos Checa no funciona bien: la pantalla vuelve a salir hasta completarlos.
         if (dialogoPermisos?.isShowing == true) pintarPermisos()
         else if (Cuenta.conectada(this) && !autoIniciar && faltanPermisos()) mostrarPermisos()
+        else if (Cuenta.conectada(this) && prefs.diagnostico && !prefs.diagAvisoVisto && guia?.isShowing != true &&
+            dialogoCuenta?.isShowing != true) handler.postDelayed({ if (!isFinishing && !prefs.diagAvisoVisto) avisoDiagnostico() }, 1200)
+        Registro.borrarPendientes(this)
+        Registro.podar(this)
+        pintarDiag()
         actualizarEstado()
         if (autoIniciar) {
             autoIniciar = false
@@ -503,6 +508,7 @@ class MainActivity : Activity() {
             etiquetaCircular.text = "Iniciar"
             etiquetaCircular.setTextColor(cVerde)
         }
+        pintarEstadoLectura()
         if (::ayudaPermiso.isInitialized) {
             ayudaPermiso.text = if (acc) "Servicio de Accesibilidad activado" else "Servicio de Accesibilidad desactivado"
             ayudaPermiso.setTextColor(if (acc) cVerde else cAmarillo)
@@ -1356,23 +1362,27 @@ class MainActivity : Activity() {
         banco.addView(boton("Volver a activar el lector", cVerde, Color.BLACK) { abrirAccesibilidad() }, margenArriba(Tema.S1))
         col.addView(banco, margenTarjeta())
 
-        // --- Diagnóstico ---
-        col.addView(etiqueta("DIAGNÓSTICO"))
+        // --- Ayuda con la lectura (lo guardado de cada oferta y reporte a soporte) ---
+        col.addView(etiqueta("AYUDA CON LA LECTURA"))
         val diag = tarjeta()
-        diag.addView(interruptor(
-            "Guardar texto y fotos de ofertas",
-            "Quedan solo en tu teléfono. Si una oferta se lee mal, compártelas", prefs.diagnostico
-        ) { prefs.diagnostico = it })
-        diag.addView(boton("Ver / compartir capturas", cTarjeta2, cTexto) { verCapturas() }, margenArriba(Tema.S2))
-        diag.addView(boton("Revisar y elegir fotos", cTarjeta2, cTexto) { gestorFotos() }, margenArriba(Tema.S1))
-        diag.addView(boton("Borrar historial de ofertas", Tema.ROJO_SUAVE, cRojo) {
+        cajaDiag = diag
+        pintarDiag()
+        col.addView(diag, margenTarjeta())
+
+        // --- Tus datos ---
+        col.addView(etiqueta("TUS DATOS"))
+        val datos = tarjeta()
+        datos.addView(texto("Estadísticas de Inicio", Tema.T_TEXTO, cTexto, true))
+        datos.addView(texto("Mejores horas, la semana y las ofertas del día, de los últimos 30 días.", Tema.T_NOTA, cTenue, false)
+            .apply { setLineSpacing(0f, 1.2f) }, margenArriba(4))
+        datos.addView(boton("Borrar estadísticas", Tema.ROJO_SUAVE, cRojo) {
             AlertDialog.Builder(this)
-                .setMessage("¿Borrar todo el historial de ofertas?")
+                .setMessage("Se borran Mejores horas, la semana y las ofertas del día. Tus ajustes, tu cuenta y Mi día no cambian. ¿Borrar?")
                 .setPositiveButton("Borrar") { _, _ -> Historial.borrar(this); actualizarResumen() }
                 .setNegativeButton("Cancelar", null)
                 .show()
-        }, margenArriba(Tema.S1))
-        col.addView(diag, margenTarjeta())
+        }, margenArriba(Tema.S2))
+        col.addView(datos, margenTarjeta())
 
         col.addView(etiqueta("VERSIÓN"))
         val ver = tarjeta()
@@ -1681,14 +1691,20 @@ class MainActivity : Activity() {
         dialogo = hoja("Diagnóstico de problemas", null, cuerpo)
     }
 
-    /** Manda a soporte el último texto que leyó Checa, para mejorar la lectura. */
+    /** «Una oferta se leyó mal»: abre el reporte con la última oferta guardada. */
     private fun reportarLecturaMala() {
-        val ultima = prefs.ultimaLectura
-        if (ultima.isBlank()) {
-            Toast.makeText(this, "Aún no se ha leído ninguna oferta. Cuando te llegue una, vuelve aquí.", Toast.LENGTH_LONG).show()
+        if (!prefs.diagnostico) {
+            Toast.makeText(this, "Enciende «Guardar pantallas de ofertas» en Ayuda con la lectura y espera la siguiente oferta.",
+                Toast.LENGTH_LONG).show()
             return
         }
-        Soporte.escribir(this, "una oferta se leyó mal. Esto fue lo último que leyó Checa:", ultima)
+        val ultima = Registro.lista(this).take(1)
+        if (ultima.isEmpty()) {
+            Toast.makeText(this, "Aún no hay ofertas guardadas. Cuando te llegue una, vuelve aquí.", Toast.LENGTH_LONG).show()
+            return
+        }
+        reporteMotivo = 0
+        mostrarReporte(ultima)
     }
 
     // =====================================================================
@@ -2865,135 +2881,510 @@ class MainActivity : Activity() {
 
     private fun num1(v: Double): String = String.format(Locale.US, "%.1f", v)
 
-    /** Las fotos nunca se envían solas: aquí se ven, se eligen las que se comparten y se borran las demás. */
-    private fun gestorFotos() {
-        if (Fotos.lista(this).isEmpty()) {
-            Toast.makeText(this, "Aún no hay fotos.", Toast.LENGTH_SHORT).show()
-            return
+    // =====================================================================
+    // Ayuda con la lectura: lo guardado de cada oferta y el reporte a soporte
+    // =====================================================================
+
+    private var cajaDiag: LinearLayout? = null
+    private var estadoLecturaTxt: TextView? = null
+    private var estadoLecturaPunto: View? = null
+    private var dialogoDiagAviso: Dialog? = null
+    /** Lo que el conductor escribió en el reporte (se conserva si va a elegir ofertas y regresa). */
+    private var reporteMotivo = 0
+    private var reporteTexto = ""
+
+    private val motivosReporte = listOf("Leyó mal la oferta", "No salió el pop-up", "Parpadea o se queda", "Otro")
+
+    private fun chipDiag(s: String, fondo: Int, color: Int) = texto(s, Tema.T_NOTA, color, true).apply {
+        setPadding(dp(10), dp(4), dp(10), dp(4))
+        background = redondo(fondo, 50)
+    }
+
+    private fun hace(ms: Long): String {
+        val min = ((System.currentTimeMillis() - ms) / 60_000L).toInt()
+        return when {
+            min < 1 -> "hace un momento"
+            min < 60 -> "hace $min min"
+            min < 24 * 60 -> "hace ${min / 60} h"
+            else -> Registro.cuando(ms)
         }
-        val elegidas = HashSet<java.io.File>()
+    }
+
+    /** «Leyendo · última oferta hace 2 min» (se repinta con [actualizarEstado]). */
+    private fun pintarEstadoLectura() {
+        val t = estadoLecturaTxt ?: return
+        val leyendo = CapturaService.corriendo
+        val ultima = prefs.ultimaOferta
+        t.text = when {
+            !leyendo -> "Lectura apagada · toca ▶ para iniciar"
+            ultima == 0L -> "Leyendo · aún sin ofertas"
+            else -> "Leyendo · última oferta ${hace(ultima)}"
+        }
+        estadoLecturaPunto?.background = punto(if (leyendo) cVerde else cTenue)
+    }
+
+    private fun pintarDiag() {
+        val c = cajaDiag ?: return
+        c.removeAllViews()
+        val estado = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            background = redondo(cTarjeta2, 12)
+            setPadding(dp(12), dp(10), dp(12), dp(10))
+        }
+        val p = View(this)
+        estado.addView(p, LinearLayout.LayoutParams(dp(8), dp(8)).apply { rightMargin = dp(10) })
+        val t = texto("", Tema.T_NOTA, cTexto2, false)
+        estado.addView(t, LinearLayout.LayoutParams(0, -2, 1f))
+        estadoLecturaTxt = t
+        estadoLecturaPunto = p
+        pintarEstadoLectura()
+        c.addView(estado)
+
+        c.addView(interruptor(
+            "Guardar pantallas de ofertas",
+            "Para revisar las que se lean mal. Solo en tu teléfono y se borran solas a los 7 días.",
+            prefs.diagnostico
+        ) { on ->
+            prefs.diagnostico = on
+            if (on && !prefs.diagAvisoVisto) avisoDiagnostico()
+            handler.post { pintarDiag() }
+        }, margenArriba(Tema.S1))
+
+        val items = Registro.lista(this)
+        if (items.isEmpty()) {
+            c.addView(texto(
+                if (prefs.diagnostico) "Aún no hay ofertas guardadas. Se guardan solas mientras Checa lee."
+                else "Está apagado: no se guarda nada.",
+                Tema.T_NOTA, cTenue, false
+            ).apply { setLineSpacing(0f, 1.2f) }, margenArriba(4))
+        } else {
+            val noLeidas = items.count { !it.leida }
+            val chips = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+            chips.addView(chipDiag("${items.size} ${if (items.size == 1) "oferta" else "ofertas"}", cTarjeta2, cTexto2))
+            if (noLeidas > 0) chips.addView(chipDiag("$noLeidas no ${if (noLeidas == 1) "leída" else "leídas"}", Tema.AMARILLO_SUAVE, cAmarillo),
+                LinearLayout.LayoutParams(-2, -2).apply { leftMargin = dp(6) })
+            chips.addView(chipDiag(String.format(Locale.US, "%.1f MB", Registro.bytes(this) / 1_048_576.0), cTarjeta2, cTexto2),
+                LinearLayout.LayoutParams(-2, -2).apply { leftMargin = dp(6) })
+            c.addView(chips, margenArriba(4))
+        }
+        c.addView(boton("Enviar reporte a soporte", cVerde, Color.BLACK) {
+            // Por defecto van las de hoy que no se pudieron leer; el conductor puede cambiarlas.
+            val hoy = items.filter { !it.leida && System.currentTimeMillis() - it.hora < 86_400_000L }.take(5)
+            mostrarReporte(hoy)
+        }, margenArriba(Tema.S2))
+        c.addView(boton("Ver lo guardado", cTarjeta2, cTexto) { mostrarGuardado() }, margenArriba(Tema.S1))
+        if (items.isNotEmpty()) {
+            c.addView(texto("Borrar todo lo guardado", Tema.T_NOTA, cTenue, false).apply {
+                gravity = Gravity.CENTER
+                minHeight = dp(Tema.ALTO_TOQUE)
+                paintFlags = paintFlags or android.graphics.Paint.UNDERLINE_TEXT_FLAG
+                isClickable = true
+                setOnClickListener {
+                    AlertDialog.Builder(this@MainActivity)
+                        .setMessage("¿Borrar las ${items.size} ofertas guardadas, con sus fotos y textos? No se puede deshacer.")
+                        .setPositiveButton("Borrar") { _, _ ->
+                            Registro.borrarTodo(this@MainActivity)
+                            prefs.borrarDiagnostico()
+                            pintarDiag()
+                        }
+                        .setNegativeButton("Cancelar", null)
+                        .show()
+                }
+            }, margenArriba(4))
+        }
+    }
+
+    /** Explica qué se guarda. Sale una vez (viene encendido) y al encenderlo a mano. */
+    private fun avisoDiagnostico() {
+        if (dialogoDiagAviso?.isShowing == true) return
+        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        listOf(
+            "Solo cuando hay una oferta de Uber o DiDi, y solo la parte de esa app.",
+            "Se quedan en tu teléfono y se borran solas a los 7 días.",
+            "Pueden salir el nombre del pasajero o direcciones. Antes de enviar algo, tú lo revisas.",
+            "Nada se envía solo."
+        ).forEachIndexed { i, s ->
+            val f = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+            f.addView(View(this).apply { background = punto(cVerde) },
+                LinearLayout.LayoutParams(dp(6), dp(6)).apply { topMargin = dp(8); rightMargin = dp(10) })
+            f.addView(texto(s, Tema.T_TEXTO, cTexto2, false).apply { setLineSpacing(0f, 1.2f) }, LinearLayout.LayoutParams(0, -2, 1f))
+            cuerpo.addView(f, if (i > 0) margenArriba(Tema.S1) else LinearLayout.LayoutParams(-1, -2))
+        }
+        cuerpo.addView(boton("Sí, guardar", cVerde, Color.BLACK) {
+            prefs.diagAvisoVisto = true
+            prefs.diagnostico = true
+            dialogoDiagAviso?.dismiss()
+            pintarDiag()
+        }, margenArriba(Tema.S2))
+        cuerpo.addView(boton("No guardar", cTarjeta2, cTexto) {
+            prefs.diagAvisoVisto = true
+            prefs.diagnostico = false
+            dialogoDiagAviso?.dismiss()
+            pintarDiag()
+        }, margenArriba(Tema.S1))
+        dialogoDiagAviso = hoja("Checa guarda las pantallas de tus ofertas", null, cuerpo).apply { setCancelable(false) }
+    }
+
+    /** Ventana de pantalla completa con encabezado (título + cerrar), cuerpo y pie. */
+    private fun ventanaCompleta(titulo: String): Triple<Dialog, LinearLayout, LinearLayout> {
         val d = Dialog(this, android.R.style.Theme_DeviceDefault_NoActionBar)
         val raiz = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setBackgroundColor(cFondo) }
-        val cuerpo = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(dp(16), dp(Tema.S3), dp(16), dp(Tema.S2))
+        val cab = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(dp(16), dp(Tema.S2), dp(8), dp(Tema.S1))
         }
+        cab.addView(texto(titulo, Tema.T_SUB, cTexto, true).apply { maxLines = 1; ellipsize = TextUtils.TruncateAt.END },
+            LinearLayout.LayoutParams(0, -2, 1f))
+        cab.addView(icono(Icono.CERRAR, cTenue, 20).apply {
+            setPadding(dp(12), dp(12), dp(12), dp(12))
+            background = ripple(Color.TRANSPARENT, 24)
+            isClickable = true
+            setOnClickListener { d.dismiss() }
+        }, LinearLayout.LayoutParams(dp(48), dp(48)))
+        raiz.addView(cab)
+        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        raiz.addView(cuerpo, LinearLayout.LayoutParams(-1, 0, 1f))
         val pie = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(16), dp(Tema.S1), dp(16), dp(Tema.S2))
         }
-        raiz.addView(ScrollView(this).apply { isVerticalScrollBarEnabled = false; addView(cuerpo) },
-            LinearLayout.LayoutParams(-1, 0, 1f))
         raiz.addView(pie)
         d.setContentView(raiz)
         d.window?.statusBarColor = cFondo
         d.window?.navigationBarColor = cFondo
+        return Triple(d, cuerpo, pie)
+    }
 
-        fun pintar() {
-            val fotos = Fotos.lista(this)
-            elegidas.retainAll(fotos.toSet())
-            if (fotos.isEmpty()) { d.dismiss(); return }
-            cuerpo.removeAllViews()
-            pie.removeAllViews()
-            cuerpo.addView(texto("Tus fotos de ofertas", 24f, cTexto, true))
-            cuerpo.addView(texto(
-                "Nada se envía solo. Toca una foto para verla grande y bórrala si tiene algo que no quieres compartir. " +
-                    "Marca con el círculo las que sí quieres mandar.",
-                Tema.T_NOTA, cTenue, false
-            ).apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S1))
-            val todas = elegidas.size == fotos.size
-            cuerpo.addView(texto(if (todas) "Quitar selección" else "Seleccionar todas", Tema.T_TEXTO, cVerde, true).apply {
-                minHeight = dp(Tema.ALTO_TOQUE)
-                gravity = Gravity.CENTER_VERTICAL
-                isClickable = true
-                setOnClickListener { if (todas) elegidas.clear() else elegidas.addAll(fotos); pintar() }
-            })
-            val lado = (resources.displayMetrics.widthPixels - dp(32) - dp(16)) / 3
-            fotos.chunked(3).forEach { grupo ->
-                val fila = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
-                grupo.forEachIndexed { i, f ->
-                    val marcada = f in elegidas
-                    val celda = FrameLayout(this).apply {
-                        background = redondo(if (marcada) cVerde else cTarjeta2, 8)
-                        setPadding(dp(if (marcada) 3 else 0), dp(if (marcada) 3 else 0), dp(if (marcada) 3 else 0), dp(if (marcada) 3 else 0))
-                    }
-                    celda.addView(ImageView(this).apply {
-                        scaleType = ImageView.ScaleType.CENTER_CROP
-                        setImageBitmap(Fotos.miniatura(f, lado))
-                        isClickable = true
-                        setOnClickListener { verFoto(f) { pintar() } }
-                    }, FrameLayout.LayoutParams(-1, -1))
-                    celda.addView(texto(if (marcada) "✓" else "", Tema.T_TEXTO, Color.BLACK, true).apply {
-                        gravity = Gravity.CENTER
-                        background = if (marcada) punto(cVerde) else punto(0xB3000000.toInt())
-                        isClickable = true
-                        setOnClickListener { if (marcada) elegidas.remove(f) else elegidas.add(f); pintar() }
-                    }, FrameLayout.LayoutParams(dp(32), dp(32), Gravity.TOP or Gravity.END).apply { setMargins(0, dp(6), dp(6), 0) })
-                    fila.addView(celda, LinearLayout.LayoutParams(lado, (lado * 1.6f).toInt()).apply { if (i > 0) leftMargin = dp(8) })
+    private fun chipLectura(it: Registro.Item) =
+        if (it.leida) chipDiag("Leída", Tema.VERDE_SUAVE, cVerde) else chipDiag("No la reconoció", Tema.AMARILLO_SUAVE, cAmarillo)
+
+    /**
+     * «Lo guardado»: una fila por oferta (foto, texto, hora y si se leyó). Las no leídas primero.
+     * Elegir solo cambia la marca de esa fila; la lista no se vuelve a armar.
+     */
+    private fun mostrarGuardado(preseleccion: Collection<String> = emptyList(), alEnviar: ((List<Registro.Item>) -> Unit)? = null) {
+        val (d, cuerpo, pie) = ventanaCompleta("Lo guardado")
+        val elegidos = LinkedHashSet<String>(preseleccion)
+        val cargador = java.util.concurrent.Executors.newFixedThreadPool(2)
+        var todos = Registro.lista(this)
+        var filtro = if (todos.any { !it.leida }) 0 else 2
+
+        val seg = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            background = redondo(cTarjeta, 12)
+            setPadding(dp(3), dp(3), dp(3), dp(3))
+        }
+        cuerpo.addView(seg, LinearLayout.LayoutParams(-1, -2).apply { setMargins(dp(16), 0, dp(16), dp(Tema.S1)) })
+        val lista = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(16), 0, dp(16), dp(Tema.S2))
+        }
+        cuerpo.addView(ScrollView(this).apply { isVerticalScrollBarEnabled = false; addView(lista) }, LinearLayout.LayoutParams(-1, 0, 1f))
+
+        val barra = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            background = redondo(cTarjeta, 16)
+            setPadding(dp(12), dp(8), dp(8), dp(8))
+        }
+        val cuenta = texto("", Tema.T_TEXTO, cTexto2, true)
+        barra.addView(cuenta, LinearLayout.LayoutParams(0, -2, 1f))
+        lateinit var pintar: () -> Unit
+        barra.addView(boton("Borrar", Tema.ROJO_SUAVE, cRojo) {
+            val sel = todos.filter { it.base in elegidos }
+            AlertDialog.Builder(this)
+                .setMessage("¿Borrar ${sel.size} ${if (sel.size == 1) "oferta" else "ofertas"} con su foto y texto? No se puede deshacer.")
+                .setPositiveButton("Borrar") { _, _ ->
+                    Registro.borrar(sel)
+                    elegidos.clear()
+                    todos = Registro.lista(this)
+                    pintar()
                 }
-                cuerpo.addView(fila, margenArriba(8))
+                .setNegativeButton("Cancelar", null)
+                .show()
+        }.apply { setPadding(dp(16), 0, dp(16), 0) }, LinearLayout.LayoutParams(-2, dp(44)).apply { rightMargin = dp(8) })
+        barra.addView(boton("Enviar", cVerde, Color.BLACK) {
+            val sel = todos.filter { it.base in elegidos }
+            d.dismiss()
+            if (alEnviar != null) alEnviar(sel) else mostrarReporte(sel)
+        }.apply { setPadding(dp(20), 0, dp(20), 0) }, LinearLayout.LayoutParams(-2, dp(44)))
+        pie.addView(barra)
+
+        fun pintarBarra() {
+            val n = elegidos.size
+            barra.visibility = if (n > 0) View.VISIBLE else View.GONE
+            cuenta.text = if (n == 1) "1 elegida" else "$n elegidas"
+        }
+
+        fun marcar(fila: LinearLayout, check: TextView, sel: Boolean) {
+            fila.background = GradientDrawable().apply {
+                setColor(cTarjeta)
+                cornerRadius = dp(14).toFloat()
+                if (sel) setStroke(dp(2), cVerde)
             }
-            val n = elegidas.size
-            pie.addView(
-                if (n > 0) boton("Compartir ($n)", cVerde, Color.BLACK) { Fotos.compartir(this, elegidas.toList()) }
-                else boton("Elige las fotos que quieres compartir", cTarjeta2, cTenue) { },
-                LinearLayout.LayoutParams(-1, dp(52))
-            )
-            if (n > 0) pie.addView(boton("Borrar ($n)", Tema.ROJO_SUAVE, cRojo) {
-                AlertDialog.Builder(this)
-                    .setMessage("¿Borrar $n ${if (n == 1) "foto" else "fotos"}? No se puede deshacer.")
-                    .setPositiveButton("Borrar") { _, _ -> Fotos.borrar(elegidas.toList()); elegidas.clear(); pintar() }
-                    .setNegativeButton("Cancelar", null)
-                    .show()
-            }, margenArriba(Tema.S1))
-            pie.addView(texto("Cerrar", Tema.T_TEXTO, cTenue, false).apply {
-                typeface = fuenteMedia
-                gravity = Gravity.CENTER
-                minHeight = dp(Tema.ALTO_TOQUE)
-                isClickable = true
-                setOnClickListener { d.dismiss() }
-            }, margenArriba(4))
+            check.text = if (sel) "✓" else ""
+            check.background = if (sel) punto(cVerde) else GradientDrawable().apply {
+                shape = GradientDrawable.OVAL
+                setStroke(dp(2), cTenue)
+            }
+        }
+
+        fun fila(it: Registro.Item): View {
+            val f = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                setPadding(dp(10), dp(10), dp(10), dp(10))
+            }
+            val check = texto("", Tema.T_NOTA, Color.BLACK, true).apply { gravity = Gravity.CENTER }
+            f.addView(check, LinearLayout.LayoutParams(dp(24), dp(24)).apply { rightMargin = dp(10); topMargin = dp(2) })
+            val col = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+            col.addView(texto(it.titulo(), Tema.T_TEXTO, cTexto, true))
+            col.addView(chipLectura(it), LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(4) })
+            val resumen = it.lineas().substringBefore("\n\nCheca entendió").lines().filter { l -> l.isNotBlank() }.take(4)
+                .joinToString(" · ")
+            col.addView(texto(resumen, Tema.T_NOTA, cTexto2, false).apply {
+                typeface = Typeface.MONOSPACE
+                maxLines = 2
+                ellipsize = TextUtils.TruncateAt.END
+            }, margenArriba(6))
+            f.addView(col, LinearLayout.LayoutParams(0, -2, 1f))
+            val img = ImageView(this).apply {
+                scaleType = ImageView.ScaleType.FIT_CENTER
+                background = redondo(cTarjeta2, 8)
+            }
+            f.addView(img, LinearLayout.LayoutParams(dp(54), dp(96)).apply { leftMargin = dp(10) })
+            it.foto?.let { foto ->
+                cargador.execute {
+                    val bm = Registro.miniatura(foto, dp(54))
+                    img.post { if (d.isShowing) img.setImageBitmap(bm) }
+                }
+            } ?: img.setVisibility(View.GONE)
+            marcar(f, check, it.base in elegidos)
+            check.isClickable = true
+            check.setOnClickListener { _ ->
+                if (!elegidos.remove(it.base)) elegidos.add(it.base)
+                marcar(f, check, it.base in elegidos)
+                pintarBarra()
+            }
+            f.isClickable = true
+            f.setOnClickListener { _ ->
+                mostrarDetalle(it, it.base in elegidos, alElegir = { sel ->
+                    if (sel) elegidos.add(it.base) else elegidos.remove(it.base)
+                    marcar(f, check, sel)
+                    pintarBarra()
+                }, alBorrar = {
+                    elegidos.remove(it.base)
+                    todos = Registro.lista(this)
+                    pintar()
+                })
+            }
+            return f
+        }
+
+        pintar = {
+            seg.removeAllViews()
+            val nNo = todos.count { !it.leida }
+            listOf("No leídas · $nNo", "Leídas · ${todos.size - nNo}", "Todas").forEachIndexed { i, s ->
+                seg.addView(texto(s, Tema.T_NOTA, if (i == filtro) cTexto else cTenue, true).apply {
+                    gravity = Gravity.CENTER
+                    minHeight = dp(36)
+                    background = if (i == filtro) redondo(cTarjeta2, 9) else null
+                    isClickable = true
+                    setOnClickListener { filtro = i; pintar() }
+                }, LinearLayout.LayoutParams(0, -2, 1f))
+            }
+            lista.removeAllViews()
+            val visibles = when (filtro) {
+                0 -> todos.filter { !it.leida }
+                1 -> todos.filter { it.leida }
+                else -> todos
+            }
+            if (visibles.isEmpty()) {
+                lista.addView(texto(
+                    when {
+                        todos.isEmpty() -> "Aún no hay ofertas guardadas. Se guardan solas mientras Checa lee, si «Guardar pantallas de ofertas» está encendido."
+                        filtro == 0 -> "Ninguna oferta sin leer. Checa entendió todas las que vio."
+                        else -> "No hay ofertas aquí."
+                    },
+                    Tema.T_TEXTO, cTenue, false
+                ).apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S2))
+            }
+            visibles.forEachIndexed { i, x -> lista.addView(fila(x), if (i > 0) margenArriba(8) else LinearLayout.LayoutParams(-1, -2)) }
+            elegidos.retainAll(todos.map { it.base }.toSet())
+            pintarBarra()
+        }
+        pintar()
+        d.setOnDismissListener {
+            cargador.shutdown()
+            pintarDiag()
         }
         d.show()
-        pintar()
     }
 
-    /** Foto grande para revisar lo que muestra antes de compartirla; se puede borrar desde aquí. */
-    private fun verFoto(f: java.io.File, alCambiar: () -> Unit) {
-        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        cuerpo.addView(ImageView(this).apply {
-            scaleType = ImageView.ScaleType.FIT_CENTER
-            setImageBitmap(Fotos.miniatura(f, 900))
-        }, LinearLayout.LayoutParams(-1, (resources.displayMetrics.heightPixels * 0.6f).toInt()))
-        var ventana: Dialog? = null
-        cuerpo.addView(boton("Borrar esta foto", Tema.ROJO_SUAVE, cRojo) {
-            Fotos.borrar(listOf(f))
-            ventana?.dismiss()
-            alCambiar()
-        }, margenArriba(Tema.S1))
-        cuerpo.addView(boton("Cerrar", cTarjeta2, cTexto) { ventana?.dismiss() }, margenArriba(Tema.S1))
-        ventana = hoja("Foto", null, cuerpo)
-    }
-
-    private fun verCapturas() {
-        val caps = prefs.capturas().ifBlank { "Aún no hay capturas." }
-        val vista = texto(caps, Tema.T_NOTA, cTexto, false).apply {
-            setTextIsSelectable(true)
-            setPadding(dp(Tema.S2), dp(12), dp(Tema.S2), dp(12))
+    /** Una oferta: foto completa con zoom y el texto que leyó Checa. */
+    private fun mostrarDetalle(
+        it: Registro.Item, elegida: Boolean,
+        alElegir: ((Boolean) -> Unit)? = null, alBorrar: (() -> Unit)? = null
+    ) {
+        val (d, cuerpo, pie) = ventanaCompleta(it.titulo())
+        if (it.foto != null) {
+            val img = ZoomImagen(this).apply { background = redondo(cTarjeta, 12) }
+            cuerpo.addView(img, LinearLayout.LayoutParams(-1, 0, 1f).apply { setMargins(dp(16), 0, dp(16), 0) })
+            cuerpo.addView(texto("Pellizca o toca dos veces para ampliar", Tema.T_NOTA, cTenue, false).apply {
+                gravity = Gravity.CENTER
+            }, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(6) })
+            val foto = it.foto
+            Thread {
+                val bm = Registro.miniatura(foto, 1200)
+                img.post { if (d.isShowing) img.setImageBitmap(bm) }
+            }.start()
         }
-        AlertDialog.Builder(this)
-            .setTitle("Capturas")
-            .setView(ScrollView(this).apply { addView(vista) })
-            .setPositiveButton("Compartir") { _, _ ->
-                val i = Intent(Intent.ACTION_SEND).apply {
-                    type = "text/plain"
-                    putExtra(Intent.EXTRA_TEXT, caps)
+        val tarjetaTexto = tarjeta()
+        val cab = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
+        cab.addView(texto("Lo que leyó Checa", Tema.T_TEXTO, cTexto, true), LinearLayout.LayoutParams(0, -2, 1f))
+        cab.addView(chipLectura(it))
+        tarjetaTexto.addView(cab)
+        tarjetaTexto.addView(texto(it.lineas(), Tema.T_NOTA, cTexto2, false).apply {
+            typeface = Typeface.MONOSPACE
+            setTextIsSelectable(true)
+        }, margenArriba(Tema.S1))
+        cuerpo.addView(ScrollView(this).apply { isVerticalScrollBarEnabled = false; addView(tarjetaTexto) },
+            LinearLayout.LayoutParams(-1, if (it.foto != null) dp(170) else 0, if (it.foto != null) 0f else 1f).apply {
+                setMargins(dp(16), dp(Tema.S1), dp(16), 0)
+            })
+
+        val fila = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+        fila.addView(boton("Borrar", Tema.ROJO_SUAVE, cRojo) {
+            AlertDialog.Builder(this)
+                .setMessage("¿Borrar esta oferta con su foto y texto?")
+                .setPositiveButton("Borrar") { _, _ ->
+                    Registro.borrar(it)
+                    d.dismiss()
+                    alBorrar?.invoke() ?: pintarDiag()
                 }
-                startActivity(Intent.createChooser(i, "Compartir capturas"))
+                .setNegativeButton("Cancelar", null)
+                .show()
+        }, LinearLayout.LayoutParams(0, dp(48), 1f).apply { rightMargin = dp(8) })
+        if (alElegir != null) {
+            fila.addView(boton(if (elegida) "Quitar del reporte" else "Elegir para el reporte", if (elegida) cTarjeta2 else cVerde,
+                if (elegida) cTexto else Color.BLACK) {
+                alElegir(!elegida)
+                d.dismiss()
+            }, LinearLayout.LayoutParams(0, dp(48), 1.6f))
+        } else {
+            fila.addView(boton("Enviar a soporte", cVerde, Color.BLACK) {
+                d.dismiss()
+                mostrarReporte(listOf(it))
+            }, LinearLayout.LayoutParams(0, dp(48), 1.6f))
+        }
+        pie.addView(fila)
+        d.show()
+    }
+
+    /** Reporte a soporte: motivo, ofertas elegidas y datos del equipo en un solo paso. */
+    private fun mostrarReporte(items: List<Registro.Item>) {
+        val (d, cuerpo, pie) = ventanaCompleta("Reporte a soporte")
+        val col = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(16), 0, dp(16), dp(Tema.S2))
+        }
+        cuerpo.addView(ScrollView(this).apply { isVerticalScrollBarEnabled = false; addView(col) }, LinearLayout.LayoutParams(-1, -1))
+
+        val que = tarjeta()
+        que.addView(texto("¿Qué pasó?", Tema.T_TEXTO, cTexto, true))
+        val chips = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        fun pintarMotivos() {
+            chips.removeAllViews()
+            motivosReporte.chunked(2).forEachIndexed { r, par ->
+                val f = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+                par.forEachIndexed { k, s ->
+                    val i = r * 2 + k
+                    val sel = i == reporteMotivo
+                    f.addView(texto(s, Tema.T_NOTA, if (sel) Color.BLACK else cTexto2, true).apply {
+                        gravity = Gravity.CENTER
+                        minHeight = dp(40)
+                        background = redondo(if (sel) cVerde else cTarjeta2, 50)
+                        isClickable = true
+                        setOnClickListener { reporteMotivo = i; pintarMotivos() }
+                    }, LinearLayout.LayoutParams(0, -2, 1f).apply { if (k > 0) leftMargin = dp(8) })
+                }
+                chips.addView(f, if (r > 0) margenArriba(8) else LinearLayout.LayoutParams(-1, -2))
             }
-            .setNeutralButton("Borrar") { _, _ -> prefs.borrarCapturas() }
-            .setNegativeButton("Cerrar", null)
-            .show()
+        }
+        pintarMotivos()
+        que.addView(chips, margenArriba(Tema.S1))
+        val campo = EditText(this).apply {
+            setText(reporteTexto)
+            hint = "Cuéntalo con tus palabras (opcional)"
+            setHintTextColor(cTenue)
+            setTextColor(cTexto)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, Tema.T_TEXTO)
+            background = redondo(cTarjeta2, 12)
+            setPadding(dp(12), dp(10), dp(12), dp(10))
+            minLines = 2
+            gravity = Gravity.TOP
+            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+        }
+        que.addView(campo, margenArriba(Tema.S1))
+        col.addView(que)
+
+        val env = tarjeta()
+        env.addView(texto("Se va a enviar", Tema.T_TEXTO, cTexto, true))
+        fun dato(k: String, v: String) {
+            val f = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+            f.addView(texto(k, Tema.T_NOTA, cTexto2, false), LinearLayout.LayoutParams(0, -2, 1f))
+            f.addView(texto(v, Tema.T_NOTA, cTexto, true).apply { gravity = Gravity.END },
+                LinearLayout.LayoutParams(0, -2, 1.4f))
+            env.addView(f, margenArriba(6))
+        }
+        val conFoto = items.count { it.foto != null }
+        dato("Ofertas elegidas", when {
+            items.isEmpty() -> "Ninguna"
+            conFoto > 0 -> "${items.size} (foto y texto)"
+            else -> "${items.size} (texto)"
+        })
+        dato("Tu equipo", "${Build.MANUFACTURER} ${Build.MODEL} · Android ${Build.VERSION.RELEASE}")
+        dato("Checa", "${Actualizacion.instalada(this)} · lector ${if (servicioActivo()) "activo" else "apagado"}")
+        dato("Cuenta", Cuenta.correo(this).ifEmpty { "sin sesión" })
+        env.addView(boton(if (items.isEmpty()) "Elegir ofertas" else "Cambiar ofertas", cTarjeta2, cTexto) {
+            reporteTexto = campo.text.toString()
+            d.dismiss()
+            mostrarGuardado(items.map { it.base }) { sel -> mostrarReporte(sel) }
+        }, margenArriba(Tema.S1))
+        var borrarDespues = false
+        if (items.isNotEmpty()) {
+            env.addView(interruptor("Borrar lo enviado al terminar", null, false) { borrarDespues = it }, margenArriba(4))
+        }
+        col.addView(env, margenArriba(Tema.ENTRE_TARJETAS))
+
+        pie.addView(boton("Enviar por WhatsApp", cVerde, Color.BLACK) {
+            reporteTexto = campo.text.toString()
+            val msj = buildString {
+                append("Hola, necesito ayuda con Checa: ").append(motivosReporte[reporteMotivo].lowercase()).append("\n")
+                if (reporteTexto.isNotBlank()) append(reporteTexto.trim()).append("\n")
+                if (items.isNotEmpty()) {
+                    append("\n— Ofertas —\n")
+                    items.forEachIndexed { i, o ->
+                        append("${i + 1}) ${o.titulo()} · ${if (o.leida) "leída" else "no la reconoció"}\n")
+                        append(o.lineas().lines().filter { l -> l.isNotBlank() }.take(15).joinToString("\n")).append("\n\n")
+                    }
+                }
+                append("\n— Datos de mi equipo —\n").append(Soporte.resumen(this@MainActivity))
+            }
+            Registro.enviar(this, items, msj, Soporte.WHATSAPP)
+            if (borrarDespues) Registro.borrarDespues(this, items)
+            reporteTexto = ""
+            reporteMotivo = 0
+            d.dismiss()
+        }, LinearLayout.LayoutParams(-1, dp(52)))
+        pie.addView(texto(
+            if (conFoto > 0) "Se abre WhatsApp con todo listo. Elige el chat de soporte de Checa."
+            else "Se abre el chat de soporte de Checa con el mensaje listo.",
+            Tema.T_NOTA, cTenue, false
+        ).apply { gravity = Gravity.CENTER }, margenArriba(Tema.S1))
+        d.setOnDismissListener { pintarDiag() }
+        d.show()
     }
 
     // =====================================================================
