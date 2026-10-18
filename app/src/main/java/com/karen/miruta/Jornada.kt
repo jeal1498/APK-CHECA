@@ -74,7 +74,7 @@ object Jornada {
     }.timeInMillis
 
     /** Lunes de esta semana a las 00:00. */
-    private fun inicioDeSemana(): Long = Calendar.getInstance().apply {
+    fun inicioDeSemana(): Long = Calendar.getInstance().apply {
         firstDayOfWeek = Calendar.MONDAY
         set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0)
         set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)

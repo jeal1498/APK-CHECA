@@ -682,11 +682,12 @@ class MainActivity : Activity() {
         col.addView(t, margenTarjeta())
     }
 
-    /** Meta dentro de un campo: nombre, − valor + (mantener presionado para avanzar rápido) e interruptor. */
+    /** Valor dentro de un campo: nombre, − valor + (mantener presionado para avanzar rápido) e interruptor si [leerOn] no es null. */
     private fun campoMeta(
         titulo: String, pre: String, unidad: String, paso: Float,
-        leerOn: () -> Boolean, ponerOn: (Boolean) -> Unit,
+        leerOn: (() -> Boolean)?, ponerOn: ((Boolean) -> Unit)?,
         leerV: () -> Float, ponerV: (Float) -> Unit,
+        min: Float = paso, max: Float = Float.MAX_VALUE,
         alCrearPintor: (() -> Unit) -> Unit = {}
     ): View {
         val fila = LinearLayout(this).apply {
@@ -705,7 +706,7 @@ class MainActivity : Activity() {
         lateinit var pintar: () -> Unit
         fun cambiar(signo: Int) {
             val nuevo = Math.round((leerV() + signo * paso) * 100f) / 100f
-            if (nuevo >= paso) { ponerV(nuevo); pintar() }
+            if (nuevo in min..max) { ponerV(nuevo); pintar() }
         }
         val teclas = ArrayList<View>()
         fun tecla(sim: String, signo: Int) = texto(sim, 20f, cTexto, false).apply {
@@ -729,20 +730,20 @@ class MainActivity : Activity() {
         fila.addView(tecla("−", -1), LinearLayout.LayoutParams(dp(36), dp(40)))
         fila.addView(vt, LinearLayout.LayoutParams(dp(76), -2))
         fila.addView(tecla("+", 1), LinearLayout.LayoutParams(dp(36), dp(40)))
-        val sw = interruptorSolo(leerOn())
-        fila.addView(sw, LinearLayout.LayoutParams(-2, -2).apply { leftMargin = dp(4) })
+        val sw = if (leerOn != null) interruptorSolo(leerOn()) else null
+        if (sw != null) fila.addView(sw, LinearLayout.LayoutParams(-2, -2).apply { leftMargin = dp(4) })
 
         var cambiando = false
         pintar = {
-            val on = leerOn()
-            if (sw.isChecked != on) { cambiando = true; sw.isChecked = on; cambiando = false }
+            val on = leerOn?.invoke() ?: true
+            if (sw != null && sw.isChecked != on) { cambiando = true; sw.isChecked = on; cambiando = false }
             vt.text = pre + num(leerV()) + unidad
             vt.setTextColor(if (on) cTexto else cTenue)
             teclas.forEach { it.alpha = if (on) 1f else 0.5f }
         }
         alCrearPintor(pintar)
-        sw.setOnCheckedChangeListener { _, b ->
-            if (!cambiando) { ponerOn(b); pintar() }
+        sw?.setOnCheckedChangeListener { _, b ->
+            if (!cambiando) { ponerOn?.invoke(b); pintar() }
         }
         pintar()
         return fila
@@ -1122,16 +1123,44 @@ class MainActivity : Activity() {
         // --- Pop-up ---
         col.addView(etiqueta("POP-UP"))
         val pop = tarjeta()
-        vistaPrevia = FrameLayout(this).apply {
+        val previa = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
             background = redondo(cFondo, Tema.R_BOTON)
-            setPadding(dp(Tema.S2), dp(Tema.S2), dp(Tema.S2), dp(Tema.S2))
+            setPadding(dp(10), dp(Tema.S2), dp(10), dp(12))
         }
-        pop.addView(vistaPrevia)
-        pop.addView(deslizador("Tamaño del texto", Prefs.TAM_MIN, Prefs.TAM_MAX, prefs.tamanoTexto, "") {
-            prefs.tamanoTexto = it; refrescarVistaPrevia()
+        vistaPrevia = FrameLayout(this)
+        previa.addView(vistaPrevia, LinearLayout.LayoutParams(-1, -2))
+        previa.addView(texto("VISTA PREVIA · NÚMEROS DE EJEMPLO", 10f, cTenue, false).apply {
+            typeface = Fuentes.numero
+            letterSpacing = 0.08f
+            gravity = Gravity.CENTER
+        }, margenArriba(10))
+        pop.addView(previa)
+
+        // Tamaño del pop-up: cambia el ancho; lo de adentro queda igual.
+        val anchos = listOf(280, 320, 360)
+        val cabAncho = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
+        cabAncho.addView(texto("Tamaño del pop-up", Tema.T_TEXTO, cTexto2, false), LinearLayout.LayoutParams(0, -2, 1f))
+        val notaAncho = texto("", 11f, cTenue, false).apply { typeface = Fuentes.numero }
+        cabAncho.addView(notaAncho)
+        fun pintarAncho() { notaAncho.text = "${prefs.anchoPopup} dp" + if (prefs.anchoPopup == 360) " · como antes" else "" }
+        pintarAncho()
+        pop.addView(cabAncho, margenArriba(Tema.S2))
+        pop.addView(pildoras(listOf("Chico", "Mediano", "Grande"), { anchos.indexOf(prefs.anchoPopup) }) { i ->
+            prefs.anchoPopup = anchos[i]
+            pintarAncho()
+            refrescarVistaPrevia()
         }, margenArriba(Tema.S1))
-        pop.addView(deslizador("Tiempo en pantalla", 3, 60, prefs.duracionSeg, " s") { prefs.duracionSeg = it })
-        pop.addView(deslizador("Distancia desde arriba", 0, 80, prefs.posicion, " %") { prefs.posicion = it })
+        pop.addView(campoMeta("Tamaño de la letra", "", "", 1f, null, null,
+            { prefs.tamanoTexto.toFloat() }, { prefs.tamanoTexto = it.toInt(); refrescarVistaPrevia() },
+            Prefs.TAM_MIN.toFloat(), Prefs.TAM_MAX.toFloat()), margenArriba(12))
+        pop.addView(campoMeta("Tiempo en pantalla", "", " s", 1f, null, null,
+            { prefs.duracionSeg.toFloat() }, { prefs.duracionSeg = it.toInt() }, 3f, 60f), margenArriba(Tema.S1))
+        pop.addView(campoMeta("Altura en la pantalla", "", " %", 1f, null, null,
+            { prefs.posicion.toFloat() }, { prefs.posicion = it.toInt() }, 0f, 80f), margenArriba(Tema.S1))
+        pop.addView(texto("También lo puedes arrastrar con el dedo cuando sale en Uber o DiDi.", Tema.T_NOTA, cTenue, false)
+            .apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
         pop.addView(botonContorno("Probar en pantalla") {
             val o = ofertaEjemplo()
             popupPrueba?.mostrar(o)
@@ -3321,7 +3350,14 @@ class MainActivity : Activity() {
         if (!::vistaPrevia.isInitialized) return
         vistaPrevia.removeAllViews()
         val v = Popup(this, prefs, WindowManager.LayoutParams.TYPE_APPLICATION).construir(ofertaEjemplo(), false)
-        vistaPrevia.addView(v, FrameLayout.LayoutParams(-1, -2, Gravity.CENTER))
+        // El ancho elegido, en proporción al grande (360 dp).
+        val fila = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_HORIZONTAL
+            weightSum = 1f
+        }
+        fila.addView(v, LinearLayout.LayoutParams(0, -2, prefs.anchoPopup / 360f))
+        vistaPrevia.addView(fila, FrameLayout.LayoutParams(-1, -2, Gravity.CENTER))
     }
 
     private fun num(v: Float): String =

@@ -50,7 +50,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
     ) {
         ultima = o
         // Misma oferta, misma marca y misma zona: no se vuelve a pintar (evita el parpadeo).
-        val firma = "$o|$app|$marca|$zona|${prefs.posicion}"
+        val firma = "$o|$app|$marca|$zona|${prefs.posicion}|${prefs.anchoPopup}"
         val actual = vista
         if (actual != null && firma == firmaVista) {
             if (reiniciar || !temporizador) {
@@ -67,7 +67,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         @Suppress("DEPRECATION")
         wm.defaultDisplay.getRealMetrics(real)
         val area = zona ?: Rect(0, 0, real.widthPixels, real.heightPixels)
-        val ancho = minOf((area.width() * 0.94f).toInt(), dp(360))
+        val ancho = minOf((area.width() * 0.94f).toInt(), dp(prefs.anchoPopup))
         val lp = WindowManager.LayoutParams(
             ancho,
             WindowManager.LayoutParams.WRAP_CONTENT,
