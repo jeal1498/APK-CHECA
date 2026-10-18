@@ -28,6 +28,7 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
@@ -1133,21 +1134,25 @@ class MainActivity : Activity() {
 
         // --- Pop-up ---
         col.addView(etiqueta("POP-UP"))
-        val pop = tarjeta()
+        // Vista previa a lo ancho de la pantalla (fuera de la tarjeta) para que mida igual que en «Probar en pantalla».
         val previa = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL
-            background = redondo(cFondo, Tema.R_BOTON)
-            setPadding(dp(10), dp(Tema.S2), dp(10), dp(12))
+            setPadding(0, dp(Tema.S1), 0, dp(Tema.S1))
         }
         vistaPrevia = FrameLayout(this)
         previa.addView(vistaPrevia, LinearLayout.LayoutParams(-1, -2))
-        previa.addView(texto("VISTA PREVIA · NÚMEROS DE EJEMPLO", 10f, cTenue, false).apply {
+        previa.addView(texto("VISTA PREVIA · TAMAÑO REAL · NÚMEROS DE EJEMPLO", 10f, cTenue, false).apply {
             typeface = Fuentes.numero
             letterSpacing = 0.08f
             gravity = Gravity.CENTER
         }, margenArriba(10))
-        pop.addView(previa)
+        col.addView(previa, LinearLayout.LayoutParams(-1, -2).apply {
+            leftMargin = -dp(Tema.S2)
+            rightMargin = -dp(Tema.S2)
+            bottomMargin = dp(Tema.S1)
+        })
+        val pop = tarjeta()
 
         // Tamaño del pop-up: cambia el ancho; lo de adentro queda igual.
         val anchos = listOf(280, 320, 360)
@@ -1157,7 +1162,7 @@ class MainActivity : Activity() {
         cabAncho.addView(notaAncho)
         fun pintarAncho() { notaAncho.text = "${prefs.anchoPopup} dp" + if (prefs.anchoPopup == 360) " · como antes" else "" }
         pintarAncho()
-        pop.addView(cabAncho, margenArriba(Tema.S2))
+        pop.addView(cabAncho)
         pop.addView(pildoras(listOf("Chico", "Mediano", "Grande"), { anchos.indexOf(prefs.anchoPopup) }) { i ->
             prefs.anchoPopup = anchos[i]
             pintarAncho()
@@ -3361,14 +3366,12 @@ class MainActivity : Activity() {
         if (!::vistaPrevia.isInitialized) return
         vistaPrevia.removeAllViews()
         val v = Popup(this, prefs, WindowManager.LayoutParams.TYPE_APPLICATION).construir(ofertaEjemplo(), false)
-        // El ancho elegido, en proporción al grande (360 dp).
-        val fila = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_HORIZONTAL
-            weightSum = 1f
-        }
-        fila.addView(v, LinearLayout.LayoutParams(0, -2, prefs.anchoPopup / 360f))
-        vistaPrevia.addView(fila, FrameLayout.LayoutParams(-1, -2, Gravity.CENTER))
+        // El mismo ancho que usa Popup.mostrar sobre la pantalla completa: 94 % de la pantalla, máximo el tamaño elegido.
+        val real = DisplayMetrics()
+        @Suppress("DEPRECATION")
+        windowManager.defaultDisplay.getRealMetrics(real)
+        val ancho = minOf((real.widthPixels * 0.94f).toInt(), dp(prefs.anchoPopup))
+        vistaPrevia.addView(v, FrameLayout.LayoutParams(ancho, -2, Gravity.CENTER_HORIZONTAL))
     }
 
     private fun num(v: Float): String =
