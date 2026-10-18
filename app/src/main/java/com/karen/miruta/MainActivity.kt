@@ -62,7 +62,7 @@ class MainActivity : Activity() {
     private val cAmarillo = Tema.AMARILLO
     private val cRojo = Tema.ROJO
     private val DORADO = Tema.DORADO
-    private val cSinDatos = Color.rgb(42, 50, 46)
+    private val cSinDatos = Color.rgb(42, 42, 51)
 
     private val fuenteMedia: Typeface get() = Fuentes.media
 
@@ -156,7 +156,7 @@ class MainActivity : Activity() {
         mostrarPestana(savedInstanceState?.getInt("tab") ?: 0, false)
         autoIniciar = savedInstanceState == null && intent?.getBooleanExtra(EXTRA_AUTO_INICIAR, false) == true
         if (savedInstanceState == null && !autoIniciar && Cuenta.conectada(this)) {
-            if (faltanPermisos()) mostrarPermisos() else guiaSiHaceFalta()
+            if (faltanPermisos()) mostrarPermisos { if (!prefs.guiaVista) mostrarGuia() } else guiaSiHaceFalta()
         }
     }
 
@@ -182,13 +182,14 @@ class MainActivity : Activity() {
         // Sin los 3 permisos Checa no funciona bien: la pantalla vuelve a salir hasta completarlos.
         if (dialogoPermisos?.isShowing == true) pintarPermisos()
         else if (Cuenta.conectada(this) && !autoIniciar && faltanPermisos()) mostrarPermisos()
-        else if (Cuenta.conectada(this) && prefs.diagnostico && !prefs.diagAvisoVisto && guia?.isShowing != true &&
-            dialogoCuenta?.isShowing != true) handler.postDelayed({ if (!isFinishing && !prefs.diagAvisoVisto) avisoDiagnostico() }, 1200)
+        else if (Cuenta.conectada(this) && prefs.diagnostico && !prefs.diagAvisoVisto && !hayVentana())
+            handler.postDelayed({ if (!isFinishing && !prefs.diagAvisoVisto && !hayVentana()) avisoDiagnostico() }, 1200)
         Guardado.borrarPendientes(this)
         Guardado.podar(this)
         pintarDiag()
         pintarAyudaAbierta?.invoke()
         pintarCuenta()
+        pintarFilasLectura()
         actualizarEstado()
         if (autoIniciar) {
             autoIniciar = false
@@ -269,7 +270,7 @@ class MainActivity : Activity() {
         }
 
         barra.addView(pestana("Inicio", Icono.INICIO, 0), LinearLayout.LayoutParams(0, -1, 1f))
-        barra.addView(pestana("Filtros", Icono.FILTROS, 1), LinearLayout.LayoutParams(0, -1, 1f))
+        barra.addView(pestana("Mis metas", Icono.FILTROS, 1), LinearLayout.LayoutParams(0, -1, 1f))
         etiquetaCircular = texto("", Tema.T_NOTA, cTenue, true).apply {
             gravity = Gravity.CENTER_HORIZONTAL or Gravity.BOTTOM
             setPadding(0, 0, 0, dp(10))
@@ -279,7 +280,7 @@ class MainActivity : Activity() {
         barra.addView(pestana("Cuenta", Icono.CUENTA, 3), LinearLayout.LayoutParams(0, -1, 1f))
         marco.addView(barra, FrameLayout.LayoutParams(-1, dp(64), Gravity.BOTTOM))
 
-        iconoCircular = Icono(Icono.PLAY, Color.BLACK)
+        iconoCircular = Icono(Icono.PLAY, Tema.ASFALTO)
         botonCircular = ImageView(this).apply {
             setImageDrawable(iconoCircular)
             setPadding(dp(20), dp(20), dp(20), dp(20))
@@ -320,8 +321,8 @@ class MainActivity : Activity() {
         }
         botonesNav.forEach { (ico, etq, j) ->
             val sel = j == i
-            ico.color = if (sel) cVerde else cTenue
-            etq.setTextColor(if (sel) cVerde else cTenue)
+            ico.color = if (sel) Tema.HUESO else cTenue
+            etq.setTextColor(if (sel) Tema.HUESO else cTenue)
             etq.typeface = if (sel) fuenteMedia else Fuentes.texto
         }
         if (i == 0) actualizarResumen()
@@ -335,26 +336,36 @@ class MainActivity : Activity() {
     private fun pantallaInicio(): View {
         val col = columna()
 
-        // --- Permiso pendiente (solo si falta) ---
-        val perm = tarjeta(Tema.AMARILLO_SUAVE)
-        val permCab = LinearLayout(this).apply {
+        // --- Marca y estado de la lectura ---
+        val marca = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
+        marca.addView(ImageView(this).apply { setImageResource(R.drawable.semaforo) },
+            LinearLayout.LayoutParams(dp(15), dp(25)).apply { rightMargin = dp(10) })
+        marca.addView(texto("Checa", 24f, cTexto, true))
+        col.addView(marca, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(12); topMargin = dp(4) })
+        val estado = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
+            setPadding(dp(14), dp(12), dp(12), dp(12))
+            minimumHeight = dp(56)
+            isClickable = true
         }
-        permCab.addView(icono(Icono.ALERTA, cAmarillo, Tema.ICONO), LinearLayout.LayoutParams(dp(Tema.ICONO), dp(Tema.ICONO)).apply {
-            rightMargin = dp(Tema.S1)
-        })
-        permCab.addView(texto("Falta un permiso", Tema.T_SUB, cAmarillo, true))
-        perm.addView(permCab)
-        perm.addView(texto(
-            "Activa \"Checa – lector de ofertas\" en Accesibilidad. Si aparece bloqueado, " +
-                "abre la información de la app → menú ⋮ → \"Permitir configuración restringida\".",
-            Tema.T_TEXTO, cTexto, false
-        ).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
-        perm.addView(boton("Abrir Accesibilidad", cAmarillo, Color.BLACK) { abrirAccesibilidad() }, margenArriba(Tema.S2))
-        perm.addView(boton("Información de la app", Color.argb(40, 255, 255, 255), cTexto) { abrirInfoApp() }, margenArriba(Tema.S1))
-        tarjetaPermiso = perm
-        col.addView(perm, margenTarjeta())
+        val ePunto = View(this)
+        estado.addView(ePunto, LinearLayout.LayoutParams(dp(10), dp(10)).apply { rightMargin = dp(12) })
+        val eTextos = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        val eTitulo = texto("", Tema.T_TEXTO, cTexto, true)
+        val eSub = texto("", Tema.T_NOTA, cTenue, false)
+        eTextos.addView(eTitulo)
+        eTextos.addView(eSub, LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(2) })
+        estado.addView(eTextos, LinearLayout.LayoutParams(0, -2, 1f))
+        val eChip = texto("", Tema.T_NOTA, Tema.ASFALTO, true).apply {
+            setPadding(dp(12), dp(6), dp(12), dp(6))
+            background = redondo(Tema.HUESO, 50)
+        }
+        estado.addView(eChip)
+        estadoInicio = EstadoInicio(estado, ePunto, eTitulo, eSub, eChip)
+        col.addView(estado, margenTarjeta())
+        // Los permisos ya son obligatorios: la tarjeta «Falta un permiso» ya no se muestra.
+        tarjetaPermiso = View(this)
 
         // --- Versión nueva (solo si hay) ---
         val act = tarjeta(Tema.VERDE_SUAVE)
@@ -376,6 +387,11 @@ class MainActivity : Activity() {
         lic.addView(botonPaquetesInicio, margenArriba(Tema.S2))
         tarjetaLicencia = lic
         col.addView(lic, margenTarjeta())
+
+        // --- Mi día: viajes aceptados, meta, gasolina de la semana y resumen para compartir ---
+        jornadaCaja = tarjeta()
+        col.addView(jornadaCaja, margenTarjeta())
+        pintarJornada()
 
         // --- Semáforo del día: barra proporcional + conteos (toca para ver el detalle) ---
         hoyEtiqueta = etiqueta("HOY")
@@ -417,11 +433,6 @@ class MainActivity : Activity() {
         }
         col.addView(filaSem, margenTarjeta())
 
-        // --- Mi día: viajes aceptados, meta, gasolina de la semana y resumen para compartir ---
-        jornadaCaja = tarjeta()
-        col.addView(jornadaCaja, margenTarjeta())
-        pintarJornada()
-
         // --- Mejores horas ---
         val mh = tarjeta()
         mh.addView(cabeceraTarjeta(Icono.RELOJ, "Mejores horas", "Hoy, hora por hora · últimos 30 días", false).first)
@@ -440,15 +451,71 @@ class MainActivity : Activity() {
 
     private fun pantallaFiltros(): View {
         val col = columna()
-        col.addView(texto("Filtros", Tema.T_TITULO, cTexto, true), LinearLayout.LayoutParams(-1, -2).apply {
+        col.addView(texto("Mis metas", 26f, cTexto, true), LinearLayout.LayoutParams(-1, -2).apply {
             bottomMargin = dp(Tema.S1)
         })
         col.addView(texto(
-            "Verde si la oferta cumple todas tus metas activas, amarillo si cumple alguna y rojo si no cumple ninguna. " +
-                "Si falla la recogida o la duración, va a rojo con el motivo.",
+            "Lo que decide si una oferta es verde, amarilla o roja. Verde si cumple todas tus metas activas, " +
+                "amarilla si cumple alguna y roja si no cumple ninguna o falla la recogida o la duración.",
             Tema.T_NOTA, cTenue, false
         ).apply { setLineSpacing(0f, 1.2f) }, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(Tema.S2) })
         tarjetaFiltros(col)
+
+        // --- Gasolina ---
+        col.addView(etiqueta("TU AUTO"))
+        val gas = tarjeta()
+        gas.addView(interruptor("Mostrar ganancia neta", "Descuenta la gasolina de recogida + viaje en el pop-up", prefs.mostrarNeta) {
+            prefs.mostrarNeta = it
+            refrescarVistaPrevia()
+        })
+        gas.addView(separador())
+        gas.addView(campoNumero("Rendimiento", "Kilómetros por litro de tu auto", prefs.kmPorLitro, "km/l") {
+            prefs.kmPorLitro = it
+            refrescarVistaPrevia()
+        })
+        gas.addView(separador())
+        gas.addView(campoNumero("Precio de la gasolina", "Por litro", prefs.precioLitro, "$/l") {
+            prefs.precioLitro = it
+            refrescarVistaPrevia()
+        })
+        col.addView(gas, margenTarjeta())
+
+        // --- Comparar ofertas ---
+        col.addView(etiqueta("DOS OFERTAS A LA VEZ"))
+        val cmp = tarjeta()
+        notaComparador = texto("Disponible en los paquetes de 6 meses y 1 año. Con el de 1 mes se muestra una oferta a la vez.",
+            Tema.T_NOTA, cAmarillo, false).apply { setLineSpacing(0f, 1.2f) }
+        cmp.addView(notaComparador, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(Tema.S1) })
+        cmp.addView(texto(
+            "Si llegan ofertas de Uber y DiDi al mismo tiempo, la mejor se marca con ⭐. " +
+                "Primero gana la de mejor color; si empatan, decide este criterio:",
+            Tema.T_NOTA, cTenue, false
+        ).apply { setLineSpacing(0f, 1.2f) })
+        val opciones = listOf(
+            Triple(Comparador.NETA_HORA, "Ganancia neta por hora", "Recomendado: tarifa, tiempo y gasolina juntos"),
+            Triple(Comparador.NETA_KM, "Ganancia neta por km", "Cuida más el desgaste del auto"),
+            Triple(Comparador.NETA_TOTAL, "Ganancia neta total", "La que deja más dinero, aunque tarde más")
+        )
+        val filasOpc = ArrayList<Pair<Int, View>>()
+        fun pintarOpc() = filasOpc.forEach { (v, marca) -> marca.background = radio(prefs.criterio == v) }
+        opciones.forEach { (v, t, sub) ->
+            val fila = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                minimumHeight = dp(56)
+                background = ripple(Color.TRANSPARENT, Tema.R_BOTON)
+                isClickable = true
+            }
+            val marca = View(this)
+            fila.addView(marca, LinearLayout.LayoutParams(dp(20), dp(20)).apply { rightMargin = dp(Tema.S2) })
+            fila.addView(textosFila(t, sub), LinearLayout.LayoutParams(0, -2, 1f))
+            fila.setOnClickListener { prefs.criterio = v; pintarOpc() }
+            filasOpc.add(v to marca)
+            cmp.addView(fila, margenArriba(4))
+        }
+        pintarOpc()
+        col.addView(cmp, margenTarjeta())
+
         return scroll(col)
     }
 
@@ -498,18 +565,18 @@ class MainActivity : Activity() {
     private fun actualizarEstado() {
         val acc = servicioActivo()
         val leyendo = CapturaService.corriendo
-        tarjetaPermiso.visibility = if (acc) View.GONE else View.VISIBLE
         pintarLicencia()
+        pintarEstadoInicio()
         if (leyendo) {
             botonCircular.setImageDrawable(Icono(Icono.STOP, Color.WHITE).also { iconoCircular = it })
             botonCircular.background = circulo(cRojo)
             etiquetaCircular.text = "Detener"
             etiquetaCircular.setTextColor(cRojo)
         } else {
-            botonCircular.setImageDrawable(Icono(Icono.PLAY, Color.BLACK).also { iconoCircular = it })
-            botonCircular.background = circulo(cVerde)
+            botonCircular.setImageDrawable(Icono(Icono.PLAY, Tema.ASFALTO).also { iconoCircular = it })
+            botonCircular.background = circulo(Tema.HUESO)
             etiquetaCircular.text = "Iniciar"
-            etiquetaCircular.setTextColor(cVerde)
+            etiquetaCircular.setTextColor(Tema.HUESO)
         }
         pintarEstadoLectura()
         if (::ayudaPermiso.isInitialized) {
@@ -1127,7 +1194,7 @@ class MainActivity : Activity() {
 
     private fun pantallaAjustes(): View {
         val col = columna()
-        col.addView(texto("Ajustes", Tema.T_TITULO, cTexto, true), LinearLayout.LayoutParams(-1, -2).apply {
+        col.addView(texto("Ajustes", 26f, cTexto, true), LinearLayout.LayoutParams(-1, -2).apply {
             bottomMargin = dp(Tema.S1)
         })
 
@@ -1150,61 +1217,6 @@ class MainActivity : Activity() {
             Alertas(this, prefs).avisar(o.nivel(prefs))
         }, margenArriba(Tema.S2))
         col.addView(pop, margenTarjeta())
-
-        // --- Gasolina ---
-        col.addView(etiqueta("GASOLINA"))
-        val gas = tarjeta()
-        gas.addView(interruptor("Mostrar ganancia neta", "Descuenta la gasolina de recogida + viaje en el pop-up", prefs.mostrarNeta) {
-            prefs.mostrarNeta = it
-            refrescarVistaPrevia()
-        })
-        gas.addView(separador())
-        gas.addView(campoNumero("Rendimiento", "Kilómetros por litro de tu auto", prefs.kmPorLitro, "km/l") {
-            prefs.kmPorLitro = it
-            refrescarVistaPrevia()
-        })
-        gas.addView(separador())
-        gas.addView(campoNumero("Precio de la gasolina", "Por litro", prefs.precioLitro, "$/l") {
-            prefs.precioLitro = it
-            refrescarVistaPrevia()
-        })
-        col.addView(gas, margenTarjeta())
-
-        // --- Comparar ofertas ---
-        col.addView(etiqueta("DOS OFERTAS A LA VEZ"))
-        val cmp = tarjeta()
-        notaComparador = texto("Disponible en los paquetes de 6 meses y 1 año. Con el de 1 mes se muestra una oferta a la vez.",
-            Tema.T_NOTA, cAmarillo, false).apply { setLineSpacing(0f, 1.2f) }
-        cmp.addView(notaComparador, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(Tema.S1) })
-        cmp.addView(texto(
-            "Si llegan ofertas de Uber y DiDi al mismo tiempo, la mejor se marca con ⭐. " +
-                "Primero gana la de mejor color; si empatan, decide este criterio:",
-            Tema.T_NOTA, cTenue, false
-        ).apply { setLineSpacing(0f, 1.2f) })
-        val opciones = listOf(
-            Triple(Comparador.NETA_HORA, "Ganancia neta por hora", "Recomendado: tarifa, tiempo y gasolina juntos"),
-            Triple(Comparador.NETA_KM, "Ganancia neta por km", "Cuida más el desgaste del auto"),
-            Triple(Comparador.NETA_TOTAL, "Ganancia neta total", "La que deja más dinero, aunque tarde más")
-        )
-        val filasOpc = ArrayList<Pair<Int, View>>()
-        fun pintarOpc() = filasOpc.forEach { (v, marca) -> marca.background = radio(prefs.criterio == v) }
-        opciones.forEach { (v, t, sub) ->
-            val fila = LinearLayout(this).apply {
-                orientation = LinearLayout.HORIZONTAL
-                gravity = Gravity.CENTER_VERTICAL
-                minimumHeight = dp(56)
-                background = ripple(Color.TRANSPARENT, Tema.R_BOTON)
-                isClickable = true
-            }
-            val marca = View(this)
-            fila.addView(marca, LinearLayout.LayoutParams(dp(20), dp(20)).apply { rightMargin = dp(Tema.S2) })
-            fila.addView(textosFila(t, sub), LinearLayout.LayoutParams(0, -2, 1f))
-            fila.setOnClickListener { prefs.criterio = v; pintarOpc() }
-            filasOpc.add(v to marca)
-            cmp.addView(fila, margenArriba(4))
-        }
-        pintarOpc()
-        col.addView(cmp, margenTarjeta())
 
         // --- Avisos ---
         col.addView(etiqueta("AVISOS"))
@@ -1239,13 +1251,17 @@ class MainActivity : Activity() {
         av.addView(pruebas, margenArriba(Tema.S2))
         col.addView(av, margenTarjeta())
 
-        // --- Apps ---
-        col.addView(etiqueta("APPS"))
+        // --- Lectura: qué lee Checa y lo que necesita para leer ---
+        col.addView(etiqueta("LECTURA"))
         val apps = tarjeta()
-        apps.addView(interruptor("Uber Driver", null, prefs.uber) { prefs.uber = it })
+        apps.addView(interruptor("Uber Driver", "Leer sus ofertas", prefs.uber) { prefs.uber = it })
         apps.addView(separador())
-        apps.addView(interruptor("DiDi Conductor", null, prefs.didi) { prefs.didi = it })
+        apps.addView(interruptor("DiDi Conductor", "Leer sus ofertas", prefs.didi) { prefs.didi = it })
         col.addView(apps, margenTarjeta())
+        val lectura = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        cajaLecturaAjustes = lectura
+        pintarFilasLectura()
+        col.addView(lectura, margenTarjeta())
 
         return scroll(col)
     }
@@ -1314,9 +1330,7 @@ class MainActivity : Activity() {
 
     private fun avisosEnVentana() {
         if (isFinishing || isDestroyed) return
-        val ocupado = guia?.isShowing == true || dialogoCuenta?.isShowing == true ||
-            dialogoAct?.isShowing == true || dialogoAviso?.isShowing == true
-        if (ocupado) return
+        if (hayVentana()) return
         val e = Licencia.estado(this)
         if (e.beta && !e.pagada) {
             val umbral = when {
@@ -1574,7 +1588,7 @@ class MainActivity : Activity() {
             setOnClickListener { accion() }
         }
         val caja = FrameLayout(this).apply { background = redondo(cTarjeta2, 10) }
-        caja.addView(icono(tipoIcono, cVerde, 18), FrameLayout.LayoutParams(dp(18), dp(18), Gravity.CENTER))
+        caja.addView(icono(tipoIcono, Tema.HUESO, 18), FrameLayout.LayoutParams(dp(18), dp(18), Gravity.CENTER))
         f.addView(caja, LinearLayout.LayoutParams(dp(32), dp(32)).apply { rightMargin = dp(12) })
         val textos = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         textos.addView(texto(titulo, Tema.T_TEXTO, cTexto, true))
@@ -1586,22 +1600,34 @@ class MainActivity : Activity() {
 
     /** Filas de la pestaña Cuenta, con el estado de cada cosa a la vista. */
     private fun filasCuenta(): View {
-        val caja = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        val g1 = grupoFilas()
+        val g = grupoFilas()
         val equipos = Cuenta.equipos(this)
-        filaMenu(g1, Icono.CUENTA, "Equipos",
+        filaMenu(g, Icono.CUENTA, "Equipos",
             "${equipos.size} de ${Cuenta.maxEquipos(this)}" +
                 if (equipos.isEmpty()) "" else " · " + equipos.joinToString(", ") { it.visible() }) { mostrarEquipos() }
-        val faltan = permisosFaltantes()
-        filaMenu(g1, Icono.OK, "Permisos", if (faltan == 0) "Todo listo" else "Falta $faltan",
-            if (faltan == 0) cVerde else cAmarillo) { mostrarPermisos() }
-        caja.addView(g1)
+        filaMenu(g, Icono.ALERTA, "Ayuda y soporte", "Preguntas frecuentes y WhatsApp") { mostrarAyuda() }
+        filaMenu(g, Icono.PLAY, "Guía de inicio", "Cómo usar Checa paso a paso") { mostrarGuia() }
+        filaMenu(g, Icono.RELOJ, "Tus datos", "Qué guarda Checa y estadísticas") { mostrarTusDatos() }
+        return g
+    }
 
-        val g2 = grupoFilas()
-        filaMenu(g2, Icono.ALERTA, "Ayuda y soporte", "¿Algo falla? Revisa en un toque") { mostrarAyuda() }
+    // =====================================================================
+    // Ajustes → Lectura (permisos, bancos y ayuda con la lectura) y estado en Inicio
+    // =====================================================================
+
+    private var cajaLecturaAjustes: LinearLayout? = null
+
+    private fun pintarFilasLectura() {
+        val caja = cajaLecturaAjustes ?: return
+        caja.removeAllViews()
+        val g = grupoFilas()
+        val faltan = permisosFaltantes()
+        filaMenu(g, Icono.OK, "Permisos", if (faltan == 0) "Todo listo" else "Falta $faltan",
+            if (faltan == 0) cVerde else cAmarillo) { mostrarPermisos() }
+        filaMenu(g, Icono.PIN, "Apps de banco", "Pausa la lectura para usar tu banco") { mostrarBancos() }
         val guardadas = Guardado.lista(this)
         val noLeidas = guardadas.count { !it.leida }
-        filaMenu(g2, Icono.FILTROS, "Ayuda con la lectura",
+        filaMenu(g, Icono.FILTROS, "Ayuda con la lectura",
             when {
                 !prefs.diagnostico -> "Guardar pantallas está apagado"
                 guardadas.isEmpty() -> "Aún no hay ofertas guardadas"
@@ -1609,11 +1635,47 @@ class MainActivity : Activity() {
                 else -> "${guardadas.size} ofertas guardadas"
             },
             if (noLeidas > 0) cAmarillo else cTenue) { mostrarAyudaLectura() }
-        filaMenu(g2, Icono.PIN, "Apps de banco", "Pausa el lector para usar tu banco") { mostrarBancos() }
-        filaMenu(g2, Icono.PLAY, "Guía de inicio", "Cómo usar Checa paso a paso") { mostrarGuia() }
-        filaMenu(g2, Icono.RELOJ, "Tus datos", "Qué guarda Checa y estadísticas") { mostrarTusDatos() }
-        caja.addView(g2, margenArriba(Tema.S1))
-        return caja
+        caja.addView(g)
+    }
+
+    private class EstadoInicio(val caja: LinearLayout, val punto: View, val titulo: TextView, val sub: TextView, val chip: TextView)
+    private var estadoInicio: EstadoInicio? = null
+    private var firmaEstadoInicio = ""
+
+    /** Línea de Inicio: si Checa está leyendo y, si algo falla, a un toque de arreglarlo. */
+    private fun pintarEstadoInicio() {
+        val e = estadoInicio ?: return
+        val leyendo = CapturaService.corriendo
+        val faltan = permisosFaltantes()
+        val ultima = prefs.ultimaOferta
+        val (color, titulo, sub, chip) = when {
+            faltan > 0 -> listOf(cAmarillo, "Falta un permiso", "Sin él Checa no puede leer tus ofertas", "Revisar")
+            !leyendo && CapturaService.cortada -> listOf(cAmarillo, "La lectura se detuvo", "Android la cortó. Toca para revisar", "Revisar")
+            !leyendo -> listOf(cTenue, "Lectura apagada", "Inicia la lectura antes de abrir Uber o DiDi", "Iniciar")
+            ultima == 0L -> listOf(cVerde, "Leyendo", "Aún sin ofertas · ¿algo falla? Toca aquí", "")
+            else -> listOf(cVerde, "Leyendo", "Última oferta ${hace(ultima)}", "")
+        }
+        val firma = "$titulo|$sub|$chip"
+        if (firma == firmaEstadoInicio) return
+        firmaEstadoInicio = firma
+        val c = color as Int
+        e.punto.background = punto(c)
+        e.titulo.text = titulo as String
+        e.sub.text = sub as String
+        e.chip.text = chip as String
+        e.chip.visibility = if ((chip as String).isEmpty()) View.GONE else View.VISIBLE
+        e.caja.background = GradientDrawable().apply {
+            setColor(cTarjeta)
+            cornerRadius = dp(Tema.R_TARJETA).toFloat()
+            setStroke(dp(1), if (c == cTenue) Tema.HUMO else Color.argb(150, Color.red(c), Color.green(c), Color.blue(c)))
+        }
+        e.caja.setOnClickListener {
+            when {
+                faltan > 0 -> mostrarPermisos()
+                !CapturaService.corriendo && !CapturaService.cortada -> iniciarCaptura()
+                else -> mostrarAyuda()
+            }
+        }
     }
 
     /** Pie de Cuenta: versión (con actualizar) y «Cerrar sesión», que pide confirmar. */
@@ -1964,8 +2026,7 @@ class MainActivity : Activity() {
         if (v == null) return
         actTexto.text = "Checa $v ya está lista (tienes la ${Actualizacion.instalada(this)}). " +
             "Se instala encima: no pierdes tu cuenta, ajustes ni historial."
-        val ocupado = guia?.isShowing == true || dialogoCuenta?.isShowing == true || dialogoAct?.isShowing == true
-        if (avisar && !ocupado && !Actualizacion.avisoMostrado(this, v)) {
+        if (avisar && !hayVentana() && !Actualizacion.avisoMostrado(this, v)) {
             Actualizacion.marcarAviso(this, v)
             dialogoActualizacion(v)
         }
@@ -2233,8 +2294,9 @@ class MainActivity : Activity() {
 
     private fun pintarLicencia() {
         val e = Licencia.estado(this)
-        tarjetaLicencia.visibility = if (e.pagada) View.GONE else View.VISIBLE
         val finBeta = e.beta && !e.pagada && e.diasRestantes <= DIAS_AVISO_FIN_BETA
+        // En Inicio solo cuando importa: prueba, licencia vencida o último mes de la beta (el plan vive en Cuenta).
+        tarjetaLicencia.visibility = if (finBeta || (!e.beta && !e.pagada)) View.VISIBLE else View.GONE
         if (finBeta) {
             licTitulo.text = "La beta gratis termina en ${e.diasRestantes} ${if (e.diasRestantes == 1) "día" else "días"}"
             licTitulo.setTextColor(cAmarillo)
@@ -2367,7 +2429,7 @@ class MainActivity : Activity() {
             guia = null
         }
         guia = d
-        pintarGuia(0)
+        pintarGuia(2)
         d.show()
     }
 
@@ -2375,8 +2437,10 @@ class MainActivity : Activity() {
         if (guia == null) return
         guiaPaso = paso
         guiaProgreso.removeAllViews()
-        for (i in 0..4) {
-            guiaProgreso.addView(View(this).apply { background = redondo(if (i <= paso) cVerde else cTarjeta2, 2) },
+        // Avance del arranque de 3 pasos: 1 permisos (ya hecho), 2 tus números, 3 así se verá.
+        for (i in 0..2) {
+            val lleno = i == 0 || (i == 1 && paso >= 2) || (i == 2 && paso >= 4)
+            View(this).apply { background = redondo(if (lleno) Tema.HUESO else cTarjeta2, 2) },
                 LinearLayout.LayoutParams(0, -1, 1f).apply { if (i > 0) leftMargin = dp(6) })
         }
         guiaOmitir.visibility = if (paso < 4) View.VISIBLE else View.INVISIBLE
@@ -2388,11 +2452,11 @@ class MainActivity : Activity() {
             gravity = Gravity.CENTER
             minHeight = dp(Tema.ALTO_TOQUE)
             isClickable = true
-            setOnClickListener { pintarGuia(guiaPaso - 1) }
+            setOnClickListener { pintarGuia(if (guiaPaso >= 4) 2 else guiaPaso - 1) }
         }
         fun titulo(s: String) = texto(s, 28f, cTexto, true).apply { setLineSpacing(0f, 1.1f) }
         fun parrafo(s: String) = texto(s, Tema.T_SUB, cTexto2, false).apply { setLineSpacing(0f, 1.3f) }
-        fun pasoDe(n: Int) = texto("PASO $n DE 4", Tema.T_NOTA, cVerde, true).apply { letterSpacing = 0.1f }
+        fun pasoDe(n: Int) = etiqueta("PASO $n DE 3").apply { setPadding(0, 0, 0, dp(4)) }
         fun principal(s: String, accion: () -> Unit) = guiaPie.addView(boton(s, cVerde, Color.BLACK, accion).apply {
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
         }, LinearLayout.LayoutParams(-1, dp(52)))
@@ -2472,8 +2536,8 @@ class MainActivity : Activity() {
             }
             2 -> {
                 c.addView(pasoDe(2))
-                c.addView(titulo("¿Cuánto quieres ganar?"), margenArriba(Tema.S1))
-                c.addView(parrafo("Con esto Checa pinta cada oferta de verde, amarillo o rojo. Lo puedes cambiar cuando quieras en Filtros."),
+                c.addView(titulo("Tus números"), margenArriba(Tema.S1))
+                c.addView(parrafo("Con esto Checa pinta cada oferta de verde, amarillo o rojo. Lo cambias cuando quieras en Mis metas."),
                     margenArriba(Tema.S2))
                 c.addView(campoGuia("Por kilómetro", { "\$" + num(prefs.minPorKm) + "/km" }) { signo ->
                     prefs.minPorKm = (prefs.minPorKm + 0.5f * signo).coerceIn(1f, 50f)
@@ -2484,15 +2548,10 @@ class MainActivity : Activity() {
                     guiaHoraTocada = true
                     prefs.minPorHora = (prefs.minPorHora + 10f * signo).coerceIn(10f, 1000f)
                 }, margenArriba(Tema.ENTRE_TARJETAS))
-                c.addView(texto("Si no sabes, deja \$8/km y ajústalo después de unos días.", Tema.T_TEXTO, cTenue, false),
-                    margenArriba(Tema.S2))
-                principal("Siguiente") { pintarGuia(3) }
-                guiaPie.addView(atras, margenArriba(Tema.S1))
-            }
-            3 -> {
-                c.addView(pasoDe(3))
-                c.addView(titulo("Tu auto"), margenArriba(Tema.S1))
-                c.addView(parrafo("Para restar la gasolina y mostrarte lo que te queda de verdad."), margenArriba(Tema.S2))
+                c.addView(texto("Si no sabes, deja \$8/km y ajústalo después de unos días.", Tema.T_NOTA, cTenue, false),
+                    margenArriba(Tema.S1))
+                // Tu auto, en la misma pantalla: para restar la gasolina y mostrar lo que te queda.
+                c.addView(etiqueta("TU AUTO"), margenArriba(Tema.S1))
                 val costo = texto("", 22f, cTexto, true)
                 fun pintarCosto() { costo.text = "\$" + num1((prefs.precioLitro / prefs.kmPorLitro).toDouble()) }
                 c.addView(campoGuia("Rendimiento", { num(prefs.kmPorLitro) + " km/l" }) { signo ->
@@ -2511,7 +2570,6 @@ class MainActivity : Activity() {
                 pintarCosto()
                 c.addView(t, margenArriba(Tema.ENTRE_TARJETAS))
                 principal("Siguiente") { pintarGuia(4) }
-                guiaPie.addView(atras, margenArriba(Tema.S1))
             }
             else -> {
                 val o = ofertaEjemplo()
@@ -2520,7 +2578,7 @@ class MainActivity : Activity() {
                     Oferta.AMARILLO -> "Considerar"
                     else -> "Rechazar"
                 }
-                c.addView(pasoDe(4))
+                c.addView(pasoDe(3))
                 c.addView(titulo("Así se verá"), margenArriba(Tema.S1))
                 c.addView(parrafo("Cuando llegue una oferta, este aviso sale encima de Uber o DiDi y te dice «$accion» en voz alta."),
                     margenArriba(Tema.S2))
@@ -2529,13 +2587,13 @@ class MainActivity : Activity() {
                 c.addView(texto("Oferta de ejemplo con tus metas. Si regresas y cambias tus metas, cambia el color.",
                     Tema.T_NOTA, cTenue, false).apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S1))
                 val t = tarjeta()
-                t.addView(texto("Al tocar Empezar", Tema.T_TEXTO, cTexto, false).apply { typeface = fuenteMedia })
+                t.addView(texto("Al tocar Iniciar lectura", Tema.T_TEXTO, cTexto, false).apply { typeface = fuenteMedia })
                 t.addView(texto(
                     "Android te pregunta qué compartir: elige «Pantalla completa» → Empezar. Si reinicias el teléfono, vuelve a tocar ▶.",
                     Tema.T_NOTA, cTenue, false
                 ).apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S1))
                 c.addView(t, margenArriba(Tema.S2))
-                principal("▶  Empezar a leer ofertas") {
+                principal("▶  Iniciar lectura") {
                     guia?.dismiss()
                     iniciarCaptura()
                 }
@@ -2678,7 +2736,17 @@ class MainActivity : Activity() {
         permisosCuerpo.removeAllViews()
         permisosPie.removeAllViews()
         val c = permisosCuerpo
-        c.addView(texto("Permisos de Checa", 28f, cTexto, true))
+        val arranque = !prefs.guiaVista
+        if (arranque) {
+            val avance = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+            for (i in 0..2) avance.addView(View(this).apply { background = redondo(if (i == 0) Tema.HUESO else cTarjeta2, 2) },
+                LinearLayout.LayoutParams(0, dp(4), 1f).apply { if (i > 0) leftMargin = dp(6) })
+            c.addView(avance, LinearLayout.LayoutParams(-1, dp(4)).apply { bottomMargin = dp(Tema.S2) })
+            c.addView(etiqueta("PASO 1 DE 3").apply { setPadding(0, 0, 0, dp(4)) })
+        }
+        // El aviso de «Guardar pantallas» va aquí como una casilla más (no sale aparte).
+        prefs.diagAvisoVisto = true
+        c.addView(texto(if (arranque) "Para leer tus ofertas" else "Permisos de Checa", 28f, cTexto, true))
         c.addView(texto(
             "Los tres primeros son necesarios para que Checa lea las ofertas y Android no corte la lectura. " +
                 "Solo lee Uber y DiDi; no toca nada ni acepta viajes por ti.",
@@ -2747,8 +2815,21 @@ class MainActivity : Activity() {
         fila("Grabación de pantalla", "Android te lo pide cada vez que inicias la lectura. Elige «Pantalla completa» → Empezar.",
             false, "Al iniciar", null) { }
 
+        val diag = tarjeta()
+        diag.addView(interruptor(
+            "Guardar pantallas de ofertas",
+            "Para revisar las que se lean mal. Solo en tu teléfono y se borran solas a los 7 días. " +
+                "Pueden salir datos del pasajero: nada se envía sin que tú lo revises.",
+            prefs.diagnostico
+        ) { prefs.diagnostico = it })
+        c.addView(diag, margenArriba(Tema.ENTRE_TARJETAS))
+
         val completo = acc && permisoNotificaciones() && permisoBateria()
-        if (completo) {
+        if (completo && arranque) {
+            permisosPie.addView(boton("Siguiente", cVerde, Color.BLACK) {
+                dialogoPermisos?.dismiss()
+            }.apply { setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f) }, LinearLayout.LayoutParams(-1, dp(52)))
+        } else if (completo) {
             permisosPie.addView(boton("▶  Iniciar lectura", cVerde, Color.BLACK) {
                 permisosAlTerminar = null
                 dialogoPermisos?.dismiss()
@@ -2766,6 +2847,11 @@ class MainActivity : Activity() {
                 .apply { setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f) }, LinearLayout.LayoutParams(-1, dp(52)))
         }
     }
+
+    /** Una sola ventana a la vez: permisos, guía, cuenta, versión nueva, beta, opinión o aviso de guardar pantallas. */
+    private fun hayVentana(): Boolean =
+        dialogoPermisos != null || guia?.isShowing == true || dialogoCuenta?.isShowing == true ||
+            dialogoAct?.isShowing == true || dialogoAviso?.isShowing == true || dialogoDiagAviso?.isShowing == true
 
     private fun actualizarAcceso() {
         acceso?.visibility = if (Cuenta.conectada(this)) View.GONE else View.VISIBLE
@@ -2793,8 +2879,8 @@ class MainActivity : Activity() {
             is Cuenta.Resultado.Error -> if (r.mensaje.isNotEmpty()) Toast.makeText(this, r.mensaje, Toast.LENGTH_LONG).show()
             is Cuenta.Resultado.Limite -> dialogoLimite(r.equipos)
             is Cuenta.Resultado.Ok -> {
-                // Después de entrar: permisos; luego, si es cuenta nueva sin lector, la guía de 5 pasos.
-                val seguir = { if (!prefs.guiaVista && !servicioActivo()) mostrarGuia() else dialogoBienvenidaCuenta() }
+                // Después de entrar: permisos (paso 1 de 3); si es la primera vez, sigue la guía (pasos 2 y 3).
+                val seguir = { if (!prefs.guiaVista) mostrarGuia() else dialogoBienvenidaCuenta() }
                 if (faltanPermisos()) mostrarPermisos(seguir) else seguir()
             }
         }
@@ -2965,11 +3051,9 @@ class MainActivity : Activity() {
             setPadding(dp(4), dp(Tema.S1), dp(4), 0)
         }
         val inicial = (nombre.ifEmpty { correo }.trim().firstOrNull() ?: '?').uppercaseChar().toString()
-        val foto = texto(inicial, 22f, Color.BLACK, true).apply {
+        val foto = texto(inicial, 22f, Tema.ASFALTO, true).apply {
             gravity = Gravity.CENTER
-            background = GradientDrawable(
-                GradientDrawable.Orientation.TL_BR, intArrayOf(Color.rgb(74, 222, 128), Color.rgb(22, 163, 74))
-            ).apply { shape = GradientDrawable.OVAL }
+            background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(Tema.HUESO) }
         }
         val aro = FrameLayout(this).apply {
             setPadding(dp(3), dp(3), dp(3), dp(3))
@@ -2997,11 +3081,10 @@ class MainActivity : Activity() {
             setPadding(dp(20), dp(20), dp(20), dp(20))
             background = GradientDrawable(
                 GradientDrawable.Orientation.TL_BR,
-                if (e.fundador) intArrayOf(Color.rgb(42, 37, 18), Color.rgb(22, 20, 12))
-                else intArrayOf(Color.rgb(30, 36, 33), Color.rgb(20, 24, 22))
+                intArrayOf(Tema.TARJETA, Tema.TARJETA)
             ).apply {
                 cornerRadius = dp(20).toFloat()
-                setStroke(dp(1), if (e.fundador) Color.argb(115, Color.red(DORADO), Color.green(DORADO), Color.blue(DORADO)) else Tema.BORDE)
+                setStroke(dp(1), Tema.HUMO)
             }
         }
         val marca = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
@@ -3047,10 +3130,17 @@ class MainActivity : Activity() {
         }
         // En la beta los paquetes están ocultos: aquí se ve que ya tiene asegurado el precio de fundador.
         if (Cuenta.precioBeta(this) && !sinFin) {
-            c.addView(texto("Precio de fundador asegurado · 40 % menos", Tema.T_NOTA, DORADO, true).apply {
-                setPadding(dp(10), dp(4), dp(10), dp(4))
-                background = redondo(Color.argb(36, Color.red(DORADO), Color.green(DORADO), Color.blue(DORADO)), 50)
-            }, LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(Tema.S1) })
+            // Sello inclinado de la marca v2.
+            c.addView(texto("PRECIO DE FUNDADOR · −40 %", 10.5f, Tema.HUESO, true).apply {
+                typeface = Fuentes.numero
+                letterSpacing = 0.06f
+                setPadding(dp(10), dp(5), dp(10), dp(5))
+                rotation = -4f
+                background = GradientDrawable().apply {
+                    cornerRadius = dp(10).toFloat()
+                    setStroke(dp(2), Tema.HUESO)
+                }
+            }, LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(Tema.S2); leftMargin = dp(4) })
         }
         return c
     }
@@ -3803,12 +3893,14 @@ class MainActivity : Activity() {
         text = s
         setTextColor(color)
         setTextSize(TypedValue.COMPLEX_UNIT_SP, tam)
-        typeface = if (negrita) Fuentes.negrita else Fuentes.texto
+        // Marca v2: títulos grandes en Bricolage, el resto en DM Sans.
+        typeface = if (tam >= Tema.T_TITULO) Fuentes.titulo else if (negrita) Fuentes.negrita else Fuentes.texto
+        if (tam >= Tema.T_TITULO) letterSpacing = -0.02f
     }
 
-    /** Número con letra de ancho fijo (Fira Code): no se mueve al cambiar. */
+    /** Número: grande en Bricolage; chico, de ancho fijo (JetBrains Mono) para que no se mueva al cambiar. */
     private fun numero(s: String, tam: Float, color: Int) = texto(s, tam, color, false).apply {
-        typeface = Fuentes.numero
+        typeface = if (tam >= 20f) Fuentes.titulo else Fuentes.numero
     }
 
     private fun icono(tipo: Int, color: Int, @Suppress("UNUSED_PARAMETER") lado: Int) = ImageView(this).apply {
@@ -3821,20 +3913,23 @@ class MainActivity : Activity() {
         background = punto(if (activo) Tema.VERDE_SUAVE else cTarjeta2)
     }
 
-    private fun etiqueta(s: String) = texto(s, Tema.T_NOTA, cTenue, true).apply {
-        letterSpacing = 0.08f
+    private fun etiqueta(s: String) = texto(s, 11f, cTenue, true).apply {
+        typeface = Fuentes.numero
+        letterSpacing = 0.12f
         setPadding(dp(4), dp(Tema.S2), 0, dp(Tema.S1))
     }
 
     private fun boton(s: String, fondo: Int, colorTexto: Int, accion: () -> Unit) = TextView(this).apply {
+        // Marca v2: el botón principal es hueso con texto asfalto, en píldora (el verde queda para decidir).
+        val principal = fondo == Tema.VERDE
         text = s
         gravity = Gravity.CENTER
-        setTextColor(colorTexto)
+        setTextColor(if (principal) Tema.ASFALTO else colorTexto)
         setTextSize(TypedValue.COMPLEX_UNIT_SP, Tema.T_TEXTO)
         typeface = fuenteMedia
         minHeight = dp(Tema.ALTO_TOQUE)
         setPadding(dp(Tema.S2), dp(12), dp(Tema.S2), dp(12))
-        background = ripple(fondo, Tema.R_BOTON)
+        background = ripple(if (principal) Tema.HUESO else fondo, 28)
         isClickable = true
         setOnClickListener { accion() }
     }
@@ -3854,8 +3949,8 @@ class MainActivity : Activity() {
     private fun interruptorSolo(valor: Boolean) = Switch(this).apply {
         isChecked = valor
         val estados = arrayOf(intArrayOf(android.R.attr.state_checked), intArrayOf())
-        thumbTintList = ColorStateList(estados, intArrayOf(cVerde, Color.rgb(200, 205, 202)))
-        trackTintList = ColorStateList(estados, intArrayOf(Color.argb(110, 34, 197, 94), Tema.BORDE))
+        thumbTintList = ColorStateList(estados, intArrayOf(Tema.HUESO, Tema.TENUE))
+        trackTintList = ColorStateList(estados, intArrayOf(Color.argb(150, 244, 244, 239), Tema.HUMO))
     }
 
     private fun interruptor(titulo: String, sub: String?, valor: Boolean, cambio: (Boolean) -> Unit): View {

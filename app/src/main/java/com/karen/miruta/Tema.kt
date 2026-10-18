@@ -13,21 +13,26 @@ import android.graphics.drawable.Drawable
 
 /** Paleta, medidas y tamaños de letra de toda la app (múltiplos de 8 dp). */
 object Tema {
-    // ---------- colores (6.0: negro OLED) ----------
-    val FONDO = Color.rgb(0, 0, 0)           // #000000
-    val TARJETA = Color.rgb(11, 15, 13)      // #0B0F0D
-    val TARJETA2 = Color.rgb(20, 26, 23)     // #141A17 controles dentro de tarjetas
-    val BORDE = Color.rgb(31, 41, 36)        // #1F2924
-    val TEXTO = Color.rgb(242, 247, 244)     // #F2F7F4
-    val TEXTO2 = Color.rgb(190, 202, 195)    // gris claro
-    val TENUE = Color.rgb(147, 163, 154)     // #93A39A
-    val VERDE = Color.rgb(34, 197, 94)       // #22C55E
-    val VERDE_SUAVE = Color.rgb(12, 40, 24)
-    val AMARILLO = Color.rgb(250, 204, 21)   // #FACC15
-    val AMARILLO_SUAVE = Color.rgb(46, 38, 6)
-    val ROJO = Color.rgb(244, 63, 94)        // #F43F5E
-    val ROJO_SUAVE = Color.rgb(50, 12, 22)
-    val DORADO = Color.rgb(232, 184, 74)     // #E8B84A fundador
+    // ---------- colores: marca v2 (checa-web/marca/tokens.json). El color solo decide. ----------
+    val ASFALTO = Color.rgb(12, 12, 16)      // #0C0C10 fondo
+    val TABLERO = Color.rgb(22, 22, 28)      // #16161C tarjetas
+    val HUMO = Color.rgb(58, 58, 69)         // #3A3A45 bordes
+    val HUESO = Color.rgb(244, 244, 239)     // #F4F4EF marca, texto y botones
+    val FONDO = ASFALTO
+    val TARJETA = TABLERO
+    val TARJETA2 = Color.rgb(34, 34, 42)     // #22222A controles dentro de tarjetas
+    val BORDE = Color.rgb(42, 42, 51)        // #2A2A33
+    val TEXTO = HUESO
+    val TEXTO2 = Color.rgb(207, 207, 212)    // #CFCFD4
+    val TENUE = Color.rgb(163, 163, 173)     // #A3A3AD gris del texto
+    val VERDE = Color.rgb(34, 197, 94)       // #22C55E aceptar
+    val VERDE_SUAVE = Color.rgb(14, 42, 26)
+    val AMARILLO = Color.rgb(250, 204, 21)   // #FACC15 considerar
+    val AMARILLO_SUAVE = Color.rgb(46, 39, 8)
+    val ROJO = Color.rgb(239, 68, 68)        // #EF4444 rechazar
+    val ROJO_SUAVE = Color.rgb(46, 18, 20)
+    /** El fundador ya no usa dorado (la marca v2 solo colorea lo que decide): va en hueso. */
+    val DORADO = HUESO
     val DIDI = Color.rgb(255, 112, 40)
 
     fun colorNivel(n: Int) = when (n) {
@@ -48,8 +53,8 @@ object Tema {
     const val S3 = 24
     const val S4 = 32
     const val ENTRE_TARJETAS = 12
-    const val R_TARJETA = 16
-    const val R_BOTON = 12
+    const val R_TARJETA = 24
+    const val R_BOTON = 16
     const val ALTO_TOQUE = 48
     const val ICONO = 24
 
@@ -74,8 +79,8 @@ object TemaPopup {
     val ROJO = Color.rgb(239, 68, 68)
     val ROJO_SUAVE = Color.rgb(56, 24, 24)
     val DIDI = Color.rgb(255, 112, 40)
-    const val S1 = Tema.S1
-    const val R_TARJETA = Tema.R_TARJETA
+    const val S1 = 8
+    const val R_TARJETA = 16
 
     fun colorNivel(n: Int) = when (n) {
         Oferta.VERDE -> VERDE
@@ -84,23 +89,28 @@ object TemaPopup {
     }
 }
 
-/** Fira Sans (texto) y Fira Code (números de ancho fijo), en assets/fuentes. */
+/**
+ * Letras de la marca v2 (assets/fuentes): Bricolage Grotesque 800 para títulos y números grandes,
+ * DM Sans para el texto y JetBrains Mono para datos y etiquetas. El pop-up usa la letra del sistema.
+ */
 object Fuentes {
+    var titulo: Typeface = Typeface.DEFAULT_BOLD; private set
     var texto: Typeface = Typeface.DEFAULT; private set
     var media: Typeface = Typeface.DEFAULT; private set
     var negrita: Typeface = Typeface.DEFAULT_BOLD; private set
-    var numero: Typeface = Typeface.DEFAULT_BOLD; private set
+    /** Datos y etiquetas (ancho fijo: los números no se mueven al cambiar). */
+    var numero: Typeface = Typeface.MONOSPACE; private set
 
     fun iniciar(c: Context) {
         val a = c.assets
-        try {
-            texto = Typeface.createFromAsset(a, "fuentes/FiraSans-Regular.ttf")
-            media = Typeface.createFromAsset(a, "fuentes/FiraSans-Medium.ttf")
-            negrita = Typeface.createFromAsset(a, "fuentes/FiraSans-Bold.ttf")
-        } catch (e: Exception) {}
-        try {
-            numero = Typeface.Builder(a, "fuentes/FiraCode.ttf").setFontVariationSettings("'wght' 700").build()
-        } catch (e: Exception) {}
+        fun variable(archivo: String, peso: Int): Typeface? = try {
+            Typeface.Builder(a, "fuentes/$archivo").setFontVariationSettings("'wght' $peso").build()
+        } catch (_: Exception) { null }
+        try { titulo = Typeface.createFromAsset(a, "fuentes/Bricolage-800.ttf") } catch (_: Exception) {}
+        variable("DMSans.ttf", 400)?.let { texto = it }
+        variable("DMSans.ttf", 500)?.let { media = it }
+        variable("DMSans.ttf", 700)?.let { negrita = it }
+        variable("JetBrainsMono.ttf", 700)?.let { numero = it }
     }
 }
 

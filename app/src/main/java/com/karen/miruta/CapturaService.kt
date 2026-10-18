@@ -102,6 +102,7 @@ class CapturaService : Service() {
             r.surface, null, handler
         )
         corriendo = true
+        cortada = false
         WidgetCheca.actualizar(this)
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).apply {
             cancel(ID_AVISO)
@@ -338,7 +339,7 @@ class CapturaService : Service() {
         display = null
         lector = null
         stopForeground(STOP_FOREGROUND_REMOVE)
-        if (avisar && estabaLeyendo) avisarDetenida()
+        if (avisar && estabaLeyendo) { cortada = true; avisarDetenida() }
         stopSelf()
     }
 
@@ -360,5 +361,7 @@ class CapturaService : Service() {
         private val tramoTexto = Regex("""\d\s?min\s*\(""", RegexOption.IGNORE_CASE)
         private val soloMonto = Regex("""^\$\s?[\d,]+(?:\.\d{1,2})?$""")
         @Volatile var corriendo = false
+        /** Android cortó la lectura sin que el conductor la detuviera (Inicio lo avisa en amarillo). */
+        @Volatile var cortada = false
     }
 }

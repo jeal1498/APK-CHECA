@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Logo de la marca v2 (checa-web/marca/semaforo.svg): luz verde encendida con ✓. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="15dp"
+    android:height="25dp"
+    android:viewportWidth="60"
+    android:viewportHeight="100">
+    <group>
+        <path android:fillColor="#222826" android:strokeColor="#3A423F" android:strokeWidth="1.6" android:pathData="M26,2 H34 A20,20 0 0 1 54,22 V78 A20,20 0 0 1 34,98 H26 A20,20 0 0 1 6,78 V22 A20,20 0 0 1 26,2 Z" />
+        <path android:fillColor="#4A2222" android:pathData="M30,26 m-9,0 a9,9 0 1,0 18,0 a9,9 0 1,0 -18,0" />
+        <path android:fillColor="#4A3C16" android:pathData="M30,50 m-9,0 a9,9 0 1,0 18,0 a9,9 0 1,0 -18,0" />
+        <path android:fillColor="#22C55E" android:pathData="M30,74 m-12,0 a12,12 0 1,0 24,0 a12,12 0 1,0 -24,0" />
+        <path android:strokeColor="#04210F" android:strokeWidth="3.4" android:strokeLineCap="round" android:strokeLineJoin="round" android:pathData="M24,74.5 l4.5,4.5 L36.5,69" />
+    </group>
+</vector>
