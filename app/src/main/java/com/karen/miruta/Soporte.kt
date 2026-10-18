@@ -85,9 +85,11 @@ object Soporte {
             Accion.SOPORTE
         ),
         Pregunta(
-            "¿Mis datos están seguros?",
-            "La lectura de ofertas se hace en tu teléfono, sin internet. Tu historial se queda en el equipo. " +
-                "Solo se usa internet para tu cuenta de Google y para revisar actualizaciones."
+            "¿Qué datos guarda Checa?",
+            "La lectura de ofertas se hace en tu teléfono, sin internet. En el teléfono quedan tus estadísticas (30 días) " +
+                "y, si lo tienes encendido, las ofertas guardadas para ayuda con la lectura (7 días). En tu cuenta de Google " +
+                "se guardan tu licencia, tus equipos y tus ajustes. A soporte solo llega lo que tú revisas y mandas. " +
+                "Todo el detalle está en Cuenta → Tus datos."
         )
     )
 
@@ -153,6 +155,13 @@ object Soporte {
             if (libre) "Sin restricción de batería."
             else "El ahorro de batería puede detener la lectura. Pon Checa en «Sin restricciones».",
             if (libre) Accion.NINGUNA else Accion.BATERIA
+        )
+        val prefs = Prefs(ctx)
+        val activas = prefs.uber || prefs.didi
+        r += Revision(
+            activas, "Apps en Checa",
+            if (activas) "Lee: " + listOfNotNull(if (prefs.uber) "Uber" else null, if (prefs.didi) "DiDi" else null).joinToString(" y ") + "."
+            else "Uber y DiDi están apagadas en Ajustes → Apps. Enciende al menos una."
         )
         val apps = appsInstaladas(ctx)
         r += Revision(

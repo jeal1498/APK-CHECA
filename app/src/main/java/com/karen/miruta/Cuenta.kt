@@ -44,7 +44,12 @@ object Cuenta {
     /** Equipos que permite la licencia de la cuenta (1 en el plan de 1 mes). */
     fun maxEquipos(ctx: Context): Int = sp(ctx).getInt("lic_eq", MAX_EQUIPOS)
 
-    data class Equipo(val id: String, val nombre: String, val ultimoUso: String)
+    /** [nombre] = modelo del teléfono; [alias] = nombre que le puso el conductor («Mi tablet»). */
+    data class Equipo(val id: String, val nombre: String, val ultimoUso: String, val alias: String = "") {
+        fun visible(): String = alias.ifEmpty { nombre.ifEmpty { id } }
+    }
+
+    private fun texto(o: JSONObject, k: String): String = o.optString(k).takeUnless { it == "null" } ?: ""
 
     sealed class Resultado {
         object Ok : Resultado()
@@ -100,7 +105,7 @@ object Cuenta {
         val a = JSONArray(sp(ctx).getString("equipos", "[]"))
         (0 until a.length()).map { i ->
             val o = a.getJSONObject(i)
-            Equipo(o.optString("equipo"), o.optString("nombre"), o.optString("ultimo_uso"))
+            Equipo(texto(o, "equipo"), texto(o, "nombre"), texto(o, "ultimo_uso"), texto(o, "alias"))
         }
     } catch (_: Exception) { emptyList() }
 
@@ -467,18 +472,37 @@ object Cuenta {
     }
 
     private fun leerEquipos(ctx: Context, t: String): List<Equipo> {
-        val a = JSONArray(pedir("GET", "/rest/v1/equipos?select=equipo,nombre,ultimo_uso&order=ultimo_uso.desc", t, null))
+        // Si el esquema aún no tiene la columna «alias», se leen sin ella.
+        val txt = try {
+            pedir("GET", "/rest/v1/equipos?select=equipo,nombre,ultimo_uso,alias&order=ultimo_uso.desc", t, null)
+        } catch (_: HttpError) {
+            pedir("GET", "/rest/v1/equipos?select=equipo,nombre,ultimo_uso&order=ultimo_uso.desc", t, null)
+        }
+        val a = JSONArray(txt)
         return (0 until a.length()).map { i ->
             val o = a.getJSONObject(i)
-            Equipo(o.optString("equipo"), o.optString("nombre"), o.optString("ultimo_uso"))
+            Equipo(texto(o, "equipo"), texto(o, "nombre"), texto(o, "ultimo_uso"), texto(o, "alias"))
         }
     }
 
     private fun equiposJson(l: List<Equipo>): String {
         val a = JSONArray()
-        l.forEach { a.put(JSONObject().put("equipo", it.id).put("nombre", it.nombre).put("ultimo_uso", it.ultimoUso)) }
+        l.forEach {
+            a.put(JSONObject().put("equipo", it.id).put("nombre", it.nombre).put("ultimo_uso", it.ultimoUso).put("alias", it.alias))
+        }
         return a.toString()
     }
+
+    /** Le pone un nombre propio a un equipo de la cuenta («Mi tablet»). Vacío = vuelve al modelo. */
+    fun renombrarEquipo(ctx: Context, id: String, alias: String, listo: (Resultado) -> Unit) =
+        enSegundoPlano(ctx, listo) {
+            // HttpURLConnection no admite PATCH: se usa el mismo «upsert» que registra el equipo.
+            val valor: Any = alias.trim().take(30).ifEmpty { JSONObject.NULL }
+            val fila = JSONObject().put("correo", correo(ctx)).put("equipo", id).put("alias", valor)
+            pedir("POST", "/rest/v1/equipos", token(ctx), JSONArray().put(fila).toString(),
+                "resolution=merge-duplicates,return=minimal")
+            sincronizar(ctx)
+        }
 
     private fun isoAhora(): String = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US)
         .apply { timeZone = TimeZone.getTimeZone("UTC") }.format(Date())

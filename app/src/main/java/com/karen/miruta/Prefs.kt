@@ -142,6 +142,11 @@ class Prefs(context: Context) {
         get() = sp.getBoolean("diagAviso", false)
         set(v) { sp.edit().putBoolean("diagAviso", v).apply() }
 
+    /** Se pausó el lector desde «Apps de banco» (la pantalla de permisos lo explica al volver). */
+    var lectorPausado: Boolean
+        get() = sp.getBoolean("lectorPausado", false)
+        set(v) { sp.edit().putBoolean("lectorPausado", v).apply() }
+
     /** Cuándo salió el último pop-up (para «Leyendo · última oferta hace 2 min»). */
     var ultimaOferta: Long
         get() = sp.getLong("ultOferta", 0L)

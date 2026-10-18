@@ -193,3 +193,6 @@ create policy "actualizar mis ajustes" on public.ajustes
   for update to authenticated
   using (correo = lower(auth.jwt() ->> 'email'))
   with check (correo = lower(auth.jwt() ->> 'email'));
+
+-- Nombre propio de cada equipo («Mi tablet»); el modelo sigue en «nombre».
+alter table public.equipos add column if not exists alias text;

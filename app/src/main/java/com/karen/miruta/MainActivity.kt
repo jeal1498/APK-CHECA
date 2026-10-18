@@ -187,6 +187,8 @@ class MainActivity : Activity() {
         Registro.borrarPendientes(this)
         Registro.podar(this)
         pintarDiag()
+        pintarAyudaAbierta?.invoke()
+        pintarCuenta()
         actualizarEstado()
         if (autoIniciar) {
             autoIniciar = false
@@ -479,6 +481,7 @@ class MainActivity : Activity() {
             startService(Intent(this, CapturaService::class.java).setAction(CapturaService.ACCION_DETENER))
         }
         srv.pausar()
+        prefs.lectorPausado = true
         Toast.makeText(this, "Lector pausado. Ya puedes abrir tu banco.", Toast.LENGTH_LONG).show()
         handler.postDelayed({ actualizarEstado() }, 600)
     }
@@ -1254,13 +1257,9 @@ class MainActivity : Activity() {
     private fun pantallaCuenta(): View {
         val col = columna()
 
-        // --- Perfil, credencial del plan y equipos (diseño «A · Credencial») ---
+        // --- Perfil, credencial del plan y menú de filas ---
         cuentaCaja = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         col.addView(cuentaCaja, margenTarjeta())
-        pintarCuenta()
-
-        // «Invita a un amigo» y «¿Te invitó alguien?» ocultas en Cuenta (7.2). La tarjeta de
-        // Inicio sigue; para volver a mostrarlas: col.addView(tarjetaCompartir()) y cajaInvitado.
 
         // --- Paquetes ---
         val paq = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
@@ -1301,95 +1300,11 @@ class MainActivity : Activity() {
         paquetesVista = paq
         col.addView(paq)
 
-        // --- Cómo usarla ---
-        col.addView(etiqueta("CÓMO USARLA"))
-        val pasos = tarjeta()
-        listOf(
-            "Activa el servicio de Accesibilidad (una sola vez).",
-            "Toca el botón verde de abajo → elige \"Pantalla completa\" → \"Empezar\".",
-            "Abre Uber o DiDi. Cuando llegue una oferta verás el pop-up con el semáforo.",
-            "Al terminar, toca el botón rojo o \"Detener\" en la notificación.",
-            "Después de reiniciar el teléfono hay que volver a iniciar la lectura."
-        ).forEachIndexed { i, s ->
-            val fila = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
-            fila.addView(texto("${i + 1}", Tema.T_NOTA, cVerde, true).apply {
-                gravity = Gravity.CENTER
-                background = punto(Tema.VERDE_SUAVE)
-            }, LinearLayout.LayoutParams(dp(24), dp(24)).apply { rightMargin = dp(12) })
-            fila.addView(texto(s, Tema.T_TEXTO, cTexto, false).apply { setLineSpacing(0f, 1.2f) },
-                LinearLayout.LayoutParams(0, -2, 1f).apply { topMargin = dp(2) })
-            pasos.addView(fila, if (i > 0) margenArriba(12) else LinearLayout.LayoutParams(-1, -2))
-        }
-        pasos.addView(boton("Ver la guía de inicio", cTarjeta2, cTexto) { mostrarGuia() }, margenArriba(Tema.S2))
-        col.addView(pasos, margenTarjeta())
-
-        // --- Ayuda ---
-        col.addView(etiqueta("AYUDA"))
-        val ayuda = tarjeta()
-        ayuda.addView(texto(
-            "Casi todo se resuelve aquí. Si no, escríbeme: respondo fuera de mis turnos.",
-            Tema.T_TEXTO, cTexto2, false
-        ).apply { setLineSpacing(0f, 1.2f) })
-        ayuda.addView(boton("Diagnóstico de problemas", cVerde, Color.BLACK) { mostrarDiagnostico() }, margenArriba(Tema.S2))
-        ayuda.addView(boton("Preguntas frecuentes", cTarjeta2, cTexto) { mostrarPreguntas() }, margenArriba(Tema.S1))
-        ayuda.addView(boton("Una oferta se leyó mal", cTarjeta2, cTexto) { reportarLecturaMala() }, margenArriba(Tema.S1))
-        ayuda.addView(boton("Escribir a soporte", cTarjeta2, cTexto) {
-            Soporte.escribir(this, "tengo una duda")
-        }, margenArriba(Tema.S1))
-        col.addView(ayuda, margenTarjeta())
-
-        // --- Permisos ---
-        col.addView(etiqueta("PERMISOS"))
-        val perm = tarjeta()
-        ayudaPermiso = texto("", Tema.T_TEXTO, cVerde, true).apply {
-            gravity = Gravity.CENTER_VERTICAL
-            compoundDrawablePadding = dp(Tema.S1)
-        }
-        perm.addView(ayudaPermiso)
-        perm.addView(boton("Abrir Accesibilidad", cTarjeta2, cTexto) { abrirAccesibilidad() }, margenArriba(Tema.S2))
-        perm.addView(boton("Información de la app", cTarjeta2, cTexto) { abrirInfoApp() }, margenArriba(Tema.S1))
-        col.addView(perm, margenTarjeta())
-
-        // --- Apps de banco ---
-        col.addView(etiqueta("APPS DE BANCO"))
-        val banco = tarjeta()
-        banco.addView(texto(
-            "Algunos bancos (Nu, BBVA…) se bloquean mientras el lector está encendido. " +
-                "Páusalo para usar tu banco y luego vuelve a activarlo en Accesibilidad.",
-            Tema.T_TEXTO, cTexto2, false
-        ).apply { setLineSpacing(0f, 1.2f) })
-        banco.addView(boton("Pausar lector para usar mi banco", cTarjeta2, cTexto) { pausarLector() }, margenArriba(Tema.S2))
-        banco.addView(boton("Volver a activar el lector", cVerde, Color.BLACK) { abrirAccesibilidad() }, margenArriba(Tema.S1))
-        col.addView(banco, margenTarjeta())
-
-        // --- Ayuda con la lectura (lo guardado de cada oferta y reporte a soporte) ---
-        col.addView(etiqueta("AYUDA CON LA LECTURA"))
-        val diag = tarjeta()
-        cajaDiag = diag
-        pintarDiag()
-        col.addView(diag, margenTarjeta())
-
-        // --- Tus datos ---
-        col.addView(etiqueta("TUS DATOS"))
-        val datos = tarjeta()
-        datos.addView(texto("Estadísticas de Inicio", Tema.T_TEXTO, cTexto, true))
-        datos.addView(texto("Mejores horas, la semana y las ofertas del día, de los últimos 30 días.", Tema.T_NOTA, cTenue, false)
-            .apply { setLineSpacing(0f, 1.2f) }, margenArriba(4))
-        datos.addView(boton("Borrar estadísticas", Tema.ROJO_SUAVE, cRojo) {
-            AlertDialog.Builder(this)
-                .setMessage("Se borran Mejores horas, la semana y las ofertas del día. Tus ajustes, tu cuenta y Mi día no cambian. ¿Borrar?")
-                .setPositiveButton("Borrar") { _, _ -> Historial.borrar(this); actualizarResumen() }
-                .setNegativeButton("Cancelar", null)
-                .show()
-        }, margenArriba(Tema.S2))
-        col.addView(datos, margenTarjeta())
-
-        col.addView(etiqueta("VERSIÓN"))
-        val ver = tarjeta()
-        ver.addView(texto("Checa ${Actualizacion.instalada(this)}", Tema.T_TEXTO, cTexto, true))
-        botonBuscarAct = boton("Buscar actualización", cTarjeta2, cTexto) { buscarActualizacion() }
-        ver.addView(botonBuscarAct, margenArriba(Tema.S2))
-        col.addView(ver, margenTarjeta())
+        // --- Versión y cerrar sesión ---
+        val pie = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        cuentaPie = pie
+        col.addView(pie, margenArriba(Tema.S1))
+        pintarCuenta()
         return scroll(col).also { cuentaScroll = it }
     }
 
@@ -1463,7 +1378,7 @@ class MainActivity : Activity() {
         }, margenArriba(Tema.S2))
         cuerpo.addView(boton("Tengo un problema", cTarjeta2, cTexto) {
             dialogoAviso?.dismiss()
-            mostrarDiagnostico()
+            mostrarAyuda()
         }, margenArriba(Tema.S1))
         cuerpo.addView(boton("Después", cTarjeta2, cTexto) { dialogoAviso?.dismiss() }, margenArriba(Tema.S1))
         dialogoAviso = hoja("¿Te está sirviendo Checa?", null, cuerpo)
@@ -1626,69 +1541,399 @@ class MainActivity : Activity() {
         }
     }
 
-    private fun mostrarPreguntas() {
-        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        Soporte.preguntas.forEach { p ->
-            val caja = LinearLayout(this).apply {
-                orientation = LinearLayout.VERTICAL
-                background = redondo(cTarjeta, Tema.R_TARJETA)
-                setPadding(dp(Tema.S2), dp(12), dp(Tema.S2), dp(12))
-            }
-            val cabecera = texto("+  ${p.pregunta}", Tema.T_TEXTO, cTexto, true)
-            val respuesta = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; visibility = View.GONE }
-            respuesta.addView(texto(p.respuesta, Tema.T_TEXTO, cTexto2, false).apply { setLineSpacing(0f, 1.2f) })
-            if (p.accion != Soporte.Accion.NINGUNA) {
-                respuesta.addView(boton(p.accion.texto, cTarjeta2, cTexto) { hacerAccion(p.accion) }, margenArriba(Tema.S1))
-            }
-            caja.addView(cabecera)
-            caja.addView(respuesta, margenArriba(Tema.S1))
-            caja.setOnClickListener {
-                val abrir = respuesta.visibility != View.VISIBLE
-                respuesta.visibility = if (abrir) View.VISIBLE else View.GONE
-                cabecera.text = (if (abrir) "−  " else "+  ") + p.pregunta
-            }
-            cuerpo.addView(caja, margenTarjeta())
-        }
-        cuerpo.addView(boton("Escribir a soporte", cVerde, Color.BLACK) {
-            Soporte.escribir(this, "tengo una duda")
-        })
-        hoja("Preguntas frecuentes", null, cuerpo)
+    // =====================================================================
+    // Pestaña Cuenta como menú (maqueta https://claude.ai/artifact/AVNnKkJ44Fw8E13scufVpH)
+    // =====================================================================
+
+    private var cuentaPie: LinearLayout? = null
+    private var firmaCuenta = ""
+    /** Repinta «Ayuda y soporte» si está abierta (al volver de Ajustes del teléfono). */
+    private var pintarAyudaAbierta: (() -> Unit)? = null
+
+    private fun permisosFaltantes(): Int =
+        listOf(servicioActivo(), permisoNotificaciones(), permisoBateria()).count { !it }
+
+    /** Grupo de filas con fondo de tarjeta y líneas entre ellas. */
+    private fun grupoFilas() = LinearLayout(this).apply {
+        orientation = LinearLayout.VERTICAL
+        background = redondo(cTarjeta, Tema.R_TARJETA)
     }
 
-    private fun mostrarDiagnostico() {
-        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        val revisiones = Soporte.diagnosticar(this)
-        val fallas = revisiones.count { !it.ok }
-        cuerpo.addView(texto(
-            if (fallas == 0) "Todo se ve bien. Si aun así no sale el pop-up, abre Uber o DiDi con una oferta en pantalla y escríbeme."
-            else if (fallas == 1) "Encontré 1 cosa por arreglar:" else "Encontré $fallas cosas por arreglar:",
-            Tema.T_TEXTO, if (fallas == 0) cVerde else cAmarillo, true
-        ).apply { setLineSpacing(0f, 1.2f) })
-        var dialogo: Dialog? = null
-        revisiones.forEach { r ->
-            val fila = tarjeta()
-            val cab = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
-            cab.addView(
-                icono(if (r.ok) Icono.OK else Icono.ALERTA, if (r.ok) cVerde else cAmarillo, 20),
-                LinearLayout.LayoutParams(dp(20), dp(20)).apply { rightMargin = dp(12) }
-            )
-            cab.addView(texto(r.titulo, Tema.T_TEXTO, cTexto, true), LinearLayout.LayoutParams(0, -2, 1f))
-            fila.addView(cab)
-            fila.addView(texto(r.detalle, Tema.T_NOTA, cTexto2, false).apply { setLineSpacing(0f, 1.2f) }, margenArriba(4))
-            if (r.accion != Soporte.Accion.NINGUNA) {
-                fila.addView(boton(r.accion.texto, cVerde, Color.BLACK) { hacerAccion(r.accion) }, margenArriba(Tema.S1))
-            }
-            cuerpo.addView(fila, margenArriba(Tema.S1))
+    private fun filaMenu(
+        grupo: LinearLayout, tipoIcono: Int, titulo: String, sub: String, colorSub: Int = cTenue, accion: () -> Unit
+    ) {
+        if (grupo.childCount > 0) grupo.addView(View(this).apply { setBackgroundColor(Tema.BORDE) },
+            LinearLayout.LayoutParams(-1, dp(1)).apply { leftMargin = dp(56) })
+        val f = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            minimumHeight = dp(60)
+            setPadding(dp(12), dp(10), dp(12), dp(10))
+            background = ripple(Color.TRANSPARENT, Tema.R_TARJETA)
+            isClickable = true
+            setOnClickListener { accion() }
         }
-        cuerpo.addView(boton("Revisar de nuevo", cTarjeta2, cTexto) {
-            dialogo?.dismiss()
-            mostrarDiagnostico()
+        val caja = FrameLayout(this).apply { background = redondo(cTarjeta2, 10) }
+        caja.addView(icono(tipoIcono, cVerde, 18), FrameLayout.LayoutParams(dp(18), dp(18), Gravity.CENTER))
+        f.addView(caja, LinearLayout.LayoutParams(dp(32), dp(32)).apply { rightMargin = dp(12) })
+        val textos = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        textos.addView(texto(titulo, Tema.T_TEXTO, cTexto, true))
+        textos.addView(texto(sub, Tema.T_NOTA, colorSub, false).apply { maxLines = 1; ellipsize = TextUtils.TruncateAt.END })
+        f.addView(textos, LinearLayout.LayoutParams(0, -2, 1f))
+        f.addView(texto("›", 20f, cTenue, false), LinearLayout.LayoutParams(-2, -2).apply { leftMargin = dp(8) })
+        grupo.addView(f)
+    }
+
+    /** Filas de la pestaña Cuenta, con el estado de cada cosa a la vista. */
+    private fun filasCuenta(): View {
+        val caja = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        val g1 = grupoFilas()
+        val equipos = Cuenta.equipos(this)
+        filaMenu(g1, Icono.CUENTA, "Equipos",
+            "${equipos.size} de ${Cuenta.maxEquipos(this)}" +
+                if (equipos.isEmpty()) "" else " · " + equipos.joinToString(", ") { it.visible() }) { mostrarEquipos() }
+        val faltan = permisosFaltantes()
+        filaMenu(g1, Icono.OK, "Permisos", if (faltan == 0) "Todo listo" else "Falta $faltan",
+            if (faltan == 0) cVerde else cAmarillo) { mostrarPermisos() }
+        caja.addView(g1)
+
+        val g2 = grupoFilas()
+        filaMenu(g2, Icono.ALERTA, "Ayuda y soporte", "¿Algo falla? Revisa en un toque") { mostrarAyuda() }
+        val guardadas = Registro.lista(this)
+        val noLeidas = guardadas.count { !it.leida }
+        filaMenu(g2, Icono.FILTROS, "Ayuda con la lectura",
+            when {
+                !prefs.diagnostico -> "Guardar pantallas está apagado"
+                guardadas.isEmpty() -> "Aún no hay ofertas guardadas"
+                noLeidas > 0 -> "${guardadas.size} guardadas · $noLeidas no ${if (noLeidas == 1) "leída" else "leídas"}"
+                else -> "${guardadas.size} ofertas guardadas"
+            },
+            if (noLeidas > 0) cAmarillo else cTenue) { mostrarAyudaLectura() }
+        filaMenu(g2, Icono.PIN, "Apps de banco", "Pausa el lector para usar tu banco") { mostrarBancos() }
+        filaMenu(g2, Icono.PLAY, "Guía de inicio", "Cómo usar Checa paso a paso") { mostrarGuia() }
+        filaMenu(g2, Icono.RELOJ, "Tus datos", "Qué guarda Checa y estadísticas") { mostrarTusDatos() }
+        caja.addView(g2, margenArriba(Tema.S1))
+        return caja
+    }
+
+    /** Pie de Cuenta: versión (con actualizar) y «Cerrar sesión», que pide confirmar. */
+    private fun pintarCuentaPie() {
+        val pie = cuentaPie ?: return
+        pie.removeAllViews()
+        val nueva = Actualizacion.pendiente(this)
+        pie.addView(texto(
+            "Checa ${Actualizacion.instalada(this)} · " + if (nueva == null) "al día" else "hay versión nueva",
+            Tema.T_NOTA, if (nueva == null) cTenue else cVerde, false
+        ).apply { gravity = Gravity.CENTER })
+        botonBuscarAct = texto(if (nueva == null) "Buscar actualización" else "Actualizar a la $nueva", Tema.T_NOTA,
+            if (nueva == null) cTexto2 else cVerde, true).apply {
+            gravity = Gravity.CENTER
+            minHeight = dp(Tema.ALTO_TOQUE)
+            isClickable = true
+            setOnClickListener { buscarActualizacion() }
+        }
+        pie.addView(botonBuscarAct)
+        if (Cuenta.conectada(this)) {
+            pie.addView(texto("Cerrar sesión", Tema.T_TEXTO, cTenue, false).apply {
+                gravity = Gravity.CENTER
+                minHeight = dp(Tema.ALTO_TOQUE)
+                typeface = fuenteMedia
+                paintFlags = paintFlags or android.graphics.Paint.UNDERLINE_TEXT_FLAG
+                isClickable = true
+                setOnClickListener { confirmarCerrarSesion() }
+            })
+        }
+    }
+
+    private fun confirmarCerrarSesion() {
+        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        listOf(
+            "Este teléfono deja de mostrar pop-ups y se libera un lugar de tus equipos.",
+            "Se borran de aquí las ofertas guardadas y las estadísticas.",
+            "Tu licencia y tus ajustes siguen en tu cuenta: al volver a entrar, regresan."
+        ).forEachIndexed { i, s ->
+            val f = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+            f.addView(View(this).apply { background = punto(cVerde) },
+                LinearLayout.LayoutParams(dp(6), dp(6)).apply { topMargin = dp(8); rightMargin = dp(10) })
+            f.addView(texto(s, Tema.T_TEXTO, cTexto2, false).apply { setLineSpacing(0f, 1.2f) }, LinearLayout.LayoutParams(0, -2, 1f))
+            cuerpo.addView(f, if (i > 0) margenArriba(Tema.S1) else LinearLayout.LayoutParams(-1, -2))
+        }
+        var d: Dialog? = null
+        cuerpo.addView(boton("Cerrar sesión", Tema.ROJO_SUAVE, cRojo) {
+            d?.dismiss()
+            Toast.makeText(this, "Cerrando sesión…", Toast.LENGTH_SHORT).show()
+            Cuenta.cerrarSesion(this) { pintarLicencia(); pintarCuenta(); actualizarAcceso() }
         }, margenArriba(Tema.S2))
-        cuerpo.addView(boton("Escribir a soporte", cTarjeta2, cTexto) {
-            val detalle = revisiones.joinToString("\n") { (if (it.ok) "✔ " else "✘ ") + it.titulo + ": " + it.detalle }
-            Soporte.escribir(this, "el diagnóstico encontró problemas", detalle)
+        cuerpo.addView(boton("Cancelar", cTarjeta2, cTexto) { d?.dismiss() }, margenArriba(Tema.S1))
+        d = hoja("¿Cerrar sesión en este teléfono?", null, cuerpo)
+    }
+
+    /** Equipos de la cuenta: nombre propio, último uso y qué pasa al quitar uno. */
+    private fun mostrarEquipos() {
+        val (d, cuerpo, _) = ventanaCompleta("Equipos")
+        val col = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(16), 0, dp(16), dp(Tema.S2))
+        }
+        cuerpo.addView(ScrollView(this).apply { isVerticalScrollBarEnabled = false; addView(col) }, LinearLayout.LayoutParams(-1, -1))
+        fun pintar() {
+            col.removeAllViews()
+            val max = Cuenta.maxEquipos(this)
+            col.addView(texto(
+                "Tu plan permite $max ${if (max == 1) "equipo" else "equipos"}. Si quitas uno, deja de mostrar pop-ups " +
+                    "hasta que vuelvas a entrar con tu cuenta en él.",
+                Tema.T_TEXTO, cTexto2, false
+            ).apply { setLineSpacing(0f, 1.2f) })
+            val lista = Cuenta.equipos(this)
+            lista.forEach { eq ->
+                val esEste = eq.id == Licencia.codigoEquipo(this)
+                val t = tarjeta()
+                val cab = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
+                val tx = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+                tx.addView(texto(if (eq.alias.isEmpty() && esEste) "Este teléfono" else eq.visible(), Tema.T_SUB, cTexto, true))
+                tx.addView(texto("${eq.nombre.ifEmpty { eq.id }} · último uso: ${Cuenta.haceCuanto(eq.ultimoUso)}",
+                    Tema.T_NOTA, cTenue, false), margenArriba(2))
+                cab.addView(tx, LinearLayout.LayoutParams(0, -2, 1f))
+                if (esEste) cab.addView(chipDiag("Este equipo", Tema.VERDE_SUAVE, cVerde))
+                t.addView(cab)
+                val botones = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+                botones.addView(boton("Cambiar nombre", cTarjeta2, cTexto) {
+                    val campo = EditText(this).apply {
+                        setText(eq.alias)
+                        hint = eq.nombre
+                        setSingleLine()
+                        inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+                    }
+                    AlertDialog.Builder(this)
+                        .setTitle("Nombre del equipo")
+                        .setView(FrameLayout(this).apply { setPadding(dp(20), dp(8), dp(20), 0); addView(campo) })
+                        .setPositiveButton("Guardar") { _, _ ->
+                            Cuenta.renombrarEquipo(this, eq.id, campo.text.toString()) { r ->
+                                if (r is Cuenta.Resultado.Error) Toast.makeText(this, r.mensaje, Toast.LENGTH_LONG).show()
+                                pintar()
+                                pintarCuenta()
+                            }
+                        }
+                        .setNegativeButton("Cancelar", null)
+                        .show()
+                }, LinearLayout.LayoutParams(0, dp(44), 1f))
+                if (!esEste) {
+                    botones.addView(boton("Quitar", Tema.ROJO_SUAVE, cRojo) {
+                        val c = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+                        c.addView(texto(
+                            "Dejará de mostrar pop-ups. Para usarlo otra vez, entra con tu cuenta en él. " +
+                                "Tu licencia y tus ajustes no cambian.",
+                            Tema.T_TEXTO, cTexto2, false
+                        ).apply { setLineSpacing(0f, 1.2f) })
+                        var h: Dialog? = null
+                        c.addView(boton("Quitar ${eq.visible()}", Tema.ROJO_SUAVE, cRojo) {
+                            h?.dismiss()
+                            Toast.makeText(this, "Quitando ${eq.visible()}…", Toast.LENGTH_SHORT).show()
+                            Cuenta.quitarEquipo(this, eq.id) { r ->
+                                pintar()
+                                mostrarResultadoCuenta(r)
+                            }
+                        }, margenArriba(Tema.S2))
+                        c.addView(boton("Cancelar", cTarjeta2, cTexto) { h?.dismiss() }, margenArriba(Tema.S1))
+                        h = hoja("¿Quitar ${eq.visible()}?", null, c)
+                    }, LinearLayout.LayoutParams(0, dp(44), 1f).apply { leftMargin = dp(8) })
+                }
+                t.addView(botones, margenArriba(Tema.S1))
+                col.addView(t, margenArriba(Tema.ENTRE_TARJETAS))
+            }
+            repeat(maxOf(0, max - lista.size)) {
+                col.addView(lugarLibre(), margenArriba(Tema.ENTRE_TARJETAS))
+            }
+        }
+        pintar()
+        d.setOnDismissListener { pintarCuenta() }
+        d.show()
+    }
+
+    private fun sinAcentos(s: String) =
+        java.text.Normalizer.normalize(s.lowercase(), java.text.Normalizer.Form.NFD).replace(Regex("\\p{Mn}+"), "")
+
+    /** Una pregunta frecuente que se abre y se cierra. */
+    private fun itemPregunta(p: Soporte.Pregunta): View {
+        val caja = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            background = redondo(cTarjeta, Tema.R_BOTON)
+            setPadding(dp(Tema.S2), dp(12), dp(Tema.S2), dp(12))
+        }
+        val cabecera = texto("+  ${p.pregunta}", Tema.T_TEXTO, cTexto, true)
+        val respuesta = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; visibility = View.GONE }
+        respuesta.addView(texto(p.respuesta, Tema.T_TEXTO, cTexto2, false).apply { setLineSpacing(0f, 1.2f) })
+        if (p.accion != Soporte.Accion.NINGUNA) {
+            respuesta.addView(boton(p.accion.texto, cTarjeta2, cTexto) { hacerAccion(p.accion) }, margenArriba(Tema.S1))
+        }
+        caja.addView(cabecera)
+        caja.addView(respuesta, margenArriba(Tema.S1))
+        caja.setOnClickListener {
+            val abrir = respuesta.visibility != View.VISIBLE
+            respuesta.visibility = if (abrir) View.VISIBLE else View.GONE
+            cabecera.text = (if (abrir) "−  " else "+  ") + p.pregunta
+        }
+        return caja
+    }
+
+    /** Ayuda y soporte: revisión automática, preguntas con buscador y WhatsApp. */
+    private fun mostrarAyuda() {
+        val (d, cuerpo, _) = ventanaCompleta("Ayuda y soporte")
+        val col = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(16), 0, dp(16), dp(Tema.S2))
+        }
+        cuerpo.addView(ScrollView(this).apply { isVerticalScrollBarEnabled = false; addView(col) }, LinearLayout.LayoutParams(-1, -1))
+
+        val revision = tarjeta()
+        col.addView(revision)
+        fun pintarRevision() {
+            revision.removeAllViews()
+            val revisiones = Soporte.diagnosticar(this)
+            val fallas = revisiones.count { !it.ok }
+            revision.addView(texto("¿Algo falla?", Tema.T_SUB, cTexto, true))
+            revision.addView(texto(
+                if (fallas == 0) "Todo se ve bien. Si aun así no sale el pop-up, abre Uber o DiDi con una oferta en pantalla."
+                else if (fallas == 1) "Hay 1 cosa por arreglar:" else "Hay $fallas cosas por arreglar:",
+                Tema.T_NOTA, if (fallas == 0) cVerde else cAmarillo, false
+            ).apply { setLineSpacing(0f, 1.2f) }, margenArriba(4))
+            revisiones.forEach { r ->
+                val f = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+                f.addView(icono(if (r.ok) Icono.OK else Icono.ALERTA, if (r.ok) cVerde else cAmarillo, 18),
+                    LinearLayout.LayoutParams(dp(18), dp(18)).apply { rightMargin = dp(10); topMargin = dp(1) })
+                val tx = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+                tx.addView(texto(r.titulo, Tema.T_TEXTO, cTexto, !r.ok))
+                if (!r.ok) {
+                    tx.addView(texto(r.detalle, Tema.T_NOTA, cTexto2, false).apply { setLineSpacing(0f, 1.2f) }, margenArriba(2))
+                    if (r.accion != Soporte.Accion.NINGUNA) {
+                        tx.addView(boton(r.accion.texto, cVerde, Color.BLACK) { hacerAccion(r.accion) }, margenArriba(Tema.S1))
+                    }
+                }
+                f.addView(tx, LinearLayout.LayoutParams(0, -2, 1f))
+                revision.addView(f, margenArriba(Tema.S1))
+            }
+            if (servicioActivo() && !CapturaService.corriendo) {
+                revision.addView(boton("▶  Iniciar lectura", cVerde, Color.BLACK) {
+                    d.dismiss()
+                    iniciarCaptura()
+                }, margenArriba(Tema.S2))
+            }
+        }
+        pintarRevision()
+        pintarAyudaAbierta = { pintarRevision() }
+
+        col.addView(etiqueta("PREGUNTAS FRECUENTES"), margenArriba(Tema.S2))
+        val buscar = EditText(this).apply {
+            hint = "Busca: pop-up, banco, batería…"
+            setHintTextColor(cTenue)
+            setTextColor(cTexto)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, Tema.T_TEXTO)
+            background = redondo(cTarjeta2, 12)
+            setPadding(dp(12), dp(10), dp(12), dp(10))
+            setSingleLine()
+        }
+        col.addView(buscar)
+        val faqs = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        col.addView(faqs)
+        fun pintarFaq(q: String) {
+            faqs.removeAllViews()
+            val clave = sinAcentos(q.trim())
+            val lista = Soporte.preguntas.filter { clave.isEmpty() || sinAcentos(it.pregunta + " " + it.respuesta).contains(clave) }
+            if (lista.isEmpty()) faqs.addView(texto("No encontré nada. Escríbenos por WhatsApp.", Tema.T_NOTA, cTenue, false),
+                margenArriba(Tema.S1))
+            lista.forEach { faqs.addView(itemPregunta(it), margenArriba(Tema.S1)) }
+        }
+        pintarFaq("")
+        buscar.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
+            override fun onTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
+            override fun afterTextChanged(s: Editable?) { pintarFaq(s?.toString() ?: "") }
+        })
+
+        col.addView(boton("Reportar una oferta mal leída", cTarjeta2, cTexto) { reportarLecturaMala() }, margenArriba(Tema.S2))
+        col.addView(boton("Escribir a soporte por WhatsApp", cTarjeta2, cTexto) {
+            Soporte.escribir(this, "tengo una duda")
         }, margenArriba(Tema.S1))
-        dialogo = hoja("Diagnóstico de problemas", null, cuerpo)
+        d.setOnDismissListener { pintarAyudaAbierta = null }
+        d.show()
+    }
+
+    /** Ayuda con la lectura en su propia pantalla (la tarjeta que pinta [pintarDiag]). */
+    private fun mostrarAyudaLectura() {
+        val (d, cuerpo, _) = ventanaCompleta("Ayuda con la lectura")
+        val col = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(16), 0, dp(16), dp(Tema.S2))
+        }
+        val caja = tarjeta()
+        col.addView(caja)
+        cuerpo.addView(ScrollView(this).apply { isVerticalScrollBarEnabled = false; addView(col) }, LinearLayout.LayoutParams(-1, -1))
+        cajaDiag = caja
+        pintarDiag()
+        d.setOnDismissListener {
+            if (cajaDiag === caja) { cajaDiag = null; estadoLecturaTxt = null }
+            pintarCuenta()
+        }
+        d.show()
+    }
+
+    private fun mostrarBancos() {
+        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        cuerpo.addView(texto(
+            "Algunos bancos (Nu, BBVA…) no abren mientras el lector está encendido. Páusalo, usa tu banco y " +
+                "al volver a Checa te pedirá activarlo otra vez.",
+            Tema.T_TEXTO, cTexto2, false
+        ).apply { setLineSpacing(0f, 1.2f) })
+        var d: Dialog? = null
+        cuerpo.addView(boton("Pausar lector para usar mi banco", cVerde, Color.BLACK) {
+            d?.dismiss()
+            pausarLector()
+        }, margenArriba(Tema.S2))
+        cuerpo.addView(boton("Volver a activar el lector", cTarjeta2, cTexto) {
+            d?.dismiss()
+            abrirAccesibilidad()
+        }, margenArriba(Tema.S1))
+        d = hoja("Apps de banco", null, cuerpo)
+    }
+
+    /** Qué guarda Checa, dónde y por cuánto tiempo; y borrar las estadísticas. */
+    private fun mostrarTusDatos() {
+        val (d, cuerpo, _) = ventanaCompleta("Tus datos")
+        val col = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(16), 0, dp(16), dp(Tema.S2))
+        }
+        cuerpo.addView(ScrollView(this).apply { isVerticalScrollBarEnabled = false; addView(col) }, LinearLayout.LayoutParams(-1, -1))
+        fun bloque(titulo: String, puntos: List<String>) {
+            val t = tarjeta()
+            t.addView(texto(titulo, Tema.T_SUB, cTexto, true))
+            puntos.forEach { s ->
+                val f = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+                f.addView(View(this).apply { background = punto(cVerde) },
+                    LinearLayout.LayoutParams(dp(6), dp(6)).apply { topMargin = dp(8); rightMargin = dp(10) })
+                f.addView(texto(s, Tema.T_TEXTO, cTexto2, false).apply { setLineSpacing(0f, 1.2f) }, LinearLayout.LayoutParams(0, -2, 1f))
+                t.addView(f, margenArriba(Tema.S1))
+            }
+            col.addView(t, margenArriba(Tema.ENTRE_TARJETAS))
+        }
+        bloque("En este teléfono", listOf(
+            "Estadísticas de ofertas (Mejores horas y semana): los últimos 30 días.",
+            "Ofertas guardadas para «Ayuda con la lectura»: 7 días, solo si está encendido.",
+            "Mi día: los viajes que marcas."
+        ))
+        bloque("En tu cuenta de Google", listOf(
+            "Tu licencia y tus equipos.",
+            "Tus ajustes (filtros, gasolina, pop-up), para que regresen si cambias de teléfono."
+        ))
+        bloque("A soporte", listOf("Nada se envía solo. Solo lo que tú revisas y mandas por WhatsApp."))
+        col.addView(boton("Borrar estadísticas", Tema.ROJO_SUAVE, cRojo) {
+            AlertDialog.Builder(this)
+                .setMessage("Se borran Mejores horas, la semana y las ofertas del día. Tus ajustes, tu cuenta y Mi día no cambian. ¿Borrar?")
+                .setPositiveButton("Borrar") { _, _ -> Historial.borrar(this); actualizarResumen() }
+                .setNegativeButton("Cancelar", null)
+                .show()
+        }, margenArriba(Tema.S2))
+        d.show()
     }
 
     /** «Una oferta se leyó mal»: abre el reporte con la última oferta guardada. */
@@ -2456,6 +2701,15 @@ class MainActivity : Activity() {
         }
 
         val acc = servicioActivo()
+        if (acc) prefs.lectorPausado = false
+        if (!acc && prefs.lectorPausado) {
+            c.addView(texto("Pausaste el lector para usar tu banco. Actívalo otra vez para seguir viendo los pop-ups.",
+                Tema.T_TEXTO, cAmarillo, true).apply {
+                setLineSpacing(0f, 1.2f)
+                background = redondo(Tema.AMARILLO_SUAVE, 12)
+                setPadding(dp(12), dp(10), dp(12), dp(10))
+            }, margenArriba(Tema.S2))
+        }
         fila("Lector de ofertas (Accesibilidad)",
             "Busca «Checa – lector de ofertas» y actívalo. Si Android dice «Controlado por ajustes restringidos», " +
                 "abre Información de la app, toca ⋮ → «Permitir configuración restringida» y vuelve a intentar.",
@@ -2650,8 +2904,17 @@ class MainActivity : Activity() {
         if (!::cuentaCaja.isInitialized) return
         pintarInvitar()
         avisarPremios()
-        cuentaCaja.removeAllViews()
         val e = Licencia.estado(this)
+        // Se llama cada 1.5 s (con el estado de la lectura): solo se vuelve a armar si algo cambió.
+        val guardadas = Registro.lista(this)
+        val firma = listOf(
+            e, Cuenta.conectada(this), Cuenta.nombre(this), Cuenta.correo(this), Cuenta.equipos(this), Cuenta.maxEquipos(this),
+            Cuenta.equipoQuitado(this), Cuenta.necesitaRevision(this), Cuenta.licencia(this) == null, Cuenta.precioBeta(this),
+            permisosFaltantes(), prefs.diagnostico, guardadas.size, guardadas.count { !it.leida }, Actualizacion.pendiente(this)
+        ).joinToString("|")
+        if (firma == firmaCuenta && cuentaCaja.childCount > 0) return
+        firmaCuenta = firma
+        cuentaCaja.removeAllViews()
         if (!Cuenta.conectada(this)) {
             val t = tarjeta()
             t.addView(texto("Entra con tu cuenta", Tema.T_SUB, cTexto, true))
@@ -2662,11 +2925,12 @@ class MainActivity : Activity() {
             t.addView(boton("Continuar con Google", Color.WHITE, Color.BLACK) { entrarConGoogle() }, margenArriba(Tema.S2))
             cuentaCaja.addView(t)
             cuentaCaja.addView(credencial(e), margenArriba(Tema.ENTRE_TARJETAS))
+            pintarCuentaPie()
             return
         }
         val nombre = Cuenta.nombre(this)
         cuentaCaja.addView(perfil(nombre, Cuenta.correo(this), e.fundador))
-        cuentaCaja.addView(credencial(e), margenArriba(Tema.S3))
+        cuentaCaja.addView(credencial(e), margenArriba(Tema.S1))
         when {
             Cuenta.equipoQuitado(this) -> {
                 cuentaCaja.addView(texto("Este equipo fue quitado de tu cuenta.", Tema.T_TEXTO, cAmarillo, true), margenArriba(Tema.S2))
@@ -2689,58 +2953,40 @@ class MainActivity : Activity() {
             e.pagada && e.vence < Licencia.PERMANENTE ->
                 cuentaCaja.addView(boton("Renovar · se suman los días", cVerde, Color.BLACK) { irAPaquetes() }, margenArriba(Tema.S2))
         }
-        val lista = Cuenta.equipos(this)
-        if (lista.isNotEmpty()) {
-            cuentaCaja.addView(etiqueta("EQUIPOS · ${lista.size} DE ${Cuenta.maxEquipos(this)}"), margenArriba(Tema.S1))
-            val fila = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
-            val huecos = maxOf(lista.size, Cuenta.maxEquipos(this))
-            for (i in 0 until huecos) {
-                val v = if (i < lista.size) lugarEquipo(lista[i]) else lugarLibre()
-                fila.addView(v, LinearLayout.LayoutParams(0, -1, 1f).apply { if (i > 0) leftMargin = dp(Tema.S1) })
-            }
-            cuentaCaja.addView(fila, LinearLayout.LayoutParams(-1, -2))
-        }
-        cuentaCaja.addView(texto("Cerrar sesión", Tema.T_TEXTO, cTenue, false).apply {
-            gravity = Gravity.CENTER
-            minHeight = dp(Tema.ALTO_TOQUE)
-            typeface = fuenteMedia
-            isClickable = true
-            setOnClickListener {
-                Toast.makeText(this@MainActivity, "Cerrando sesión…", Toast.LENGTH_SHORT).show()
-                Cuenta.cerrarSesion(this@MainActivity) { pintarLicencia(); pintarCuenta(); actualizarAcceso() }
-            }
-        }, margenArriba(Tema.S2))
+        cuentaCaja.addView(filasCuenta(), margenArriba(Tema.S2))
+        pintarCuentaPie()
     }
 
-    /** Foto con la inicial (aro dorado si es fundador), nombre grande y correo, centrados. */
+    /** Foto con la inicial (aro dorado si es fundador), nombre y correo en una fila. */
     private fun perfil(nombre: String, correo: String, fundador: Boolean): View {
-        val caja = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER_HORIZONTAL
-            setPadding(0, dp(Tema.S2), 0, 0)
+        val fila = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(dp(4), dp(Tema.S1), dp(4), 0)
         }
         val inicial = (nombre.ifEmpty { correo }.trim().firstOrNull() ?: '?').uppercaseChar().toString()
-        val foto = texto(inicial, 34f, Color.BLACK, true).apply {
+        val foto = texto(inicial, 22f, Color.BLACK, true).apply {
             gravity = Gravity.CENTER
             background = GradientDrawable(
                 GradientDrawable.Orientation.TL_BR, intArrayOf(Color.rgb(74, 222, 128), Color.rgb(22, 163, 74))
             ).apply { shape = GradientDrawable.OVAL }
         }
         val aro = FrameLayout(this).apply {
-            setPadding(dp(5), dp(5), dp(5), dp(5))
+            setPadding(dp(3), dp(3), dp(3), dp(3))
             background = GradientDrawable().apply {
                 shape = GradientDrawable.OVAL
                 setColor(Color.TRANSPARENT)
                 setStroke(dp(2), if (fundador) DORADO else cVerde)
             }
-            addView(foto, FrameLayout.LayoutParams(dp(84), dp(84)))
+            addView(foto, FrameLayout.LayoutParams(dp(50), dp(50)))
         }
-        caja.addView(aro, LinearLayout.LayoutParams(-2, -2))
-        caja.addView(texto(nombre.ifEmpty { "Tu cuenta" }, 24f, cTexto, true).apply { gravity = Gravity.CENTER },
-            LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(12) })
-        caja.addView(texto(correo, Tema.T_TEXTO, cTenue, false).apply { gravity = Gravity.CENTER },
-            LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(2) })
-        return caja
+        fila.addView(aro, LinearLayout.LayoutParams(-2, -2).apply { rightMargin = dp(14) })
+        val tx = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        tx.addView(texto(nombre.ifEmpty { "Tu cuenta" }, Tema.T_SUB, cTexto, true).apply { maxLines = 1; ellipsize = TextUtils.TruncateAt.END })
+        tx.addView(texto(correo, Tema.T_NOTA, cTenue, false).apply { maxLines = 1; ellipsize = TextUtils.TruncateAt.END },
+            margenArriba(2))
+        fila.addView(tx, LinearLayout.LayoutParams(0, -2, 1f))
+        return fila
     }
 
     /** Tarjeta tipo membresía con el plan: dorada para fundadores. */
@@ -2798,6 +3044,13 @@ class MainActivity : Activity() {
                 lleno.layoutParams = FrameLayout.LayoutParams(barra.width * quedan / Licencia.DIAS_PRUEBA, -1)
             }
             c.addView(barra, LinearLayout.LayoutParams(-1, dp(6)).apply { topMargin = dp(Tema.S2) })
+        }
+        // En la beta los paquetes están ocultos: aquí se ve que ya tiene asegurado el precio de fundador.
+        if (Cuenta.precioBeta(this) && !sinFin) {
+            c.addView(texto("Precio de fundador asegurado · 40 % menos", Tema.T_NOTA, DORADO, true).apply {
+                setPadding(dp(10), dp(4), dp(10), dp(4))
+                background = redondo(Color.argb(36, Color.red(DORADO), Color.green(DORADO), Color.blue(DORADO)), 50)
+            }, LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(Tema.S1) })
         }
         return c
     }
