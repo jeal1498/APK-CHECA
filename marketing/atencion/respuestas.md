@@ -10,7 +10,7 @@ dm.txt / copy.txt de cada video. Si falta algo, no se inventa: va a «Para Eduar
 | Descarga (general) | https://jeal1498.github.io/checa-web/ |
 | Descarga desde un video | el mismo + ?utm_source=tiktok&utm_campaign=<etiqueta del video> (cuenta de marca) o utm_source=tiktok-personal (cuenta personal). Está escrito en el dm.txt del video. |
 | Comentó «CHECA» | el dm.txt del video, tal cual |
-| Comentó «YO» (beta) | https://jeal1498.github.io/checa-web/instalar/?desde=tiktok + pedirle su Gmail |
+| Comentó «YO» (beta) | el link del dm.txt del video, sin pedir Gmail (la beta es gratis para todos hasta el 31 ene 2027) |
 | Guía de instalación | https://jeal1498.github.io/checa-web/instalar/ |
 
 …/checa-web/beta/ ya **no** se usa.
@@ -23,9 +23,10 @@ dm.txt / copy.txt de cada video. Si falta algo, no se inventa: va a «Para Eduar
 > Es solo para Android. Si algo no le queda claro al instalarla, escríbame por aquí.
 
 **«Comento YO / quiero ser beta tester»**
-> ¡Hola! Bienvenido 🙌 Los primeros 50 entran a la beta con 3 meses gratis.
-> Mándeme su correo de Gmail y se lo activo, y aquí está la guía para instalarla:
-> https://jeal1498.github.io/checa-web/instalar/?desde=tiktok
+> ¡Va! Te dejo el link, nomás es para Android 👇 <link del dm.txt del video>
+> Si se te traba al instalar, me escribes y te ayudo.
+
+Sin pedir Gmail ni mandar la plantilla (Eduardo, 18 oct): durante la beta todo es gratis sin licencia.
 
 **«¿Qué hace la app?»**
 > Cuando le llega una oferta de Uber o DiDi, Checa le muestra encima cuánto le queda ya descontada
