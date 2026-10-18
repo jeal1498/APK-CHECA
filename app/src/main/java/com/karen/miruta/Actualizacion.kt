@@ -1,7 +1,18 @@
 package com.karen.miruta
 
+import android.Manifest
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.job.JobInfo
+import android.app.job.JobParameters
+import android.app.job.JobScheduler
+import android.app.job.JobService
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
@@ -25,6 +36,11 @@ object Actualizacion {
     const val URL_ACTUALIZAR = WEB + "instalar/?desde=app"
     private const val APK = WEB + "descargar/Checa.apk"
     private const val CADA = 6 * 60 * 60 * 1000L
+    /** La ventana de aviso vuelve a salir al abrir Checa, como mucho cada 30 min, hasta actualizar. */
+    private const val REPETIR_AVISO = 30 * 60 * 1000L
+    private const val CANAL = "actualizaciones"
+    private const val ID_NOTIFICACION = 7
+    private const val ID_TRABAJO = 7
 
     private val principal = Handler(Looper.getMainLooper())
     @Volatile private var revisando = false
@@ -74,9 +90,66 @@ object Actualizacion {
         }.start()
     }
 
-    /** La ventana de aviso sale una sola vez por versión; la tarjeta de Inicio se queda hasta actualizar. */
-    fun avisoMostrado(ctx: Context, v: String) = sp(ctx).getString("avisada", null) == v
-    fun marcarAviso(ctx: Context, v: String) = sp(ctx).edit().putString("avisada", v).apply()
+    /** La ventana sale cada vez que se abre Checa (como mucho cada 30 min) hasta actualizar; la tarjeta de Inicio se queda. */
+    fun avisoToca(ctx: Context, v: String): Boolean {
+        val s = sp(ctx)
+        return s.getString("avisada", null) != v || System.currentTimeMillis() - s.getLong("avisadaHora", 0L) >= REPETIR_AVISO
+    }
+
+    fun marcarAviso(ctx: Context, v: String) =
+        sp(ctx).edit().putString("avisada", v).putLong("avisadaHora", System.currentTimeMillis()).apply()
+
+    // ------------------------------------------------------------------
+    // Aviso con Checa cerrada: revisión en segundo plano y notificación (una por versión)
+    // ------------------------------------------------------------------
+
+    /** Programa la revisión cada 6 h con internet (sigue después de reiniciar el teléfono). */
+    fun programar(ctx: Context) {
+        try {
+            val js = ctx.getSystemService(JobScheduler::class.java) ?: return
+            if (js.getPendingJob(ID_TRABAJO) != null) return
+            js.schedule(
+                JobInfo.Builder(ID_TRABAJO, ComponentName(ctx, ActualizacionJob::class.java))
+                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                    .setPeriodic(CADA)
+                    .setPersisted(true)
+                    .build()
+            )
+        } catch (_: Exception) { }
+    }
+
+    /** Notificación «Hay una versión nueva»; tocarla abre Checa con la ventana para actualizar. */
+    fun notificar(ctx: Context, v: String) {
+        val s = sp(ctx)
+        if (s.getString("notificada", null) == v) return
+        if (Build.VERSION.SDK_INT >= 33 &&
+            ctx.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return
+        try {
+            val nm = ctx.getSystemService(NotificationManager::class.java) ?: return
+            nm.createNotificationChannel(NotificationChannel(CANAL, "Versiones nuevas", NotificationManager.IMPORTANCE_DEFAULT))
+            val abrir = PendingIntent.getActivity(
+                ctx, ID_NOTIFICACION,
+                Intent(ctx, MainActivity::class.java).putExtra(MainActivity.EXTRA_ACTUALIZAR, true)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP),
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+            nm.notify(
+                ID_NOTIFICACION,
+                Notification.Builder(ctx, CANAL)
+                    .setContentTitle("Hay una versión nueva de Checa")
+                    .setContentText("Toca para actualizar a la $v. No pierdes tu cuenta ni tus ajustes.")
+                    .setSmallIcon(R.drawable.ic_notif)
+                    .setContentIntent(abrir)
+                    .setAutoCancel(true)
+                    .build()
+            )
+            s.edit().putString("notificada", v).apply()
+        } catch (_: Exception) { }
+    }
+
+    fun quitarNotificacion(ctx: Context) {
+        try { ctx.getSystemService(NotificationManager::class.java)?.cancel(ID_NOTIFICACION) } catch (_: Exception) { }
+    }
 
     fun abrirDescarga(ctx: Context) {
         try {
@@ -185,4 +258,17 @@ object Actualizacion {
             ctx.startActivity(Intent.createChooser(i, "Compartir Checa").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
         } catch (_: Exception) { }
     }
+}
+
+/** Revisión de versión nueva en segundo plano (la programa [Actualizacion.programar]). */
+class ActualizacionJob : JobService() {
+    override fun onStartJob(params: JobParameters?): Boolean {
+        Actualizacion.revisar(applicationContext, forzar = true) { v, _ ->
+            if (v != null) Actualizacion.notificar(applicationContext, v)
+            jobFinished(params, false)
+        }
+        return true
+    }
+
+    override fun onStopJob(params: JobParameters?): Boolean = true
 }

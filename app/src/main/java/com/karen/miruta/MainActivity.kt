@@ -112,6 +112,7 @@ class MainActivity : Activity() {
     private var esperandoPago = false
     /** Se abrió desde el aviso «Checa no está leyendo»: iniciar la lectura y volver a Uber/DiDi. */
     private var autoIniciar = false
+    private var abrirActualizacion = false
     private var desdeAviso = false
     private var volverAtras = false
     /** Pantalla de acceso: tapa la app hasta que se entra con Google. */
@@ -155,6 +156,8 @@ class MainActivity : Activity() {
         actualizarAcceso()
         mostrarPestana(savedInstanceState?.getInt("tab") ?: 0, false)
         autoIniciar = savedInstanceState == null && intent?.getBooleanExtra(EXTRA_AUTO_INICIAR, false) == true
+        abrirActualizacion = savedInstanceState == null && intent?.getBooleanExtra(EXTRA_ACTUALIZAR, false) == true
+        Actualizacion.programar(this)
         if (savedInstanceState == null && !autoIniciar && Cuenta.conectada(this)) {
             if (faltanPermisos()) mostrarPermisos { if (!prefs.guiaVista) mostrarGuia() } else guiaSiHaceFalta()
         }
@@ -164,6 +167,7 @@ class MainActivity : Activity() {
         super.onNewIntent(intent)
         setIntent(intent)
         if (intent.getBooleanExtra(EXTRA_AUTO_INICIAR, false)) autoIniciar = true
+        if (intent.getBooleanExtra(EXTRA_ACTUALIZAR, false)) abrirActualizacion = true
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -208,6 +212,13 @@ class MainActivity : Activity() {
         // Espera un momento para que, si hay una versión nueva, ese aviso salga primero.
         handler.postDelayed({ avisosEnVentana() }, 1500)
         Actualizacion.revisar(this) { v, _ -> pintarActualizacion(v, true) }
+        // Vino de la notificación «Hay una versión nueva»: la ventana sale aunque haya otra abierta.
+        if (abrirActualizacion) {
+            abrirActualizacion = false
+            Actualizacion.pendiente(this)?.let { v ->
+                if (dialogoAct?.isShowing != true) { Actualizacion.marcarAviso(this, v); dialogoActualizacion(v) }
+            }
+        }
         if (esperandoPago && Cuenta.conectada(this)) {
             Cuenta.revisarAhora(this) { r ->
                 if (r is Cuenta.Resultado.Ok && Cuenta.licencia(this) == null) {
@@ -2012,15 +2023,15 @@ class MainActivity : Activity() {
     // Actualizaciones y compartir
     // =====================================================================
 
-    /** Muestra u oculta la tarjeta de Inicio; la ventana sale una vez por versión. */
+    /** Muestra u oculta la tarjeta de Inicio; la ventana sale cada vez que se abre Checa (máx. cada 30 min) hasta actualizar. */
     private fun pintarActualizacion(v: String?, avisar: Boolean) {
         if (!::tarjetaActualizacion.isInitialized) return
         tarjetaActualizacion.visibility = if (v == null) View.GONE else View.VISIBLE
         botonBuscarAct?.text = if (v == null) "Buscar actualización" else "Actualizar a la $v"
-        if (v == null) return
+        if (v == null) { Actualizacion.quitarNotificacion(this); return }
         actTexto.text = "Checa $v ya está lista (tienes la ${Actualizacion.instalada(this)}). " +
             "Se instala encima: no pierdes tu cuenta, ajustes ni historial."
-        if (avisar && !hayVentana() && !Actualizacion.avisoMostrado(this, v)) {
+        if (avisar && !hayVentana() && Actualizacion.avisoToca(this, v)) {
             Actualizacion.marcarAviso(this, v)
             dialogoActualizacion(v)
         }
@@ -4154,6 +4165,8 @@ class MainActivity : Activity() {
         private const val REQ_CAPTURA = 42
         /** La notificación «Checa no está leyendo» abre la app pidiendo iniciar la lectura. */
         const val EXTRA_AUTO_INICIAR = "auto_iniciar"
+        /** La notificación «Hay una versión nueva» abre la app con la ventana para actualizar. */
+        const val EXTRA_ACTUALIZAR = "actualizar"
         /** Desde cuántos días antes de que acabe la beta se avisa del cobro. */
         private const val DIAS_AVISO_FIN_BETA = 30
         /** Días de uso y ofertas leídas antes de pedir la opinión. */

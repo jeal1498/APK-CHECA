@@ -11,8 +11,8 @@ android {
         applicationId = "com.karen.miruta"
         minSdk = 26
         targetSdk = 34
-        versionCode = 63
-        versionName = "8.3"
+        versionCode = 64
+        versionName = "8.4"
     }
 
     signingConfigs {
