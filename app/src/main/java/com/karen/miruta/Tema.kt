@@ -68,32 +68,9 @@ object Tema {
     const val T_NUMERO = 28f
 }
 
-/** Paleta anterior: el pop-up se queda como estaba (v14). */
-object TemaPopup {
-    val TARJETA = Color.rgb(24, 28, 26)
-    val TARJETA2 = Color.rgb(34, 40, 38)
-    val BORDE = Color.rgb(46, 53, 50)
-    val TEXTO = Color.rgb(242, 245, 243)
-    val TEXTO2 = Color.rgb(180, 188, 183)
-    val TENUE = Color.rgb(125, 135, 129)
-    val VERDE = Color.rgb(34, 197, 94)
-    val AMARILLO = Color.rgb(245, 183, 10)
-    val ROJO = Color.rgb(239, 68, 68)
-    val ROJO_SUAVE = Color.rgb(56, 24, 24)
-    val DIDI = Color.rgb(255, 112, 40)
-    const val S1 = 8
-    const val R_TARJETA = 16
-
-    fun colorNivel(n: Int) = when (n) {
-        Oferta.VERDE -> VERDE
-        Oferta.AMARILLO -> AMARILLO
-        else -> ROJO
-    }
-}
-
 /**
  * Letras de la marca v2 (assets/fuentes): Bricolage Grotesque 800 para títulos y números grandes,
- * DM Sans para el texto y JetBrains Mono para datos y etiquetas. El pop-up usa la letra del sistema.
+ * DM Sans para el texto y JetBrains Mono para datos y etiquetas. El pop-up también las usa desde v65.
  */
 object Fuentes {
     var titulo: Typeface = Typeface.DEFAULT_BOLD; private set
@@ -103,7 +80,12 @@ object Fuentes {
     /** Datos y etiquetas (ancho fijo: los números no se mueven al cambiar). */
     var numero: Typeface = Typeface.MONOSPACE; private set
 
+    @Volatile private var listas = false
+
+    /** Carga las fuentes una sola vez (la app o el pop-up, lo que llegue primero). */
     fun iniciar(c: Context) {
+        if (listas) return
+        listas = true
         val a = c.assets
         fun variable(archivo: String, peso: Int): Typeface? = try {
             Typeface.Builder(a, "fuentes/$archivo").setFontVariationSettings("'wght' $peso").build()
