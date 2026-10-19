@@ -46,7 +46,7 @@ object Soporte {
             Accion.ACCESIBILIDAD
         ),
         Pregunta(
-            "Mi teléfono dice «Controlado por ajustes restringidos»",
+            "Dice «A la app se le negó el acceso» o «Controlado por ajustes restringidos»",
             "Pasa en Android 13 o más nuevo con apps instaladas fuera de Play Store. " +
                 "Abre la información de la app, toca los tres puntos ⋮ arriba a la derecha y elige " +
                 "«Permitir configuración restringida» (si no aparece, intenta activar Checa una vez en Accesibilidad y vuelve). " +

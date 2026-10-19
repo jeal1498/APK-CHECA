@@ -2513,6 +2513,19 @@ class MainActivity : Activity() {
                 c.addView(titulo("Activa el lector"), margenArriba(Tema.S1))
                 c.addView(parrafo("Checa necesita permiso para ver la oferta en tu pantalla. Solo lee Uber y DiDi; no toca nada ni acepta viajes por ti."),
                     margenArriba(Tema.S2))
+                // Android 13+: los ajustes restringidos se permiten ANTES de activar la Accesibilidad.
+                if (Build.VERSION.SDK_INT >= 33 && !listo) {
+                    val r = tarjeta()
+                    r.addView(texto("Antes: permite los ajustes restringidos", Tema.T_TEXTO, cTexto, false).apply { typeface = fuenteMedia })
+                    r.addView(texto(
+                        "Si no, al activar el lector Android dice «A la app se le negó el acceso». " +
+                            "En Información de la app toca ⋮ (arriba a la derecha) → «Permitir configuración restringida». " +
+                            "Si la opción no aparece, toca «Abrir Accesibilidad», intenta activar el lector una vez y vuelve aquí.",
+                        Tema.T_NOTA, cTenue, false
+                    ).apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S1))
+                    r.addView(boton("Información de la app", cTarjeta2, cTexto) { abrirInfoApp() }, margenArriba(12))
+                    c.addView(r, margenArriba(Tema.S2))
+                }
                 val t = tarjeta()
                 val fila = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
                 fila.addView(texto("Checa – lector de ofertas", Tema.T_SUB, cTexto, false).apply { typeface = fuenteMedia },
@@ -2532,15 +2545,7 @@ class MainActivity : Activity() {
                         f.addView(texto(s, Tema.T_TEXTO, cTexto2, false), LinearLayout.LayoutParams(0, -2, 1f))
                         t.addView(f, margenArriba(12))
                     }
-                c.addView(t, margenArriba(Tema.S2))
-                val r = tarjeta()
-                r.addView(texto("¿Sale «Controlado por ajustes restringidos»?", Tema.T_TEXTO, cTexto, false).apply { typeface = fuenteMedia })
-                r.addView(texto(
-                    "En Información de la app toca ⋮ (arriba a la derecha) → «Permitir configuración restringida». Si no aparece, intenta activar el lector una vez y vuelve aquí. Luego vuelve a intentar.",
-                    Tema.T_NOTA, cTenue, false
-                ).apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S1))
-                r.addView(boton("Información de la app", cTarjeta2, cTexto) { abrirInfoApp() }, margenArriba(12))
-                c.addView(r, margenArriba(Tema.ENTRE_TARJETAS))
+                c.addView(t, margenArriba(Tema.ENTRE_TARJETAS))
                 if (listo) principal("Siguiente") { pintarGuia(2) } else principal("Abrir Accesibilidad") { abrirAccesibilidad() }
                 guiaPie.addView(atras, margenArriba(Tema.S1))
             }
@@ -2776,6 +2781,11 @@ class MainActivity : Activity() {
 
         // Casilla verde = listo; contorno amarillo = falta (se toca la fila para activarlo).
         val g = grupoFilas()
+        if (Build.VERSION.SDK_INT >= 33 && !acc) {
+            filaCasilla(g, "Permitir ajustes restringidos", "Hazlo primero si Android bloquea el permiso de abajo · toca para abrir", null) {
+                abrirInfoApp()
+            }
+        }
         filaCasilla(g, "Leer Uber y DiDi", if (acc) "Permiso de Accesibilidad" else "Falta · toca para activarlo", acc) {
             abrirAccesibilidad()
         }
@@ -2806,7 +2816,7 @@ class MainActivity : Activity() {
         if (!acc) {
             c.addView(texto(
                 "Busca «Checa – lector de ofertas» y actívalo. En Samsung está dentro de «Aplicaciones instaladas»; " +
-                    "en OPPO suele estar en «Aplicaciones descargadas». Si Android dice «Controlado por ajustes restringidos», " +
+                    "en OPPO suele estar en «Aplicaciones descargadas». Si Android dice «A la app se le negó el acceso» o «Controlado por ajustes restringidos», " +
                     "abre Información de la app, toca ⋮ → «Permitir configuración restringida» (a veces solo aparece después " +
                     "de intentar activarlo una vez) y vuelve a intentar.",
                 Tema.T_NOTA, cTenue, false
@@ -3914,8 +3924,13 @@ class MainActivity : Activity() {
 
     private fun abrirAccesibilidad() {
         Toast.makeText(this, pistaAccesibilidad(), Toast.LENGTH_LONG).show()
+        // Si Ajustes lo entiende (Android estándar), baja hasta «Checa» y lo resalta; si no, lo ignora.
+        val yo = ComponentName(this, RutaService::class.java).flattenToString()
+        val abrir = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+            .putExtra(":settings:fragment_args_key", yo)
+            .putExtra(":settings:show_fragment_args", Bundle().apply { putString(":settings:fragment_args_key", yo) })
         try {
-            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+            startActivity(abrir)
         } catch (_: Exception) {
             try { startActivity(Intent(Settings.ACTION_SETTINGS)) } catch (_: Exception) { }
         }
