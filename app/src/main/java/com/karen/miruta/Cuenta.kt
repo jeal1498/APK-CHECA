@@ -13,6 +13,9 @@ import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
 import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialException
+import androidx.credentials.exceptions.GetCredentialInterruptedException
+import androidx.credentials.exceptions.GetCredentialProviderConfigurationException
+import androidx.credentials.exceptions.NoCredentialException
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import org.json.JSONArray
@@ -162,12 +165,24 @@ object Cuenta {
                 }
 
                 override fun onError(e: GetCredentialException) {
-                    listo(Resultado.Error(
-                        if (e is GetCredentialCancellationException) ""
-                        else "No se pudo abrir Google. Revisa tu internet e inténtalo otra vez."
-                    ))
+                    listo(Resultado.Error(mensajeErrorGoogle(e)))
                 }
             })
+    }
+
+    /** Dice la causa real del fallo de Google (antes todo salía como "revisa tu internet"). */
+    private fun mensajeErrorGoogle(e: GetCredentialException): String = when (e) {
+        is GetCredentialCancellationException -> ""
+        is NoCredentialException ->
+            "No encontramos una cuenta de Google en tu teléfono. Agrégala en Ajustes → Cuentas e inténtalo otra vez."
+        is GetCredentialProviderConfigurationException ->
+            "Falta actualizar Google Play Services. Actualízalo desde la Play Store e inténtalo otra vez."
+        is GetCredentialInterruptedException ->
+            "Se interrumpió el acceso con Google. Inténtalo otra vez."
+        else ->
+            // El tipo del error es texto fijo (R8 no lo cambia): sirve para que el usuario lo mande en captura.
+            "No se pudo abrir Google. Revisa tu internet e inténtalo otra vez. (código: " +
+                e.type.substringAfterLast('.').take(40) + ")"
     }
 
     /** Revisión diaria (si hay sesión y ya pasó un día). Sin internet no hace nada. */
