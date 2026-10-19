@@ -2514,7 +2514,7 @@ class MainActivity : Activity() {
                 c.addView(parrafo("Checa necesita permiso para ver la oferta en tu pantalla. Solo lee Uber y DiDi; no toca nada ni acepta viajes por ti."),
                     margenArriba(Tema.S2))
                 // Android 13+: los ajustes restringidos se permiten ANTES de activar la Accesibilidad.
-                if (Build.VERSION.SDK_INT >= 33 && !listo) {
+                if (Build.VERSION.SDK_INT >= 33 && !listo && ajustesRestringidosPermitidos() != true) {
                     val r = tarjeta()
                     r.addView(texto("Antes: permite los ajustes restringidos", Tema.T_TEXTO, cTexto, false).apply { typeface = fuenteMedia })
                     r.addView(texto(
@@ -2782,7 +2782,10 @@ class MainActivity : Activity() {
         // Casilla verde = listo; contorno amarillo = falta (se toca la fila para activarlo).
         val g = grupoFilas()
         if (Build.VERSION.SDK_INT >= 33 && !acc) {
-            filaCasilla(g, "Permitir ajustes restringidos", "Hazlo primero si Android bloquea el permiso de abajo · toca para abrir", null) {
+            val permitido = ajustesRestringidosPermitidos() == true
+            filaCasilla(g, "Permitir ajustes restringidos",
+                if (permitido) "Ya está permitido" else "Hazlo primero si Android bloquea el permiso de abajo · toca para abrir",
+                if (permitido) true else null) {
                 abrirInfoApp()
             }
         }
@@ -3934,6 +3937,16 @@ class MainActivity : Activity() {
         } catch (_: Exception) {
             try { startActivity(Intent(Settings.ACTION_SETTINGS)) } catch (_: Exception) { }
         }
+    }
+
+    /** true = ya se permitieron los ajustes restringidos (o no aplica), false = siguen bloqueados, null = este Android no deja saberlo. */
+    private fun ajustesRestringidosPermitidos(): Boolean? {
+        if (Build.VERSION.SDK_INT < 33) return true
+        return try {
+            val ops = getSystemService(Context.APP_OPS_SERVICE) as android.app.AppOpsManager
+            ops.unsafeCheckOpNoThrow("android:access_restricted_settings", android.os.Process.myUid(), packageName) ==
+                android.app.AppOpsManager.MODE_ALLOWED
+        } catch (_: Exception) { null }
     }
 
     private fun abrirInfoApp() = startActivity(
