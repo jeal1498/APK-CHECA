@@ -30,6 +30,8 @@ Referencia de metas: ≥ 40 % del video visto en promedio y ≥ 10 % que lo ve c
 - El alcance llega el primer día y casi todo por «Para ti» (87–97 %); casi nada viene del perfil.
 - Comentar funciona cuando se pide con una palabra («comenta 70»: 101 comentarios). En CHECA casi no hay comentarios.
 - Búsquedas reales de la audiencia (de sus propios videos): «app para calcular viajes DiDi», «mejores ganancias en Uber», «cuánto vale el kilómetro Uber o DiDi», «cómo saber tus ganancias de DiDi», «app que te diga si te conviene un viaje», y las de marca («uber checa», «Checa», «Checa.driver»). Varias dicen «didi moto…»: posible público de moto sin atender (preguntar a Eduardo si Checa funciona igual con moto).
+- **Horario (19 oct):** los 8 videos salieron entre 8:57 y 17:43 (columna `hora_publicacion` en `videos.csv`). Sin patrón: a las 10:37 salió el de mejor % visto (47 %) y a las 10:49 uno de los peores (17 %). Con 8 videos y temas distintos no se separa la hora del contenido.
+- **Cuánto pesa cada búsqueda:** cada lista de TikTok Studio sale de ~5–21 búsquedas por video (un 2.9 %–5 % es una sola búsqueda). Solo «app para calcular viajes DiDi mot…» se repite en 3 videos (≈ 6 búsquedas). «Cuánto vale el kilómetro Uber o DiDi» y «cómo saber tus ganancias de DiDi» son casos sueltos: ideas, no demanda comprobada.
 
 ## Hipótesis en prueba
 | Hipótesis | Prueba | Cómo se mide |
