@@ -10,6 +10,8 @@ Una publicación al día, alternando videos de **venta** (llevan a la prueba gra
 5. 4–5 hashtags.
 Sin link en la bio (TikTok pide constancia del SAT para cuenta de empresa): a quien comente «CHECA» se le manda por mensaje directo el texto de **`dm.txt`** de la carpeta de ese video (trae su link con etiqueta `utm_campaign`, así el reporte cuenta las descargas de cada video) (y a quien comente «YO», `jeal1498.github.io/checa-web/instalar/?desde=tiktok` + pedirle su Gmail para la beta).
 
+**Videos de consejo descartados (19 oct 2026):** Eduardo decidió no publicar más videos de consejo. Se descartan los no publicados: CHECA y PERSONAL 07, 09, 11 y 13 (las carpetas se conservan, sin subirse). Los consejos ya publicados (03 y 05) se quedan. Al preguntar «qué toca hoy», saltar los marcados ❌ y dar solo videos de venta.
+
 **Hora sugerida:** 8:00 pm (cuando muchos conductores ya terminaron turno o están en pausa). Ajústala según tus estadísticas después de la primera semana.
 
 **Publicado:** al subir un video, marcarlo con ✅ y la fecha en la tabla de su cuenta. Al preguntar «qué toca hoy», dar el primero sin ✅ de **CHECA** y, si ya tiene v2, también el de **PERSONAL**, con sus links y su `copy.txt`.
@@ -27,13 +29,13 @@ Sin link en la bio (TikTok pide constancia del SAT para cuenta de empresa): a qu
 | 05 | — | Consejo | `05 - Cansancio y salud` | ✅ | ✅ 16 oct |
 | — | — | Ayuda | «¿Android no te deja instalarla?» (fuera de calendario, sin carpeta) | ✅ | ✅ |
 | 06 | sáb 17 oct | Venta | `06 - Gasolina cara` |  | |
-| 07 | dom 18 oct | Consejo | `07 - Pasajeros y cancelaciones` |  | |
+| 07 | — | Consejo (descartado 19 oct) | `07 - Pasajeros y cancelaciones` |  | ❌ descartado |
 | 08 | lun 19 oct | Venta | `08 - Decidir en segundos` |  | |
-| 09 | mar 20 oct | Consejo | `09 - Cuenta desactivada` |  | |
+| 09 | — | Consejo (descartado 19 oct) | `09 - Cuenta desactivada` |  | ❌ descartado |
 | 10 | mié 21 oct | Venta | `10 - Mejores horas` |  | |
-| 11 | jue 22 oct | Consejo | `11 - Ingreso inestable` |  | |
+| 11 | — | Consejo (descartado 19 oct) | `11 - Ingreso inestable` |  | ❌ descartado |
 | 12 | vie 23 oct | Venta | `12 - Comisión y tarifas` |  | |
-| 13 | sáb 24 oct | Consejo | `13 - Multas y papeles` |  | |
+| 13 | — | Consejo (descartado 19 oct) | `13 - Multas y papeles` |  | ❌ descartado |
 | 14 | dom 25 oct | Venta | `14 - Miedo a rechazar` |  | |
 | 15 | lun 26 oct | Venta | `15 - Desgaste y renta` |  | |
 | 19 | mar 27 oct | Venta | `19 - Checa lee la oferta` |  | |
@@ -62,13 +64,13 @@ Misma idea que cada video de CHECA, con otro gancho y otras palabras (reglas en 
 | 05 | — | Consejo | `05 - Cansancio y salud` | ✅ | ✅ |
 | 19 | sáb 17 oct | Venta | `19 - Checa lee la oferta` | ✅ |✅ 17 oct |
 | 06 | dom 18 oct | Venta | `06 - Gasolina cara` | ✅ | |
-| 07 | lun 19 oct | Consejo | `07 - Pasajeros y cancelaciones` | ✅ | |
+| 07 | — | Consejo (descartado 19 oct) | `07 - Pasajeros y cancelaciones` | ✅ | ❌ descartado |
 | 08 | mar 20 oct | Venta | `08 - Decidir en segundos` | ✅ | |
-| 09 | mié 21 oct | Consejo | `09 - Cuenta desactivada` |  | |
+| 09 | — | Consejo (descartado 19 oct) | `09 - Cuenta desactivada` |  | ❌ descartado |
 | 10 | jue 22 oct | Venta | `10 - Mejores horas` |  | |
-| 11 | vie 23 oct | Consejo | `11 - Ingreso inestable` |  | |
+| 11 | — | Consejo (descartado 19 oct) | `11 - Ingreso inestable` |  | ❌ descartado |
 | 12 | sáb 24 oct | Venta | `12 - Comisión y tarifas` |  | |
-| 13 | dom 25 oct | Consejo | `13 - Multas y papeles` |  | |
+| 13 | — | Consejo (descartado 19 oct) | `13 - Multas y papeles` |  | ❌ descartado |
 | 14 | lun 26 oct | Venta | `14 - Miedo a rechazar` |  | |
 | 15 | mar 27 oct | Venta | `15 - Desgaste y renta` |  | |
 | 22 | por definir | Venta (v2, un día detrás de CHECA) | `22 - Cuánto vale tu kilómetro` | guion para aprobar | |
