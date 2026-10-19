@@ -41,6 +41,7 @@ Sin link en la bio (TikTok pide constancia del SAT para cuenta de empresa): a qu
 | 18 | por definir | Venta | `18 - Cuánto ganas tú` |  | (ya está en PERSONAL) |
 | 20 | por definir | Tutorial | `20 - Cómo instalar Checa` |  | |
 | 21 | sáb 17 oct | Campaña beta | `21 - Beta testers corto` | ✅ |✅ 17 oct (sin efectos de sonido) |
+| 22 | por definir | Venta (prueba del domingo 19 oct) | `22 - Cuánto vale tu kilómetro` | guion para aprobar | |
 
 ---
 
@@ -70,6 +71,7 @@ Misma idea que cada video de CHECA, con otro gancho y otras palabras (reglas en 
 | 13 | dom 25 oct | Consejo | `13 - Multas y papeles` |  | |
 | 14 | lun 26 oct | Venta | `14 - Miedo a rechazar` |  | |
 | 15 | mar 27 oct | Venta | `15 - Desgaste y renta` |  | |
+| 22 | por definir | Venta (v2, un día detrás de CHECA) | `22 - Cuánto vale tu kilómetro` | guion para aprobar | |
 
 # Medición semanal (qué videos venden)
 
