@@ -74,7 +74,8 @@ Contexto para continuar el proyecto en una conversación nueva.
 
 ## Instalación en el teléfono (problemas que ya salieron)
 - Play Protect bloquea la instalación porque la app usa Accesibilidad. Se resuelve apagando "Analizar apps" un momento o con "Instalar de todos modos".
-- Android 13+: "Controlado por ajustes restringidos". Se resuelve en Info de la app → ⋮ → **Permitir configuración restringida** y luego activando "Checa – lector de ofertas" en Accesibilidad.
+- Android 13+: "Controlado por ajustes restringidos". Se resuelve en Info de la app → ⋮ → **Permitir configuración restringida** y luego activando "Checa – lector de ofertas" en Accesibilidad. El ⋮ a veces solo sale después de intentar activarlo una vez.
+- **Samsung (A26, A9+) y OPPO** (v69): el lector NO sale en la lista principal de Accesibilidad. En Samsung está en **Aplicaciones instaladas**; en OPPO suele estar en **Aplicaciones descargadas**. Al tocar "Leer Uber y DiDi" la app ya avisa con un Toast dónde buscarlo.
 - Apps de banco: antes de v29 Nu bloqueaba a Checa por usar Accesibilidad. Desde la 4.8 (lector limitado a Uber/DiDi) Nu funciona. Si otro banco bloquea: Ajustes → Apps de banco → Pausar lector. **No desinstalar**: se pierde la activación (el código de equipo no cambia, pero hay que generar otra activación).
 - Lectura de pantalla: elegir **Pantalla completa** → Empezar. Después de reiniciar el teléfono hay que volver a iniciarla.
 

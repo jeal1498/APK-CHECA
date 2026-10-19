@@ -40,10 +40,17 @@ object Soporte {
             Accion.ACCESIBILIDAD
         ),
         Pregunta(
+            "No encuentro «Checa – lector de ofertas» en Accesibilidad",
+            "En Samsung no está en la lista principal: entra a «Aplicaciones instaladas» y ahí está. " +
+                "En OPPO suele estar en «Aplicaciones descargadas». Tócalo y actívalo.",
+            Accion.ACCESIBILIDAD
+        ),
+        Pregunta(
             "Mi teléfono dice «Controlado por ajustes restringidos»",
             "Pasa en Android 13 o más nuevo con apps instaladas fuera de Play Store. " +
                 "Abre la información de la app, toca los tres puntos ⋮ arriba a la derecha y elige " +
-                "«Permitir configuración restringida». Después activa Checa en Accesibilidad.",
+                "«Permitir configuración restringida» (si no aparece, intenta activar Checa una vez en Accesibilidad y vuelve). " +
+                "Después actívalo en Accesibilidad.",
             Accion.INFO_APP
         ),
         Pregunta(

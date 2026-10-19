@@ -2522,7 +2522,7 @@ class MainActivity : Activity() {
                     background = redondo(if (listo) Tema.VERDE_SUAVE else Tema.AMARILLO_SUAVE, 50)
                 })
                 t.addView(fila)
-                listOf("Toca «Abrir Accesibilidad»", "Busca «Checa – lector de ofertas»", "Actívalo y regresa aquí")
+                listOf("Toca «Abrir Accesibilidad»", "Busca «Checa – lector de ofertas». En Samsung está dentro de «Aplicaciones instaladas»; en OPPO, en «Aplicaciones descargadas»", "Actívalo y regresa aquí")
                     .forEachIndexed { i, s ->
                         val f = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
                         f.addView(texto("${i + 1}", Tema.T_NOTA, cTexto, true).apply {
@@ -2536,7 +2536,7 @@ class MainActivity : Activity() {
                 val r = tarjeta()
                 r.addView(texto("¿Sale «Controlado por ajustes restringidos»?", Tema.T_TEXTO, cTexto, false).apply { typeface = fuenteMedia })
                 r.addView(texto(
-                    "En Información de la app toca ⋮ (arriba a la derecha) → «Permitir configuración restringida». Luego vuelve a intentar.",
+                    "En Información de la app toca ⋮ (arriba a la derecha) → «Permitir configuración restringida». Si no aparece, intenta activar el lector una vez y vuelve aquí. Luego vuelve a intentar.",
                     Tema.T_NOTA, cTenue, false
                 ).apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S1))
                 r.addView(boton("Información de la app", cTarjeta2, cTexto) { abrirInfoApp() }, margenArriba(12))
@@ -2805,8 +2805,10 @@ class MainActivity : Activity() {
 
         if (!acc) {
             c.addView(texto(
-                "Busca «Checa – lector de ofertas» y actívalo. Si Android dice «Controlado por ajustes restringidos», " +
-                    "abre Información de la app, toca ⋮ → «Permitir configuración restringida» y vuelve a intentar.",
+                "Busca «Checa – lector de ofertas» y actívalo. En Samsung está dentro de «Aplicaciones instaladas»; " +
+                    "en OPPO suele estar en «Aplicaciones descargadas». Si Android dice «Controlado por ajustes restringidos», " +
+                    "abre Información de la app, toca ⋮ → «Permitir configuración restringida» (a veces solo aparece después " +
+                    "de intentar activarlo una vez) y vuelve a intentar.",
                 Tema.T_NOTA, cTenue, false
             ).apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S2))
             c.addView(botonContorno("Información de la app") { abrirInfoApp() }, margenArriba(Tema.S1))
@@ -3903,7 +3905,21 @@ class MainActivity : Activity() {
     // Permisos y lectura de pantalla
     // =====================================================================
 
-    private fun abrirAccesibilidad() = startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+    /** Dónde está el lector dentro de Accesibilidad: en Samsung y OPPO no está en la lista principal. */
+    private fun pistaAccesibilidad(): String =
+        if (Build.MANUFACTURER.lowercase().contains("samsung"))
+            "Entra a «Aplicaciones instaladas» y activa «Checa – lector de ofertas»"
+        else
+            "Busca «Checa – lector de ofertas» (puede estar en «Aplicaciones descargadas» o «instaladas») y actívalo"
+
+    private fun abrirAccesibilidad() {
+        Toast.makeText(this, pistaAccesibilidad(), Toast.LENGTH_LONG).show()
+        try {
+            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+        } catch (_: Exception) {
+            try { startActivity(Intent(Settings.ACTION_SETTINGS)) } catch (_: Exception) { }
+        }
+    }
 
     private fun abrirInfoApp() = startActivity(
         Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:$packageName"))
