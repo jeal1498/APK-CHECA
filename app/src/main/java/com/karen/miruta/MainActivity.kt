@@ -159,7 +159,7 @@ class MainActivity : Activity() {
         autoIniciar = savedInstanceState == null && intent?.getBooleanExtra(EXTRA_AUTO_INICIAR, false) == true
         abrirActualizacion = savedInstanceState == null && intent?.getBooleanExtra(EXTRA_ACTUALIZAR, false) == true
         Actualizacion.programar(this)
-        if (savedInstanceState == null && !autoIniciar && Cuenta.conectada(this)) {
+        if (savedInstanceState == null && !autoIniciar && Cuenta.puedeUsar(this)) {
             if (faltanPermisos()) mostrarPermisos { if (!prefs.guiaVista) mostrarGuia() } else guiaSiHaceFalta()
         }
     }
@@ -186,8 +186,8 @@ class MainActivity : Activity() {
         if (Cuenta.ajustesAplicados(this)) refrescarFiltrosYAjustes()
         // Sin los 3 permisos Checa no funciona bien: la pantalla vuelve a salir hasta completarlos.
         if (dialogoPermisos?.isShowing == true) pintarPermisos()
-        else if (Cuenta.conectada(this) && !autoIniciar && faltanPermisos()) mostrarPermisos()
-        else if (Cuenta.conectada(this) && prefs.diagnostico && !prefs.diagAvisoVisto && !hayVentana())
+        else if (Cuenta.puedeUsar(this) && !autoIniciar && faltanPermisos()) mostrarPermisos()
+        else if (Cuenta.puedeUsar(this) && prefs.diagnostico && !prefs.diagAvisoVisto && !hayVentana())
             handler.postDelayed({ if (!isFinishing && !prefs.diagAvisoVisto && !hayVentana()) avisoDiagnostico() }, 1200)
         Guardado.borrarPendientes(this)
         Guardado.podar(this)
@@ -2664,6 +2664,9 @@ class MainActivity : Activity() {
             gravity = Gravity.CENTER
         }, margenArriba(4))
         col.addView(boton("Continuar con Google", Color.WHITE, Color.BLACK) { entrarConGoogle() }, margenArriba(Tema.S4))
+        if (Licencia.estado(this).beta) {
+            col.addView(boton("Entrar sin cuenta (beta)", cTarjeta2, cTexto) { entrarSinCuenta() }, margenArriba(Tema.S1))
+        }
         col.addView(texto(
             "Entra con tu cuenta para activar Checa. Tu licencia y tus ajustes (filtros, gasolina, pop-up) " +
                 "se guardan en ella: si cambias de celular o reinstalas, solo vuelves a entrar.",
@@ -3014,7 +3017,18 @@ class MainActivity : Activity() {
             dialogoFalla?.isShowing == true
 
     private fun actualizarAcceso() {
-        acceso?.visibility = if (Cuenta.conectada(this)) View.GONE else View.VISIBLE
+        acceso?.visibility = if (Cuenta.puedeUsar(this)) View.GONE else View.VISIBLE
+    }
+
+    /** Beta gratis: usar Checa sin cuenta. Después de la beta hay que entrar con Google o usar un código. */
+    private fun entrarSinCuenta() {
+        Cuenta.entrarSinCuenta(this)
+        actualizarAcceso()
+        pintarLicencia()
+        pintarCuenta()
+        // Igual que después de entrar con Google: permisos y, si es la primera vez, la guía.
+        val seguir: () -> Unit = { if (!prefs.guiaVista) mostrarGuia() }
+        if (faltanPermisos()) mostrarPermisos(seguir) else seguir()
     }
 
     private fun entrarConGoogle() {

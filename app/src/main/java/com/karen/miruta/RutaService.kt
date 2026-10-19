@@ -71,7 +71,7 @@ class RutaService : AccessibilityService() {
 
     /** Muestra la oferta de [app] sobre su [zona] (sin repetir la misma en 60 s). */
     fun mostrarOferta(oferta: Oferta, app: String, zona: Rect?) {
-        if (!Licencia.activa(this) || !Cuenta.conectada(this)) return
+        if (!Licencia.activa(this) || !Cuenta.puedeUsar(this)) return
         prefs.ultimaOferta = System.currentTimeMillis()
         val clave = app.ifEmpty { "?" }
         // Con el pop-up encima, el lector ve la oferta tapada y lee otros montos.
