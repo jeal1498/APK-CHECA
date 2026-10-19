@@ -179,6 +179,12 @@ class MainActivity : Activity() {
     override fun onResume() {
         super.onResume()
         actualizarAcceso()
+        // Ajustes cerró al instante la página del lector (ese teléfono no la soporta): se abre la lista.
+        if (detalleAbiertoEn > 0L) {
+            val rapido = android.os.SystemClock.elapsedRealtime() - detalleAbiertoEn < 1500
+            detalleAbiertoEn = 0L
+            if (rapido && !servicioActivo()) abrirListaAccesibilidad()
+        }
         if (pidioPermisoInstalar) {
             pidioPermisoInstalar = false
             if (Actualizacion.puedeInstalar(this)) actualizarApp()
@@ -2779,16 +2785,26 @@ class MainActivity : Activity() {
             }, margenArriba(Tema.S2))
         }
 
-        // Casilla verde = listo; contorno amarillo = falta (se toca la fila para activarlo).
-        val g = grupoFilas()
+        // Android 13+: primero se quita el bloqueo de ajustes restringidos; después se activa el lector.
         if (Build.VERSION.SDK_INT >= 33 && !acc) {
             val permitido = ajustesRestringidosPermitidos() == true
-            filaCasilla(g, "Permitir ajustes restringidos",
-                if (permitido) "Ya está permitido" else "Hazlo primero si Android bloquea el permiso de abajo · toca para abrir",
-                if (permitido) true else null) {
-                abrirInfoApp()
-            }
+            val r = tarjeta(if (permitido) Tema.VERDE_SUAVE else cTarjeta)
+            r.addView(texto(if (permitido) "✓ Ajustes restringidos permitidos" else "Primero: quita el bloqueo de Android",
+                Tema.T_TEXTO, if (permitido) cVerde else cTexto, true))
+            r.addView(texto(
+                if (permitido) "Android ya no bloquea al lector. Sigue con «Leer Uber y DiDi»."
+                else "Android bloquea la Accesibilidad en las apps instaladas fuera de Play Store " +
+                    "(te sale «A la app se le negó el acceso»). Toca el botón, en «Información de la app» abre ⋮ " +
+                    "(arriba a la derecha) y elige «Permitir configuración restringida». Después activa «Leer Uber y DiDi». " +
+                    "Si no ves esa opción, intenta activar el lector una vez y vuelve.",
+                Tema.T_NOTA, cTexto2, false
+            ).apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S1))
+            if (!permitido) r.addView(boton("Abrir Información de la app", cTarjeta2, cTexto) { abrirInfoApp() }, margenArriba(Tema.S2))
+            c.addView(r, margenArriba(Tema.S2))
         }
+
+        // Casilla verde = listo; contorno amarillo = falta (se toca la fila para activarlo).
+        val g = grupoFilas()
         filaCasilla(g, "Leer Uber y DiDi", if (acc) "Permiso de Accesibilidad" else "Falta · toca para activarlo", acc) {
             abrirAccesibilidad()
         }
@@ -2819,12 +2835,9 @@ class MainActivity : Activity() {
         if (!acc) {
             c.addView(texto(
                 "Busca «Checa – lector de ofertas» y actívalo. En Samsung está dentro de «Aplicaciones instaladas»; " +
-                    "en OPPO suele estar en «Aplicaciones descargadas». Si Android dice «A la app se le negó el acceso» o «Controlado por ajustes restringidos», " +
-                    "abre Información de la app, toca ⋮ → «Permitir configuración restringida» (a veces solo aparece después " +
-                    "de intentar activarlo una vez) y vuelve a intentar.",
+                    "en OPPO suele estar en «Aplicaciones descargadas».",
                 Tema.T_NOTA, cTenue, false
             ).apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S2))
-            c.addView(botonContorno("Información de la app") { abrirInfoApp() }, margenArriba(Tema.S1))
         }
         c.addView(texto(
             (if (arranque) "" else "Al iniciar la lectura, Android pregunta qué compartir: elige «Pantalla completa» y luego Empezar. ") +
@@ -3925,9 +3938,28 @@ class MainActivity : Activity() {
         else
             "Busca «Checa – lector de ofertas» (puede estar en «Aplicaciones descargadas» o «instaladas») y actívalo"
 
+    /** Cuándo se abrió la página propia del lector (para saber si Ajustes la cerró al instante). */
+    private var detalleAbiertoEn = 0L
+
     private fun abrirAccesibilidad() {
+        // Android 14+: abre directo la página de «Checa – lector de ofertas» con su interruptor, sin buscarla en la lista.
+        if (Build.VERSION.SDK_INT >= 34) {
+            try {
+                val yo = ComponentName(this, RutaService::class.java).flattenToString()
+                startActivity(Intent("android.settings.ACCESSIBILITY_DETAILS_SETTINGS")
+                    .putExtra("android.intent.extra.COMPONENT_NAME", yo))
+                detalleAbiertoEn = android.os.SystemClock.elapsedRealtime()
+                Toast.makeText(this, "Activa el interruptor de «Checa – lector de ofertas»", Toast.LENGTH_LONG).show()
+                return
+            } catch (_: Exception) { }
+        }
+        abrirListaAccesibilidad()
+    }
+
+    /** Lista de Accesibilidad: baja hasta «Checa» y lo resalta si ese Ajustes lo entiende; si no, lo ignora. */
+    private fun abrirListaAccesibilidad() {
+        detalleAbiertoEn = 0L
         Toast.makeText(this, pistaAccesibilidad(), Toast.LENGTH_LONG).show()
-        // Si Ajustes lo entiende (Android estándar), baja hasta «Checa» y lo resalta; si no, lo ignora.
         val yo = ComponentName(this, RutaService::class.java).flattenToString()
         val abrir = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
             .putExtra(":settings:fragment_args_key", yo)
