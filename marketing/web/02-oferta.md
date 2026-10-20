@@ -7,7 +7,7 @@ Base: `01-publico.md`, la web actual (`checa-web/index.html`) y `supabase/functi
 |---|---|---|
 | Producto | Pop-up con neta, $/km, $/h, semáforo y voz | Bien |
 | Prueba | 7 días gratis, sin tarjeta, todo incluido | Muy bien: quita el riesgo de entrada |
-| Precio | 1 mes $99 · **6 meses $399** · 1 año $899, pago único | Señuelo correcto; no tocar |
+| Precio | 1 mes $99 · **6 meses $499** · 1 año $899, pago único | Señuelo correcto; no tocar |
 | Garantía | Ninguna (solo la prueba) | **Falta** |
 | Bonos | Ninguno | **Falta** |
 | Urgencia | Ninguna en la web | **Falta** (y debe ser real) |
@@ -44,7 +44,7 @@ Sin «valores» inflados en pesos.
 - Nada de relojes falsos ni «quedan 3».
 
 ### 4. Precio (sin cambios, mejor presentado)
-- Ancla diaria: **6 meses = $399 ≈ $2.20 al día**. «Menos que un viaje malo.»
+- Ancla diaria: **6 meses = $499 ≈ $2.77 al día**. «Menos que un viaje malo.»
 - Mantener la calculadora «Haz tus cuentas»: ya convierte el precio en ganancia.
 - **Sin cupones ni descuentos** para nuevos clientes: atraen a quien se va rápido.
 

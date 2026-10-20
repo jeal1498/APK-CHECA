@@ -64,7 +64,7 @@ Cuando te llega una oferta en Uber o DiDi, Checa te muestra encima tus netos des
 | Paquete | Precio | Al día | Incluye |
 |---|---|---|---|
 | Básico | $99 · 1 mes | $3.30 | Pop-up con netos y semáforo, filtros, voz. 1 equipo |
-| **Estratega** · *Más elegido* | **$399 · 6 meses** | **$2.20** | Todo lo del Básico + Uber y DiDi juntos con ⭐ a la mejor + mejores horas de la semana. 2 equipos |
+| **Estratega** · *Más elegido* | **$499 · 6 meses** | **$2.77** | Todo lo del Básico + Uber y DiDi juntos con ⭐ a la mejor + mejores horas de la semana. 2 equipos |
 | Pro | $899 · 1 año | $2.46 | Todo lo del Estratega por un año completo |
 
 **Frase bajo las tarjetas:** Con un viaje malo que evites a la semana, el Estratega ya se pagó.
@@ -130,7 +130,7 @@ Descargar gratis · 7 días
 | Principio | Dónde |
 |---|---|
 | Aversión a la pérdida | «¿Cuánto pierdes al mes?», «no te dice cuánto te queda» |
-| Contabilidad mental | «$2.20 al día» y «un viaje malo a la semana» |
+| Contabilidad mental | «$2.77 al día» y «un viaje malo a la semana» |
 | Señuelo y opción por defecto | Estratega destacado entre Básico y Pro |
 | Efecto de lo gratis | «Gratis · 7 días» en todos los botones |
 | Efecto de dotación | Prueba con todo incluido: cuesta soltarla |

@@ -28,5 +28,5 @@ Tráfico esperado: redes (TikTok, Reels, Facebook, WhatsApp), casi todo desde el
 |---|---|---|
 | Un dolor concreto engancha más | «Antes de aceptar, checa cuánto te queda.» | «¿12 horas al volante y la lana no aparece?» |
 | El video arriba sube descargas | Video en la sección 2 | Video en el encabezado |
-| El precio por día baja la objeción | «$2.20 al día» | «$399 por 6 meses» |
+| El precio por día baja la objeción | «$2.77 al día» | «$499 por 6 meses» |
 | La garantía cerca del botón ayuda | Solo en Confianza y Precios | También bajo el botón del encabezado |
