@@ -90,6 +90,26 @@ create policy "la web anota eventos" on public.web_eventos
 grant insert on public.web_eventos to anon;
 create index if not exists web_eventos_creado on public.web_eventos (creado);
 
+-- Registro de testers (checa-web/registro/). La página solo puede insertar; nadie de fuera puede leer.
+-- Eduardo exporta los correos desde el panel de Supabase (CSV) y los sube a Google Play Console
+-- (Pruebas → Prueba cerrada → Testers). Un correo no se repite: si ya existe, la página lo toma como registrado.
+create table if not exists public.testers (
+  id          uuid primary key default gen_random_uuid(),
+  creado      timestamptz not null default now(),
+  nombre      text not null check (char_length(btrim(nombre)) between 1 and 80),
+  correo      text not null check (char_length(correo) <= 120 and correo ~* '^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$'),
+  fuente      text check (char_length(fuente) <= 60),
+  campana     text check (char_length(campana) <= 60),
+  dispositivo text check (dispositivo in ('android','iphone','pc','otro')),
+  estado      text not null default 'pendiente' check (estado in ('pendiente','agregado'))
+);
+alter table public.testers enable row level security;
+drop policy if exists "la web registra testers" on public.testers;
+create policy "la web registra testers" on public.testers
+  for insert to anon with check (estado = 'pendiente' and creado > now() - interval '1 minute');
+grant insert on public.testers to anon;
+create unique index if not exists testers_correo_unico on public.testers (lower(correo));
+
 -- ===================== Invita a un amigo =====================
 -- Cada cuenta tiene un código (p. ej. LALO-7K2). El amigo lo usa antes de su primer pago;
 -- cuando paga cualquier paquete, mp-webhook da 30 días más a los dos (una sola vez por amigo).
