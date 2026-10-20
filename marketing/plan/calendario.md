@@ -30,7 +30,7 @@ Sin link en la bio (TikTok pide constancia del SAT para cuenta de empresa): a qu
 | — | — | Ayuda | «¿Android no te deja instalarla?» (fuera de calendario, sin carpeta) | ✅ | ✅ |
 | 06 | sáb 17 oct | Venta | `06 - Gasolina cara` | ✅ | ✅ 19 oct |
 | 07 | — | Consejo (descartado 19 oct) | `07 - Pasajeros y cancelaciones` |  | ❌ descartado |
-| 08 | lun 19 oct | Venta | `08 - Decidir en segundos` |  | |
+| 08 | lun 19 oct | Venta | `08 - Decidir en segundos` | ✅ | ✅ 20 oct 10:30 |
 | 09 | — | Consejo (descartado 19 oct) | `09 - Cuenta desactivada` |  | ❌ descartado |
 | 10 | mié 21 oct | Venta | `10 - Mejores horas` |  | |
 | 11 | — | Consejo (descartado 19 oct) | `11 - Ingreso inestable` |  | ❌ descartado |
@@ -65,7 +65,7 @@ Misma idea que cada video de CHECA, con otro gancho y otras palabras (reglas en 
 | 19 | sáb 17 oct | Venta | `19 - Checa lee la oferta` | ✅ |✅ 17 oct |
 | 06 | dom 18 oct | Venta | `06 - Gasolina cara` | ✅ | ✅ 19 oct |
 | 07 | — | Consejo (descartado 19 oct) | `07 - Pasajeros y cancelaciones` | ✅ | ❌ descartado |
-| 08 | mar 20 oct | Venta | `08 - Decidir en segundos` | ✅ | |
+| 08 | mar 20 oct | Venta | `08 - Decidir en segundos` | ✅ | ✅ 20 oct 10:30 |
 | 09 | — | Consejo (descartado 19 oct) | `09 - Cuenta desactivada` |  | ❌ descartado |
 | 10 | jue 22 oct | Venta | `10 - Mejores horas` |  | |
 | 11 | — | Consejo (descartado 19 oct) | `11 - Ingreso inestable` |  | ❌ descartado |
