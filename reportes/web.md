@@ -1,18 +1,18 @@
 # Reporte de Checa (web + app) · últimos 30 días
 
-Generado: 2026-10-19 18:51 UTC. Cuenta visitas únicas (una por pestaña).
+Generado: 2026-10-20 17:35 UTC. Cuenta visitas únicas (una por pestaña).
 
 ## Resumen
 | visitas | descargas | cuentas_nuevas | pagos | ingresos | licencias_activas |
 | --- | --- | --- | --- | --- | --- |
-| 404 | 196 | 22 | 0 | 0 | 3 |
+| 461 | 226 | 24 | 0 | 0 | 3 |
 
 # App
 
 ## Cuentas nuevas por día (inicio con Google)
 | dia | cuentas |
 | --- | --- |
-| 2026-10-19 | 4 |
+| 2026-10-19 | 6 |
 | 2026-10-18 | 7 |
 | 2026-10-17 | 3 |
 | 2026-10-16 | 5 |
@@ -22,6 +22,8 @@ Generado: 2026-10-19 18:51 UTC. Cuenta visitas únicas (una por pestaña).
 ## Quiénes son (cuentas con Google)
 | correo | registro | ultimo_acceso | equipos | licencia_vence |
 | --- | --- | --- | --- | --- |
+| yokebet2012@gmail.com | 10-19 18:59 | 10-19 18:59 | 1 | sin licencia |
+| jonathan.galvan198228@gmail.com | 10-19 16:03 | 10-19 17:02 | 1 | sin licencia |
 | jcr9785@gmail.com | 10-19 08:28 | 10-19 08:28 | 1 | sin licencia |
 | darrellpena.00632@gmail.com | 10-19 03:18 | 10-19 03:18 | 1 | sin licencia |
 | robertopadillaibarra@gmail.com | 10-19 00:16 | 10-19 00:16 | 1 | sin licencia |
@@ -43,7 +45,7 @@ Generado: 2026-10-19 18:51 UTC. Cuenta visitas únicas (una por pestaña).
 | edent402@gmail.com | 10-16 07:42 | 10-16 07:42 | 1 | sin licencia |
 | lufercab@gmail.com | 10-15 18:21 | 10-15 18:21 | 1 | 20270113 |
 | landingbot01@gmail.com | 10-11 15:23 | 10-11 19:46 | 0 | sin licencia |
-| lalolopezxd@gmail.com | 10-11 15:08 | 10-18 23:21 | 2 | 99991231 |
+| lalolopezxd@gmail.com | 10-11 15:08 | 10-19 18:43 | 2 | 99991231 |
 
 ## Pagos por plan
 Sin datos todavía.
@@ -74,20 +76,20 @@ Sin datos todavía.
 ## Embudo
 | evento | visitas | veces |
 | --- | --- | --- |
-| visita | 404 | 611 |
-| descarga | 196 | 228 |
-| clic_descargar | 103 | 114 |
-| descarga_instalar | 63 | 141 |
-| video_play | 48 | 51 |
+| visita | 461 | 670 |
+| descarga | 226 | 259 |
+| clic_descargar | 104 | 115 |
+| descarga_instalar | 67 | 145 |
+| video_play | 60 | 63 |
 | whatsapp_ayuda | 11 | 11 |
 | beta_whatsapp | 8 | 8 |
 
 ## Por fuente (visitas → descargas)
 | fuente | campana | visitas | descargas |
 | --- | --- | --- | --- |
-| directo |  | 343 | 165 |
-| tiktok |  | 40 | 21 |
-| app | compartir | 11 | 8 |
+| directo |  | 351 | 169 |
+| tiktok |  | 88 | 47 |
+| app | compartir | 12 | 8 |
 | facebook | beta | 6 | 2 |
 | prueba |  | 3 | 1 |
 | chatgpt.com |  | 2 | 0 |
@@ -96,28 +98,30 @@ Sin datos todavía.
 ## Por dispositivo
 | dispositivo | visitas | descargas |
 | --- | --- | --- |
-| android | 333 | 196 |
-| iphone | 46 | 0 |
+| android | 385 | 226 |
+| iphone | 51 | 0 |
 | pc | 26 | 0 |
 
 ## Qué botón lleva a descargar
 | boton | descargas |
 | --- | --- |
 | fijo | 77 |
-| hero | 67 |
-| app | 27 |
-| tiktok | 21 |
+| hero | 68 |
+| tiktok | 46 |
+| app | 31 |
 | nav | 19 |
 | cierre | 11 |
 | Rhc | 2 |
 | hero2 | 2 |
 | RhcT | 1 |
+| edgar | 1 |
 | RhcTAZ | 1 |
 
 ## Por día
 | dia | visitas | descargas |
 | --- | --- | --- |
-| 2026-10-19 | 20 | 11 |
+| 2026-10-20 | 3 | 0 |
+| 2026-10-19 | 74 | 41 |
 | 2026-10-18 | 115 | 56 |
 | 2026-10-17 | 59 | 45 |
 | 2026-10-16 | 69 | 46 |
