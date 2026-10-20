@@ -1265,7 +1265,7 @@ class MainActivity : Activity() {
             ), false
         ), margenTarjeta())
         paq.addView(tarjetaPaquete(
-            "6m", "6 MESES", "Plan Estratega", "$399", "$239", "Equivale a $66.50 al mes · Ahorras 33 %",
+            "6m", "6 MESES", "Plan Estratega", "$499", "$299", "Equivale a $83 al mes · Ahorras 16 %",
             listOf(
                 "Todo lo del Plan Básico, más:",
                 "Uber y DiDi al mismo tiempo: Checa marca cuál conviene más",
