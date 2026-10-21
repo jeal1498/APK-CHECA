@@ -31,6 +31,8 @@ jobs:
         run: |
           set -euo pipefail
           SRC=app/src/main/java/com/karen/miruta/MainActivity.kt
+          PREFS=app/src/main/java/com/karen/miruta/Prefs.kt
+          grep -Fq 'getBoolean("diag", !BuildConfig.ES_PLAY)' "$PREFS"
           grep -Fq 'Permiso para leer ofertas' "$SRC"
           grep -Fq 'Acepto y continuar' "$SRC"
           grep -Fq 'accesibilidad_divulgacion_aceptada' "$SRC"
