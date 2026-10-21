@@ -34,8 +34,12 @@ jobs:
           grep -Fq 'Permiso para leer ofertas' "$SRC"
           grep -Fq 'Acepto y continuar' "$SRC"
           grep -Fq 'accesibilidad_divulgacion_aceptada' "$SRC"
+          grep -Fq 'Acepto y continuar' "$SRC"
+          grep -Fq 'Ahora no' "$SRC"
+          grep -Fq 'lector_setup_pospuesto' "$SRC"
+          grep -Fq 'Continuar sin activar el lector' "$SRC"
           grep -Fq 'BuildConfig.ES_PLAY' "$SRC"
-          echo "OK: divulgación y consentimiento de Accesibilidad presentes en el código Play"
+          echo "OK: divulgación, consentimiento y opción de continuar sin Accesibilidad presentes en el código Play"
       - name: Verificar paquete, permisos y firma del APK play
         run: |
           python3 - <<'PY'
