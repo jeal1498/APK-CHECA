@@ -1755,7 +1755,52 @@ class MainActivity : Activity() {
                 isClickable = true
                 setOnClickListener { confirmarCerrarSesion() }
             })
+            if (BuildConfig.ES_PLAY) {
+                pie.addView(texto("Eliminar cuenta", Tema.T_TEXTO, cRojo, false).apply {
+                    gravity = Gravity.CENTER
+                    minHeight = dp(Tema.ALTO_TOQUE)
+                    typeface = fuenteMedia
+                    paintFlags = paintFlags or android.graphics.Paint.UNDERLINE_TEXT_FLAG
+                    isClickable = true
+                    setOnClickListener { confirmarEliminarCuenta() }
+                }, margenArriba(Tema.S1))
+            }
         }
+    }
+
+    private fun confirmarEliminarCuenta() {
+        val cuerpo = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(18), 0, dp(18), dp(Tema.S2))
+        }
+        cuerpo.addView(texto(
+            "Esta acción es definitiva. Se eliminarán tu cuenta de Checa, la licencia, los equipos y los ajustes sincronizados. También se borrarán de este teléfono las ofertas guardadas y las estadísticas.",
+            Tema.T_TEXTO, cTexto, false
+        ).apply { setLineSpacing(0f, 1.2f) })
+        cuerpo.addView(texto(
+            "Los registros de pago se conservarán sin asociarlos a tu correo cuando sea necesario mantenerlos por control de transacciones. La cuenta de Google no se elimina.",
+            Tema.T_NOTA, cTenue, false
+        ).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S2))
+        var d: Dialog? = null
+        cuerpo.addView(boton("Eliminar cuenta definitivamente", Tema.ROJO_SUAVE, cRojo) {
+            d?.dismiss()
+            Toast.makeText(this, "Eliminando cuenta…", Toast.LENGTH_SHORT).show()
+            Cuenta.eliminarCuenta(this) { r ->
+                when (r) {
+                    is Cuenta.Resultado.Ok -> {
+                        Toast.makeText(this, "Cuenta de Checa eliminada.", Toast.LENGTH_LONG).show()
+                        pintarLicencia()
+                        pintarCuenta()
+                        actualizarAcceso()
+                    }
+                    is Cuenta.Resultado.Error ->
+                        Toast.makeText(this, r.mensaje, Toast.LENGTH_LONG).show()
+                    is Cuenta.Resultado.Limite -> Unit
+                }
+            }
+        }, margenArriba(Tema.S2))
+        cuerpo.addView(boton("Cancelar", cTarjeta2, cTexto) { d?.dismiss() }, margenArriba(Tema.S1))
+        d = hoja("¿Eliminar tu cuenta?", null, cuerpo)
     }
 
     private fun confirmarCerrarSesion() {
