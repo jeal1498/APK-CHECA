@@ -2400,7 +2400,7 @@ class MainActivity : Activity() {
         }
         insignias.forEach { it.visibility = if (e.fundador) View.VISIBLE else View.GONE }
         pintarPrecios.forEach { it() }
-        notaComparador?.visibility = if (e.basico) View.VISIBLE else View.GONE
+        notaComparador?.visibility = if (!BuildConfig.ES_PLAY && e.basico) View.VISIBLE else View.GONE
         // Con licencia sin vencimiento (fundadores) no hay nada que comprar.
         if (::paquetesVista.isInitialized) {
             paquetesVista.visibility = if (BuildConfig.ES_PLAY || e.beta ||
@@ -3402,7 +3402,7 @@ class MainActivity : Activity() {
             c.addView(barra, LinearLayout.LayoutParams(-1, dp(6)).apply { topMargin = dp(Tema.S2) })
         }
         // En la beta los paquetes están ocultos: aquí se ve que ya tiene asegurado el precio de fundador.
-        if (Cuenta.precioBeta(this) && !sinFin) {
+        if (!BuildConfig.ES_PLAY && Cuenta.precioBeta(this) && !sinFin) {
             // Sello inclinado de la marca v2.
             c.addView(texto("PRECIO DE FUNDADOR · −40 %", 10.5f, Tema.HUESO, true).apply {
                 typeface = Fuentes.numero
