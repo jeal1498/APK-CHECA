@@ -62,6 +62,7 @@ jobs:
           }
           for k, v in checks.items(): print("OK " if v else "FALLA", k)
           sys.exit(0 if all(checks.values()) else 1)
+          PY
       - name: Publicar APK de prueba como artefacto descargable
         uses: actions/upload-artifact@v4
         with:
@@ -69,4 +70,3 @@ jobs:
           path: app/build/outputs/apk/play/release/*.apk
           if-no-files-found: error
           retention-days: 14
-          PY
