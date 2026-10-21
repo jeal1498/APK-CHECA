@@ -2989,7 +2989,7 @@ class MainActivity : Activity() {
             permisosPie.addView(boton("Completa los permisos para seguir", Tema.CAMPO, cTenue) { }
                 .apply { setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f) }, LinearLayout.LayoutParams(-1, dp(52)))
             if (BuildConfig.ES_PLAY) {
-                permisosPie.addView(texto("Continuar sin activar el lector", Tema.T_TEXTO, cTenue, false).apply {
+                permisosPie.addView(texto("Continuar sin iniciar la lectura", Tema.T_TEXTO, cTenue, false).apply {
                     typeface = fuenteMedia
                     gravity = Gravity.CENTER
                     minHeight = dp(Tema.ALTO_TOQUE)
