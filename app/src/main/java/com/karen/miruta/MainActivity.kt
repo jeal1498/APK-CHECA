@@ -3199,7 +3199,8 @@ class MainActivity : Activity() {
         val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         cuerpo.addView(texto(
             Cuenta.maxEquipos(this).let { n ->
-                if (n == 1) "Tu paquete de 1 mes permite 1 equipo. Quita el otro para activar este, o cambia al de 6 meses para usar 2."
+                if (BuildConfig.ES_PLAY) "Tu licencia permite $n equipo${if (n == 1) "" else "s"}. Quita uno para activar este."
+                else if (n == 1) "Tu paquete de 1 mes permite 1 equipo. Quita el otro para activar este, o cambia al de 6 meses para usar 2."
                 else "Tu licencia permite $n equipos. Quita uno para activar este."
             },
             Tema.T_TEXTO, cTexto2, false
