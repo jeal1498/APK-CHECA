@@ -62,4 +62,11 @@ jobs:
           }
           for k, v in checks.items(): print("OK " if v else "FALLA", k)
           sys.exit(0 if all(checks.values()) else 1)
+      - name: Publicar APK de prueba como artefacto descargable
+        uses: actions/upload-artifact@v4
+        with:
+          name: checa-play-apk-${{ github.run_number }}
+          path: app/build/outputs/apk/play/release/*.apk
+          if-no-files-found: error
+          retention-days: 14
           PY
