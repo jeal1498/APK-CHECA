@@ -8,12 +8,13 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.karen.miruta"
         minSdk = 26
         targetSdk = 34
         versionCode = 73
         versionName = "9.3"
     }
+
+    buildFeatures { buildConfig = true }
 
     signingConfigs {
         create("propia") {
@@ -24,11 +25,27 @@ android {
         }
     }
 
+    flavorDimensions += "canal"
+    productFlavors {
+        // Canal web (el de siempre): misma firma, mismo paquete, con auto-actualización.
+        create("directo") {
+            dimension = "canal"
+            applicationId = "com.karen.miruta"
+            signingConfig = signingConfigs.getByName("propia")
+            buildConfigField("boolean", "ES_PLAY", "false")
+        }
+        // Google Play: otro paquete y sin firma aquí (la llave de subida llega en la Fase 4).
+        create("play") {
+            dimension = "canal"
+            applicationId = "com.jeal1498.checa"
+            buildConfigField("boolean", "ES_PLAY", "true")
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            signingConfig = signingConfigs.getByName("propia")
         }
     }
 
@@ -51,4 +68,20 @@ dependencies {
     implementation("androidx.credentials:credentials:1.3.0")
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+}
+
+// build.yml no cambia: "gradle assembleRelease" compila solo el canal directo y deja el APK
+// en la ruta de siempre (app/build/outputs/apk/release/app-release.apk).
+afterEvaluate {
+    tasks.named("assembleRelease") { setDependsOn(listOf("assembleDirectoRelease")) }
+    tasks.named("assembleDirectoRelease") {
+        doLast {
+            val origen = File(project.layout.buildDirectory.get().asFile, "outputs/apk/directo/release")
+                .listFiles { f -> f.extension == "apk" }?.firstOrNull()
+                ?: error("No se encontró el APK del canal directo")
+            val destino = File(project.layout.buildDirectory.get().asFile, "outputs/apk/release/app-release.apk")
+            destino.parentFile.mkdirs()
+            origen.copyTo(destino, overwrite = true)
+        }
+    }
 }
