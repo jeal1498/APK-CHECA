@@ -135,6 +135,12 @@ Contexto para continuar el proyecto en una conversación nueva.
 - El paquete sigue siendo `com.karen.miruta` y el APK `MiRuta.apk` para que se actualice encima.
 - Pop-up: ningún texto puede ser *solo un monto* (el OCR lo tomaría como tarifa); por eso "Te quedan $x", "$x/h", "$x/km" y "… km total".
 
+### Estado documental — ficha y revisión de Google (21 oct 2026)
+- Guardado en `docs/google-play/ficha-y-documentos-revision.md`: borradores del título, descripciones de Play y divulgación destacada/consentimiento de Accesibilidad, más checklist de publicación.
+- **Estado: esperar la revisión de documentos de Google.** La ficha y el consentimiento siguen siendo borradores; no afirmar que están aprobados ni publicar hasta recibir respuesta.
+- Antes de enviar definitivamente, verificar la divulgación de Accesibilidad contra el comportamiento real y completar Seguridad de los datos, privacidad, recursos gráficos, eliminación de cuenta y requisitos de prueba cerrada.
+- No modificar el canal web/directo por requisitos exclusivos de Play.
+
 ## Google Play (lanzamiento, plan de 20 oct 2026)
 Plan por fases (0–7); Eduardo da el «adelante» antes de cada una. Decisiones: flavors `directo` (com.karen.miruta; la firma local se configura mediante variables de entorno, nunca con secretos en Git) y `play` (applicationId com.jeal1498.checa, namespace sigue com.karen.miruta); `play` sin REQUEST_INSTALL_PACKAGES, sin auto-actualización, sin Mercado Pago ni links de pago/descarga fuera de Play; gratis hasta el 1 feb 2027 y luego Play Billing (Fase 7); Play App Signing con llave de subida nueva; cuenta personal (prueba cerrada de 12 testers por 14 días). El canal web (`build.yml`, `publicar-apk.yml`, `MiRuta.apk`, firma, `Actualizacion.kt`, `version.json`) no cambia para `directo`; `play` nunca toca `version.json`.
 - **Fase 0 (hecha):** diagnóstico. Accesibilidad exige aviso destacado + declaración + video (Checa no es herramienta de accesibilidad); ML Kit 16.0.1 ya trae libs de 64 bits alineadas a 16 KB; sin secretos nuevos en el repo; faltan eliminar cuenta y corregir la política de privacidad.
