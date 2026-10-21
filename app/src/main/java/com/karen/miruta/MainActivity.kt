@@ -1728,7 +1728,7 @@ class MainActivity : Activity() {
         pie.removeAllViews()
         val nueva = Actualizacion.pendiente(this)
         pie.addView(texto(
-            "Checa ${Actualizacion.instalada(this)} · " + if (nueva == null) "al día" else "hay versión nueva",
+            "Checa ${Actualizacion.instalada(this)}" + if (BuildConfig.ES_PLAY) "" else " · " + if (nueva == null) "al día" else "hay versión nueva",
             Tema.T_NOTA, if (nueva == null) cTenue else Tema.HUESO, false
         ).apply { gravity = Gravity.CENTER })
         if (!BuildConfig.ES_PLAY) {
