@@ -176,7 +176,7 @@ class MainActivity : Activity() {
         mostrarPestana(savedInstanceState?.getInt("tab") ?: 0, false)
         autoIniciar = savedInstanceState == null && intent?.getBooleanExtra(EXTRA_AUTO_INICIAR, false) == true
         abrirActualizacion = savedInstanceState == null && intent?.getBooleanExtra(EXTRA_ACTUALIZAR, false) == true
-        Actualizacion.programar(this)
+        if (!BuildConfig.ES_PLAY) Actualizacion.programar(this)
         if (savedInstanceState == null && !autoIniciar && Cuenta.puedeUsar(this)) {
             if (faltanPermisos()) mostrarPermisos { if (!prefs.guiaVista) mostrarGuia() } else guiaSiHaceFalta()
         }
@@ -203,7 +203,7 @@ class MainActivity : Activity() {
             detalleAbiertoEn = 0L
             if (rapido && !servicioActivo()) abrirListaAccesibilidad()
         }
-        if (pidioPermisoInstalar) {
+        if (!BuildConfig.ES_PLAY && pidioPermisoInstalar) {
             pidioPermisoInstalar = false
             if (Actualizacion.puedeInstalar(this)) actualizarApp()
         }
@@ -236,12 +236,16 @@ class MainActivity : Activity() {
         handler.post(refresco)
         // Espera un momento para que, si hay una versión nueva, ese aviso salga primero.
         handler.postDelayed({ avisosEnVentana() }, 1500)
-        Actualizacion.revisar(this) { v, _ -> pintarActualizacion(v, true) }
-        // Vino de la notificación «Hay una versión nueva»: la ventana sale aunque haya otra abierta.
-        if (abrirActualizacion) {
-            abrirActualizacion = false
-            Actualizacion.pendiente(this)?.let { v ->
-                if (dialogoAct?.isShowing != true) { Actualizacion.marcarAviso(this, v); dialogoActualizacion(v) }
+        if (!BuildConfig.ES_PLAY) {
+            Actualizacion.revisar(this) { v, _ -> pintarActualizacion(v, true) }
+            // Vino de la notificación «Hay una versión nueva»: la ventana sale aunque haya otra abierta.
+            if (abrirActualizacion) {
+                abrirActualizacion = false
+                Actualizacion.pendiente(this)?.let { v ->
+                    if (dialogoAct?.isShowing != true) { Actualizacion.marcarAviso(this, v); dialogoActualizacion(v) }
+                }
+            } else {
+                abrirActualizacion = false
             }
         }
         if (esperandoPago && Cuenta.conectada(this)) {
@@ -1721,14 +1725,18 @@ class MainActivity : Activity() {
             "Checa ${Actualizacion.instalada(this)} · " + if (nueva == null) "al día" else "hay versión nueva",
             Tema.T_NOTA, if (nueva == null) cTenue else Tema.HUESO, false
         ).apply { gravity = Gravity.CENTER })
-        botonBuscarAct = texto(if (nueva == null) "Buscar actualización" else "Actualizar a la $nueva", Tema.T_NOTA,
-            if (nueva == null) cTexto2 else Tema.HUESO, true).apply {
-            gravity = Gravity.CENTER
-            minHeight = dp(Tema.ALTO_TOQUE)
-            isClickable = true
-            setOnClickListener { buscarActualizacion() }
+        if (!BuildConfig.ES_PLAY) {
+            botonBuscarAct = texto(if (nueva == null) "Buscar actualización" else "Actualizar a la $nueva", Tema.T_NOTA,
+                if (nueva == null) cTexto2 else Tema.HUESO, true).apply {
+                gravity = Gravity.CENTER
+                minHeight = dp(Tema.ALTO_TOQUE)
+                isClickable = true
+                setOnClickListener { buscarActualizacion() }
+            }
+            pie.addView(botonBuscarAct)
+        } else {
+            botonBuscarAct = null
         }
-        pie.addView(botonBuscarAct)
         if (Cuenta.conectada(this)) {
             pie.addView(texto("Cerrar sesión", Tema.T_TEXTO, cTenue, false).apply {
                 gravity = Gravity.CENTER
@@ -2055,6 +2063,12 @@ class MainActivity : Activity() {
     /** Muestra u oculta la tarjeta de Inicio; la ventana sale cada vez que se abre Checa (máx. cada 30 min) hasta actualizar. */
     private fun pintarActualizacion(v: String?, avisar: Boolean) {
         if (!::tarjetaActualizacion.isInitialized) return
+        if (BuildConfig.ES_PLAY) {
+            tarjetaActualizacion.visibility = View.GONE
+            botonBuscarAct?.visibility = View.GONE
+            Actualizacion.quitarNotificacion(this)
+            return
+        }
         tarjetaActualizacion.visibility = if (v == null) View.GONE else View.VISIBLE
         botonBuscarAct?.text = if (v == null) "Buscar actualización" else "Actualizar a la $v"
         if (v == null) { Actualizacion.quitarNotificacion(this); return }
@@ -2086,7 +2100,7 @@ class MainActivity : Activity() {
 
     /** Descarga la versión nueva dentro de la app y abre el instalador de Android (el usuario confirma). */
     private fun actualizarApp() {
-        if (descargandoApp) return
+        if (BuildConfig.ES_PLAY || descargandoApp) return
         if (!Actualizacion.puedeInstalar(this)) {
             pidioPermisoInstalar = true
             Toast.makeText(this, "Activa «Permitir de esta fuente» para Checa y regresa.", Toast.LENGTH_LONG).show()
@@ -2114,6 +2128,7 @@ class MainActivity : Activity() {
     }
 
     private fun buscarActualizacion() {
+        if (BuildConfig.ES_PLAY) return
         Actualizacion.pendiente(this)?.let { actualizarApp(); return }
         botonBuscarAct?.text = "Buscando…"
         Actualizacion.revisar(this, forzar = true) { v, ok ->
@@ -2135,6 +2150,12 @@ class MainActivity : Activity() {
     }
 
     private fun pintarInvitar() {
+        if (BuildConfig.ES_PLAY) {
+            cajasCompartir.forEach { it.visibility = View.GONE }
+            pintarInvitado()
+            return
+        }
+        cajasCompartir.forEach { it.visibility = View.VISIBLE }
         val codigo = Cuenta.miCodigo(this)
         cajasCompartir.forEach { t ->
             t.removeAllViews()
@@ -2165,6 +2186,8 @@ class MainActivity : Activity() {
     private fun pintarInvitado() {
         val caja = cajaInvitado ?: return
         caja.removeAllViews()
+        if (BuildConfig.ES_PLAY) { caja.visibility = View.GONE; return }
+        caja.visibility = View.VISIBLE
         val usado = Cuenta.invitacion(this)
         if (usado != null || Licencia.estado(this).pagada) return
         val t = tarjeta()
@@ -2201,6 +2224,7 @@ class MainActivity : Activity() {
 
     /** Ventana «¡Ganaste 1 mes!» cuando suben los premios de la cuenta. */
     private fun avisarPremios() {
+        if (BuildConfig.ES_PLAY) return
         val n = Cuenta.premiosNuevos(this)
         if (n <= 0 || guia?.isShowing == true || dialogoCuenta?.isShowing == true) return
         Cuenta.marcarPremiosVistos(this)
@@ -2220,7 +2244,7 @@ class MainActivity : Activity() {
     /** Si llegó desde el link de un amigo, la web dejó «CHECA-REF:CODIGO» en el portapapeles. */
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        if (!hasFocus) return
+        if (!hasFocus || BuildConfig.ES_PLAY) return
         val sp = getSharedPreferences("invitar", Context.MODE_PRIVATE)
         val veces = sp.getInt("portapapeles", 0)
         if (veces >= 3 || Cuenta.invitacion(this) != null || Cuenta.invitacionPendiente(this) != null ||
@@ -2241,6 +2265,10 @@ class MainActivity : Activity() {
 
     /** Lleva a la pestaña Cuenta, a la parte de los paquetes. */
     private fun irAPaquetes() {
+        if (BuildConfig.ES_PLAY) {
+            Toast.makeText(this, "Las compras integradas de Google Play aún no están disponibles en esta versión.", Toast.LENGTH_LONG).show()
+            return
+        }
         dialogoCuenta?.dismiss()
         mostrarPestana(3)
         cuentaScroll.post { cuentaScroll.smoothScrollTo(0, paquetesVista.top) }
@@ -2299,6 +2327,10 @@ class MainActivity : Activity() {
 
     /** Abre Mercado Pago con el paquete; la licencia se activa sola en la cuenta Google. */
     private fun pagarPaquete(plan: String) {
+        if (BuildConfig.ES_PLAY) {
+            Toast.makeText(this, "Las compras integradas de Google Play aún no están disponibles en esta versión.", Toast.LENGTH_LONG).show()
+            return
+        }
         if (!Cuenta.conectada(this)) {
             Toast.makeText(this, "Primero entra con tu cuenta de Google: ahí se guarda tu licencia", Toast.LENGTH_LONG).show()
             entrarConGoogle()
@@ -2352,17 +2384,22 @@ class MainActivity : Activity() {
         } else if (!e.activa) {
             licTitulo.text = "Tu licencia terminó"
             licTitulo.setTextColor(cAmarillo)
-            licTexto.text = "Renueva tu paquete para volver a ver los pop-ups."
+            licTexto.text = if (BuildConfig.ES_PLAY)
+                "Las compras integradas de Google Play aún no están disponibles en esta versión."
+            else "Renueva tu paquete para volver a ver los pop-ups."
         }
         insignias.forEach { it.visibility = if (e.fundador) View.VISIBLE else View.GONE }
         pintarPrecios.forEach { it() }
         notaComparador?.visibility = if (e.basico) View.VISIBLE else View.GONE
         // Con licencia sin vencimiento (fundadores) no hay nada que comprar.
         if (::paquetesVista.isInitialized) {
-            paquetesVista.visibility = if (e.beta || (e.pagada && e.vence >= Licencia.PERMANENTE)) View.GONE else View.VISIBLE
+            paquetesVista.visibility = if (BuildConfig.ES_PLAY || e.beta ||
+                (e.pagada && e.vence >= Licencia.PERMANENTE)) View.GONE else View.VISIBLE
         }
-        // En la beta no hay nada que comprar: se oculta el botón de paquetes de Inicio.
-        if (e.beta) {
+        // En Play no se ofrecen paquetes externos; el cobro se integrará mediante Google Play en otra fase.
+        if (BuildConfig.ES_PLAY) {
+            botonPaquetesInicio.visibility = View.GONE
+        } else if (e.beta) {
             botonPaquetesInicio.text = "Entrar con Google"
             botonPaquetesInicio.setOnClickListener { entrarConGoogle() }
             botonPaquetesInicio.visibility = if (finBeta && !Cuenta.conectada(this)) View.VISIBLE else View.GONE
@@ -3020,8 +3057,10 @@ class MainActivity : Activity() {
                 accion("Elegir apps que lee") { mostrarAppsLee() }
             }
             if (!Licencia.estado(this).activa) {
-                revisiones.add(false to "Tu plan terminó: no salen pop-ups")
-                accion("Ver paquetes") { d.dismiss(); irAPaquetes() }
+                revisiones.add(false to if (BuildConfig.ES_PLAY)
+                    "Tu licencia terminó; las compras de Google Play aún no están disponibles"
+                else "Tu plan terminó: no salen pop-ups")
+                if (!BuildConfig.ES_PLAY) accion("Ver paquetes") { d.dismiss(); irAPaquetes() }
             }
             revisiones.forEach { (ok, s) -> cuerpo.addView(filaRevision(ok, s), margenArriba(Tema.S1)) }
             if (revisiones.all { it.first }) {
@@ -4015,8 +4054,12 @@ class MainActivity : Activity() {
         val volver = desdeAviso
         desdeAviso = false
         if (!Licencia.activa(this)) {
-            Toast.makeText(this, "Elige un paquete para seguir usando Checa", Toast.LENGTH_LONG).show()
-            irAPaquetes()
+            if (BuildConfig.ES_PLAY) {
+                Toast.makeText(this, "Tu licencia no está activa. Las compras integradas de Google Play aún no están disponibles en esta versión.", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(this, "Elige un paquete para seguir usando Checa", Toast.LENGTH_LONG).show()
+                irAPaquetes()
+            }
             return
         }
         if (!servicioActivo()) {
