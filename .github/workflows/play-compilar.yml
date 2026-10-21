@@ -24,10 +24,24 @@ jobs:
           gradle-version: "8.9"
       - name: Compilar play
         run: gradle assemblePlayRelease --no-daemon
-      - name: Paquete y permisos del APK play
+      - name: Verificar paquete, permisos y firma del APK play
         run: |
-          APK=$(ls app/build/outputs/apk/play/release/*.apk | head -n1)
-          echo "APK: $APK"
-          unzip -p "$APK" AndroidManifest.xml | strings -el | grep -E 'com\.(karen|jeal1498)\.' | sort -u
-          echo "--- REQUEST_INSTALL_PACKAGES en el manifest de play:"
-          unzip -p "$APK" AndroidManifest.xml | strings -el | grep -c REQUEST_INSTALL_PACKAGES || true
+          python3 - <<'PY'
+          import glob, zipfile, sys
+          apks = glob.glob("app/build/outputs/apk/play/release/*.apk")
+          assert apks, "no hay APK play"
+          apk = apks[0]
+          print("APK:", apk)
+          man = zipfile.ZipFile(apk).read("AndroidManifest.xml")
+          u = lambda t: t.encode("utf-16-le")
+          raw = open(apk, "rb").read()
+          checks = {
+            "paquete com.jeal1498.checa": u("com.jeal1498.checa") in man,
+            "authority com.jeal1498.checa.fileprovider": u("com.jeal1498.checa.fileprovider") in man,
+            "sin authority com.karen.miruta.fileprovider": u("com.karen.miruta.fileprovider") not in man,
+            "sin REQUEST_INSTALL_PACKAGES": u("REQUEST_INSTALL_PACKAGES") not in man,
+            "sin firma (no usa miruta.jks)": b"APK Sig Block 42" not in raw,
+          }
+          for k, v in checks.items(): print("OK " if v else "FALLA", k)
+          sys.exit(0 if all(checks.values()) else 1)
+          PY
