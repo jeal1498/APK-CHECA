@@ -5,11 +5,11 @@ plugins {
 
 android {
     namespace = "com.karen.miruta"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 73
         versionName = "9.3"
     }
