@@ -77,7 +77,7 @@ Revisar estos puntos contra el código y los flujos reales antes de contestar el
 - **Correo electrónico:** se usa para iniciar sesión con Google, identificar la cuenta y consultar licencia/equipos. Se procesa mediante Supabase.
 - **Identificadores de cuenta/equipo:** la app sincroniza la licencia y los equipos vinculados con Supabase. Confirmar en el código y en el formulario qué categoría de identificador corresponde.
 - **Preferencias de la app:** filtros, metas, consumo y precio de gasolina se sincronizan con Supabase para recuperar ajustes al iniciar sesión en otro equipo.
-- **Texto de ofertas e historial de viajes:** se procesa localmente. El guardado de diagnósticos es opcional, local y temporal; no declarar que se recopila por el servidor salvo que una comprobación del código revele lo contrario.
+- **Texto de ofertas e historial de viajes:** se procesa localmente. En la versión Play, el guardado de diagnósticos empieza desactivado y solo se guarda si el usuario lo activa; es local y temporal. No declarar que se recopila por el servidor salvo que una comprobación del código revele lo contrario.
 - **Pagos:** la primera versión Play está configurada sin compras. No declarar un flujo de pago dentro de Play que no esté implementado.
 - Confirmar en el formulario si algún dato se comparte con proveedores que actúan únicamente como procesadores de servicio, y documentar las medidas de seguridad y la eliminación.
 - Completar también la sección de eliminación de datos, con las dos URLs indicadas arriba.
