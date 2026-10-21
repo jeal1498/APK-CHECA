@@ -3,4 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools">
     <!-- Play no instala APK: este permiso es solo del canal directo. -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" tools:node="remove" />
+    <!-- Play no solicita la excepción restringida de optimización de batería. -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" tools:node="remove" />
 </manifest>
