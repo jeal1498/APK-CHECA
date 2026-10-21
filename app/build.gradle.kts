@@ -22,6 +22,11 @@ android {
     val legacyStorePassword = providers.environmentVariable("MIRUTA_STORE_PASSWORD").orNull
     val legacyKeyPassword = providers.environmentVariable("MIRUTA_KEY_PASSWORD").orNull
     val legacyKeyAlias = providers.environmentVariable("MIRUTA_KEY_ALIAS").orNull ?: "miruta"
+    // Llave exclusiva de subida a Google Play; solo existe en el runner del workflow manual.
+    val playKeystorePath = providers.environmentVariable("PLAY_UPLOAD_KEYSTORE_PATH").orNull
+    val playStorePassword = providers.environmentVariable("PLAY_UPLOAD_STORE_PASSWORD").orNull
+    val playKeyPassword = providers.environmentVariable("PLAY_UPLOAD_KEY_PASSWORD").orNull
+    val playKeyAlias = providers.environmentVariable("PLAY_UPLOAD_KEY_ALIAS").orNull ?: "checa-upload"
 
     signingConfigs {
         if (!legacyKeystorePath.isNullOrBlank() &&
@@ -36,6 +41,18 @@ android {
                 keyPassword = legacyKeyPassword
             }
         }
+        if (!playKeystorePath.isNullOrBlank() &&
+            !playStorePassword.isNullOrBlank() &&
+            !playKeyPassword.isNullOrBlank() &&
+            file(playKeystorePath).isFile
+        ) {
+            create("playUpload") {
+                storeFile = file(playKeystorePath)
+                storePassword = playStorePassword
+                keyAlias = playKeyAlias
+                keyPassword = playKeyPassword
+            }
+        }
     }
 
     flavorDimensions += "canal"
@@ -47,10 +64,11 @@ android {
             signingConfig = signingConfigs.findByName("propia")
             buildConfigField("boolean", "ES_PLAY", "false")
         }
-        // Google Play: otro paquete y sin firma aquí (la llave de subida llega en la Fase 4).
+        // Google Play: se firma solo cuando el workflow manual proporciona la llave de subida.
         create("play") {
             dimension = "canal"
             applicationId = "com.jeal1498.checa"
+            signingConfig = signingConfigs.findByName("playUpload")
             buildConfigField("boolean", "ES_PLAY", "true")
         }
     }
