@@ -38,7 +38,7 @@ jobs:
           grep -Fq 'accesibilidad_divulgacion_aceptada' "$SRC"
           grep -Fq 'Ahora no' "$SRC"
           grep -Fq 'lector_setup_pospuesto' "$SRC"
-          grep -Fq 'Continuar sin activar el lector' "$SRC"
+          grep -Fq 'Continuar sin iniciar la lectura' "$SRC"
           grep -Fq 'BuildConfig.ES_PLAY' "$SRC"
           echo "OK: divulgación, consentimiento y opción de continuar sin Accesibilidad presentes en el código Play"
       - name: Verificar paquete, permisos y firma del APK play
