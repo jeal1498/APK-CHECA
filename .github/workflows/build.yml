@@ -3,7 +3,7 @@ name: Compilar APK
 on:
   push:
     branches: [main]
-    paths-ignore: ["pedidos/**", "reportes/**", "marketing/**", "clientes.md", "CLAUDE.md", "supabase/**", "docs/**", "video/**", ".claude/**", ".github/workflows/supabase.yml", ".github/workflows/reporte-web.yml", ".github/workflows/build.yml", "app/**", ".gitignore", "build.gradle.kts", "settings.gradle.kts", "gradle.properties"]
+    paths-ignore: ["pedidos/**", "reportes/**", "marketing/**", "clientes.md", "CLAUDE.md", "supabase/**", "docs/**", "video/**", ".claude/**", ".github/workflows/supabase.yml", ".github/workflows/reporte-web.yml", ".github/workflows/build.yml", ".github/workflows/play-compilar.yml", "app/**", ".gitignore", "build.gradle.kts", "settings.gradle.kts", "gradle.properties"]
   workflow_dispatch:
 
 permissions:
