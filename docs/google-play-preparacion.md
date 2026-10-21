@@ -13,6 +13,38 @@ Este documento es una guía interna para preparar la primera versión. No sustit
 - Workflow de AAB existente: `.github/workflows/play-aab-firmado.yml`. Es manual, ejecuta `gradle bundlePlayRelease`, verifica la firma y guarda `checa-play-release.aab` como artefacto por 14 días. No publica en Play Console.
 - Workflow de comprobación: `.github/workflows/play-compilar.yml`; compila el flavor Play y revisa paquete/permisos. Se añadió una comprobación de la divulgación de Accesibilidad.
 
+## Borrador de ficha de Google Play
+
+**Nombre:** Checa
+
+**Descripción breve (borrador):** Calcula lo que te queda de las ofertas de Uber y DiDi después de gasolina.
+
+**Descripción completa (borrador):**
+
+Checa ayuda a conductores a evaluar ofertas de viaje antes de decidir.
+
+- Estima cuánto te queda después de gasolina.
+- Compara el ingreso estimado por kilómetro y por hora con tus metas.
+- Muestra un indicador visual y puede avisarte por voz y vibración.
+- Puedes ajustar consumo, precio de gasolina y tus metas.
+- La decisión siempre es tuya: Checa no pulsa botones ni acepta o rechaza viajes.
+
+Para leer las ofertas, debes activar manualmente el servicio de Accesibilidad y aceptar el diálogo de captura de pantalla de Android cuando inicies la lectura. El contenido de las ofertas se procesa en tu teléfono. Tu correo de cuenta, la licencia, los equipos vinculados y tus preferencias pueden sincronizarse con los servidores de Checa; consulta el aviso de privacidad para más detalles.
+
+La versión inicial de Google Play será gratuita durante la beta actual y no incluye compras dentro de la app. La beta está configurada hasta el 31 de enero de 2027; cualquier cambio futuro se comunicará en la app y en el sitio web.
+
+Checa es un proyecto independiente y no está afiliado ni respaldado por Uber o DiDi.
+
+**Sitio web:** https://jeal1498.github.io/checa-web/
+
+**Contacto/soporte:** https://wa.me/529985214490
+
+**Categoría sugerida para revisar:** Herramientas. Confirmar la categoría definitiva al crear la ficha.
+
+**Capturas requeridas:** capturas reales de la versión Play en un dispositivo, sin correos, nombres, datos de pasajeros ni información de cuenta. Conviene mostrar la pantalla principal, un ejemplo de oferta calculada, los ajustes de metas y la explicación de permisos. No usar mockups que sugieran funciones que no están implementadas.
+
+**Público objetivo y clasificación de contenido:** contestar los cuestionarios reales en Play Console; no marcar una edad ni una clasificación por suposición. La app está orientada a conductores, no a niños.
+
 ## URLs que deben declararse
 
 - Política de privacidad: https://jeal1498.github.io/checa-web/privacidad.html
@@ -33,6 +65,10 @@ Antes de presentar la app, abrir ambas URLs en una ventana privada y confirmar q
 **Divulgación mostrada antes de abrir los ajustes de Accesibilidad:** el texto del diálogo «Permiso para leer ofertas» en la app Play. La acción afirmativa es «Acepto y continuar»; «Ahora no» no activa el servicio.
 
 Google puede pedir una demostración en vídeo del flujo de permiso y de la función principal. Grabarla con la versión Play real, sin datos personales de pasajeros.
+
+## Vídeo de demostración para la declaración de Accesibilidad
+
+Grabarlo en un dispositivo con la versión Play final y datos ficticios. Google indica que el vídeo debe mostrar la apertura de la app, la divulgación completa, el consentimiento, la concesión del permiso, la función principal y también qué pasa si el usuario no consiente. Para este último caso, mostrar «Ahora no» y cómo volver a abrir la divulgación más tarde. Si el texto requiere desplazamiento, desplazarlo lentamente para que se lea completo. No subirlo hasta que se haya probado el flujo real.
 
 ## Borrador de información de seguridad de los datos
 
