@@ -1,0 +1,62 @@
+# Solo prepara un AAB firmado para revisión manual; nunca publica en Play Console.
+name: Preparar AAB Google Play
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  aab:
+    runs-on: ubuntu-latest
+    env:
+      PLAY_UPLOAD_KEYSTORE_BASE64: ${{ secrets.PLAY_UPLOAD_KEYSTORE_BASE64 }}
+      PLAY_UPLOAD_STORE_PASSWORD: ${{ secrets.PLAY_UPLOAD_STORE_PASSWORD }}
+      PLAY_UPLOAD_KEY_ALIAS: ${{ secrets.PLAY_UPLOAD_KEY_ALIAS }}
+      PLAY_UPLOAD_KEY_PASSWORD: ${{ secrets.PLAY_UPLOAD_KEY_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.11.1"
+      - name: Validar secretos y preparar llave
+        shell: bash
+        run: |
+          set -euo pipefail
+          for name in PLAY_UPLOAD_KEYSTORE_BASE64 PLAY_UPLOAD_STORE_PASSWORD PLAY_UPLOAD_KEY_ALIAS PLAY_UPLOAD_KEY_PASSWORD; do
+            if [[ -z "${!name}" ]]; then
+              echo "::error::Falta el secreto requerido: $name"
+              exit 1
+            fi
+          done
+          KEYSTORE="$RUNNER_TEMP/checa-upload.jks"
+          printf '%s' "$PLAY_UPLOAD_KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE"
+          chmod 600 "$KEYSTORE"
+          keytool -list -keystore "$KEYSTORE" -storetype JKS -storepass "$PLAY_UPLOAD_STORE_PASSWORD" -alias "$PLAY_UPLOAD_KEY_ALIAS" >/dev/null
+          echo "PLAY_UPLOAD_KEYSTORE_PATH=$KEYSTORE" >> "$GITHUB_ENV"
+          echo "Llave válida; no se muestran contraseñas."
+      - name: Compilar AAB firmado
+        run: gradle bundlePlayRelease --no-daemon
+      - name: Verificar firma y preparar artefactos
+        shell: bash
+        run: |
+          set -euo pipefail
+          AAB="$(find app/build/outputs/bundle/playRelease -maxdepth 1 -name '*.aab' -print -quit)"
+          test -n "$AAB" || { echo "::error::No se generó el AAB"; exit 1; }
+          jarsigner -verify "$AAB" >/dev/null
+          mkdir -p "$RUNNER_TEMP/checa-artifacts"
+          cp "$AAB" "$RUNNER_TEMP/checa-artifacts/checa-play-release.aab"
+          cp app/build/outputs/mapping/playRelease/mapping.txt "$RUNNER_TEMP/checa-artifacts/mapping.txt"
+          sha256sum "$RUNNER_TEMP/checa-artifacts/checa-play-release.aab"
+          keytool -printcert -jarfile "$AAB" | grep -E 'SHA1:|SHA256:'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: checa-play-release-${{ github.run_number }}
+          path: ${{ runner.temp }}/checa-artifacts/
+          if-no-files-found: error
+          retention-days: 14
