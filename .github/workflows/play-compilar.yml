@@ -27,6 +27,15 @@ jobs:
           gradle-version: "8.11.1"
       - name: Compilar play
         run: gradle assemblePlayRelease --no-daemon
+      - name: Verificar divulgación y consentimiento de Accesibilidad para Play
+        run: |
+          set -euo pipefail
+          SRC=app/src/main/java/com/karen/miruta/MainActivity.kt
+          grep -Fq 'Permiso para leer ofertas' "$SRC"
+          grep -Fq 'Acepto y continuar' "$SRC"
+          grep -Fq 'accesibilidad_divulgacion_aceptada' "$SRC"
+          grep -Fq 'BuildConfig.ES_PLAY' "$SRC"
+          echo "OK: divulgación y consentimiento de Accesibilidad presentes en el código Play"
       - name: Verificar paquete, permisos y firma del APK play
         run: |
           python3 - <<'PY'
