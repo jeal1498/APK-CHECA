@@ -213,6 +213,35 @@ object Cuenta {
     }
 
     /**
+     * Solicita al backend la eliminación de la cuenta autenticada y sus datos asociados.
+     * Los registros de pago se conservan anonimizados en el servidor.
+     */
+    fun eliminarCuenta(ctx: Context, listo: (Resultado) -> Unit) {
+        val app = ctx.applicationContext
+        Thread {
+            val resultado = try {
+                if (!conectada(app)) throw HttpError(401, "sin sesión")
+                pedir("POST", "/functions/v1/eliminar-cuenta", token(app), JSONObject().toString())
+                val bienvenida = sp(app).getBoolean("bienvenida", false)
+                sp(app).edit().clear().putBoolean("bienvenida", bienvenida).commit()
+                Guardado.borrarTodo(app)
+                Historial.borrar(app)
+                Prefs(app).borrarDiagnostico()
+                Licencia.limpiarCache()
+                Resultado.Ok
+            } catch (e: HttpError) {
+                Resultado.Error(
+                    if (e.codigo == 401) "Tu sesión venció. Vuelve a entrar con Google e inténtalo otra vez."
+                    else "No se pudo completar la eliminación (${e.codigo}). Inténtalo de nuevo o contacta soporte."
+                )
+            } catch (_: Exception) {
+                Resultado.Error("No se pudo completar la eliminación. Revisa tu conexión e inténtalo de nuevo.")
+            }
+            principal.post { listo(resultado) }
+        }.start()
+    }
+
+    /**
      * Pide a Supabase (función mp-pago) el link de pago de Mercado Pago para [plan] (1m, 6m o 12m).
      * [listo] recibe el link, o null y un mensaje si falló.
      */
