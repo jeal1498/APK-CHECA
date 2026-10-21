@@ -2773,7 +2773,9 @@ class MainActivity : Activity() {
     private fun permisoNotificaciones() = Build.VERSION.SDK_INT < 33 ||
         checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
 
-    private fun permisoBateria() =
+    // Google Play no puede exigir ni solicitar la excepción restringida de optimización de batería.
+    // En el canal directo se conserva el comportamiento existente.
+    private fun permisoBateria() = BuildConfig.ES_PLAY ||
         (getSystemService(Context.POWER_SERVICE) as android.os.PowerManager).isIgnoringBatteryOptimizations(packageName)
 
     private fun esXiaomi() = Build.MANUFACTURER.lowercase().let { it.contains("xiaomi") || it.contains("redmi") || it.contains("poco") }
@@ -2882,9 +2884,11 @@ class MainActivity : Activity() {
                 pedirNotificaciones()
             }
         }
-        val bat = permisoBateria()
-        filaCasilla(g, "Batería sin restricción", if (bat) "Para que Android no corte la lectura" else "Falta · toca para activarla", bat) {
-            pedirBateria()
+        if (!BuildConfig.ES_PLAY) {
+            val bat = permisoBateria()
+            filaCasilla(g, "Batería sin restricción", if (bat) "Para que Android no corte la lectura" else "Falta · toca para activarla", bat) {
+                pedirBateria()
+            }
         }
         if (esXiaomi()) {
             filaCasilla(g, "Inicio automático", "Recomendado en Xiaomi · toca para abrir", null) {
@@ -2982,6 +2986,15 @@ class MainActivity : Activity() {
     }
 
     private fun pedirBateria() {
+        if (BuildConfig.ES_PLAY) {
+            // En Play solo se abren los ajustes generales; no se solicita la excepción restringida.
+            try {
+                startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
+            } catch (_: Exception) {
+                abrirInfoApp()
+            }
+            return
+        }
         try {
             startActivity(Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:$packageName")))
         } catch (_: Exception) {
@@ -3062,9 +3075,11 @@ class MainActivity : Activity() {
                 revisiones.add(ok to if (ok) "Notificaciones permitidas" else "Notificaciones apagadas")
                 if (!ok) accion("Permitir notificaciones") { pedirNotificaciones() }
             }
-            val bat = permisoBateria()
-            revisiones.add(bat to if (bat) "Batería sin restricción" else "Batería con restricción")
-            if (!bat) accion("Quitar restricción de batería") { pedirBateria() }
+            if (!BuildConfig.ES_PLAY) {
+                val bat = permisoBateria()
+                revisiones.add(bat to if (bat) "Batería sin restricción" else "Batería con restricción")
+                if (!bat) accion("Quitar restricción de batería") { pedirBateria() }
+            }
             if (!prefs.uber && !prefs.didi) {
                 revisiones.add(false to "Uber y DiDi están apagadas")
                 accion("Elegir apps que lee") { mostrarAppsLee() }
