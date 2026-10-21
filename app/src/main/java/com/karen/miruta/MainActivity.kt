@@ -178,7 +178,11 @@ class MainActivity : Activity() {
         abrirActualizacion = savedInstanceState == null && intent?.getBooleanExtra(EXTRA_ACTUALIZAR, false) == true
         if (!BuildConfig.ES_PLAY) Actualizacion.programar(this)
         if (savedInstanceState == null && !autoIniciar && Cuenta.puedeUsar(this)) {
-            if (faltanPermisos()) mostrarPermisos { if (!prefs.guiaVista) mostrarGuia() } else guiaSiHaceFalta()
+            if (faltanPermisos() && !configuracionPermisosPospuestaPlay()) {
+                mostrarPermisos { if (!prefs.guiaVista) mostrarGuia() }
+            } else if (!faltanPermisos()) {
+                guiaSiHaceFalta()
+            }
         }
     }
 
@@ -210,7 +214,7 @@ class MainActivity : Activity() {
         if (Cuenta.ajustesAplicados(this)) refrescarFiltrosYAjustes()
         // Sin los 3 permisos Checa no funciona bien: la pantalla vuelve a salir hasta completarlos.
         if (dialogoPermisos?.isShowing == true) pintarPermisos()
-        else if (Cuenta.puedeUsar(this) && !autoIniciar && faltanPermisos()) mostrarPermisos()
+        else if (Cuenta.puedeUsar(this) && !autoIniciar && faltanPermisos() && !configuracionPermisosPospuestaPlay()) mostrarPermisos()
         else if (Cuenta.puedeUsar(this) && prefs.diagnostico && !prefs.diagAvisoVisto && !hayVentana())
             handler.postDelayed({ if (!isFinishing && !prefs.diagAvisoVisto && !hayVentana()) avisoDiagnostico() }, 1200)
         Guardado.borrarPendientes(this)
@@ -2984,6 +2988,19 @@ class MainActivity : Activity() {
         } else {
             permisosPie.addView(boton("Completa los permisos para seguir", Tema.CAMPO, cTenue) { }
                 .apply { setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f) }, LinearLayout.LayoutParams(-1, dp(52)))
+            if (BuildConfig.ES_PLAY) {
+                permisosPie.addView(texto("Continuar sin activar el lector", Tema.T_TEXTO, cTenue, false).apply {
+                    typeface = fuenteMedia
+                    gravity = Gravity.CENTER
+                    minHeight = dp(Tema.ALTO_TOQUE)
+                    isClickable = true
+                    setOnClickListener {
+                        getSharedPreferences("play_policy", Context.MODE_PRIVATE).edit()
+                            .putBoolean("lector_setup_pospuesto", true).apply()
+                        dialogoPermisos?.dismiss()
+                    }
+                }, margenArriba(Tema.S1))
+            }
         }
     }
 
@@ -4086,6 +4103,10 @@ class MainActivity : Activity() {
     /** Cuándo se abrió la página propia del lector (para saber si Ajustes la cerró al instante). */
     private var detalleAbiertoEn = 0L
 
+    private fun configuracionPermisosPospuestaPlay(): Boolean =
+        BuildConfig.ES_PLAY && getSharedPreferences("play_policy", Context.MODE_PRIVATE)
+            .getBoolean("lector_setup_pospuesto", false)
+
     private fun abrirAccesibilidad() {
         // Google Play requiere divulgación destacada y consentimiento afirmativo antes de solicitar Accesibilidad.
         if (BuildConfig.ES_PLAY) {
@@ -4105,9 +4126,14 @@ class MainActivity : Activity() {
                             "Checa no toca botones ni acepta o rechaza viajes por ti. Android te pedirá que " +
                             "actives el servicio manualmente. Si no aceptas, no se activará el lector."
                     )
-                    .setNegativeButton("Ahora no", null)
+                    .setNegativeButton("Ahora no") { _, _ ->
+                        politica.edit().putBoolean("lector_setup_pospuesto", true).apply()
+                        dialogoPermisos?.dismiss()
+                        guia?.dismiss()
+                    }
                     .setPositiveButton("Acepto y continuar") { _, _ ->
-                        politica.edit().putBoolean("accesibilidad_divulgacion_aceptada", true).apply()
+                        politica.edit().putBoolean("accesibilidad_divulgacion_aceptada", true)
+                            .putBoolean("lector_setup_pospuesto", false).apply()
                         abrirAccesibilidadSistema()
                     }
                     .show()
