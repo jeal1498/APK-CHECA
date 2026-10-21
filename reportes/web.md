@@ -1,17 +1,19 @@
 # Reporte de Checa (web + app) · últimos 30 días
 
-Generado: 2026-10-20 17:35 UTC. Cuenta visitas únicas (una por pestaña).
+Generado: 2026-10-21 17:42 UTC. Cuenta visitas únicas (una por pestaña).
 
 ## Resumen
 | visitas | descargas | cuentas_nuevas | pagos | ingresos | licencias_activas |
 | --- | --- | --- | --- | --- | --- |
-| 461 | 226 | 24 | 0 | 0 | 3 |
+| 491 | 240 | 29 | 0 | 0 | 3 |
 
 # App
 
 ## Cuentas nuevas por día (inicio con Google)
 | dia | cuentas |
 | --- | --- |
+| 2026-10-21 | 2 |
+| 2026-10-20 | 3 |
 | 2026-10-19 | 6 |
 | 2026-10-18 | 7 |
 | 2026-10-17 | 3 |
@@ -22,6 +24,11 @@ Generado: 2026-10-20 17:35 UTC. Cuenta visitas únicas (una por pestaña).
 ## Quiénes son (cuentas con Google)
 | correo | registro | ultimo_acceso | equipos | licencia_vence |
 | --- | --- | --- | --- | --- |
+| morterafer5@gmail.com | 10-21 10:40 | 10-21 10:40 | 1 | sin licencia |
+| iktan3dimpresiones@gmail.com | 10-21 10:28 | 10-21 10:28 | 1 | sin licencia |
+| serjavier9@gmail.com | 10-20 17:37 | 10-20 17:37 | 1 | sin licencia |
+| jorge.tegoma@gmail.com | 10-20 14:19 | 10-20 14:19 | 1 | sin licencia |
+| morterafer6@gmail.com | 10-20 12:18 | 10-20 12:18 | 1 | sin licencia |
 | yokebet2012@gmail.com | 10-19 18:59 | 10-19 18:59 | 1 | sin licencia |
 | jonathan.galvan198228@gmail.com | 10-19 16:03 | 10-19 17:02 | 1 | sin licencia |
 | jcr9785@gmail.com | 10-19 08:28 | 10-19 08:28 | 1 | sin licencia |
@@ -76,19 +83,20 @@ Sin datos todavía.
 ## Embudo
 | evento | visitas | veces |
 | --- | --- | --- |
-| visita | 461 | 670 |
-| descarga | 226 | 259 |
-| clic_descargar | 104 | 115 |
-| descarga_instalar | 67 | 145 |
-| video_play | 60 | 63 |
+| visita | 491 | 713 |
+| descarga | 240 | 273 |
+| clic_descargar | 111 | 122 |
+| descarga_instalar | 68 | 146 |
+| video_play | 64 | 67 |
 | whatsapp_ayuda | 11 | 11 |
-| beta_whatsapp | 8 | 8 |
+| beta_whatsapp | 9 | 13 |
+| beta | 4 | 4 |
 
 ## Por fuente (visitas → descargas)
 | fuente | campana | visitas | descargas |
 | --- | --- | --- | --- |
-| directo |  | 351 | 169 |
-| tiktok |  | 88 | 47 |
+| directo |  | 377 | 180 |
+| tiktok |  | 92 | 50 |
 | app | compartir | 12 | 8 |
 | facebook | beta | 6 | 2 |
 | prueba |  | 3 | 1 |
@@ -98,29 +106,31 @@ Sin datos todavía.
 ## Por dispositivo
 | dispositivo | visitas | descargas |
 | --- | --- | --- |
-| android | 385 | 226 |
-| iphone | 51 | 0 |
+| android | 415 | 241 |
+| iphone | 52 | 0 |
 | pc | 26 | 0 |
 
 ## Qué botón lleva a descargar
 | boton | descargas |
 | --- | --- |
-| fijo | 77 |
-| hero | 68 |
-| tiktok | 46 |
-| app | 31 |
+| fijo | 79 |
+| hero | 74 |
+| tiktok | 50 |
+| app | 32 |
 | nav | 19 |
 | cierre | 11 |
 | Rhc | 2 |
 | hero2 | 2 |
-| RhcT | 1 |
+| registro | 2 |
 | edgar | 1 |
+| RhcT | 1 |
 | RhcTAZ | 1 |
 
 ## Por día
 | dia | visitas | descargas |
 | --- | --- | --- |
-| 2026-10-20 | 3 | 0 |
+| 2026-10-21 | 6 | 3 |
+| 2026-10-20 | 28 | 12 |
 | 2026-10-19 | 74 | 41 |
 | 2026-10-18 | 115 | 56 |
 | 2026-10-17 | 59 | 45 |
