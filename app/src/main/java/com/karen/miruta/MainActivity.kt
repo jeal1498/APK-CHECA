@@ -1283,7 +1283,7 @@ class MainActivity : Activity() {
             Tema.T_NOTA, cTenue, false
         ).apply { setLineSpacing(0f, 1.2f) }, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(Tema.S1) })
         paq.addView(tarjetaPaquete(
-            "1m", "1 MES", "Plan Básico", "$99", "$59", "Para probar todo en tu día a día.",
+            "1m", "1 MES", "Plan Básico", "$119", "$71", "Para probar todo en tu día a día.",
             listOf(
                 "Pop-up con semáforo, ganancia neta, $/\u2060hora, $/\u2060km y dinámica ⚡",
                 "Filtros inteligentes y aviso por voz o vibración",
@@ -1293,7 +1293,7 @@ class MainActivity : Activity() {
             ), false
         ), margenTarjeta())
         paq.addView(tarjetaPaquete(
-            "6m", "6 MESES", "Plan Estratega", "$499", "$299", "Equivale a $83 al mes · Ahorras 16 %",
+            "6m", "6 MESES", "Plan Estratega", "$589", "$353", "Equivale a $98 al mes · Ahorras 17 %",
             listOf(
                 "Todo lo del Plan Básico, más:",
                 "Uber y DiDi al mismo tiempo: Checa marca cuál conviene más",
@@ -1303,7 +1303,7 @@ class MainActivity : Activity() {
             ), true
         ), margenTarjeta())
         paq.addView(tarjetaPaquete(
-            "12m", "1 AÑO", "Plan Pro", "$899", "$539", "Equivale a $74.90 al mes",
+            "12m", "1 AÑO", "Plan Pro", "$1,059", "$635", "Equivale a $88.25 al mes",
             listOf(
                 "Todo lo del Plan Estratega",
                 "2 equipos (teléfono + tablet)",
@@ -1352,7 +1352,7 @@ class MainActivity : Activity() {
                 "Las compras integradas de Google Play aún no están disponibles en esta versión."
         } else {
             "La beta gratis termina el ${Licencia.fechaBonita(Licencia.BETA_HASTA)} (quedan $dias ${if (dias == 1) "día" else "días"}). " +
-                "Después, Checa se paga con paquetes desde $99 al mes."
+                "Después, Checa se paga con paquetes desde $119 al mes."
         }
         cuerpo.addView(texto(avisoBeta, Tema.T_TEXTO, cTexto2, false).apply { setLineSpacing(0f, 1.2f) })
         val avisoFundador = if (BuildConfig.ES_PLAY) {
