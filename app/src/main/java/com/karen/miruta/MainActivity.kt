@@ -4087,6 +4087,38 @@ class MainActivity : Activity() {
     private var detalleAbiertoEn = 0L
 
     private fun abrirAccesibilidad() {
+        // Google Play requiere divulgación destacada y consentimiento afirmativo antes de solicitar Accesibilidad.
+        if (BuildConfig.ES_PLAY) {
+            val politica = getSharedPreferences("play_policy", Context.MODE_PRIVATE)
+            if (!politica.getBoolean("accesibilidad_divulgacion_aceptada", false)) {
+                AlertDialog.Builder(this)
+                    .setTitle("Permiso para leer ofertas")
+                    .setMessage(
+                        "Checa necesita el servicio de Accesibilidad para leer el texto visible de las ofertas " +
+                            "en Uber y DiDi (como tarifa, distancia y tiempo) y calcular cuánto te queda. " +
+                            "Mientras el lector está activado, puede acceder al contenido visible de esas apps. " +
+                            "Ese contenido se procesa en este teléfono y no se envía a los servidores de Checa " +
+                            "ni se comparte con terceros.\n\n" +
+                            "Si activas «Guardar pantallas de ofertas», los datos de diagnóstico se conservan " +
+                            "solo en este teléfono durante un máximo de 7 días y podrían incluir información " +
+                            "personal que aparezca en pantalla. Puedes desactivar esa opción.\n\n" +
+                            "Checa no toca botones ni acepta o rechaza viajes por ti. Android te pedirá que " +
+                            "actives el servicio manualmente. Si no aceptas, no se activará el lector."
+                    )
+                    .setNegativeButton("Ahora no", null)
+                    .setPositiveButton("Acepto y continuar") { _, _ ->
+                        politica.edit().putBoolean("accesibilidad_divulgacion_aceptada", true).apply()
+                        abrirAccesibilidadSistema()
+                    }
+                    .show()
+                return
+            }
+        }
+        abrirAccesibilidadSistema()
+    }
+
+    /** Abre los ajustes del sistema tras el consentimiento informado cuando se usa el canal Play. */
+    private fun abrirAccesibilidadSistema() {
         // Android 14+: abre directo la página de «Checa – lector de ofertas» con su interruptor, sin buscarla en la lista.
         if (Build.VERSION.SDK_INT >= 34) {
             try {
