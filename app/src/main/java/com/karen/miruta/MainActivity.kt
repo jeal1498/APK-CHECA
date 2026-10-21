@@ -3203,7 +3203,7 @@ class MainActivity : Activity() {
         pintarCuenta()
         // Igual que después de entrar con Google: permisos y, si es la primera vez, la guía.
         val seguir: () -> Unit = { if (!prefs.guiaVista) mostrarGuia() }
-        if (faltanPermisos()) mostrarPermisos(seguir) else seguir()
+        if (faltanPermisos() && !configuracionPermisosPospuestaPlay()) mostrarPermisos(seguir) else seguir()
     }
 
     private fun entrarConGoogle() {
@@ -3230,7 +3230,7 @@ class MainActivity : Activity() {
             is Cuenta.Resultado.Ok -> {
                 // Después de entrar: permisos (paso 1 de 3); si es la primera vez, sigue la guía (pasos 2 y 3).
                 val seguir = { if (!prefs.guiaVista) mostrarGuia() else dialogoBienvenidaCuenta() }
-                if (faltanPermisos()) mostrarPermisos(seguir) else seguir()
+                if (faltanPermisos() && !configuracionPermisosPospuestaPlay()) mostrarPermisos(seguir) else seguir()
             }
         }
     }
