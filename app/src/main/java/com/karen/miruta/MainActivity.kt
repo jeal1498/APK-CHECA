@@ -2384,7 +2384,9 @@ class MainActivity : Activity() {
         } else if (e.activa && !e.pagada) {
             licTitulo.text = "Prueba gratis: ${e.diasRestantes} ${if (e.diasRestantes == 1) "día" else "días"}"
             licTitulo.setTextColor(cTexto)
-            licTexto.text = "Úsala en tu turno. Para seguir después de la prueba, activa tu licencia."
+            licTexto.text = if (BuildConfig.ES_PLAY)
+                "Las compras integradas de Google Play aún no están disponibles en esta versión."
+            else "Úsala en tu turno. Para seguir después de la prueba, activa tu licencia."
         } else if (!e.activa && Cuenta.necesitaRevision(this)) {
             licTitulo.text = "Revisa tu licencia"
             licTitulo.setTextColor(cAmarillo)
