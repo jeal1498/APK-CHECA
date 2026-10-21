@@ -1340,17 +1340,23 @@ class MainActivity : Activity() {
 
     private fun dialogoFinBeta(dias: Int) {
         val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        cuerpo.addView(texto(
+        val avisoBeta = if (BuildConfig.ES_PLAY) {
             "La beta gratis termina el ${Licencia.fechaBonita(Licencia.BETA_HASTA)} (quedan $dias ${if (dias == 1) "día" else "días"}). " +
-                "Después, Checa se paga con paquetes desde $99 al mes.",
-            Tema.T_TEXTO, cTexto2, false
-        ).apply { setLineSpacing(0f, 1.2f) })
-        cuerpo.addView(texto(
+                "Las compras integradas de Google Play aún no están disponibles en esta versión."
+        } else {
+            "La beta gratis termina el ${Licencia.fechaBonita(Licencia.BETA_HASTA)} (quedan $dias ${if (dias == 1) "día" else "días"}). " +
+                "Después, Checa se paga con paquetes desde $99 al mes."
+        }
+        cuerpo.addView(texto(avisoBeta, Tema.T_TEXTO, cTexto2, false).apply { setLineSpacing(0f, 1.2f) })
+        val avisoFundador = if (BuildConfig.ES_PLAY) {
+            "Las condiciones de compra dentro de Google Play se anunciarán cuando estén disponibles."
+        } else {
             "Como la probaste en la beta, tendrás precio de fundador: 40 % menos de por vida " +
                 "(paga antes del 28 de febrero y renueva a tiempo). " +
-                if (Cuenta.conectada(this)) "Tu cuenta ya está registrada." else "Entra con tu cuenta de Google para asegurarlo.",
-            Tema.T_TEXTO, cTexto, true
-        ).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
+                if (Cuenta.conectada(this)) "Tu cuenta ya está registrada." else "Entra con tu cuenta de Google para asegurarlo."
+        }
+        cuerpo.addView(texto(avisoFundador, Tema.T_TEXTO, cTexto, true)
+            .apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
         if (!Cuenta.conectada(this)) {
             cuerpo.addView(boton("Entrar con Google", cVerde, Color.BLACK) {
                 dialogoAviso?.dismiss()
@@ -2366,7 +2372,9 @@ class MainActivity : Activity() {
         if (finBeta) {
             licTitulo.text = "La beta gratis termina en ${e.diasRestantes} ${if (e.diasRestantes == 1) "día" else "días"}"
             licTitulo.setTextColor(cAmarillo)
-            licTexto.text = "El ${Licencia.fechaBonita(Licencia.BETA_HASTA)} Checa empieza a cobrar. " +
+            licTexto.text = if (BuildConfig.ES_PLAY)
+                "Las compras integradas de Google Play aún no están disponibles en esta versión."
+            else "El ${Licencia.fechaBonita(Licencia.BETA_HASTA)} Checa empieza a cobrar. " +
                 "Quienes la probaron en la beta tendrán precio de fundador: 40 % menos de por vida." +
                 (if (Cuenta.conectada(this)) " Tu cuenta ya está registrada." else " Entra con tu cuenta de Google para asegurarlo.")
         } else if (e.beta && !e.pagada) {
@@ -3172,10 +3180,13 @@ class MainActivity : Activity() {
                 Tema.T_SUB, if (e.activa) cTexto else cAmarillo, true
             ), margenArriba(Tema.S1))
             cuerpo.addView(texto(
-                "Elige tu paquete y paga con Mercado Pago. Se activa solo en esta cuenta; no tienes que escribir ningún código.",
+                if (BuildConfig.ES_PLAY) "Las compras integradas de Google Play aún no están disponibles en esta versión."
+                else "Elige tu paquete y paga con Mercado Pago. Se activa solo en esta cuenta; no tienes que escribir ningún código.",
                 Tema.T_NOTA, cTenue, false
             ).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
-            cuerpo.addView(boton("Ver paquetes", cTarjeta2, cTexto) { irAPaquetes() }, margenArriba(Tema.S2))
+            if (!BuildConfig.ES_PLAY) {
+                cuerpo.addView(boton("Ver paquetes", cTarjeta2, cTexto) { irAPaquetes() }, margenArriba(Tema.S2))
+            }
             cuerpo.addView(boton("Empezar", cVerde, Color.BLACK) { dialogoCuenta?.dismiss() }, margenArriba(Tema.S1))
             dialogoCuenta = hoja(if (nombre.isEmpty()) "Bienvenido" else "Bienvenido, $nombre", null, cuerpo)
         }
@@ -3289,14 +3300,25 @@ class MainActivity : Activity() {
             ).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S2))
             e.beta -> {}
             Cuenta.licencia(this) == null -> {
-                cuentaCaja.addView(boton("Ver paquetes", cVerde, Color.BLACK) { irAPaquetes() }, margenArriba(Tema.S2))
-                cuentaCaja.addView(boton("Ya pagué: revisar mi licencia", cTarjeta2, cTexto) {
-                    Toast.makeText(this, "Buscando tu licencia…", Toast.LENGTH_SHORT).show()
-                    Cuenta.revisarAhora(this) { r -> mostrarResultadoCuenta(r) }
-                }, margenArriba(Tema.S1))
+                if (BuildConfig.ES_PLAY) {
+                    cuentaCaja.addView(texto("Las compras integradas de Google Play aún no están disponibles en esta versión.",
+                        Tema.T_TEXTO, cTenue, false).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S2))
+                } else {
+                    cuentaCaja.addView(boton("Ver paquetes", cVerde, Color.BLACK) { irAPaquetes() }, margenArriba(Tema.S2))
+                    cuentaCaja.addView(boton("Ya pagué: revisar mi licencia", cTarjeta2, cTexto) {
+                        Toast.makeText(this, "Buscando tu licencia…", Toast.LENGTH_SHORT).show()
+                        Cuenta.revisarAhora(this) { r -> mostrarResultadoCuenta(r) }
+                    }, margenArriba(Tema.S1))
+                }
             }
-            e.pagada && e.vence < Licencia.PERMANENTE ->
-                cuentaCaja.addView(boton("Renovar · se suman los días", cVerde, Color.BLACK) { irAPaquetes() }, margenArriba(Tema.S2))
+            e.pagada && e.vence < Licencia.PERMANENTE -> {
+                if (BuildConfig.ES_PLAY) {
+                    cuentaCaja.addView(texto("Tu licencia terminó. Las compras integradas de Google Play aún no están disponibles en esta versión.",
+                        Tema.T_TEXTO, cTenue, false).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S2))
+                } else {
+                    cuentaCaja.addView(boton("Renovar · se suman los días", cVerde, Color.BLACK) { irAPaquetes() }, margenArriba(Tema.S2))
+                }
+            }
         }
         cuentaCaja.addView(filasCuenta(), margenArriba(Tema.S2))
         pintarCuentaPie()
