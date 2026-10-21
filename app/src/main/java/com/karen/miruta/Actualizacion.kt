@@ -123,6 +123,7 @@ object Actualizacion {
 
     /** Notificación «Hay una versión nueva»; tocarla abre Checa con la ventana para actualizar. */
     fun notificar(ctx: Context, v: String) {
+        if (BuildConfig.ES_PLAY) return
         val s = sp(ctx)
         if (s.getString("notificada", null) == v) return
         if (Build.VERSION.SDK_INT >= 33 &&
