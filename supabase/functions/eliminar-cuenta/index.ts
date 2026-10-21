@@ -55,6 +55,8 @@ Deno.serve(async (req) => {
     await borrar(`invitaciones?invitado=eq.${c}`);
     await borrar(`invitaciones?invitador=eq.${c}`);
     await borrar(`licencias?correo=eq.${c}`);
+    // Si el mismo correo se registró como tester en la web, también se elimina ese registro.
+    await borrar(`testers?correo=eq.${c}`);
 
     // Conserva el registro mínimo de transacción, sin mantener el correo del usuario.
     const anonimizar = await fetch(`${SUPA}/rest/v1/pagos?correo=eq.${c}`, {
