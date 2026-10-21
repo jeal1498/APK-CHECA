@@ -34,7 +34,6 @@ jobs:
           grep -Fq 'Permiso para leer ofertas' "$SRC"
           grep -Fq 'Acepto y continuar' "$SRC"
           grep -Fq 'accesibilidad_divulgacion_aceptada' "$SRC"
-          grep -Fq 'Acepto y continuar' "$SRC"
           grep -Fq 'Ahora no' "$SRC"
           grep -Fq 'lector_setup_pospuesto' "$SRC"
           grep -Fq 'Continuar sin activar el lector' "$SRC"
