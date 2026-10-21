@@ -16,12 +16,25 @@ android {
 
     buildFeatures { buildConfig = true }
 
+    // La firma del canal antiguo solo se configura localmente mediante variables de entorno.
+    // No guardar contraseñas ni archivos de firma en el repositorio.
+    val legacyKeystorePath = providers.environmentVariable("MIRUTA_KEYSTORE_PATH").orNull
+    val legacyStorePassword = providers.environmentVariable("MIRUTA_STORE_PASSWORD").orNull
+    val legacyKeyPassword = providers.environmentVariable("MIRUTA_KEY_PASSWORD").orNull
+    val legacyKeyAlias = providers.environmentVariable("MIRUTA_KEY_ALIAS").orNull ?: "miruta"
+
     signingConfigs {
-        create("propia") {
-            storeFile = file("miruta.jks")
-            storePassword = "miruta123"
-            keyAlias = "miruta"
-            keyPassword = "miruta123"
+        if (!legacyKeystorePath.isNullOrBlank() &&
+            !legacyStorePassword.isNullOrBlank() &&
+            !legacyKeyPassword.isNullOrBlank() &&
+            file(legacyKeystorePath).isFile
+        ) {
+            create("propia") {
+                storeFile = file(legacyKeystorePath)
+                storePassword = legacyStorePassword
+                keyAlias = legacyKeyAlias
+                keyPassword = legacyKeyPassword
+            }
         }
     }
 
@@ -31,7 +44,7 @@ android {
         create("directo") {
             dimension = "canal"
             applicationId = "com.karen.miruta"
-            signingConfig = signingConfigs.getByName("propia")
+            signingConfig = signingConfigs.findByName("propia")
             buildConfigField("boolean", "ES_PLAY", "false")
         }
         // Google Play: otro paquete y sin firma aquí (la llave de subida llega en la Fase 4).
