@@ -13,3 +13,13 @@ renders/
 .hyperframes/
 audio_engine_meta.json
 video/out/
+
+# Credenciales y llaves: nunca versionar
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.env
+.env.*
+!*.env.example
+keystore.properties
