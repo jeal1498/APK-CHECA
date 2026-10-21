@@ -45,6 +45,9 @@ import android.widget.SeekBar
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -131,8 +134,15 @@ class MainActivity : Activity() {
         Fuentes.iniciar(this)
         prefs = Prefs(this)
         popupPrueba = Popup(this, prefs, WindowManager.LayoutParams.TYPE_APPLICATION)
-        window.statusBarColor = cFondo
-        window.navigationBarColor = cTarjeta
+        // API 36 impone edge-to-edge. Dibujamos el fondo bajo las barras, pero
+        // mantenemos los controles dentro de los insets para no taparlos.
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        window.statusBarColor = Color.TRANSPARENT
+        window.navigationBarColor = Color.TRANSPARENT
+        WindowCompat.getInsetsController(window, window.decorView).apply {
+            isAppearanceLightStatusBars = false
+            isAppearanceLightNavigationBars = false
+        }
 
         contenido = FrameLayout(this)
         pestanas.add(pantallaInicio())
@@ -150,10 +160,18 @@ class MainActivity : Activity() {
             addView(barraNavegacion(), LinearLayout.LayoutParams(-1, dp(88)))
         }
         acceso = pantallaAcceso()
-        setContentView(FrameLayout(this).apply {
+        val marco = FrameLayout(this).apply {
+            setBackgroundColor(cFondo)
             addView(raiz, FrameLayout.LayoutParams(-1, -1))
             addView(acceso, FrameLayout.LayoutParams(-1, -1))
-        })
+        }
+        ViewCompat.setOnApplyWindowInsetsListener(marco) { vista, insets ->
+            val barras = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
+            vista.setPadding(barras.left, barras.top, barras.right, barras.bottom)
+            insets
+        }
+        setContentView(marco)
+        ViewCompat.requestApplyInsets(marco)
         actualizarAcceso()
         mostrarPestana(savedInstanceState?.getInt("tab") ?: 0, false)
         autoIniciar = savedInstanceState == null && intent?.getBooleanExtra(EXTRA_AUTO_INICIAR, false) == true
