@@ -53,6 +53,7 @@ object Actualizacion {
 
     /** Versión nueva ya conocida (sin internet), o null si la instalada está al día. */
     fun pendiente(ctx: Context): String? {
+        if (BuildConfig.ES_PLAY) return null
         val v = sp(ctx).getString("nueva", null) ?: return null
         return if (esMayor(v, instalada(ctx))) v else null
     }
@@ -62,6 +63,7 @@ object Actualizacion {
      * y si se pudo consultar la web en esta llamada (false sin internet o si no tocaba revisar).
      */
     fun revisar(ctx: Context, forzar: Boolean = false, listo: (String?, Boolean) -> Unit) {
+        if (BuildConfig.ES_PLAY) { listo(null, false); return }
         val app = ctx.applicationContext
         val ultima = sp(app).getLong("revision", 0L)
         if (revisando || (!forzar && System.currentTimeMillis() - ultima < CADA)) {
@@ -105,6 +107,7 @@ object Actualizacion {
 
     /** Programa la revisión cada 6 h con internet (sigue después de reiniciar el teléfono). */
     fun programar(ctx: Context) {
+        if (BuildConfig.ES_PLAY) return
         try {
             val js = ctx.getSystemService(JobScheduler::class.java) ?: return
             if (js.getPendingJob(ID_TRABAJO) != null) return
@@ -120,6 +123,7 @@ object Actualizacion {
 
     /** Notificación «Hay una versión nueva»; tocarla abre Checa con la ventana para actualizar. */
     fun notificar(ctx: Context, v: String) {
+        if (BuildConfig.ES_PLAY) return
         val s = sp(ctx)
         if (s.getString("notificada", null) == v) return
         if (Build.VERSION.SDK_INT >= 33 &&
@@ -152,6 +156,7 @@ object Actualizacion {
     }
 
     fun abrirDescarga(ctx: Context) {
+        if (BuildConfig.ES_PLAY) return
         try {
             ctx.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(URL_ACTUALIZAR)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
         } catch (_: Exception) { }
@@ -162,9 +167,11 @@ object Actualizacion {
     // ------------------------------------------------------------------
 
     /** Android pide un permiso, una sola vez, para que Checa pueda abrir el instalador. */
-    fun puedeInstalar(ctx: Context) = Build.VERSION.SDK_INT < 26 || ctx.packageManager.canRequestPackageInstalls()
+    fun puedeInstalar(ctx: Context) = !BuildConfig.ES_PLAY &&
+        (Build.VERSION.SDK_INT < 26 || ctx.packageManager.canRequestPackageInstalls())
 
     fun pedirPermisoInstalar(ctx: Context) {
+        if (BuildConfig.ES_PLAY) return
         try {
             ctx.startActivity(
                 Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:" + ctx.packageName))
@@ -175,6 +182,7 @@ object Actualizacion {
 
     /** Baja el APK de la web. [progreso] recibe 0–100 (o -1 si no se sabe); [listo], el archivo o null si falló. */
     fun descargar(ctx: Context, progreso: (Int) -> Unit, listo: (File?) -> Unit) {
+        if (BuildConfig.ES_PLAY) { listo(null); return }
         val app = ctx.applicationContext
         Thread {
             var archivo: File? = null
@@ -214,7 +222,9 @@ object Actualizacion {
     }
 
     /** Abre el instalador de Android con el APK descargado. */
-    fun instalar(ctx: Context, apk: File): Boolean = try {
+    fun instalar(ctx: Context, apk: File): Boolean {
+        if (BuildConfig.ES_PLAY) return false
+        return try {
         val uri = FileProvider.getUriForFile(ctx, ctx.packageName + ".fileprovider", apk)
         ctx.startActivity(
             Intent(Intent.ACTION_VIEW)
@@ -222,7 +232,8 @@ object Actualizacion {
                 .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
         )
         true
-    } catch (_: Exception) { false }
+        } catch (_: Exception) { false }
+    }
 
     /** Compara "6.10" > "6.9" por partes numéricas. */
     fun esMayor(a: String, b: String): Boolean {
@@ -241,6 +252,9 @@ object Actualizacion {
 
     /** Mensaje para compartir; con [codigo], el link lleva ?ref= y el amigo gana el mes extra al pagar. */
     fun textoCompartir(codigo: String?): String {
+        if (BuildConfig.ES_PLAY) {
+            return "Te recomiendo Checa: en cada oferta de Uber o DiDi te dice cuánto te queda después de gasolina y si conviene aceptarla."
+        }
         val link = WEB + "?" + (if (codigo != null) "ref=$codigo&" else "") + "utm_source=app&utm_campaign=compartir"
         val base = "Te recomiendo Checa: en cada oferta de Uber o DiDi te dice cuánto te queda después de gasolina " +
             "y si conviene aceptarla. Es gratis durante la beta (Android): $link"
@@ -263,6 +277,7 @@ object Actualizacion {
 /** Revisión de versión nueva en segundo plano (la programa [Actualizacion.programar]). */
 class ActualizacionJob : JobService() {
     override fun onStartJob(params: JobParameters?): Boolean {
+        if (BuildConfig.ES_PLAY) return false
         Actualizacion.revisar(applicationContext, forzar = true) { v, _ ->
             if (v != null) Actualizacion.notificar(applicationContext, v)
             jobFinished(params, false)
