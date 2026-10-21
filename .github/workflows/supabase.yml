@@ -51,3 +51,5 @@ jobs:
           # Las dos revisan por su cuenta quién llama (mp-pago con la sesión, mp-webhook con Mercado Pago).
           supabase functions deploy mp-pago --project-ref "$PROYECTO" --no-verify-jwt --use-api
           supabase functions deploy mp-webhook --project-ref "$PROYECTO" --no-verify-jwt --use-api
+          # Esta función conserva la verificación JWT y valida además la sesión en el handler.
+          supabase functions deploy eliminar-cuenta --project-ref "$PROYECTO" --use-api
