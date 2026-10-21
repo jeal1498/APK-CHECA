@@ -217,6 +217,10 @@ object Cuenta {
      * [listo] recibe el link, o null y un mensaje si falló.
      */
     fun crearPago(ctx: Context, plan: String, listo: (String?, String) -> Unit) {
+        if (BuildConfig.ES_PLAY) {
+            listo(null, "Las compras de Google Play aún no están disponibles en esta versión.")
+            return
+        }
         val app = ctx.applicationContext
         Thread {
             var url: String? = null
