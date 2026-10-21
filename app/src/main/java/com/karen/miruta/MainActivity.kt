@@ -3388,7 +3388,7 @@ class MainActivity : Activity() {
             e.pagada -> "Vence el ${Licencia.fechaBonita(e.vence)} · ${quedanDias(quedan)}"
             e.beta -> "Todo incluido gratis hasta el ${Licencia.fechaBonita(Licencia.BETA_HASTA)}"
             e.activa -> "Todo incluido · ${quedanDias(quedan)}"
-            else -> "Elige un paquete para volver a ver los pop-ups"
+            else -> if (BuildConfig.ES_PLAY) "Las compras integradas de Google Play aún no están disponibles en esta versión." else "Elige un paquete para volver a ver los pop-ups"
         }
         c.addView(texto(sub, Tema.T_TEXTO, cTexto2, false), margenArriba(4))
         if (!e.pagada && e.activa && !e.beta) {
