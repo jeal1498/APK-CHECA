@@ -42,12 +42,45 @@ jobs:
           echo "Llave válida; no se muestran contraseñas."
       - name: Compilar AAB firmado
         run: gradle bundlePlayRelease --no-daemon
-      - name: Verificar firma y preparar artefactos
+      - name: Preparar bundletool
+        shell: bash
+        run: |
+          set -euo pipefail
+          BUNDLETOOL_VERSION="1.18.3"
+          curl --fail --location --silent --show-error             "https://github.com/google/bundletool/releases/download/${BUNDLETOOL_VERSION}/bundletool-all-${BUNDLETOOL_VERSION}.jar"             --output "$RUNNER_TEMP/bundletool.jar"
+          test -s "$RUNNER_TEMP/bundletool.jar"
+          echo "BUNDLETOOL_JAR=$RUNNER_TEMP/bundletool.jar" >> "$GITHUB_ENV"
+      - name: Auditar manifiesto y certificado del AAB
         shell: bash
         run: |
           set -euo pipefail
           AAB="$(find app/build/outputs/bundle/playRelease -maxdepth 1 -name '*.aab' -print -quit)"
           test -n "$AAB" || { echo "::error::No se generó el AAB"; exit 1; }
+          java -jar "$BUNDLETOOL_JAR" validate --bundle="$AAB"
+          java -jar "$BUNDLETOOL_JAR" dump manifest --bundle="$AAB" > "$RUNNER_TEMP/manifest-play.xml"
+          echo "=== Paquete y versión ==="
+          grep -oE 'package="[^"]+"|android:versionCode="[^"]+"|android:versionName="[^"]+"' "$RUNNER_TEMP/manifest-play.xml" | head -n 3
+          if grep -Eq 'android.permission.(REQUEST_IGNORE_BATTERY_OPTIMIZATIONS|REQUEST_INSTALL_PACKAGES)' "$RUNNER_TEMP/manifest-play.xml"; then
+            echo "::error::El manifiesto incluye un permiso restringido que no debe estar en el AAB."
+            grep -E 'REQUEST_IGNORE_BATTERY_OPTIMIZATIONS|REQUEST_INSTALL_PACKAGES' "$RUNNER_TEMP/manifest-play.xml"
+            exit 1
+          fi
+          echo "OK: no aparecen REQUEST_IGNORE_BATTERY_OPTIMIZATIONS ni REQUEST_INSTALL_PACKAGES."
+          EXPECTED="$(keytool -list -v -keystore "$PLAY_UPLOAD_KEYSTORE_PATH" -storetype JKS -storepass "$PLAY_UPLOAD_STORE_PASSWORD" -alias "$PLAY_UPLOAD_KEY_ALIAS" | awk -F': ' '/SHA256:/{gsub(/:/,"",$2); print tolower($2); exit}')"
+          ACTUAL="$(keytool -printcert -jarfile "$AAB" | awk -F': ' '/SHA256:/{gsub(/:/,"",$2); print tolower($2); exit}')"
+          test -n "$EXPECTED" && test -n "$ACTUAL" || { echo "::error::No se pudo obtener la huella SHA-256"; exit 1; }
+          echo "Huella SHA-256 de la llave configurada: $EXPECTED"
+          echo "Huella SHA-256 del AAB:                 $ACTUAL"
+          if [[ "$EXPECTED" != "$ACTUAL" ]]; then
+            echo "::error::La firma del AAB no coincide con el certificado de la llave configurada."
+            exit 1
+          fi
+          echo "OK: la firma del AAB coincide con la llave configurada en GitHub Secrets."
+      - name: Verificar firma y preparar artefactos
+        shell: bash
+        run: |
+          set -euo pipefail
+          AAB="$(find app/build/outputs/bundle/playRelease -maxdepth 1 -name '*.aab' -print -quit)"
           jarsigner -verify "$AAB" >/dev/null
           mkdir -p "$RUNNER_TEMP/checa-artifacts"
           cp "$AAB" "$RUNNER_TEMP/checa-artifacts/checa-play-release.aab"
