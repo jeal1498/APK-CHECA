@@ -43,6 +43,7 @@ jobs:
             "authority com.jeal1498.checa.fileprovider": u("com.jeal1498.checa.fileprovider") in man,
             "sin authority com.karen.miruta.fileprovider": u("com.karen.miruta.fileprovider") not in man,
             "sin REQUEST_INSTALL_PACKAGES": u("REQUEST_INSTALL_PACKAGES") not in man,
+            "sin REQUEST_IGNORE_BATTERY_OPTIMIZATIONS": u("REQUEST_IGNORE_BATTERY_OPTIMIZATIONS") not in man,
             "sin firma (no usa miruta.jks)": b"APK Sig Block 42" not in raw,
           }
           for k, v in checks.items(): print("OK " if v else "FALLA", k)
