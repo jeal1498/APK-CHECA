@@ -89,11 +89,13 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
             actual.removeAllViews()
             actual.addView(v, ajuste())
             try { wm.updateViewLayout(actual, lp) } catch (_: Exception) { }
+            corregirPosicion(actual)
         } else {
             val caja = CajaArrastrable(ctx).apply { addView(v, ajuste()) }
             try {
                 wm.addView(caja, lp)
                 vista = caja
+                corregirPosicion(caja)
                 caja.alpha = 0f
                 caja.scaleX = 0.94f
                 caja.scaleY = 0.94f
@@ -146,8 +148,9 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
                     val lp = lpActual ?: return true
                     val area = areaActual ?: return true
                     arrastrando = true
-                    val maxY = area.bottom - dp(48)
-                    lp.y = (inicioLpY + (e.rawY - inicioY)).toInt().coerceIn(area.top, maxOf(area.top, maxY))
+                    val alto = height.takeIf { it > 0 } ?: dp(200)
+                    val maxY = maxOf(area.top, area.bottom - alto)
+                    lp.y = (inicioLpY + (e.rawY - inicioY)).toInt().coerceIn(area.top, maxY)
                     try { wm.updateViewLayout(this, lp) } catch (_: Exception) { }
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
@@ -167,7 +170,9 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         val lp = lpActual ?: return
         val area = areaActual ?: return
         if (area.height() <= 0) return
-        val pct = ((lp.y - area.top) * 100 / area.height()).coerceIn(0, 85)
+        val alto = vista?.height?.takeIf { it > 0 } ?: dp(200)
+        val maxPct = (((area.height() - alto).coerceAtLeast(0) * 100) / area.height()).coerceIn(0, 80)
+        val pct = ((lp.y - area.top) * 100 / area.height()).coerceIn(0, maxPct)
         prefs.posicion = pct
         // La firma termina con la posición: se actualiza para no rehacer el pop-up por moverlo.
         firmaVista = firmaVista?.replaceAfterLast('|', pct.toString())
@@ -186,6 +191,23 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         vista = null
         firmaVista = null
         lpActual = null
+    }
+
+    /** Corrige la posición cuando Android ya midió el alto real del pop-up. */
+    private fun corregirPosicion(v: View) {
+        v.post {
+            val lp = lpActual ?: return@post
+            val area = areaActual ?: return@post
+            if (area.height() <= 0) return@post
+            val alto = v.height.takeIf { it > 0 } ?: v.measuredHeight
+            if (alto <= 0) return@post
+            val maxY = maxOf(area.top, area.bottom - alto)
+            val y = lp.y.coerceIn(area.top, maxY)
+            if (y != lp.y) {
+                lp.y = y
+                try { wm.updateViewLayout(v, lp) } catch (_: Exception) { }
+            }
+        }
     }
 
     private fun ajuste() = FrameLayout.LayoutParams(
