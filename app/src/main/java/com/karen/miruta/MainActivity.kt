@@ -423,7 +423,9 @@ class MainActivity : Activity() {
         lic.addView(licTitulo)
         licTexto = texto("", Tema.T_TEXTO, cTexto, false).apply { setLineSpacing(0f, 1.2f) }
         lic.addView(licTexto, margenArriba(Tema.S1))
-        botonPaquetesInicio = boton("Ver paquetes", cVerde, Color.BLACK) { irAPaquetes() }
+        botonPaquetesInicio = boton("Ver paquetes", cVerde, Color.BLACK) { irAPaquetes() }.apply {
+            if (BuildConfig.ES_PLAY) visibility = View.GONE
+        }
         lic.addView(botonPaquetesInicio, margenArriba(Tema.S2))
         tarjetaLicencia = lic
         col.addView(lic, margenTarjeta())
@@ -1305,6 +1307,7 @@ class MainActivity : Activity() {
             ), false
         ), margenTarjeta())
         paquetesVista = paq
+        if (BuildConfig.ES_PLAY) paq.visibility = View.GONE
         col.addView(paq)
 
         // --- Versión y cerrar sesión ---
