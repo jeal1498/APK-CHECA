@@ -16,6 +16,11 @@ permissions:
 jobs:
   play:
     runs-on: ubuntu-latest
+    env:
+      PLAY_UPLOAD_KEYSTORE_BASE64: ${{ secrets.PLAY_UPLOAD_KEYSTORE_BASE64 }}
+      PLAY_UPLOAD_STORE_PASSWORD: ${{ secrets.PLAY_UPLOAD_STORE_PASSWORD }}
+      PLAY_UPLOAD_KEY_ALIAS: ${{ secrets.PLAY_UPLOAD_KEY_ALIAS }}
+      PLAY_UPLOAD_KEY_PASSWORD: ${{ secrets.PLAY_UPLOAD_KEY_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -41,18 +46,30 @@ jobs:
           grep -Fq 'Continuar sin iniciar la lectura' "$SRC"
           grep -Fq 'BuildConfig.ES_PLAY' "$SRC"
           echo "OK: divulgación, consentimiento y opción de continuar sin Accesibilidad presentes en el código Play"
-      - name: Firmar APK de prueba para instalación local y verificar paquete
+      - name: Preparar APK firmado con la llave estable de Play
+        id: firma
+        if: github.event_name != 'pull_request' || env.PLAY_UPLOAD_KEYSTORE_BASE64 != ''
         shell: bash
         run: |
           set -euo pipefail
+          for name in PLAY_UPLOAD_KEYSTORE_BASE64 PLAY_UPLOAD_STORE_PASSWORD PLAY_UPLOAD_KEY_ALIAS PLAY_UPLOAD_KEY_PASSWORD; do
+            if [[ -z "${!name}" ]]; then
+              echo "::error::Falta el secreto requerido: $name. No se generará un APK de prueba que falle el acceso con Google."
+              exit 1
+            fi
+          done
+          KEYSTORE="$RUNNER_TEMP/checa-upload.jks"
+          printf '%s' "$PLAY_UPLOAD_KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE"
+          chmod 600 "$KEYSTORE"
+          keytool -list -keystore "$KEYSTORE" -storetype JKS -storepass "$PLAY_UPLOAD_STORE_PASSWORD" -alias "$PLAY_UPLOAD_KEY_ALIAS" >/dev/null
           APK="$(find app/build/outputs/apk/play/release -maxdepth 1 -name '*.apk' -print -quit)"
           test -n "$APK" || { echo "::error::No hay APK play"; exit 1; }
-          # Esta llave temporal es solo para instalar la versión de prueba; nunca sirve para Google Play.
-          keytool -genkeypair -v -keystore "$RUNNER_TEMP/checa-test-debug.jks" -storepass android -keypass android -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
           BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -n 1)"
           "$BUILD_TOOLS/zipalign" -f -p 4 "$APK" "$RUNNER_TEMP/checa-aligned.apk"
-          "$BUILD_TOOLS/apksigner" sign --ks "$RUNNER_TEMP/checa-test-debug.jks" --ks-pass pass:android --key-pass pass:android --ks-key-alias androiddebugkey --out "$RUNNER_TEMP/checa-play-test.apk" "$RUNNER_TEMP/checa-aligned.apk"
+          "$BUILD_TOOLS/apksigner" sign --ks "$KEYSTORE" --ks-pass "pass:$PLAY_UPLOAD_STORE_PASSWORD" --key-pass "pass:$PLAY_UPLOAD_KEY_PASSWORD" --ks-key-alias "$PLAY_UPLOAD_KEY_ALIAS" --out "$RUNNER_TEMP/checa-play-test.apk" "$RUNNER_TEMP/checa-aligned.apk"
           "$BUILD_TOOLS/apksigner" verify --verbose "$RUNNER_TEMP/checa-play-test.apk"
+          echo "=== Certificado SHA-1/SHA-256 para comprobar la configuración OAuth ==="
+          "$BUILD_TOOLS/apksigner" verify --print-certs "$RUNNER_TEMP/checa-play-test.apk" | grep -E 'certificate SHA-1 digest|certificate SHA-256 digest'
           python3 - "$RUNNER_TEMP/checa-play-test.apk" <<'PY'
           import sys, zipfile
           apk=sys.argv[1]
@@ -70,7 +87,11 @@ jobs:
           PY
           mkdir -p "$RUNNER_TEMP/checa-test-apk"
           cp "$RUNNER_TEMP/checa-play-test.apk" "$RUNNER_TEMP/checa-test-apk/checa-play-test.apk"
+      - name: Omitir APK en PR externo sin secretos de firma
+        if: github.event_name == 'pull_request' && env.PLAY_UPLOAD_KEYSTORE_BASE64 == ''
+        run: echo "Compilación validada; no se publica APK porque este PR no tiene acceso a la llave de firma."
       - name: Publicar APK de prueba como artefacto descargable
+        if: steps.firma.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
           name: checa-play-apk-firmado-prueba-${{ github.run_number }}
