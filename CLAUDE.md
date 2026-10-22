@@ -206,3 +206,7 @@ Plan por fases (0–7); Eduardo da el «adelante» antes de cada una. Decisiones
 - **Pendiente de su visto bueno:** cambiar `servicio_desc` («No envía datos a ningún lado») solo en el flavor play.
 - **Bloqueo actual:** Google sigue verificando la identidad como desarrollador, así que el AAB todavía no se sube. La ruta crítica es: identidad → app y AAB en Prueba interna → Google Cloud con los dos SHA-1 → prueba cerrada con 12 testers durante 14 días → solicitud de producción.
 - **Fase 7 (Play Billing):** pendiente y debe estar lista antes del 1 de febrero de 2027.
+
+### Estado de Play Console (22 oct 2026, según Eduardo)
+- **Hecho:** la app ya está creada en Play Console y la verificación de identidad como desarrollador ya pasó (el bloqueo de «Decisiones de Eduardo y estado» quedó resuelto). Siguiente: subir `checa-play-release-5` (corrida «Preparar AAB Google Play» #5, commit `a7ad302`) a Prueba interna, registrar el SHA-1 de Play App Signing en Google Cloud (Integridad de la aplicación), grabar los dos videos y reclutar testers.
+- **Entrada sin cuenta:** «Entrar sin cuenta (beta)» sigue disponible en `play` hasta `BETA_HASTA` = 31 ene 2027 (`Licencia.kt`), así que testers y revisores pueden usar la app sin Google. El login con Google desde una instalación de Play necesita el SHA-1 de Play App Signing en Google Cloud.
