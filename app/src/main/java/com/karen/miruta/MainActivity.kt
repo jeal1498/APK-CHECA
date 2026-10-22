@@ -119,6 +119,8 @@ class MainActivity : Activity() {
     private var abrirActualizacion = false
     private var desdeAviso = false
     private var volverAtras = false
+    /** Aviso destacado de captura de pantalla (solo flavor Play); evita apilar varios. */
+    private var dialogoCaptura: AlertDialog? = null
     /** Pantalla de acceso: tapa la app hasta que se entra con Google. */
     private var acceso: View? = null
 
@@ -4213,6 +4215,42 @@ class MainActivity : Activity() {
             abrirAccesibilidad()
             return
         }
+        // Google Play: divulgación destacada, separada de la de Accesibilidad y con consentimiento
+        // afirmativo, antes de pedir la captura de pantalla. Solo en el flavor play.
+        if (BuildConfig.ES_PLAY) {
+            val politica = getSharedPreferences("play_policy", Context.MODE_PRIVATE)
+            if (!politica.getBoolean("captura_divulgacion_aceptada", false)) {
+                if (dialogoCaptura?.isShowing == true) return
+                dialogoCaptura = AlertDialog.Builder(this)
+                    .setTitle("Permiso para leer la pantalla")
+                    .setMessage(
+                        "Para calcular tus ofertas, Checa usa la captura de pantalla de Android. " +
+                            "Mientras la lectura está activa, Checa analiza en este teléfono todo lo que se muestra " +
+                            "en la pantalla, no solo Uber o DiDi, para encontrar ofertas de viaje (tarifa, distancia y tiempo). " +
+                            "Lo que no es una oferta se descarta. Nada de esto se envía a los servidores de Checa " +
+                            "ni se comparte con terceros.\n\n" +
+                            "Si activas «Guardar pantallas de ofertas», los datos se guardan solo en este teléfono " +
+                            "hasta 7 días y pueden incluir información personal visible.\n\n" +
+                            "Android te pedirá confirmar la captura y verás una notificación mientras esté activa; " +
+                            "puedes detenerla cuando quieras desde esa notificación. Evita mostrar información " +
+                            "sensible, como apps de banco, mientras la lectura esté activa."
+                    )
+                    .setNegativeButton("Ahora no") { _, _ ->
+                        Toast.makeText(this, "Sin este permiso Checa no puede leer ofertas.", Toast.LENGTH_LONG).show()
+                    }
+                    .setPositiveButton("Acepto y continuar") { _, _ ->
+                        politica.edit().putBoolean("captura_divulgacion_aceptada", true).apply()
+                        pedirCaptura(volver)
+                    }
+                    .show()
+                return
+            }
+        }
+        pedirCaptura(volver)
+    }
+
+    /** Pide el permiso de notificaciones y el aviso de captura de pantalla del sistema. */
+    private fun pedirCaptura(volver: Boolean) {
         if (Build.VERSION.SDK_INT >= 33 &&
             checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
         ) {
