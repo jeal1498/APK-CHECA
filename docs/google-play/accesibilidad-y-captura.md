@@ -26,14 +26,15 @@
 | Describe qué datos se leen | Cumple: texto visible, tarifa, distancia, tiempo |
 | Explica cómo se usan o comparten | Cumple: se procesa en el teléfono; no se envía ni se comparte |
 | Consentimiento con acción afirmativa | Cumple: «Acepto y continuar» / «Ahora no» |
-| Separada de otras divulgaciones | Cumple para accesibilidad; **falta la de captura de pantalla** |
+| Separada de otras divulgaciones | Cumple: la captura tiene su propio aviso (commit `a7ad302`) |
 
-## Brecha: no hay divulgación propia para la captura de pantalla
-Hoy `iniciarCaptura()` pide el permiso con el diálogo del sistema, sin aviso previo de Checa. Como Play exige que la de accesibilidad sea una divulgación **separada**, la captura necesita la suya, y debe decir que se analiza toda la pantalla (no solo Uber o DiDi). Texto propuesto:
+## Divulgación de captura de pantalla (implementada en `a7ad302`, solo flavor play)
+Antes de ese commit, `iniciarCaptura()` pedía el permiso solo con el diálogo del sistema. Como Play exige que la divulgación de accesibilidad sea separada, la captura tiene ahora la suya, con consentimiento afirmativo y guardado en `play_policy`. Aparece antes del aviso de Android, y si la persona toca «Ahora no», no se pide la captura. Texto vigente en la app:
 
 > **Permiso para leer la pantalla**
 > Para calcular tus ofertas, Checa usa la captura de pantalla de Android. Mientras la lectura está activa, Checa analiza en este teléfono todo lo que se muestra en la pantalla, no solo Uber o DiDi, para encontrar ofertas de viaje (tarifa, distancia y tiempo). Lo que no es una oferta se descarta. Nada de esto se envía a los servidores de Checa ni se comparte con terceros.
-> Si activas «Guardar pantallas de ofertas», los datos se guardan solo en este teléfono hasta 7 días y pueden incluir información personal visible. Android te pedirá confirmar la captura, verás una notificación mientras esté activa y puedes detenerla cuando quieras. Evita mostrar información sensible (por ejemplo, apps de banco) con la lectura activa; puedes pausarla desde Ajustes → Apps de banco.
+> Si activas «Guardar pantallas de ofertas», los datos se guardan solo en este teléfono hasta 7 días y pueden incluir información personal visible.
+> Android te pedirá confirmar la captura y verás una notificación mientras esté activa; puedes detenerla cuando quieras desde esa notificación. Evita mostrar información sensible, como apps de banco, mientras la lectura esté activa.
 >
 > Botones: **«Acepto y continuar»** / **«Ahora no»**.
 
@@ -54,12 +55,11 @@ Debe incluir los cinco puntos que pide Google:
 
 ## Guion del video 2: servicio en primer plano
 1. Abrir Checa con el lector ya activado.
-2. Tocar «Iniciar lectura» y mostrar el aviso propio (cuando exista) y el diálogo de Android.
+2. Tocar «Iniciar lectura» y mostrar el aviso «Permiso para leer la pantalla» completo y el diálogo de Android.
 3. Mostrar la notificación «Checa está leyendo la pantalla».
 4. Mostrar una oferta y el pop-up.
 5. Tocar «Detener» y mostrar que la lectura termina.
 
 ## Pendiente
-1. **Decisión:** agregar la divulgación de captura al flavor play (cambio de código; no toca `directo`).
-2. Grabar los dos videos con la versión final del AAB.
-3. Revisar el texto de `servicio_desc` («No envía datos a ningún lado»): es demasiado absoluto, porque la app sí sincroniza cuenta y ajustes. Propuesta: «El contenido que lee se procesa en tu teléfono». Se aplicaría solo al flavor play.
+1. Grabar los dos videos con la versión final del AAB.
+2. Revisar el texto de `servicio_desc` («No envía datos a ningún lado»): es demasiado absoluto, porque la app sí sincroniza cuenta y ajustes. Propuesta: «El contenido que lee se procesa en tu teléfono». Se aplicaría solo al flavor play.

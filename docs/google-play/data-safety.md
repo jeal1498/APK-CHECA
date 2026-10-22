@@ -55,5 +55,5 @@
 1. Revisar nombre y avatar en Supabase Auth.
 2. Probar `eliminar-cuenta` con una cuenta secundaria.
 3. Confirmar en un teléfono si «Entrar sin cuenta» se ve en el flavor play.
-4. Agregar correo de contacto y plazo a la página de eliminación y a la política de privacidad.
+4. ~~Agregar correo de contacto y plazo~~ Hecho en `checa-web` (`8f9d5cb`): correo y plazo de 30 días en la página de eliminación y en la política.
 5. Actualizar este documento si cambian las llamadas de red o los SDKs.

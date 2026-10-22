@@ -7,7 +7,7 @@
 - **Descripción corta:** Calcula cuánto te deja cada oferta de viaje: por km, por hora y ganancia neta.
 - **Política de privacidad:** https://jeal1498.github.io/checa-web/privacidad.html
 - **Eliminación de cuenta:** https://jeal1498.github.io/checa-web/eliminar-cuenta.html
-- **Correo de contacto:** *pendiente (lo define Eduardo)*
+- **Correo de contacto:** lalolopezxd@gmail.com
 
 ## Descripción completa
 Checa te ayuda a decidir si una oferta de viaje te conviene antes de aceptarla.
@@ -46,6 +46,5 @@ Primera versión en Google Play.
 - Sin logos ni pantallas de Uber o DiDi: usar pantallas propias de Checa (pop-up sobre fondo neutro, «Lo guardado», ajustes). Es una recomendación; falta verificarla contra la política de metadatos.
 
 ## Pendiente
-1. Correo de contacto.
-2. Categoría, etiquetas y clasificación de contenido (Fase 6, en Play Console).
-3. Revisar el texto con el resultado final de la divulgación de captura.
+1. Categoría, etiquetas y clasificación de contenido (Fase 6, en Play Console).
+2. Revisar el texto cuando se graben los videos con el AAB final.
