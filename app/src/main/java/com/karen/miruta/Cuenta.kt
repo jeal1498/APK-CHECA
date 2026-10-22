@@ -174,9 +174,11 @@ object Cuenta {
                     }
                     // Diagnóstico real: este error ocurre antes de elegir cuenta, así que no
                     // debemos atribuirlo automáticamente a la conexión a internet.
-                    val tipo = e.javaClass.simpleName.ifBlank { "GetCredentialException" }
-                    android.util.Log.e("ChecaGoogleLogin", "Credential Manager falló: $tipo", e)
-                    listo(Resultado.Error("Google no pudo mostrar tus cuentas. Diagnóstico: $tipo. Toma una captura de este mensaje."))
+                    val tipo = e.javaClass.name
+                    val detalle = (e.message ?: "").replace(Regex("[\\r\\n]+"), " ").take(180)
+                    android.util.Log.e("ChecaGoogleLogin", "Credential Manager falló: $tipo; $detalle", e)
+                    val diagnostico = if (detalle.isBlank()) tipo else "$tipo — $detalle"
+                    listo(Resultado.Error("Google no pudo mostrar tus cuentas. Diagnóstico: $diagnostico"))
                 }
             })
     }
