@@ -1,18 +1,18 @@
 # Reporte de Checa (web + app) · últimos 30 días
 
-Generado: 2026-10-21 17:42 UTC. Cuenta visitas únicas (una por pestaña).
+Generado: 2026-10-22 17:40 UTC. Cuenta visitas únicas (una por pestaña).
 
 ## Resumen
 | visitas | descargas | cuentas_nuevas | pagos | ingresos | licencias_activas |
 | --- | --- | --- | --- | --- | --- |
-| 491 | 240 | 29 | 0 | 0 | 3 |
+| 512 | 245 | 32 | 0 | 0 | 3 |
 
 # App
 
 ## Cuentas nuevas por día (inicio con Google)
 | dia | cuentas |
 | --- | --- |
-| 2026-10-21 | 2 |
+| 2026-10-21 | 5 |
 | 2026-10-20 | 3 |
 | 2026-10-19 | 6 |
 | 2026-10-18 | 7 |
@@ -24,6 +24,9 @@ Generado: 2026-10-21 17:42 UTC. Cuenta visitas únicas (una por pestaña).
 ## Quiénes son (cuentas con Google)
 | correo | registro | ultimo_acceso | equipos | licencia_vence |
 | --- | --- | --- | --- | --- |
+| diberdiub@gmail.com | 10-21 18:24 | 10-21 18:24 | 1 | sin licencia |
+| ceverthbernabe@gmail.com | 10-21 14:00 | 10-21 14:00 | 1 | sin licencia |
+| luisramirezibarra62@gmail.com | 10-21 11:58 | 10-21 11:58 | 1 | sin licencia |
 | morterafer5@gmail.com | 10-21 10:40 | 10-21 10:40 | 1 | sin licencia |
 | iktan3dimpresiones@gmail.com | 10-21 10:28 | 10-21 10:28 | 1 | sin licencia |
 | serjavier9@gmail.com | 10-20 17:37 | 10-20 17:37 | 1 | sin licencia |
@@ -51,7 +54,7 @@ Generado: 2026-10-21 17:42 UTC. Cuenta visitas únicas (una por pestaña).
 | ivanmanuelzamoracortes240498@gmail.com | 10-16 09:33 | 10-16 09:33 | 1 | sin licencia |
 | edent402@gmail.com | 10-16 07:42 | 10-16 07:42 | 1 | sin licencia |
 | lufercab@gmail.com | 10-15 18:21 | 10-15 18:21 | 1 | 20270113 |
-| landingbot01@gmail.com | 10-11 15:23 | 10-11 19:46 | 0 | sin licencia |
+| landingbot01@gmail.com | 10-11 15:23 | 10-21 19:26 | 1 | sin licencia |
 | lalolopezxd@gmail.com | 10-11 15:08 | 10-19 18:43 | 2 | 99991231 |
 
 ## Pagos por plan
@@ -83,21 +86,21 @@ Sin datos todavía.
 ## Embudo
 | evento | visitas | veces |
 | --- | --- | --- |
-| visita | 491 | 713 |
-| descarga | 240 | 273 |
-| clic_descargar | 111 | 122 |
+| visita | 512 | 737 |
+| descarga | 245 | 278 |
+| clic_descargar | 114 | 125 |
 | descarga_instalar | 68 | 146 |
-| video_play | 64 | 67 |
+| video_play | 65 | 68 |
 | whatsapp_ayuda | 11 | 11 |
-| beta_whatsapp | 9 | 13 |
-| beta | 4 | 4 |
+| beta_whatsapp | 11 | 15 |
+| beta | 7 | 7 |
 
 ## Por fuente (visitas → descargas)
 | fuente | campana | visitas | descargas |
 | --- | --- | --- | --- |
-| directo |  | 377 | 180 |
-| tiktok |  | 92 | 50 |
-| app | compartir | 12 | 8 |
+| directo |  | 393 | 183 |
+| tiktok |  | 94 | 52 |
+| app | compartir | 15 | 8 |
 | facebook | beta | 6 | 2 |
 | prueba |  | 3 | 1 |
 | chatgpt.com |  | 2 | 0 |
@@ -106,7 +109,7 @@ Sin datos todavía.
 ## Por dispositivo
 | dispositivo | visitas | descargas |
 | --- | --- | --- |
-| android | 415 | 241 |
+| android | 435 | 245 |
 | iphone | 52 | 0 |
 | pc | 26 | 0 |
 
@@ -114,14 +117,14 @@ Sin datos todavía.
 | boton | descargas |
 | --- | --- |
 | fijo | 79 |
-| hero | 74 |
-| tiktok | 50 |
+| hero | 75 |
+| tiktok | 51 |
 | app | 32 |
 | nav | 19 |
-| cierre | 11 |
+| cierre | 12 |
+| registro | 3 |
 | Rhc | 2 |
 | hero2 | 2 |
-| registro | 2 |
 | edgar | 1 |
 | RhcT | 1 |
 | RhcTAZ | 1 |
@@ -129,7 +132,8 @@ Sin datos todavía.
 ## Por día
 | dia | visitas | descargas |
 | --- | --- | --- |
-| 2026-10-21 | 6 | 3 |
+| 2026-10-22 | 1 | 0 |
+| 2026-10-21 | 25 | 7 |
 | 2026-10-20 | 28 | 12 |
 | 2026-10-19 | 74 | 41 |
 | 2026-10-18 | 115 | 56 |
