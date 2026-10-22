@@ -168,10 +168,15 @@ object Cuenta {
                 }
 
                 override fun onError(e: GetCredentialException) {
-                    listo(Resultado.Error(
-                        if (e is GetCredentialCancellationException) ""
-                        else "No se pudo abrir Google. Revisa tu internet e inténtalo otra vez."
-                    ))
+                    if (e is GetCredentialCancellationException) {
+                        listo(Resultado.Error(""))
+                        return
+                    }
+                    // Diagnóstico real: este error ocurre antes de elegir cuenta, así que no
+                    // debemos atribuirlo automáticamente a la conexión a internet.
+                    val tipo = e.javaClass.simpleName.ifBlank { "GetCredentialException" }
+                    android.util.Log.e("ChecaGoogleLogin", "Credential Manager falló: $tipo", e)
+                    listo(Resultado.Error("Google no pudo mostrar tus cuentas. Diagnóstico: $tipo. Toma una captura de este mensaje."))
                 }
             })
     }
