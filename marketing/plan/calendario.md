@@ -34,7 +34,7 @@ Sin link en la bio (TikTok pide constancia del SAT para cuenta de empresa): a qu
 | 09 | — | Consejo (descartado 19 oct) | `09 - Cuenta desactivada` |  | ❌ descartado |
 | 10 | mié 21 oct | Venta | `10 - Mejores horas` | ✅ | ✅ 22 oct |
 | 11 | — | Consejo (descartado 19 oct) | `11 - Ingreso inestable` |  | ❌ descartado |
-| 12 | vie 23 oct | Venta | `12 - Comisión y tarifas` |  | |
+| 12 | vie 23 oct | Venta | `12 - Comisión y tarifas` |  | ✅ 23 oct |
 | 13 | — | Consejo (descartado 19 oct) | `13 - Multas y papeles` |  | ❌ descartado |
 | 14 | dom 25 oct | Venta | `14 - Miedo a rechazar` |  | |
 | 15 | lun 26 oct | Venta | `15 - Desgaste y renta` |  | |
@@ -69,7 +69,7 @@ Misma idea que cada video de CHECA, con otro gancho y otras palabras (reglas en 
 | 09 | — | Consejo (descartado 19 oct) | `09 - Cuenta desactivada` |  | ❌ descartado |
 | 10 | jue 22 oct | Venta | `10 - Mejores horas` |  | |
 | 11 | — | Consejo (descartado 19 oct) | `11 - Ingreso inestable` |  | ❌ descartado |
-| 12 | sáb 24 oct | Venta | `12 - Comisión y tarifas` |  | |
+| 12 | sáb 24 oct | Venta | `12 - Comisión y tarifas` | ✅ | |
 | 13 | — | Consejo (descartado 19 oct) | `13 - Multas y papeles` |  | ❌ descartado |
 | 14 | lun 26 oct | Venta | `14 - Miedo a rechazar` |  | |
 | 15 | mar 27 oct | Venta | `15 - Desgaste y renta` |  | |
