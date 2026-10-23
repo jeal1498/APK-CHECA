@@ -775,8 +775,9 @@ def esc_dedo(sc, e, n):
     inner += clip(3, f"{n}-dd", "left:290px;top:520px", ic("puntero", 130), D)
     js = fi(f"#{n}-a", 0, -50, 0) + fi(f"#{n}-r", 0.1, 50, 0)
     js += f'      tl.fromTo("#{n}-dd", {{ opacity: 0, x: 0 }}, {{ opacity: 1, x: 0, duration: 0.3 }}, 0.2);\n'
-    js += f'      tl.to("#{n}-dd", {{ x: 420, duration: 0.7, ease: "power2.inOut" }}, {round(max(0.6, t - 0.6), 2)});\n'
-    js += f'      tl.to("#{n}-dd", {{ x: 400, duration: 0.06, yoyo: true, repeat: {max(3, int((D - t) / 0.12))} }}, {round(t + 0.1, 2)});\n'
+    t0 = round(max(0.7, t - 0.6), 2)
+    js += f'      tl.to("#{n}-dd", {{ x: 420, duration: 0.7, ease: "power2.inOut" }}, {t0});\n'
+    js += f'      tl.to("#{n}-dd", {{ x: 400, duration: 0.06, yoyo: true, repeat: {max(3, int((D - t0 - 0.8) / 0.12))} }}, {round(t0 + 0.75, 2)});\n'
     return marco(n, D, "", inner, js)
 
 
