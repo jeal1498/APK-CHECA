@@ -25,7 +25,7 @@ Inicio (/)                      ← página de venta, todo el funnel
 | 5 | **Pruébalo aquí** (demo interactiva) | Prueba antes de instalar | Descargar |
 | 6 | **Confianza**: no toca tus viajes, no acepta por ti, datos en tu teléfono, **garantía de lectura** | Quita el miedo principal | — |
 | 7 | **Haz tus cuentas** (calculadora) | El precio se paga solo | — |
-| 8 | **Precios**: 3 paquetes, 6 meses destacado, «≈ $2.77 al día», garantía | Decide el plan | Descargar gratis · 7 días |
+| 8 | **Precios**: 3 paquetes, 6 meses destacado, «≈ $3.27 al día», garantía | Decide el plan | Descargar gratis · 7 días |
 | 9 | **Beta**: 50 lugares (banda discreta) | Urgencia real | Quiero ser beta tester → /beta/ |
 | 10 | **Preguntas** (6 a 8) | Últimas dudas | — |
 | 11 | **Cierre**: frase + botón | Último empujón | Descargar gratis · 7 días |

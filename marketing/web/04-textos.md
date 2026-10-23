@@ -130,7 +130,7 @@ Descargar gratis · 7 días
 | Principio | Dónde |
 |---|---|
 | Aversión a la pérdida | «¿Cuánto pierdes al mes?», «no te dice cuánto te queda» |
-| Contabilidad mental | «$2.77 al día» y «un viaje malo a la semana» |
+| Contabilidad mental | «$3.27 al día» y «un viaje malo a la semana» |
 | Señuelo y opción por defecto | Estratega destacado entre Básico y Pro |
 | Efecto de lo gratis | «Gratis · 7 días» en todos los botones |
 | Efecto de dotación | Prueba con todo incluido: cuesta soltarla |

@@ -17,7 +17,7 @@
 
 **Garantía de lectura (desde 13 oct 2026):** si pagas y Checa no lee las ofertas en tu teléfono, escribe en los primeros 7 días y se devuelve el dinero (también en `terminos.html`).
 **Bono:** ayuda para instalar por WhatsApp (`/instalar/` en la web).
-**Precio por día:** Básico $3.30, Estratega $2.77, Pro $2.46. Frase: «Con un viaje malo que evites a la semana, el Estratega ya se pagó». Sin cupones ni descuentos para nuevos clientes.
+**Precio por día:** Básico $3.97, Estratega $3.27, Pro $2.90. Frase: «Con un viaje malo que evites a la semana, el Estratega ya se pagó». Sin cupones ni descuentos para nuevos clientes.
 
 ## Campaña actual: beta testers (octubre 2026)
 - Video: `marketing/videos/CHECA/01 - Beta testers/video.mp4` (se publica el 14 oct; calendario en `marketing/plan/calendario.md`) (Eduardo a cuadro, conductor que hizo la app).
@@ -73,7 +73,7 @@ B2C, una sola persona: el conductor que quiere ganar más por hora y gastar meno
 | "¿Me pueden bloquear la cuenta de Uber/DiDi?" | Checa solo lee la pantalla; no toca ni acepta viajes por ti. |
 | "No está en Play Store, ¿es seguro?" | Pide Accesibilidad solo para leer Uber/DiDi; los datos no salen del teléfono. Guía paso a paso para instalar. |
 | "No quiero que me cobren cada mes" | Es pago único: pagas el paquete y listo, sin cargos automáticos. |
-| "¿Vale la pena pagar?" | Estratega = $2.77 al día; un viaje malo evitado a la semana lo paga. 7 días gratis para probar. |
+| "¿Vale la pena pagar?" | Estratega = $3.27 al día; un viaje malo evitado a la semana lo paga. 7 días gratis para probar. |
 | "¿Y si pago y no lee bien?" | Garantía de lectura: si no lee las ofertas en tu teléfono, se devuelve el dinero en los primeros 7 días. |
 | "Instalar es complicado" | Guía en `/instalar/` y ayuda por WhatsApp. |
 | "Tengo iPhone" | Solo Android; la web lo avisa en iPhone y computadora. |

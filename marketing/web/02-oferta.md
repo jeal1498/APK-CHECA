@@ -46,7 +46,7 @@ Sin «valores» inflados en pesos.
 - Nada de relojes falsos ni «quedan 3».
 
 ### 4. Precio (sin cambios, mejor presentado)
-- Ancla diaria: **6 meses = $499 ≈ $2.77 al día**. «Menos que un viaje malo.»
+- Ancla diaria: **6 meses = $589 ≈ $3.27 al día**. «Menos que un viaje malo.»
 - Mantener la calculadora «Haz tus cuentas»: ya convierte el precio en ganancia.
 - **Sin cupones ni descuentos** para nuevos clientes: atraen a quien se va rápido.
 
