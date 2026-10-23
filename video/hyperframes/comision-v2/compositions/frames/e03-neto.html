@@ -23,11 +23,11 @@
     .oc .k2 { position: absolute; left: 30px; top: 556px; font-family:'JetBrains Mono',monospace;font-weight:700; font-size: 34px; color: #A3A3AD; }
   </style>
 
-  <div id="root" data-composition-id="e03-neto" data-width="1080" data-height="1920" data-start="0" data-duration="7.209">
-    <div id="e03-neto-g" class="clip G" data-start="0" data-duration="7.209" data-track-index="0"></div>
-    <div id="e03-neto-o0" class="clip" style="left:60px;top:230px;width:440px;height:640px" data-start="0" data-duration="7.209" data-track-index="1"><div class="oc" id="e03-neto-c0"><div class="l">NUEVA OFERTA</div><div class="f">$100</div><div class="g" id="e03-neto-g0"><span>Gasolina</span><span>−$28</span></div><div class="ln"></div><div class="q" id="e03-neto-q0">TE QUEDAN</div><div class="n" id="e03-neto-n0">$100</div><div class="k2">14 km total</div></div></div>
-    <div id="e03-neto-o1" class="clip" style="left:580px;top:230px;width:440px;height:640px" data-start="0" data-duration="7.209" data-track-index="2"><div class="oc" id="e03-neto-c1"><div class="l">NUEVA OFERTA</div><div class="f">$100</div><div class="g" id="e03-neto-g1"><span>Gasolina</span><span>−$16</span></div><div class="ln"></div><div class="q" id="e03-neto-q1">TE QUEDAN</div><div class="n" id="e03-neto-n1">$100</div><div class="k2">8 km total</div></div></div>
-    <div class="etq clip" style="top:920px" data-start="0" data-duration="7.209" data-track-index="3">Números de ejemplo</div>
+  <div id="root" data-composition-id="e03-neto" data-width="1080" data-height="1920" data-start="0" data-duration="7.255">
+    <div id="e03-neto-g" class="clip G" data-start="0" data-duration="7.255" data-track-index="0"></div>
+    <div id="e03-neto-o0" class="clip" style="left:60px;top:230px;width:440px;height:640px" data-start="0" data-duration="7.255" data-track-index="1"><div class="oc" id="e03-neto-c0"><div class="l">NUEVA OFERTA</div><div class="f">$100</div><div class="g" id="e03-neto-g0"><span>Gasolina</span><span>−$28</span></div><div class="ln"></div><div class="q" id="e03-neto-q0">TE QUEDAN</div><div class="n" id="e03-neto-n0">$100</div><div class="k2">14 km total</div></div></div>
+    <div id="e03-neto-o1" class="clip" style="left:580px;top:230px;width:440px;height:640px" data-start="0" data-duration="7.255" data-track-index="2"><div class="oc" id="e03-neto-c1"><div class="l">NUEVA OFERTA</div><div class="f">$100</div><div class="g" id="e03-neto-g1"><span>Gasolina</span><span>−$16</span></div><div class="ln"></div><div class="q" id="e03-neto-q1">TE QUEDAN</div><div class="n" id="e03-neto-n1">$100</div><div class="k2">8 km total</div></div></div>
+    <div class="etq clip" style="top:920px" data-start="0" data-duration="7.255" data-track-index="3">Números de ejemplo</div>
 
   </div>
 
@@ -36,18 +36,18 @@
     (function () {
       window.__timelines = window.__timelines || {};
       var tl = gsap.timeline({ paused: true });
-      var D = 7.209;
+      var D = 7.255;
       tl.fromTo("#e03-neto-o0", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.35, ease: "power4.out" }, 0);
       tl.fromTo("#e03-neto-o1", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.35, ease: "power4.out" }, 0.12);
-      tl.fromTo("#e03-neto-g0", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.35, ease: "power4.out" }, 1.51);
-      tl.fromTo("#e03-neto-g1", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.35, ease: "power4.out" }, 1.63);
+      tl.fromTo("#e03-neto-g0", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.35, ease: "power4.out" }, 1.45);
+      tl.fromTo("#e03-neto-g1", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.35, ease: "power4.out" }, 1.57);
       var a = { v: 100 }, b = { v: 100 };
-      tl.to("#e03-neto-q0", { opacity: 1, duration: 0.2 }, 2.83); tl.to("#e03-neto-n0", { opacity: 1, duration: 0.2 }, 2.83);
-      tl.to(a, { v: 72, duration: 0.6, ease: "power2.out", onUpdate: function () { document.getElementById("e03-neto-n0").textContent = "$" + Math.round(a.v); } }, 2.83);
-      tl.to("#e03-neto-q1", { opacity: 1, duration: 0.2 }, 4.94); tl.to("#e03-neto-n1", { opacity: 1, duration: 0.2 }, 4.94);
-      tl.to(b, { v: 84, duration: 0.6, ease: "power2.out", onUpdate: function () { document.getElementById("e03-neto-n1").textContent = "$" + Math.round(b.v); } }, 4.94);
-      tl.to("#e03-neto-n1", { color: "#22C55E", duration: 0.25 }, 5.54);
-      tl.to("#e03-neto-c1", { borderColor: "#22C55E", duration: 0.25 }, 5.54);
+      tl.to("#e03-neto-q0", { opacity: 1, duration: 0.2 }, 2.72); tl.to("#e03-neto-n0", { opacity: 1, duration: 0.2 }, 2.72);
+      tl.to(a, { v: 72, duration: 0.6, ease: "power2.out", onUpdate: function () { document.getElementById("e03-neto-n0").textContent = "$" + Math.round(a.v); } }, 2.72);
+      tl.to("#e03-neto-q1", { opacity: 1, duration: 0.2 }, 4.92); tl.to("#e03-neto-n1", { opacity: 1, duration: 0.2 }, 4.92);
+      tl.to(b, { v: 84, duration: 0.6, ease: "power2.out", onUpdate: function () { document.getElementById("e03-neto-n1").textContent = "$" + Math.round(b.v); } }, 4.92);
+      tl.to("#e03-neto-n1", { color: "#22C55E", duration: 0.25 }, 5.52);
+      tl.to("#e03-neto-c1", { borderColor: "#22C55E", duration: 0.25 }, 5.52);
 
       window.__timelines["e03-neto"] = tl;
     })();
