@@ -52,3 +52,8 @@ Hacer cada etapa a la vez para los 3 videos (los 3 guiones, luego las 3 tablas, 
 - `comentarios2` (CTA) se parametriza con `pregunta`, `opciones` y `fuente`; `dospopups` acepta `p1`, `p2` y `palabra`.
 - Todo el copy usa los 5 hashtags fijos; en 10 v2 cambia `#choferes` por `#mejoreshoras` y en 15 (v1 y v2) por `#rentadeauto`. El `dm.txt` de CHECA conserva su `utm_source=tiktok`; el de PERSONAL usa `tiktok-personal`.
 - **Siguiente: Lote 2** (22 v1 y v2, 19 v1 con CTA, 17 v1; la v2 del 17 aún no existe). Pendiente de Eduardo: captura con el conteo de hashtags.
+
+## 7. Calendario de videos en checa-web (23 oct 2026)
+- Página interna `checa-web/calendario-d4f81c/` (enlace discreto, `noindex`; **cualquiera con el enlace ve todo, incluidos videos y copys sin publicar**, decisión de Eduardo). Mes que se desliza, los 2 videos del día (CHECA y PERSONAL) con estado, copy, DM, reproductor y descarga. Maqueta aprobada: https://claude.ai/artifact/PjSyTKff6NUyktbS5EACHc
+- Se alimenta con `python3 -I video/scripts/exportar_calendario.py /ruta/a/checa-web/calendario-d4f81c` (lee `marketing/plan/calendario.md` y las carpetas de `marketing/videos/`; copia `video.mp4` solo si no está «en proceso»). Después: commit y push en `checa-web`. `index.html` vive solo en `checa-web`.
+- Quedó en la rama `claude/checa-videos-lote-1-7g94s5` de `checa-web` (commit `e67d3ce`); **sale a la web al fusionarla a `main`** (Eduardo debe confirmarlo).
