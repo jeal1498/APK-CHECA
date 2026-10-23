@@ -13,3 +13,9 @@ v1: `marketing/videos/CHECA/14 - Miedo a rechazar/` · v2: esta carpeta (publica
 Hay viajes que aceptas por miedo, no porque te convengan. Y ese miedo sale caro. Un viaje de 70 pesos por 13 kilómetros, ya con la gasolina, solo te deja 44 pesos. Otro de 120 pesos por 12 kilómetros te deja 96. Rechazar el primero no es flojera, es hacer la cuenta. Checa te la hace en la pantalla antes de que decidas, y el botón lo sigues tocando tú. Dime en los comentarios: ¿cuál es el viaje que más te arrepientes de haber aceptado? Sígueme para más consejos. Descarga Checa y checa cuánto te queda de cada viaje.
 
 **Honestidad:** no se promete nada sobre calificación ni tasa de aceptación; cifras solo como ejemplo («Números de ejemplo» en pantalla); la gasolina depende de lo que configure el conductor.
+
+## Guion v2 APROBADO por Eduardo (23 oct 2026) — sustituye a la «Voz limpia» de arriba
+Cambio: mismo hook que el v1 aprobado, sin primera persona («yo he aceptado…»), que Eduardo descartó.
+
+### Voz limpia
+¿Te ha pasado que aceptas un viaje y a media ruta ya te arrepentiste? Casi siempre es por el miedo a rechazar. Pero ojo con la cuenta: un viaje de 70 pesos por 13 kilómetros, ya con la gasolina, solo te deja 44. Otro de 120 pesos por 12 kilómetros te deja 96. Rechazar el primero no es flojera, es hacer la cuenta. Checa te la hace en la pantalla antes de que decidas, y el botón lo sigues tocando tú. Dime en los comentarios: ¿cuál es el viaje que más te arrepientes de haber aceptado? Sígueme para más consejos. Descarga Checa y checa cuánto te queda de cada viaje.
