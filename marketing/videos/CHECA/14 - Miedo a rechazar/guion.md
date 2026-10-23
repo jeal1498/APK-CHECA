@@ -30,3 +30,15 @@ Cambio: hook más simple y cercano (el anterior no generaba intriga). Mismos dat
 
 ### Voz limpia
 ¿Te ha pasado que aceptas un viaje y a media ruta ya te arrepentiste? Pasa por el miedo a rechazar. Un viaje de 70 pesos por 13 kilómetros, ya con la gasolina, solo te deja 44. Otro de 120 pesos por 12 kilómetros te deja 96. Más del doble, casi con los mismos kilómetros. La app Checa te marca cuál es cuál antes de que toques, y el botón siempre lo tocas tú. Dime en los comentarios: ¿rechazas los viajes que no convienen o aceptas de todo? Descarga Checa y checa cuánto te queda de cada viaje.
+
+## Tabla de animaciones APROBADA por Eduardo (23 oct 2026)
+| # | Voz | En pantalla |
+|---|---|---|
+| 1 | ¿Te ha pasado que aceptas un viaje y a media ruta ya te arrepentiste? | Mapa con ruta en curso; aparece «¿ARREPENTIDO?» (escena nueva) |
+| 2 | Pasa por el miedo a rechazar. | Dedo temblando entre «Aceptar» y «Rechazar» |
+| 3 | Un viaje de 70 pesos por 13 kilómetros, ya con la gasolina, solo te deja 44. | Pop-up rojo: 70 − gasolina = 44 netos. «Números de ejemplo» |
+| 4 | Otro de 120 pesos por 12 kilómetros te deja 96. | Pop-up verde del mismo tamaño: 120 − gasolina = 96 |
+| 5 | Más del doble, casi con los mismos kilómetros. | Los dos netos lado a lado; 96 crece sobre 44 con «×2» |
+| 6 | La app Checa te marca cuál es cuál antes de que toques, y el botón siempre lo tocas tú. | `dospopups` / `control` |
+| 7 | Dime en los comentarios: ¿rechazas los viajes que no convienen o aceptas de todo? | `comentarios` |
+| 8 | Descarga Checa y checa cuánto te queda de cada viaje. | `cierre` (sin «Sígueme») |
