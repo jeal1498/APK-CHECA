@@ -1,0 +1,38 @@
+<template>
+  <style>
+    @font-face{ font-family: 'Bricolage Grotesque'; font-weight: 800; font-display: block; src: url('assets/fonts/bricolage-grotesque-latin-800-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'DM Sans'; font-weight: 400; font-display: block; src: url('assets/fonts/dm-sans-latin-400-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'DM Sans'; font-weight: 700; font-display: block; src: url('assets/fonts/dm-sans-latin-700-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'JetBrains Mono'; font-weight: 500; font-display: block; src: url('assets/fonts/jetbrains-mono-latin-500-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'JetBrains Mono'; font-weight: 700; font-display: block; src: url('assets/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+    #root { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; font-family: 'DM Sans', Arial, sans-serif; color: #F4F4EF; }
+    .clip { position: absolute; }
+    .G { inset: 0; background: #0C0C10; }
+    .etq { position: absolute; left: 0; right: 0; text-align: center; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 28px; letter-spacing: .12em; text-transform: uppercase; color: #A3A3AD; }
+    .mask { position: absolute; left: 0; right: 0; overflow: hidden; text-align: center; }
+    .mask > div { font-family: 'Bricolage Grotesque', 'Arial Black', sans-serif; font-weight: 800; letter-spacing: -0.045em; line-height: 1; white-space: nowrap; }
+    
+  </style>
+
+  <div id="root" data-composition-id="e01-vueltas" data-width="1080" data-height="1920" data-start="0" data-duration="3.354">
+    <div id="e01-vueltas-g" class="clip G" data-start="0" data-duration="3.354" data-track-index="0"></div>
+    <div class="etq clip" style="top:250px" data-start="0" data-duration="3.354" data-track-index="1">dos horas dando vueltas</div>
+    <div id="e01-vueltas-rg" class="clip" style="left:330px;top:320px;width:420px;height:420px" data-start="0" data-duration="3.354" data-track-index="2"><svg width="420" height="420" viewBox="0 0 420 420" aria-hidden="true"><circle cx="210" cy="210" r="170" fill="none" stroke="#3A3A45" stroke-width="26"/><line id="e01-vueltas-h" x1="210" y1="210" x2="210" y2="90" stroke="#FACC15" stroke-width="14" stroke-linecap="round"/><circle cx="210" cy="210" r="14" fill="#F4F4EF"/></svg></div>
+    <div id="e01-vueltas-ch" class="clip" style="left:240px;top:810px;width:600px;height:110px;border-radius:999px;background:#3A1414;border:3px solid #EF4444;box-sizing:border-box;color:#EF4444;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:40px;opacity:0" data-start="0" data-duration="3.354" data-track-index="3">0 viajes buenos</div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      var D = 3.354;
+      tl.fromTo("#e01-vueltas-rg", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "power4.out" }, 0);
+      tl.to("#e01-vueltas-h", { rotation: 720, svgOrigin: "210 210", duration: 3.09, ease: "none" }, 0);
+      tl.fromTo("#e01-vueltas-ch", { opacity: 0, x: 0, y: 30 }, { opacity: 1, x: 0, y: 0, duration: 0.4, ease: "power4.out" }, 1.14);
+
+      window.__timelines["e01-vueltas"] = tl;
+    })();
+  </script>
+</template>

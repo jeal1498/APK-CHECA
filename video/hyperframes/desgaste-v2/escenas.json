@@ -1,0 +1,11 @@
+[
+ {"tipo": "popup", "popup": {"nivel": "rojo", "app": "UBER", "neta": 38, "viaje": 60, "gasolina": 22, "chips": [["$76/h", "por hora", "mal"], ["$3.8/km", "por km", "mal"], ["30 min", "10 km total", ""]]}, "ejemplo": true},
+ {"tipo": "carro"},
+ {"tipo": "desgaste", "renta": true},
+ {"tipo": "cobros"},
+ {"tipo": "escaneo2", "escanea": "muestra"},
+ {"tipo": "alcancia"},
+ {"tipo": "comentarios2", "pregunta": "¿Carro propio o rentado?", "fuente": 42, "opciones": ["Propio", "Rentado"], "sfx": [["popup-entra", 0.0, 0.35]]},
+ {"tipo": "seguir"},
+ {"tipo": "cierre"}
+]

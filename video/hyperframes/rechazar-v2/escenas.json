@@ -1,0 +1,11 @@
+[
+ {"tipo": "arrepentido"},
+ {"tipo": "dedo"},
+ {"tipo": "popup", "popup": {"nivel": "rojo", "app": "UBER", "neta": 44, "viaje": 70, "gasolina": 26, "chips": [["$88/h", "por hora", "mal"], ["$3.4/km", "por km", "mal"], ["30 min", "13 km total", ""]]}, "ejemplo": true},
+ {"tipo": "popup", "popup": {"nivel": "verde", "app": "UBER", "neta": 96, "viaje": 120, "gasolina": 24, "chips": [["$262/h", "por hora", "ok"], ["$8.0/km", "por km", "ok"], ["22 min", "12 km total", ""]]}, "ejemplo": true},
+ {"tipo": "cuenta"},
+ {"tipo": "dospopups", "p1": {"nivel": "rojo", "app": "UBER", "neta": 44, "viaje": 70, "gasolina": 26, "chips": [["$88/h", "por hora", "mal"], ["$3.4/km", "por km", "mal"], ["30 min", "13 km total", ""]]}, "p2": {"nivel": "verde", "app": "UBER", "neta": 96, "viaje": 120, "gasolina": 24, "mejor": true, "chips": [["$262/h", "por hora", "ok"], ["$8.0/km", "por km", "ok"], ["22 min", "12 km total", ""]]}, "palabra": "pantalla", "sfx": [["popup-entra", 0.0, 0.4], ["rechazar", 0.45, 0.4], ["aceptar", "pantalla", 0.45]]},
+ {"tipo": "comentarios2", "pregunta": "¿Cuál te arrepientes más?", "fuente": 40, "opciones": ["Muy lejos", "Muy barato"], "sfx": [["popup-entra", 0.0, 0.35]]},
+ {"tipo": "seguir"},
+ {"tipo": "cierre"}
+]

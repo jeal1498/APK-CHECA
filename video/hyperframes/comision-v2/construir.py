@@ -564,11 +564,12 @@ def esc_control(sc, e, n):
 
 
 def esc_dospopups(sc, e, n):
-    D = sc["dur"]; tV = pal(sc, "marca")
+    D = sc["dur"]; tV = palo(sc, e.get("palabra", "marca"), .5)
     p1 = {"nivel": "amarillo", "app": "UBER", "neta": 72, "viaje": 100, "gasolina": 28,
           "chips": [["$173/h", "por hora", "ok"], ["$5.1/km", "por km", "mal"], ["25 min", "14 km total", ""]]}
     p2 = {"nivel": "verde", "app": "UBER", "neta": 84, "viaje": 100, "gasolina": 16, "mejor": True,
           "chips": [["$296/h", "por hora", "ok"], ["$10.5/km", "por km", "ok"], ["17 min", "8 km total", ""]]}
+    p1, p2 = e.get("p1", p1), e.get("p2", p2)
     for p in (p1, p2):
         validar_popup(p)
     inner = clip(1, f"{n}-p0", "left:273px;top:210px", popup(p1, 0.62), D)
@@ -605,6 +606,336 @@ TIPOS_V12 = {"comentarios": esc_comentarios, "billete": esc_billete, "ofertas": 
 
 TIPOS = {"hook": esc_hook, "anillo": esc_anillo, "datos": esc_datos, "logo": esc_logo, "escaneo": esc_escaneo, "voz": esc_voz, "popup_oferta": esc_popup_oferta, "reloj": esc_reloj, "seguir": esc_seguir, "gancho": esc_gancho, "numero": esc_numero, "popup": esc_popup, "estados": esc_estados, "cierre": esc_cierre}
 TIPOS.update(TIPOS_V12)
+
+
+# ---------- escenas del Lote 1 (10 v2, 14 v1/v2, 15 v1/v2; 23 oct 2026) ----------
+def palo(sc, k, fr):
+    """Como pal(), pero si la palabra no está usa una fracción de la voz."""
+    try:
+        return pal(sc, k)
+    except AssertionError:
+        return round(sc["voice"] * fr, 2)
+
+
+def fi(sel, t, x=0, y=30, d=0.4):
+    return f'      tl.fromTo("{sel}", {{ opacity: 0, x: {x}, y: {y} }}, {{ opacity: 1, x: 0, y: 0, duration: {d}, ease: "power4.out" }}, {t});\n'
+
+
+def mk(n, D, i, txt, top, size, color="#F4F4EF", extra=""):
+    return f'    <div id="{n}-{i}" class="mask clip" style="top:{top}px;height:{int(size * 1.15)}px" data-start="0" data-duration="{D}" data-track-index="{i + 1}"><div style="font-size:{size}px;color:{color};{extra}">{txt}</div></div>\n'
+
+
+def rev(n, i, t):
+    return f'      tl.fromTo("#{n}-{i} > div", {{ yPercent: 120 }}, {{ yPercent: 0, duration: 0.45, ease: "power4.out" }}, {t});\n'
+
+
+def etq(D, top, txt, i=1):
+    return f'    <div class="etq clip" style="top:{top}px" data-start="0" data-duration="{D}" data-track-index="{i}">{txt}</div>\n'
+
+
+CHIP_ROJO = f"border-radius:999px;background:#3A1414;border:3px solid #EF4444;box-sizing:border-box;color:#EF4444;display:flex;align-items:center;justify-content:center;{MONO}"
+TARJ = "border-radius:28px;background:#16161C;border:3px solid #3A3A45;box-sizing:border-box"
+
+
+def esc_vueltas(sc, e, n):
+    D = sc["dur"]; t = palo(sc, "ningún", .45)
+    inner = etq(D, 250, "dos horas dando vueltas")
+    inner += clip(2, f"{n}-rg", "left:330px;top:320px;width:420px;height:420px", '<svg width="420" height="420" viewBox="0 0 420 420" aria-hidden="true"><circle cx="210" cy="210" r="170" fill="none" stroke="#3A3A45" stroke-width="26"/><line id="' + n + '-h" x1="210" y1="210" x2="210" y2="90" stroke="#FACC15" stroke-width="14" stroke-linecap="round"/><circle cx="210" cy="210" r="14" fill="#F4F4EF"/></svg>', D)
+    inner += clip(3, f"{n}-ch", f"left:240px;top:810px;width:600px;height:110px;{CHIP_ROJO};font-size:40px;opacity:0", "0 viajes buenos", D)
+    js = f'      tl.fromTo("#{n}-rg", {{ opacity: 0, y: 40 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: "power4.out" }}, 0);\n'
+    js += f'      tl.to("#{n}-h", {{ rotation: 720, svgOrigin: "210 210", duration: {round(D * 0.92, 2)}, ease: "none" }}, 0);\n'
+    js += fi(f"#{n}-ch", t, 0, 30)
+    return marco(n, D, "", inner, js)
+
+
+def esc_tachado(sc, e, n):
+    D = sc["dur"]; ts, tr = palo(sc, 3, .35), palo(sc, 6, .62)
+    inner = mk(n, D, 1, "Mala suerte", 360, 150)
+    inner += clip(3, f"{n}-st", "left:150px;top:455px;width:0px;height:16px;border-radius:8px;background:#EF4444", "", D)
+    inner += mk(n, D, 4, "Mala hora", 620, 190, "#FACC15")
+    js = rev(n, 1, 0.05)
+    js += f'      tl.to("#{n}-st", {{ width: 780, duration: 0.35, ease: "power2.out" }}, {ts});\n      tl.to("#{n}-1 > div", {{ opacity: 0.35, duration: 0.3 }}, {round(ts + 0.2, 2)});\n'
+    js += rev(n, 4, tr)
+    return marco(n, D, "", inner, js)
+
+
+def esc_relojes(sc, e, n):
+    D = sc["dur"]; t1, t2 = palo(sc, "tres", .2), palo(sc, "siete", .62)
+    inner, js = "", ""
+    for i, (x, h, v, col, t) in enumerate([(60, "3 PM", 6, "#EF4444", t1), (580, "7 PM", 11, "#22C55E", t2)]):
+        html = (f'<div style="position:absolute;left:34px;top:30px;{MONO};font-size:46px;color:{col}">{h}</div>'
+                f'<div id="{n}-v{i}" style="position:absolute;left:30px;top:130px;{BRIC};font-size:84px;letter-spacing:-.04em;line-height:1;white-space:nowrap">0 pesos</div>'
+                f'<div style="position:absolute;left:34px;top:270px;{MONO};font-size:32px;color:#A3A3AD">por km</div>')
+        inner += clip(1 + i, f"{n}-c{i}", f"left:{x}px;top:300px;width:440px;height:350px;{TARJ};border-color:{col}", html, D)
+        js += fi(f"#{n}-c{i}", t, -60 if i == 0 else 60, 20)
+        js += f'      var o{i} = {{ v: 0 }}; tl.to(o{i}, {{ v: {v}, duration: 0.7, ease: "power2.out", onUpdate: function () {{ document.getElementById("{n}-v{i}").textContent = Math.round(o{i}.v) + " pesos"; }} }}, {round(t + 0.15, 2)});\n'
+    inner += EJEMPLO.format(top=720, D=D, i=3)
+    return marco(n, D, "", inner, js)
+
+
+def esc_barras(sc, e, n):
+    D = sc["dur"]; tg, td = palo(sc, "misma", .1), palo(sc, "doble", .55)
+    inner, js = "", ""
+    for g, (h, ing, col) in enumerate([("3 PM", 330, "#EF4444"), ("7 PM", 605, "#22C55E")]):
+        y0 = 270 + g * 380
+        inner += clip(1, f"{n}-l{g}", f"left:120px;top:{y0}px;{MONO};font-size:44px;color:{col}", h, D)
+        inner += clip(2, f"{n}-g{g}t", f"left:120px;top:{y0 + 62}px;{MONO};font-size:26px;color:#A3A3AD", "gasolina", D)
+        inner += clip(3, f"{n}-g{g}", f"left:120px;top:{y0 + 100}px;width:0;height:36px;border-radius:18px;background:#EF4444", "", D)
+        inner += clip(2, f"{n}-i{g}t", f"left:120px;top:{y0 + 168}px;{MONO};font-size:26px;color:#A3A3AD", "lo que ganas por km", D)
+        inner += clip(3, f"{n}-i{g}", f"left:120px;top:{y0 + 206}px;width:0;height:36px;border-radius:18px;background:{col}", "", D)
+        js += fi(f"#{n}-l{g}", 0.1 + g * 0.1, -30, 0, 0.3)
+        js += f'      tl.to("#{n}-g{g}", {{ width: 300, duration: 0.6, ease: "power2.out" }}, {round(tg + g * 0.15, 2)});\n'
+        js += f'      tl.to("#{n}-i{g}", {{ width: {ing}, duration: 0.7, ease: "power2.out" }}, {round(td + g * 0.2, 2)});\n'
+    inner += EJEMPLO.format(top=1050, D=D, i=5)
+    return marco(n, D, "", inner, js)
+
+
+def esc_balanza(sc, e, n):
+    D = sc["dur"]; t = palo(sc, "pesa", .35)
+    a, b = e.get("a", "CUÁNDO"), e.get("b", "CUÁL VIAJE")
+    pill = f"position:absolute;top:120px;width:340px;height:110px;border-radius:999px;background:#16161C;border:3px solid #F4F4EF;box-sizing:border-box;display:flex;align-items:center;justify-content:center;{BRIC};font-size:46px;letter-spacing:-.02em"
+    beam = (f'<div style="{pill};left:0">{a}</div><div style="{pill};right:0">{b}</div>'
+            '<div style="position:absolute;left:0;right:0;top:250px;height:16px;border-radius:8px;background:#FACC15"></div>')
+    inner = clip(1, f"{n}-bm", "left:140px;top:340px;width:800px;height:300px;transform-origin:50% 258px", beam, D)
+    inner += clip(2, f"{n}-pv", "left:500px;top:600px", '<svg width="80" height="150" viewBox="0 0 80 150" aria-hidden="true"><path d="M40 6 L76 144 H4 Z" fill="#3A3A45"/></svg>', D)
+    js = f'      tl.fromTo("#{n}-bm", {{ opacity: 0, rotation: 11 }}, {{ opacity: 1, rotation: 11, duration: 0.4 }}, 0);\n'
+    js += f'      tl.to("#{n}-bm", {{ rotation: 0, duration: 0.9, ease: "elastic.out(1,0.45)" }}, {t});\n'
+    js += fi(f"#{n}-pv", 0.1, 0, 20, 0.3)
+    return marco(n, D, "", inner, js)
+
+
+PAT = "rrrryy" "yggyyr" "ryyggg" "ggyrrr"
+
+
+def esc_horas(sc, e, n):
+    D = sc["dur"]; fase = e.get("fase", 1)
+    inner = etq(D, 240, "tus horas del día")
+    js = ""
+    col = {"r": "#EF4444", "y": "#FACC15", "g": "#22C55E"}
+    for i, ch in enumerate(PAT):
+        c, r = i % 6, i // 6
+        inner += clip(2, f"{n}-c{i}", f"left:{140 + c * 136}px;top:{330 + r * 136}px;width:120px;height:120px;border-radius:26px;background:#16161C;border:3px solid #3A3A45;box-sizing:border-box", "", D)
+        if fase == 1:
+            k = {"g": "verde", "y": "amarillo", "r": "rojo"}[ch]
+            base = palo(sc, k, {"g": .5, "y": .65, "r": .85}[ch])
+            idx = sum(1 for j in range(i) if PAT[j] == ch)
+            js += f'      tl.to("#{n}-c{i}", {{ backgroundColor: "{col[ch]}", borderColor: "{col[ch]}", duration: 0.2 }}, {round(base + idx * 0.06, 2)});\n'
+        else:
+            js += f'      tl.set("#{n}-c{i}", {{ backgroundColor: "{col[ch]}", borderColor: "{col[ch]}" }}, 0);\n'
+            if ch != "g":
+                js += f'      tl.to("#{n}-c{i}", {{ opacity: 0.18, duration: 0.4 }}, {palo(sc, "mejores", .3)});\n'
+            else:
+                js += f'      tl.to("#{n}-c{i}", {{ scale: 1.1, duration: 0.25, yoyo: true, repeat: 3 }}, {round(palo(sc, "mejores", .3) + 0.3, 2)});\n'
+    inner += EJEMPLO.format(top=900, D=D, i=3)
+    return marco(n, D, "", inner, js)
+
+
+def esc_comentarios2(sc, e, n):
+    D = sc["dur"]; ops = e["opciones"]; k = len(ops)
+    tc = palo(sc, "comentarios", .1); ta = round(sc["voice"] * 0.5, 2)
+    inner = etq(D, 250, "responde en los comentarios")
+    tarjeta = (f'<div style="position:absolute;left:36px;top:34px;width:84px;height:84px;border-radius:50%;background:#2A2A33"></div>'
+               f'<div style="position:absolute;left:144px;top:44px;{MONO};font-size:28px;color:#A3A3AD">@tu_comentario</div>'
+               f'<div style="position:absolute;left:144px;top:96px;{BRIC};font-size:{e.get("fuente", 44)}px;letter-spacing:-.03em;white-space:nowrap">{e["pregunta"]}</div>')
+    inner += clip(2, f"{n}-cm", f"left:140px;top:330px;width:800px;height:190px;{TARJ}", tarjeta, D)
+    ancho = 380 if k == 2 else 250
+    paso = 420 if k == 2 else 275
+    js = fi(f"#{n}-cm", round(tc + 0.1, 2), 0, 40)
+    for i, o in enumerate(ops):
+        inner += clip(3 + i, f"{n}-o{i}", f"left:{140 + i * paso}px;top:590px;width:{ancho}px;height:130px;border-radius:999px;background:#16161C;border:3px solid #F4F4EF;box-sizing:border-box;display:flex;align-items:center;justify-content:center;{BRIC};font-size:{60 if k == 2 else 48}px;letter-spacing:-.02em", o, D)
+        js += fi(f"#{n}-o{i}", round(ta + i * 0.35, 2), 0, 30, 0.35)
+    tin = round(ta + k * 0.35, 2)
+    inner += clip(8, f"{n}-in", f"left:140px;top:800px;width:800px;height:110px;border-radius:999px;background:#16161C;border:3px solid #3A3A45;box-sizing:border-box;display:flex;align-items:center;padding-left:40px;{MONO};font-size:34px;color:#A3A3AD", f'Escribe tu respuesta<span id="{n}-cur" style="display:inline-block;width:3px;height:40px;margin-left:8px;background:#FACC15"></span>', D)
+    js += fi(f"#{n}-in", tin, 0, 30, 0.35)
+    js += f'      tl.to("#{n}-cur", {{ opacity: 0, duration: 0.4, yoyo: true, repeat: {max(1, int(D / 0.4))}, ease: "none" }}, {tin});\n'
+    return marco(n, D, "", inner, js)
+
+
+def esc_arrepentido(sc, e, n):
+    D = sc["dur"]; t = palo(sc, "arrepentiste", .8)
+    ruta = "M60 420 C200 420 220 200 380 220 C520 240 520 400 680 330 C740 300 750 160 760 120"
+    mapa = (f'<svg width="800" height="520" viewBox="0 0 800 520" aria-hidden="true"><path d="{ruta}" fill="none" stroke="#3A3A45" stroke-width="16" stroke-linecap="round"/>'
+            f'<path id="{n}-rt" d="{ruta}" fill="none" stroke="#22C55E" stroke-width="16" stroke-linecap="round"/><circle id="{n}-dt" cx="60" cy="420" r="22" fill="#F4F4EF"/></svg>')
+    inner = etq(D, 250, "viaje en curso")
+    inner += clip(2, f"{n}-mp", f"left:140px;top:320px;width:800px;height:520px;{TARJ};overflow:hidden", mapa, D)
+    inner += clip(3, f"{n}-sl", f"left:210px;top:560px;width:660px;height:150px;border-radius:24px;background:#FACC15;color:#2B2200;display:flex;align-items:center;justify-content:center;{BRIC};font-size:78px;letter-spacing:-.03em;opacity:0;transform:rotate(-6deg)", "¿ARREPENTIDO?", D)
+    js = fi(f"#{n}-mp", 0, 0, 40)
+    js += f'      var L = document.getElementById("{n}-rt").getTotalLength(); var pr = {{ p: 0 }};\n'
+    js += f'      tl.fromTo("#{n}-rt", {{ strokeDasharray: 4000, strokeDashoffset: 4000 }}, {{ strokeDashoffset: 0, duration: {round(D * 0.85, 2)}, ease: "none" }}, 0.1);\n'
+    js += f'      tl.fromTo(pr, {{ p: 0 }}, {{ p: 1, duration: {round(D * 0.85, 2)}, ease: "none", onUpdate: function () {{ var pt = document.getElementById("{n}-rt").getPointAtLength(pr.p * L); var d = document.getElementById("{n}-dt"); d.setAttribute("cx", pt.x); d.setAttribute("cy", pt.y); }} }}, 0.1);\n'
+    js += f'      tl.fromTo("#{n}-sl", {{ opacity: 0, scale: 2.2 }}, {{ opacity: 1, scale: 1, duration: 0.3, ease: "power4.out" }}, {t});\n'
+    return marco(n, D, "", inner, js)
+
+
+def esc_dedo(sc, e, n):
+    D = sc["dur"]; t = palo(sc, "miedo", .4)
+    pill = "width:380px;height:150px;border-radius:999px;display:flex;align-items:center;justify-content:center;" + BRIC + ";font-size:62px;letter-spacing:.06em"
+    inner = clip(1, f"{n}-a", f"left:140px;top:420px;{pill};background:#22C55E;color:#04210F", "ACEPTAR", D)
+    inner += clip(2, f"{n}-r", f"left:560px;top:420px;{pill};background:#EF4444;color:#1F0000", "RECHAZAR", D)
+    inner += clip(3, f"{n}-dd", "left:290px;top:520px", ic("puntero", 130), D)
+    js = fi(f"#{n}-a", 0, -50, 0) + fi(f"#{n}-r", 0.1, 50, 0)
+    js += f'      tl.fromTo("#{n}-dd", {{ opacity: 0, x: 0 }}, {{ opacity: 1, x: 0, duration: 0.3 }}, 0.2);\n'
+    js += f'      tl.to("#{n}-dd", {{ x: 420, duration: 0.7, ease: "power2.inOut" }}, {round(max(0.6, t - 0.6), 2)});\n'
+    js += f'      tl.to("#{n}-dd", {{ x: 400, duration: 0.06, yoyo: true, repeat: {max(3, int((D - t) / 0.12))} }}, {round(t + 0.1, 2)});\n'
+    return marco(n, D, "", inner, js)
+
+
+def esc_netos(sc, e, n):
+    D = sc["dur"]; t = palo(sc, "doble", .2)
+    inner, js = "", ""
+    for i, (x, h, col, txt, km) in enumerate([(250, 220, "#EF4444", "44 netos", "13 km"), (600, 480, "#22C55E", "96 netos", "12 km")]):
+        top = 900 - h
+        inner += clip(1, f"{n}-b{i}", f"left:{x}px;top:{top}px;width:230px;height:{h}px;border-radius:24px;background:{col}", "", D)
+        inner += clip(2, f"{n}-t{i}", f"left:{x - 20}px;top:{top - 72}px;width:270px;text-align:center;{MONO};font-size:40px", txt, D)
+        inner += clip(2, f"{n}-k{i}", f"left:{x}px;top:925px;width:230px;text-align:center;{MONO};font-size:30px;color:#A3A3AD", km, D)
+        js += f'      tl.fromTo("#{n}-b{i}", {{ scaleY: 0, transformOrigin: "50% 100%" }}, {{ scaleY: 1, duration: 0.6, ease: "power3.out" }}, {round(0.1 + i * 0.35, 2)});\n'
+        js += fi(f"#{n}-t{i}", round(0.5 + i * 0.35, 2), 0, 10, 0.3)
+    inner += clip(4, f"{n}-x", f"left:440px;top:330px;width:200px;height:200px;border-radius:50%;background:#FACC15;color:#2B2200;display:flex;align-items:center;justify-content:center;{BRIC};font-size:100px;opacity:0", "×2", D)
+    js += f'      tl.fromTo("#{n}-x", {{ opacity: 0, scale: 0.3 }}, {{ opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)" }}, {t});\n'
+    inner += EJEMPLO.format(top=1000, D=D, i=5)
+    return marco(n, D, "", inner, js)
+
+
+def esc_cuenta(sc, e, n):
+    D = sc["dur"]; v = sc["voice"]
+    fila = f"position:absolute;left:44px;right:44px;display:flex;justify-content:space-between;align-items:baseline;{BRIC};letter-spacing:-.03em"
+    panel = (f'<div id="{n}-v" style="{fila};top:40px;font-size:56px"><span>Viaje</span><span style="{MONO};font-size:52px">$70</span></div>'
+             f'<div id="{n}-g" style="{fila};top:128px;font-size:56px;color:#EF4444"><span>Gasolina</span><span style="{MONO};font-size:52px">−$26</span></div>'
+             f'<div style="position:absolute;left:44px;right:44px;top:224px;height:3px;background:#3A3A45"></div>'
+             f'<div id="{n}-n" style="{fila};top:250px;font-size:60px;color:#EF4444"><span>Te quedan</span><span style="font-size:110px">$44</span></div>')
+    inner = clip(1, f"{n}-pn", f"left:140px;top:330px;width:800px;height:400px;{TARJ}", panel, D)
+    inner += EJEMPLO.format(top=800, D=D, i=2)
+    js = fi(f"#{n}-pn", 0, 0, 40) + fi(f"#{n}-v", round(v * .12, 2), -40, 0, 0.35) + fi(f"#{n}-g", round(v * .4, 2), -40, 0, 0.35) + fi(f"#{n}-n", round(v * .62, 2), 0, 30, 0.4)
+    return marco(n, D, "", inner, js)
+
+
+def esc_odometro(sc, e, n):
+    D = sc["dur"]; t = palo(sc, "cuesta", .4)
+    inner = etq(D, 250, "kilómetros recorridos")
+    inner += clip(2, f"{n}-od", f"left:140px;top:330px;width:800px;height:300px;{TARJ};display:flex;align-items:center;justify-content:center;gap:20px;{MONO};font-size:130px", f'<span id="{n}-dg">000</span><span style="font-size:56px;color:#A3A3AD">km</span>', D)
+    inner += clip(3, f"{n}-q", f"left:240px;top:700px;width:600px;height:120px;border-radius:999px;background:#FACC15;color:#2B2200;display:flex;align-items:center;justify-content:center;{BRIC};font-size:56px;letter-spacing:-.02em;opacity:0", "¿cuánto cuesta?", D)
+    js = fi(f"#{n}-od", 0, 0, 40)
+    js += f'      var o = {{ v: 0 }}; tl.to(o, {{ v: 187, duration: {round(D * 0.9, 2)}, ease: "none", onUpdate: function () {{ document.getElementById("{n}-dg").textContent = ("00" + Math.round(o.v)).slice(-3); }} }}, 0.1);\n'
+    js += fi(f"#{n}-q", t, 0, 30)
+    return marco(n, D, "", inner, js)
+
+
+def esc_bomba(sc, e, n):
+    D = sc["dur"]; t = palo(sc, "solo", .4)
+    inner = clip(1, f"{n}-gs", "left:360px;top:300px", ic("gas", 360), D)
+    inner += mk(n, D, 2, "No solo gasolina", 740, 104)
+    js = fi(f"#{n}-gs", 0, 0, 40)
+    js += f'      tl.to("#{n}-gs", {{ x: -280, scale: 0.7, opacity: 0.35, duration: 0.6, ease: "power3.inOut" }}, {round(t + 0.2, 2)});\n'
+    js += rev(n, 2, round(t, 2))
+    return marco(n, D, "", inner, js)
+
+
+def esc_desgaste(sc, e, n):
+    D = sc["dur"]; ks = e.get("claves", ["llantas", "frenos", "aceite"])
+    inner, js = "", ""
+    for i, (nm, k) in enumerate(zip(["Llantas", "Frenos", "Aceite"], ks)):
+        y = 280 + i * 190
+        t = palo(sc, k, .25 + i * .2)
+        inner += clip(1, f"{n}-l{i}", f"left:140px;top:{y}px;{BRIC};font-size:60px;letter-spacing:-.03em", nm, D)
+        inner += clip(2, f"{n}-bg{i}", f"left:140px;top:{y + 86}px;width:800px;height:28px;border-radius:14px;background:#3A3A45", f'<div id="{n}-br{i}" style="width:100%;height:100%;border-radius:14px;background:#22C55E"></div>', D)
+        js += fi(f"#{n}-l{i}", max(0, round(t - 0.1, 2)), -40, 0, 0.35) + fi(f"#{n}-bg{i}", max(0, round(t - 0.1, 2)), -40, 0, 0.35)
+        js += f'      tl.to("#{n}-br{i}", {{ width: "22%", backgroundColor: "#EF4444", duration: 0.9, ease: "power2.inOut" }}, {round(t + 0.3, 2)});\n'
+    if e.get("renta"):
+        tr = palo(sc, "debiendo", .85)
+        inner += clip(5, f"{n}-rn", f"left:140px;top:870px;width:800px;height:170px;border-radius:28px;background:#3A1414;border:3px solid #EF4444;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;padding:0 40px;{BRIC};font-size:54px;letter-spacing:-.02em", f'<span>Renta del día</span><span style="{MONO};font-size:34px;color:#EF4444">saldo en rojo</span>', D)
+        js += fi(f"#{n}-rn", tr, 0, 40)
+    return marco(n, D, "", inner, js)
+
+
+def esc_renta(sc, e, n):
+    D = sc["dur"]; t = palo(sc, "debiendo", .6)
+    inner = etq(D, 250, "empieza el día")
+    inner += clip(2, f"{n}-hr", f"left:0;right:0;top:330px;text-align:center;{MONO};font-size:150px", "6:00 AM", D)
+    inner += clip(3, f"{n}-rn", f"left:140px;top:600px;width:800px;height:190px;border-radius:28px;background:#16161C;border:3px solid #3A3A45;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;padding:0 40px;{BRIC};font-size:56px;letter-spacing:-.02em", f'<span>{ic("dinero", 70)}</span><span style="margin-left:-300px">Renta del día</span><span id="{n}-sd" style="{MONO};font-size:34px;color:#A3A3AD">al corriente</span>', D)
+    js = fi(f"#{n}-hr", 0, 0, 30) + fi(f"#{n}-rn", 0.3, 0, 40)
+    js += f'      tl.to("#{n}-rn", {{ borderColor: "#EF4444", backgroundColor: "#3A1414", duration: 0.3 }}, {t});\n      tl.to("#{n}-sd", {{ color: "#EF4444", duration: 0.3 }}, {t});\n      tl.call(function () {{ document.getElementById("{n}-sd").textContent = "saldo en rojo"; }}, [], {t});\n'
+    return marco(n, D, "", inner, js)
+
+
+def esc_cobros(sc, e, n):
+    D = sc["dur"]; tg, td, tx = palo(sc, "gasolina", .5), palo(sc, "desgaste", .7), palo(sc, "doble", .3)
+    inner = clip(1, f"{n}-cd", f"left:140px;top:300px;width:800px;height:290px;{TARJ}", f'<div style="position:absolute;left:44px;top:34px;{MONO};font-size:26px;letter-spacing:.14em;color:#A3A3AD">VIAJE MALO</div><div style="position:absolute;left:40px;top:90px;{BRIC};font-size:120px;letter-spacing:-.04em;line-height:1">Paga poco</div>', D)
+    chip = f"width:380px;height:112px;font-size:42px;opacity:0"
+    inner += clip(2, f"{n}-g", f"left:140px;top:650px;{CHIP_ROJO};{chip}", "GASOLINA", D)
+    inner += clip(3, f"{n}-d", f"left:560px;top:650px;{CHIP_ROJO};{chip}", "DESGASTE", D)
+    inner += clip(4, f"{n}-x", f"left:440px;top:830px;width:200px;height:200px;border-radius:50%;background:#FACC15;color:#2B2200;display:flex;align-items:center;justify-content:center;{BRIC};font-size:100px;opacity:0", "×2", D)
+    js = fi(f"#{n}-cd", 0, 0, 40)
+    js += f'      tl.fromTo("#{n}-g", {{ opacity: 0, y: -80 }}, {{ opacity: 1, y: 0, duration: 0.35, ease: "bounce.out" }}, {tg});\n'
+    js += f'      tl.fromTo("#{n}-d", {{ opacity: 0, y: -80 }}, {{ opacity: 1, y: 0, duration: 0.35, ease: "bounce.out" }}, {td});\n'
+    js += f'      tl.fromTo("#{n}-x", {{ opacity: 0, scale: 0.3 }}, {{ opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)" }}, {max(tx, round(td + 0.4, 2)) if tx < td else tx});\n'
+    return marco(n, D, "", inner, js)
+
+
+def oferta12():
+    return '<div class="of"><div class="l">NUEVA OFERTA</div><div class="f">$120</div><div class="d">3 min (1.2 km)<br>20 min (10.8 km)</div><div class="b">ACEPTAR</div></div>'
+
+
+def esc_escaneo2(sc, e, n):
+    D = sc["dur"]; ts = palo(sc, e.get("escanea", "lee"), .1); tk = palo(sc, "kilómetros", .3); tr = palo(sc, "recogida", .55); tc = palo(sc, "cuánto", .75)
+    inner = clip(1, f"{n}-of", "left:220px;top:230px;width:640px;height:420px", oferta12(), D)
+    inner += clip(2, f"{n}-sc", "left:200px;top:230px;width:680px;height:8px;border-radius:4px;background:#22C55E;box-shadow:0 0 30px #22C55E;opacity:0", "", D)
+    fila = f"position:absolute;left:44px;right:44px;display:flex;justify-content:space-between;align-items:baseline;{BRIC};letter-spacing:-.03em"
+    panel = (f'<div id="{n}-a" style="{fila};top:30px;font-size:50px"><span>Kilómetros reales</span><span style="{MONO};font-size:46px">12 km</span></div>'
+             f'<div id="{n}-b" style="{fila};top:112px;font-size:50px"><span>Recogida</span><span style="{MONO};font-size:46px;color:#22C55E">incluida</span></div>'
+             f'<div style="position:absolute;left:44px;right:44px;top:196px;height:3px;background:#3A3A45"></div>'
+             f'<div id="{n}-c" style="{fila};top:220px;font-size:54px;color:#22C55E"><span>Te deja por km</span><span style="font-size:96px">$8</span></div>')
+    inner += clip(3, f"{n}-pn", f"left:140px;top:700px;width:800px;height:360px;{TARJ}", panel, D)
+    inner += EJEMPLO.format(top=1100, D=D, i=4)
+    js = fi(f"#{n}-of", 0, 0, 40)
+    js += f'      tl.fromTo("#{n}-sc", {{ opacity: 1, y: 0 }}, {{ opacity: 1, y: 410, duration: 1.0, ease: "power1.inOut" }}, {ts});\n      tl.to("#{n}-sc", {{ opacity: 0, duration: 0.2 }}, {round(ts + 1.0, 2)});\n'
+    js += fi(f"#{n}-pn", tk, 0, 40) + f'      tl.set("#{n}-b", {{ opacity: 0 }}, 0); tl.set("#{n}-c", {{ opacity: 0 }}, 0);\n'
+    js += fi(f"#{n}-b", max(tr, round(tk + 0.3, 2)), -40, 0, 0.35) + fi(f"#{n}-c", max(tc, round(tr + 0.4, 2)), 0, 30)
+    return marco(n, D, OF_CSS, inner, js)
+
+
+def esc_alcancia(sc, e, n):
+    D = sc["dur"]; t = palo(sc, "apártalo", .75); tm = palo(sc, "mantenimiento", .55)
+    inner, y = "", 340
+    css = ""
+    if e.get("popup"):
+        p = e["popup"]; validar_popup(p)
+        inner += clip(1, f"{n}-p", "left:273px;top:200px", popup(p, 0.62), D)
+        y = 690; css = css_popup()
+    jar = (f'<svg width="170" height="200" viewBox="0 0 170 200" aria-hidden="true"><path d="M30 40 H140 V150 Q140 185 105 185 H65 Q30 185 30 150 Z" fill="none" stroke="#F4F4EF" stroke-width="8" stroke-linejoin="round"/><rect x="45" y="20" width="80" height="20" rx="8" fill="#F4F4EF"/><circle id="{n}-co" cx="85" cy="70" r="20" fill="#FACC15"/></svg>')
+    inner += clip(2, f"{n}-aj", f"left:140px;top:{y}px;width:800px;height:240px;{TARJ}", f'<div style="position:absolute;left:34px;top:20px">{jar}</div><div style="position:absolute;left:250px;top:60px;{BRIC};font-size:66px;letter-spacing:-.03em">Mantenimiento</div><div style="position:absolute;left:250px;top:150px;{MONO};font-size:30px;color:#A3A3AD">lo apartas tú</div>', D)
+    inner += clip(3, f"{n}-ok", f"left:790px;top:{y + 60}px;width:110px;height:110px;border-radius:50%;background:#22C55E;opacity:0", '<svg width="110" height="110" viewBox="0 0 24 24" fill="none" stroke="#04210F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 12.5l4 4L17.5 8"/></svg>', D)
+    if e.get("popup"):
+        inner += EJEMPLO.format(top=y + 280, D=D, i=4)
+    js = ""
+    if e.get("popup"):
+        js += f'      tl.fromTo("#{n}-p", {{ y: -70, opacity: 0 }}, {{ y: 0, opacity: 1, duration: 0.45, ease: "power4.out" }}, 0);\n'
+    js += fi(f"#{n}-aj", tm if e.get("popup") else 0, 0, 40)
+    js += f'      tl.fromTo("#{n}-co", {{ y: -60, opacity: 0 }}, {{ y: 40, opacity: 1, duration: 0.5, ease: "power2.in" }}, {round(max(0.4, t - 0.3), 2)});\n'
+    js += f'      tl.fromTo("#{n}-ok", {{ opacity: 0, scale: 0.5 }}, {{ opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }}, {t});\n'
+    return marco(n, D, css, inner, js)
+
+
+def esc_carro(sc, e, n):
+    D = sc["dur"]; t = palo(sc, "gasta", .5)
+    car = (f'<svg width="640" height="320" viewBox="0 0 640 320" aria-hidden="true"><path d="M40 210 L100 120 Q120 100 160 100 L440 100 Q480 100 510 135 L590 195 Q610 205 610 235 L610 260 L40 260 Z" fill="#16161C" stroke="#F4F4EF" stroke-width="8" stroke-linejoin="round"/>'
+           f'<path d="M150 120 H280 V190 H110 Z M310 120 H440 L500 190 H310 Z" fill="#2A2A33"/>'
+           f'<circle id="{n}-w0" cx="170" cy="266" r="52" fill="#0C0C10" stroke="#F4F4EF" stroke-width="10"/><circle id="{n}-w1" cx="470" cy="266" r="52" fill="#0C0C10" stroke="#F4F4EF" stroke-width="10"/></svg>')
+    inner = etq(D, 250, "tu carro")
+    inner += clip(2, f"{n}-cr", "left:220px;top:330px;width:640px;height:320px", car, D)
+    inner += clip(3, f"{n}-bg", "left:140px;top:720px;width:800px;height:28px;border-radius:14px;background:#3A3A45", f'<div id="{n}-br" style="width:100%;height:100%;border-radius:14px;background:#22C55E"></div>', D)
+    inner += etq(D, 780, "desgaste", 4)
+    js = fi(f"#{n}-cr", 0, 0, 40) + fi(f"#{n}-bg", 0.2, 0, 0, 0.3)
+    js += f'      tl.to("#{n}-br", {{ width: "30%", backgroundColor: "#EF4444", duration: 1.0, ease: "power2.inOut" }}, {t});\n'
+    js += f'      tl.to("#{n}-w0", {{ stroke: "#EF4444", duration: 0.5 }}, {t}); tl.to("#{n}-w1", {{ stroke: "#EF4444", duration: 0.5 }}, {round(t + 0.2, 2)});\n'
+    js += f'      tl.to("#{n}-cr", {{ y: 6, duration: 0.07, yoyo: true, repeat: 7 }}, {t});\n'
+    return marco(n, D, "", inner, js)
+
+
+TIPOS_L1 = {"vueltas": esc_vueltas, "tachado": esc_tachado, "relojes": esc_relojes, "barras": esc_barras, "balanza": esc_balanza, "horas": esc_horas,
+            "comentarios2": esc_comentarios2, "arrepentido": esc_arrepentido, "dedo": esc_dedo, "netos": esc_netos, "cuenta": esc_cuenta,
+            "odometro": esc_odometro, "bomba": esc_bomba, "desgaste": esc_desgaste, "renta": esc_renta, "cobros": esc_cobros,
+            "escaneo2": esc_escaneo2, "alcancia": esc_alcancia, "carro": esc_carro}
+TIPOS.update(TIPOS_L1)
 
 
 # ---------- subtítulos ----------

@@ -1,0 +1,37 @@
+<template>
+  <style>
+    @font-face{ font-family: 'Bricolage Grotesque'; font-weight: 800; font-display: block; src: url('assets/fonts/bricolage-grotesque-latin-800-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'DM Sans'; font-weight: 400; font-display: block; src: url('assets/fonts/dm-sans-latin-400-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'DM Sans'; font-weight: 700; font-display: block; src: url('assets/fonts/dm-sans-latin-700-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'JetBrains Mono'; font-weight: 500; font-display: block; src: url('assets/fonts/jetbrains-mono-latin-500-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'JetBrains Mono'; font-weight: 700; font-display: block; src: url('assets/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+    #root { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; font-family: 'DM Sans', Arial, sans-serif; color: #F4F4EF; }
+    .clip { position: absolute; }
+    .G { inset: 0; background: #0C0C10; }
+    .etq { position: absolute; left: 0; right: 0; text-align: center; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 28px; letter-spacing: .12em; text-transform: uppercase; color: #A3A3AD; }
+    .mask { position: absolute; left: 0; right: 0; overflow: hidden; text-align: center; }
+    .mask > div { font-family: 'Bricolage Grotesque', 'Arial Black', sans-serif; font-weight: 800; letter-spacing: -0.045em; line-height: 1; white-space: nowrap; }
+    
+  </style>
+
+  <div id="root" data-composition-id="e02-bomba" data-width="1080" data-height="1920" data-start="0" data-duration="2.008">
+    <div id="e02-bomba-g" class="clip G" data-start="0" data-duration="2.008" data-track-index="0"></div>
+    <div id="e02-bomba-gs" class="clip" style="left:360px;top:300px" data-start="0" data-duration="2.008" data-track-index="1"><svg width="360" height="360" viewBox="0 0 24 24" fill="none" stroke="#F4F4EF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20V5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v15M4 20h11M14 9h2.5a1.5 1.5 0 0 1 1.5 1.5V16a1.5 1.5 0 0 0 3 0V8l-3-3M7 8h5"/></svg></div>
+    <div id="e02-bomba-2" class="mask clip" style="top:740px;height:119px" data-start="0" data-duration="2.008" data-track-index="3"><div style="font-size:104px;color:#F4F4EF;">No solo gasolina</div></div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      var D = 2.008;
+      tl.fromTo("#e02-bomba-gs", { opacity: 0, x: 0, y: 40 }, { opacity: 1, x: 0, y: 0, duration: 0.4, ease: "power4.out" }, 0);
+      tl.to("#e02-bomba-gs", { x: -280, scale: 0.7, opacity: 0.35, duration: 0.6, ease: "power3.inOut" }, 0.52);
+      tl.fromTo("#e02-bomba-2 > div", { yPercent: 120 }, { yPercent: 0, duration: 0.45, ease: "power4.out" }, 0.32);
+
+      window.__timelines["e02-bomba"] = tl;
+    })();
+  </script>
+</template>

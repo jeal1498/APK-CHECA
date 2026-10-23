@@ -1,0 +1,45 @@
+<template>
+  <style>
+    @font-face{ font-family: 'Bricolage Grotesque'; font-weight: 800; font-display: block; src: url('assets/fonts/bricolage-grotesque-latin-800-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'DM Sans'; font-weight: 400; font-display: block; src: url('assets/fonts/dm-sans-latin-400-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'DM Sans'; font-weight: 700; font-display: block; src: url('assets/fonts/dm-sans-latin-700-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'JetBrains Mono'; font-weight: 500; font-display: block; src: url('assets/fonts/jetbrains-mono-latin-500-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'JetBrains Mono'; font-weight: 700; font-display: block; src: url('assets/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+    #root { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; font-family: 'DM Sans', Arial, sans-serif; color: #F4F4EF; }
+    .clip { position: absolute; }
+    .G { inset: 0; background: #0C0C10; }
+    .etq { position: absolute; left: 0; right: 0; text-align: center; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 28px; letter-spacing: .12em; text-transform: uppercase; color: #A3A3AD; }
+    .mask { position: absolute; left: 0; right: 0; overflow: hidden; text-align: center; }
+    .mask > div { font-family: 'Bricolage Grotesque', 'Arial Black', sans-serif; font-weight: 800; letter-spacing: -0.045em; line-height: 1; white-space: nowrap; }
+    
+  </style>
+
+  <div id="root" data-composition-id="e05-netos" data-width="1080" data-height="1920" data-start="0" data-duration="2.983">
+    <div id="e05-netos-g" class="clip G" data-start="0" data-duration="2.983" data-track-index="0"></div>
+    <div id="e05-netos-b0" class="clip" style="left:250px;top:680px;width:230px;height:220px;border-radius:24px;background:#EF4444" data-start="0" data-duration="2.983" data-track-index="1"></div>
+    <div id="e05-netos-t0" class="clip" style="left:230px;top:608px;width:270px;text-align:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:40px" data-start="0" data-duration="2.983" data-track-index="2">44 netos</div>
+    <div id="e05-netos-k0" class="clip" style="left:250px;top:925px;width:230px;text-align:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:30px;color:#A3A3AD" data-start="0" data-duration="2.983" data-track-index="2">13 km</div>
+    <div id="e05-netos-b1" class="clip" style="left:600px;top:420px;width:230px;height:480px;border-radius:24px;background:#22C55E" data-start="0" data-duration="2.983" data-track-index="1"></div>
+    <div id="e05-netos-t1" class="clip" style="left:580px;top:348px;width:270px;text-align:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:40px" data-start="0" data-duration="2.983" data-track-index="2">96 netos</div>
+    <div id="e05-netos-k1" class="clip" style="left:600px;top:925px;width:230px;text-align:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:30px;color:#A3A3AD" data-start="0" data-duration="2.983" data-track-index="2">12 km</div>
+    <div id="e05-netos-x" class="clip" style="left:440px;top:330px;width:200px;height:200px;border-radius:50%;background:#FACC15;color:#2B2200;display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:100px;opacity:0" data-start="0" data-duration="2.983" data-track-index="4">×2</div>
+    <div class="etq clip" style="top:1000px" data-start="0" data-duration="2.983" data-track-index="5">Números de ejemplo</div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      var D = 2.983;
+      tl.fromTo("#e05-netos-b0", { scaleY: 0, transformOrigin: "50% 100%" }, { scaleY: 1, duration: 0.6, ease: "power3.out" }, 0.1);
+      tl.fromTo("#e05-netos-t0", { opacity: 0, x: 0, y: 10 }, { opacity: 1, x: 0, y: 0, duration: 0.3, ease: "power4.out" }, 0.5);
+      tl.fromTo("#e05-netos-b1", { scaleY: 0, transformOrigin: "50% 100%" }, { scaleY: 1, duration: 0.6, ease: "power3.out" }, 0.45);
+      tl.fromTo("#e05-netos-t1", { opacity: 0, x: 0, y: 10 }, { opacity: 1, x: 0, y: 0, duration: 0.3, ease: "power4.out" }, 0.85);
+      tl.fromTo("#e05-netos-x", { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)" }, 0.21);
+
+      window.__timelines["e05-netos"] = tl;
+    })();
+  </script>
+</template>

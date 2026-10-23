@@ -1,0 +1,11 @@
+[
+ {"tipo": "odometro"},
+ {"tipo": "bomba"},
+ {"tipo": "desgaste"},
+ {"tipo": "renta"},
+ {"tipo": "cobros"},
+ {"tipo": "escaneo2", "escanea": "lee"},
+ {"tipo": "alcancia", "popup": {"nivel": "verde", "app": "UBER", "neta": 96, "viaje": 120, "gasolina": 24, "chips": [["$262/h", "por hora", "ok"], ["$8.0/km", "por km", "ok"], ["22 min", "12 km total", ""]]}},
+ {"tipo": "comentarios2", "pregunta": "¿Carro propio o rentado?", "fuente": 42, "opciones": ["Propio", "Rentado"], "sfx": [["popup-entra", 0.0, 0.35]]},
+ {"tipo": "cierre"}
+]

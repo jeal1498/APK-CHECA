@@ -1,0 +1,12 @@
+[
+ {"tipo": "vueltas"},
+ {"tipo": "tachado"},
+ {"tipo": "relojes"},
+ {"tipo": "barras"},
+ {"tipo": "balanza"},
+ {"tipo": "horas", "fase": 1},
+ {"tipo": "horas", "fase": 2},
+ {"tipo": "comentarios2", "pregunta": "¿A qué hora te va mejor?", "opciones": ["Mañana", "Tarde", "Noche"], "sfx": [["popup-entra", 0.0, 0.35]]},
+ {"tipo": "seguir"},
+ {"tipo": "cierre"}
+]
