@@ -216,3 +216,49 @@ create policy "actualizar mis ajustes" on public.ajustes
 
 -- Nombre propio de cada equipo («Mi tablet»); el modelo sigue en «nombre».
 alter table public.equipos add column if not exists alias text;
+
+-- ===================== Cupos del Plan Fundador =====================
+-- El precio de fundador (40 % menos de por vida) es solo para las primeras 50 cuentas de Google
+-- (50 en total, no por paquete). mp-pago reclama el lugar con reclamar_fundador(); la tabla solo la
+-- toca el servidor (RLS sin políticas). Para liberar un lugar: delete from public.fundadores where correo = '…';
+create table if not exists public.fundadores (
+  correo text primary key,
+  creado timestamptz not null default now()
+);
+alter table public.fundadores enable row level security;
+
+-- Devuelve true si la cuenta tiene (o acaba de tomar) un lugar de fundador. p_crear = false solo consulta.
+-- El candado evita que dos cuentas simultáneas pasen de p_cupos.
+create or replace function public.reclamar_fundador(p_correo text, p_cupos integer, p_crear boolean default true)
+returns boolean language plpgsql security definer set search_path = public as $$
+declare
+  c text := lower(p_correo);
+begin
+  if c is null or c = '' then return false; end if;
+  if exists (select 1 from fundadores where correo = c) then return true; end if;
+  if not p_crear then return false; end if;
+  perform pg_advisory_xact_lock(hashtext('cupos_fundador'));
+  if exists (select 1 from fundadores where correo = c) then return true; end if;
+  if (select count(*) from fundadores) >= p_cupos then return false; end if;
+  insert into fundadores (correo) values (c);
+  return true;
+end $$;
+revoke all on function public.reclamar_fundador(text, integer, boolean) from public, anon, authenticated;
+grant execute on function public.reclamar_fundador(text, integer, boolean) to service_role;
+
+-- Cuentas que ya existen: ocupan los lugares libres en orden de registro. Primero quien ya pagó con
+-- precio de fundador; se omiten las licencias sin vencimiento (propietaria y pruebas). Solo cuenta
+-- quien se registró antes de que termine la beta (1 feb 2027, 00:00 Cancún). Se puede correr más de una vez.
+do $$
+begin
+  perform pg_advisory_xact_lock(hashtext('cupos_fundador'));
+  insert into public.fundadores (correo)
+  select lower(u.email)
+  from auth.users u
+  where u.email is not null
+    and u.created_at < timestamptz '2027-02-01 05:00:00+00'
+    and not exists (select 1 from public.licencias l where l.correo = lower(u.email) and l.vence = 99991231)
+  order by exists (select 1 from public.pagos p where p.correo = lower(u.email) and p.precio_beta) desc, u.created_at
+  limit greatest(0, 50 - (select count(*) from public.fundadores))
+  on conflict (correo) do nothing;
+end $$;
