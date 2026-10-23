@@ -24,3 +24,9 @@ Cambios: cifras con «pesos» (sin «$», la voz decía «dólares»), CTA de co
 
 ### Voz limpia
 Te da miedo rechazar viajes porque sientes que la app te va a castigar. Así que terminas aceptando de todo, hasta lo que te hace perder dinero. Cada plataforma tiene sus reglas, pero si vas a rechazar, que sea el viaje que de verdad no conviene. Mira: 70 pesos por 13 kilómetros solo te dejan 44 pesos limpios. En cambio, 120 pesos por 12 kilómetros te dejan 96 en la bolsa. La app Checa te marca cuál es cuál, y el botón siempre lo tocas tú. Dime en los comentarios: ¿rechazas los viajes que no convienen o aceptas de todo? Descarga Checa y checa cuánto te queda de cada viaje.
+
+## Guion v1 APROBADO por Eduardo (23 oct 2026) — sustituye al «Guion revisado» de arriba
+Cambio: hook más simple y cercano (el anterior no generaba intriga). Mismos datos ($70/13 km → $44; $120/12 km → $96).
+
+### Voz limpia
+¿Te ha pasado que aceptas un viaje y a media ruta ya te arrepentiste? Pasa por el miedo a rechazar. Un viaje de 70 pesos por 13 kilómetros, ya con la gasolina, solo te deja 44. Otro de 120 pesos por 12 kilómetros te deja 96. Más del doble, casi con los mismos kilómetros. La app Checa te marca cuál es cuál antes de que toques, y el botón siempre lo tocas tú. Dime en los comentarios: ¿rechazas los viajes que no convienen o aceptas de todo? Descarga Checa y checa cuánto te queda de cada viaje.
