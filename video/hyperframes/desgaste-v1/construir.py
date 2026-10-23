@@ -758,7 +758,7 @@ def esc_arrepentido(sc, e, n):
             f'<path id="{n}-rt" d="{ruta}" fill="none" stroke="#22C55E" stroke-width="16" stroke-linecap="round"/><circle id="{n}-dt" cx="60" cy="420" r="22" fill="#F4F4EF"/></svg>')
     inner = etq(D, 250, "viaje en curso")
     inner += clip(2, f"{n}-mp", f"left:140px;top:320px;width:800px;height:520px;{TARJ};overflow:hidden", mapa, D)
-    inner += clip(3, f"{n}-sl", f"left:210px;top:560px;width:660px;height:150px;border-radius:24px;background:#FACC15;color:#2B2200;display:flex;align-items:center;justify-content:center;{BRIC};font-size:78px;letter-spacing:-.03em;opacity:0;transform:rotate(-6deg)", "¿ARREPENTIDO?", D)
+    inner += clip(3, f"{n}-sl", f"left:210px;top:700px;width:660px;height:150px;border-radius:24px;background:#FACC15;color:#2B2200;display:flex;align-items:center;justify-content:center;{BRIC};font-size:78px;letter-spacing:-.03em;opacity:0;transform:rotate(-6deg)", "¿ARREPENTIDO?", D)
     js = fi(f"#{n}-mp", 0, 0, 40)
     js += f'      var L = document.getElementById("{n}-rt").getTotalLength(); var pr = {{ p: 0 }};\n'
     js += f'      tl.fromTo("#{n}-rt", {{ strokeDasharray: 4000, strokeDashoffset: 4000 }}, {{ strokeDashoffset: 0, duration: {round(D * 0.85, 2)}, ease: "none" }}, 0.1);\n'
@@ -772,7 +772,7 @@ def esc_dedo(sc, e, n):
     pill = "width:380px;height:150px;border-radius:999px;display:flex;align-items:center;justify-content:center;" + BRIC + ";font-size:62px;letter-spacing:.06em"
     inner = clip(1, f"{n}-a", f"left:140px;top:420px;{pill};background:#22C55E;color:#04210F", "ACEPTAR", D)
     inner += clip(2, f"{n}-r", f"left:560px;top:420px;{pill};background:#EF4444;color:#1F0000", "RECHAZAR", D)
-    inner += clip(3, f"{n}-dd", "left:290px;top:520px", ic("puntero", 130), D)
+    inner += clip(3, f"{n}-dd", "left:290px;top:585px", ic("puntero", 130), D)
     js = fi(f"#{n}-a", 0, -50, 0) + fi(f"#{n}-r", 0.1, 50, 0)
     js += f'      tl.fromTo("#{n}-dd", {{ opacity: 0, x: 0 }}, {{ opacity: 1, x: 0, duration: 0.3 }}, 0.2);\n'
     t0 = round(max(0.7, t - 0.6), 2)
@@ -791,7 +791,7 @@ def esc_netos(sc, e, n):
         inner += clip(2, f"{n}-k{i}", f"left:{x}px;top:925px;width:230px;text-align:center;{MONO};font-size:30px;color:#A3A3AD", km, D)
         js += f'      tl.fromTo("#{n}-b{i}", {{ scaleY: 0, transformOrigin: "50% 100%" }}, {{ scaleY: 1, duration: 0.6, ease: "power3.out" }}, {round(0.1 + i * 0.35, 2)});\n'
         js += fi(f"#{n}-t{i}", round(0.5 + i * 0.35, 2), 0, 10, 0.3)
-    inner += clip(4, f"{n}-x", f"left:440px;top:330px;width:200px;height:200px;border-radius:50%;background:#FACC15;color:#2B2200;display:flex;align-items:center;justify-content:center;{BRIC};font-size:100px;opacity:0", "×2", D)
+    inner += clip(4, f"{n}-x", f"left:255px;top:330px;width:200px;height:200px;border-radius:50%;background:#FACC15;color:#2B2200;display:flex;align-items:center;justify-content:center;{BRIC};font-size:100px;opacity:0", "×2", D)
     js += f'      tl.fromTo("#{n}-x", {{ opacity: 0, scale: 0.3 }}, {{ opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)" }}, {t});\n'
     inner += EJEMPLO.format(top=1000, D=D, i=5)
     return marco(n, D, "", inner, js)
@@ -852,7 +852,7 @@ def esc_renta(sc, e, n):
     D = sc["dur"]; t = palo(sc, "debiendo", .6)
     inner = etq(D, 250, "empieza el día")
     inner += clip(2, f"{n}-hr", f"left:0;right:0;top:330px;text-align:center;{MONO};font-size:150px", "6:00 AM", D)
-    inner += clip(3, f"{n}-rn", f"left:140px;top:600px;width:800px;height:190px;border-radius:28px;background:#16161C;border:3px solid #3A3A45;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;padding:0 40px;{BRIC};font-size:56px;letter-spacing:-.02em", f'<span>{ic("dinero", 70)}</span><span style="margin-left:-300px">Renta del día</span><span id="{n}-sd" style="{MONO};font-size:34px;color:#A3A3AD">al corriente</span>', D)
+    inner += clip(3, f"{n}-rn", f"left:140px;top:600px;width:800px;height:190px;border-radius:28px;background:#16161C;border:3px solid #3A3A45;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;padding:0 40px;{BRIC};font-size:56px;letter-spacing:-.02em", f'<span style="display:flex;align-items:center;gap:24px">{ic("dinero", 70)}<span>Renta del día</span></span><span id="{n}-sd" style="{MONO};font-size:34px;color:#A3A3AD">al corriente</span>', D)
     js = fi(f"#{n}-hr", 0, 0, 30) + fi(f"#{n}-rn", 0.3, 0, 40)
     js += f'      tl.to("#{n}-rn", {{ borderColor: "#EF4444", backgroundColor: "#3A1414", duration: 0.3 }}, {t});\n      tl.to("#{n}-sd", {{ color: "#EF4444", duration: 0.3 }}, {t});\n      tl.call(function () {{ document.getElementById("{n}-sd").textContent = "saldo en rojo"; }}, [], {t});\n'
     return marco(n, D, "", inner, js)
@@ -903,8 +903,8 @@ def esc_alcancia(sc, e, n):
         inner += clip(1, f"{n}-p", "left:273px;top:200px", popup(p, 0.62), D)
         y = 690; css = css_popup()
     jar = (f'<svg width="170" height="200" viewBox="0 0 170 200" aria-hidden="true"><path d="M30 40 H140 V150 Q140 185 105 185 H65 Q30 185 30 150 Z" fill="none" stroke="#F4F4EF" stroke-width="8" stroke-linejoin="round"/><rect x="45" y="20" width="80" height="20" rx="8" fill="#F4F4EF"/><circle id="{n}-co" cx="85" cy="70" r="20" fill="#FACC15"/></svg>')
-    inner += clip(2, f"{n}-aj", f"left:140px;top:{y}px;width:800px;height:240px;{TARJ}", f'<div style="position:absolute;left:34px;top:20px">{jar}</div><div style="position:absolute;left:250px;top:60px;{BRIC};font-size:66px;letter-spacing:-.03em">Mantenimiento</div><div style="position:absolute;left:250px;top:150px;{MONO};font-size:30px;color:#A3A3AD">lo apartas tú</div>', D)
-    inner += clip(3, f"{n}-ok", f"left:790px;top:{y + 60}px;width:110px;height:110px;border-radius:50%;background:#22C55E;opacity:0", '<svg width="110" height="110" viewBox="0 0 24 24" fill="none" stroke="#04210F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 12.5l4 4L17.5 8"/></svg>', D)
+    inner += clip(2, f"{n}-aj", f"left:140px;top:{y}px;width:800px;height:240px;{TARJ}", f'<div style="position:absolute;left:34px;top:20px">{jar}</div><div style="position:absolute;left:250px;top:64px;{BRIC};font-size:50px;letter-spacing:-.03em">Mantenimiento</div><div style="position:absolute;left:250px;top:150px;{MONO};font-size:30px;color:#A3A3AD">lo apartas tú</div>', D)
+    inner += clip(3, f"{n}-ok", f"left:830px;top:{y + 75}px;width:90px;height:90px;border-radius:50%;background:#22C55E;opacity:0", '<svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="#04210F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 12.5l4 4L17.5 8"/></svg>', D)
     if e.get("popup"):
         inner += EJEMPLO.format(top=y + 280, D=D, i=4)
     js = ""
