@@ -1,17 +1,18 @@
 # Reporte de Checa (web + app) · últimos 30 días
 
-Generado: 2026-10-22 17:40 UTC. Cuenta visitas únicas (una por pestaña).
+Generado: 2026-10-23 17:31 UTC. Cuenta visitas únicas (una por pestaña).
 
 ## Resumen
 | visitas | descargas | cuentas_nuevas | pagos | ingresos | licencias_activas |
 | --- | --- | --- | --- | --- | --- |
-| 512 | 245 | 32 | 0 | 0 | 3 |
+| 530 | 251 | 34 | 0 | 0 | 3 |
 
 # App
 
 ## Cuentas nuevas por día (inicio con Google)
 | dia | cuentas |
 | --- | --- |
+| 2026-10-22 | 2 |
 | 2026-10-21 | 5 |
 | 2026-10-20 | 3 |
 | 2026-10-19 | 6 |
@@ -24,6 +25,8 @@ Generado: 2026-10-22 17:40 UTC. Cuenta visitas únicas (una por pestaña).
 ## Quiénes son (cuentas con Google)
 | correo | registro | ultimo_acceso | equipos | licencia_vence |
 | --- | --- | --- | --- | --- |
+| jeal1498@gmail.com | 10-22 17:15 | 10-22 17:15 | 1 | sin licencia |
+| ciberbumker@gmail.com | 10-22 16:24 | 10-22 16:40 | 2 | sin licencia |
 | diberdiub@gmail.com | 10-21 18:24 | 10-21 18:24 | 1 | sin licencia |
 | ceverthbernabe@gmail.com | 10-21 14:00 | 10-21 14:00 | 1 | sin licencia |
 | luisramirezibarra62@gmail.com | 10-21 11:58 | 10-21 11:58 | 1 | sin licencia |
@@ -86,19 +89,19 @@ Sin datos todavía.
 ## Embudo
 | evento | visitas | veces |
 | --- | --- | --- |
-| visita | 512 | 737 |
-| descarga | 245 | 278 |
-| clic_descargar | 114 | 125 |
+| visita | 530 | 759 |
+| descarga | 251 | 284 |
+| clic_descargar | 117 | 128 |
 | descarga_instalar | 68 | 146 |
-| video_play | 65 | 68 |
+| video_play | 67 | 71 |
+| beta_whatsapp | 12 | 16 |
 | whatsapp_ayuda | 11 | 11 |
-| beta_whatsapp | 11 | 15 |
-| beta | 7 | 7 |
+| beta | 9 | 9 |
 
 ## Por fuente (visitas → descargas)
 | fuente | campana | visitas | descargas |
 | --- | --- | --- | --- |
-| directo |  | 393 | 183 |
+| directo |  | 411 | 189 |
 | tiktok |  | 94 | 52 |
 | app | compartir | 15 | 8 |
 | facebook | beta | 6 | 2 |
@@ -109,20 +112,20 @@ Sin datos todavía.
 ## Por dispositivo
 | dispositivo | visitas | descargas |
 | --- | --- | --- |
-| android | 435 | 245 |
+| android | 450 | 251 |
 | iphone | 52 | 0 |
-| pc | 26 | 0 |
+| pc | 29 | 0 |
 
 ## Qué botón lleva a descargar
 | boton | descargas |
 | --- | --- |
-| fijo | 79 |
+| fijo | 80 |
 | hero | 75 |
 | tiktok | 51 |
 | app | 32 |
 | nav | 19 |
 | cierre | 12 |
-| registro | 3 |
+| registro | 8 |
 | Rhc | 2 |
 | hero2 | 2 |
 | edgar | 1 |
@@ -132,7 +135,8 @@ Sin datos todavía.
 ## Por día
 | dia | visitas | descargas |
 | --- | --- | --- |
-| 2026-10-22 | 1 | 0 |
+| 2026-10-23 | 6 | 1 |
+| 2026-10-22 | 14 | 5 |
 | 2026-10-21 | 25 | 7 |
 | 2026-10-20 | 28 | 12 |
 | 2026-10-19 | 74 | 41 |
