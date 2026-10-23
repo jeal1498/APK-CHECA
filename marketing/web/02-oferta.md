@@ -1,3 +1,5 @@
+> **Actualización 23 oct 2026 (vigente):** la beta es gratis para todos hasta el 31 ene 2027. Precios normales: $119 (1 mes), $589 (6 meses), $1,059 (1 año). **Plan Fundador: 40 % menos de por vida ($71, $353, $635) solo para las primeras 50 cuentas de Google, en total.** Lo de «50 lugares gratis por 3 meses» de abajo es del plan viejo y ya no aplica. Mostrar el contador de lugares solo si es real.
+
 # Página web como funnel · Paso 2: oferta y precios
 
 Base: `01-publico.md`, la web actual (`checa-web/index.html`) y `supabase/functions/_shared/planes.ts`.

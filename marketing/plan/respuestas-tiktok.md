@@ -22,7 +22,7 @@ Guía para que Claude redacte las respuestas. Eduardo pega los mensajes en el ch
 ## Respuestas tipo
 | Pregunta | Respuesta |
 |---|---|
-| ¿Cuánto cuesta? / precio | Gratis hasta el 31 de enero y 7 días de prueba después. Luego desde $99 al mes; si te registras antes, 40 % menos de por vida. |
+| ¿Cuánto cuesta? / precio | Gratis hasta el 31 de enero y 7 días de prueba después. Luego desde $119 al mes ($589 por 6 meses, $1,059 por 1 año). Las primeras 50 cuentas que se registren con Google tienen 40 % menos de por vida ($71, $353 y $635). |
 | ¿Dónde la descargo? / link | Te lo mando por DM 📩 (solo Android). |
 | ¿Sirve para iPhone? | Por ahora solo Android. |
 | ¿Sirve con Uber y DiDi? | Sí, con las dos, y también en pantalla dividida. |
