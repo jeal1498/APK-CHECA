@@ -1,0 +1,3 @@
+<resources>
+    <string name="servicio_desc">Lee la tarifa, los kilómetros y los minutos de las ofertas de Uber y DiDi para mostrarte un pop-up con $/km, $/hora y si conviene. El contenido que lee se procesa en tu teléfono.</string>
+</resources>

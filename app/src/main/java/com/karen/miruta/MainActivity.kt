@@ -2639,7 +2639,7 @@ class MainActivity : Activity() {
                 val listo = servicioActivo()
                 c.addView(pasoDe(1))
                 c.addView(titulo("Activa el lector"), margenArriba(Tema.S1))
-                c.addView(parrafo("Checa necesita permiso para ver la oferta en tu pantalla. Solo lee Uber y DiDi; no toca nada ni acepta viajes por ti."),
+                c.addView(parrafo(if (BuildConfig.ES_PLAY) "Checa necesita permiso para ver la oferta en tu pantalla. Lee en tu teléfono lo que aparece para encontrar las ofertas de Uber y DiDi; no toca nada ni acepta viajes por ti." else "Checa necesita permiso para ver la oferta en tu pantalla. Solo lee Uber y DiDi; no toca nada ni acepta viajes por ti."),
                     margenArriba(Tema.S2))
                 // Android 13+: los ajustes restringidos se permiten ANTES de activar la Accesibilidad.
                 if (Build.VERSION.SDK_INT >= 33 && !listo && ajustesRestringidosPermitidos() != true) {
@@ -2895,7 +2895,7 @@ class MainActivity : Activity() {
         // El aviso de «Guardar pantallas» va aquí como una casilla más (no sale aparte).
         prefs.diagAvisoVisto = true
         c.addView(texto(if (arranque) "Para leer tus ofertas" else "Permisos de Checa", 28f, cTexto, true))
-        c.addView(texto("Solo lee Uber y DiDi. No toca nada ni acepta viajes por ti.", Tema.T_SUB, cTexto2, false)
+        c.addView(texto(if (BuildConfig.ES_PLAY) "Lee en tu teléfono lo que aparece en pantalla para encontrar las ofertas de Uber y DiDi. No toca nada ni acepta viajes por ti." else "Solo lee Uber y DiDi. No toca nada ni acepta viajes por ti.", Tema.T_SUB, cTexto2, false)
             .apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S1))
 
         val acc = servicioActivo()
