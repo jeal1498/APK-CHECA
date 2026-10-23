@@ -75,7 +75,7 @@ object Cuenta {
     fun nombre(ctx: Context): String = sp(ctx).getString("nombre", null) ?: ""
     fun equipoQuitado(ctx: Context) = sp(ctx).getBoolean("quitado", false)
     fun tieneLicenciaGuardada(ctx: Context) = sp(ctx).getString("lic_firma", null) != null
-    /** Precio de fundador (40 % menos): la cuenta se creó durante la beta (lo decide mp-pago). */
+    /** Precio de fundador (40 % menos): la cuenta tiene uno de los 50 lugares del Plan Fundador (lo decide mp-pago). */
     fun precioBeta(ctx: Context) = sp(ctx).getBoolean("precio_beta", false)
 
     fun bienvenidaVista(ctx: Context) = sp(ctx).getBoolean("bienvenida", false)

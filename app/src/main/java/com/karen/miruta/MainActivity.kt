@@ -1360,9 +1360,11 @@ class MainActivity : Activity() {
         val avisoFundador = if (BuildConfig.ES_PLAY) {
             "Las condiciones de compra dentro de Google Play se anunciarán cuando estén disponibles."
         } else {
-            "Como la probaste en la beta, tendrás precio de fundador: 40 % menos de por vida " +
-                "(paga antes del 28 de febrero y renueva a tiempo). " +
-                if (Cuenta.conectada(this)) "Tu cuenta ya está registrada." else "Entra con tu cuenta de Google para asegurarlo."
+            if (Cuenta.precioBeta(this))
+                "Tienes precio de fundador: 40 % menos de por vida (paga antes del 28 de febrero y renueva a tiempo)."
+            else
+                "El precio de fundador (40 % menos de por vida) es solo para los primeros 50 que se registran con Google, mientras haya lugares. " +
+                    if (Cuenta.conectada(this)) "Si tu cuenta no lo tiene, pagas el precio normal." else "Entra con tu cuenta de Google para apartar el tuyo."
         }
         cuerpo.addView(texto(avisoFundador, Tema.T_TEXTO, cTexto, true)
             .apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
@@ -2429,8 +2431,9 @@ class MainActivity : Activity() {
             licTexto.text = if (BuildConfig.ES_PLAY)
                 "Las compras integradas de Google Play aún no están disponibles en esta versión."
             else "El ${Licencia.fechaBonita(Licencia.BETA_HASTA)} Checa empieza a cobrar. " +
-                "Quienes la probaron en la beta tendrán precio de fundador: 40 % menos de por vida." +
-                (if (Cuenta.conectada(this)) " Tu cuenta ya está registrada." else " Entra con tu cuenta de Google para asegurarlo.")
+                (if (Cuenta.precioBeta(this)) "Tienes precio de fundador: 40 % menos de por vida."
+                else "El precio de fundador (40 % menos de por vida) es solo para los primeros 50 que se registran con Google, mientras haya lugares." +
+                    (if (Cuenta.conectada(this)) "" else " Entra con tu cuenta de Google para apartar el tuyo."))
         } else if (e.beta && !e.pagada) {
             licTitulo.text = "Beta gratis · todo incluido"
             licTitulo.setTextColor(cTexto)
