@@ -1,11 +1,82 @@
 [
- {"tipo": "billete"},
- {"tipo": "ofertas"},
- {"tipo": "neto", "sfx": [["numero-sube", "primera", 0.4], ["numero-sube", "segunda", 0.4]]},
- {"tipo": "diferencia", "sfx": [["sello", 0.1, 0.4]]},
- {"tipo": "rejilla", "sfx": [["numero-sube", "20", 0.35]]},
- {"tipo": "control"},
- {"tipo": "dospopups", "sfx": [["popup-entra", 0.0, 0.4], ["considerar", 0.45, 0.4], ["aceptar", "marca", 0.45]]},
- {"tipo": "seguir"},
- {"tipo": "cierre"}
+ {
+  "tipo": "billete"
+ },
+ {
+  "tipo": "ofertas"
+ },
+ {
+  "tipo": "neto",
+  "sfx": [
+   [
+    "numero-sube",
+    "primera",
+    0.4
+   ],
+   [
+    "numero-sube",
+    "segunda",
+    0.4
+   ]
+  ]
+ },
+ {
+  "tipo": "diferencia",
+  "sfx": [
+   [
+    "sello",
+    0.1,
+    0.4
+   ]
+  ]
+ },
+ {
+  "tipo": "rejilla",
+  "sfx": [
+   [
+    "numero-sube",
+    "20",
+    0.35
+   ]
+  ]
+ },
+ {
+  "tipo": "control"
+ },
+ {
+  "tipo": "dospopups",
+  "sfx": [
+   [
+    "popup-entra",
+    0.0,
+    0.4
+   ],
+   [
+    "considerar",
+    0.45,
+    0.4
+   ],
+   [
+    "aceptar",
+    "marca",
+    0.45
+   ]
+  ]
+ },
+ {
+  "tipo": "comentarios",
+  "sfx": [
+   [
+    "popup-entra",
+    0.0,
+    0.35
+   ]
+  ]
+ },
+ {
+  "tipo": "seguir"
+ },
+ {
+  "tipo": "cierre"
+ }
 ]

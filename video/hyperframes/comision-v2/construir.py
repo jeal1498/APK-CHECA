@@ -580,7 +580,28 @@ def esc_dospopups(sc, e, n):
     return marco(n, D, css_popup(), inner, js)
 
 
-TIPOS_V12 = {"billete": esc_billete, "ofertas": esc_ofertas, "neto": esc_neto, "diferencia": esc_diferencia, "rejilla": esc_rejilla, "control": esc_control, "dospopups": esc_dospopups}
+def esc_comentarios(sc, e, n):
+    D = sc["dur"]; t14, t8 = pal(sc, "14"), pal(sc, "8")
+    tc = pal(sc, "comentarios")
+    inner = f'    <div class="etq clip" style="top:250px" data-start="0" data-duration="{D}" data-track-index="1">responde en los comentarios</div>\n'
+    tarjeta = (f'<div style="position:absolute;left:36px;top:34px;width:84px;height:84px;border-radius:50%;background:#2A2A33"></div>'
+               f'<div style="position:absolute;left:144px;top:44px;{MONO};font-size:28px;color:#A3A3AD">@tu_comentario</div>'
+               f'<div style="position:absolute;left:144px;top:92px;{BRIC};font-size:60px;letter-spacing:-.03em">¿Cuál aceptas?</div>')
+    inner += clip(2, f"{n}-cm", "left:140px;top:330px;width:800px;height:190px;border-radius:28px;background:#16161C;border:3px solid #3A3A45;box-sizing:border-box", tarjeta, D)
+    pill = f"width:380px;height:130px;border-radius:999px;background:#16161C;border:3px solid #F4F4EF;box-sizing:border-box;display:flex;align-items:center;justify-content:center;{BRIC};font-size:64px;letter-spacing:-.02em"
+    inner += clip(3, f"{n}-a", f"left:140px;top:590px;{pill}", "14 km", D)
+    inner += clip(4, f"{n}-b", f"left:560px;top:590px;{pill}", "8 km", D)
+    inner += clip(5, f"{n}-in", f"left:140px;top:800px;width:800px;height:110px;border-radius:999px;background:#16161C;border:3px solid #3A3A45;box-sizing:border-box;display:flex;align-items:center;padding-left:40px;{MONO};font-size:34px;color:#A3A3AD", f'Escribe tu respuesta<span id="{n}-cur" style="display:inline-block;width:3px;height:40px;margin-left:8px;background:#FACC15"></span>', D)
+    js = f"""      tl.fromTo("#{n}-cm", {{ opacity: 0, y: 40 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: "power4.out" }}, 0.1);
+      tl.fromTo("#{n}-a", {{ opacity: 0, y: 30 }}, {{ opacity: 1, y: 0, duration: 0.35, ease: "power4.out" }}, {t14});
+      tl.fromTo("#{n}-b", {{ opacity: 0, y: 30 }}, {{ opacity: 1, y: 0, duration: 0.35, ease: "power4.out" }}, {t8});
+      tl.fromTo("#{n}-in", {{ opacity: 0, y: 30 }}, {{ opacity: 1, y: 0, duration: 0.35, ease: "power4.out" }}, {round(t8 + 0.3, 2)});
+      tl.to("#{n}-cur", {{ opacity: 0, duration: 0.4, yoyo: true, repeat: {max(1, int(D / 0.4))}, ease: "none" }}, {round(t8 + 0.3, 2)});
+"""
+    return marco(n, D, "", inner, js)
+
+
+TIPOS_V12 = {"comentarios": esc_comentarios, "billete": esc_billete, "ofertas": esc_ofertas, "neto": esc_neto, "diferencia": esc_diferencia, "rejilla": esc_rejilla, "control": esc_control, "dospopups": esc_dospopups}
 
 TIPOS = {"hook": esc_hook, "anillo": esc_anillo, "datos": esc_datos, "logo": esc_logo, "escaneo": esc_escaneo, "voz": esc_voz, "popup_oferta": esc_popup_oferta, "reloj": esc_reloj, "seguir": esc_seguir, "gancho": esc_gancho, "numero": esc_numero, "popup": esc_popup, "estados": esc_estados, "cierre": esc_cierre}
 TIPOS.update(TIPOS_V12)
