@@ -15,3 +15,9 @@ Despertar todos los días debiendo $500 pesos... esa sí es una chinga. [Corte] 
 | 6 | 0:17–0:21 | La gasolina ya te la calcula en automático. El mantenimiento, ese sí apártalo tú. | Alcancía «Mantenimiento» con ✓ |
 | 7 | 0:21–0:26 | Deja de regalar el desgaste de tu carro. Pide tus 7 días de prueba sin costo en el enlace del perfil. | Logo |
 
+
+## Guion v1 APROBADO por Eduardo (23 oct 2026) — sustituye al de arriba para rehacer el video en HyperFrames
+Cambios: hook como pregunta, sin «$500» ni «chinga» (voz sin «$»), CTA de comentarios y cierre estándar. La app solo calcula gasolina; el desgaste lo aparta el conductor (honesto).
+
+### Voz limpia
+¿Cuánto te cuesta realmente cada kilómetro que manejas? Y no hablo solo de la gasolina. También se gastan tus llantas, tus frenos y tu aceite. Si rentas carro, además empiezas el día debiendo antes de ganarte el primer peso. Por eso un viaje malo te cobra doble: gasolina y desgaste. La app Checa lee la oferta al instante y te muestra los kilómetros reales, la recogida incluida, y cuánto te deja por kilómetro. La gasolina te la descuenta sola. El mantenimiento sí apártalo tú. Dime en los comentarios: ¿manejas carro propio o rentado? Descarga Checa y checa cuánto te queda de cada viaje.
