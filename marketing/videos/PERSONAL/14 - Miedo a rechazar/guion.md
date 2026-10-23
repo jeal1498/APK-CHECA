@@ -19,3 +19,16 @@ Cambio: mismo hook que el v1 aprobado, sin primera persona («yo he aceptado…�
 
 ### Voz limpia
 ¿Te ha pasado que aceptas un viaje y a media ruta ya te arrepentiste? Casi siempre es por el miedo a rechazar. Pero ojo con la cuenta: un viaje de 70 pesos por 13 kilómetros, ya con la gasolina, solo te deja 44. Otro de 120 pesos por 12 kilómetros te deja 96. Rechazar el primero no es flojera, es hacer la cuenta. Checa te la hace en la pantalla antes de que decidas, y el botón lo sigues tocando tú. Dime en los comentarios: ¿cuál es el viaje que más te arrepientes de haber aceptado? Sígueme para más consejos. Descarga Checa y checa cuánto te queda de cada viaje.
+
+## Tabla de animaciones APROBADA por Eduardo (23 oct 2026)
+| # | Voz | En pantalla |
+|---|---|---|
+| 1 | ¿Te ha pasado que aceptas un viaje y a media ruta ya te arrepentiste? | Mapa con ruta en curso; «¿ARREPENTIDO?» (misma escena nueva del v1) |
+| 2 | Casi siempre es por el miedo a rechazar. | Dedo temblando entre «Aceptar» y «Rechazar» |
+| 3 | Pero ojo con la cuenta: un viaje de 70 pesos por 13 kilómetros, ya con la gasolina, solo te deja 44. | Pop-up rojo: 70 − gasolina = 44 netos. «Números de ejemplo» |
+| 4 | Otro de 120 pesos por 12 kilómetros te deja 96. | Pop-up verde del mismo tamaño: 120 − gasolina = 96 |
+| 5 | Rechazar el primero no es flojera, es hacer la cuenta. | El pop-up rojo sale; queda una calculadora «70 − gasolina = 44» |
+| 6 | Checa te la hace en la pantalla antes de que decidas, y el botón lo sigues tocando tú. | `dospopups` / `control` |
+| 7 | Dime en los comentarios: ¿cuál es el viaje que más te arrepientes de haber aceptado? | `comentarios` |
+| 8 | Sígueme para más consejos. | `seguir` |
+| 9 | Descarga Checa y checa cuánto te queda de cada viaje. | `cierre` |
