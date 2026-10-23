@@ -7,7 +7,7 @@ Una publicación al día, alternando videos de **venta** (llevan a la prueba gra
 2. 1–2 frases con palabras que la gente busca («chofer de Uber», «gasolina DiDi», «conviene el viaje»).
 3. Una pregunta para comentar 👇.
 4. Llamada: venta → «Descarga CHECA y checa cuánto te queda de cada viaje (solo Android)»; consejo → «Guárdalo y compártelo». (Los videos ya publicados conservan su texto.)
-5. 4–5 hashtags.
+5. 5 hashtags (23 oct 2026): `#uber #didi #conductores #choferes #checaapp` fijos (los más generales que ya usamos) y, si el tema lo pide, cambiar uno por uno del tema (`#gasolina`, `#comision`…). Evitar los de pocas publicaciones (`#choferdidi` tenía 343). **Pendiente:** Eduardo manda captura con el conteo de los candidatos (`#uberdriver`, `#didiconductor`, `#choferesdeapp`, `#conductoresdeapp`, `#conductoresuber`, `#ingresoextra`, `#ahorrodegasolina`, `#trabajoenapp`, `#fyp`) para armar el ranking final.
 Sin link en la bio (TikTok pide constancia del SAT para cuenta de empresa): a quien comente «CHECA» se le manda por mensaje directo el texto de **`dm.txt`** de la carpeta de ese video (trae su link con etiqueta `utm_campaign`, así el reporte cuenta las descargas de cada video) (y a quien comente «YO», `jeal1498.github.io/checa-web/instalar/?desde=tiktok` + pedirle su Gmail para la beta).
 
 **Videos de consejo descartados (19 oct 2026):** Eduardo decidió no publicar más videos de consejo. Se descartan los no publicados: CHECA y PERSONAL 07, 09, 11 y 13 (las carpetas se conservan, sin subirse). Los consejos ya publicados (03 y 05) se quedan. Al preguntar «qué toca hoy», saltar los marcados ❌ y dar solo videos de venta.

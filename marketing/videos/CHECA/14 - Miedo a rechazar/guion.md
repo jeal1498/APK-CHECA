@@ -17,3 +17,10 @@ Te da miedo rechazar viajes [Corte] porque sientes que la app te va a castigar. 
 | 8 | 0:25–0:28 | La app solo lee la pantalla, el botón siempre lo tocas tú. | Ojo escaneando la pantalla, dedo tocando |
 | 9 | 0:28–0:31 | Pide tus 7 días de prueba sin costo en el link del perfil. | Logo + 7 días de prueba sin costo |
 
+
+
+## Guion revisado (23 oct 2026, para rehacer el video antes de publicarlo; estado: guion para aprobar)
+Cambios: cifras con «pesos» (sin «$», la voz decía «dólares»), CTA de comentarios (regla del 23 oct) y cierre estándar en lugar de «link del perfil». Mismos datos ($70/13 km → $44; $120/12 km → $96; gasolina $2/km).
+
+### Voz limpia
+Te da miedo rechazar viajes porque sientes que la app te va a castigar. Así que terminas aceptando de todo, hasta lo que te hace perder dinero. Cada plataforma tiene sus reglas, pero si vas a rechazar, que sea el viaje que de verdad no conviene. Mira: 70 pesos por 13 kilómetros solo te dejan 44 pesos limpios. En cambio, 120 pesos por 12 kilómetros te dejan 96 en la bolsa. La app Checa te marca cuál es cuál, y el botón siempre lo tocas tú. Dime en los comentarios: ¿rechazas los viajes que no convienen o aceptas de todo? Descarga Checa y checa cuánto te queda de cada viaje.
