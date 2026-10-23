@@ -63,9 +63,9 @@ Cuando te llega una oferta en Uber o DiDi, Checa te muestra encima tus netos des
 
 | Paquete | Precio | Al día | Incluye |
 |---|---|---|---|
-| Básico | $99 · 1 mes | $3.30 | Pop-up con netos y semáforo, filtros, voz. 1 equipo |
-| **Estratega** · *Más elegido* | **$499 · 6 meses** | **$2.77** | Todo lo del Básico + Uber y DiDi juntos con ⭐ a la mejor + mejores horas de la semana. 2 equipos |
-| Pro | $899 · 1 año | $2.46 | Todo lo del Estratega por un año completo |
+| Básico | $119 · 1 mes | $3.97 | Pop-up con netos y semáforo, filtros, voz. 1 equipo |
+| **Estratega** · *Más elegido* | **$589 · 6 meses** | **$3.27** | Todo lo del Básico + Uber y DiDi juntos con ⭐ a la mejor + mejores horas de la semana. 2 equipos |
+| Pro | $1,059 · 1 año | $2.90 | Todo lo del Estratega por un año completo |
 
 **Frase bajo las tarjetas:** Con un viaje malo que evites a la semana, el Estratega ya se pagó.
 **Botón:** Empezar mis 7 días gratis

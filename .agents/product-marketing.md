@@ -9,10 +9,11 @@
 **Product category:** App calculadora / asistente de ofertas para conductores de apps de transporte (se busca como "calculadora de viajes Uber", "filtro de viajes DiDi", alternativa a Ruta Rentable).
 **Product type:** App Android (APK fuera de Play Store por ahora) con licencia por cuenta Google.
 **Business model:** 7 días de prueba gratis, luego **pago único** con Mercado Pago (tarjeta, OXXO, saldo); no es suscripción, no hay cobros automáticos ni nada que cancelar:
-- 1 mes $99 (Plan Básico: 1 equipo, sin comparador ni "lo mejor que viene")
-- 6 meses $499 (Plan Estratega, el recomendado, "Más popular")
-- 1 año $899 (Plan Pro)
+- 1 mes $119 (Plan Básico: 1 equipo, sin comparador ni "lo mejor que viene")
+- 6 meses $589 (Plan Estratega, el recomendado, "Más popular")
+- 1 año $1,059 (Plan Pro)
 - Miembro fundador ⭐ (primeros clientes): licencia especial, insignia dorada.
+- Plan Fundador (precio): 40 % menos de por vida para las primeras 50 cuentas de Google en total: $71 (1 mes), $353 (6 meses), $635 (1 año).
 
 **Garantía de lectura (desde 13 oct 2026):** si pagas y Checa no lee las ofertas en tu teléfono, escribe en los primeros 7 días y se devuelve el dinero (también en `terminos.html`).
 **Bono:** ayuda para instalar por WhatsApp (`/instalar/` en la web).
@@ -62,7 +63,7 @@ B2C, una sola persona: el conductor que quiere ganar más por hora y gastar meno
 - Aviso por voz ("Aceptar" / "Considerar" / "Rechazar") para no quitar la vista del camino.
 - Filtros sencillos: meta por km, por hora, recogida máx. y duración máx.
 - Mejores horas: semáforo por hora del día y de la semana con tus propias ofertas.
-- Más barata: desde $99/mes, $499 por 6 meses.
+- Más barata: desde $119/mes, $589 por 6 meses.
 - Privada: lee la oferta en el teléfono, sin enviar tus viajes a ningún servidor.
 **Why customers choose us:** Decide por ti en un vistazo, dice lo que de verdad te queda y cuesta menos.
 
@@ -125,7 +126,7 @@ B2C, una sola persona: el conductor que quiere ganar más por hora y gastar meno
 |-------|-------|
 | Lo que de verdad te queda | Ejemplo del video: "…en realidad te deja $90", "La gasolina se lleva $60 que no ves" |
 | Uber y DiDi al mismo tiempo | Pantalla dividida con dos pop-ups y ⭐ |
-| Más barato | $2.77 al día con el Estratega (interno: $99 vs $129/mes de Ruta Rentable; no usar en público) |
+| Más barato | $3.27 al día con el Estratega (interno: $119 vs $129/mes de Ruta Rentable; no usar en público) |
 | Riesgo cero | 7 días gratis sin tarjeta + garantía de lectura |
 
 ## Goals

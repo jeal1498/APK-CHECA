@@ -9,7 +9,7 @@ Base: `01-publico.md`, la web actual (`checa-web/index.html`) y `supabase/functi
 |---|---|---|
 | Producto | Pop-up con neta, $/km, $/h, semáforo y voz | Bien |
 | Prueba | 7 días gratis, sin tarjeta, todo incluido | Muy bien: quita el riesgo de entrada |
-| Precio | 1 mes $99 · **6 meses $499** · 1 año $899, pago único | Señuelo correcto; no tocar |
+| Precio | 1 mes $119 · **6 meses $589** · 1 año $1,059, pago único (Plan Fundador −40 %: $71 · $353 · $635, 50 lugares en total) | Señuelo correcto; no tocar |
 | Garantía | Ninguna (solo la prueba) | **Falta** |
 | Bonos | Ninguno | **Falta** |
 | Urgencia | Ninguna en la web | **Falta** (y debe ser real) |
