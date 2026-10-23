@@ -36,8 +36,8 @@ Sin link en la bio (TikTok pide constancia del SAT para cuenta de empresa): a qu
 | 11 | — | Consejo (descartado 19 oct) | `11 - Ingreso inestable` |  | ❌ descartado |
 | 12 | vie 23 oct | Venta | `12 - Comisión y tarifas` |  | ✅ 23 oct |
 | 13 | — | Consejo (descartado 19 oct) | `13 - Multas y papeles` |  | ❌ descartado |
-| 14 | dom 25 oct | Venta | `14 - Miedo a rechazar` |  | |
-| 15 | lun 26 oct | Venta | `15 - Desgaste y renta` |  | |
+| 14 | dom 25 oct | Venta | `14 - Miedo a rechazar` | ✅ | |
+| 15 | lun 26 oct | Venta | `15 - Desgaste y renta` | ✅ | |
 | 19 | mar 27 oct | Venta | `19 - Checa lee la oferta` |  | |
 | 17 | mié 28 oct | Explicativo | `17 - Cómo funciona Checa` |  | |
 | 18 | por definir | Venta | `18 - Cuánto ganas tú` |  | (ya está en PERSONAL) |
@@ -71,8 +71,8 @@ Misma idea que cada video de CHECA, con otro gancho y otras palabras (reglas en 
 | 11 | — | Consejo (descartado 19 oct) | `11 - Ingreso inestable` |  | ❌ descartado |
 | 12 | vie 23 oct | Venta | `12 - Comisión y tarifas` | ✅ | ✅ 23 oct |
 | 13 | — | Consejo (descartado 19 oct) | `13 - Multas y papeles` |  | ❌ descartado |
-| 14 | lun 26 oct | Venta | `14 - Miedo a rechazar` |  | |
-| 15 | mar 27 oct | Venta | `15 - Desgaste y renta` |  | |
+| 14 | lun 26 oct | Venta | `14 - Miedo a rechazar` | ✅ | |
+| 15 | mar 27 oct | Venta | `15 - Desgaste y renta` | ✅ | |
 | 22 | por definir | Venta (v2, un día detrás de CHECA) | `22 - Cuánto vale tu kilómetro` | guion para aprobar | |
 
 # Medición semanal (qué videos venden)

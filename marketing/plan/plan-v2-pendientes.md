@@ -45,3 +45,10 @@ Hacer cada etapa a la vez para los 3 videos (los 3 guiones, luego las 3 tablas, 
 - **Publicados:** CHECA 02, 03, 04, 05, 06, 08, 10, 12, 21 y el de «Ayuda Android»; PERSONAL 01, 05, 06, 07, 08, 12 (23 oct), 18, 19.
 - **Hecha pero sin publicar:** CHECA 14, 15, 17, 18, 19, 20 y 22 (en borrador, con guion por aprobar).
 - **Tareas ajenas a los videos que siguen pendientes (ver `CLAUDE.md`):** gráficos de la ficha de Play, declaraciones de accesibilidad y servicio en primer plano, prueba cerrada con 12 testers, Fase 7 (Play Billing antes del 1 feb 2027).
+
+## 6. Lote 1 terminado (23 oct 2026, noche)
+- **Hechos y aprobados por Eduardo** (guion, tabla, portada, video con portada de primer cuadro y copy): PERSONAL 10 v2, CHECA 14 v1 (rehecho en HyperFrames, sustituye al 1Volt), PERSONAL 14 v2, CHECA 15 v1 (rehecho en HyperFrames) y PERSONAL 15 v2. Los `video.mp4` ya están en git; «Publicado» lo marca Eduardo.
+- Proyectos HyperFrames: `video/hyperframes/{mejores-horas-v2,rechazar-v1,rechazar-v2,desgaste-v1,desgaste-v2}/` (cada uno con `construir.py` copiado de `comision-v2`, que ahora trae las escenas del lote: `vueltas, tachado, relojes, barras, balanza, horas, comentarios2, arrepentido, dedo, netos, cuenta, odometro, bomba, desgaste, renta, cobros, escaneo2, alcancia, carro`). Portadas: `video/hyperframes/{mejores-horas-v2,rechazar,desgaste}/portada/`.
+- `comentarios2` (CTA) se parametriza con `pregunta`, `opciones` y `fuente`; `dospopups` acepta `p1`, `p2` y `palabra`.
+- Todo el copy usa los 5 hashtags fijos; en 10 v2 cambia `#choferes` por `#mejoreshoras` y en 15 (v1 y v2) por `#rentadeauto`. El `dm.txt` de CHECA conserva su `utm_source=tiktok`; el de PERSONAL usa `tiktok-personal`.
+- **Siguiente: Lote 2** (22 v1 y v2, 19 v1 con CTA, 17 v1; la v2 del 17 aún no existe). Pendiente de Eduardo: captura con el conteo de hashtags.
