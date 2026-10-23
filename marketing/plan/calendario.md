@@ -67,7 +67,7 @@ Misma idea que cada video de CHECA, con otro gancho y otras palabras (reglas en 
 | 07 | jue 22 oct | Consejo (descartado 19 oct, publicado 22 oct) | `07 - Pasajeros y cancelaciones` | ✅ | ✅ 22 oct |
 | 08 | mar 20 oct | Venta | `08 - Decidir en segundos` | ✅ | ✅ 20 oct 10:30 |
 | 09 | — | Consejo (descartado 19 oct) | `09 - Cuenta desactivada` |  | ❌ descartado |
-| 10 | jue 22 oct | Venta | `10 - Mejores horas` |  | |
+| 10 | jue 22 oct | Venta | `10 - Mejores horas` | ✅ | |
 | 11 | — | Consejo (descartado 19 oct) | `11 - Ingreso inestable` |  | ❌ descartado |
 | 12 | vie 23 oct | Venta | `12 - Comisión y tarifas` | ✅ | ✅ 23 oct |
 | 13 | — | Consejo (descartado 19 oct) | `13 - Multas y papeles` |  | ❌ descartado |
