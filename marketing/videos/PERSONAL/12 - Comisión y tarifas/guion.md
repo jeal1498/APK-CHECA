@@ -1,6 +1,6 @@
 # Guion · 12 - Comisión y tarifas (PERSONAL, v2)
 
-v1: `marketing/videos/CHECA/12 - Comisión y tarifas/` (publicada 23 oct) · v2: esta carpeta (~38 s con cierre estándar; publica sáb 24 oct). **Estado: guion aprobado; tabla aprobada; portada aprobada; video para aprobar.**
+v1: `marketing/videos/CHECA/12 - Comisión y tarifas/` (publicada 23 oct) · v2: esta carpeta (~38 s con cierre estándar; publica sáb 24 oct). **Estado: guion aprobado; tabla aprobada; portada nueva («¿Cuál deja más?») para aprobar; video de prueba hecho, pendiente.**
 
 ## Auditoría de la v1
 - El gancho abre con la comisión (algo que no se controla) y la queja dura 2 cortes antes de llegar a los $100.
