@@ -20,7 +20,7 @@
 | Categoría → tipo | Qué es y de dónde sale | Propósitos |
 |---|---|---|
 | Info personal → Correo | Inicio de sesión con Google; llave de `licencias`, `equipos` y `ajustes` | Funcionalidad de la app; Administración de cuenta |
-| Info personal → Nombre | El token de Google trae el nombre y Supabase Auth puede guardarlo. **Verificar en Supabase → Auth → Users.** Si aparece, declarar | Administración de cuenta |
+| Info personal → Nombre | El token de Google trae el nombre y Supabase Auth puede guardarlo. **Confirmado el 23 oct 2026 en Supabase → Auth → Users: sí lo guarda (Display name) y también la foto de perfil; se declaran Nombre y Fotos.** | Administración de cuenta |
 | Info personal → ID de usuario | UUID de la cuenta en Supabase | Funcionalidad; Administración de cuenta |
 | Dispositivo u otros ID | Código de equipo = hash SHA-256 truncado (8 hex) de ANDROID_ID, guardado en `equipos` con marca, modelo y alias. Es seudónimo | Funcionalidad (límite de equipos); Prevención de fraude, seguridad y cumplimiento |
 | Dispositivo u otros ID | ML Kit: identificadores por instalación | Analítica |
@@ -52,7 +52,7 @@
 - La página web debe cumplir lo que pide Play: funcionar, mostrar la vía de solicitud de forma destacada, nombrar la app como en la ficha, permitir pedirlo sin reinstalar, explicar pasos extra y dar un plazo razonable.
 
 ## Pendiente antes de enviar el formulario
-1. Revisar nombre y avatar en Supabase Auth.
+1. ~~Revisar nombre y avatar en Supabase Auth.~~ Hecho (23 oct 2026): se guardan nombre y foto; declarados en Play Console.
 2. Probar `eliminar-cuenta` con una cuenta secundaria.
 3. Confirmar en un teléfono si «Entrar sin cuenta» se ve en el flavor play.
 4. ~~Agregar correo de contacto y plazo~~ Hecho en `checa-web` (`8f9d5cb`): correo y plazo de 30 días en la página de eliminación y en la política.
