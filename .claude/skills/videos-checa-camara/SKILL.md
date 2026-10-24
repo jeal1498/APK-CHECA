@@ -17,7 +17,7 @@ Port de la skill `videos-karen` (repo `jeal1498/videos-karen-trujillo`) a la mar
 ## Flujo con una aprobación por etapa (el de Checa, 16 oct 2026)
 1. **Guion / transcripción:** el texto corregido de lo que Eduardo dice, de corrido. Sin etiquetas ni tablas.
 2. **Tabla de gráficos por toma** (chat): `Segundo · Frase que dice · Elemento en pantalla` (gancho, rótulo, escenas con su tipo, pantalla final). Se piensa con `plantillas/guion-escenas.md`.
-3. **Portada** (estilo marca v2: `video/hyperframes/checa-marca-v2/portada/portada.html`; va antes que el video).
+3. **Portada** (estilo marca v2: `video/hyperframes/checa-marca-v2/portada/portada.html`; va antes que el video). Con la tarjeta de oferta parecida a la de una app de viajes y las preferencias de Eduardo del 24 oct 2026 (ver «Portadas» en `videos-checa`).
 4. **Video:** versión de prueba con `SendUserFile` desde la carpeta de trabajo (no se commitea). Con portada y video aprobados: `video/scripts/portada_primer_cuadro.sh <video.mp4> <portada.jpg> <salida.mp4>`.
 5. **Copy** (`copy.txt` sin link y `dm.txt` con el link y su `utm_campaign`): `utm_source=tiktok-personal` en la cuenta de Eduardo y `utm_source=tiktok` en la CHECA oficial. Eduardo aprueba el copy antes de guardar.
 6. **Hecho:** copiar a `marketing/videos/PERSONAL/NN - Nombre/` (o `CHECA/` si va a la cuenta oficial; agrega su fila en `marketing/plan/calendario.md`) (`video.mp4`, `portada.jpg`, `copy.txt`, `dm.txt`, `guion.md`), una sola vez y ya aprobado. Commit con `[skip ci]` (si no, GitHub Actions compila el APK). «Hecho» no es «Publicado».

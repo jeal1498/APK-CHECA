@@ -1,3 +1,9 @@
+<!-- PLANTILLA DE PORTADA (marca v2). Estilo aprobado por Eduardo el 24 oct 2026 (video 23).
+ Qué se cambia en cada portada: .k (etiqueta gris, la frase del gancho), .t (título enorme: pregunta, número o afirmación;
+ si lleva groserías, censurada «v***»), la tarjeta .card (oferta con estructura de app de viajes: VIAJE, ★ calificación,
+ precio, $/km est., recogida, viaje, botón Aceptar; sin logo ni nombre de Uber/DiDi) y el sello amarillo (.sello: respuesta
+ borrosa). Las cifras deben cuadrar con el video (neta = viaje − 31 km × $2). Zona segura y 300–1620.
+ Render: chrome --headless --window-size=1080,1920 --allow-file-access-from-files --screenshot=p.png portada.html; ffmpeg -q:v 3 portada.jpg -->
 <!doctype html><html><head><meta charset="utf-8"><style>
 @font-face{font-family:BG;src:url('../assets/fonts/bricolage-grotesque-latin-800-normal.woff2');font-weight:800}
 @font-face{font-family:DM;src:url('../assets/fonts/dm-sans-latin-500-normal.woff2');font-weight:500}
@@ -5,25 +11,34 @@
 html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#0C0C10;font-family:DM;color:#F4F4EF}
 .road{position:absolute;left:0;top:0}
 .k{position:absolute;left:84px;top:330px;font-family:JB;font-weight:700;font-size:38px;letter-spacing:.14em;color:#A3A3AD}
-.t{position:absolute;left:78px;top:395px;font-family:BG;font-weight:800;font-size:236px;line-height:.88;letter-spacing:-.06em}
-.card{position:absolute;left:84px;top:900px;width:660px;height:470px;border-radius:28px;background:#16161C;border:2px solid #3A3A45;transform:rotate(-3deg);box-shadow:0 40px 80px rgba(0,0,0,.6)}
-.card .l{position:absolute;left:44px;top:36px;font-family:JB;font-weight:700;font-size:26px;letter-spacing:.14em;color:#A3A3AD}
-.card .f{position:absolute;left:40px;top:70px;font-family:BG;font-weight:800;font-size:170px;letter-spacing:-.05em;line-height:1}
-.card svg{position:absolute;left:500px;top:48px;width:112px;height:112px}
-.card .d{position:absolute;left:44px;top:252px;font-family:JB;font-weight:700;font-size:32px;color:#C9C9D1;line-height:1.5}
-.card .b{position:absolute;left:44px;top:366px;background:#22C55E;color:#04210F;border-radius:999px;padding:14px 40px;font-family:BG;font-weight:800;font-size:44px;letter-spacing:.06em}
-.sello{position:absolute;left:600px;top:1190px;width:300px;height:300px;border-radius:50%;background:#FACC15;color:#2B2200;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(-12deg);font-family:BG;font-weight:800;line-height:1;box-shadow:0 24px 50px rgba(0,0,0,.6)}
-.sello .a{font-size:34px;letter-spacing:.08em}
+.t{position:absolute;left:78px;top:395px;font-family:BG;font-weight:800;font-size:200px;line-height:.9;letter-spacing:-.06em}
+.sello{position:absolute;left:610px;top:1230px;width:300px;height:300px;border-radius:50%;background:#FACC15;color:#2B2200;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(-12deg);font-family:BG;font-weight:800;line-height:1;box-shadow:0 24px 50px rgba(0,0,0,.6)}
+.sello .a{font-size:30px;letter-spacing:.06em}
 .sello .n{font-size:110px;letter-spacing:-.04em;filter:blur(13px);margin-top:6px}
-.logo{position:absolute;left:84px;top:1450px;display:flex;align-items:center;gap:22px}
+.logo{position:absolute;left:84px;top:1490px;display:flex;align-items:center;gap:22px}
 .logo span{font-family:BG;font-weight:800;font-size:84px;letter-spacing:-.04em}
+.card{position:absolute;left:84px;top:820px;width:640px;height:610px;border-radius:30px;background:#F4F4EF;color:#0C0C10;transform:rotate(-3deg);box-shadow:0 40px 80px rgba(0,0,0,.6);font-family:DM}
+.card .top{position:absolute;left:44px;top:34px;right:44px;display:flex;justify-content:space-between;align-items:center}
+.card .pill{background:#0C0C10;color:#F4F4EF;border-radius:999px;padding:8px 22px;font-family:JB;font-weight:700;font-size:24px;letter-spacing:.08em}
+.card .rate{font-family:JB;font-weight:700;font-size:28px;color:#3A3A45}
+.card .p{position:absolute;left:44px;top:92px;font-family:BG;font-weight:800;font-size:150px;letter-spacing:-.05em;line-height:1}
+.card .km{position:absolute;left:48px;top:246px;font-family:JB;font-weight:700;font-size:28px;color:#55555F}
+.card .hr{position:absolute;left:44px;right:44px;top:306px;height:2px;background:#DAD9D1}
+.card .r{position:absolute;left:44px;right:44px;font-family:JB;font-weight:700;font-size:28px;line-height:1.3}
+.card .r small{display:block;font-family:DM;font-weight:500;font-size:26px;color:#55555F;margin-top:2px}
+.card .r i{position:absolute;left:-2px;top:6px;width:20px;height:20px;border-radius:50%;background:#22C55E}
+.card .r i.q{border-radius:4px;background:#0C0C10}
+.card .r span{display:block;padding-left:40px}
+.card .btn{position:absolute;left:44px;right:44px;top:492px;height:84px;border-radius:999px;background:#0C0C10;color:#F4F4EF;display:flex;align-items:center;justify-content:center;font-family:BG;font-weight:800;font-size:44px;letter-spacing:.02em}
 </style></head><body>
 <svg class="road" width="1080" height="1920" viewBox="0 0 1080 1920" aria-hidden="true"><path d="M-20 1700C260 1700 330 1560 560 1580C800 1600 860 1680 1100 1620" fill="none" stroke="#FACC15" stroke-width="10" stroke-dasharray="3 28" stroke-linecap="round"/><circle cx="560" cy="1580" r="18" fill="#22C55E"/></svg>
-<div class="k">LLEGA LA OFERTA</div>
-<div class="t">¿La<br>aceptas?</div>
-<div class="card"><div class="l">NUEVA OFERTA</div><div class="f">$120</div>
-<svg viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="40" stroke="#3A3A45" stroke-width="12"/><path d="M50 10 A40 40 0 1 1 14 67" stroke="#EF4444" stroke-width="12" stroke-linecap="round"/></svg>
-<div class="d">5 min (1.8 km)<br>18 min (9 km)</div><div class="b">ACEPTAR</div></div>
-<div class="sello"><div class="a">TE QUEDAN</div><div class="n">$▒▒</div></div>
+<div class="k">SE VEÍA BUENO</div>
+<div class="t">¡Ya valió<br>v***!</div>
+<div class="card"><div class="top"><div class="pill">VIAJE</div><div class="rate">★ 4.92</div></div>
+<div class="p">$150.00</div><div class="km">$4.84/km est.</div><div class="hr"></div>
+<div class="r" style="top:334px"><i></i><span>A 5 min (2 km)<small>Calle Principal 120</small></span></div>
+<div class="r" style="top:416px"><i class="q"></i><span>Viaje: 50 min (29 km)<small>Av. del Centro 45</small></span></div>
+<div class="btn">Aceptar</div></div>
+<div class="sello"><div class="a">TE QUEDARON</div><div class="n">$▒▒</div></div>
 <div class="logo"><svg width="54" height="90" viewBox="0 0 60 100" aria-hidden="true"><rect x="6" y="2" width="48" height="96" rx="20" fill="#222826" stroke="#3A423F" stroke-width="1.6"/><circle cx="30" cy="26" r="9" fill="#4A2222"/><circle cx="30" cy="50" r="9" fill="#4A3C16"/><circle cx="30" cy="74" r="12" fill="#22C55E"/><path d="M24 74.5l4.5 4.5L36.5 69" fill="none" stroke="#04210F" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Checa</span></div>
 </body></html>
