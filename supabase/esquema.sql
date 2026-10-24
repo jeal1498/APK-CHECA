@@ -241,3 +241,25 @@ returns boolean language sql stable security definer set search_path = public as
 $$;
 revoke all on function public.reclamar_fundador(text, integer, boolean) from public, anon, authenticated;
 grant execute on function public.reclamar_fundador(text, integer, boolean) to service_role;
+
+-- ===================== Registro de testers: tope de 50 y fecha límite =====================
+-- La página de registro (checa-web/registro/) muestra «Quedan N de 50 lugares» y cierra al llegar a 50 testers
+-- o el 15 de noviembre de 2026 (23:59 Cancún = 16 nov 05:00 UTC). El cierre también se aplica en la base de datos.
+-- Para cambiar la fecha o el tope, editar estas dos funciones y volver a desplegar.
+create or replace function public.lugares_fundador()
+returns integer language sql stable security definer set search_path = public as $$
+  select greatest(0, 50 - count(*))::integer from testers;
+$$;
+create or replace function public.registro_abierto()
+returns boolean language sql stable security definer set search_path = public as $$
+  select now() < timestamptz '2026-11-16 05:00:00+00' and (select count(*) from testers) < 50;
+$$;
+revoke all on function public.lugares_fundador() from public;
+revoke all on function public.registro_abierto() from public;
+grant execute on function public.lugares_fundador() to anon, authenticated;
+grant execute on function public.registro_abierto() to anon, authenticated;
+
+drop policy if exists "la web registra testers" on public.testers;
+create policy "la web registra testers" on public.testers
+  for insert to anon
+  with check (estado = 'pendiente' and creado > now() - interval '1 minute' and public.registro_abierto());
