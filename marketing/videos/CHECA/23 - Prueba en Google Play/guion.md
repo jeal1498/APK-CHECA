@@ -55,7 +55,7 @@ Aceptaste ese viaje solo porque se veía bueno, y a la mera hora estaba de la v*
 | Segundo | Frase que dice | Elemento en pantalla |
 |---|---|---|
 | 0.2–2.8 | «Aceptaste ese viaje solamente porque se veía bueno» | **Gancho** (placa arriba): «SE VEÍA BUENO. PERDISTE.», «PERDISTE» en amarillo |
-| 2.8–4.54 | «pero a la mera hora valió ver—» (corte seco) | **Escena `comparar`** corta (1.7 s): arriba «Se veía bueno · $150 de tarifa»; abajo en rojo «Te quedó · $88 netos»; «Números de ejemplo». Termina en el corte |
+| 2.35–4.24 | «pero a la mera hora valió ver—» (corte seco) | **Escena `numero`** (rojo, aprobada en lugar de `comparar`): «TE QUEDARON» / **$88** / «de un viaje de $150»; «Números de ejemplo». Termina en el corte |
 | 4.54–9.4 | «pero no te agüites, hay una forma de saber cuánto te queda y nadie te lo está diciendo» | Eduardo a cámara (zoom discreto 1.08) |
 | 9.9–13.4 | «qué hubo, soy Eduardo, papá, esposo y conductor» | **Rótulo** a la izquierda: «Eduardo» / «Papá, esposo y conductor» |
 | 13.4–18.2 | «y así como tú todos los días salgo a la calle a fletarme… por eso armé Checa» | Eduardo a cámara |
@@ -87,3 +87,6 @@ Aceptaste el viaje porque se veía buen billete… y llegaste a casa con menos d
 Armé Checa para decirte cuánto te queda, ya sin gasolina, antes de aceptar. Está en prueba y busco 50 conductores (solo Android). Los primeros 50 conservan −40 % de por vida.
 ¿Quieres tu lugar? Comenta CHECA 👇
 #choferuber #choferdidi #conductores #appdeconductores #ganarmas
+
+## Estado
+Hecho el 24 oct 2026: guion, tabla, portada, video (40.9 s con la portada de primer cuadro) y copy aprobados por Eduardo. Publicado: lo marca Eduardo en `marketing/plan/calendario.md`. Proyecto de render (fuera del repo): corte con `unir_clips.py` y composición de `videos-checa-camara` (spec con la escena `numero`, cierre «Comenta CHECA»).

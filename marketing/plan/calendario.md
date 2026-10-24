@@ -44,6 +44,7 @@ Sin link en la bio (TikTok pide constancia del SAT para cuenta de empresa): a qu
 | 20 | por definir | Tutorial | `20 - Cómo instalar Checa` |  | |
 | 21 | sáb 17 oct | Campaña beta | `21 - Beta testers corto` | ✅ |✅ 17 oct (sin efectos de sonido) |
 | 22 | por definir | Venta (prueba del domingo 19 oct) | `22 - Cuánto vale tu kilómetro` | guion para aprobar | |
+| 23 | hoy 24 oct | Campaña testers (Eduardo a cámara) | `23 - Prueba en Google Play` | ✅ | |
 
 ---
 
