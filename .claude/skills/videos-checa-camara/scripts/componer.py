@@ -9,7 +9,7 @@ Spec (ver ejemplos/spec-escenas.json):
   gancho   {texto, resalta?, ini, fin}
   nametag  {nombre, detalle, ini, fin}
   escenas  [{id, tipo, ini, fin, nivel?, ...}]  tipos: dato, lista, comparar, pasos, numero, popup
-  cierre   {ini}   (pantalla final estándar de Checa)
+  cierre   {ini, pil?, link?}   (pantalla final estándar de Checa; pil = texto de la píldora, por defecto «Descarga Checa»; link = enlace que se muestra)
 Reutiliza de video/hyperframes/checa-marca-v2/construir.py: el pop-up (sin rediseñar), el logo animado y el agrupado de subtítulos."""
 import json, math, re, html, sys, os, importlib.util, contextlib
 
@@ -155,10 +155,10 @@ if cz:
     ini = cz['ini']; ocupado.append((ini, DUR, 'cierre'))
     t0 = ini + T
     inner = (f'<div class="e-it" id="cz-lgw" style="left:465px;top:190px">{M.logo_svg("cz", 150, 250)}</div>'
-             '<div class="e-it nombre" id="cz-nom">Checa</div><div class="e-it pil" id="cz-pil">Descarga Checa</div>'
+             f'<div class="e-it nombre" id="cz-nom">Checa</div><div class="e-it pil" id="cz-pil">{esc(cz.get("pil", "Descarga Checa"))}</div>'
              '<div class="e-it sa" id="cz-sa">Solo Android</div>'
              '<div class="e-it cu" id="cz-cu">síguenos en tiktok<br><b>@checa.driver</b><br>creador de Checa<br><b>@Eduardoalv9802</b></div>'
-             '<div class="e-it li" id="cz-li">jeal1498.github.io/checa-web</div>')
+             f'<div class="e-it li" id="cz-li">{esc(cz.get("link", "jeal1498.github.io/checa-web"))}</div>')
     H.append(f'<div class="escena cierre-c clip" id="cz" data-layout-allow-occlusion data-start="{ini}" data-duration="{round(DUR-ini,2)}" data-track-index="4">{inner}</div>')
     H.append(f'<div class="barrido clip" id="cz-sw" data-layout-allow-occlusion data-start="{ini}" data-duration="{round(T+0.1,2)}" data-track-index="4"></div>')
     sweep('cz', ini, DUR, sale=False)
