@@ -1,17 +1,19 @@
 # Reporte de Checa (web + app) · últimos 30 días
 
-Generado: 2026-10-23 17:31 UTC. Cuenta visitas únicas (una por pestaña).
+Generado: 2026-10-24 16:17 UTC. Cuenta visitas únicas (una por pestaña).
 
 ## Resumen
 | visitas | descargas | cuentas_nuevas | pagos | ingresos | licencias_activas |
 | --- | --- | --- | --- | --- | --- |
-| 530 | 251 | 34 | 0 | 0 | 3 |
+| 548 | 259 | 38 | 0 | 0 | 3 |
 
 # App
 
 ## Cuentas nuevas por día (inicio con Google)
 | dia | cuentas |
 | --- | --- |
+| 2026-10-24 | 2 |
+| 2026-10-23 | 2 |
 | 2026-10-22 | 2 |
 | 2026-10-21 | 5 |
 | 2026-10-20 | 3 |
@@ -25,6 +27,10 @@ Generado: 2026-10-23 17:31 UTC. Cuenta visitas únicas (una por pestaña).
 ## Quiénes son (cuentas con Google)
 | correo | registro | ultimo_acceso | equipos | licencia_vence |
 | --- | --- | --- | --- | --- |
+| patchucp@gmail.com | 10-24 06:08 | 10-24 06:08 | 1 | sin licencia |
+| glozano30506@gmail.com | 10-24 00:12 | 10-24 00:12 | 1 | sin licencia |
+| nikte06bacabespinoza@gmail.com | 10-23 18:23 | 10-23 18:23 | 1 | sin licencia |
+| wilmafields.72871@gmail.com | 10-23 12:15 | 10-23 12:15 | 1 | sin licencia |
 | jeal1498@gmail.com | 10-22 17:15 | 10-22 17:15 | 1 | sin licencia |
 | ciberbumker@gmail.com | 10-22 16:24 | 10-22 16:40 | 2 | sin licencia |
 | diberdiub@gmail.com | 10-21 18:24 | 10-21 18:24 | 1 | sin licencia |
@@ -78,32 +84,33 @@ Sin datos todavía.
 ## Invita a un amigo
 | codigos_usados | premiados |
 | --- | --- |
-| 2 | 0 |
+| 3 | 0 |
 
 | invitador | invitados | premiados |
 | --- | --- | --- |
 | lufercab@gmail.com | 2 | 0 |
+| patpechluisfernando89@gmail.com | 1 | 0 |
 
 # Web
 
 ## Embudo
 | evento | visitas | veces |
 | --- | --- | --- |
-| visita | 530 | 759 |
-| descarga | 251 | 284 |
-| clic_descargar | 117 | 128 |
-| descarga_instalar | 68 | 146 |
-| video_play | 67 | 71 |
+| visita | 548 | 782 |
+| descarga | 259 | 292 |
+| clic_descargar | 121 | 132 |
+| descarga_instalar | 69 | 147 |
+| video_play | 68 | 72 |
+| whatsapp_ayuda | 13 | 13 |
 | beta_whatsapp | 12 | 16 |
-| whatsapp_ayuda | 11 | 11 |
 | beta | 9 | 9 |
 
 ## Por fuente (visitas → descargas)
 | fuente | campana | visitas | descargas |
 | --- | --- | --- | --- |
-| directo |  | 411 | 189 |
-| tiktok |  | 94 | 52 |
-| app | compartir | 15 | 8 |
+| directo |  | 426 | 195 |
+| tiktok |  | 95 | 53 |
+| app | compartir | 17 | 9 |
 | facebook | beta | 6 | 2 |
 | prueba |  | 3 | 1 |
 | chatgpt.com |  | 2 | 0 |
@@ -112,17 +119,17 @@ Sin datos todavía.
 ## Por dispositivo
 | dispositivo | visitas | descargas |
 | --- | --- | --- |
-| android | 450 | 251 |
+| android | 461 | 259 |
 | iphone | 52 | 0 |
-| pc | 29 | 0 |
+| pc | 36 | 0 |
 
 ## Qué botón lleva a descargar
 | boton | descargas |
 | --- | --- |
-| fijo | 80 |
-| hero | 75 |
+| fijo | 83 |
+| hero | 79 |
 | tiktok | 51 |
-| app | 32 |
+| app | 33 |
 | nav | 19 |
 | cierre | 12 |
 | registro | 8 |
@@ -135,7 +142,8 @@ Sin datos todavía.
 ## Por día
 | dia | visitas | descargas |
 | --- | --- | --- |
-| 2026-10-23 | 6 | 1 |
+| 2026-10-24 | 8 | 3 |
+| 2026-10-23 | 16 | 6 |
 | 2026-10-22 | 14 | 5 |
 | 2026-10-21 | 25 | 7 |
 | 2026-10-20 | 28 | 12 |
