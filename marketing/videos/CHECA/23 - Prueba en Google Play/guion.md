@@ -15,8 +15,24 @@ Voz: «Aceptaste ese viaje porque se veía buen billete… y llegaste a casa con
 ## Re-ganchos (uno cada 4–5 s; v2 del guion tras la observación de Eduardo: la primera versión tenía tramos informativos planos)
 Pérdida (0–4) → bucle abierto «hay una forma… casi nadie la tiene» (4–9) → autoridad «yo también manejo» (9–12) → promesa concreta «en segundos, ya sin gasolina» (12–16) → giro «todavía no está en la tienda, aquí viene lo bueno» (16–21) → escasez «solo cincuenta» (21–24) → recompensa (24–29) → cambio de ritmo corto «gratis hasta enero, solo Android» (29–32) → pérdida «se acabó» (32–35) → CTA con urgencia (35–40).
 
-## Guion de Eduardo (texto de corrido, para decirlo a cámara)
-Aceptaste ese viaje porque se veía buen billete… y llegaste a casa con menos de lo que pensabas. Hay una forma de saber cuánto te queda antes de aceptar, y casi nadie la tiene todavía. Soy Eduardo, yo también manejo, y por eso armé Checa. Te dice cuánto te queda en segundos, ya sin gasolina. Todavía no está en la tienda, y aquí viene lo bueno: la probamos con cincuenta conductores. Solo cincuenta. Los primeros cincuenta conservan cuarenta por ciento de descuento de por vida. Gratis hasta enero, solo para Android. Y cuando se llenen los lugares, se acabó. Mientras lo piensas, alguien más ya apartó el suyo. Comenta CHECA ahorita y te mando el link.
+## Guion de Eduardo (versión corregida por él, 24 oct 2026; es la que manda)
+Aceptaste ese viaje solo porque se veía bueno, y a la mera hora estaba de la v****, pero no te agüites: hay una forma de saber cuánto te queda antes de aceptar y nadie te lo está diciendo. Soy Eduardo, papá, esposo y conductor, y así como tú todos los días salgo a la calle a fletarme, por eso armé Checa. Te dice en corto cuánto te queda de cada viaje, ya descontando la gasolina. Todavía no está pública en la Play Store. Necesito 50 conductores que quieran hacer valer su tiempo y su dinero, y a cambio yo les doy un descuento de por vida en la aplicación. Comenta CHECA y ahorita te mando el link.
+
+(La versión anterior con re-ganchos y urgencia —«solo cincuenta», «se acabó», «alguien más ya apartó el suyo»— se descartó; sigue en el historial de git.)
+
+### Qué se aprendió de su corrección (guía de estilo, también en la skill `videos-checa-camara`)
+- Habla en mexicano coloquial, sin lenguaje de anuncio: «a la mera hora», «no te agüites», «fletarme», «en corto», «ahorita», «hacer valer su tiempo y su dinero».
+- Primero consuela, luego ofrece («no te agüites» antes de la solución).
+- Se presenta con su identidad y no con una credencial: «papá, esposo y conductor» y «salgo a la calle a fletarme».
+- El trato es un intercambio entre iguales, no escasez: «necesito 50 conductores… y a cambio yo les doy un descuento de por vida».
+- Quita presión y detalles: sin «se acabó», sin «alguien más ya apartó el suyo», sin porcentaje, sin «gratis hasta enero» ni «solo Android» en la voz. Un solo número: 50.
+- Frases largas, con comas, dichas de un tirón, no frases cortas de efecto.
+- Abre con la pérdida en palabras crudas («estaba de la v****»).
+
+### Cosas a revisar antes de grabar (decisión suya)
+- La grosería al inicio puede limitar el alcance en TikTok; alternativa si la quiere suavizar: «estaba de la fregada».
+- «Nadie te lo está diciendo» es absoluto y hay apps que muestran datos parecidos; opción: «casi nadie te lo dice».
+- «Solo Android» y «gratis hasta enero» ya no se dicen: deben ir en la pantalla final y en el texto de publicación.
 
 ## Cortes de referencia (aprox. 40 s)
 | Corte | Tiempo | Frase | Técnica |

@@ -64,3 +64,14 @@ Una idea por escena, de 3 a 5 s, máximo 12 palabras; suman como máximo el 40 %
 ## Pendientes
 - Ajustar zona del rótulo según el encuadre de Eduardo (en el primer uso quedó bien).
 - Si Eduardo quiere un encuadre fijo como el de Karen (`encuadre.py`, ojos en el tercio superior), se porta de `videos-karen-trujillo`.
+
+## Cómo habla Eduardo (aprendido de su corrección, 24 oct 2026, video 23 «Prueba en Google Play»)
+Úsalo al escribir cualquier guion para que lo diga él a cámara:
+- **Mexicano coloquial, cero lenguaje de anuncio:** «a la mera hora», «no te agüites», «fletarme», «en corto», «ahorita», «hacer valer tu tiempo y tu dinero». Evita «aquí viene lo bueno», «apártalo ya», «se acabó».
+- **Consuelo antes que solución:** reconoce el golpe («no te agüites») y luego ofrece la salida.
+- **Identidad, no credencial:** «papá, esposo y conductor», «salgo a la calle a fletarme», en lugar de «yo también manejo».
+- **Trato entre iguales:** pide ayuda y ofrece algo a cambio («necesito 50 conductores… y a cambio yo les doy un descuento de por vida»). No usa escasez ni presión («solo 50, se acaban», «alguien más ya apartó el suyo»).
+- **Menos cifras y menos condiciones en la voz:** un solo número; sin porcentajes ni «gratis hasta…»; esos datos van en pantalla y en el texto de publicación.
+- **Ritmo hablado:** frases largas con comas, de un tirón, en lugar de frases cortas de efecto.
+- **Abre con la pérdida en palabras crudas** de la vivencia del conductor; si lleva groserías, avisarle del posible efecto en el alcance y ofrecer una alternativa suave, pero decide él.
+- **Cuida los absolutos** («nadie te lo dice»): sugerir «casi nadie».
