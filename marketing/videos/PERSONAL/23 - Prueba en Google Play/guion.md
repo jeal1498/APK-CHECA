@@ -1,21 +1,20 @@
-# Guion · 23 - Prueba en Google Play (PERSONAL, v2, Eduardo a cámara)
+# Guion · 23 - Prueba en Google Play (PERSONAL, v2)
 
-**Estado:** guion para aprobar (24 oct 2026). Reemplaza la v2 anterior con narrador de IA (sigue en el historial de git). Mismo tema y datos que la v1 (`CHECA/23`), otro gancho (control en lugar de pérdida), otras palabras, «sígueme» antes del CTA. Un solo número hablado: 50.
+**Decisión de Eduardo (24 oct 2026):** la v2 es **el mismo video original** (misma toma a cámara, mismo guion y mismos cortes que `CHECA/23`) con **gráficos diferentes**. Se descartó el guion nuevo y la versión con narrador.
 
-## Guion de Eduardo (de corrido)
-Antes de aceptar un viaje yo ya sé cuánto me va a quedar, porque armé una app que me lo dice en corto, ya descontando la gasolina. Me cansé de llegar a casa con menos de lo que pensaba, y como yo también salgo todos los días a fletarme, la hice pensando en nosotros. Todavía no está pública en la Play Store, así que necesito 50 conductores que quieran hacer valer su tiempo y su dinero, y a cambio yo les doy un descuento de por vida en la aplicación. Sígueme para ver cómo va, y si quieres tu lugar, comenta CHECA y ahorita te mando el link.
+## Guion
+El de `marketing/videos/CHECA/23 - Prueba en Google Play/guion.md` (versión corregida por Eduardo).
 
-## Hook (0–3 s)
-Voz: «Antes de aceptar un viaje yo ya sé cuánto me va a quedar». Placa: «YO YA SÉ CUÁNTO ME QUEDA» (QUEDA en verde). Imagen: Eduardo a cámara; pop-up sobre oferta genérica.
+## Tabla de gráficos v2 (segundos del corte de 36.87 s; mismos tiempos que la v1)
+| Segundo | Frase | Elemento en pantalla (distinto de la v1) |
+|---|---|---|
+| 0.2–2.8 | «Aceptaste ese viaje solamente porque se veía bueno» | **Gancho**: «¿CUÁNTO TE QUEDÓ DE VERDAD?», «DE VERDAD» en amarillo |
+| 2.35–4.24 | «pero a la mera hora valió ver—» | **`comparar`**: arriba «PARECÍA» $150; abajo en rojo «FUE» $88; «Números de ejemplo». Termina en el corte seco |
+| 9.9–13.4 | «soy Eduardo, papá, esposo y conductor» | **Rótulo**: «Eduardo» / «Conductor y creador de Checa» |
+| 18.4–22.0 | «te dice en corto cuánto te queda… ya descontando el combustible» | **`lista`** tipo ticket: Viaje $150 / Gasolina −$62 / **Te quedan $88** (verde); «Números de ejemplo» |
+| 25.4–28.6 | «necesito 50 conductores que quieran hacer valer su tiempo» | **`dato`**: «BUSCO» / «50 conductores» (50 en amarillo) |
+| 30.5–33.4 | «a cambio yo les doy un descuento de por vida» | **`comparar`**: «Precio normal» / «Tu precio de por vida: −40 %» (verde) |
+| 33.4–36.87 | «comenta CHECA…» | Eduardo a cámara; «CHECA» en amarillo |
+| 36.87–40.4 | (sin voz) | Pantalla final igual a la v1 |
 
-## Hooks intermedios
-Control (0–5) → dolor reconocible «me cansé de llegar con menos» (5–10) → identidad «a fletarme» (10–14) → exclusividad «no está en la Play Store» (14–18) → intercambio «50 + descuento de por vida» (18–27) → sígueme (27–30) → CTA «Comenta CHECA» (30–34) → pantalla final.
-
-## Honestidad
-«Yo ya sé» = lo calcula la app con los datos que configura el conductor; «ya descontando la gasolina» es estimación; descuento solo para los primeros 50 registrados; sin precios ni ganancias; sin ciudad ni país; sin logos de Uber/DiDi; cifras en pantalla con «Números de ejemplo». Cierre: «Comenta CHECA» + pantalla final como la v1 (la app aún no se descarga libre).
-
-## Texto de publicación
-Antes de aceptar un viaje yo ya sé cuánto me va a quedar. 🚗
-Armé Checa para decirte cuánto te queda de cada viaje, ya descontando la gasolina. Todavía no está en la Play Store y busco 50 conductores (solo Android) que quieran hacer valer su tiempo y su dinero. A cambio, descuento de por vida.
-¿Quieres tu lugar? Comenta CHECA 👇
-#choferuber #choferdidi #conductores #appdeconductores #ganarmas
+Sin sonidos de popup (no hay pop-up); `numero` ya no se usa. Honestidad: igual que la v1.
