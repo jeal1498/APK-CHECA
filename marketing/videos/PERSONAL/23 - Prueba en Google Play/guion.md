@@ -1,34 +1,21 @@
-# Guion · 23 - Prueba en Google Play (PERSONAL, v2)
+# Guion · 23 - Prueba en Google Play (PERSONAL, v2, Eduardo a cámara)
 
-**Objetivo:** mismo tema y datos que la v1 (`marketing/videos/CHECA/23 - Prueba en Google Play/`), con otro gancho, otras palabras, «Sígueme» antes del cierre y la voz de Eduardo. Estado: guion para aprobar (24 oct 2026). Un día detrás de CHECA.
+**Estado:** guion para aprobar (24 oct 2026). Reemplaza la v2 anterior con narrador de IA (sigue en el historial de git). Mismo tema y datos que la v1 (`CHECA/23`), otro gancho (control en lugar de pérdida), otras palabras, «sígueme» antes del CTA. Un solo número hablado: 50.
 
-## Hook inicial (0–3 s)
-Voz: «Antes de aceptar un viaje, yo ya sé cuánto me va a quedar.» Texto: «YO YA SÉ CUÁNTO ME QUEDA». Imagen: pop-up de Checa sobre una oferta genérica. (Gancho de control, distinto al de la v1.)
+## Guion de Eduardo (de corrido)
+Antes de aceptar un viaje yo ya sé cuánto me va a quedar, porque armé una app que me lo dice en corto, ya descontando la gasolina. Me cansé de llegar a casa con menos de lo que pensaba, y como yo también salgo todos los días a fletarme, la hice pensando en nosotros. Todavía no está pública en la Play Store, así que necesito 50 conductores que quieran hacer valer su tiempo y su dinero, y a cambio yo les doy un descuento de por vida en la aplicación. Sígueme para ver cómo va, y si quieres tu lugar, comenta CHECA y ahorita te mando el link.
+
+## Hook (0–3 s)
+Voz: «Antes de aceptar un viaje yo ya sé cuánto me va a quedar». Placa: «YO YA SÉ CUÁNTO ME QUEDA» (QUEDA en verde). Imagen: Eduardo a cámara; pop-up sobre oferta genérica.
 
 ## Hooks intermedios
-Curiosidad («armé una app») → exclusividad («todavía no está en la tienda») → escasez (cincuenta lugares) → recompensa (−40 % de por vida) → objeción (gratis, solo Android) → pérdida (se llenan) → CTA específico.
+Control (0–5) → dolor reconocible «me cansé de llegar con menos» (5–10) → identidad «a fletarme» (10–14) → exclusividad «no está en la Play Store» (14–18) → intercambio «50 + descuento de por vida» (18–27) → sígueme (27–30) → CTA «Comenta CHECA» (30–34) → pantalla final.
 
-## Voz limpia (para ElevenLabs)
-Antes de aceptar un viaje, yo ya sé cuánto me va a quedar. Armé una app que lo calcula, ya sin gasolina, y todavía no está en la tienda. Busco cincuenta conductores que la prueben primero. Los primeros cincuenta conservan cuarenta por ciento de descuento de por vida. Es gratis hasta enero y solo para Android. Cuando se llenen los lugares, se acabó. Sígueme para más. Comenta CHECA y te mando el link para apartar tu lugar.
+## Honestidad
+«Yo ya sé» = lo calcula la app con los datos que configura el conductor; «ya descontando la gasolina» es estimación; descuento solo para los primeros 50 registrados; sin precios ni ganancias; sin ciudad ni país; sin logos de Uber/DiDi; cifras en pantalla con «Números de ejemplo». Cierre: «Comenta CHECA» + pantalla final como la v1 (la app aún no se descarga libre).
 
-## Guion optimizado
-| Corte | Tiempo | Voz | En pantalla / sonido | Técnica |
-|---|---|---|---|---|
-| 1 | 0:00–0:04 | Antes de aceptar un viaje, yo ya sé cuánto me va a quedar. | «YO YA SÉ CUÁNTO ME QUEDA»; pop-up cae sobre oferta; impact-bass | [Hook Inicial: control] |
-| 2 | 0:04–0:10 | Armé una app que lo calcula, ya sin gasolina, y todavía no está en la tienda. | Teléfono con Checa; ícono Play con candado | [Open Loop: exclusividad] |
-| 3 | 0:10–0:13 | Busco cincuenta conductores que la prueben primero. | Cuadrícula de 50 puntos que se enciende | [Giro: escasez] |
-| 4 | 0:13–0:18 | Los primeros cincuenta conservan cuarenta por ciento de descuento de por vida. | Ficha amarilla «−40 % DE POR VIDA»; riser corto | [Payoff + beneficio] |
-| 5 | 0:18–0:21 | Es gratis hasta enero y solo para Android. | Dos pastillas | [Cambio de ritmo: objeción resuelta] |
-| 6 | 0:21–0:24 | Cuando se llenen los lugares, se acabó. | Puntos en verde, último en rojo, «0» | [Pausa dramática + pérdida] |
-| 7 | 0:24–0:26 | Sígueme para más. | «+ Seguir» | [CTA de seguimiento] |
-| 8 | 0:26–0:31 | Comenta CHECA y te mando el link para apartar tu lugar. | Burbuja de comentario + DM que llega | [CTA específico] |
-| 9 | 0:31–0:35 | (pantalla final, sin voz) | Logo, @checa.driver, @Eduardoalv9802, «solo Android», `jeal1498.github.io/checa-web` | [Cierre estándar de pantalla] |
-
-## Ajustes de honestidad
-Los mismos de la v1: «armé una app» (la app es de Eduardo, hecha con apoyo de IA; no se afirma programación propia); descuento solo para los primeros 50 registrados; «ya sin gasolina» como estimación; sin precios ni ganancias; sin ciudad ni país; cierre distinto al estándar (Comenta CHECA).
-
-## Texto de publicación (se pasa a `copy.txt` en la etapa del copy)
-Antes de aceptar un viaje, yo ya sé cuánto me va a quedar. 🚗💸
-Armé una app que lo calcula ya sin gasolina. Todavía no está en la tienda y busco 50 conductores (solo Android) para probarla primero. Los primeros 50 conservan −40 % de por vida.
-¿Te apuntas? Comenta CHECA 👇
+## Texto de publicación
+Antes de aceptar un viaje yo ya sé cuánto me va a quedar. 🚗
+Armé Checa para decirte cuánto te queda de cada viaje, ya descontando la gasolina. Todavía no está en la Play Store y busco 50 conductores (solo Android) que quieran hacer valer su tiempo y su dinero. A cambio, descuento de por vida.
+¿Quieres tu lugar? Comenta CHECA 👇
 #choferuber #choferdidi #conductores #appdeconductores #ganarmas
