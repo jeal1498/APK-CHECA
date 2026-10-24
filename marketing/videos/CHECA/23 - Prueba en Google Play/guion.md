@@ -49,8 +49,29 @@ Aceptaste ese viaje solo porque se veía bueno, y a la mera hora estaba de la v*
 | 10 | 0:35–0:40 | Mientras lo piensas, alguien más ya apartó el suyo. Comenta CHECA ahorita y te mando el link. | [CTA específico con urgencia] |
 | 11 | 0:40–0:44 | (pantalla final, sin voz de Eduardo) | [Cierre de pantalla: logo, cuentas, link] |
 
-## Tabla de gráficos por toma
-Pendiente: se presenta en el chat después de aprobar este guion (flujo de una aprobación por etapa).
+## Tabla de gráficos por toma (corte aprobado de 37.97 s; segundos del corte)
+| Segundo | Frase que dice | Elemento en pantalla |
+|---|---|---|
+| 0.2–3.0 | «Aceptaste ese viaje solamente porque se veía bueno» | **Gancho** (placa arriba): «SE VEÍA BUENO. PERDISTE.» con «PERDISTE» en amarillo |
+| 3.2–6.4 | «pero a la mera hora valió v****… no te agüites» | **Escena `comparar`**: arriba «Se veía bueno · $150 de tarifa»; abajo en rojo «Te quedó · $88 netos»; «Números de ejemplo» |
+| 6.4–10.9 | «hay una forma de saber cuánto te queda y nadie te lo está diciendo» | Eduardo a cámara (zoom discreto 1.08) |
+| 11.0–14.6 | «Soy Eduardo, papá, esposo y conductor» | **Rótulo** a la izquierda: «Eduardo» / «Papá, esposo y conductor» |
+| 14.6–19.7 | «y así como tú todos los días salgo a la calle a fletarme… por eso armé Checa» | Eduardo a cámara |
+| 19.9–23.4 | «te dice en corto cuánto te queda de cada viaje, ya descontando el combustible» | **Escena `popup`** (amarillo, CONSIDERAR): neta $88 · viaje $150 · gasolina −$62; chips $164/h ✓, $4.84/km ✗, 55 min · 31 km total; «Números de ejemplo» |
+| 23.4–26.4 | «todavía no está pública en Play Store, para ello» | Eduardo a cámara |
+| 26.5–29.6 | «necesito 50 conductores que quieran hacer valer su tiempo» | **Escena `numero`** (amarillo): «CONDUCTORES» / **50** / «para probar Checa primero» |
+| 29.6–31.4 | «y su dinero» | Eduardo a cámara |
+| 31.5–34.5 | «a cambio yo les doy un descuento de por vida en la aplicación» | **Escena `dato`**: etiqueta «A CAMBIO» / título «Descuento de por vida» (verde) con la raya de carretera |
+| 34.5–37.97 | «comenta CHECA aquí abajo y te mando el link» | Eduardo a cámara; subtítulo «CHECA» en amarillo |
+| 37.97–41.5 | (sin voz) | **Pantalla final**: logo animado, «Comenta CHECA», «Solo Android», `@checa.driver`, `@Eduardoalv9802` y el link de registro |
+
+- **Escenas:** 4 (comparar, popup, numero, dato), de 3.0 a 3.5 s; suman 12.9 s, 34 % de lo hablado (tope 40 %).
+- **Zooms discretos 1.0 ↔ 1.08** en 6.63–10.48, 17.50–23.76 y 31.49–37.97 para disimular el cambio de luz entre tomas.
+- **Subtítulos:** la grosería sale como «v****».
+- **Colores en palabras:** «50» amarillo, «descuento» verde, «CHECA» amarillo.
+- **Sonidos oficiales automáticos:** popup (entra + amarillo), numero-sube y logo-semáforo en la pantalla final; sin música.
+- **Cifras que cuadran:** 31 km × $2 = $62 de gasolina; $150 − $62 = $88; $150 ÷ 55 min × 60 = $164/h; $150 ÷ 31 km = $4.84/km.
+- **Pantalla final distinta a la estándar:** no hay voz de Fernando ni «Descarga Checa»; dice «Comenta CHECA».
 
 ## Ajustes de honestidad
 - «Yo también manejo»: Eduardo maneja y usa Checa en su propio carro.
