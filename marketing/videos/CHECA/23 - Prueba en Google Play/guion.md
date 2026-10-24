@@ -10,26 +10,28 @@
 - Cierre estándar («Descarga Checa…») no aplica porque la app no se descarga libremente: la llamada es «Comenta CHECA» y el DM lleva a `/registro/`.
 
 ## Hook inicial (0–3 s)
-Voz: «¿Cuántas veces aceptaste un viaje porque se veía bueno… y terminaste perdiendo?» Placa de gancho: «SE VEÍA BUENO. PERDISTE.» (amarillo en «PERDISTE»).
+Voz: «Aceptaste ese viaje porque se veía buen billete… y llegaste a casa con menos de lo que pensabas.» Placa de gancho: «SE VEÍA BUENO. PERDISTE.» (amarillo en «PERDISTE»).
 
-## Hooks intermedios (~cada 4–5 s)
-Autoridad («yo también manejo») → solución concreta (cuánto te queda, ya sin gasolina) → curiosidad («todavía no está en la tienda») → escasez (cincuenta) → recompensa (−40 % de por vida) → objeción (gratis, solo Android) → pérdida (se llenan) → CTA específico con urgencia («Comenta CHECA ahorita»).
+## Re-ganchos (uno cada 4–5 s; v2 del guion tras la observación de Eduardo: la primera versión tenía tramos informativos planos)
+Pérdida (0–4) → bucle abierto «hay una forma… casi nadie la tiene» (4–9) → autoridad «yo también manejo» (9–12) → promesa concreta «en segundos, ya sin gasolina» (12–16) → giro «todavía no está en la tienda, aquí viene lo bueno» (16–21) → escasez «solo cincuenta» (21–24) → recompensa (24–29) → cambio de ritmo corto «gratis hasta enero, solo Android» (29–32) → pérdida «se acabó» (32–35) → CTA con urgencia (35–40).
 
 ## Guion de Eduardo (texto de corrido, para decirlo a cámara)
-¿Cuántas veces aceptaste un viaje porque se veía bueno… y terminaste perdiendo? Soy Eduardo, yo también manejo, y armé Checa para que eso no te pase. Lee la oferta y te dice cuánto te queda, ya sin gasolina, antes de que aceptes. Todavía no está en la tienda, y la estoy probando con cincuenta conductores. Los primeros cincuenta se quedan con cuarenta por ciento de descuento de por vida. Es gratis hasta enero y solo para Android. Cuando se llenen los lugares, se acabó. Comenta CHECA ahorita y te mando el link para apartar el tuyo.
+Aceptaste ese viaje porque se veía buen billete… y llegaste a casa con menos de lo que pensabas. Hay una forma de saber cuánto te queda antes de aceptar, y casi nadie la tiene todavía. Soy Eduardo, yo también manejo, y por eso armé Checa. Te dice cuánto te queda en segundos, ya sin gasolina. Todavía no está en la tienda, y aquí viene lo bueno: la probamos con cincuenta conductores. Solo cincuenta. Los primeros cincuenta conservan cuarenta por ciento de descuento de por vida. Gratis hasta enero, solo para Android. Y cuando se llenen los lugares, se acabó. Mientras lo piensas, alguien más ya apartó el suyo. Comenta CHECA ahorita y te mando el link.
 
 ## Cortes de referencia (aprox. 40 s)
 | Corte | Tiempo | Frase | Técnica |
 |---|---|---|---|
-| 1 | 0:00–0:04 | ¿Cuántas veces aceptaste un viaje porque se veía bueno… y terminaste perdiendo? | [Hook Inicial] |
-| 2 | 0:04–0:09 | Soy Eduardo, yo también manejo, y armé Checa para que eso no te pase. | [Micro-hook: autoridad y cara] |
-| 3 | 0:09–0:15 | Lee la oferta y te dice cuánto te queda, ya sin gasolina, antes de que aceptes. | [Payoff parcial: la solución] |
-| 4 | 0:15–0:21 | Todavía no está en la tienda, y la estoy probando con cincuenta conductores. | [Open Loop + escasez] |
-| 5 | 0:21–0:27 | Los primeros cincuenta se quedan con cuarenta por ciento de descuento de por vida. | [Payoff + beneficio] |
-| 6 | 0:27–0:31 | Es gratis hasta enero y solo para Android. | [Cambio de ritmo: objeción resuelta] |
-| 7 | 0:31–0:34 | Cuando se llenen los lugares, se acabó. | [Pausa dramática + pérdida] |
-| 8 | 0:34–0:39 | Comenta CHECA ahorita y te mando el link para apartar el tuyo. | [CTA específico] |
-| 9 | 0:39–0:43 | (pantalla final, sin voz de Eduardo) | [Cierre de pantalla: logo, cuentas, link] |
+| 1 | 0:00–0:04 | Aceptaste ese viaje porque se veía buen billete… y llegaste a casa con menos de lo que pensabas. | [Hook Inicial: pérdida reconocible] |
+| 2 | 0:04–0:09 | Hay una forma de saber cuánto te queda antes de aceptar, y casi nadie la tiene todavía. | [Open Loop: ¿cuál forma?] |
+| 3 | 0:09–0:12 | Soy Eduardo, yo también manejo, y por eso armé Checa. | [Micro-hook: autoridad y cara] |
+| 4 | 0:12–0:16 | Te dice cuánto te queda en segundos, ya sin gasolina. | [Payoff parcial: promesa concreta] |
+| 5 | 0:16–0:21 | Todavía no está en la tienda, y aquí viene lo bueno: la probamos con cincuenta conductores. | [Giro + Open Loop] |
+| 6 | 0:21–0:24 | Solo cincuenta. | [Pausa dramática: escasez] |
+| 7 | 0:24–0:29 | Los primeros cincuenta conservan cuarenta por ciento de descuento de por vida. | [Payoff: recompensa] |
+| 8 | 0:29–0:32 | Gratis hasta enero, solo para Android. | [Cambio de ritmo: objeción resuelta] |
+| 9 | 0:32–0:35 | Y cuando se llenen los lugares, se acabó. | [Pérdida] |
+| 10 | 0:35–0:40 | Mientras lo piensas, alguien más ya apartó el suyo. Comenta CHECA ahorita y te mando el link. | [CTA específico con urgencia] |
+| 11 | 0:40–0:44 | (pantalla final, sin voz de Eduardo) | [Cierre de pantalla: logo, cuentas, link] |
 
 ## Tabla de gráficos por toma
 Pendiente: se presenta en el chat después de aprobar este guion (flujo de una aprobación por etapa).
@@ -43,7 +45,7 @@ Pendiente: se presenta en el chat después de aprobar este guion (flujo de una a
 - El cierre cambia «Descarga Checa» por «Comenta CHECA»; el `dm.txt` ya está en esta carpeta.
 
 ## Texto de publicación (se pasa a `copy.txt` en la etapa del copy)
-¿Cuántas veces aceptaste un viaje que se veía bueno y saliste perdiendo? 😮‍💨
+Aceptaste el viaje porque se veía buen billete… y llegaste a casa con menos de lo que pensabas. 😮‍💨
 Armé Checa para decirte cuánto te queda, ya sin gasolina, antes de aceptar. Está en prueba y busco 50 conductores (solo Android). Los primeros 50 conservan −40 % de por vida.
 ¿Quieres tu lugar? Comenta CHECA 👇
 #choferuber #choferdidi #conductores #appdeconductores #ganarmas
