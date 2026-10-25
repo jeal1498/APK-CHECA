@@ -1,18 +1,18 @@
 # Reporte de Checa (web + app) · últimos 30 días
 
-Generado: 2026-10-24 16:17 UTC. Cuenta visitas únicas (una por pestaña).
+Generado: 2026-10-25 16:52 UTC. Cuenta visitas únicas (una por pestaña).
 
 ## Resumen
 | visitas | descargas | cuentas_nuevas | pagos | ingresos | licencias_activas |
 | --- | --- | --- | --- | --- | --- |
-| 548 | 259 | 38 | 0 | 0 | 3 |
+| 574 | 259 | 42 | 0 | 0 | 3 |
 
 # App
 
 ## Cuentas nuevas por día (inicio con Google)
 | dia | cuentas |
 | --- | --- |
-| 2026-10-24 | 2 |
+| 2026-10-24 | 6 |
 | 2026-10-23 | 2 |
 | 2026-10-22 | 2 |
 | 2026-10-21 | 5 |
@@ -27,6 +27,10 @@ Generado: 2026-10-24 16:17 UTC. Cuenta visitas únicas (una por pestaña).
 ## Quiénes son (cuentas con Google)
 | correo | registro | ultimo_acceso | equipos | licencia_vence |
 | --- | --- | --- | --- | --- |
+| jaimeortizventas@gmail.com | 10-24 16:54 | 10-24 16:54 | 1 | sin licencia |
+| gomeztrujillokarenamayrani@gmail.com | 10-24 14:10 | 10-24 14:10 | 1 | sin licencia |
+| pootmartinezj07@gmail.com | 10-24 12:46 | 10-24 12:46 | 1 | sin licencia |
+| karentrujillopsic@gmail.com | 10-24 11:20 | 10-24 11:20 | 1 | sin licencia |
 | patchucp@gmail.com | 10-24 06:08 | 10-24 06:08 | 1 | sin licencia |
 | glozano30506@gmail.com | 10-24 00:12 | 10-24 00:12 | 1 | sin licencia |
 | nikte06bacabespinoza@gmail.com | 10-23 18:23 | 10-23 18:23 | 1 | sin licencia |
@@ -51,9 +55,9 @@ Generado: 2026-10-24 16:17 UTC. Cuenta visitas únicas (una por pestaña).
 | patpechluisfernando89@gmail.com | 10-18 21:35 | 10-18 21:35 | 1 | sin licencia |
 | carrasquedomiguel36@gmail.com | 10-18 21:24 | 10-18 21:24 | 1 | sin licencia |
 | carloshernandez.soles@gmail.com | 10-18 21:09 | 10-18 21:09 | 1 | sin licencia |
-| mcamposl0088@gmail.com | 10-18 19:57 | 10-18 19:57 | 1 | sin licencia |
+| mcamposl0088@gmail.com | 10-18 19:57 | 10-24 13:40 | 2 | sin licencia |
 | migajas.tlx@gmail.com | 10-18 13:24 | 10-18 13:24 | 1 | sin licencia |
-| dcisnerosdanys@gmail.com | 10-18 13:11 | 10-18 21:37 | 2 | sin licencia |
+| dcisnerosdanys@gmail.com | 10-18 13:11 | 10-24 12:43 | 2 | sin licencia |
 | fercho75.1he@gmail.com | 10-17 21:02 | 10-17 21:02 | 1 | sin licencia |
 | fran2026mx@gmail.com | 10-17 20:31 | 10-17 20:31 | 1 | sin licencia |
 | danvasquez.74625@gmail.com | 10-17 18:19 | 10-17 18:19 | 0 | sin licencia |
@@ -96,32 +100,34 @@ Sin datos todavía.
 ## Embudo
 | evento | visitas | veces |
 | --- | --- | --- |
-| visita | 548 | 782 |
+| visita | 574 | 810 |
 | descarga | 259 | 292 |
 | clic_descargar | 121 | 132 |
 | descarga_instalar | 69 | 147 |
 | video_play | 68 | 72 |
+| beta_whatsapp | 15 | 19 |
 | whatsapp_ayuda | 13 | 13 |
-| beta_whatsapp | 12 | 16 |
-| beta | 9 | 9 |
+| beta | 13 | 13 |
 
 ## Por fuente (visitas → descargas)
 | fuente | campana | visitas | descargas |
 | --- | --- | --- | --- |
-| directo |  | 426 | 195 |
+| directo |  | 446 | 195 |
 | tiktok |  | 95 | 53 |
 | app | compartir | 17 | 9 |
 | facebook | beta | 6 | 2 |
+| tiktok | prueba-en-google-play | 4 | 0 |
 | prueba |  | 3 | 1 |
 | chatgpt.com |  | 2 | 0 |
+| tiktok-personal | prueba-en-google-play | 2 | 0 |
 | tiktok | beta-testers-corto | 1 | 0 |
 
 ## Por dispositivo
 | dispositivo | visitas | descargas |
 | --- | --- | --- |
-| android | 461 | 259 |
-| iphone | 52 | 0 |
-| pc | 36 | 0 |
+| android | 480 | 259 |
+| iphone | 54 | 0 |
+| pc | 41 | 0 |
 
 ## Qué botón lleva a descargar
 | boton | descargas |
@@ -142,7 +148,8 @@ Sin datos todavía.
 ## Por día
 | dia | visitas | descargas |
 | --- | --- | --- |
-| 2026-10-24 | 8 | 3 |
+| 2026-10-25 | 3 | 0 |
+| 2026-10-24 | 31 | 3 |
 | 2026-10-23 | 16 | 6 |
 | 2026-10-22 | 14 | 5 |
 | 2026-10-21 | 25 | 7 |
