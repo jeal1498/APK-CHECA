@@ -20,3 +20,6 @@ Mismo crudo que la v1 (Drive `VID_20261024_131435.mp4`), cortes rehechos con `un
 Eduardo descartó el `comparar` (bloques partidos con texto chico). Tipos nuevos en `componer.py`: `oferta` y `sello`.
 
 Sin sonidos de popup (no hay pop-up); `numero` ya no se usa. Honestidad: igual que la v1.
+
+## Estado
+Hecho el 25 oct 2026: guion (el de CHECA/23), tabla de gráficos, portada, video (39.6 s con la portada de primer cuadro) y copy aprobados por Eduardo. Publicado: lo marca Eduardo.
