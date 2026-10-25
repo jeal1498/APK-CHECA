@@ -3226,7 +3226,7 @@ class MainActivity : Activity() {
             "Checa ahora vive en Google Play como una app nueva. Para seguir usándola, regístrate y descárgala desde ahí.",
             Tema.T_TEXTO, cTexto2, false
         ).apply { gravity = Gravity.CENTER; setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
-        col.addView(boton("Pasar a la nueva Checa", cVerde, Color.BLACK) { Migracion.abrirRegistro(this) }, margenArriba(Tema.S4))
+        col.addView(boton("Pasar a la nueva Checa", cVerde, Color.BLACK) { Migracion.abrirRegistro(this, "migracion-bloqueo") }, margenArriba(Tema.S4))
         col.addView(texto(
             "Si ya usabas tu cuenta de Google, tus ajustes y tu licencia vuelven al entrar con ella en la app nueva. " +
                 "Si el registro ya cerró, en esa página encuentras la comunidad de WhatsApp.",
@@ -3261,7 +3261,7 @@ class MainActivity : Activity() {
             Tema.T_NOTA, cTenue, false
         ).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
         cuerpo.addView(boton("Registrarme para la nueva Checa", cVerde, Color.BLACK) {
-            Migracion.abrirRegistro(this)
+            Migracion.abrirRegistro(this, "migracion-aviso")
         }, margenArriba(Tema.S2))
         cuerpo.addView(boton("Después", cTarjeta2, cTexto) { dialogoMigra?.dismiss() }, margenArriba(Tema.S1))
         val dialogo = hoja("Checa cambia de app", null, cuerpo)

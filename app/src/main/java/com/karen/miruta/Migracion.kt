@@ -39,9 +39,14 @@ object Migracion {
 
     fun marcarAviso(ctx: Context) = sp(ctx).edit().putLong("avisoHora", System.currentTimeMillis()).apply()
 
-    fun abrirRegistro(ctx: Context) {
+    /**
+     * Abre el registro con utm_source=app y utm_campaign=[campana]: medir.js los guarda y quedan en
+     * testers.fuente / testers.campana (aviso = la ventana con cuenta regresiva, bloqueo = la pantalla final).
+     */
+    fun abrirRegistro(ctx: Context, campana: String) {
         try {
-            ctx.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(URL_REGISTRO)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            val url = "$URL_REGISTRO?utm_source=app&utm_campaign=$campana"
+            ctx.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
         } catch (_: Exception) { }
     }
 }
