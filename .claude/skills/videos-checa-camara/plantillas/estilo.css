@@ -50,3 +50,23 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
 .cierre-c .cu{left:140px;right:140px;top:840px;text-align:center;font:400 34px/1.5 "DM Sans",sans-serif;color:#A3A3AD}
 .cierre-c .cu b{font:700 42px "JetBrains Mono",monospace;color:#F4F4EF}
 .cierre-c .li{left:0;width:1080px;top:1100px;text-align:center;font:700 36px/1.2 "JetBrains Mono",monospace;color:#FACC15}
+
+.escena .of-card{left:220px;top:340px;width:640px;height:610px;border-radius:30px;background:#F4F4EF;color:#0C0C10;transform:rotate(-3deg) scale(1.15);transform-origin:50% 0;box-shadow:0 40px 80px rgba(0,0,0,.6)}
+.of-card .of-top{position:absolute;left:44px;top:34px;right:44px;display:flex;justify-content:space-between;align-items:center}
+.of-card .of-pill{background:#0C0C10;color:#F4F4EF;border-radius:999px;padding:8px 22px;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:24px;letter-spacing:.08em}
+.of-card .of-rate{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:28px;color:#3A3A45}
+.of-card .of-p{position:absolute;left:44px;top:92px;font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:150px;letter-spacing:-.05em;line-height:1}
+.of-card .of-km{position:absolute;left:48px;top:246px;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:28px;color:#55555F}
+.of-card .of-hr{position:absolute;left:44px;right:44px;top:306px;height:2px;background:#DAD9D1}
+.of-card .of-r{position:absolute;left:44px;right:44px;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:28px;line-height:1.3}
+.of-card .of-r small{display:block;font-family:"DM Sans",sans-serif;font-weight:500;font-size:26px;color:#55555F;margin-top:2px}
+.of-card .of-r i{position:absolute;left:-2px;top:6px;width:20px;height:20px;border-radius:50%;background:#22C55E}
+.of-card .of-r i.q{border-radius:4px;background:#0C0C10}
+.of-card .of-r span{display:block;padding-left:40px}
+.of-card .of-btn{position:absolute;left:44px;right:44px;top:492px;height:84px;border-radius:999px;background:#0C0C10;color:#F4F4EF;display:flex;align-items:center;justify-content:center;font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:44px}
+
+.escena .sl-disco{left:100px;top:300px;width:880px;height:880px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;transform:rotate(-8deg);box-shadow:0 40px 90px rgba(0,0,0,.6)}
+.sl-disco .sl-e{font:700 40px/1 "JetBrains Mono",monospace;letter-spacing:.14em;text-transform:uppercase}
+.sl-disco .sl-n{font:800 240px/1 "Bricolage Grotesque","Arial Black",sans-serif;letter-spacing:-.06em;margin:10px 0 0}
+.sl-disco .sl-t{font:800 84px/.95 "Bricolage Grotesque","Arial Black",sans-serif;letter-spacing:-.03em;text-transform:uppercase}
+.escena .sl-raya{left:140px;top:1230px;width:800px;height:10px;background:repeating-linear-gradient(90deg,#FACC15 0 10px,transparent 10px 38px)}

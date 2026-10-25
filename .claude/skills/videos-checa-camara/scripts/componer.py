@@ -134,6 +134,19 @@ for e in spec.get('escenas', []):
         body += part('e-big', esc(e['numero']), base + 0.08, f'color:{col(nv)};font-size:{fs}px')
         if e.get('texto'): body += part('e-sub', br(e['texto']), base + 0.3)
         if e.get('ejemplo', True): body += part('e-pie', 'Números de ejemplo', base + 0.35)
+    elif tipo == 'oferta':
+        o = e['oferta']
+        card = (f'<div class="of-top"><div class="of-pill">VIAJE</div><div class="of-rate">★ {esc(o.get("estrellas","4.92"))}</div></div>'
+                f'<div class="of-p">{esc(o["precio"])}</div><div class="of-km">{esc(o["km_est"])}</div><div class="of-hr"></div>'
+                f'<div class="of-r" style="top:334px"><i></i><span>{esc(o["recogida"])}<small>{esc(o.get("dir1","Calle Principal 120"))}</small></span></div>'
+                f'<div class="of-r" style="top:416px"><i class="q"></i><span>{esc(o["viaje"])}<small>{esc(o.get("dir2","Av. del Centro 45"))}</small></span></div>'
+                f'<div class="of-btn">Aceptar</div>')
+        body += part('of-card', card, base)
+        body += part('e-popnota', 'Números de ejemplo', base + 0.3, 'top:1075px')
+    elif tipo == 'sello':
+        fondo, tinta = NIV[nv or 'verde']
+        body += part('sl-disco', f'<div class="sl-e">{esc(e["etiqueta"])}</div><div class="sl-n">{esc(e["numero"])}</div><div class="sl-t">{br(e["titulo"])}</div>', anc(e['en']) - 0.1 if e.get('en') else base, f'background:{fondo};color:{tinta}')
+        if e.get('ejemplo'): body += part('e-popnota', 'Números de ejemplo', base + 0.4, 'top:1075px')
     elif tipo == 'popup':
         M.validar_popup(e['popup'])
         if not POPCSS:
