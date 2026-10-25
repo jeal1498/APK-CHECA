@@ -26,6 +26,8 @@ jobs:
       - name: Renombrar APK
         run: cp app/build/outputs/apk/release/app-release.apk MiRuta.apk
       - uses: actions/upload-artifact@v4
+        # Respaldo opcional: si se llena la cuota de artefactos, el release se publica igual.
+        continue-on-error: true
         with:
           name: MiRuta
           path: MiRuta.apk
