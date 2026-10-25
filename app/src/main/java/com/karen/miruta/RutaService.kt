@@ -193,7 +193,7 @@ class RutaService : AccessibilityService() {
      */
     private fun avisarApertura(app: String) {
         try {
-            if (!prefs.avisarApertura || CapturaService.corriendo || !Licencia.activa(this)) return
+            if (!prefs.avisarApertura || CapturaService.corriendo || !Licencia.activa(this) || Migracion.vencida()) return
             // El límite es por app: abrir DiDi no debe callar el aviso de Uber.
             val ahora = System.currentTimeMillis()
             if (ahora - (ultimoAviso[app] ?: 0L) < 3 * 60_000L) return

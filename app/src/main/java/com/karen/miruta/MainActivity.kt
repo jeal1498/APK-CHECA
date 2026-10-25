@@ -123,6 +123,9 @@ class MainActivity : Activity() {
     private var dialogoCaptura: AlertDialog? = null
     /** Pantalla de acceso: tapa la app hasta que se entra con Google. */
     private var acceso: View? = null
+    /** Pantalla de cierre del canal directo: tapa todo al llegar a [Migracion.LIMITE_MS]. */
+    private var bloqueo: View? = null
+    private var dialogoMigra: Dialog? = null
 
     private val refresco = object : Runnable {
         override fun run() {
@@ -162,10 +165,12 @@ class MainActivity : Activity() {
             addView(barraNavegacion(), LinearLayout.LayoutParams(-1, dp(88)))
         }
         acceso = pantallaAcceso()
+        bloqueo = pantallaMigracion()
         val marco = FrameLayout(this).apply {
             setBackgroundColor(cFondo)
             addView(raiz, FrameLayout.LayoutParams(-1, -1))
             addView(acceso, FrameLayout.LayoutParams(-1, -1))
+            addView(bloqueo, FrameLayout.LayoutParams(-1, -1))
         }
         ViewCompat.setOnApplyWindowInsetsListener(marco) { vista, insets ->
             val barras = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
@@ -240,6 +245,7 @@ class MainActivity : Activity() {
         }
         actualizarResumen()
         handler.post(refresco)
+        avisoMigracion()
         // Espera un momento para que, si hay una versión nueva, ese aviso salga primero.
         handler.postDelayed({ avisosEnVentana() }, 1500)
         if (!BuildConfig.ES_PLAY) {
@@ -3194,10 +3200,81 @@ class MainActivity : Activity() {
     private fun hayVentana(): Boolean =
         dialogoPermisos != null || guia?.isShowing == true || dialogoCuenta?.isShowing == true ||
             dialogoAct?.isShowing == true || dialogoAviso?.isShowing == true || dialogoDiagAviso?.isShowing == true ||
-            dialogoFalla?.isShowing == true
+            dialogoFalla?.isShowing == true || dialogoMigra?.isShowing == true
 
     private fun actualizarAcceso() {
-        acceso?.visibility = if (Cuenta.puedeUsar(this)) View.GONE else View.VISIBLE
+        val cerrada = Migracion.vencida()
+        acceso?.visibility = if (cerrada || Cuenta.puedeUsar(this)) View.GONE else View.VISIBLE
+        bloqueo?.visibility = if (cerrada) View.VISIBLE else View.GONE
+        if (cerrada && CapturaService.corriendo) {
+            startService(Intent(this, CapturaService::class.java).setAction(CapturaService.ACCION_DETENER))
+        }
+    }
+
+    /** Cierre del canal directo: sin salida, solo el paso a la Checa de Google Play. */
+    private fun pantallaMigracion(): View {
+        val col = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
+            setPadding(dp(Tema.S3), dp(Tema.S3), dp(Tema.S3), dp(Tema.S3))
+        }
+        col.addView(ImageView(this).apply { setImageResource(R.mipmap.ic_launcher) },
+            LinearLayout.LayoutParams(dp(88), dp(88)).apply { gravity = Gravity.CENTER_HORIZONTAL })
+        col.addView(texto("Esta versión de Checa ya cerró", Tema.T_TITULO, cTexto, true).apply { gravity = Gravity.CENTER },
+            margenArriba(Tema.S2))
+        col.addView(texto(
+            "Checa ahora vive en Google Play como una app nueva. Para seguir usándola, regístrate y descárgala desde ahí.",
+            Tema.T_TEXTO, cTexto2, false
+        ).apply { gravity = Gravity.CENTER; setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
+        col.addView(boton("Pasar a la nueva Checa", cVerde, Color.BLACK) { Migracion.abrirRegistro(this) }, margenArriba(Tema.S4))
+        col.addView(texto(
+            "Si ya usabas tu cuenta de Google, tus ajustes y tu licencia vuelven al entrar con ella en la app nueva. " +
+                "Si el registro ya cerró, en esa página encuentras la comunidad de WhatsApp.",
+            Tema.T_NOTA, cTenue, false
+        ).apply { gravity = Gravity.CENTER; setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S2))
+        return ScrollView(this).apply {
+            setBackgroundColor(cFondo)
+            isClickable = true
+            isFillViewport = true
+            visibility = View.GONE
+            addView(FrameLayout(this@MainActivity).apply {
+                addView(col, FrameLayout.LayoutParams(minOf(resources.displayMetrics.widthPixels, dp(480)), -2, Gravity.CENTER))
+            }, ViewGroup.LayoutParams(-1, -1))
+        }
+    }
+
+    /** Ventana con cuenta regresiva al abrir Checa (como mucho cada 30 min) hasta el cierre. */
+    private fun avisoMigracion() {
+        if (isFinishing || isDestroyed || !Migracion.aplica() || Migracion.vencida()) return
+        if (dialogoMigra?.isShowing == true || !Migracion.avisoToca(this)) return
+        Migracion.marcarAviso(this)
+        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        cuerpo.addView(texto(
+            "Esta versión de Checa deja de funcionar el ${Licencia.fechaBonita(20261115)}. " +
+                "Checa ya está en Google Play como app nueva: regístrate para pasarte.",
+            Tema.T_TEXTO, cTexto2, false
+        ).apply { setLineSpacing(0f, 1.2f) })
+        val cuenta = texto("Quedan ${Migracion.restante()}", Tema.T_TITULO, cTexto, true).apply { gravity = Gravity.CENTER }
+        cuerpo.addView(cuenta, margenArriba(Tema.S2))
+        cuerpo.addView(texto(
+            "Si ya usabas tu cuenta de Google, tus ajustes y tu licencia vuelven al entrar con ella en la app nueva.",
+            Tema.T_NOTA, cTenue, false
+        ).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
+        cuerpo.addView(boton("Registrarme para la nueva Checa", cVerde, Color.BLACK) {
+            Migracion.abrirRegistro(this)
+        }, margenArriba(Tema.S2))
+        cuerpo.addView(boton("Después", cTarjeta2, cTexto) { dialogoMigra?.dismiss() }, margenArriba(Tema.S1))
+        val dialogo = hoja("Checa cambia de app", null, cuerpo)
+        dialogoMigra = dialogo
+        val tic = object : Runnable {
+            override fun run() {
+                if (!dialogo.isShowing) return
+                if (Migracion.vencida()) { dialogo.dismiss(); actualizarAcceso(); return }
+                cuenta.text = "Quedan ${Migracion.restante()}"
+                handler.postDelayed(this, 30_000)
+            }
+        }
+        handler.postDelayed(tic, 30_000)
     }
 
     /** Beta gratis: usar Checa sin cuenta. Después de la beta hay que entrar con Google o usar un código. */
@@ -4204,6 +4281,7 @@ class MainActivity : Activity() {
     private fun iniciarCaptura() {
         val volver = desdeAviso
         desdeAviso = false
+        if (Migracion.vencida()) return
         if (!Licencia.activa(this)) {
             if (BuildConfig.ES_PLAY) {
                 Toast.makeText(this, "Tu licencia no está activa. Las compras integradas de Google Play aún no están disponibles en esta versión.", Toast.LENGTH_LONG).show()
