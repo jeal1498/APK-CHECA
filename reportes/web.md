@@ -1,6 +1,6 @@
 # Reporte de Checa (web + app) · últimos 30 días
 
-Generado: 2026-10-25 16:52 UTC. Cuenta visitas únicas (una por pestaña).
+Generado: 2026-10-26 18:53 UTC. Cuenta visitas únicas (una por pestaña).
 
 ## Resumen
 | visitas | descargas | cuentas_nuevas | pagos | ingresos | licencias_activas |
