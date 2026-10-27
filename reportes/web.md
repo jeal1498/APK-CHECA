@@ -1,17 +1,18 @@
 # Reporte de Checa (web + app) · últimos 30 días
 
-Generado: 2026-10-26 18:53 UTC. Cuenta visitas únicas (una por pestaña).
+Generado: 2026-10-27 18:24 UTC. Cuenta visitas únicas (una por pestaña).
 
 ## Resumen
 | visitas | descargas | cuentas_nuevas | pagos | ingresos | licencias_activas |
 | --- | --- | --- | --- | --- | --- |
-| 574 | 259 | 42 | 0 | 0 | 3 |
+| 578 | 259 | 43 | 0 | 0 | 3 |
 
 # App
 
 ## Cuentas nuevas por día (inicio con Google)
 | dia | cuentas |
 | --- | --- |
+| 2026-10-27 | 1 |
 | 2026-10-24 | 6 |
 | 2026-10-23 | 2 |
 | 2026-10-22 | 2 |
@@ -27,6 +28,7 @@ Generado: 2026-10-26 18:53 UTC. Cuenta visitas únicas (una por pestaña).
 ## Quiénes son (cuentas con Google)
 | correo | registro | ultimo_acceso | equipos | licencia_vence |
 | --- | --- | --- | --- | --- |
+| hugo942001@gmail.com | 10-27 11:12 | 10-27 11:12 | 1 | sin licencia |
 | jaimeortizventas@gmail.com | 10-24 16:54 | 10-24 16:54 | 1 | sin licencia |
 | gomeztrujillokarenamayrani@gmail.com | 10-24 14:10 | 10-24 14:10 | 1 | sin licencia |
 | pootmartinezj07@gmail.com | 10-24 12:46 | 10-24 12:46 | 1 | sin licencia |
@@ -100,14 +102,14 @@ Sin datos todavía.
 ## Embudo
 | evento | visitas | veces |
 | --- | --- | --- |
-| visita | 574 | 810 |
+| visita | 578 | 814 |
 | descarga | 259 | 292 |
 | clic_descargar | 121 | 132 |
 | descarga_instalar | 69 | 147 |
 | video_play | 68 | 72 |
-| beta_whatsapp | 15 | 19 |
+| beta_whatsapp | 17 | 21 |
+| beta | 15 | 15 |
 | whatsapp_ayuda | 13 | 13 |
-| beta | 13 | 13 |
 
 ## Por fuente (visitas → descargas)
 | fuente | campana | visitas | descargas |
@@ -115,8 +117,8 @@ Sin datos todavía.
 | directo |  | 446 | 195 |
 | tiktok |  | 95 | 53 |
 | app | compartir | 17 | 9 |
+| tiktok | prueba-en-google-play | 8 | 0 |
 | facebook | beta | 6 | 2 |
-| tiktok | prueba-en-google-play | 4 | 0 |
 | prueba |  | 3 | 1 |
 | chatgpt.com |  | 2 | 0 |
 | tiktok-personal | prueba-en-google-play | 2 | 0 |
@@ -125,7 +127,7 @@ Sin datos todavía.
 ## Por dispositivo
 | dispositivo | visitas | descargas |
 | --- | --- | --- |
-| android | 480 | 259 |
+| android | 484 | 259 |
 | iphone | 54 | 0 |
 | pc | 41 | 0 |
 
@@ -148,6 +150,7 @@ Sin datos todavía.
 ## Por día
 | dia | visitas | descargas |
 | --- | --- | --- |
+| 2026-10-26 | 4 | 0 |
 | 2026-10-25 | 3 | 0 |
 | 2026-10-24 | 31 | 3 |
 | 2026-10-23 | 16 | 6 |
