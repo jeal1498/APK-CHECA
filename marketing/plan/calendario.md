@@ -68,14 +68,13 @@ Misma idea que cada video de CHECA, con otro gancho y otras palabras (reglas en 
 | 07 | jue 22 oct | Consejo (descartado 19 oct, publicado 22 oct) | `07 - Pasajeros y cancelaciones` | ✅ | ✅ 22 oct |
 | 08 | mar 20 oct | Venta | `08 - Decidir en segundos` | ✅ | ✅ 20 oct 10:30 |
 | 09 | — | Consejo (descartado 19 oct) | `09 - Cuenta desactivada` |  | ❌ descartado |
-| 10 | jue 22 oct | Venta | `10 - Mejores horas` |  | |
+| 10 | jue 22 oct | Venta | `10 - Mejores horas` |  |⏳ pendiente |
 | 11 | — | Consejo (descartado 19 oct) | `11 - Ingreso inestable` |  | ❌ descartado |
-| 12 | sáb 24 oct | Venta | `12 - Comisión y tarifas` |  | |
+| 12 | sáb 24 oct | Venta | `12 - Comisión y tarifas` |  |⏳ pendiente |
 | 13 | — | Consejo (descartado 19 oct) | `13 - Multas y papeles` |  | ❌ descartado |
-| 14 | lun 26 oct | Venta | `14 - Miedo a rechazar` |  | |
-| 15 | mar 27 oct | Venta | `15 - Desgaste y renta` |  | |
-| 22 | por definir | Venta (v2, un día detrás de CHECA) | `22 - Cuánto vale tu kilómetro` | guion para aprobar | |
-
+| 14 | lun 26 oct | Venta | `14 - Miedo a rechazar` |  |⏳ pendiente |
+| 15 | mar 27 oct | Venta | `15 - Desgaste y renta` |  |⏳ pendiente |
+| 22 | por definir | Venta (v2, un día detrás de CHECA) | `22 - Cuánto vale tu kilómetro` | guion para aprobar |⏳ pendiente |
 # Medición semanal (qué videos venden)
 
 Cada domingo: Eduardo anota de las estadísticas de TikTok **vistas**, **% que lo vio completo** y **comentarios «CHECA»** de cada video publicado; Claude llena **visitas** y **descargas** con `reportes/web.md` (tabla por fuente y campaña: `tiktok` / `tiktok-personal` + la etiqueta del video). En 2–3 semanas se ve qué temas repetir.
