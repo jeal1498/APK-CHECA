@@ -1,11 +1,11 @@
 # Reporte de Checa (web + app) · últimos 30 días
 
-Generado: 2026-10-27 18:24 UTC. Cuenta visitas únicas (una por pestaña).
+Generado: 2026-10-28 18:33 UTC. Cuenta visitas únicas (una por pestaña).
 
 ## Resumen
 | visitas | descargas | cuentas_nuevas | pagos | ingresos | licencias_activas |
 | --- | --- | --- | --- | --- | --- |
-| 578 | 259 | 43 | 0 | 0 | 3 |
+| 582 | 260 | 43 | 0 | 0 | 3 |
 
 # App
 
@@ -102,22 +102,22 @@ Sin datos todavía.
 ## Embudo
 | evento | visitas | veces |
 | --- | --- | --- |
-| visita | 578 | 814 |
-| descarga | 259 | 292 |
+| visita | 582 | 818 |
+| descarga | 260 | 293 |
 | clic_descargar | 121 | 132 |
 | descarga_instalar | 69 | 147 |
 | video_play | 68 | 72 |
-| beta_whatsapp | 17 | 21 |
-| beta | 15 | 15 |
+| beta_whatsapp | 18 | 22 |
+| beta | 16 | 16 |
 | whatsapp_ayuda | 13 | 13 |
 
 ## Por fuente (visitas → descargas)
 | fuente | campana | visitas | descargas |
 | --- | --- | --- | --- |
-| directo |  | 446 | 195 |
-| tiktok |  | 95 | 53 |
+| directo |  | 447 | 195 |
+| tiktok |  | 96 | 54 |
 | app | compartir | 17 | 9 |
-| tiktok | prueba-en-google-play | 8 | 0 |
+| tiktok | prueba-en-google-play | 10 | 0 |
 | facebook | beta | 6 | 2 |
 | prueba |  | 3 | 1 |
 | chatgpt.com |  | 2 | 0 |
@@ -127,16 +127,16 @@ Sin datos todavía.
 ## Por dispositivo
 | dispositivo | visitas | descargas |
 | --- | --- | --- |
-| android | 484 | 259 |
+| android | 487 | 260 |
 | iphone | 54 | 0 |
-| pc | 41 | 0 |
+| pc | 42 | 0 |
 
 ## Qué botón lleva a descargar
 | boton | descargas |
 | --- | --- |
 | fijo | 83 |
 | hero | 79 |
-| tiktok | 51 |
+| tiktok | 52 |
 | app | 33 |
 | nav | 19 |
 | cierre | 12 |
@@ -150,6 +150,7 @@ Sin datos todavía.
 ## Por día
 | dia | visitas | descargas |
 | --- | --- | --- |
+| 2026-10-27 | 4 | 1 |
 | 2026-10-26 | 4 | 0 |
 | 2026-10-25 | 3 | 0 |
 | 2026-10-24 | 31 | 3 |
