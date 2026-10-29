@@ -45,3 +45,29 @@ Referencia de metas: ≥ 40 % del video visto en promedio y ≥ 10 % que lo ve c
 - «App para calcular viajes DiDi»: variante de «Lo que la app no te dice» con otro ejemplo.
 - Dudas sueltas de la audiencia (cobro en efectivo, pasajeros que se portan mal): solo con dato verificable y sin afirmaciones legales.
 - Play Protect bloqueando la instalación, en ~30 s (reemplaza al de 4 minutos como contenido de alcance).
+
+## Análisis de guiones · 28 oct 2026 (4 videos de la cuenta personal)
+Fuente: capturas de TikTok Studio (28 oct) y guiones transcritos por Eduardo. Los guiones vienen del audio; el diseño visual se analizó aparte.
+
+**Qué tienen en común (patrón de guion, 4 videos):**
+1. Abren con una pérdida concreta del conductor, no con el nombre de la app («Aceptas un viaje a ciegas…», «Te cancelan…», «La plataforma te paga cuánto te paga…»).
+2. La app aparece a mitad del video como solución («Hice una app para que esto no nos vuelva a pasar»).
+3. Terminan con una acción pedida: comentar una palabra, mandar mensaje o descargar (3 de 4 piden comentario).
+4. Hablan de conductor a conductor («nos vuelva a pasar», «ese viaje de Uber sí nos convenía»).
+
+**Qué cambia el resultado (hipótesis, 2 videos con oferta comparable):**
+- Oferta con premio concreto: «Busco 50» (3 meses gratis, un mes por referido) → 161 comentarios. «Te conviene» (solo «te paso los accesos») → 25 comentarios. Con 4 videos no hay regla todavía.
+- Estructura de consejo en lista: «Te cancelan» → 14 compartidos, 2 comentarios, sin CTA de comentario.
+- Retención: los 4 caen fuerte en el primer segundo (32–43 % visto en promedio). El gancho verbal no basta; falta comprobar si el primer cuadro visual cambia la caída.
+
+**Métricas de la captura (28 oct, valores de la pantalla):**
+| Video | Vistas | % visto | % completo | Comentarios | Compartidos | Guardados | Seguidores |
+|---|---|---|---|---|---|---|---|
+| Busco 50 conductores | 4,372 | 32 % | 11.26 % | 161 | 16 | 15 | 12 |
+| Lo que la app no te dice | ≈ 3,800 | — | 19.85 % | 95 | 16 | 21 | 11 |
+| Te cancelan, ¿qué haces? | 2,423 | 43 % | 7.55 % | 2 | 14 | 5 | 7 |
+| Te conviene el viaje | 1,421 | 41 % | 9.87 % | 25 | 2 | 3 | 2 |
+
+Nota: «Lo que la app» aparece como 3.8K redondeado en Studio; las filas de `videos.csv` son snapshots a distintas fechas, no se sobrescriben.
+
+**Próximo paso:** guion `24 - Viaje de 60 que se queda en 38` (borrador). Probar con el mismo guion en dos primeros cuadros distintos para separar el efecto del guion del diseño.
