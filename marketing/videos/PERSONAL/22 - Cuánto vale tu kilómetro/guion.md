@@ -1,6 +1,6 @@
 # Guion · 22 - Cuánto vale tu kilómetro (PERSONAL v2) — 30 oct 2026, con la skill `guion-remotion-checa`
 
-**Estado:** guion por aprobar. Versión anterior: `guion_anterior.md`. Misma idea y cifras que `CHECA/22`; otro gancho (arranca con lo que te queda, no con la comparación), otras palabras y otro orden (primero la de 110, luego la de 90). Montos sin moneda en la voz.
+**Estado:** guion aprobado el 30 oct 2026; tabla de animaciones por aprobar. Versión anterior: `guion_anterior.md`. Misma idea y cifras que `CHECA/22`; otro gancho (arranca con lo que te queda, no con la comparación), otras palabras y otro orden (primero la de 110, luego la de 90). Montos sin moneda en la voz.
 
 Concepto / Problema detectado en el repo:
 El conductor compara tarifas, no kilómetros. `Parser.kt`: `porKm` = tarifa / km **totales** (recogida + viaje); `gasolina()` = km / km por litro × $/litro; `neta()` = tarifa − gasolina; `nivel()` pinta el semáforo con la meta por km. La oferta que más paga puede ser la peor.
@@ -26,3 +26,16 @@ CTA final:
 
 ## Notas
 - Marca v2, pop-ups con «OFERTA», sin ciudad ni país, sin promesa de ganancia; la meta de 5/km es ejemplo. Voz v3 sin `[pause]`. Plantilla: `video/hyperframes/cuanto-vale-km-22/`.
+
+## Tabla de animaciones por toma (30 oct 2026, por aprobar)
+| Toma | Frase | Componente | Animación | Objetivo |
+|---|---|---|---|---|
+| 0–3 s | «Te ofrecen 110 y te quedan 54.» | Tarjeta de oferta «110» + sello «¿$?» + «Números de ejemplo» | Flash en el cuadro 0; la tarjeta se estrella con zoom; contador 110 → 54; cámara sacude la cifra | Golpe: lo que te queda |
+| 3–6 s | «Son 28 kilómetros, a 3.93 por kilómetro.» | Cuenta 110 ÷ 28 km + ticket Gasolina −56 | La cifra 3.93/km se revela en rojo; el ticket cae | Por qué queda poco |
+| 6–9 s | «La otra oferta paga 90, pero son 15 kilómetros…» | Segunda tarjeta + cuenta 90 ÷ 15 = 6/km | La 2ª entra con spring y la 1ª se reduce; 6/km en verde; contador 90 → 60 | Contraste |
+| 9–12 s | «Si tu kilómetro tiene que valer 5…» | Raya de meta «5/km» + dos barras | La raya se dibuja; la barra de 6 sube sobre ella y la de 3.93 queda abajo | Payoff |
+| 12–15 s | «Y en segundos, nadie saca esa cuenta.» | Reloj + dos cuentas con «?» | El reloj corre y los números tiemblan | Cambio de ritmo |
+| 15–18 s | «Checa la hace por ti, antes de que aceptes.» | Dos pop-ups «A · Franja»: RECHAZAR 54 y ACEPTAR ★ 60 | Caen con spring uno tras otro | Checa como solución |
+| 18–21 s | «Comenta CHECA y te paso el acceso…» | Pantalla final estándar sin link | Logo rojo → ámbar → verde → ✓; pastilla «Comenta CHECA» | Una sola acción |
+
+Marca v2, pop-ups con «OFERTA», subtítulos palabra por palabra, efectos oficiales, sin música, todo por encima de y≈1150.
