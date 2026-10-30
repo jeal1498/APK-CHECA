@@ -1,13 +1,13 @@
 ---
 name: videos-checa-camara
-description: Hacer los videos de Checa con la marca v2 (asfalto y hueso, semáforo con significado, Bricolage Grotesque, DM Sans, JetBrains Mono). Dos modos. (1) Eduardo a cámara (cuenta personal @Eduardoalv9802 y tutoriales con su cara): gancho en pantalla, subtítulos v2 palabra por palabra, escenas gráficas animadas que acompañan el guion y pantalla final estándar. (2) Narrador de IA sin su cara (CHECA y su v2 PERSONAL): proyecto de HyperFrames con SCRIPT.md + escenas.json + construir.py, voz de Fernando v3, portada y flujo por etapas. Úsala al editar un video suyo a cámara, o al hacer, rehacer o corregir cualquier video de Checa. Los guiones se escriben con `guion-remotion-checa`.
+description: Producción de los videos de Checa con la marca v2 (asfalto y hueso, semáforo con significado, Bricolage Grotesque, DM Sans, JetBrains Mono). Dos modos: (1) Eduardo a cámara (cuenta @Eduardoalv9802 y tutoriales con su cara): gancho en pantalla, subtítulos v2 palabra por palabra, escenas gráficas y pantalla final; (2) narrador de IA sin su cara (CHECA y su v2 PERSONAL): proyecto de HyperFrames con SCRIPT.md + escenas.json + construir.py, voz de Fernando v3, portada, render, copy y calendarios. Úsala SIEMPRE que se vaya a hacer, rehacer, corregir, renderizar o entregar un video de Checa, una portada o su copy, aunque Eduardo no nombre la skill. El guion se escribe antes con `guion-remotion-checa`.
 ---
 
 # Videos de Checa (marca v2): a cámara y con narrador de IA
 
 > **30 oct 2026:** esta skill absorbió a `videos-checa` (eliminada a petición de Eduardo; su historial —1Volt, 3D y el proceso HyperFrames viejo— sigue en git). Las secciones de abajo hasta «Cómo habla Eduardo» son del modo **a cámara**; el modo **narrador de IA** está en «Videos con narrador de IA (sin su cara)», al final.
 
-Port de la skill `videos-karen` (repo `jeal1498/videos-karen-trujillo`) a la marca Checa. Misma mecánica: un `spec.json` + `words.json` (transcripción por palabra) → `componer.py` arma `public/index.html` de HyperFrames → `check` → render. **Estado (17 oct 2026):** probada con un video sintético (`check` sin errores, escenas revisadas en fotogramas y un render corto); primer uso real con 5 clips de Eduardo (17 oct 2026): `CHECA/21 - Beta testers corto`.
+Port de la skill `videos-karen` (repo `jeal1498/videos-karen-trujillo`) a la marca Checa. Misma mecánica: un `spec.json` + `words.json` (transcripción por palabra) → `componer.py` arma `public/index.html` de HyperFrames → `check` → render. Usos reales: `CHECA/21 - Beta testers corto` y `CHECA/23 - Prueba en Google Play`.
 
 ## Marca (manda `jeal1498/checa-web`, carpeta `marca/`; usa la skill `marca-checa`)
 - Asfalto `#0C0C10`, tablero `#16161C`, humo `#3A3A45`, hueso `#F4F4EF`. **El color solo decide:** verde `#22C55E` (lo que ganas), amarillo `#FACC15` (lo que recuerdas), rojo `#EF4444` (lo que pierdes).
@@ -22,7 +22,7 @@ Port de la skill `videos-karen` (repo `jeal1498/videos-karen-trujillo`) a la mar
 3. **Portada** (estilo marca v2: `video/hyperframes/checa-marca-v2/portada/portada.html`; va antes que el video). Con la tarjeta de oferta parecida a la de una app de viajes y las preferencias de Eduardo del 24 oct 2026 (ver «Portadas» al final de esta skill).
 4. **Video:** versión de prueba con `SendUserFile` desde la carpeta de trabajo (no se commitea). Con portada y video aprobados: `video/scripts/portada_primer_cuadro.sh <video.mp4> <portada.jpg> <salida.mp4>`.
 5. **Copy** (`copy.txt` sin link y `dm.txt` con el link y su `utm_campaign`): `utm_source=tiktok-personal` en la cuenta de Eduardo y `utm_source=tiktok` en la CHECA oficial. Eduardo aprueba el copy antes de guardar.
-6. **Hecho:** copiar a `marketing/videos/PERSONAL/NN - Nombre/` (o `CHECA/` si va a la cuenta oficial; agrega su fila en `marketing/plan/calendario.md`) (`video.mp4`, `portada.jpg`, `copy.txt`, `dm.txt`, `guion.md`), una sola vez y ya aprobado. Commit con `[skip ci]` (si no, GitHub Actions compila el APK). «Hecho» no es «Publicado».
+6. **Hecho:** copiar a `marketing/videos/PERSONAL/NN - Nombre/` (o `CHECA/` si va a la cuenta oficial; agrega su fila en `marketing/plan/calendario.md`) (`video.mp4`, `portada.jpg`, `copy.txt`, `dm.txt`, `guion.md`), una sola vez y ya aprobado. Commit y push a `main` (`build.yml` ignora `marketing/**`, `video/**` y `.claude/**`, así que ya no hace falta `[skip ci]`). «Hecho» no es «Publicado».
 
 ## Pasos técnicos (`SK=.claude/skills/videos-checa-camara`)
 1. `bash $SK/scripts/preparar.sh <original.mp4> <trabajo>` (trabajo en el scratchpad, no en el repo): re-codifica a 1080×1920, voz a −14 LUFS, copia fuentes y gsap, transcribe con Whisper (`words.json`).
@@ -64,7 +64,6 @@ Port de la skill `videos-karen` (repo `jeal1498/videos-karen-trujillo`) a la mar
 Una idea por escena, de 3 a 5 s, máximo 12 palabras; suman como máximo el 40 % del video; entran 0.2 s antes de la palabra clave; el contenido queda entre y=250 y y=1120 (los subtítulos ocupan y=1160 a 1480); sin cuenta animada en `numero` (el render por cuadros no ejecuta callbacks).
 
 ## Pendientes
-- Ajustar zona del rótulo según el encuadre de Eduardo (en el primer uso quedó bien).
 - Si Eduardo quiere un encuadre fijo como el de Karen (`encuadre.py`, ojos en el tercio superior), se porta de `videos-karen-trujillo`.
 
 ## Cómo habla Eduardo (aprendido de su corrección, 24 oct 2026, video 23 «Prueba en Google Play»)

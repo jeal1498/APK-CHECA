@@ -1,6 +1,6 @@
 ---
 name: guion-remotion-checa
-description: Genera guiones verticales de Checa (TikTok, Reels, Shorts) con la «regla de los 3 segundos» y una instrucción de animación por bloque para Remotion / Hyperframes, partiendo del análisis del código de la app. Úsala al pedir un guion de video nuevo de Checa (cuenta CHECA o PERSONAL), una versión A/B o «un guion con Remotion».
+description: Escribe los guiones de video vertical de Checa (TikTok, Reels, Shorts; cuenta CHECA y su v2 PERSONAL) en bloques de 2.5 a 3 s, con una instrucción de animación por bloque, a partir del código real de la app (Parser, Comparador, Popup) y con las cifras calculadas con sus fórmulas. Úsala SIEMPRE que Eduardo pida un guion, un gancho, una v2, un A/B o «rehacer» un video de Checa, aunque no nombre la skill; también trae «Cómo le gustan los videos a Eduardo» (reglas de ritmo, voz, portada y entrega). La producción del video (voz, escenas, render) está en `videos-checa-camara`.
 ---
 
 # Guion Remotion · Checa
@@ -46,15 +46,14 @@ CTA final:
 ```
 
 ## Cómo le gustan los videos a Eduardo (30 oct 2026, video 17; vigente para todos)
-Eduardo pidió que esto viva en esta skill (`guion-remotion-checa`), no en `videos-checa-camara`.
 - **Los primeros 3 s son un golpe, no una entrada suave.** Del 17: «se sienten muy flojos» con una tarjeta que solo entraba y un título quieto. Lo que sí funcionó: flash en el cuadro 0, tarjeta que se estrella con zoom grande, monto que sube de $0, toque en «Aceptar» con ondita, cámara que se pega a la cifra y la sacude, y el título entra grande (blanco + amarillo) con sello «¿$?». Nada quieto ni vacío mientras la voz habla.
 - **Sin pausas largas de voz.** Un `[pause]` de v3 dejó 1.3 s de silencio con pantalla estática: no usar `[pause]` en el gancho (si hace falta, solo entre ideas y con algo moviéndose).
 - **Voz v3 en todas las líneas del video** (`ELEVEN_V3=1 python3 -I construir.py …`) para no mezclar voces; si cambia una línea, apartar su `NN.mp3/.json/.wav` con `mv` (no `rm` con comodín) y regenerar.
 - **Una idea por toma de ~3 s y algo cambia en cada toma.** Los pop-ups dicen «OFERTA» (no nombres de app); «Números de ejemplo» donde haya cifras; todo el contenido por encima de y≈1150 (subtítulos en 1160–1480).
 - **Formato del mp4:** siempre `yuv420p`, perfil High (`-pix_fmt yuv420p -profile:v high -movflags +faststart`). Un unido con `xfade` salió en 4:4:4 y el teléfono de Eduardo dijo «mi dispositivo no puede reproducirlo»; revisa con `ffprobe` antes de mandarlo.
 - **Rehacer un video viejo con el flujo nuevo:** `guion-remotion-checa` para el guion (cifras con las fórmulas del código) → tabla de animaciones → portada → video → copy, una aprobación por etapa. No pegar un cierre nuevo a un cuerpo de marca vieja.
-- **Plantilla con más tipos de escena: `video/hyperframes/como-funciona-17/construir.py`** (suma `oferta` con golpe, `lee`, `aviso`, `ticket`, `fichas`, `metas`, `horas`; `rutas` con `ficha`, `en_rec`, `en_viaje`; copiarla en vez de la del 26 para un explicador). `hyperframes check` marca un error de «texto oculto» si el cierre va solo: no pasa si el cierre va al final de un video completo.
-- **Portadas:** `portada/portada.html` del 17 es la tarjeta de oferta con título de pregunta y sello «TE QUEDAN $▒▒»; se renderiza con Playwright (`require('playwright')`, viewport 1080×1920).
+- **Plantilla con más tipos de escena: `video/hyperframes/cuanto-vale-km-22/construir.py`** (suma `comparar`, `cuenta`, `meta`, `reloj15`, además de `oferta`, `lee`, `aviso`, `ticket`, `fichas`, `metas`, `horas`, `rutas`, `duo`; copiar ese proyecto para cualquier video nuevo). `hyperframes check` marca un error de «texto oculto» si el cierre va solo: no pasa si el cierre va al final de un video completo.
+- **Portadas:** receta y plantilla en `videos-checa-camara` (sección «Videos con narrador de IA», punto 5).
 - **Copy de videos sin la cara de Eduardo (30 oct):** no decir «Soy Eduardo» ni «armé Checa» (la gente espera ver a alguien); solo se presenta en los videos donde sale a cámara (p. ej. PERSONAL 23). El `dm.txt` sí puede ir en primera persona.
 - **Montos en la voz sin moneda (30 oct, CHECA 22):** la voz decía «dólares» por el símbolo $. En SCRIPT.md escribir solo números («una oferta de 110», «a 3.93 por kilómetro»); en pantalla sí van con $ y «Números de ejemplo». Mostrar el texto de la voz a Eduardo antes de regenerar.
 - **Portada (30 oct, PERSONAL 22):** Eduardo rechazó «Pagan 90 y deja más» y eligió como título el **gancho del video** («Te ofrecen 110 y te quedan 54»). Si el título ya dice una cifra, el sello amarillo esconde **otra** (p. ej. «CADA KM VALE $▒.▒▒») y la tarjeta no puede mostrar esa cifra (quitar «$/km est.»). Si no cabe, bajar la letra del título (128 px alcanza para 14 caracteres).
