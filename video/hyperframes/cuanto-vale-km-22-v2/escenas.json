@@ -1,0 +1,157 @@
+[
+ {
+  "tipo": "oferta",
+  "tarifa": 110,
+  "titulo": [
+   "110 y te",
+   "quedan 54"
+  ],
+  "titulo_en": "quedan",
+  "d": "A 6 min (3 km)<br>Viaje: 40 min (25 km)",
+  "sfx": [
+   [
+    "popup-entra",
+    0.0,
+    0.5
+   ],
+   [
+    "numero-sube",
+    0.2,
+    0.4
+   ],
+   [
+    "sello",
+    "quedan",
+    0.4
+   ]
+  ]
+ },
+ {
+  "tipo": "cuenta",
+  "tarifa": 110,
+  "km": 28,
+  "porkm": "3.93",
+  "color": "rojo",
+  "gasolina": 56,
+  "neta": 54,
+  "d1": "6 min (3 km)",
+  "d2": "40 min (25 km)",
+  "w_km": "28",
+  "w_res": "393",
+  "sfx": [
+   [
+    "sello",
+    "393",
+    0.4
+   ],
+   [
+    "numero-sube",
+    "kilómetro",
+    0.35
+   ]
+  ],
+  "w_q": "kilómetro"
+ },
+ {
+  "tipo": "cuenta",
+  "tarifa": 90,
+  "km": 15,
+  "porkm": "6",
+  "color": "verde",
+  "gasolina": 30,
+  "neta": 60,
+  "d1": "4 min (2 km)",
+  "d2": "20 min (13 km)",
+  "w_km": "15",
+  "w_res": "6",
+  "sfx": [
+   [
+    "sello",
+    "6",
+    0.4
+   ],
+   [
+    "numero-sube",
+    "quedan",
+    0.35
+   ]
+  ]
+ },
+ {
+  "tipo": "meta",
+  "sfx": [
+   [
+    "sello",
+    "valer",
+    0.35
+   ]
+  ],
+  "w_m": "valer",
+  "w_u": "kilómetro",
+  "w_o": "110"
+ },
+ {
+  "tipo": "reloj15",
+  "sfx": false
+ },
+ {
+  "tipo": "duo",
+  "entra": "Checa",
+  "popups": [
+   {
+    "nivel": "rojo",
+    "app": "OFERTA",
+    "neta": 54,
+    "viaje": 110,
+    "gasolina": 56,
+    "chips": [
+     [
+      "$143/h",
+      "por hora",
+      "mal"
+     ],
+     [
+      "$3.9/km",
+      "por km",
+      "mal"
+     ],
+     [
+      "46 min",
+      "28 km total",
+      ""
+     ]
+    ]
+   },
+   {
+    "nivel": "verde",
+    "app": "OFERTA",
+    "neta": 60,
+    "viaje": 90,
+    "gasolina": 30,
+    "chips": [
+     [
+      "$225/h",
+      "por hora",
+      "ok"
+     ],
+     [
+      "$6/km",
+      "por km",
+      "ok"
+     ],
+     [
+      "24 min",
+      "15 km total",
+      ""
+     ]
+    ],
+    "mejor": true
+   }
+  ]
+ },
+ {
+  "tipo": "cierre",
+  "pil": "Comenta CHECA",
+  "link": false
+ }
+]
