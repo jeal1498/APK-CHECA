@@ -32,7 +32,7 @@ Lo vigente para trabajar en Checa. La historia con fecha y el detalle largo vive
 
 ## Estado actual (30 oct 2026)
 - **Versión:** `main` trae `versionCode` 75 / **9.5**. Último release del canal directo: **v78 (9.3)**. Play: AAB 74 (9.4) en Prueba interna y **Prueba cerrada «Alpha»** (México), ya disponible para testers.
-- **Pendiente importante:** la 9.5 (aviso «Checa cambia de app» y bloqueo del canal directo el 15 nov, `Migracion.kt`) **todavía no tiene release directo**, así que los usuarios del APK aún no ven el aviso. La web (`checa-web/descargar/`) aún ofrece el APK y debería apuntar a `/registro/`.
+- **Pendiente importante (Eduardo decidió esperar, 30 oct):** la 9.5 (aviso «Checa cambia de app» y bloqueo del canal directo el 15 nov, `Migracion.kt`) **todavía no tiene release directo**, así que los usuarios del APK aún no ven el aviso. La web (`checa-web/descargar/`) aún ofrece el APK y debería apuntar a `/registro/`.
 - **Google Play:** falta juntar **12 testers dentro 14 días seguidos** para pedir producción. `/registro/` (checa-web) guarda nombre y Gmail en la tabla `testers` de Supabase y manda a la comunidad de WhatsApp; Eduardo pasa los correos a mano a la lista «Testers» de Play Console. El registro cierra al llegar a 50 o el 15 nov 2026.
 - **Fase 7 (Play Billing)** pendiente: debe estar lista antes del **1 feb 2027**, cuando termina la beta gratis (`Licencia.BETA_HASTA` = 31 ene 2027). Necesita su «adelante».
 - Detalle e historia: `docs/google-play/bitacora.md`.
