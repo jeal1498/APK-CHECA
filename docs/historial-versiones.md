@@ -73,4 +73,4 @@ v69 (8.6) **marcada como errónea** (Eduardo, 19 oct 2026): no instala en su tab
 v70 (8.7): **vuelve al código de la 8.5** (`Cuenta.kt` como en 0bcf296). Sube el `versionCode` a 67 para que quien ya tenga la 8.6 pueda actualizar encima (bajarlo a 65 sería un downgrade y Android lo rechaza).
 v74 (9.4): **solo flavor `play`**: el subtítulo del paso 1 («Solo lee Uber y DiDi») y la descripción del servicio de accesibilidad («No envía datos a ningún lado») se alinean con la divulgación de captura (lee en el teléfono lo que aparece en pantalla; «El contenido que lee se procesa en tu teléfono»). `directo` conserva sus textos. `versionCode` 74.
 v75 (9.5): aviso «Checa cambia de app» y bloqueo del canal directo el 15 nov 2026 (`Migracion.kt`); release directo v80.
-v76 (9.6): la web cambió de nombre (`checa-web` → `PWA-Checa-Multimedia`); el aviso de migración, la actualización y la imagen del día apuntan a la nueva dirección.
+v76 (9.6): la web cambió de nombre (nombre anterior → `PWA-Checa-Multimedia`); el aviso de migración, la actualización y la imagen del día apuntan a la nueva dirección.
