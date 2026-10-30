@@ -10,7 +10,7 @@
   {"tipo": "duo", "entra": "compara", "popups": [
     {"nivel": "verde", "app": "OFERTA", "mejor": true, "neta": 75, "viaje": 95, "gasolina": 20,
      "chips": [["$285/h", "por hora", "ok"], ["$9.5/km", "por km", "ok"], ["20 min", "10 km total", ""]]},
-    {"nivel": "verde", "app": "OFERTA ⚡1.4x", "neta": 98, "viaje": 126, "gasolina": 28,
+    {"nivel": "verde", "app": "OFERTA", "neta": 98, "viaje": 126, "gasolina": 28,
      "chips": [["$236/h", "por hora", "ok"], ["$9/km", "por km", "ok"], ["32 min", "14 km total", ""]]}
   ]},
   {"tipo": "cierre", "pil": "Comenta CHECA", "link": false}
