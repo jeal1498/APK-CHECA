@@ -1,0 +1,314 @@
+[
+ {
+  "tipo": "oferta",
+  "tarifa": 150,
+  "titulo": [
+   "$150 no es",
+   "tu ganancia"
+  ],
+  "sfx": [
+   [
+    "popup-entra",
+    0.0,
+    0.5
+   ],
+   [
+    "numero-sube",
+    0.2,
+    0.4
+   ],
+   [
+    "sello",
+    "quedan",
+    0.4
+   ]
+  ],
+  "titulo_en": "quedan"
+ },
+ {
+  "tipo": "aviso",
+  "tarifa": 150,
+  "popup": {
+   "nivel": "verde",
+   "app": "OFERTA",
+   "neta": 118,
+   "viaje": 150,
+   "gasolina": 32,
+   "chips": [
+    [
+     "$321/h",
+     "por hora",
+     "ok"
+    ],
+    [
+     "$9.4/km",
+     "por km",
+     "ok"
+    ],
+    [
+     "28 min",
+     "16 km total",
+     ""
+    ]
+   ]
+  },
+  "sfx": [
+   [
+    "popup-entra",
+    0.1,
+    0.4
+   ],
+   [
+    "aceptar",
+    0.55,
+    0.45
+   ]
+  ]
+ },
+ {
+  "tipo": "lee",
+  "tarifa": 150,
+  "sfx": [
+   [
+    "logo-semaforo",
+    0.2,
+    0.4
+   ]
+  ]
+ },
+ {
+  "tipo": "rutas",
+  "gasolina": "",
+  "ficha": "Gasolina −$32",
+  "km_rec": "3 km",
+  "km_viaje": "13 km",
+  "en_rec": "Descuenta",
+  "en_viaje": "pasajero",
+  "en_gas": "viaje",
+  "en_tu": "viaje"
+ },
+ {
+  "tipo": "fichas",
+  "fichas": [
+   [
+    "$321/h",
+    "POR HORA",
+    "hora"
+   ],
+   [
+    "$9.4/km",
+    "POR KM",
+    "kilómetro"
+   ]
+  ],
+  "sfx": [
+   [
+    "sello",
+    "hora",
+    0.35
+   ],
+   [
+    "sello",
+    "kilómetro",
+    0.35
+   ]
+  ]
+ },
+ {
+  "tipo": "estados",
+  "popups": [
+   {
+    "nivel": "verde",
+    "app": "OFERTA",
+    "neta": 118,
+    "viaje": 150,
+    "gasolina": 32,
+    "chips": [
+     [
+      "$321/h",
+      "por hora",
+      "ok"
+     ],
+     [
+      "$9.4/km",
+      "por km",
+      "ok"
+     ],
+     [
+      "28 min",
+      "16 km total",
+      ""
+     ]
+    ]
+   },
+   {
+    "nivel": "amarillo",
+    "app": "OFERTA",
+    "neta": 82,
+    "viaje": 112,
+    "gasolina": 30,
+    "chips": [
+     [
+      "$224/h",
+      "por hora",
+      "ok"
+     ],
+     [
+      "$7.5/km",
+      "por km",
+      "mal"
+     ],
+     [
+      "30 min",
+      "15 km total",
+      ""
+     ]
+    ]
+   },
+   {
+    "nivel": "rojo",
+    "app": "OFERTA",
+    "neta": 71,
+    "viaje": 120,
+    "gasolina": 49,
+    "chips": [
+     [
+      "$212/h",
+      "por hora",
+      "ok"
+     ],
+     [
+      "$4.9/km",
+      "por km",
+      "mal"
+     ],
+     [
+      "6 km",
+      "recogida",
+      "mal"
+     ]
+    ]
+   }
+  ],
+  "en_palabra": [
+   0,
+   2,
+   4
+  ]
+ },
+ {
+  "tipo": "metas",
+  "metas": [
+   [
+    "Meta por km",
+    6,
+    8,
+    "/km"
+   ],
+   [
+    "Meta por hora",
+    120,
+    150,
+    "/h"
+   ]
+  ],
+  "sfx": [
+   [
+    "sello",
+    "metas",
+    0.3
+   ]
+  ],
+  "en": [
+   "metas",
+   "pones"
+  ]
+ },
+ {
+  "tipo": "rutas",
+  "gasolina": "",
+  "ficha": "Recogida 6 km",
+  "km_rec": "6 km",
+  "km_viaje": "18.5 km",
+  "en_rec": "recogida",
+  "en_viaje": "lejos",
+  "en_gas": "sale",
+  "en_tu": "rojo"
+ },
+ {
+  "tipo": "horas",
+  "buenas": [
+   17,
+   18,
+   19
+  ],
+  "sfx": [
+   [
+    "sello",
+    "conviene",
+    0.35
+   ]
+  ],
+  "mejor_en": "conviene"
+ },
+ {
+  "tipo": "duo",
+  "entra": 0,
+  "popups": [
+   {
+    "nivel": "verde",
+    "app": "OFERTA",
+    "neta": 118,
+    "viaje": 150,
+    "gasolina": 32,
+    "chips": [
+     [
+      "$321/h",
+      "por hora",
+      "ok"
+     ],
+     [
+      "$9.4/km",
+      "por km",
+      "ok"
+     ],
+     [
+      "28 min",
+      "16 km total",
+      ""
+     ]
+    ],
+    "mejor": true
+   },
+   {
+    "nivel": "amarillo",
+    "app": "OFERTA",
+    "neta": 82,
+    "viaje": 112,
+    "gasolina": 30,
+    "chips": [
+     [
+      "$224/h",
+      "por hora",
+      "ok"
+     ],
+     [
+      "$7.5/km",
+      "por km",
+      "mal"
+     ],
+     [
+      "30 min",
+      "15 km total",
+      ""
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "tipo": "cierre",
+  "pil": "Comenta CHECA",
+  "link": false
+ }
+]
