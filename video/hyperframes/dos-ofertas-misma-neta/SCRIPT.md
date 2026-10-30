@@ -1,4 +1,4 @@
-# SCRIPT — 26 Dos ofertas, misma neta (avance de 6 s)
+# SCRIPT — 26 Dos ofertas, misma neta (avance)
 
-    Te ofrecen 95 pesos. Te quedan 67.
+    Te cae un viaje de 95 pesos… pero en tu bolsa nomás se quedan 67.
     La gasolina de la recogida y del viaje también la pagas tú.

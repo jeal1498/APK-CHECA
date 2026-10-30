@@ -11,7 +11,7 @@ Ajustes por defecto: 12 km/l, $24/l, meta $150/h y $8/km, recogida máx. 4 km.
 - **Oferta B (DiDi):** $82 · recogida 1.2 km / 4 min · viaje 6 km / 11 min → 7.2 km, 15 min. Gasolina $14.40 → **$68 netos**. $11.39/km ✓, $328/h ✓ → 🟢 ACEPTAR, ★ mejor.
 
 ## Guion desglosado
-- `0:00 - 0:03` | Audio: «Te ofrecen 95 pesos. Te quedan 67.» | Remotion / Visual: [RideCard «$95» con spring entry desde abajo; a 0:01.5 tachado SVG que se dibuja (strokeDashoffset) y debajo contador $95 → $67 con interpolate + Math.round]
+- `0:00 - 0:03` | Audio: «Te cae un viaje de 95 pesos… pero en tu bolsa nomás se quedan 67.» | Remotion / Visual: [RideCard «$95» con spring entry desde abajo; a 0:01.5 tachado SVG que se dibuja (strokeDashoffset) y debajo contador $95 → $67 con interpolate + Math.round]
 - `0:03 - 0:06` | Audio: «La gasolina de la recogida y del viaje también la pagas tú.» | Remotion / Visual: [Mapa line-art: ruta de recogida (3.8 km) y de viaje (10 km) se dibujan; ficha «Gasolina −$27.60» entra con spring y empuja el monto]
 - `0:06 - 0:09` | Audio: «Y te va a tomar media hora.» | Remotion / Visual: [Reloj circular que se llena de 0 a 30 min (interpolate sobre el arco); texto palabra por palabra]
 - `0:09 - 0:12` | Audio: «Al mismo tiempo cae otra: 82 pesos.» | Remotion / Visual: [Layout split: segunda RideCard «$82» entra desde la derecha con spring; la primera se reduce a la mitad izquierda (scale + translateX interpolados)]
