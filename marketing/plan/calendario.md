@@ -16,6 +16,7 @@
 | 17 | mar 3 nov | Explicativo (rehecho 30 oct, voz v3) | `17 - Cómo funciona Checa` | ✅ (hecho 30 oct) | |
 | 22 | mié 4 nov | Venta (rehecho 30 oct, voz v3) | `22 - Cuánto vale tu kilómetro` | ✅ (hecho 30 oct) | |
 | 28 | jue 5 nov | Venta | `28 - El 1.4x que paga menos por hora` | ✅ (hecho 30 oct) | |
+| 29 | vie 6 nov | Aviso | `29 - Checa cambia de app` | ✅ (hecho 30 oct) | |
 
 # PERSONAL · cuenta personal de Eduardo (v2)
 
@@ -28,6 +29,7 @@
 | 17 | mar 3 nov | Explicativo (v2, voz v3) | `17 - Cómo funciona Checa` | ✅ (hecho 30 oct) | |
 | 22 | jue 5 nov | Venta (v2, un día detrás de CHECA) | `22 - Cuánto vale tu kilómetro` | ✅ (hecho 30 oct) | |
 | 27 | mié 4 nov | Venta (v2) | `27 - Cuánto te queda de verdad` | ✅ (hecho 30 oct) | |
+| 29 | vie 6 nov | Aviso (v2) | `29 - Checa cambia de app` | ✅ (hecho 30 oct) | |
 
 # Medición semanal (qué videos venden)
 
