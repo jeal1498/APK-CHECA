@@ -18,7 +18,7 @@ Sustituye a `../checa-promo/` para los videos **nuevos** (17 oct 2026). `checa-p
 
 `construir.py` valida que la neta cuadre (viaje − gasolina), pone «Números de ejemplo», usa ids que empiezan con letra y exige el cierre estándar como última escena. No agrega música ni efectos de sonido todavía.
 
-La marca completa vive en `jeal1498/checa-web`, carpeta `marca/` (skill `marca-checa`).
+La marca completa vive en `jeal1498/PWA-Checa-Multimedia`, carpeta `marca/` (skill `marca-checa`).
 
 **Verificado (17 oct 2026):** los tres pop-ups y un subtítulo de ejemplo se renderizaron en Chromium con las fuentes de `assets/fonts/`: mismo tamaño, sin desbordes (la ficha «Rec. 6 km» exigió bajar los datos a 40 px).
 **Probada de punta a punta (17 oct 2026):** `prueba-marca-v2/` es un video de 13 s (4 escenas, voz de Fernando, subtítulos v2, pantalla final) hecho con esta plantilla: `check` sin errores y render en ~25 s. Después se reprodujo con `construir.py` (mismo resultado visual, 9 subtítulos, 24 s de render).

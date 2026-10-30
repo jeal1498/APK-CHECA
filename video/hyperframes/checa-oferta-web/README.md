@@ -1,6 +1,6 @@
 # checa-oferta-web — video del inicio de la web (17 oct 2026)
 
-`checa-web/media/vsl-oferta.mp4` (35 s, 720×1280, marca v2). Es el guion aprobado el 16 oct 2026 de `../checa-lee-la-oferta-v2/` con su misma voz, armado con la plantilla `../checa-marca-v2/` y con el cierre sin cuentas ni link (`"sin_redes": true`), porque la web no tiene salidas.
+`PWA-Checa-Multimedia/media/vsl-oferta.mp4` (35 s, 720×1280, marca v2). Es el guion aprobado el 16 oct 2026 de `../checa-lee-la-oferta-v2/` con su misma voz, armado con la plantilla `../checa-marca-v2/` y con el cierre sin cuentas ni link (`"sin_redes": true`), porque la web no tiene salidas.
 
 Regenerar:
 1. `cp -r video/hyperframes/checa-marca-v2 video/hyperframes/<carpeta-de-trabajo>` y copiar encima `SCRIPT.md` y `escenas.json` de esta carpeta (cambiar `meta.json` y `package.json`).

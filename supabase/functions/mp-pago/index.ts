@@ -8,7 +8,7 @@ const SUPA = Deno.env.get("SUPABASE_URL")!;
 const ANON = Deno.env.get("SUPABASE_ANON_KEY")!;
 const SERVICIO = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const MP = Deno.env.get("MP_ACCESS_TOKEN")!;
-const WEB = "https://jeal1498.github.io/checa-web/";
+const WEB = "https://jeal1498.github.io/PWA-Checa-Multimedia/";
 
 const json = (o: unknown, status = 200) =>
   new Response(JSON.stringify(o), { status, headers: { "Content-Type": "application/json" } });

@@ -49,7 +49,7 @@ fin = lambda sel, t, y=24, d=0.35: J.append(f"tl.fromTo('{sel}',{{opacity:0,y:{y
 fout = lambda sel, t, d=0.25: J.append(f"tl.to('{sel}',{{opacity:0,duration:{d},ease:'power2.in'}},{q(t)});")
 ocupado = []   # (ini, fin, nombre) para avisar de empalmes
 
-# ---- efectos de sonido oficiales (checa-web/marca/sonido, copiados de la plantilla a public/sfx) ----
+# ---- efectos de sonido oficiales (PWA-Checa-Multimedia/marca/sonido, copiados de la plantilla a public/sfx) ----
 # Un sonido por evento visual, máximo 3 por escena, volumen 0.3 a 0.5 con voz. La raya de carretera va sin sonido.
 NIVEL_SFX = {'verde': 'aceptar', 'amarillo': 'considerar', 'rojo': 'rechazar'}
 SFX = []   # (archivo, segundo en el video, volumen)
@@ -171,7 +171,7 @@ if cz:
              f'<div class="e-it nombre" id="cz-nom">Checa</div><div class="e-it pil" id="cz-pil">{esc(cz.get("pil", "Descarga Checa"))}</div>'
              '<div class="e-it sa" id="cz-sa">Solo Android</div>'
              '<div class="e-it cu" id="cz-cu">síguenos en tiktok<br><b>@checa.driver</b><br>creador de Checa<br><b>@Eduardoalv9802</b></div>'
-             f'<div class="e-it li" id="cz-li">{esc(cz.get("link", "jeal1498.github.io/checa-web"))}</div>')
+             f'<div class="e-it li" id="cz-li">{esc(cz.get("link", "jeal1498.github.io/PWA-Checa-Multimedia"))}</div>')
     H.append(f'<div class="escena cierre-c clip" id="cz" data-layout-allow-occlusion data-start="{ini}" data-duration="{round(DUR-ini,2)}" data-track-index="4">{inner}</div>')
     H.append(f'<div class="barrido clip" id="cz-sw" data-layout-allow-occlusion data-start="{ini}" data-duration="{round(T+0.1,2)}" data-track-index="4"></div>')
     sweep('cz', ini, DUR, sale=False)

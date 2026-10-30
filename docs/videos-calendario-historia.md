@@ -8,7 +8,7 @@ Una publicación al día, alternando videos de **venta** (llevan a la prueba gra
 3. Una pregunta para comentar 👇.
 4. Llamada: venta → «Descarga CHECA y checa cuánto te queda de cada viaje (solo Android)»; consejo → «Guárdalo y compártelo». (Los videos ya publicados conservan su texto.)
 5. 4–5 hashtags.
-Sin link en la bio (TikTok pide constancia del SAT para cuenta de empresa): a quien comente «CHECA» se le manda por mensaje directo el texto de **`dm.txt`** de la carpeta de ese video (trae su link con etiqueta `utm_campaign`, así el reporte cuenta las descargas de cada video) (y a quien comente «YO», `jeal1498.github.io/checa-web/instalar/?desde=tiktok` + pedirle su Gmail para la beta).
+Sin link en la bio (TikTok pide constancia del SAT para cuenta de empresa): a quien comente «CHECA» se le manda por mensaje directo el texto de **`dm.txt`** de la carpeta de ese video (trae su link con etiqueta `utm_campaign`, así el reporte cuenta las descargas de cada video) (y a quien comente «YO», `jeal1498.github.io/PWA-Checa-Multimedia/instalar/?desde=tiktok` + pedirle su Gmail para la beta).
 
 **Videos de consejo descartados (19 oct 2026):** Eduardo decidió no publicar más videos de consejo. Se descartan los no publicados: CHECA y PERSONAL 07, 09, 11 y 13 (las carpetas se conservan, sin subirse). Los consejos ya publicados (03 y 05) se quedan. Al preguntar «qué toca hoy», saltar los marcados ❌ y dar solo videos de venta.
 

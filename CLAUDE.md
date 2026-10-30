@@ -33,9 +33,9 @@ Lo vigente para trabajar en Checa. La historia con fecha y el detalle largo vive
 - `versionCode` / `versionName` en `app/build.gradle.kts` (compartidos por los dos flavors): súbelos en cada versión y nunca bajes de 67. Historial en `docs/historial-versiones.md`.
 
 ## Estado actual (30 oct 2026)
-- **Versión:** `main` trae `versionCode` 75 / **9.5**. Último release del canal directo: **v78 (9.3)**. Play: AAB 74 (9.4) en Prueba interna y **Prueba cerrada «Alpha»** (México), ya disponible para testers.
-- **Pendiente importante (Eduardo decidió esperar, 30 oct):** la 9.5 (aviso «Checa cambia de app» y bloqueo del canal directo el 15 nov, `Migracion.kt`) **todavía no tiene release directo**, así que los usuarios del APK aún no ven el aviso. La web (`checa-web/descargar/`) aún ofrece el APK y debería apuntar a `/registro/`.
-- **Google Play:** falta juntar **12 testers dentro 14 días seguidos** para pedir producción. `/registro/` (checa-web) guarda nombre y Gmail en la tabla `testers` de Supabase y manda a la comunidad de WhatsApp; Eduardo pasa los correos a mano a la lista «Testers» de Play Console. El registro cierra al llegar a 50 o el 15 nov 2026.
+- **Versión:** `main` trae `versionCode` 76 / **9.6**. Último release del canal directo: **v80 (9.5)** (pendiente el de la 9.6). Play: AAB 74 (9.4) en Prueba interna y **Prueba cerrada «Alpha»** (México), ya disponible para testers.
+- **Migración al canal Play (30 oct):** la 9.5 ya tiene release directo (v80) y la web manda a `/registro/`. La web cambió de nombre a `PWA-Checa-Multimedia`: la 9.6 corrige las direcciones dentro de la app y **necesita un release directo nuevo** (Eduardo lo lanza con «Run workflow» en `build.yml`; yo no tengo ese permiso).
+- **Google Play:** falta juntar **12 testers dentro 14 días seguidos** para pedir producción. `/registro/` (PWA-Checa-Multimedia) guarda nombre y Gmail en la tabla `testers` de Supabase y manda a la comunidad de WhatsApp; Eduardo pasa los correos a mano a la lista «Testers» de Play Console. El registro cierra al llegar a 50 o el 15 nov 2026.
 - **Fase 7 (Play Billing)** pendiente: debe estar lista antes del **1 feb 2027**, cuando termina la beta gratis (`Licencia.BETA_HASTA` = 31 ene 2027). Necesita su «adelante».
 - Detalle e historia: `docs/google-play/bitacora.md`.
 
@@ -54,7 +54,7 @@ Lo vigente para trabajar en Checa. La historia con fecha y el detalle largo vive
 | `Cuenta.kt` | Login con Google (Credential Manager → Supabase), licencia y ajustes en Supabase, «Entrar sin cuenta (beta)» hasta `BETA_HASTA`, «Eliminar cuenta» (solo `play`). |
 | `Licencia.kt` | Licencia sin internet (código de equipo firmado ECDSA), combinada con la de cuenta y la beta. |
 | `Migracion.kt` | Solo `directo`: aviso con cuenta regresiva y bloqueo el 15 nov 2026 para pasar a Play. |
-| `Actualizacion.kt` | Solo `directo`: busca versión nueva en `checa-web/descargar/version.json`, avisa e instala. |
+| `Actualizacion.kt` | Solo `directo`: busca versión nueva en `PWA-Checa-Multimedia/descargar/version.json`, avisa e instala. |
 | `Resumen.kt`, `Soporte.kt`, `Guardado.kt`, `MainActivity.kt` | Imagen del día para compartir, ayuda y soporte, pantallas guardadas para diagnóstico, y la UI (Inicio · Mis metas · botón central · Ajustes · Cuenta). |
 
 Pantallas, instalación en teléfonos (Play Protect, ajustes restringidos, Samsung/OPPO) y licencias en detalle: `docs/app-pantallas.md`.
@@ -81,8 +81,8 @@ Pantallas, instalación en teléfonos (Play Protect, ajustes restringidos, Samsu
 - Detalle (paquetes, Mercado Pago, invitaciones, historia de precios): `docs/web-y-ventas.md`.
 
 ## Marca
-- Vive en el repo **`jeal1498/checa-web`**, carpeta `marca/` (skill `marca-checa`); no guardar copias aquí. Asfalto `#0C0C10`, hueso `#F4F4EF`; el color solo decide (aceptar `#22C55E`, considerar `#FACC15`, rechazar `#EF4444`); Bricolage Grotesque 800, DM Sans, JetBrains Mono.
-- La web es `https://jeal1498.github.io/checa-web/` (repo `checa-web`; cambios directo a `main`). Los legales los debe revisar un abogado.
+- Vive en el repo **`jeal1498/PWA-Checa-Multimedia`**, carpeta `marca/` (skill `marca-checa`); no guardar copias aquí. Asfalto `#0C0C10`, hueso `#F4F4EF`; el color solo decide (aceptar `#22C55E`, considerar `#FACC15`, rechazar `#EF4444`); Bricolage Grotesque 800, DM Sans, JetBrains Mono.
+- La web es `https://jeal1498.github.io/PWA-Checa-Multimedia/` (repo `PWA-Checa-Multimedia`; cambios directo a `main`). Los legales los debe revisar un abogado.
 
 ## Índice de `docs/` (léelos solo si la tarea lo pide)
 | Si vas a… | Lee |

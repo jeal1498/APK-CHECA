@@ -1,7 +1,7 @@
 # Copiar a: <repo de la app>/.github/workflows/publicar-apk.yml
-# Cuando publicas un Release con un .apk adjunto, lo sube a checa-web/descargar/
+# Cuando publicas un Release con un .apk adjunto, lo sube a PWA-Checa-Multimedia/descargar/
 # como Checa.apk y actualiza version.json.
-# Requiere el secret CHECA_WEB_TOKEN (token con Contents: Read and write en checa-web).
+# Requiere el secret CHECA_WEB_TOKEN (token con Contents: Read and write en PWA-Checa-Multimedia).
 name: Publicar APK en la web
 
 on:
@@ -36,10 +36,10 @@ jobs:
           gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern '*.apk' --dir apk
           ls apk/*.apk | head -n1 | xargs -I{} mv {} Checa.apk
 
-      - name: Clonar checa-web
+      - name: Clonar PWA-Checa-Multimedia
         uses: actions/checkout@v4
         with:
-          repository: jeal1498/checa-web
+          repository: jeal1498/PWA-Checa-Multimedia
           ref: main
           token: ${{ secrets.CHECA_WEB_TOKEN }}
           path: web

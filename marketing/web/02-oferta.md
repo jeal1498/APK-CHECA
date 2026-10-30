@@ -2,7 +2,7 @@
 
 # Página web como funnel · Paso 2: oferta y precios
 
-Base: `01-publico.md`, la web actual (`checa-web/index.html`) y `supabase/functions/_shared/planes.ts`.
+Base: `01-publico.md`, la web actual (`PWA-Checa-Multimedia/index.html`) y `supabase/functions/_shared/planes.ts`.
 
 ## La oferta hoy
 | Pieza | Hoy | Nota |

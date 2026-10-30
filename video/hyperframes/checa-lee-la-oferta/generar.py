@@ -462,7 +462,7 @@ F["10-cta"] = frame(10, c, """
       <div id="§-sub"><span id="§-s1">y te mando la <em>app</em></span></div>
       <div id="§-rA" class="§-row"><div class="l">síguenos en tiktok</div><div class="h"><i>@</i>checa.driver</div></div>
       <div id="§-rB" class="§-row"><div class="l">creador de checa</div><div class="h"><i>@</i>Eduardoalv9802</div></div>
-      <div id="§-rC" class="§-row"><div class="l">descarga en la web · solo Android</div><div class="h">jeal1498.github.io/checa-web</div></div>
+      <div id="§-rC" class="§-row"><div class="l">descarga en la web · solo Android</div><div class="h">jeal1498.github.io/PWA-Checa-Multimedia</div></div>
       <div id="§-black"></div>""",
     """      var body = document.getElementById("§-body"); var len = body.getTotalLength() * 1.05; body.style.strokeDasharray = String(len);
 """

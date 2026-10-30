@@ -13,7 +13,7 @@
 |---|---|---|
 | ¿Recopila o comparte datos? | Sí | Cuenta, equipos, ajustes y ML Kit |
 | ¿Cifrado en tránsito? | Sí | Sin `http://` en el código; Supabase y Google por HTTPS; ML Kit usa HTTPS según Google |
-| ¿Mecanismo para pedir eliminación? | Sí | En la app: Cuenta → Eliminar cuenta. Web: `https://jeal1498.github.io/checa-web/eliminar-cuenta.html` |
+| ¿Mecanismo para pedir eliminación? | Sí | En la app: Cuenta → Eliminar cuenta. Web: `https://jeal1498.github.io/PWA-Checa-Multimedia/eliminar-cuenta.html` |
 | Families / revisión independiente | No / No | App para conductores adultos |
 
 ## Datos a declarar (todos «Recopilado»; ninguno «Compartido», ver abajo)
@@ -46,7 +46,7 @@
 
 ## Preguntas de eliminación de datos
 - ¿Permite crear cuenta en la app? Sí. Ruta en la app: Cuenta → Eliminar cuenta (llama a la función `eliminar-cuenta`).
-- URL web: `https://jeal1498.github.io/checa-web/eliminar-cuenta.html`
+- URL web: `https://jeal1498.github.io/PWA-Checa-Multimedia/eliminar-cuenta.html`
 - Se elimina: cuenta de autenticación, licencia, equipos, ajustes e invitaciones.
 - Retención en el flavor play: ninguna. Los registros de pago son del canal directo (Mercado Pago).
 - La página web debe cumplir lo que pide Play: funcionar, mostrar la vía de solicitud de forma destacada, nombrar la app como en la ficha, permitir pedirlo sin reinstalar, explicar pasos extra y dar un plazo razonable.
@@ -55,5 +55,5 @@
 1. ~~Revisar nombre y avatar en Supabase Auth.~~ Hecho (23 oct 2026): se guardan nombre y foto; declarados en Play Console.
 2. Probar `eliminar-cuenta` con una cuenta secundaria.
 3. Confirmar en un teléfono si «Entrar sin cuenta» se ve en el flavor play.
-4. ~~Agregar correo de contacto y plazo~~ Hecho en `checa-web` (`8f9d5cb`): correo y plazo de 30 días en la página de eliminación y en la política.
+4. ~~Agregar correo de contacto y plazo~~ Hecho en `PWA-Checa-Multimedia` (`8f9d5cb`): correo y plazo de 30 días en la página de eliminación y en la política.
 5. Actualizar este documento si cambian las llamadas de red o los SDKs.

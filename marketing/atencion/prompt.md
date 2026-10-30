@@ -36,7 +36,7 @@ sección en tono.md, créala y enséñamela antes de contestar con ese tono.
    esa cuenta y de WhatsApp desde el corte del último diario.
 2. Para cada uno, escribe la respuesta con el tono de esa cuenta.
    - Links: solo los que estén en los dm.txt de los videos (con su UTM). Nunca inventes
-     links. Ya no se usan …/checa-web/beta/ ni el link de descarga del APK.
+     links. Ya no se usan …/PWA-Checa-Multimedia/beta/ ni el link de descarga del APK.
    - A quien comenta «CHECA»: mándale por mensaje el texto del dm.txt de ese video
      (registro con su Gmail para la prueba en Google Play y la comunidad de WhatsApp).
      Durante la beta todo es gratis.

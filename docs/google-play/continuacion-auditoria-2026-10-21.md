@@ -7,7 +7,7 @@
 - El manifiesto de origen común contiene dos permisos que no deben llegar al flavor Play: `REQUEST_INSTALL_PACKAGES` y `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`. `app/src/play/AndroidManifest.xml` los elimina mediante manifest merger. La auditoría del AAB previo confirmó que no están en el manifiesto final.
 - La función Supabase `eliminar-cuenta` sí está desplegada y activa en el proyecto esperado, versión 3, con verificación JWT habilitada. El archivo desplegado coincide con `supabase/functions/eliminar-cuenta/index.ts`. No se ejecutó ni se cambió el despliegue.
 - La verificación de identidad del desarrollador sigue siendo un bloqueo externo para subir el AAB a Play Console.
-- Se mantiene intacto el repositorio `jeal1498/checa-web` y el workflow legado `.github/workflows/build.yml`.
+- Se mantiene intacto el repositorio `jeal1498/PWA-Checa-Multimedia` y el workflow legado `.github/workflows/build.yml`.
 
 ## Hallazgos estáticos adicionales
 

@@ -195,7 +195,7 @@ def cmd_dm(args):
     hola = "¡Hola! 👋 Gracias por comentar." if cuenta == "CHECA" else "¡Hola! 👋 Soy Eduardo, gracias por comentar."
     texto = (f"{hola} Aquí está tu lugar para probar Checa en Google Play:\n\n"
              f"1️⃣ Regístrate con tu Gmail (el de tu Play Store):\n"
-             f"https://jeal1498.github.io/checa-web/registro/?utm_source={fuente}&utm_campaign={slug(nombre)}\n\n"
+             f"https://jeal1498.github.io/PWA-Checa-Multimedia/registro/?utm_source={fuente}&utm_campaign={slug(nombre)}\n\n"
              f"2️⃣ Al terminar te lleva a nuestra comunidad de WhatsApp. Entra: ahí te aviso cuando tu acceso esté habilitado y te paso el enlace para descargar.\n\n"
              f"📲 Solo Android.\n")
     open(os.path.join(d, "dm.txt"), "w", encoding="utf-8").write(texto)

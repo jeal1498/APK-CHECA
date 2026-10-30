@@ -1,6 +1,6 @@
 # Tutorial de instalación en marca v2 (para la web, 17 oct 2026)
 
-Salida: `checa-web/media/instalar.mp4` (3:03, 720×1280). Es el tutorial de Eduardo (`marketing/videos/CHECA/20 - Cómo instalar Checa`) rehecho en marca v2: misma voz y pasos (líneas 1 y 4–42 de `lineas.txt`, del «Paso dos» al «Paso doce»), mismas capturas de su grabación original, más una tarjeta de inicio, «Listo» y «¿Te atoraste? Escríbenos por WhatsApp» (`voz-v2-fin/`, voz de Fernando).
+Salida: `PWA-Checa-Multimedia/media/instalar.mp4` (3:03, 720×1280). Es el tutorial de Eduardo (`marketing/videos/CHECA/20 - Cómo instalar Checa`) rehecho en marca v2: misma voz y pasos (líneas 1 y 4–42 de `lineas.txt`, del «Paso dos» al «Paso doce»), mismas capturas de su grabación original, más una tarjeta de inicio, «Listo» y «¿Te atoraste? Escríbenos por WhatsApp» (`voz-v2-fin/`, voz de Fernando).
 
 - `build-v2.py`: `build.py` adaptado (marca v2, subtítulos con palabra activa, tarjetas de inicio/Listo/fin, render en paralelo, difumina cuentas y nombre).
 - `armar-v2.sh`: arma `trabajo-v2/` con las voces en el orden que espera el script y baja las fuentes TTF.

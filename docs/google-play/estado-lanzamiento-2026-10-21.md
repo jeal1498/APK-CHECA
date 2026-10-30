@@ -41,7 +41,7 @@ Google está verificando la identidad y los documentos del desarrollador. Play C
 
 - La compilación correcta no significa que Google haya aprobado la aplicación.
 - No subir ni enviar a revisión hasta que Google habilite la cuenta y se hayan completado las comprobaciones pendientes.
-- No modificar el repositorio web `jeal1498/checa-web` ni el workflow legado `.github/workflows/build.yml`, que genera el APK distribuido por web.
+- No modificar el repositorio web `jeal1498/PWA-Checa-Multimedia` ni el workflow legado `.github/workflows/build.yml`, que genera el APK distribuido por web.
 - No cambiar la llave de firma ni publicar la aplicación sin autorización explícita de Eduardo.
 - Hacer cambios pequeños directamente en `main` y comprobar CI antes de cambios de riesgo.
 

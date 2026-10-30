@@ -16,7 +16,7 @@ Aceptas un viaje porque se ve buen billete… y a la hora de la verdad sales per
 | 7 | 0:29–0:34 | Tú pones la vara: cuánto quieres ganar por kilómetro y por hora. | Panel de metas con −/+ ($8/km, $150/h) | Control |
 | 8 | 0:34–0:39 | Y ni miras la pantalla: la app te dice en voz alta aceptar, considerar o rechazar. | Semáforo: ACEPTAR · CONSIDERAR · RECHAZAR con cada palabra | Beneficio |
 | 9 | 0:39–0:44 | Ojo: Checa no acepta los viajes por ti, solo te dice cuál conviene y cuál no. | Un dedo toca «Aceptar» en la plataforma; Checa solo avisa | Objeción resuelta |
-| 10 | 0:44–0:49 | Comenta Checa y te mando la app, para que cheques cuánto te queda de cada viaje. | Logo semáforo + «Comenta CHECA» + @checa.driver (TikTok de Checa) + @Eduardoalv9802 (Eduardo) + jeal1498.github.io/checa-web | CTA |
+| 10 | 0:44–0:49 | Comenta Checa y te mando la app, para que cheques cuánto te queda de cada viaje. | Logo semáforo + «Comenta CHECA» + @checa.driver (TikTok de Checa) + @Eduardoalv9802 (Eduardo) + jeal1498.github.io/PWA-Checa-Multimedia | CTA |
 
 La cuenta (gasolina $2/km; metas $8/km y $150/h; el km total incluye la recogida): rojo = $180, 40 km, 75 min → $4.50/km, $144/h, gasolina −$80, netos $100. Verde = $96, 8 km, 17 min → $12.00/km, $339/h, gasolina −$16, netos $80.
 

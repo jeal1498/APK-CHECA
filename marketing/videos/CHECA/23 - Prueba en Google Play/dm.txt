@@ -1,7 +1,7 @@
 ¡Hola! 👋 Gracias por comentar. Aquí está tu lugar para probar Checa en Google Play:
 
 1️⃣ Regístrate con tu Gmail (el de tu Play Store):
-https://jeal1498.github.io/checa-web/registro/?utm_source=tiktok&utm_campaign=prueba-en-google-play
+https://jeal1498.github.io/PWA-Checa-Multimedia/registro/?utm_source=tiktok&utm_campaign=prueba-en-google-play
 
 2️⃣ Al terminar te lleva a nuestra comunidad de WhatsApp. Entra: ahí te aviso cuando tu acceso esté habilitado y te paso el enlace para descargar.
 

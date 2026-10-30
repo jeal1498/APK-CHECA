@@ -206,7 +206,7 @@ object Resumen {
         p.color = Tema.VERDE
         c.drawCircle(x1 - 20f, 1179.5f, 20f, p)
         texto("Checa: mira cuánto te queda de cada viaje.", x0, 1238f, Fuentes.texto, 36f, Tema.TEXTO2)
-        texto("jeal1498.github.io/checa-web", x0, 1283f, Fuentes.numero, 33f, Tema.TENUE)
+        texto("jeal1498.github.io/PWA-Checa-Multimedia", x0, 1283f, Fuentes.numero, 33f, Tema.TENUE)
         return bmp
     }
 }

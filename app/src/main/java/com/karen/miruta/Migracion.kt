@@ -12,7 +12,7 @@ import android.net.Uri
 object Migracion {
     /** 15 nov 2026 23:59 Cancún (UTC-5) = 16 nov 05:00 UTC; es el mismo cierre de /registro/. */
     const val LIMITE_MS = 1794805200000L
-    const val URL_REGISTRO = "https://jeal1498.github.io/checa-web/registro/"
+    const val URL_REGISTRO = "https://jeal1498.github.io/PWA-Checa-Multimedia/registro/"
     /** La ventana de aviso sale al abrir Checa, como mucho cada 30 min. */
     private const val REPETIR_AVISO = 30 * 60 * 1000L
 

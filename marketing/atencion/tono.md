@@ -76,5 +76,5 @@ Es donde más confianza da. Más cálido que en TikTok, pero sigue de usted.
 
 - La plantilla de TikTok dice «aumentar tus ganancias hasta un 35 %». Es una promesa de ganancia y la
   marca no las permite. Propuesta: «para que sepas cuánto te queda de cada viaje antes de aceptarlo».
-- Varias plantillas viejas mandan a …/checa-web/beta/, y esa página ya no existe (redirige al inicio).
+- Varias plantillas viejas mandan a …/PWA-Checa-Multimedia/beta/, y esa página ya no existe (redirige al inicio).
   Hay que dejar solo los links de los dm.txt.

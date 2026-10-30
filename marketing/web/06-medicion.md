@@ -21,13 +21,13 @@ La fuente sale de `?utm_source=` (o `?ref=`). Sin ella, se usa el sitio de donde
 
 | Dónde | Link |
 |---|---|
-| Perfil de TikTok | `https://jeal1498.github.io/checa-web/?utm_source=tiktok` |
-| Perfil de Instagram | `https://jeal1498.github.io/checa-web/?utm_source=instagram` |
-| Página de Facebook | `https://jeal1498.github.io/checa-web/?utm_source=facebook` |
-| YouTube | `https://jeal1498.github.io/checa-web/?utm_source=youtube` |
-| Grupos de WhatsApp | `https://jeal1498.github.io/checa-web/?utm_source=whatsapp&utm_campaign=grupos` |
-| Grupos de Facebook | `https://jeal1498.github.io/checa-web/?utm_source=facebook&utm_campaign=grupos` |
-| Campaña beta | `https://jeal1498.github.io/checa-web/beta/?utm_source=<red>&utm_campaign=beta` |
+| Perfil de TikTok | `https://jeal1498.github.io/PWA-Checa-Multimedia/?utm_source=tiktok` |
+| Perfil de Instagram | `https://jeal1498.github.io/PWA-Checa-Multimedia/?utm_source=instagram` |
+| Página de Facebook | `https://jeal1498.github.io/PWA-Checa-Multimedia/?utm_source=facebook` |
+| YouTube | `https://jeal1498.github.io/PWA-Checa-Multimedia/?utm_source=youtube` |
+| Grupos de WhatsApp | `https://jeal1498.github.io/PWA-Checa-Multimedia/?utm_source=whatsapp&utm_campaign=grupos` |
+| Grupos de Facebook | `https://jeal1498.github.io/PWA-Checa-Multimedia/?utm_source=facebook&utm_campaign=grupos` |
+| Campaña beta | `https://jeal1498.github.io/PWA-Checa-Multimedia/beta/?utm_source=<red>&utm_campaign=beta` |
 | Un video en especial | agrega `&utm_campaign=<tema>` (p. ej. `gasolina-cara`) |
 
 ## Qué mirar cada semana

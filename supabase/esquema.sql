@@ -70,7 +70,7 @@ create table if not exists public.pagos (
 );
 alter table public.pagos enable row level security;
 
--- Medición de la web (checa-web). La página solo puede insertar; nadie de fuera puede leer.
+-- Medición de la web (PWA-Checa-Multimedia). La página solo puede insertar; nadie de fuera puede leer.
 -- Sin cookies ni datos personales: «visita» es un número al azar por pestaña.
 create table if not exists public.web_eventos (
   id          uuid primary key default gen_random_uuid(),
@@ -90,7 +90,7 @@ create policy "la web anota eventos" on public.web_eventos
 grant insert on public.web_eventos to anon;
 create index if not exists web_eventos_creado on public.web_eventos (creado);
 
--- Registro de testers (checa-web/registro/). La página solo puede insertar; nadie de fuera puede leer.
+-- Registro de testers (PWA-Checa-Multimedia/registro/). La página solo puede insertar; nadie de fuera puede leer.
 -- Eduardo exporta los correos desde el panel de Supabase (CSV) y los sube a Google Play Console
 -- (Pruebas → Prueba cerrada → Testers). Un correo no se repite: si ya existe, la página lo toma como registrado.
 create table if not exists public.testers (
@@ -219,7 +219,7 @@ alter table public.equipos add column if not exists alias text;
 
 -- ===================== Plan Fundador: los primeros 50 testers =====================
 -- El precio de fundador (40 % menos de por vida) es solo para los primeros 50 correos de la tabla `testers`
--- (registro de checa-web), por orden de registro (`creado`), siempre que entren con una cuenta de Google.
+-- (registro de PWA-Checa-Multimedia), por orden de registro (`creado`), siempre que entren con una cuenta de Google.
 -- mp-pago consulta con reclamar_fundador() (siempre con una sesión de Google). Nada se guarda ni se borra:
 -- el lugar es la posición del correo en `testers`. Si una cuenta se elimina (eliminar-cuenta borra su fila
 -- de `testers`), su lugar pasa al siguiente. La tabla `fundadores` quedó de la versión anterior y ya no se usa.
@@ -243,7 +243,7 @@ revoke all on function public.reclamar_fundador(text, integer, boolean) from pub
 grant execute on function public.reclamar_fundador(text, integer, boolean) to service_role;
 
 -- ===================== Registro de testers: tope de 50 y fecha límite =====================
--- La página de registro (checa-web/registro/) muestra «Quedan N de 50 lugares» y cierra al llegar a 50 testers
+-- La página de registro (PWA-Checa-Multimedia/registro/) muestra «Quedan N de 50 lugares» y cierra al llegar a 50 testers
 -- o el 15 de noviembre de 2026 (23:59 Cancún = 16 nov 05:00 UTC). El cierre también se aplica en la base de datos.
 -- Para cambiar la fecha o el tope, editar estas dos funciones y volver a desplegar.
 create or replace function public.lugares_fundador()

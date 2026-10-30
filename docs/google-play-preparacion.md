@@ -35,7 +35,7 @@ La versión inicial de Google Play será gratuita durante la beta actual y no in
 
 Checa es un proyecto independiente y no está afiliado ni respaldado por Uber o DiDi.
 
-**Sitio web:** https://jeal1498.github.io/checa-web/
+**Sitio web:** https://jeal1498.github.io/PWA-Checa-Multimedia/
 
 **Contacto/soporte:** https://wa.me/529985214490
 
@@ -47,8 +47,8 @@ Checa es un proyecto independiente y no está afiliado ni respaldado por Uber o 
 
 ## URLs que deben declararse
 
-- Política de privacidad: https://jeal1498.github.io/checa-web/privacidad.html
-- Solicitud externa de eliminación de cuenta: https://jeal1498.github.io/checa-web/eliminar-cuenta.html
+- Política de privacidad: https://jeal1498.github.io/PWA-Checa-Multimedia/privacidad.html
+- Solicitud externa de eliminación de cuenta: https://jeal1498.github.io/PWA-Checa-Multimedia/eliminar-cuenta.html
 
 Antes de presentar la app, abrir ambas URLs en una ventana privada y confirmar que responden públicamente y que el contenido coincide con la versión publicada.
 

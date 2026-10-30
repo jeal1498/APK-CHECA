@@ -16,9 +16,9 @@ Sustituye a `../checa-promo/` para los videos **nuevos** (17 oct 2026). `checa-p
 3. `python3 -I construir.py --render`: pide la voz de Fernando (solo las líneas que falten), calcula tiempos, genera escenas, subtítulos e `index.html`, corre `hyperframes check` y renderiza a `renders/video.mp4` (~25 s). Sin `--render` solo arma; con `--check` también valida.
 4. Para una escena que no encaja en esos tipos, escribe a mano `compositions/frames/eNN-<nombre>.html` siguiendo `frame.md` (declara las `@font-face` con `assets/fonts/*.woff2`) y agrega el nombre al index; `construir.py` borra y regenera `compositions/frames/*.html`, así que mejor añade un tipo nuevo al script.
 
-`construir.py` valida que la neta cuadre (viaje − gasolina), pone «Números de ejemplo», usa ids que empiezan con letra y exige el cierre estándar como última escena. Agrega solos los **efectos de sonido oficiales** (`assets/sfx/`, copiados de `checa-web/marca/sonido/mp3`) según el tipo de escena (popup, estados, numero, cierre, logo); `--sin-sfx` los quita y `"sfx"` en una escena los cambia (detalle en la cabecera de `construir.py`). **No hay música**: se descartó (17 oct 2026).
+`construir.py` valida que la neta cuadre (viaje − gasolina), pone «Números de ejemplo», usa ids que empiezan con letra y exige el cierre estándar como última escena. Agrega solos los **efectos de sonido oficiales** (`assets/sfx/`, copiados de `PWA-Checa-Multimedia/marca/sonido/mp3`) según el tipo de escena (popup, estados, numero, cierre, logo); `--sin-sfx` los quita y `"sfx"` en una escena los cambia (detalle en la cabecera de `construir.py`). **No hay música**: se descartó (17 oct 2026).
 
-La marca completa vive en `jeal1498/checa-web`, carpeta `marca/` (skill `marca-checa`).
+La marca completa vive en `jeal1498/PWA-Checa-Multimedia`, carpeta `marca/` (skill `marca-checa`).
 
 **Verificado (17 oct 2026):** los tres pop-ups y un subtítulo de ejemplo se renderizaron en Chromium con las fuentes de `assets/fonts/`: mismo tamaño, sin desbordes (la ficha «Rec. 6 km» exigió bajar los datos a 40 px).
 **Probada de punta a punta (17 oct 2026):** `prueba-marca-v2/` es un video de 13 s (4 escenas, voz de Fernando, subtítulos v2, pantalla final) hecho con esta plantilla: `check` sin errores y render en ~25 s. Después se reprodujo con `construir.py` (mismo resultado visual, 9 subtítulos, 24 s de render).

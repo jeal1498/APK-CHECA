@@ -11,7 +11,7 @@ Un asistente en la extensión **Claude in Chrome** que, una vez al día:
 - cada domingo analiza los videos y propone mejoras para los guiones (sin editar la skill).
 
 ## Decisiones tomadas
-- **Repo:** APK-CHECA (privado; antes Mi-Ruta), no checa-web (público). Edita desde github.com: la línea de comandos de la extensión no tiene acceso a GitHub.
+- **Repo:** APK-CHECA (privado; antes Mi-Ruta), no PWA-Checa-Multimedia (público). Edita desde github.com: la línea de comandos de la extensión no tiene acceso a GitHub.
 - **Modo borrador** desde el 18 oct: no envía nada sin el OK de Eduardo hasta que él diga «modo automático» (plan: una semana).
 - **Nunca contesta solo** (va a «Para Eduardo»): quejas, pagos/licencias/precios/descuentos, fallas técnicas, temas delicados, colaboraciones o prensa, «¿eres bot?», cualquier duda.
 - **Multimedia:** ve las imágenes y los videos dentro del chat sin descargarlos (los videos sin sonido). No escucha audios: usa la transcripción de WhatsApp si existe; si no, «Audio de 0:18 sin escuchar» para Eduardo. Nunca guarda multimedia en el repo.

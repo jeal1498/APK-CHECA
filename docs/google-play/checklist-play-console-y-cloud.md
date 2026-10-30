@@ -33,13 +33,13 @@ Tiempo estimado: unas 3 semanas desde que haya 12 testers dentro (14 días de pr
 - [ ] Evita poner logo o nombre de marca en esa pantalla si no quieres pasar por verificación de marca.
 
 ## 4. Contenido de la app (Play Console → Política y programas → Contenido de la app)
-- [ ] **Política de privacidad:** `https://jeal1498.github.io/checa-web/privacidad.html`
+- [ ] **Política de privacidad:** `https://jeal1498.github.io/PWA-Checa-Multimedia/privacidad.html`
 - [ ] **Acceso a la app:** indicar que requiere inicio de sesión y dar credenciales de revisión: crea una cuenta de Google solo para el revisor (sin verificación en dos pasos) y explica también la opción «Entrar sin cuenta» si aparece en la versión de Play. Google pide credenciales válidas para probar todas las funciones.
 - [ ] **Anuncios:** No.
 - [ ] **Clasificación de contenido:** responder el cuestionario con la realidad de la app.
 - [ ] **Público objetivo:** solo adultos (conductores).
 - [ ] **Seguridad de los datos:** copiar de `data-safety.md` (antes: verificar el nombre en Supabase Auth).
-- [ ] **Eliminación de cuenta:** URL `https://jeal1498.github.io/checa-web/eliminar-cuenta.html` y ruta en la app (Cuenta → Eliminar cuenta).
+- [ ] **Eliminación de cuenta:** URL `https://jeal1498.github.io/PWA-Checa-Multimedia/eliminar-cuenta.html` y ruta en la app (Cuenta → Eliminar cuenta).
 - [ ] **API de Accesibilidad:** declaración y video 1 de `accesibilidad-y-captura.md`.
 - [ ] **Servicio en primer plano (mediaProjection):** descripción, impacto y video 2 del mismo documento.
 - [ ] **ID de publicidad:** responder según la pestaña de permisos que muestre Play Console para el AAB; la app no muestra anuncios.

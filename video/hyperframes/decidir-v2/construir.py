@@ -20,13 +20,13 @@ escenas.json: lista con un objeto por línea, en el mismo orden. Tipos:
            "chips": [["$321/h", "por hora", "ok"], ["$9.4/km", "por km", "ok"], ["28 min", "16 km total", ""]]}
           (chip: "ok" cumple, "mal" no cumple, "" neutro). Las cifras deben cuadrar: neta = viaje − gasolina.
 
-Efectos de sonido oficiales (assets/sfx, de checa-web/marca/sonido): se agregan solos según el tipo de escena:
+Efectos de sonido oficiales (assets/sfx, de PWA-Checa-Multimedia/marca/sonido): se agregan solos según el tipo de escena:
   popup → popup-entra y el sonido de su nivel (aceptar / considerar / rechazar) · estados → el sonido de cada nivel
   numero → numero-sube · cierre y logo → logo-semaforo. Las demás escenas no llevan sonido por defecto.
   Para cambiarlo, una escena puede traer "sfx": false  o  "sfx": [["sello", 1.2], ["popup-entra", 0.0, 0.4]]  (archivo, segundo —o palabra de la voz— dentro
   de la escena y, opcional, volumen). Reglas: un sonido por evento visual, máximo 3 por escena, volumen 0.3 a 0.5 con voz.
 
-Marca: jeal1498/checa-web, carpeta marca/ (skill marca-checa). Reglas: ningún texto es solo un monto,
+Marca: jeal1498/PWA-Checa-Multimedia, carpeta marca/ (skill marca-checa). Reglas: ningún texto es solo un monto,
 los tres pop-ups miden lo mismo, «Números de ejemplo» donde haya cifras, sin logos de Uber/DiDi.
 La voz es Fernando Martínez de ElevenLabs (clave en ELEVENLABS_API_KEY); no vuelve a pedir una línea si ya existe assets/voice/NN.mp3.
 """
@@ -204,7 +204,7 @@ def esc_cierre(sc, e, nombre):
     <div id="{nombre}-pil" class="clip" style="left:290px;top:660px;width:500px;height:92px;border-radius:999px;background:#F4F4EF;color:#0C0C10;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;font-weight:700;font-size:44px" data-start="0" data-duration="{D}" data-track-index="3">Descarga Checa</div>
     <div id="{nombre}-sa" class="etq clip" style="top:780px" data-start="0" data-duration="{D}" data-track-index="4">Solo Android</div>
     <div id="{nombre}-cu" class="clip" style="left:140px;right:140px;top:840px;text-align:center;font-family:'DM Sans',sans-serif;font-size:34px;line-height:1.5;color:#A3A3AD" data-start="0" data-duration="{D}" data-track-index="5">síguenos en tiktok<br><b style="font-family:'JetBrains Mono',monospace;font-size:42px;color:#F4F4EF">@checa.driver</b><br>creador de Checa<br><b style="font-family:'JetBrains Mono',monospace;font-size:42px;color:#F4F4EF">@Eduardoalv9802</b></div>
-    <div id="{nombre}-li" class="clip" style="left:0;right:0;top:1100px;text-align:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:36px;color:#FACC15" data-start="0" data-duration="{D}" data-track-index="6">jeal1498.github.io/checa-web</div>"""
+    <div id="{nombre}-li" class="clip" style="left:0;right:0;top:1100px;text-align:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:36px;color:#FACC15" data-start="0" data-duration="{D}" data-track-index="6">jeal1498.github.io/PWA-Checa-Multimedia</div>"""
     n = nombre
     js = f"""      tl.fromTo("#{n}-lgw", {{ opacity: 0, y: 30 }}, {{ opacity: 1, y: 0, duration: 0.3, ease: "power4.out" }}, 0.0);
       tl.set("#{n}-lr", {{ opacity: 1 }}, 0.1); tl.set("#{n}-lr", {{ opacity: 0 }}, 0.4);
@@ -430,7 +430,7 @@ def juntar_sfx(T, escenas):
     for sc, e in zip(T["scenes"], escenas):
         for archivo, seg, vol in sfx_escena(sc, e):
             ruta = f"assets/sfx/{archivo}.mp3"
-            assert os.path.exists(ruta), f"Falta {ruta} (copiar los mp3 de checa-web/marca/sonido/mp3)"
+            assert os.path.exists(ruta), f"Falta {ruta} (copiar los mp3 de PWA-Checa-Multimedia/marca/sonido/mp3)"
             out.append((ruta, round(sc["start"] + seg, 3), vol))
     return out
 

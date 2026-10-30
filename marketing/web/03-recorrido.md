@@ -1,6 +1,6 @@
 # Página web como funnel · Paso 3: recorrido y estructura
 
-Base: `01-publico.md`, `02-oferta.md` y la web actual (`checa-web`, GitHub Pages).
+Base: `01-publico.md`, `02-oferta.md` y la web actual (`PWA-Checa-Multimedia`, GitHub Pages).
 Meta única: **descargar y empezar los 7 días gratis**. Secundaria: **beta tester**.
 
 ## Páginas (planas, máximo 2 niveles)

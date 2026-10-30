@@ -7,13 +7,13 @@ dm.txt / copy.txt de cada video. Si falta algo, no se inventa: va a «Para Eduar
 
 | Para qué | Link |
 |---|---|
-| Descarga (general) | https://jeal1498.github.io/checa-web/ |
+| Descarga (general) | https://jeal1498.github.io/PWA-Checa-Multimedia/ |
 | Descarga desde un video | el mismo + ?utm_source=tiktok&utm_campaign=<etiqueta del video> (cuenta de marca) o utm_source=tiktok-personal (cuenta personal). Está escrito en el dm.txt del video. |
 | Comentó «CHECA» | el dm.txt del video, tal cual |
 | Comentó «YO» (beta) | el link del dm.txt del video, sin pedir Gmail (la beta es gratis para todos hasta el 31 ene 2027) |
-| Guía de instalación | https://jeal1498.github.io/checa-web/instalar/ |
+| Guía de instalación | https://jeal1498.github.io/PWA-Checa-Multimedia/instalar/ |
 
-…/checa-web/beta/ ya **no** se usa.
+…/PWA-Checa-Multimedia/beta/ ya **no** se usa.
 
 ## Preguntas frecuentes
 
@@ -53,7 +53,7 @@ Sin pedir Gmail ni mandar la plantilla (Eduardo, 18 oct): durante la beta todo e
 **«Android no me deja instalarla»**
 > Es totalmente normal: como todavía no está en Play Store, Android pone sus candados.
 > En el aviso toque «Instalar de todos modos». Aquí está la guía con video:
-> https://jeal1498.github.io/checa-web/instalar/
+> https://jeal1498.github.io/PWA-Checa-Multimedia/instalar/
 > Dígame en qué paso se queda y lo vemos.
 
 **«¿Qué datos usa / es seguro?»**
@@ -79,7 +79,7 @@ Sustituye a la que decía «aumentar tus ganancias hasta un 35 %»: la marca no 
 > ¡Hola! Gracias por escribir 🙌
 > Checa es una app para conductores de Uber y DiDi (solo Android). Cuando te llega una oferta te muestra encima cuánto te queda limpio ya descontada la gasolina, cuánto ganas por hora y por km, y un semáforo: 🟢 conviene, 🟡 regular, 🔴 no conviene. Si te caen dos ofertas a la vez, te marca cuál te conviene más.
 > No te pide contraseñas de tus cuentas ni tarjeta para probarla.
-> 👉 Descárgala aquí: https://jeal1498.github.io/checa-web/
+> 👉 Descárgala aquí: https://jeal1498.github.io/PWA-Checa-Multimedia/
 > Si algo no te queda claro al instalarla, escríbeme y te ayudo 🚗💨
 
 Números de ejemplo siempre marcados. Nada de porcentajes de ganancia.

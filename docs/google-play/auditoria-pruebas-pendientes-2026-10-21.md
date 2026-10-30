@@ -52,7 +52,7 @@
 
 ## 3. Protección del canal web/directo
 
-- No se modificó `jeal1498/checa-web`.
+- No se modificó `jeal1498/PWA-Checa-Multimedia`.
 - No se modificó `.github/workflows/build.yml`.
 - No se desplegó ninguna función, no se borraron cuentas y no se publicaron versiones.
 

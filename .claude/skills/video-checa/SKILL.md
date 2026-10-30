@@ -32,7 +32,7 @@ Carpetas: `marketing/videos/CHECA/NN - Nombre/` y `marketing/videos/PERSONAL/NN 
 Todo lo repetible vive aquí (corre sin argumentos para ver la ayuda): `nuevo`, `construir`, `portada`, `revisar`, `entregar`, `dm`, `tabla`, `calidad`, `hecho`, `publicado`, `subir`. Úsala en vez de rehacer los pasos a mano: ya probó que da el mismo resultado y evita errores (p. ej. `portada` se niega si la cifra del sello ya está a la vista).
 
 ## Marca (los dos modos)
-La fuente es `jeal1498/checa-web`, carpeta `marca/`. Para cualquier duda usa la skill `marca-checa`.
+La fuente es `jeal1498/PWA-Checa-Multimedia`, carpeta `marca/`. Para cualquier duda usa la skill `marca-checa`.
 - **Colores:** asfalto `#0C0C10`, tablero `#16161C`, hueso `#F4F4EF`. El color solo decide: verde `#22C55E` es lo que ganas, amarillo `#FACC15` lo que recuerdas, rojo `#EF4444` lo que pierdes.
 - **Letras:** Bricolage Grotesque 800 en títulos y números, DM Sans en texto y JetBrains Mono en datos. Las fuentes están en `video/hyperframes/checa-marca-v2/assets/fonts/`.
 - **Contenido:** sin logos ni nombres de Uber o DiDi (los pop-ups dicen «OFERTA»). Sin ciudad ni país. Sin «gratis», precios ni promesas de ganancia. «Números de ejemplo» donde haya cifras, y la neta siempre cuadra (viaje − gasolina).
@@ -56,7 +56,7 @@ La fuente es `jeal1498/checa-web`, carpeta `marca/`. Para cualquier duda usa la 
 - **`copy.txt`:** gancho con cifra, una línea de qué hace Checa con «(números de ejemplo)», una pregunta para comentar, el CTA «Comenta «CHECA» y te mando el acceso a la prueba en Google Play (solo Android).» y 5–6 hashtags.
   - En videos **sin su cara** no digas «Soy Eduardo» ni «armé Checa»: quien lo lee espera ver a alguien y no hay nadie.
   - Solo se presenta en los videos donde sale a cámara.
-- **`dm.txt`:** el mensaje de siempre con el link `https://jeal1498.github.io/checa-web/registro/?utm_source=tiktok&utm_campaign=<nombre-sin-acentos>`.
+- **`dm.txt`:** el mensaje de siempre con el link `https://jeal1498.github.io/PWA-Checa-Multimedia/registro/?utm_source=tiktok&utm_campaign=<nombre-sin-acentos>`.
   - En PERSONAL usa `utm_source=tiktok-personal`.
   - Con el UTM se cuenta qué video trae registros.
 

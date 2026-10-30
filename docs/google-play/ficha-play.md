@@ -5,8 +5,8 @@
 ## Datos
 - **Título:** Checa: Rentabilidad de viajes
 - **Descripción corta:** Calcula cuánto te deja cada oferta de viaje: por km, por hora y ganancia neta.
-- **Política de privacidad:** https://jeal1498.github.io/checa-web/privacidad.html
-- **Eliminación de cuenta:** https://jeal1498.github.io/checa-web/eliminar-cuenta.html
+- **Política de privacidad:** https://jeal1498.github.io/PWA-Checa-Multimedia/privacidad.html
+- **Eliminación de cuenta:** https://jeal1498.github.io/PWA-Checa-Multimedia/eliminar-cuenta.html
 - **Correo de contacto:** lalolopezxd@gmail.com
 
 ## Descripción completa
@@ -40,7 +40,7 @@ Checa se ofrece gratis durante el lanzamiento. Si más adelante hay planes de pa
 Primera versión en Google Play.
 
 ## Recursos gráficos (preparar y verificar medidas al subirlos)
-- [ ] Icono 512 × 512 px (a partir de `marca/icono-app.svg` de checa-web)
+- [ ] Icono 512 × 512 px (a partir de `marca/icono-app.svg` de PWA-Checa-Multimedia)
 - [ ] Gráfico de funciones 1024 × 500 px
 - [ ] Capturas de teléfono reales del flavor play
 - Sin logos ni pantallas de Uber o DiDi: usar pantallas propias de Checa (pop-up sobre fondo neutro, «Lo guardado», ajustes). Es una recomendación; falta verificarla contra la política de metadatos.

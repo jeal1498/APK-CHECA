@@ -1,6 +1,6 @@
 # Checa · Sabe cuánto te queda de cada viaje
 
-Source: https://jeal1498.github.io/checa-web/
+Source: https://jeal1498.github.io/PWA-Checa-Multimedia/
 
 To create a video from this capture, use the `product-launch-video` skill.
 

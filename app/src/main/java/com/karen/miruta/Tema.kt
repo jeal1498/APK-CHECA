@@ -13,7 +13,7 @@ import android.graphics.drawable.Drawable
 
 /** Paleta, medidas y tamaños de letra de toda la app (múltiplos de 8 dp). */
 object Tema {
-    // ---------- colores: marca v2 (checa-web/marca/tokens.json). El color solo decide. ----------
+    // ---------- colores: marca v2 (PWA-Checa-Multimedia/marca/tokens.json). El color solo decide. ----------
     val ASFALTO = Color.rgb(12, 12, 16)      // #0C0C10 fondo
     val TABLERO = Color.rgb(22, 22, 28)      // #16161C tarjetas
     val HUMO = Color.rgb(58, 58, 69)         // #3A3A45 bordes

@@ -17,7 +17,7 @@
 **De Eduardo**
 - Escuchar el audio (·2691) y ver el video (·7360) de WhatsApp.
 - Editar su respuesta a @jaredtavera56 («el ahorro y las ganancias te van a pagar la anualidad» es promesa de ganancia).
-- Pegar en TikTok la presentación corregida de `respuestas.md` como respuesta guardada, y quitar de sus plantillas los links a `…/checa-web/beta/`.
+- Pegar en TikTok la presentación corregida de `respuestas.md` como respuesta guardada, y quitar de sus plantillas los links a `…/PWA-Checa-Multimedia/beta/`.
 - Decidir si la respuesta de precio aprobada (gratis hasta el 31 ene, después los precios de la página, descuento de fundador) queda como respuesta modelo para el modo automático.
 - Confirmar la regla de `wa.me`.
 - Revisar la sección de @Eduardoalv9802 en `tono.md` la primera vez que el asistente la llene.

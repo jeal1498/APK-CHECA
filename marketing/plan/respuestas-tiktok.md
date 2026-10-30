@@ -15,8 +15,8 @@ Guía para que Claude redacte las respuestas. Eduardo pega los mensajes en el ch
 - Solo Android. Si preguntan por iPhone: «Por ahora solo Android».
 
 ## Links (con el UTM del video si se conoce)
-- Descarga: `https://jeal1498.github.io/checa-web/?utm_source=tiktok&utm_campaign=<tema-del-video>`
-- Instalar: `https://jeal1498.github.io/checa-web/instalar/?desde=tiktok`
+- Descarga: `https://jeal1498.github.io/PWA-Checa-Multimedia/?utm_source=tiktok&utm_campaign=<tema-del-video>`
+- Instalar: `https://jeal1498.github.io/PWA-Checa-Multimedia/instalar/?desde=tiktok`
 - En comentarios no se pone el link (TikTok lo frena): «Te lo mando por DM 📩».
 
 ## Respuestas tipo

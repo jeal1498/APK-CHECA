@@ -2,7 +2,7 @@
 version: alpha
 name: Checa v2 — Frame (video)
 description: >
-  Capa de video de la marca Checa v2 (17 oct 2026). Fuente única de la marca: repo jeal1498/checa-web,
+  Capa de video de la marca Checa v2 (17 oct 2026). Fuente única de la marca: repo jeal1498/PWA-Checa-Multimedia,
   carpeta marca/ (skill marca-checa). Fondo asfalto, texto hueso, y el color solo decide.
 unit: el cuadro — 1080×1920 (9:16) principal; 1920×1080 y 1080×1080 solo si se piden
 principle: una idea por cuadro · el color significa algo · todo redondeado
@@ -67,7 +67,7 @@ degradados de colores, sin emojis. Una idea por cuadro; 45 % del cuadro vacío e
 - **Raya de carretera:** línea punteada amarilla `stroke-dasharray: 2 14`, siempre curva, con un punto verde; sirve de separador, de camino que se dibuja o de cierre.
 - **Íconos de línea:** trazo 2.2, redondeado, `hueso`. Sin rellenos de color salvo el semáforo.
 - **Sello:** círculo con borde del color del semáforo y su palabra, inclinado −10° a 8°.
-- **Pantalla final** (≥ 2 s tras la voz): logo + «Descarga Checa» + «solo Android» + `@checa.driver` («síguenos en tiktok») + `@Eduardoalv9802` («creador de checa») + `jeal1498.github.io/checa-web`. Todo por encima de y ≈ 1450.
+- **Pantalla final** (≥ 2 s tras la voz): logo + «Descarga Checa» + «solo Android» + `@checa.driver` («síguenos en tiktok») + `@Eduardoalv9802` («creador de checa») + `jeal1498.github.io/PWA-Checa-Multimedia`. Todo por encima de y ≈ 1450.
 
 ## Movimiento
 Curva rápida que frena suave, sin rebote. Cambio de toma cada 3 s. Una transición por objeto (la tarjeta se vuelve el teléfono, el número se vuelve la barra del semáforo, el logo se arma desde las tres luces). Con «reducir movimiento»: solo cortes.

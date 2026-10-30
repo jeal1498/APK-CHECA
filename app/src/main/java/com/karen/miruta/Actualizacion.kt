@@ -26,11 +26,11 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 /**
- * Avisa cuando hay una versión nueva en la web. Lee descargar/version.json de checa-web
+ * Avisa cuando hay una versión nueva en la web. Lee descargar/version.json de PWA-Checa-Multimedia
  * (lo escribe publicar-apk.yml en cada compilación) y lo compara con la versión instalada.
  */
 object Actualizacion {
-    private const val WEB = "https://jeal1498.github.io/checa-web/"
+    private const val WEB = "https://jeal1498.github.io/PWA-Checa-Multimedia/"
     private const val VERSION_JSON = WEB + "descargar/version.json"
     /** Página que baja el APK y explica cómo instalarlo encima. */
     const val URL_ACTUALIZAR = WEB + "instalar/?desde=app"
