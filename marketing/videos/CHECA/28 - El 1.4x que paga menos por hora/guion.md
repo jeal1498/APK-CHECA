@@ -28,3 +28,15 @@ CTA final:
 
 ## Notas
 Marca v2, pop-ups con «OFERTA», montos sin moneda en la voz, sin `[pause]` en el gancho, sin ciudad ni país, sin promesa de ganancia. La ★ sigue el criterio por defecto (neta por hora). Todo por encima de y≈1150.
+
+## Tabla de animaciones por toma (sacada del desglose)
+| Toma | Frase | Animación |
+|---|---|---|
+| 0:00–0:03 | «Este 1.4 paga más y te deja menos por hora.» | Flash en el cuadro 0; sello ⚡1.4x se estrella con zoom; cámara sacude; título grande «−$/HORA» con sello rojo; «Números de ejemplo» |
+| 0:03–0:06 | «Paga 126, pero la recogida es de 5 kilómetros.» | Tarjeta OFERTA ⚡1.4x con contador 0 → $126; tramo de recogida 5 km que se estira en rojo |
+| 0:06–0:09 | «Son 32 minutos y te quedan 98. Por hora, 184.» | Reloj 32 min; ticket Gasolina −$28; contador 126 → 98; cifra $184/h se revela |
+| 0:09–0:12 | «La otra, sin dinámica, paga 95.» | Layout split: la 2ª tarjeta OFERTA $95 entra con spring y la 1ª se reduce |
+| 0:12–0:16 | «Recogida a 1 kilómetro, 20 minutos, te quedan 75. Por hora, 225.» | Tramo 1 km corto; reloj 20 min; contador 95 → 75; $225/h se revela |
+| 0:16–0:20 | «Con el 1.4 ganas más en ese viaje, pero tardas más en ganarlo.» | Dos barras de neta por hora: $225 sube por encima de $184; raya de meta $150/h que se dibuja debajo de las dos |
+| 0:20–0:24 | «La app Checa compara las dos y le pone estrella a la que más te deja por hora.» | Dos pop-ups «A · Franja» ACEPTAR: $98 netos con ⚡1.4x y $75 netos con ★ y borde hueso |
+| 0:24–0:28 | «Comenta CHECA y te paso el acceso a la prueba en Google Play.» | Pantalla final estándar sin link: logo rojo → ámbar → verde → ✓, pastilla «Comenta CHECA» |

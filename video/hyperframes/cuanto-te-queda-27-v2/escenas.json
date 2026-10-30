@@ -1,0 +1,10 @@
+[
+  {"tipo": "tachado", "tarifa": 150, "neta": 120, "corte": "bolsa", "datos": ["A 5 min (2 km)", "Viaje: 20 min (13 km)"]},
+  {"tipo": "rutas", "gasolina": "−$30", "km_rec": "2 km", "km_viaje": "13 km", "en_rec": "Son", "en_viaje": "kilómetros", "en_gas": "recogida", "en_tu": "recogida", "sfx": [["sello", "recogida", 0.4]]},
+  {"tipo": "numero", "etiqueta": "15 km ÷ 12 km/l × $24 el litro", "numero": "−$30", "size": 280, "color": "rojo", "pie": "Números de ejemplo", "sfx": [["numero-sube", 0.3, 0.4]]},
+  {"tipo": "numero", "etiqueta": "10 viajes así · gasolina del día", "numero": "−$300", "size": 280, "color": "rojo", "pie": "Números de ejemplo", "sfx": [["numero-sube", 0.3, 0.4]]},
+  {"tipo": "gancho", "lineas": ["Y con la oferta", "parpadeando,", "casi nadie", "saca esa cuenta."], "resalta": 2},
+  {"tipo": "popup", "ejemplo": true, "popup": {"nivel": "verde", "app": "OFERTA", "neta": 120, "viaje": 150, "gasolina": 30,
+    "chips": [["$360/h", "por hora", "ok"], ["$10/km", "por km", "ok"], ["25 min", "15 km total", ""]]}},
+  {"tipo": "cierre", "pil": "Comenta CHECA", "link": false}
+]

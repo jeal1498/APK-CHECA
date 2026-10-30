@@ -27,3 +27,14 @@ CTA final:
 
 ## Notas
 Marca v2, pop-up con «OFERTA», montos sin moneda en la voz, sin `[pause]` en el gancho, sin ciudad ni país, sin promesa de ganancia. Todo por encima de y≈1150.
+
+## Tabla de animaciones por toma (sacada del desglose)
+| Toma | Frase | Animación |
+|---|---|---|
+| 0:00–0:03 | «Te ofrecen 150 y a tu bolsa entran 120.» | Flash en el cuadro 0; tarjeta OFERTA $150 se estrella con zoom; contador 150 → 120 que cae; cámara sacude la cifra; «Números de ejemplo» |
+| 0:03–0:06 | «Son 15 kilómetros, contando la recogida.» | Ruta que se dibuja: tramo recogida 2 km + viaje 13 km = 15 km; stagger de 4 frames |
+| 0:06–0:09 | «Con 12 kilómetros por litro y el litro a 24, se van 30 de gasolina.» | Cuenta 15 km ÷ 12 km/l × $24 = $30; ticket «Gasolina −$30» cae en rojo |
+| 0:09–0:13 | «Si haces 10 viajes así, son 300 al día que la oferta no te enseña.» | 10 tickets −$30 se apilan rápido; contador 0 → $300 en rojo |
+| 0:13–0:16 | «Y con la oferta parpadeando, casi nadie saca esa cuenta.» | Tarjeta OFERTA con barra de tiempo que se vacía; la cuenta tiembla con «?» |
+| 0:16–0:20 | «La app Checa te pone lo que te queda, antes de aceptar.» | Pop-up «A · Franja» cae con spring: ACEPTAR · «$120 netos» · `Viaje $150 · Gasolina −$30` · fichas $360/h, $10/km |
+| 0:20–0:24 | «Comenta CHECA y te paso el acceso a la prueba en Google Play.» | Pantalla final estándar sin link: logo rojo → ámbar → verde → ✓, pastilla «Comenta CHECA» |

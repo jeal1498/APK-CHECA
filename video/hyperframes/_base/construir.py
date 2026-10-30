@@ -9,9 +9,9 @@ Uso: python3 -I video/scripts/checa.py construir <proyecto> [--check|--render]  
 
 SCRIPT.md: una línea de voz por escena, con 4 espacios al inicio.
 escenas.json: lista con un objeto por línea, en el mismo orden. Tipos:
-  {"tipo": "gancho", "lineas": ["¿Aceptas", "viajes sin", "hacer la", "cuenta?"], "resalta": 3}
+  {"tipo": "gancho", "lineas": ["¿Aceptas", "viajes sin", "hacer la", "cuenta?"], "resalta": 3, "flash": true}
       Frase grande que entra por líneas (cada línea aparece en la palabra donde empieza) + raya de carretera.
-      "resalta": índice de la línea en amarillo (por defecto la última).
+      "resalta": índice de la línea en amarillo (por defecto la última). "flash": true = golpe en el cuadro 0 (para usarlo de gancho).
   {"tipo": "numero", "etiqueta": "te quedan", "numero": "$97", "pie": "Números de ejemplo", "color": "verde|amarillo|rojo|hueso"}
   {"tipo": "popup", "popup": POPUP, "ejemplo": true}
   {"tipo": "estados", "popups": [POPUP, POPUP, POPUP], "en_palabra": [0, 1, 3], "texto": "Tú decides.", "texto_en": 4}
@@ -176,6 +176,11 @@ def esc_gancho(sc, e, nombre):
     inner += f'    <svg id="{nombre}-raya" class="clip" style="left:0;top:{y}px" width="1080" height="120" viewBox="0 0 1080 120" data-start="0" data-duration="{D}" data-track-index="9" aria-hidden="true"><defs><clipPath id="{nombre}-rc"><rect id="{nombre}-rcr" x="0" y="0" width="0" height="120"/></clipPath></defs><g clip-path="url(#{nombre}-rc)"><path d="M-20 90C220 90 300 20 540 28C780 36 860 100 1100 70" fill="none" stroke="#FACC15" stroke-width="8" stroke-dasharray="2 22" stroke-linecap="round"/><circle cx="540" cy="28" r="14" fill="#22C55E"/></g></svg>'
     js = "".join(f'      tl.fromTo("#{nombre}-q{i} > div", {{ yPercent: 120 }}, {{ yPercent: 0, duration: 0.45, ease: "power4.out" }}, {max(0, round(w[inicio[i]][1] - 0.05, 2))});\n' for i in range(len(lineas)))
     js += f'      tl.fromTo("#{nombre}-rcr", {{ attr: {{ width: 0 }} }}, {{ attr: {{ width: 1080 }}, duration: 1.4, ease: "power2.out" }}, 0.3);\n'
+    if e.get("flash"):  # gancho con golpe: flash en el cuadro 0 y la cámara sacude la línea resaltada
+        inner += clip(20, f"{nombre}-fl", "inset:0;background:#F4F4EF;opacity:0", "", D)
+        js += f'      tl.fromTo("#{nombre}-fl", {{ opacity: 0.85 }}, {{ opacity: 0, duration: 0.25, ease: "power2.out" }}, 0);\n'
+        js += f'      tl.fromTo("#{nombre}-q0 > div", {{ scale: 1.6 }}, {{ scale: 1, duration: 0.4, ease: "power4.out" }}, 0);\n'
+        js += f'      tl.to("#{nombre}-q{res}", {{ x: 10, duration: 0.04, yoyo: true, repeat: 7 }}, {round(w[inicio[res]][1] + 0.4, 2)});\n'
     return marco(nombre, D, "", inner, js)
 
 

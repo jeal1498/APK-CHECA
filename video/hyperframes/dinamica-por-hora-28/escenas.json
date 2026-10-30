@@ -1,0 +1,17 @@
+[
+  {"tipo": "gancho", "flash": true, "lineas": ["Este ⚡1.4x", "paga más", "y te deja", "menos por hora."], "resalta": 3, "sfx": [["sello", 0.0, 0.45]]},
+  {"tipo": "oferta", "tarifa": 126, "titulo": ["Recogida", "de 5 km"], "titulo_en": "recogida", "d": "⚡1.4x · A 12 min (5 km)<br>Viaje: 20 min (9 km)",
+   "sfx": [["popup-entra", 0.0, 0.5], ["numero-sube", 0.2, 0.4]]},
+  {"tipo": "numero", "etiqueta": "32 min · te quedan $98 · por hora", "numero": "$184/h", "size": 250, "color": "amarillo", "pie": "Números de ejemplo", "sfx": [["numero-sube", 0.3, 0.4]]},
+  {"tipo": "oferta", "tarifa": 95, "titulo": ["Sin", "dinámica"], "titulo_en": "95", "d": "A 3 min (1 km)<br>Viaje: 17 min (9 km)",
+   "sfx": [["popup-entra", 0.0, 0.5], ["numero-sube", 0.2, 0.4]]},
+  {"tipo": "numero", "etiqueta": "20 min · te quedan $75 · por hora", "numero": "$225/h", "size": 250, "color": "verde", "pie": "Números de ejemplo", "sfx": [["numero-sube", 0.3, 0.4]]},
+  {"tipo": "gancho", "lineas": ["Con el 1.4", "ganas más", "en ese viaje,", "pero tardas más", "en ganarlo."], "resalta": 3},
+  {"tipo": "duo", "entra": "compara", "popups": [
+    {"nivel": "verde", "app": "OFERTA", "mejor": true, "neta": 75, "viaje": 95, "gasolina": 20,
+     "chips": [["$285/h", "por hora", "ok"], ["$9.5/km", "por km", "ok"], ["20 min", "10 km total", ""]]},
+    {"nivel": "verde", "app": "OFERTA ⚡1.4x", "neta": 98, "viaje": 126, "gasolina": 28,
+     "chips": [["$236/h", "por hora", "ok"], ["$9/km", "por km", "ok"], ["32 min", "14 km total", ""]]}
+  ]},
+  {"tipo": "cierre", "pil": "Comenta CHECA", "link": false}
+]
