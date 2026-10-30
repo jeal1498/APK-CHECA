@@ -56,7 +56,7 @@ CTA final:
 - **Sin promesas:** nada de promesas de ganancia, ciudad, país, «gratis» ni precios.
 
 ## 6. Versiones
-- **Entrega v1 y v2 juntas:** cada tema se presenta con su guion CHECA y su v2 PERSONAL en el mismo mensaje (primero la v1, una línea «Versión 2», luego la v2), para que Eduardo apruebe los dos de una vez.
+- **Por lotes, v1 y v2 juntas:** Eduardo aprueba todos los guiones de un lote en un solo mensaje (aprobación 1 de 2; la otra es la revisión final del video, ver `video-checa`). En el chat va cada tema con su título, el guion CHECA, una línea «Versión 2» y el guion PERSONAL, todos de corrido. Como después ya no se le pregunta nada hasta el video terminado, el guion debe dejar decidido todo lo que se verá: cifras, gancho y texto exacto de la voz.
 - **v2 PERSONAL:** usa las mismas cifras que la v1, con otro gancho, otras palabras y otro orden. Por ejemplo, la v1 abre con la comparación y la v2 con lo que te queda. Lleva el mismo número de carpeta. Reglas en `marketing/plan/reglas-v2.md`.
 - **A/B:** el mismo texto y las mismas cifras; solo cambia la capa visual (A con cámara, B con gráficos).
 

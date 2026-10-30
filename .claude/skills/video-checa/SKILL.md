@@ -11,16 +11,19 @@ Lleva un guion aprobado a un video terminado, con una aprobación de Eduardo en 
 - **Sin la cara de Eduardo** (CHECA y su v2 PERSONAL): lee `references/narrador.md`.
 - **Con Eduardo a cámara** (cuenta @Eduardoalv9802, tutoriales): lee `references/camara.md`. Para elegir qué escena acompaña cada frase usa `plantillas/guion-escenas.md`.
 
-## Flujo por etapas (los dos modos)
-Una aprobación de Eduardo por etapa, con **CHECA y su v2 PERSONAL juntos en cada etapa** (dos guiones, dos tablas, dos portadas, dos videos, dos copys): así son 5 aprobaciones por tema y no 10. No adelantes etapas: él revisaría cosas que aún pueden cambiar.
-1. **Guion** de las dos versiones con la skill `guion-checa`.
-2. **Tabla de animaciones**: `checa.py tabla <guion.md> --guardar` la saca del «Guión Desglosado» (no la reescribas a mano); en el chat va la tabla corta.
-3. **Portadas** (ver «Portada»), antes que el video.
-4. **Videos de prueba**: `SendUserFile` desde `renders/` (ignorado en git).
-5. **Con su «aprobado» del video, entrega sin volver a preguntar**: `checa.py entregar <proyecto> <CHECA|PERSONAL> <NN>` pone la portada aprobada como primer cuadro (0.2 s), copia `video.mp4` y `portada.jpg` a la carpeta y revisa el formato. Es un paso mecánico sobre dos cosas ya aprobadas; el mp4 se commitea **una sola vez** (cada mp4 commiteado engorda el repo para siempre).
-6. **Copy y DM**: escribe `copy.txt` y genera el DM con `checa.py dm <carpeta>`; Eduardo aprueba el copy.
-7. **Hecho**: `checa.py hecho <carpeta> <AAAA-MM-DD> [tipo]` (calendario web + `calendario.md`). «Publicado» lo marca Eduardo; cuando avise: `checa.py publicado <carpeta> <AAAA-MM-DD>`.
-8. **Subir**: `checa.py subir "<mensaje con las líneas de atribución>"` hace commit y push a `main` y a la rama de la sesión en los dos repos. `build.yml` ignora `marketing/**`, `video/**` y `.claude/**`: no hace falta `[skip ci]`.
+## Flujo: dos aprobaciones por lote (Eduardo, 30 oct 2026)
+Eduardo aprueba **dos veces por lote** y no cinco por video: así el tiempo no se le va en idas y vueltas. Un lote son los temas que él dé (3–4 lo normal), cada uno con CHECA y su v2 PERSONAL.
+1. **Aprobación 1 · guiones:** todos los guiones del lote en un solo mensaje, con la skill `guion-checa`. Si pide cambios, se corrigen solo esos y se vuelve a mostrar el lote.
+2. **Producción sin parar** (no le preguntes nada en medio), para cada video:
+   - Tabla de animaciones: `checa.py tabla <guion.md> --guardar` (no se reescribe a mano).
+   - Portada: `portada/portada.json` + `checa.py portada <proyecto>`.
+   - Video: `checa.py construir <proyecto> --render` y `checa.py revisar`.
+   - Entrega: `checa.py entregar <proyecto> <CHECA|PERSONAL> <NN>` (portada como primer cuadro; copia `video.mp4` y `portada.jpg`).
+   - Copy y DM: escribe `copy.txt` y corre `checa.py dm <carpeta>`.
+   Revisa tú cada hoja de cuadros y cada portada antes de seguir: él solo verá el resultado final, así que lo que se te pase llega hasta él.
+3. **Aprobación 2 · revisión final:** un solo mensaje con todo el lote: por video, el mp4 (con `SendUserFile`; la portada ya va en el primer cuadro), el copy en texto y la fecha propuesta. Si algo no le gusta, se corrige **solo eso** (portada, una escena, una línea de voz o el copy) y se manda de nuevo solo lo corregido.
+4. **Hecho y subida:** con su «aprobado», `checa.py hecho <carpeta> <AAAA-MM-DD> [tipo]` por video y `checa.py subir "<mensaje con las líneas de atribución>"`. El `video.mp4` se commitea **una sola vez**, ya aprobado: hasta la aprobación 2 los mp4 viven en `renders/` y en la carpeta sin commitear (si un hook pide subir, apártalos con `mv` a `renders/`). «Publicado» lo marca Eduardo; cuando avise: `checa.py publicado <carpeta> <AAAA-MM-DD>`.
+`build.yml` ignora `marketing/**`, `video/**` y `.claude/**`: no hace falta `[skip ci]`.
 
 Carpetas: `marketing/videos/CHECA/NN - Nombre/` y `marketing/videos/PERSONAL/NN - Nombre/` (`video.mp4`, `portada.jpg`, `copy.txt`, `dm.txt`, `guion.md`); la v2 usa el mismo `NN`.
 
