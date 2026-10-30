@@ -170,7 +170,7 @@ def esc_gancho(sc, e, nombre):
 def esc_numero(sc, e, nombre):
     D = sc["dur"]; col = COLOR[e.get("color", "hueso")]
     inner = f"""    <div id="{nombre}-k" class="etq clip" style="top:420px" data-start="0" data-duration="{D}" data-track-index="1">{e["etiqueta"]}</div>
-    <div id="{nombre}-n" class="mask clip" style="top:500px;height:340px" data-start="0" data-duration="{D}" data-track-index="2"><div style="font-size:300px;color:{col}">{e["numero"]}</div></div>
+    <div id="{nombre}-n" class="mask clip" style="top:500px;height:340px" data-start="0" data-duration="{D}" data-track-index="2"><div style="font-size:{e.get("size", 300)}px;color:{col}">{e["numero"]}</div></div>
     <div class="etq clip" style="top:900px" data-start="0" data-duration="{D}" data-track-index="3">{e.get("pie", "Números de ejemplo")}</div>"""
     js = f'      tl.fromTo("#{nombre}-k", {{ opacity: 0, y: 20 }}, {{ opacity: 1, y: 0, duration: 0.3 }}, 0);\n      tl.fromTo("#{nombre}-n > div", {{ yPercent: 120 }}, {{ yPercent: 0, duration: 0.5, ease: "power4.out" }}, 0.2);\n'
     return marco(nombre, D, "", inner, js)
@@ -207,7 +207,7 @@ def esc_cierre(sc, e, nombre):
     logo = '<svg id="N-lg" width="150" height="250" viewBox="0 0 60 100" aria-hidden="true"><rect x="6" y="2" width="48" height="96" rx="20" fill="#222826" stroke="#3A423F" stroke-width="1.6"/><circle cx="30" cy="26" r="9" fill="#4A2222"/><circle cx="30" cy="50" r="9" fill="#4A3C16"/><circle cx="30" cy="74" r="12" fill="#1D3A27"/><circle id="N-lr" cx="30" cy="26" r="9" fill="#EF4444" opacity="0"/><circle id="N-la" cx="30" cy="50" r="9" fill="#FACC15" opacity="0"/><circle id="N-lv" cx="30" cy="74" r="12" fill="#22C55E" opacity="0"/><path id="N-lk" d="M24 74.5l4.5 4.5L36.5 69" fill="none" stroke="#04210F" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="20" stroke-dashoffset="20"/></svg>'.replace("N-", nombre + "-")
     inner = f"""    <div id="{nombre}-lgw" class="clip" style="left:465px;top:190px" data-start="0" data-duration="{D}" data-track-index="1">{logo}</div>
     <div id="{nombre}-nom" class="mask clip" style="top:470px;height:150px" data-start="0" data-duration="{D}" data-track-index="2"><div style="font-size:140px">Checa</div></div>
-    <div id="{nombre}-pil" class="clip" style="left:290px;top:660px;width:500px;height:92px;border-radius:999px;background:#F4F4EF;color:#0C0C10;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;font-weight:700;font-size:44px" data-start="0" data-duration="{D}" data-track-index="3">Descarga Checa</div>
+    <div id="{nombre}-pil" class="clip" style="left:290px;top:660px;width:500px;height:92px;border-radius:999px;background:#F4F4EF;color:#0C0C10;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;font-weight:700;font-size:44px" data-start="0" data-duration="{D}" data-track-index="3">{e.get("pil", "Descarga Checa")}</div>
     <div id="{nombre}-sa" class="etq clip" style="top:780px" data-start="0" data-duration="{D}" data-track-index="4">Solo Android</div>
     <div id="{nombre}-cu" class="clip" style="left:140px;right:140px;top:840px;text-align:center;font-family:'DM Sans',sans-serif;font-size:34px;line-height:1.5;color:#A3A3AD" data-start="0" data-duration="{D}" data-track-index="5">síguenos en tiktok<br><b style="font-family:'JetBrains Mono',monospace;font-size:42px;color:#F4F4EF">@checa.driver</b><br>creador de Checa<br><b style="font-family:'JetBrains Mono',monospace;font-size:42px;color:#F4F4EF">@Eduardoalv9802</b></div>
     <div id="{nombre}-li" class="clip" style="left:0;right:0;top:1100px;text-align:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:36px;color:#FACC15" data-start="0" data-duration="{D}" data-track-index="6">jeal1498.github.io/checa-web</div>"""
@@ -223,6 +223,10 @@ def esc_cierre(sc, e, nombre):
       tl.fromTo("#{n}-cu", {{ opacity: 0, y: 20 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: "power4.out" }}, 2.1);
       tl.fromTo("#{n}-li", {{ opacity: 0 }}, {{ opacity: 1, duration: 0.4 }}, 2.6);
 """
+    if e.get("link") is False:
+        inner = "\n".join(l for l in inner.split("\n") if f'id="{nombre}-li"' not in l)
+        inner = inner.replace('</b></div>', '</b></div>', 1)
+        js = "".join(l for l in js.splitlines(True) if f'#{n}-li' not in l)
     if e.get("sin_redes"):  # versión para la web: sin cuentas ni link (la web no tiene salidas)
         inner = "\n".join(l for l in inner.split("\n") if f'id="{nombre}-cu"' not in l and f'id="{nombre}-li"' not in l)
         js = "".join(l for l in js.splitlines(True) if f'#{n}-cu' not in l and f'#{n}-li' not in l)
@@ -431,6 +435,15 @@ def sfx_escena(sc, e):
         return [("popup-entra", 0.3, 0.4), ("rechazar", pal(sc, e.get("corte", "pero")) + 0.15, 0.45), ("numero-sube", pal(sc, e.get("corte", "pero")) + 0.3, 0.35)]
     if tipo == "rutas":
         return [("sello", pal(sc, e.get("en_gas", "gasolina")), 0.4)]
+    if tipo == "dos":
+        f = e["fase"]
+        if f == "entra":
+            return [("popup-entra", pal(sc, "82"), 0.4)]
+        if f == "datos":
+            return [("sello", pal(sc, "corta"), 0.35), ("sello", pal(sc, "quince"), 0.35)]
+        return [("numero-sube", pal(sc, "68") - 0.2, 0.4)]
+    if tipo == "duo":
+        return [("popup-entra", pal(sc, e.get("entra", 0)), 0.4), ("popup-entra", pal(sc, e.get("entra", 0)) + 0.35, 0.3), ("aceptar", pal(sc, e.get("entra", 0)) + 0.8, 0.45)]
     if tipo == "numero":
         return [("numero-sube", 0.2, 0.4)]
     if tipo in ("cierre", "logo"):
@@ -569,7 +582,82 @@ def esc_rutas(sc, e, n):
     return marco(n, D, "", inner, js)
 
 
-TIPOS = {"hook": esc_hook, "anillo": esc_anillo, "datos": esc_datos, "logo": esc_logo, "escaneo": esc_escaneo, "voz": esc_voz, "popup_oferta": esc_popup_oferta, "reloj": esc_reloj, "seguir": esc_seguir, "gancho": esc_gancho, "numero": esc_numero, "popup": esc_popup, "estados": esc_estados, "cierre": esc_cierre, "paso": esc_paso, "listo": esc_listo, "fin": esc_fin, "tachado": esc_tachado, "rutas": esc_rutas}
+def _of_mini(idd, x, y, tarifa, d1, d2, extra_style=""):
+    return (f'<div id="{idd}" class="clip" style="left:{x}px;top:{y}px;width:640px;height:420px;transform:scale(.72);transform-origin:0 0;{extra_style}">'
+            f'<div class="of"><div class="l">NUEVA OFERTA</div><div class="f">${tarifa}</div><div class="d">{d1}<br>{d2}</div><div class="b">ACEPTAR</div></div></div>')
+
+
+def esc_dos(sc, e, n):
+    """Dos ofertas lado a lado. Fases: entra (cae la 2ª), datos (recogida corta, 15 min), neta (68 vs 67 y la mitad del tiempo)."""
+    D = sc["dur"]; fase = e["fase"]
+    ax, bx, y0 = 50, 569, 220
+    inner = ""
+    js = ""
+    # tarjeta A (la de $95): ya tachada y apagada desde antes
+    inner += _of_mini(f"{n}-a", ax, y0, 95, "8 min (3.8 km)", "22 min (10 km)", "opacity:.55;")
+    inner += f'    <svg class="clip" style="left:{ax + 40}px;top:{y0 + 60}px" width="300" height="100" viewBox="0 0 300 100" data-start="0" data-duration="{D}" data-track-index="2" aria-hidden="true"><path d="M6 72 L292 24" fill="none" stroke="#EF4444" stroke-width="12" stroke-linecap="round"/></svg>\n'
+    inner += _of_mini(f"{n}-b", bx, y0, 82, "4 min (1.2 km)", "11 min (6 km)")
+    inner += f'    <div class="etq clip" style="top:1060px;font-size:24px" data-start="0" data-duration="{D}" data-track-index="30">Números de ejemplo</div>\n'
+    if fase == "entra":
+        t = pal(sc, "82")
+        js += f'      tl.fromTo("#{n}-b", {{ x: 700, opacity: 0 }}, {{ x: 0, opacity: 1, duration: 0.45, ease: "back.out(1.3)" }}, {t});\n'
+        inner += f'    <div id="{n}-ka" class="etq clip" style="left:{ax}px;right:auto;width:461px;top:560px;color:#FACC15;font-size:40px" data-start="0" data-duration="{D}" data-track-index="3">te quedan $67</div>\n'
+        pe = pal(sc, "peor")
+        inner += f'    <div id="{n}-pe" class="clip" style="left:{bx + 20}px;top:560px;background:#2A0E10;border:3px solid #EF4444;border-radius:999px;padding:12px 28px;font-family:\'JetBrains Mono\',monospace;font-weight:700;font-size:40px;color:#EF4444;opacity:0" data-start="0" data-duration="{D}" data-track-index="4">−$13 vs $95</div>\n'
+        js += f'      tl.fromTo("#{n}-pe", {{ y: 30, opacity: 0 }}, {{ y: 0, opacity: 1, duration: 0.3, ease: "power4.out" }}, {pe});\n'
+    else:
+        inner = inner  # B ya está en su lugar
+    if fase in ("datos", "neta"):
+        inner += f'    <div class="etq clip" style="left:{ax}px;right:auto;width:461px;top:560px;color:#FACC15;font-size:40px" data-start="0" data-duration="{D}" data-track-index="3">te quedan $67</div>\n'
+    if fase == "datos":
+        c1 = pal(sc, "corta"); c2 = pal(sc, "quince")
+        ficha = lambda i, x, y, big, small, col: (f'    <div id="{n}-f{i}" class="clip" style="left:{x}px;top:{y}px;width:461px;border-radius:24px;background:#1B1B22;border:3px solid {col};padding:16px 0;text-align:center;opacity:0" data-start="0" data-duration="{D}" data-track-index="{10 + i}"><b style="font-family:\'JetBrains Mono\',monospace;font-size:54px;color:{col}">{big}</b><br><span style="font-family:\'JetBrains Mono\',monospace;font-size:26px;color:#A3A3AD;letter-spacing:.1em;text-transform:uppercase">{small}</span></div>\n')
+        inner += ficha(1, bx, 640, "1.2 km", "recogida corta", "#22C55E")
+        inner += ficha(2, bx, 790, "15 min", "viaje", "#22C55E")
+        inner += ficha(3, ax, 640, "3.8 km", "recogida", "#EF4444")
+        inner += ficha(4, ax, 790, "22 min", "viaje", "#A3A3AD")
+        js += f'      tl.fromTo("#{n}-f3", {{ opacity: 0 }}, {{ opacity: .8, duration: 0.2 }}, 0.1);\n      tl.fromTo("#{n}-f4", {{ opacity: 0 }}, {{ opacity: .8, duration: 0.2 }}, 0.25);\n'
+        js += f'      tl.fromTo("#{n}-f1", {{ y: 40, opacity: 0, scale: .9 }}, {{ y: 0, opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.5)" }}, {c1});\n'
+        js += f'      tl.fromTo("#{n}-f2", {{ y: 40, opacity: 0, scale: .9 }}, {{ y: 0, opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.5)" }}, {c2});\n'
+    if fase == "neta":
+        g1 = pal(sc, "gasolina"); n1 = pal(sc, "68"); uno = pal(sc, "uno"); mit = pal(sc, "mitad")
+        inner += f'    <div id="{n}-ga" class="clip" style="left:{ax}px;top:640px;width:461px;text-align:center;font-family:\'JetBrains Mono\',monospace;font-weight:700;font-size:42px;color:#EF4444;opacity:0" data-start="0" data-duration="{D}" data-track-index="10">gasolina −$28</div>\n'
+        inner += f'    <div id="{n}-gb" class="clip" style="left:{bx}px;top:640px;width:461px;text-align:center;font-family:\'JetBrains Mono\',monospace;font-weight:700;font-size:42px;color:#EF4444;opacity:0" data-start="0" data-duration="{D}" data-track-index="11">gasolina −$14</div>\n'
+        inner += f'    <div id="{n}-na" class="clip" style="left:{ax}px;top:700px;width:461px;text-align:center;font-family:\'Bricolage Grotesque\',sans-serif;font-weight:800;font-size:130px;letter-spacing:-.04em;color:#F4F4EF;opacity:0" data-start="0" data-duration="{D}" data-track-index="12">$67</div>\n'
+        inner += f'    <div id="{n}-nb" class="clip" style="left:{bx}px;top:700px;width:461px;text-align:center;font-family:\'Bricolage Grotesque\',sans-serif;font-weight:800;font-size:130px;letter-spacing:-.04em;color:#22C55E;opacity:0" data-start="0" data-duration="{D}" data-track-index="13">$68</div>\n'
+        inner += f'    <div id="{n}-ta" class="clip" style="left:{ax}px;top:880px;width:461px;text-align:center;font-family:\'JetBrains Mono\',monospace;font-weight:700;font-size:40px;color:#A3A3AD;opacity:0" data-start="0" data-duration="{D}" data-track-index="14">30 min</div>\n'
+        inner += f'    <div id="{n}-tb" class="clip" style="left:{bx}px;top:880px;width:461px;text-align:center;font-family:\'JetBrains Mono\',monospace;font-weight:700;font-size:40px;color:#22C55E;opacity:0" data-start="0" data-duration="{D}" data-track-index="15">15 min</div>\n'
+        inner += f'    <div id="{n}-ba" class="clip" style="left:{ax + 30}px;top:940px;width:400px;height:22px;border-radius:999px;background:#A3A3AD;transform-origin:0 50%;opacity:0" data-start="0" data-duration="{D}" data-track-index="16"></div>\n'
+        inner += f'    <div id="{n}-bb" class="clip" style="left:{bx + 30}px;top:940px;width:400px;height:22px;border-radius:999px;background:#22C55E;transform-origin:0 50%;opacity:0" data-start="0" data-duration="{D}" data-track-index="17"></div>\n'
+        # la tarjeta de la neta tapa el hueco de «te quedan $67» (queda arriba, ya dicho)
+        js += f'      tl.fromTo("#{n}-ga", {{ opacity: 0, y: 20 }}, {{ opacity: 1, y: 0, duration: 0.25 }}, {g1});\n'
+        js += f'      tl.fromTo("#{n}-gb", {{ opacity: 0, y: 20 }}, {{ opacity: 1, y: 0, duration: 0.25 }}, {round(g1 + 0.15, 2)});\n'
+        js += f'      tl.fromTo("#{n}-na", {{ opacity: 0, scale: .8 }}, {{ opacity: 1, scale: 1, duration: 0.3, ease: "power4.out" }}, {round(n1 - 0.45, 2)});\n'
+        js += f'      tl.fromTo("#{n}-nb", {{ opacity: 0, scale: .8 }}, {{ opacity: 1, scale: 1, duration: 0.3, ease: "back.out(1.6)" }}, {round(n1 - 0.2, 2)});\n'
+        js += f'      tl.fromTo("#{n}-ta", {{ opacity: 0 }}, {{ opacity: 1, duration: 0.2 }}, {mit});\n      tl.fromTo("#{n}-tb", {{ opacity: 0 }}, {{ opacity: 1, duration: 0.2 }}, {mit});\n'
+        js += f'      tl.fromTo("#{n}-ba", {{ opacity: 0, scaleX: 0 }}, {{ opacity: 1, scaleX: 1, duration: 0.5, ease: "power3.out" }}, {mit});\n'
+        js += f'      tl.fromTo("#{n}-bb", {{ opacity: 0, scaleX: 0 }}, {{ opacity: 1, scaleX: 0.5, duration: 0.5, ease: "power3.out" }}, {mit});\n'
+        js += f'      tl.to("#{n}-nb", {{ scale: 1.12, duration: 0.12, yoyo: true, repeat: 1 }}, {uno});\n'
+        inner = inner.replace(f'<div class="etq clip" style="left:{ax}px;right:auto;width:461px;top:560px;color:#FACC15;font-size:40px" data-start="0" data-duration="{D}" data-track-index="3">te quedan $67</div>', "")
+    return marco(n, D, OF_CSS + "\n    .mask,.etq{}", inner, js)
+
+
+def esc_duo(sc, e, n):
+    """Los dos pop-ups apilados: el mejor (borde hueso, MEJOR) y el otro."""
+    D = sc["dur"]
+    for p in e["popups"]:
+        validar_popup(p)
+    u = 0.6; x = int((1080 - 860 * u) / 2)
+    inner = "".join(f'    <div id="{n}-p{i}" class="clip" style="left:{x}px;top:{190 + i * 400}px" data-start="0" data-duration="{D}" data-track-index="{i + 1}">{popup(p, u)}</div>\n' for i, p in enumerate(e["popups"]))
+    inner += f'    <div class="etq clip" style="top:1080px;font-size:24px" data-start="0" data-duration="{D}" data-track-index="9">Números de ejemplo</div>\n'
+    t = pal(sc, e.get("entra", 0))
+    js = ""
+    for i in range(len(e["popups"])):
+        js += f'      tl.fromTo("#{n}-p{i}", {{ y: -60, opacity: 0 }}, {{ y: 0, opacity: 1, duration: 0.4, ease: "power4.out" }}, {round(t + 0.35 * i, 2)});\n'
+    return marco(n, D, css_popup(), inner, js)
+
+
+TIPOS = {"hook": esc_hook, "anillo": esc_anillo, "datos": esc_datos, "logo": esc_logo, "escaneo": esc_escaneo, "voz": esc_voz, "popup_oferta": esc_popup_oferta, "reloj": esc_reloj, "seguir": esc_seguir, "gancho": esc_gancho, "numero": esc_numero, "popup": esc_popup, "estados": esc_estados, "cierre": esc_cierre, "paso": esc_paso, "listo": esc_listo, "fin": esc_fin, "tachado": esc_tachado, "rutas": esc_rutas, "dos": esc_dos, "duo": esc_duo}
 
 
 # ---------- subtítulos ----------

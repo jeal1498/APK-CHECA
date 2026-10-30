@@ -1,5 +1,18 @@
 [
   {"tipo": "tachado", "tarifa": 95, "neta": 67, "corte": "pero",
    "datos": ["8 min (3.8 km)", "22 min (10 km)"]},
-  {"tipo": "rutas", "gasolina": "−$27.60", "km_rec": "3.8 km", "km_viaje": "10 km", "en_gas": "también", "en_tu": "pagas"}
+  {"tipo": "rutas", "gasolina": "−$28", "km_rec": "3.8 km", "km_viaje": "10 km", "en_gas": "también", "en_tu": "pagas"},
+  {"tipo": "numero", "etiqueta": "y te va a tomar", "numero": "30 min", "size": 250, "color": "amarillo", "pie": "Números de ejemplo", "sfx": [["numero-sube", 0.3, 0.4]]},
+  {"tipo": "dos", "fase": "entra"},
+  {"tipo": "dos", "fase": "datos"},
+  {"tipo": "dos", "fase": "neta"},
+  {"tipo": "duo", "entra": 0, "popups": [
+    {"nivel": "verde", "app": "DIDI", "mejor": true, "neta": 68, "viaje": 82, "gasolina": 14,
+     "chips": [["$328/h", "por hora", "ok"], ["$11.4/km", "por km", "ok"], ["15 min", "7.2 km total", ""]]},
+    {"nivel": "amarillo", "app": "UBER", "neta": 67, "viaje": 95, "gasolina": 28,
+     "chips": [["$190/h", "por hora", "ok"], ["$6.9/km", "por km", "mal"], ["30 min", "13.8 km total", ""]]}
+  ]},
+  {"tipo": "popup", "ejemplo": true, "sfx": false, "popup": {"nivel": "verde", "app": "DIDI", "mejor": true, "neta": 68, "viaje": 82, "gasolina": 14,
+    "chips": [["$328/h", "por hora", "ok"], ["$11.4/km", "por km", "ok"], ["15 min", "7.2 km total", ""]]}},
+  {"tipo": "cierre", "pil": "Comenta CHECA", "link": false}
 ]
