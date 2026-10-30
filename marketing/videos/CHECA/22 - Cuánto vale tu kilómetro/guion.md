@@ -1,6 +1,6 @@
 # Guion · 22 - Cuánto vale tu kilómetro (CHECA v1) — reescrito el 30 oct 2026 con la skill `guion-remotion-checa`
 
-**Estado:** guion por aprobar. Antes: `guion_19oct_anterior.md` (cierre «7 días gratis» y «Descarga Checa», ya no vigentes). Misma idea (cuenta que se revela, giro «más dinero, peor viaje»), con la neta del código y el CTA vigente.
+**Estado:** guion aprobado el 30 oct 2026; tabla de animaciones por aprobar. Antes: `guion_19oct_anterior.md` (cierre «7 días gratis» y «Descarga Checa», ya no vigentes). Misma idea (cuenta que se revela, giro «más dinero, peor viaje»), con la neta del código y el CTA vigente.
 
 Concepto / Problema detectado en el repo:
 El conductor compara tarifas, no kilómetros. `Parser.kt`: `porKm` = tarifa / km **totales** (recogida + viaje); `gasolina()` = km / km por litro × $/litro; `neta()` = tarifa − gasolina; `nivel()` pinta el semáforo con la meta por km. La oferta más cara puede ser la peor.
@@ -28,3 +28,16 @@ CTA final:
 ## Notas
 - Sin ciudad ni país, sin logos ni nombres de apps, «Números de ejemplo», sin promesa de ganancia; la meta de $5/km es ejemplo (cada conductor pone la suya). Duración real ~20–24 s (el borrador de 34 s dejaba pausas); si Eduardo la quiere más larga, se agrega un bloque con la comparación de $/hora.
 - La v2 de PERSONAL se hace después, con otro gancho (p. ej. «Te ofrecen $110 y te quedan $54»).
+
+## Tabla de animaciones por toma (30 oct 2026, por aprobar)
+| Toma | Frase | Componente | Animación | Objetivo |
+|---|---|---|---|---|
+| 0–3 s | «$110 pagan más que $90, y son el peor viaje de los dos.» | Dos tarjetas de oferta ($110 y $90) + «Números de ejemplo» | Flash en el cuadro 0; las dos se estrellan con zoom; los montos suben desde $0 | Golpe: gana la que paga menos |
+| 3–6 s | «Los $110 son 28 kilómetros…» | Cuenta $110 ÷ 28 km = $3.93/km + ticket Gasolina −$56 → $54 | Cámara a la de $110; la cifra baja y se pone roja; el ticket cae | Se revela la cuenta |
+| 6–9 s | «Los $90 son 15 kilómetros…» | $90 ÷ 15 km = $6/km + ticket −$30 → $60 | Cámara a la de $90; cifra verde; contador $90 → $60 | Contraste |
+| 9–12 s | «Con una meta de $5 por kilómetro…» | Raya de meta «$5/km» | La raya se dibuja; el $6 sube sobre ella en verde y el $3.93 cae en rojo | Payoff |
+| 12–15 s | «Y en segundos, nadie saca esa cuenta.» | Reloj de 15 s sobre la oferta | El reloj corre y los números tiemblan | Cambio de ritmo |
+| 15–18 s | «Checa la hace por ti…» | Dos pop-ups «A · Franja»: RECHAZAR $3.9/km y ACEPTAR $6/km | Caen con spring sobre cada oferta | Checa como solución |
+| 18–21 s | «Comenta CHECA y te paso el acceso…» | Pantalla final estándar sin link | Logo rojo → ámbar → verde → ✓; pastilla «Comenta CHECA» | Una sola acción |
+
+Marca v2, pop-ups con «OFERTA», subtítulos palabra por palabra, efectos oficiales, sin música, todo por encima de y≈1150.
