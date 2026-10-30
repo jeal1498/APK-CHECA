@@ -77,3 +77,6 @@ Antes de cada subida: revisar el `copy.txt` (CTA de §3.2), pasar el video al ca
 - Sin ciudad ni país, sin logos ni nombres de Uber/DiDi, ortografía «checas / cheques».
 - Un `rm` con comodín fue bloqueado por el entorno: para apartar voces viejas usar `mv`.
 - Si ElevenLabs responde 401 `quota_exceeded`, avisar a Eduardo (v3 gasta más créditos que v2).
+
+## Avance al 30 oct 2026 (noche)
+Hecho: copy y DM del 26; calendarios con fechas de la Fase 1; 17 rehecho; 26 v2 hecha; cierre nuevo en C14, C15, C19, P10, P14, P15; 24 y 25 descartados. Pendiente: subir los videos (calendario de arriba), v2 PERSONAL del 17, decidir el guion del 22 y los videos nuevos de urgencia. Detalle en `CLAUDE.md` («Videos — puesta al día»).
