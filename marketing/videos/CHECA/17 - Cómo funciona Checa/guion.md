@@ -1,6 +1,6 @@
 # Guion · 17 - Cómo funciona Checa (CHECA) — rehecho el 30 oct 2026 con la skill `guion-remotion-checa`
 
-**Estado:** propuesto, sin aprobar. Reemplaza al guion del 16 oct (cierre «pruébala 7 días sin costo», marca anterior); el video viejo sigue en `video.mp4` hasta que se apruebe el nuevo.
+**Estado:** guion aprobado por Eduardo el 30 oct 2026; tabla de animaciones por aprobar. Reemplaza al guion del 16 oct (cierre «pruébala 7 días sin costo», marca anterior); el video viejo sigue en `video.mp4` hasta que se apruebe el nuevo.
 
 Concepto / Problema detectado en el repo:
 El conductor decide en segundos viendo solo la tarifa bruta. Checa (`Parser.kt`, `Popup.kt`) calcula gasolina de recogida + viaje, neta, $/h y $/km sobre km y min **totales**, pinta el semáforo con sus metas y marca recogida lejana o la mejor de dos ofertas (`Comparador.kt`). Explicador: qué hace Checa, en orden, sin promesas de ganancia.
@@ -33,3 +33,20 @@ CTA final:
 - Marca v2 en todo el video (asfalto/hueso, Bricolage, DM Sans, JetBrains Mono); sin «UBER»/«DiDi» en los pop-ups (pastilla genérica o sin app). Sin ciudad ni país; sin «7 días», precios ni promesas de ganancia.
 - Hecho con Hyperframes (`checa-marca-v2`/`construir.py` del 26), voz v3 con 1–2 tags por línea como máximo, igual que el 26.
 - Versión del 16 oct (legado): voz «¿Aceptas viajes sin saber si de verdad te conviene?…», cierre «pruébala 7 días sin costo».
+
+## Tabla de animaciones por toma (30 oct 2026, por aprobar)
+| Toma | Frase | Componente | Animación | Objetivo |
+|---|---|---|---|---|
+| 0–3 s | «Te cae un viaje de 150 pesos. ¿Cuánto te queda de verdad?» | Tarjeta de oferta tipo app de viajes («$150.00», «Aceptar») + sello amarillo «¿$?» | Entra desde abajo con zoom lento desde el cuadro 0; el sello late | Pérdida/duda en el primer segundo |
+| 3–6 s | «Checa lee la oferta en cuanto aparece.» | Teléfono con la oferta + logo semáforo ✓ | Línea de escaneo verde que baja | Mostrar que lee sola |
+| 6–9 s | «Y te muestra un aviso encima, antes de aceptar.» | Pop-up «A · Franja» sobre la oferta (ambos visibles) | Pop-up cae con spring; «Números de ejemplo» | El pop-up es el producto |
+| 9–12 s | «Resta la gasolina… te quedan 118.» | Ticket Viaje $150 / Gasolina −$32 | Gasolina cae en rojo; contador $150 → $118 | La cifra que importa |
+| 12–15 s | «…por hora y por kilómetro.» | Fichas $321/h y $9.4/km | Zoom 1 → 1.4, entran en escalera, borde verde | Datos en una mirada |
+| 15–18 s | «Un semáforo decide…» | Tres pop-ups del mismo tamaño | ACEPTAR → CONSIDERAR → RECHAZAR en su palabra | Decisión sin pensar |
+| 18–21 s | «Tú pones las metas…» | Tarjetas «Meta por km $8» y «Meta por hora $150» | Los valores suben con − / + | Control del conductor |
+| 21–24 s | «Si la recogida queda lejos, te lo marca en rojo.» | Mapa con ruta «6 km» + pop-up RECHAZAR $71 | La ruta se dibuja; ficha roja se marca | Alerta concreta |
+| 24–27 s | «Si caen dos ofertas…» | Dos pop-ups apilados ($118 ★ MEJOR, $84 apagado) | Entran escalonados | Comparador |
+| 27–30 s | «…a qué horas te pagan mejor.» | Cuadrícula de horas | Se pinta en escalera; 17–19 h en verde | Mejores horas |
+| 30–33 s | «Comenta CHECA y te paso el acceso…» | Pantalla final estándar sin link | Logo rojo → ámbar → verde → ✓; pastilla «Comenta CHECA» | Una sola acción |
+
+Marca v2, sin «UBER»/«DiDi» en pop-ups, subtítulos v2 palabra por palabra, efectos de sonido oficiales, sin música.
