@@ -34,18 +34,18 @@ Sin link en la bio (TikTok pide constancia del SAT para cuenta de empresa): a qu
 | 09 | — | Consejo (descartado 19 oct) | `09 - Cuenta desactivada` |  | ❌ descartado |
 | 10 | mié 21 oct | Venta | `10 - Mejores horas` | ✅ | ✅ 22 oct |
 | 11 | — | Consejo (descartado 19 oct) | `11 - Ingreso inestable` |  | ❌ descartado |
-| 12 | vie 23 oct | Venta | `12 - Comisión y tarifas` |  | |
+| 12 | vie 23 oct | Venta | `12 - Comisión y tarifas` | ✅ | ✅ 23 oct |
 | 13 | — | Consejo (descartado 19 oct) | `13 - Multas y papeles` |  | ❌ descartado |
-| 14 | dom 25 oct | Venta | `14 - Miedo a rechazar` |  | |
-| 15 | lun 26 oct | Venta | `15 - Desgaste y renta` |  | |
-| 19 | mar 27 oct | Venta | `19 - Checa lee la oferta` |  | |
-| 17 | mié 28 oct | Explicativo | `17 - Cómo funciona Checa` |  | |
+| 14 | vie 30 oct | Venta | `14 - Miedo a rechazar` | ✅ | |
+| 15 | sáb 31 oct | Venta | `15 - Desgaste y renta` | ✅ | |
+| 19 | lun 2 nov | Venta | `19 - Checa lee la oferta` | ✅ (falta subirlo al calendario web) | |
+| 17 | mar 3 nov (si se rehace el cierre) | Explicativo | `17 - Cómo funciona Checa` | voz dice «7 días sin costo»; sin copy | |
 | 18 | por definir | Venta | `18 - Cuánto ganas tú` |  | (ya está en PERSONAL) |
 | 20 | — | Tutorial (descartado 30 oct: explica el APK, que se cierra el 15 nov) | `20 - Cómo instalar Checa` |  | ❌ descartado |
 | 21 | sáb 17 oct | Campaña beta | `21 - Beta testers corto` | ✅ |✅ 17 oct (sin efectos de sonido) |
 | 22 | por definir | Venta (prueba del domingo 19 oct) | `22 - Cuánto vale tu kilómetro` | guion para aprobar | |
 | 23 | dom 25 oct | Campaña testers (Eduardo a cámara; CHECA y v2 PERSONAL el mismo día) | `23 - Prueba en Google Play` | ✅ | ✅ publicado 25 oct |
-| 26 | por definir | Venta (Remotion/Hyperframes, voz v3) | `26 - Dos ofertas misma neta` | video y portada ✅; falta copy y dm | |
+| 26 | dom 1 nov | Venta (Hyperframes, voz v3) | `26 - Dos ofertas misma neta` | ✅ (copy por aprobar) | |
 
 > **30 oct 2026:** el estado real de publicación está en el calendario web (repo `PWA-Checa-Multimedia`, `calendario-d4f81c/data.json`). El plan para ponerse al día está en `marketing/plan/plan-ponerse-al-dia.md`. Desde el 25 oct no se ha publicado nada; 12, 14, 15, 17 y 19 de esta tabla no se marcaron. Los copys de 14, 15 y 19 ya usan el CTA «Comenta CHECA… acceso a la prueba en Google Play».
 
@@ -71,12 +71,13 @@ Misma idea que cada video de CHECA, con otro gancho y otras palabras (reglas en 
 | 07 | jue 22 oct | Consejo (descartado 19 oct, publicado 22 oct) | `07 - Pasajeros y cancelaciones` | ✅ | ✅ 22 oct |
 | 08 | mar 20 oct | Venta | `08 - Decidir en segundos` | ✅ | ✅ 20 oct 10:30 |
 | 09 | — | Consejo (descartado 19 oct) | `09 - Cuenta desactivada` |  | ❌ descartado |
-| 10 | jue 22 oct | Venta | `10 - Mejores horas` |  | |
+| 10 | vie 30 oct | Venta | `10 - Mejores horas` | ✅ | |
 | 11 | — | Consejo (descartado 19 oct) | `11 - Ingreso inestable` |  | ❌ descartado |
-| 12 | sáb 24 oct | Venta | `12 - Comisión y tarifas` |  | |
+| 12 | sáb 24 oct | Venta | `12 - Comisión y tarifas` | ✅ | ✅ 23 oct |
 | 13 | — | Consejo (descartado 19 oct) | `13 - Multas y papeles` |  | ❌ descartado |
-| 14 | lun 26 oct | Venta | `14 - Miedo a rechazar` |  | |
-| 15 | mar 27 oct | Venta | `15 - Desgaste y renta` |  | |
+| 14 | sáb 31 oct | Venta | `14 - Miedo a rechazar` | ✅ | |
+| 15 | dom 1 nov | Venta | `15 - Desgaste y renta` | ✅ | |
+| 26 | lun 2 nov | Venta (v2) | `26 - Dos ofertas misma neta` | por hacer | |
 | 22 | por definir | Venta (v2, un día detrás de CHECA) | `22 - Cuánto vale tu kilómetro` | guion para aprobar | |
 
 # Medición semanal (qué videos venden)
