@@ -1,0 +1,44 @@
+<template>
+  <style>
+    @font-face{ font-family: 'Bricolage Grotesque'; font-weight: 800; font-display: block; src: url('assets/fonts/bricolage-grotesque-latin-800-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'DM Sans'; font-weight: 400; font-display: block; src: url('assets/fonts/dm-sans-latin-400-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'DM Sans'; font-weight: 700; font-display: block; src: url('assets/fonts/dm-sans-latin-700-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'JetBrains Mono'; font-weight: 500; font-display: block; src: url('assets/fonts/jetbrains-mono-latin-500-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'JetBrains Mono'; font-weight: 700; font-display: block; src: url('assets/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+    #root { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; font-family: 'DM Sans', Arial, sans-serif; color: #F4F4EF; }
+    .clip { position: absolute; }
+    .G { inset: 0; background: #0C0C10; }
+    .etq { position: absolute; left: 0; right: 0; text-align: center; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 28px; letter-spacing: .12em; text-transform: uppercase; color: #A3A3AD; }
+    .mask { position: absolute; left: 0; right: 0; overflow: hidden; text-align: center; }
+    .mask > div { font-family: 'Bricolage Grotesque', 'Arial Black', sans-serif; font-weight: 800; letter-spacing: -0.045em; line-height: 1; white-space: nowrap; }
+    
+  </style>
+
+  <div id="root" data-composition-id="e05-reloj15" data-width="1080" data-height="1920" data-start="0" data-duration="2.71">
+    <div id="e05-reloj15-g" class="clip G" data-start="0" data-duration="2.71" data-track-index="0"></div>
+    <div id="e05-reloj15-rg" class="clip" style="left:330px;top:240px;width:420px;height:420px" data-start="0" data-duration="2.71" data-track-index="1"><svg width="420" height="420" viewBox="0 0 420 420" aria-hidden="true"><circle cx="210" cy="210" r="170" fill="none" stroke="#3A3A45" stroke-width="26"/><circle id="e05-reloj15-rp" cx="210" cy="210" r="170" fill="none" stroke="#FACC15" stroke-width="26" stroke-linecap="round" stroke-dasharray="1068" stroke-dashoffset="0" transform="rotate(-90 210 210)"/></svg><div id="e05-reloj15-tx" style="position:absolute;left:0;right:0;top:150px;text-align:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:112px">0:15</div></div>
+    <div id="e05-reloj15-q" class="clip" style="left:0;right:0;top:760px;text-align:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:84px;color:#F4F4EF" data-start="0" data-duration="2.71" data-track-index="2">$110 ÷ 28 = <span style="color:#EF4444">?</span></div>
+    <div id="e05-reloj15-q2" class="clip" style="left:0;right:0;top:880px;text-align:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:84px;color:#F4F4EF" data-start="0" data-duration="2.71" data-track-index="3">$90 ÷ 15 = <span style="color:#EF4444">?</span></div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      var D = 2.71;
+      var seg = { v: 15 };
+      tl.fromTo("#e05-reloj15-rg", { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power4.out" }, 0);
+      tl.to("#e05-reloj15-rp", { strokeDashoffset: 1068, duration: 2.41, ease: "none" }, 0.1);
+      tl.to(seg, { v: 0, duration: 2.41, ease: "none", onUpdate: function () { var s = Math.ceil(seg.v); document.getElementById("e05-reloj15-tx").textContent = "0:" + (s < 10 ? "0" : "") + s; } }, 0.1);
+      tl.to("#e05-reloj15-rp", { stroke: "#EF4444", duration: 0.3 }, 1.91);
+      tl.fromTo("#e05-reloj15-q", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.3, ease: "power4.out" }, 0.2);
+      tl.fromTo("#e05-reloj15-q2", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.3, ease: "power4.out" }, 0.45);
+      tl.to("#e05-reloj15-q", { x: 8, duration: 0.05, yoyo: true, repeat: 13 }, 0.8);
+      tl.to("#e05-reloj15-q2", { x: -8, duration: 0.05, yoyo: true, repeat: 13 }, 0.8);
+
+      window.__timelines["e05-reloj15"] = tl;
+    })();
+  </script>
+</template>
