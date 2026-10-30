@@ -33,7 +33,7 @@ Ejemplos de vocabulario:
 - `[Componente Popup «A · Franja» con franja del semáforo y pastilla ★]`
 - `[Barras/arcos que crecen con spring]`, `[stagger de 4 frames]`, `[zoom scale 1 → 1.4]`
 
-Reglas: entradas con `spring()` (damping medio), salidas con `interpolate()` clamped; verde/amarillo/rojo solo para decidir, el resto asfalto/tablero/hueso; Bricolage (títulos y números), DM Sans (texto), JetBrains Mono (datos). Si se produce en Hyperframes (`video/hyperframes/`), traduce las mismas instrucciones con el proceso económico de la skill `videos-checa`.
+Reglas: entradas con `spring()` (damping medio), salidas con `interpolate()` clamped; verde/amarillo/rojo solo para decidir, el resto asfalto/tablero/hueso; Bricolage (títulos y números), DM Sans (texto), JetBrains Mono (datos). Si se produce en Hyperframes (`video/hyperframes/`), traduce las mismas instrucciones con el proceso económico de la skill `videos-checa-camara`.
 
 ## Formato de entrega (exacto)
 ```
@@ -46,7 +46,7 @@ CTA final:
 ```
 
 ## Cómo le gustan los videos a Eduardo (30 oct 2026, video 17; vigente para todos)
-Eduardo pidió que esto viva en esta skill (`guion-remotion-checa`), no en `videos-checa`.
+Eduardo pidió que esto viva en esta skill (`guion-remotion-checa`), no en `videos-checa-camara`.
 - **Los primeros 3 s son un golpe, no una entrada suave.** Del 17: «se sienten muy flojos» con una tarjeta que solo entraba y un título quieto. Lo que sí funcionó: flash en el cuadro 0, tarjeta que se estrella con zoom grande, monto que sube de $0, toque en «Aceptar» con ondita, cámara que se pega a la cifra y la sacude, y el título entra grande (blanco + amarillo) con sello «¿$?». Nada quieto ni vacío mientras la voz habla.
 - **Sin pausas largas de voz.** Un `[pause]` de v3 dejó 1.3 s de silencio con pantalla estática: no usar `[pause]` en el gancho (si hace falta, solo entre ideas y con algo moviéndose).
 - **Voz v3 en todas las líneas del video** (`ELEVEN_V3=1 python3 -I construir.py …`) para no mezclar voces; si cambia una línea, apartar su `NN.mp3/.json/.wav` con `mv` (no `rm` con comodín) y regenerar.
@@ -69,4 +69,4 @@ Eduardo pidió que esto viva en esta skill (`guion-remotion-checa`), no en `vide
 Mismo texto y mismas cifras; solo cambia la capa visual (A: cámara; B: gráficos).
 
 ## Guardar
-Guarda en `marketing/videos/CHECA/NN - Nombre/guion.md` (o `PERSONAL/`) con el siguiente número libre, junto con los números de ejemplo y su cálculo. Commit y push. El guion queda «propuesto» hasta que Eduardo lo apruebe (flujo de etapas de `videos-checa`).
+Guarda en `marketing/videos/CHECA/NN - Nombre/guion.md` (o `PERSONAL/`) con el siguiente número libre, junto con los números de ejemplo y su cálculo. Commit y push. El guion queda «propuesto» hasta que Eduardo lo apruebe (flujo de etapas de `videos-checa-camara`).

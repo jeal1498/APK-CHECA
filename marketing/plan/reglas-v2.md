@@ -5,7 +5,7 @@ Cada video de la cuenta de **Checa** tiene una **v2** para la cuenta **personal*
 **Reglas de la v2** (Eduardo, 16 oct 2026):
 - Mismo tema y mismos consejos/cifras que la v1; texto nuevo (gancho distinto, frases distintas).
 - Tono de conductor a conductor, en «tú». Sin anécdotas personales inventadas; «yo» solo en llamadas como «sígueme».
-- Cierre: el estándar de la skill `videos-checa` (voz «Descarga Checa y checa cuánto te queda de cada viaje.» + pantalla final con logo, @checa.driver, @Eduardoalv9802 y el link de descarga). «Sígueme» va en el corte anterior. (La v2 del 18-10 se rehízo el 16 oct con el cierre estándar.)
+- Cierre: el estándar de la skill `videos-checa-camara` (voz «Descarga Checa y checa cuánto te queda de cada viaje.» + pantalla final con logo, @checa.driver, @Eduardoalv9802 y el link de descarga). «Sígueme» va en el corte anterior. (La v2 del 18-10 se rehízo el 16 oct con el cierre estándar.)
 - Mismas reglas de siempre: sin ciudad ni país, sin prometer lo que no podamos garantizar, sin preguntas que la voz se contesta sola.
 - Carpeta del video: `marketing/videos/PERSONAL/NN - Nombre del video/` con el **mismo número** que su original de CHECA (`video.mp4`, `portada.jpg`, `copy.txt`, `dm.txt` y `guion.md`).
 

@@ -4,7 +4,7 @@ Para empezar en una **conversación nueva**. Hecho el 30 oct 2026 con lo que hay
 
 ## 0. Arranque de la conversación nueva
 1. **Rama:** todo el trabajo del 29–30 oct está en `ccr-5643065c-aezfnl` (repo `APK-CHECA`), no en `main`. Pregunta a Eduardo si la pasa a `main` (el CLAUDE.md pide `main` directo) y, mientras tanto, `git fetch origin ccr-5643065c-aezfnl && git checkout ccr-5643065c-aezfnl`.
-2. Lee `CLAUDE.md` (sección «Cómo trabajar con el usuario»), la skill `videos-checa` (sobre todo «Estado y pendientes» y «Novedades del 30 oct») y `marketing/plan/reglas-v2.md`.
+2. Lee `CLAUDE.md` (sección «Cómo trabajar con el usuario»), la skill `videos-checa-camara` (sobre todo «Estado y pendientes» y «Novedades del 30 oct») y `marketing/plan/reglas-v2.md`.
 3. Eduardo habla en masculino, quiere respuestas **cortas**; un video a la vez, **una aprobación por etapa** (guion → tabla de animaciones → portada → video → copy), sin adelantar la siguiente.
 4. **Pídele confirmar qué publicó desde el 25 oct** (ver §1) y actualiza los dos calendarios antes de planear fechas.
 
