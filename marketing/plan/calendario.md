@@ -79,7 +79,7 @@ Misma idea que cada video de CHECA, con otro gancho y otras palabras (reglas en 
 | 15 | dom 1 nov | Venta | `15 - Desgaste y renta` | ✅ | |
 | 24 | — | Venta (descartado 30 oct: campaña vieja «Busco 50») | `24 - Viaje de 60 que se queda en 38` |  | ❌ descartado |
 | 25 | — | Venta (descartados 30 oct, 2 borradores: campaña vieja) | `25 - Checa lee la oferta en 3 segundos` y `25 - Pagar gasolina antes de aceptar` |  | ❌ descartado |
-| 26 | lun 2 nov | Venta (v2) | `26 - Dos ofertas misma neta` | por hacer | |
+| 26 | lun 2 nov | Venta (v2) | `26 - Dos ofertas misma neta` | ✅ (hecho 30 oct) | |
 | 22 | por definir | Venta (v2, un día detrás de CHECA) | `22 - Cuánto vale tu kilómetro` | guion para aprobar | |
 
 # Medición semanal (qué videos venden)
