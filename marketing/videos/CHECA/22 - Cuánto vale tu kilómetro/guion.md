@@ -10,8 +10,8 @@ El conductor compara tarifas, no kilómetros. `Parser.kt`: `porKm` = tarifa / km
 - **B:** tarifa $90, 15 km totales → $/km = **$6.00** (cumple). Gasolina 15/12×24 = **$30** → **$60 netos**.
 - La de $90 deja $6 más, aunque pague $20 menos.
 
-## Guion de voz (limpio, ~30 s, Fernando v3)
-$110 pagan más que $90, y son el peor viaje de los dos. Los $110 son 28 kilómetros: a $3.93 cada uno, y te quedan $54. Los $90 son 15 kilómetros: a $6 cada uno, y te quedan $60. Con una meta de $5 por kilómetro, uno te sirve y el otro te sale caro. Y en segundos, nadie saca esa cuenta. Checa la hace por ti, con la recogida incluida, antes de que aceptes. Comenta CHECA y te paso el acceso a la prueba en Google Play.
+## Guion de voz (limpio, ~30 s, Fernando v3; montos sin moneda, aprobado el 30 oct)
+Una oferta de 110 paga más que una de 90, y es el peor viaje de los dos. Los 110 son 28 kilómetros: a 3.93 por kilómetro, y te quedan 54. Los 90 son 15 kilómetros: a 6 por kilómetro, y te quedan 60. Con una meta de 5 por kilómetro, uno te sirve y el otro te sale caro. Y en segundos, nadie saca esa cuenta. Checa la hace por ti, con la recogida incluida, antes de que aceptes. Comenta CHECA y te paso el acceso a la prueba en Google Play.
 
 ## Guión Desglosado
 - `0:00 - 0:03` | Audio: «$110 pagan más que $90, y son el peor viaje de los dos.» | Remotion / Visual: [Flash en el cuadro 0; dos tarjetas de oferta (OFERTA) se estrellan con zoom, $110 grande a la izquierda y $90 a la derecha; cifras suben con interpolate; «Números de ejemplo»] `[Hook]`

@@ -18,14 +18,14 @@
     .of .b { position: absolute; left: 40px; top: 318px; background: #22C55E; color: #04210F; border-radius: 999px; padding: 10px 36px; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 38px; letter-spacing: .06em; }
   </style>
 
-  <div id="root" data-composition-id="e01-comparar" data-width="1080" data-height="1920" data-start="0" data-duration="4.39">
-    <div id="e01-comparar-g" class="clip G" data-start="0" data-duration="4.39" data-track-index="0"></div>
-    <div id="e01-comparar-h" class="mask clip" style="top:190px;height:200px" data-start="0" data-duration="4.39" data-track-index="1"><div style="font-size:170px;color:#F4F4EF">$110 <span id="e01-comparar-gt" style="color:#FACC15">&gt;</span> $90</div></div>
-    <div id="e01-comparar-a" class="clip" style="left:50px;top:470px;width:461px;height:303px" data-start="0" data-duration="4.39" data-track-index="2" data-layout-allow-overflow><div style="transform:scale(.72);transform-origin:0 0;width:640px;height:420px"><div class="of"><div class="l">NUEVA OFERTA</div><div class="f">$<span id="e01-comparar-ca">0</span></div><div class="d">6 min (3 km)<br>40 min (25 km)</div><div class="b">ACEPTAR</div></div></div></div>
-    <div id="e01-comparar-b" class="clip" style="left:569px;top:470px;width:461px;height:303px" data-start="0" data-duration="4.39" data-track-index="3" data-layout-allow-overflow><div style="transform:scale(.72);transform-origin:0 0;width:640px;height:420px"><div class="of"><div class="l">NUEVA OFERTA</div><div class="f">$<span id="e01-comparar-cb">0</span></div><div class="d">4 min (2 km)<br>20 min (13 km)</div><div class="b">ACEPTAR</div></div></div></div>
-    <div id="e01-comparar-fl" class="clip" style="inset:0;background:#F4F4EF;opacity:0" data-start="0" data-duration="4.39" data-track-index="4"></div>
-    <div id="e01-comparar-pe" class="clip" style="left:50px;top:810px;width:461px;text-align:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:44px;color:#EF4444;opacity:0" data-start="0" data-duration="4.39" data-track-index="5">el peor</div>
-    <div class="etq clip" style="top:1010px;font-size:24px" data-start="0" data-duration="4.39" data-track-index="9">Números de ejemplo</div>
+  <div id="root" data-composition-id="e01-comparar" data-width="1080" data-height="1920" data-start="0" data-duration="4.95">
+    <div id="e01-comparar-g" class="clip G" data-start="0" data-duration="4.95" data-track-index="0"></div>
+    <div id="e01-comparar-h" class="mask clip" style="top:190px;height:200px" data-start="0" data-duration="4.95" data-track-index="1"><div style="font-size:170px;color:#F4F4EF">$110 <span id="e01-comparar-gt" style="color:#FACC15">&gt;</span> $90</div></div>
+    <div id="e01-comparar-a" class="clip" style="left:50px;top:470px;width:461px;height:303px" data-start="0" data-duration="4.95" data-track-index="2" data-layout-allow-overflow><div style="transform:scale(.72);transform-origin:0 0;width:640px;height:420px"><div class="of"><div class="l">NUEVA OFERTA</div><div class="f">$<span id="e01-comparar-ca">0</span></div><div class="d">6 min (3 km)<br>40 min (25 km)</div><div class="b">ACEPTAR</div></div></div></div>
+    <div id="e01-comparar-b" class="clip" style="left:569px;top:470px;width:461px;height:303px" data-start="0" data-duration="4.95" data-track-index="3" data-layout-allow-overflow><div style="transform:scale(.72);transform-origin:0 0;width:640px;height:420px"><div class="of"><div class="l">NUEVA OFERTA</div><div class="f">$<span id="e01-comparar-cb">0</span></div><div class="d">4 min (2 km)<br>20 min (13 km)</div><div class="b">ACEPTAR</div></div></div></div>
+    <div id="e01-comparar-fl" class="clip" style="inset:0;background:#F4F4EF;opacity:0" data-start="0" data-duration="4.95" data-track-index="4"></div>
+    <div id="e01-comparar-pe" class="clip" style="left:50px;top:810px;width:461px;text-align:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:44px;color:#EF4444;opacity:0" data-start="0" data-duration="4.95" data-track-index="5">el peor</div>
+    <div class="etq clip" style="top:1010px;font-size:24px" data-start="0" data-duration="4.95" data-track-index="9">Números de ejemplo</div>
 
   </div>
 
@@ -34,7 +34,7 @@
     (function () {
       window.__timelines = window.__timelines || {};
       var tl = gsap.timeline({ paused: true });
-      var D = 4.39;
+      var D = 4.95;
       tl.fromTo("#e01-comparar-fl", { opacity: 0.85 }, { opacity: 0, duration: 0.25 }, 0);
       tl.fromTo("#e01-comparar-h > div", { yPercent: 160 }, { yPercent: 0, duration: 0.35, ease: "power4.out" }, 0.05);
       tl.fromTo("#e01-comparar-a", { scale: 1.9, y: 160, opacity: 0.1, transformOrigin: "50% 50%" }, { scale: 1, y: 0, opacity: 1, duration: 0.45, ease: "power4.out" }, 0);
@@ -42,11 +42,11 @@
       var ca = { v: 0 }, cb = { v: 0 };
       tl.to(ca, { v: 110, duration: 0.7, ease: "power2.out", onUpdate: function () { document.getElementById("e01-comparar-ca").textContent = Math.round(ca.v); } }, 0.15);
       tl.to(cb, { v: 90, duration: 0.7, ease: "power2.out", onUpdate: function () { document.getElementById("e01-comparar-cb").textContent = Math.round(cb.v); } }, 0.27);
-      tl.to("#e01-comparar-gt", { color: "#EF4444", scale: 1.3, duration: 0.15, yoyo: true, repeat: 1 }, 2.84);
-      tl.to("#e01-comparar-a", { x: 10, duration: 0.04, yoyo: true, repeat: 7 }, 2.84);
-      tl.to("#e01-comparar-a .of", { borderColor: "#EF4444", duration: 0.2 }, 2.84);
-      tl.fromTo("#e01-comparar-pe", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: "power4.out" }, 2.94);
-      tl.to("#e01-comparar-b", { scale: 1.04, duration: 2.0, ease: "none" }, 2.84);
+      tl.to("#e01-comparar-gt", { color: "#EF4444", scale: 1.3, duration: 0.15, yoyo: true, repeat: 1 }, 3.16);
+      tl.to("#e01-comparar-a", { x: 10, duration: 0.04, yoyo: true, repeat: 7 }, 3.16);
+      tl.to("#e01-comparar-a .of", { borderColor: "#EF4444", duration: 0.2 }, 3.16);
+      tl.fromTo("#e01-comparar-pe", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: "power4.out" }, 3.26);
+      tl.to("#e01-comparar-b", { scale: 1.04, duration: 2.0, ease: "none" }, 3.16);
 
       window.__timelines["e01-comparar"] = tl;
     })();

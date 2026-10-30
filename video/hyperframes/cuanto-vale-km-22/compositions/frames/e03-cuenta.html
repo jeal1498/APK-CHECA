@@ -18,14 +18,14 @@
     .of .b { position: absolute; left: 40px; top: 318px; background: #22C55E; color: #04210F; border-radius: 999px; padding: 10px 36px; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 38px; letter-spacing: .06em; }
   </style>
 
-  <div id="root" data-composition-id="e03-cuenta" data-width="1080" data-height="1920" data-start="0" data-duration="5.11">
-    <div id="e03-cuenta-g" class="clip G" data-start="0" data-duration="5.11" data-track-index="0"></div>
-    <div id="e03-cuenta-of" class="clip" style="left:310px;top:140px;width:461px;height:303px" data-start="0" data-duration="5.11" data-track-index="1" data-layout-allow-overflow><div style="transform:scale(.72);transform-origin:0 0;width:640px;height:420px"><div class="of"><div class="l">NUEVA OFERTA</div><div class="f">$90</div><div class="d">4 min (2 km)<br>20 min (13 km)</div><div class="b">ACEPTAR</div></div></div></div>
-    <div id="e03-cuenta-div" class="clip" style="left:0;right:0;top:500px;text-align:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:76px;color:#F4F4EF;opacity:0" data-start="0" data-duration="5.11" data-track-index="2">$90 ÷ 15 km</div>
-    <div id="e03-cuenta-res" class="clip" style="left:0;right:0;top:610px;text-align:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.04em;font-size:150px;color:#22C55E;opacity:0" data-start="0" data-duration="5.11" data-track-index="3">$6<span style="font-size:70px">/km</span></div>
-    <div id="e03-cuenta-ga" class="clip" style="left:0;right:0;top:860px;text-align:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:56px;color:#EF4444;opacity:0" data-start="0" data-duration="5.11" data-track-index="4">Gasolina −$30</div>
-    <div id="e03-cuenta-ne" class="clip" style="left:0;right:0;top:940px;text-align:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.04em;font-size:100px;color:#F4F4EF;opacity:0" data-start="0" data-duration="5.11" data-track-index="5">Te quedan $<span id="e03-cuenta-nn">90</span></div>
-    <div class="etq clip" style="top:1080px;font-size:24px" data-start="0" data-duration="5.11" data-track-index="9">Números de ejemplo</div>
+  <div id="root" data-composition-id="e03-cuenta" data-width="1080" data-height="1920" data-start="0" data-duration="4.39">
+    <div id="e03-cuenta-g" class="clip G" data-start="0" data-duration="4.39" data-track-index="0"></div>
+    <div id="e03-cuenta-of" class="clip" style="left:310px;top:140px;width:461px;height:303px" data-start="0" data-duration="4.39" data-track-index="1" data-layout-allow-overflow><div style="transform:scale(.72);transform-origin:0 0;width:640px;height:420px"><div class="of"><div class="l">NUEVA OFERTA</div><div class="f">$90</div><div class="d">4 min (2 km)<br>20 min (13 km)</div><div class="b">ACEPTAR</div></div></div></div>
+    <div id="e03-cuenta-div" class="clip" style="left:0;right:0;top:500px;text-align:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:76px;color:#F4F4EF;opacity:0" data-start="0" data-duration="4.39" data-track-index="2">$90 ÷ 15 km</div>
+    <div id="e03-cuenta-res" class="clip" style="left:0;right:0;top:610px;text-align:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.04em;font-size:150px;color:#22C55E;opacity:0" data-start="0" data-duration="4.39" data-track-index="3">$6<span style="font-size:70px">/km</span></div>
+    <div id="e03-cuenta-ga" class="clip" style="left:0;right:0;top:860px;text-align:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:56px;color:#EF4444;opacity:0" data-start="0" data-duration="4.39" data-track-index="4">Gasolina −$30</div>
+    <div id="e03-cuenta-ne" class="clip" style="left:0;right:0;top:940px;text-align:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.04em;font-size:100px;color:#F4F4EF;opacity:0" data-start="0" data-duration="4.39" data-track-index="5">Te quedan $<span id="e03-cuenta-nn">90</span></div>
+    <div class="etq clip" style="top:1080px;font-size:24px" data-start="0" data-duration="4.39" data-track-index="9">Números de ejemplo</div>
 
   </div>
 
@@ -34,16 +34,16 @@
     (function () {
       window.__timelines = window.__timelines || {};
       var tl = gsap.timeline({ paused: true });
-      var D = 5.11;
+      var D = 4.39;
       tl.fromTo("#e03-cuenta-of", { scale: 1.5, y: 120, opacity: 0 }, { scale: 1, y: 0, opacity: 1, duration: 0.4, ease: "power4.out", transformOrigin: "50% 50%" }, 0);
-      tl.to("#e03-cuenta-of", { scale: 1.06, duration: 5.11, ease: "none" }, 0.4);
-      tl.fromTo("#e03-cuenta-div", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.3, ease: "power4.out" }, 0.87);
-      tl.fromTo("#e03-cuenta-res", { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power4.out" }, 1.95);
-      tl.to("#e03-cuenta-res", { x: 10, duration: 0.04, yoyo: true, repeat: 5 }, 2.25);
-      tl.fromTo("#e03-cuenta-ga", { opacity: 0, y: -60 }, { opacity: 1, y: 0, duration: 0.3, ease: "power4.out" }, 2.82);
-      tl.fromTo("#e03-cuenta-ne", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.35, ease: "power4.out" }, 3.32);
+      tl.to("#e03-cuenta-of", { scale: 1.06, duration: 4.39, ease: "none" }, 0.4);
+      tl.fromTo("#e03-cuenta-div", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.3, ease: "power4.out" }, 0.63);
+      tl.fromTo("#e03-cuenta-res", { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power4.out" }, 1.83);
+      tl.to("#e03-cuenta-res", { x: 10, duration: 0.04, yoyo: true, repeat: 5 }, 2.13);
+      tl.fromTo("#e03-cuenta-ga", { opacity: 0, y: -60 }, { opacity: 1, y: 0, duration: 0.3, ease: "power4.out" }, 2.5);
+      tl.fromTo("#e03-cuenta-ne", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.35, ease: "power4.out" }, 3.0);
       var nm = { v: 90 };
-      tl.fromTo(nm, { v: 90 }, { v: 60, duration: 0.6, ease: "power2.out", onUpdate: function () { document.getElementById("e03-cuenta-nn").textContent = Math.round(nm.v); } }, 3.32);
+      tl.fromTo(nm, { v: 90 }, { v: 60, duration: 0.6, ease: "power2.out", onUpdate: function () { document.getElementById("e03-cuenta-nn").textContent = Math.round(nm.v); } }, 3.0);
 
       window.__timelines["e03-cuenta"] = tl;
     })();
