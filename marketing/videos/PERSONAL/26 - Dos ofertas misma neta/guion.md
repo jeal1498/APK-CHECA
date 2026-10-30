@@ -1,4 +1,4 @@
-# Guion · 26 - Dos ofertas, misma neta (PERSONAL, v2) — propuesto, sin aprobar
+# Guion · 26 - Dos ofertas, misma neta (PERSONAL, v2) — guion aprobado el 30 oct 2026; tabla por aprobar
 
 Skill: `guion-remotion-checa` + reglas v2 (`marketing/plan/reglas-v2.md`). Misma idea y mismas cifras que la v1 (`CHECA/26`), con otro gancho y orden: abre con la oferta de $82 que «parece peor» y revela al final que deja más que la de $95.
 
@@ -29,3 +29,17 @@ CTA final: «Comenta CHECA y te paso el acceso a la prueba en Google Play.»
 - Marca v2, sin logos ni nombres de Uber/DiDi (pastilla «OFERTA»), sin ciudad ni país, «Números de ejemplo» en pantalla.
 - Plantilla: `video/hyperframes/como-funciona-17/construir.py` (o la del 26); voz v3 en todas las líneas, sin `[pause]`.
 - Portada distinta a la v1 (etapa 3).
+
+## Tabla de animaciones por toma (30 oct 2026, por aprobar)
+| Toma | Frase | Qué se ve y cómo se mueve |
+|---|---|---|
+| 0–3 s | «Te cae un viaje de 82 pesos. Qué poquito.» | Flash en el cuadro 0; tarjeta «$82» se estrella con zoom grande; el monto sube de $0; sello gris «¿POQUITO?» que tiembla |
+| 3–6 s | «Y al mismo tiempo, uno de 95. Cualquiera agarra el de 95.» | Entra la tarjeta «$95» desde la derecha; la de 82 se reduce y se apaga; flecha ↑ sobre el 95 |
+| 6–10 s | «…recogida larga… te quedan 67.» | Mapa: recogida 3.8 km y viaje 10 km se dibujan; ficha «Gasolina −$28» cae; el contador $95 baja a $67 en rojo |
+| 10–13 s | «El de 82 recoge cerca y dura quince minutos.» | Vuelve la tarjeta de 82; fichas «1.2 km» y «15 min» en escalera; reloj que se llena a la mitad |
+| 13–17 s | «…te quedan 68. Uno más, en la mitad del tiempo.» | Dos contadores en paralelo (95 → 67 y 82 → 68, el de 82 en verde); barras 30 min vs 15 min con «$135/h» y «$270/h netos» |
+| 17–21 s | «Checa te lo calcula en el pop-up…» | Dos pop-ups apilados: $68 verde ★ MEJOR y $67 amarillo «2ª»; «Números de ejemplo» |
+| 21–24 s | «Sígueme para más cuentas como esta.» | Tarjeta de @Eduardoalv9802 con botón «+ Seguir» que se presiona |
+| 24–29 s | «Comenta CHECA y te paso el acceso…» | Pantalla final estándar sin link: semáforo ✓, pastilla «Comenta CHECA», @checa.driver y @Eduardoalv9802 |
+
+Marca v2, pop-ups con «OFERTA», subtítulos v2, efectos de sonido oficiales, sin música.
