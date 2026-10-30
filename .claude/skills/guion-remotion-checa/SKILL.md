@@ -55,6 +55,7 @@ Eduardo pidió que esto viva en esta skill (`guion-remotion-checa`), no en `vide
 - **Rehacer un video viejo con el flujo nuevo:** `guion-remotion-checa` para el guion (cifras con las fórmulas del código) → tabla de animaciones → portada → video → copy, una aprobación por etapa. No pegar un cierre nuevo a un cuerpo de marca vieja.
 - **Plantilla con más tipos de escena: `video/hyperframes/como-funciona-17/construir.py`** (suma `oferta` con golpe, `lee`, `aviso`, `ticket`, `fichas`, `metas`, `horas`; `rutas` con `ficha`, `en_rec`, `en_viaje`; copiarla en vez de la del 26 para un explicador). `hyperframes check` marca un error de «texto oculto» si el cierre va solo: no pasa si el cierre va al final de un video completo.
 - **Portadas:** `portada/portada.html` del 17 es la tarjeta de oferta con título de pregunta y sello «TE QUEDAN $▒▒»; se renderiza con Playwright (`require('playwright')`, viewport 1080×1920).
+- **Copy de videos sin la cara de Eduardo (30 oct):** no decir «Soy Eduardo» ni «armé Checa» (la gente espera ver a alguien); solo se presenta en los videos donde sale a cámara (p. ej. PERSONAL 23). El `dm.txt` sí puede ir en primera persona.
 - **Descartes del 30 oct:** videos 20, PERSONAL 24 y 25 (campaña vieja «Busco 50»). CTA vigente: «Comenta CHECA y te paso el acceso a la prueba en Google Play».
 
 ## Versiones A/B
