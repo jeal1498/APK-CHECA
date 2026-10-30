@@ -764,7 +764,8 @@ def esc_fichas(sc, e, n):
         y = 330 + i * 330
         inner += clip(i + 1, f"{n}-f{i}", f"left:140px;top:{y}px;width:800px;height:270px;border-radius:32px;background:#0F2A18;border:4px solid #22C55E;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px", f"<div style=\"font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:150px;letter-spacing:-.04em;color:#22C55E;line-height:1\">{num}</div><div style=\"font-family:'JetBrains Mono',monospace;font-weight:700;font-size:36px;color:#A3A3AD;letter-spacing:.1em\">{lab}</div>", D)
         js += f'      tl.fromTo("#{n}-f{i}", {{ x: -90, opacity: 0, scale: 0.92 }}, {{ x: 0, opacity: 1, scale: 1, duration: 0.4, ease: "power4.out" }}, {pal(sc, pw)});\n'
-    inner += f'    <div class="etq clip" style="top:1000px;font-size:24px" data-start="0" data-duration="{D}" data-track-index="5">Números de ejemplo</div>\n'
+    if e.get("ejemplo", True):
+        inner += f'    <div class="etq clip" style="top:1000px;font-size:24px" data-start="0" data-duration="{D}" data-track-index="5">Números de ejemplo</div>\n'
     js += f'      tl.fromTo("#{n}-f0", {{ scale: 1 }}, {{ scale: 1.03, duration: {D}, ease: "none" }}, 0.4);\n'
     return marco(n, D, "", inner, js)
 

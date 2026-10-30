@@ -1,0 +1,8 @@
+[
+  {"tipo": "gancho", "flash": true, "lineas": ["El 15 de", "noviembre,", "tu Checa", "deja de abrir."], "resalta": 3, "sfx": [["sello", 0.0, 0.45]]},
+  {"tipo": "paso", "n": 1, "de": 3, "icono": "archivo", "titulo": "Checa.apk", "chips": [["Se cierra el 15 nov", 11]]},
+  {"tipo": "paso", "n": 2, "de": 3, "icono": "play", "titulo": "Google Play", "chips": [["Checa se pasa aquí", 3]]},
+  {"tipo": "fichas", "ejemplo": false, "fichas": [["Licencia", "SE QUEDA ✓", "licencia"], ["Ajustes", "SE QUEDAN ✓", "ajustes"]]},
+  {"tipo": "paso", "n": 3, "de": 3, "icono": "escudo", "titulo": "Tu Gmail de Play", "chips": [["Regístrate con él", 0]]},
+  {"tipo": "cierre", "pil": "Comenta CHECA", "link": false}
+]

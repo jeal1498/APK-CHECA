@@ -21,3 +21,13 @@ CTA final:
 
 ## Notas
 Sin «gratis», precios ni ciudad; sin nombres de Uber/DiDi; montos sin moneda en la voz; sin `[pause]` en el gancho. Todo por encima de y≈1150.
+
+## Tabla de animaciones por toma (sacada del desglose)
+| Toma | Frase | Animación |
+|---|---|---|
+| 0:00–0:03 | «El 15 de noviembre, tu Checa deja de abrir.» | Flash en el cuadro 0; «15 NOV» se estrella con zoom en rojo; cámara sacude; semáforo en rojo |
+| 0:03–0:07 | «Si la instalaste con el archivo de la web, ese archivo se cierra ese día.» | Ícono de archivo «Checa.apk» entra con spring y se apaga con un candado |
+| 0:07–0:10 | «La app Checa se pasa a Google Play.» | El logo del semáforo con ✓ se desliza hacia una tarjeta «Google Play»; raya punteada |
+| 0:10–0:15 | «Entras con el mismo Google, y tu licencia y tus ajustes se quedan.» | Dos fichas «Licencia» y «Ajustes» con ✓ verde, en escalera |
+| 0:15–0:18 | «Regístrate con tu Gmail, el de tu Play Store.» | Campo de correo que se llena letra por letra; botón «Registrarme» |
+| 0:18–0:22 | «Comenta CHECA y te paso el acceso a la prueba en Google Play.» | Pantalla final estándar sin link: logo rojo → ámbar → verde → ✓, pastilla «Comenta CHECA» |

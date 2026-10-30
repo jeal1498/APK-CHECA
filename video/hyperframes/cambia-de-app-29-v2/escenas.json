@@ -1,0 +1,7 @@
+[
+  {"tipo": "gancho", "flash": true, "lineas": ["Pásate a Google", "Play antes del 15", "de noviembre,", "o tu Checa", "deja de abrir"], "resalta": 1, "sfx": [["sello", 0.0, 0.45]]},
+  {"tipo": "fichas", "ejemplo": false, "fichas": [["Licencia", "SE QUEDA ✓", "licencia"], ["Ajustes", "SE QUEDAN ✓", "ajustes"]]},
+  {"tipo": "paso", "n": 1, "de": 2, "icono": "play", "titulo": "Nueva casa", "chips": [["Del archivo a Google Play", 7]]},
+  {"tipo": "paso", "n": 2, "de": 2, "icono": "escudo", "titulo": "Tu Gmail de Play", "chips": [["Regístrate con él", 0]]},
+  {"tipo": "cierre", "pil": "Comenta CHECA", "link": false}
+]
