@@ -1,0 +1,41 @@
+<template>
+  <style>
+    @font-face{ font-family: 'Bricolage Grotesque'; font-weight: 800; font-display: block; src: url('assets/fonts/bricolage-grotesque-latin-800-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'DM Sans'; font-weight: 400; font-display: block; src: url('assets/fonts/dm-sans-latin-400-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'DM Sans'; font-weight: 700; font-display: block; src: url('assets/fonts/dm-sans-latin-700-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'JetBrains Mono'; font-weight: 500; font-display: block; src: url('assets/fonts/jetbrains-mono-latin-500-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'JetBrains Mono'; font-weight: 700; font-display: block; src: url('assets/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+    #root { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; font-family: 'DM Sans', Arial, sans-serif; color: #F4F4EF; }
+    .clip { position: absolute; }
+    .G { inset: 0; background: #0C0C10; }
+    .etq { position: absolute; left: 0; right: 0; text-align: center; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 28px; letter-spacing: .12em; text-transform: uppercase; color: #A3A3AD; }
+    .mask { position: absolute; left: 0; right: 0; overflow: hidden; text-align: center; }
+    .mask > div { font-family: 'Bricolage Grotesque', 'Arial Black', sans-serif; font-weight: 800; letter-spacing: -0.045em; line-height: 1; white-space: nowrap; }
+    .of { position: relative; width: 640px; height: 420px; border-radius: 28px; background: #16161C; border: 2px solid #3A3A45; box-shadow: 0 30px 60px rgba(0,0,0,.6); }
+    .of .l { position: absolute; left: 40px; top: 30px; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 24px; letter-spacing: .14em; color: #A3A3AD; }
+    .of .f { position: absolute; left: 36px; top: 64px; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 150px; letter-spacing: -.05em; line-height: 1; }
+    .of .d { position: absolute; left: 40px; top: 214px; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 28px; color: #C9C9D1; line-height: 1.5; }
+    .of .b { position: absolute; left: 40px; top: 318px; background: #22C55E; color: #04210F; border-radius: 999px; padding: 10px 36px; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 38px; letter-spacing: .06em; }
+  </style>
+
+  <div id="root" data-composition-id="e03-split" data-width="1080" data-height="1920" data-start="0" data-duration="1.75">
+    <div id="e03-split-g" class="clip G" data-start="0" data-duration="1.75" data-track-index="0"></div>
+<div id="e03-split-b" class="clip" style="left:50px;top:300px;width:640px;height:420px;transform:scale(.72);transform-origin:0 0;"><div class="of"><div class="l">NUEVA OFERTA</div><div class="f">$82</div><div class="d">4 min (1.2 km)<br>11 min (6 km)</div><div class="b">ACEPTAR</div></div></div><div id="e03-split-a" class="clip" style="left:569px;top:300px;width:640px;height:420px;transform:scale(.72);transform-origin:0 0;"><div class="of"><div class="l">NUEVA OFERTA</div><div class="f">$95</div><div class="d">8 min (3.8 km)<br>22 min (10 km)</div><div class="b">ACEPTAR</div></div></div>    <div class="etq clip" style="top:1060px;font-size:24px" data-start="0" data-duration="1.75" data-track-index="30">Números de ejemplo</div>
+<svg id="e03-split-ar" class="clip" style="left:719px;top:640px" width="160" height="200" viewBox="0 0 160 200" data-start="0" data-duration="1.75" data-track-index="5" aria-hidden="true"><path d="M80 190 V30 M30 80 L80 28 L130 80" fill="none" stroke="#F4F4EF" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      var D = 1.75;
+      tl.set("#e03-split-b", { opacity: 0.4 }, 0);
+      tl.fromTo("#e03-split-ar", { y: 60, opacity: 0, scale: 0.6 }, { y: 0, opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, 0.12);
+      tl.fromTo("#e03-split-a", { scale: 0.72 }, { scale: 0.84, duration: 1.75, ease: "none" }, 0);
+
+      window.__timelines["e03-split"] = tl;
+    })();
+  </script>
+</template>

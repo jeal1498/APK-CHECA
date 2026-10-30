@@ -1,0 +1,158 @@
+[
+ {
+  "tipo": "oferta",
+  "tarifa": 82,
+  "titulo": [
+   "Qué",
+   "poquito."
+  ],
+  "titulo_en": "poquito",
+  "datos": "A 4 min (1.2 km)<br>Viaje: 11 min (6 km)",
+  "sello": "¿SOLO?",
+  "sello_fondo": "#3A3A45",
+  "sello_color": "#F4F4EF",
+  "sello_size": 64,
+  "sfx": [
+   [
+    "popup-entra",
+    0.0,
+    0.5
+   ],
+   [
+    "numero-sube",
+    0.2,
+    0.4
+   ],
+   [
+    "sello",
+    "poquito",
+    0.4
+   ]
+  ]
+ },
+ {
+  "tipo": "split",
+  "fase": "entra",
+  "sfx": [
+   [
+    "popup-entra",
+    "uno",
+    0.4
+   ]
+  ]
+ },
+ {
+  "tipo": "split",
+  "fase": "flecha",
+  "sfx": [
+   [
+    "sello",
+    "agarra",
+    0.35
+   ]
+  ]
+ },
+ {
+  "tipo": "rutas",
+  "gasolina": "",
+  "ficha": "Casi 30 min",
+  "km_rec": "3.8 km",
+  "km_viaje": "10 km",
+  "en_rec": "recoges",
+  "en_viaje": "lejos",
+  "en_gas": "casi",
+  "en_tu": "treinta"
+ },
+ {
+  "tipo": "ticket",
+  "viaje": 95,
+  "gasolina": 28,
+  "neta": 67,
+  "sfx": [
+   [
+    "sello",
+    "gasolina",
+    0.4
+   ],
+   [
+    "numero-sube",
+    "quedan",
+    0.35
+   ]
+  ]
+ },
+ {
+  "tipo": "dos",
+  "fase": "datos",
+  "k1": "cerca",
+  "k2": "quince"
+ },
+ {
+  "tipo": "dos",
+  "fase": "neta"
+ },
+ {
+  "tipo": "duo",
+  "entra": 0,
+  "popups": [
+   {
+    "nivel": "verde",
+    "app": "OFERTA",
+    "mejor": true,
+    "neta": 68,
+    "viaje": 82,
+    "gasolina": 14,
+    "chips": [
+     [
+      "$328/h",
+      "por hora",
+      "ok"
+     ],
+     [
+      "$11.4/km",
+      "por km",
+      "ok"
+     ],
+     [
+      "15 min",
+      "7.2 km total",
+      ""
+     ]
+    ]
+   },
+   {
+    "nivel": "amarillo",
+    "app": "OFERTA",
+    "neta": 67,
+    "viaje": 95,
+    "gasolina": 28,
+    "chips": [
+     [
+      "$190/h",
+      "por hora",
+      "ok"
+     ],
+     [
+      "$6.9/km",
+      "por km",
+      "mal"
+     ],
+     [
+      "30 min",
+      "13.8 km total",
+      ""
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "tipo": "seguir",
+  "sfx": false
+ },
+ {
+  "tipo": "cierre",
+  "pil": "Comenta CHECA",
+  "link": false
+ }
+]

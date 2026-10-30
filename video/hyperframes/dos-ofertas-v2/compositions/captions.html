@@ -1,0 +1,231 @@
+<template id="captions-template" data-composition-id="captions" data-width="1080" data-height="1920">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+
+
+<style data-brand-tokens>
+@font-face{ font-family: 'Bricolage Grotesque'; font-weight: 800; font-display: block; src: url("assets/fonts/bricolage-grotesque-latin-800-normal.woff2") format('woff2'); }
+@font-face{ font-family: 'Bricolage Grotesque'; font-weight: 500; font-display: block; src: url("assets/fonts/bricolage-grotesque-latin-500-normal.woff2") format('woff2'); }
+@font-face{ font-family: 'DM Sans'; font-weight: 400; font-display: block; src: url("assets/fonts/dm-sans-latin-400-normal.woff2") format('woff2'); }
+@font-face{ font-family: 'DM Sans'; font-weight: 500; font-display: block; src: url("assets/fonts/dm-sans-latin-500-normal.woff2") format('woff2'); }
+@font-face{ font-family: 'DM Sans'; font-weight: 700; font-display: block; src: url("assets/fonts/dm-sans-latin-700-normal.woff2") format('woff2'); }
+@font-face{ font-family: 'JetBrains Mono'; font-weight: 500; font-display: block; src: url("assets/fonts/jetbrains-mono-latin-500-normal.woff2") format('woff2'); }
+@font-face{ font-family: 'JetBrains Mono'; font-weight: 700; font-display: block; src: url("assets/fonts/jetbrains-mono-latin-700-normal.woff2") format('woff2'); }
+      :root {
+      /* Marca Checa v2: fuente única en jeal1498/checa-web, carpeta marca/ */
+      --asfalto: #0C0C10;
+      --tablero: #16161C;
+      --humo: #3A3A45;
+      --hueso: #F4F4EF;
+      --aceptar: #22C55E;
+      --considerar: #FACC15;
+      --rechazar: #EF4444;
+      --cap-ink: #F4F4EF;
+      --cap-canvas: #0C0C10;
+      --cap-accent: #FACC15;
+      --cap-accent-2: #FACC15;
+      --font-display: "Bricolage Grotesque", "Arial Black", sans-serif;
+      --font-body: "DM Sans", Arial, sans-serif;
+      --font-mono: "JetBrains Mono", "Courier New", monospace;
+      --cap-band-top: 1160px;
+      --cap-band-height: 320px;
+      }
+    </style>
+
+<style>
+  #captions-root {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .caption-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    pointer-events: none;
+  }
+  /* the keep-out band, from captionBand(H) — frame content stays above it */
+  .caption-stage {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: var(--cap-band-top, 900px);
+    height: var(--cap-band-height, 180px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .caption-group {
+    /* every group is absolutely stacked over the SAME band — exactly one shown at a
+       time via opacity. Must be absolute: in-flow groups would lay out side-by-side. */
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+  }
+
+  /* Subtítulo v2: sin placa; sombra oscura para leerse sobre cualquier fondo */
+  .caption-pill {
+    max-width: 86%;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+  }
+  .caption-line {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.04em 0.3em;
+    font-family: "Bricolage Grotesque", "Arial Black", sans-serif;
+    font-weight: 800;
+    font-size: clamp(48px, 5.2vw, 64px);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    text-shadow: 0 2px 0 #0C0C10, 0 0 14px #0C0C10, 0 0 28px rgba(12,12,16,.8);
+  }
+
+  /* palabra por venir */
+  .caption-word {
+    display: inline-block;
+    padding: 0 0.08em;
+    color: #B6B6BE;
+  }
+  /* palabra activa: bloque amarillo calle con texto oscuro (estilo A de la lámina 6) */
+  .caption-word.is-active {
+    color: #14141A;
+    background: #FACC15;
+    border-radius: 0.18em;
+    box-shadow: 0 0 0 0.06em #FACC15;
+    text-shadow: none;
+  }
+  /* palabra ya dicha */
+  .caption-word.is-spoken {
+    color: #F4F4EF;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  /* optional per-word accents (dormant until a word-classer tags them) */
+  /* brand / key term — fire-orange ink, the cream-on-ink register's only inflection */
+  .caption-word.cap-brand {
+    color: #F4F4EF;
+  }
+  /* numerals / data — the IBM Plex Mono chrome voice, uppercase + tracked, recessed */
+  .caption-word.cap-num {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 800;
+    color: #F4F4EF;
+  }
+  /* cifras con color del semáforo: añadir cap-gana (verde) o cap-pierde (rojo) a la palabra */
+  .caption-word.cap-gana { color: #22C55E; }
+  .caption-word.cap-pierde { color: #EF4444; }
+  /* emphasis — a fire-orange hairline underline (no second hue; the lone accent again) */
+  .caption-word.cap-cta {
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-decoration-color: #FACC15;
+    text-underline-offset: 0.1em;
+  }
+
+  @media (max-aspect-ratio: 9/16) {
+    .caption-pill {
+      max-width: 90%;
+    }
+    .caption-line {
+      font-size: clamp(44px, 5.8vw, 60px);
+    }
+  }
+</style>
+
+<div
+  id="captions-root"
+  data-composition-id="captions"
+  data-timeline-locked
+  data-start="0"
+  data-duration="30.79"
+  data-fps="30"
+  data-width="1080"
+  data-height="1920"
+>
+  <div class="caption-layer" aria-hidden="true">
+    <div id="caption-stage" class="caption-stage"></div>
+  </div>
+</div>
+
+<script>
+  // captions.mjs injects the engine's scene-aware groups + real duration here.
+  var GROUPS = [{"id":"caption-group-0","frame":1,"start":0.0,"end":0.73,"text":"Te cae uno","words":[{"id":"caption-word-0-0","text":"Te","start":0.0,"end":0.08},{"id":"caption-word-0-1","text":"cae","start":0.13,"end":0.32},{"id":"caption-word-0-2","text":"uno","start":0.36,"end":0.48}]},{"id":"caption-group-1","frame":1,"start":0.51,"end":2.09,"text":"de 82 pesos.","words":[{"id":"caption-word-1-0","text":"de","start":0.51,"end":0.56},{"id":"caption-word-1-1","text":"82","start":0.64,"end":1.2},{"id":"caption-word-1-2","text":"pesos.","start":1.28,"end":1.84}]},{"id":"caption-group-2","frame":1,"start":1.91,"end":2.97,"text":"Qué poquito.","words":[{"id":"caption-word-2-0","text":"Qué","start":1.91,"end":1.92},{"id":"caption-word-2-1","text":"poquito.","start":2.03,"end":2.72}]},{"id":"caption-group-3","frame":2,"start":2.87,"end":4.08,"text":"Y al mismo tiempo,","words":[{"id":"caption-word-3-0","text":"Y","start":2.87,"end":2.95},{"id":"caption-word-3-1","text":"al","start":2.98,"end":3.03},{"id":"caption-word-3-2","text":"mismo","start":3.08,"end":3.35},{"id":"caption-word-3-3","text":"tiempo,","start":3.41,"end":3.83}]},{"id":"caption-group-4","frame":2,"start":3.89,"end":5.28,"text":"uno de 95.","words":[{"id":"caption-word-4-0","text":"uno","start":3.89,"end":4.07},{"id":"caption-word-4-1","text":"de","start":4.12,"end":4.23},{"id":"caption-word-4-2","text":"95.","start":4.55,"end":5.03}]},{"id":"caption-group-5","frame":3,"start":5.18,"end":7.03,"text":"Cualquiera agarra el de 95.","words":[{"id":"caption-word-5-0","text":"Cualquiera","start":5.18,"end":5.5},{"id":"caption-word-5-1","text":"agarra","start":5.55,"end":5.78},{"id":"caption-word-5-2","text":"el","start":5.79,"end":5.82},{"id":"caption-word-5-3","text":"de","start":5.87,"end":5.98},{"id":"caption-word-5-4","text":"95.","start":6.3,"end":6.78}]},{"id":"caption-group-6","frame":4,"start":6.93,"end":8.46,"text":"Pero recoges lejos y","words":[{"id":"caption-word-6-0","text":"Pero","start":6.93,"end":7.09},{"id":"caption-word-6-1","text":"recoges","start":7.13,"end":7.57},{"id":"caption-word-6-2","text":"lejos","start":7.65,"end":8.05},{"id":"caption-word-6-3","text":"y","start":8.13,"end":8.21}]},{"id":"caption-group-7","frame":4,"start":8.27,"end":10.14,"text":"son casi treinta minutos.","words":[{"id":"caption-word-7-0","text":"son","start":8.27,"end":8.45},{"id":"caption-word-7-1","text":"casi","start":8.5,"end":8.69},{"id":"caption-word-7-2","text":"treinta","start":8.75,"end":9.09},{"id":"caption-word-7-3","text":"minutos.","start":9.17,"end":9.89}]},{"id":"caption-group-8","frame":5,"start":10.04,"end":11.09,"text":"Con la gasolina de","words":[{"id":"caption-word-8-0","text":"Con","start":10.04,"end":10.12},{"id":"caption-word-8-1","text":"la","start":10.15,"end":10.2},{"id":"caption-word-8-2","text":"gasolina","start":10.26,"end":10.76},{"id":"caption-word-8-3","text":"de","start":10.79,"end":10.84}]},{"id":"caption-group-9","frame":5,"start":10.9,"end":12.13,"text":"todo el recorrido,","words":[{"id":"caption-word-9-0","text":"todo","start":10.9,"end":11.16},{"id":"caption-word-9-1","text":"el","start":11.19,"end":11.24},{"id":"caption-word-9-2","text":"recorrido,","start":11.3,"end":11.88}]},{"id":"caption-group-10","frame":5,"start":11.91,"end":13.73,"text":"te quedan 67.","words":[{"id":"caption-word-10-0","text":"te","start":11.91,"end":11.96},{"id":"caption-word-10-1","text":"quedan","start":11.99,"end":12.28},{"id":"caption-word-10-2","text":"67.","start":12.36,"end":13.48}]},{"id":"caption-group-11","frame":6,"start":13.63,"end":15.72,"text":"El de 82 recoge cerca,","words":[{"id":"caption-word-11-0","text":"El","start":13.63,"end":13.79},{"id":"caption-word-11-1","text":"de","start":13.82,"end":13.87},{"id":"caption-word-11-2","text":"82","start":14.19,"end":14.51},{"id":"caption-word-11-3","text":"recoge","start":14.57,"end":14.91},{"id":"caption-word-11-4","text":"cerca,","start":14.98,"end":15.47}]},{"id":"caption-group-12","frame":6,"start":15.51,"end":17.0,"text":"dura quince minutos.","words":[{"id":"caption-word-12-0","text":"dura","start":15.51,"end":15.71},{"id":"caption-word-12-1","text":"quince","start":15.76,"end":16.03},{"id":"caption-word-12-2","text":"minutos.","start":16.1,"end":16.75}]},{"id":"caption-group-13","frame":7,"start":16.9,"end":18.11,"text":"Le restas la gasolina","words":[{"id":"caption-word-13-0","text":"Le","start":16.9,"end":16.98},{"id":"caption-word-13-1","text":"restas","start":17.01,"end":17.3},{"id":"caption-word-13-2","text":"la","start":17.33,"end":17.38},{"id":"caption-word-13-3","text":"gasolina","start":17.44,"end":17.86}]},{"id":"caption-group-14","frame":7,"start":17.9,"end":19.47,"text":"y te quedan 68.","words":[{"id":"caption-word-14-0","text":"y","start":17.9,"end":17.94},{"id":"caption-word-14-1","text":"te","start":17.99,"end":18.1},{"id":"caption-word-14-2","text":"quedan","start":18.13,"end":18.34},{"id":"caption-word-14-3","text":"68.","start":18.42,"end":19.22}]},{"id":"caption-group-15","frame":7,"start":19.32,"end":20.19,"text":"Uno más,","words":[{"id":"caption-word-15-0","text":"Uno","start":19.32,"end":19.62},{"id":"caption-word-15-1","text":"más,","start":19.68,"end":19.94}]},{"id":"caption-group-16","frame":7,"start":19.99,"end":21.39,"text":"en la mitad del tiempo.","words":[{"id":"caption-word-16-0","text":"en","start":19.99,"end":20.1},{"id":"caption-word-16-1","text":"la","start":20.13,"end":20.18},{"id":"caption-word-16-2","text":"mitad","start":20.22,"end":20.42},{"id":"caption-word-16-3","text":"del","start":20.46,"end":20.58},{"id":"caption-word-16-4","text":"tiempo.","start":20.64,"end":21.14}]},{"id":"caption-group-17","frame":8,"start":21.29,"end":22.54,"text":"Checa te lo calcula","words":[{"id":"caption-word-17-0","text":"Checa","start":21.29,"end":21.53},{"id":"caption-word-17-1","text":"te","start":21.58,"end":21.69},{"id":"caption-word-17-2","text":"lo","start":21.72,"end":21.77},{"id":"caption-word-17-3","text":"calcula","start":21.83,"end":22.29}]},{"id":"caption-group-18","frame":8,"start":22.31,"end":23.3,"text":"antes de aceptar,","words":[{"id":"caption-word-18-0","text":"antes","start":22.31,"end":22.41},{"id":"caption-word-18-1","text":"de","start":22.44,"end":22.49},{"id":"caption-word-18-2","text":"aceptar,","start":22.54,"end":23.05}]},{"id":"caption-group-19","frame":8,"start":23.09,"end":24.74,"text":"y te marca cuál conviene.","words":[{"id":"caption-word-19-0","text":"y","start":23.09,"end":23.13},{"id":"caption-word-19-1","text":"te","start":23.16,"end":23.21},{"id":"caption-word-19-2","text":"marca","start":23.28,"end":23.61},{"id":"caption-word-19-3","text":"cuál","start":23.66,"end":23.85},{"id":"caption-word-19-4","text":"conviene.","start":23.9,"end":24.49}]},{"id":"caption-group-20","frame":9,"start":24.64,"end":25.93,"text":"Sígueme para más.","words":[{"id":"caption-word-20-0","text":"Sígueme","start":24.64,"end":25.04},{"id":"caption-word-20-1","text":"para","start":25.07,"end":25.2},{"id":"caption-word-20-2","text":"más.","start":25.28,"end":25.68}]},{"id":"caption-group-21","frame":10,"start":25.83,"end":27.2,"text":"Comenta CHECA y te paso","words":[{"id":"caption-word-21-0","text":"Comenta","start":25.83,"end":26.15},{"id":"caption-word-21-1","text":"CHECA","start":26.21,"end":26.47},{"id":"caption-word-21-2","text":"y","start":26.51,"end":26.55},{"id":"caption-word-21-3","text":"te","start":26.6,"end":26.71},{"id":"caption-word-21-4","text":"paso","start":26.76,"end":26.95}]},{"id":"caption-group-22","frame":10,"start":26.98,"end":28.16,"text":"el acceso a la prueba","words":[{"id":"caption-word-22-0","text":"el","start":26.98,"end":27.03},{"id":"caption-word-22-1","text":"acceso","start":27.09,"end":27.43},{"id":"caption-word-22-2","text":"a","start":27.47,"end":27.51},{"id":"caption-word-22-3","text":"la","start":27.54,"end":27.59},{"id":"caption-word-22-4","text":"prueba","start":27.64,"end":27.91}]},{"id":"caption-group-23","frame":10,"start":27.94,"end":29.04,"text":"en Google Play.","words":[{"id":"caption-word-23-0","text":"en","start":27.94,"end":27.99},{"id":"caption-word-23-1","text":"Google","start":28.02,"end":28.23},{"id":"caption-word-23-2","text":"Play.","start":28.31,"end":28.79}]}];
+  var DURATION = 30.79;
+
+  (function () {
+    var stage = document.getElementById("caption-stage");
+
+    // build DOM: one .caption-group per group, .caption-word per word
+    GROUPS.forEach(function (group, g) {
+      var groupEl = document.createElement("div");
+      groupEl.className = "caption-group";
+      groupEl.id = "caption-group-" + g;
+      var pill = document.createElement("div");
+      pill.className = "caption-pill";
+      var line = document.createElement("div");
+      line.className = "caption-line";
+      (group.words || []).forEach(function (w, i) {
+        var span = document.createElement("span");
+        span.className = "caption-word";
+        span.id = "caption-word-" + g + "-" + i;
+        span.textContent = String(w.text);
+        line.appendChild(span);
+      });
+      pill.appendChild(line);
+      groupEl.appendChild(pill);
+      stage.appendChild(groupEl);
+    });
+
+    window.__timelines = window.__timelines || {};
+    var tl = gsap.timeline({ paused: true });
+
+    GROUPS.forEach(function (group, g) {
+      var groupEl = document.getElementById("caption-group-" + g);
+      var words = group.words || [];
+      var next = GROUPS[g + 1];
+      var isLast = g === GROUPS.length - 1;
+      var start = Math.max(0, Number(group.start));
+      var end = isLast ? DURATION : Math.min(Number(next.start), Number(group.end) + 0.3);
+      if (end <= start) end = start + 0.01;
+
+      // group on/off — exactly one group visible at a time
+      tl.set(groupEl, { opacity: 1 }, start);
+      tl.set(groupEl, { opacity: 0 }, end);
+
+      // 3-state karaoke via className SETS — seek-safe (gsap.set applies on the
+      // engine's frame-by-frame seek; .call callbacks would NOT fire).
+      words.forEach(function (w, i) {
+        var el = document.getElementById("caption-word-" + g + "-" + i);
+        var at = Math.max(start, Number(w.start));
+        tl.set(el, { className: "caption-word" }, start); // upcoming (also resets on reverse-seek)
+        tl.set(el, { className: "caption-word is-active" }, at); // current
+        tl.fromTo(el, { scale: 0.92 }, { scale: 1, duration: 0.1, ease: "power3.out" }, at);
+        if (i + 1 < words.length) {
+          var nextAt = Math.max(start, Number(words[i + 1].start));
+          tl.set(el, { className: "caption-word is-spoken" }, nextAt); // demote when next activates
+        }
+      });
+      if (words.length) {
+        var lastEl = document.getElementById("caption-word-" + g + "-" + (words.length - 1));
+        var lastSpoken = Math.min(end, Number(words[words.length - 1].end) + 0.1);
+        tl.set(lastEl, { className: "caption-word is-spoken" }, lastSpoken);
+      }
+    });
+
+    // full-span anchor so the sub-comp timeline spans the whole video
+    tl.to({}, { duration: DURATION }, 0);
+    window.__timelines["captions"] = tl;
+  })();
+</script>
+
+<style>
+  .caption-line { line-height: 1.1 !important; }
+</style>
+</template>
