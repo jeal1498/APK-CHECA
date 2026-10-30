@@ -1,6 +1,6 @@
 # Guion · 17 - Cómo funciona Checa (CHECA) — rehecho el 30 oct 2026 con la skill `guion-remotion-checa`
 
-**Estado:** guion aprobado por Eduardo el 30 oct 2026; tabla de animaciones por aprobar. Reemplaza al guion del 16 oct (cierre «pruébala 7 días sin costo», marca anterior); el video viejo sigue en `video.mp4` hasta que se apruebe el nuevo.
+**Estado:** guion, tabla, portada y video aprobados el 30 oct 2026; falta el copy. Reemplaza al guion del 16 oct (cierre «pruébala 7 días sin costo», marca anterior); el video viejo sigue en `video.mp4` hasta que se apruebe el nuevo.
 
 Concepto / Problema detectado en el repo:
 El conductor decide en segundos viendo solo la tarifa bruta. Checa (`Parser.kt`, `Popup.kt`) calcula gasolina de recogida + viaje, neta, $/h y $/km sobre km y min **totales**, pinta el semáforo con sus metas y marca recogida lejana o la mejor de dos ofertas (`Comparador.kt`). Explicador: qué hace Checa, en orden, sin promesas de ganancia.

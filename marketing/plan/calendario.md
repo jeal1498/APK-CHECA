@@ -39,7 +39,7 @@ Sin link en la bio (TikTok pide constancia del SAT para cuenta de empresa): a qu
 | 14 | vie 30 oct | Venta | `14 - Miedo a rechazar` | ✅ | |
 | 15 | sáb 31 oct | Venta | `15 - Desgaste y renta` | ✅ | |
 | 19 | lun 2 nov | Venta | `19 - Checa lee la oferta` | ✅ (falta subirlo al calendario web) | |
-| 17 | mar 3 nov (si se rehace el cierre) | Explicativo | `17 - Cómo funciona Checa` | voz dice «7 días sin costo»; sin copy | |
+| 17 | mar 3 nov | Explicativo (rehecho 30 oct, voz v3) | `17 - Cómo funciona Checa` | video y portada ✅; falta copy | |
 | 18 | por definir | Venta | `18 - Cuánto ganas tú` |  | (ya está en PERSONAL) |
 | 20 | — | Tutorial (descartado 30 oct: explica el APK, que se cierra el 15 nov) | `20 - Cómo instalar Checa` |  | ❌ descartado |
 | 21 | sáb 17 oct | Campaña beta | `21 - Beta testers corto` | ✅ |✅ 17 oct (sin efectos de sonido) |
