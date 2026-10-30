@@ -41,10 +41,13 @@ Sin link en la bio (TikTok pide constancia del SAT para cuenta de empresa): a qu
 | 19 | mar 27 oct | Venta | `19 - Checa lee la oferta` |  | |
 | 17 | mié 28 oct | Explicativo | `17 - Cómo funciona Checa` |  | |
 | 18 | por definir | Venta | `18 - Cuánto ganas tú` |  | (ya está en PERSONAL) |
-| 20 | por definir | Tutorial | `20 - Cómo instalar Checa` |  | |
+| 20 | — | Tutorial (descartado 30 oct: explica el APK, que se cierra el 15 nov) | `20 - Cómo instalar Checa` |  | ❌ descartado |
 | 21 | sáb 17 oct | Campaña beta | `21 - Beta testers corto` | ✅ |✅ 17 oct (sin efectos de sonido) |
 | 22 | por definir | Venta (prueba del domingo 19 oct) | `22 - Cuánto vale tu kilómetro` | guion para aprobar | |
 | 23 | dom 25 oct | Campaña testers (Eduardo a cámara; CHECA y v2 PERSONAL el mismo día) | `23 - Prueba en Google Play` | ✅ | ✅ publicado 25 oct |
+| 26 | por definir | Venta (Remotion/Hyperframes, voz v3) | `26 - Dos ofertas misma neta` | video y portada ✅; falta copy y dm | |
+
+> **30 oct 2026:** el estado real de publicación está en el calendario web (repo `PWA-Checa-Multimedia`, `calendario-d4f81c/data.json`). El plan para ponerse al día está en `marketing/plan/plan-ponerse-al-dia.md`. Desde el 25 oct no se ha publicado nada; 12, 14, 15, 17 y 19 de esta tabla no se marcaron. Los copys de 14, 15 y 19 ya usan el CTA «Comenta CHECA… acceso a la prueba en Google Play».
 
 ---
 

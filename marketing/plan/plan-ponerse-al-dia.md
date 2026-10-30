@@ -16,7 +16,7 @@ Para empezar en una **conversación nueva**. Hecho el 30 oct 2026 con lo que hay
 
 Regla: tras confirmar con Eduardo, actualizar **ambos** (el `data.json` con commit a `main` del repo de la web, como se hizo el 25 oct).
 
-## 2. Inventario (según los dos calendarios al 30 oct)
+## 2. Inventario (según los dos calendarios al 30 oct; Eduardo confirma que no ha publicado nada desde el 25 oct)
 **Publicados (hasta el 25 oct):** CHECA 02–06, 08, 10, 12, 21, 23 · PERSONAL 05, 06, 07, 08, 12, 19, 23.
 
 **Listos en la web, sin publicar el 25 oct (confirmar si ya se subieron):**
@@ -27,7 +27,7 @@ Regla: tras confirmar con Eduardo, actualizar **ambos** (el `data.json` con comm
 
 **Hechos en este repo pero «en proceso» en la web (falta subirlos al calendario web y revisar copy):** CHECA 17 Cómo funciona Checa, 19 Checa lee la oferta (los dos con `video.mp4`, `portada.jpg`, `copy.txt`, `dm.txt`).
 
-**Con video pero fuera de calendario:** CHECA 18 Cuánto ganas tú (ya salió en PERSONAL como original) · CHECA 20 Cómo instalar Checa (tutorial del APK).
+**Con video pero fuera de calendario:** CHECA 18 Cuánto ganas tú (ya salió en PERSONAL como original) · CHECA 20 Cómo instalar Checa (**descartado el 30 oct**).
 
 **Con solo guion o borrador:**
 | Video | Estado |
@@ -42,13 +42,14 @@ Regla: tras confirmar con Eduardo, actualizar **ambos** (el `data.json` con comm
 - Falta: `copy.txt` y `dm.txt`, su fila en los dos calendarios, y la **v2 PERSONAL** (propuesta de Claude: abrir con la oferta de $82 que «parece peor» y revelar al final que la de $95 deja menos; otra voz, otras escenas, mismo número 26).
 - Proyecto: `video/hyperframes/dos-ofertas-misma-neta/` (ver «Novedades del 30 oct» en la skill).
 
-## 3. Decisiones que necesita de Eduardo (antes de grabar o subir)
-1. **¿Qué se publicó entre el 25 y el 30 oct?** (para marcar ✅ y no repetir).
-2. **CTA vigente de los copys viejos.** Los `copy.txt` y `dm.txt` de 06–19 dicen «7 días gratis», «Descarga CHECA» y mandan al APK de `checa-web`. Hoy: el APK se cierra el **15 nov** (`Migracion.LIMITE_MS`), la app está en prueba cerrada de Google Play y el acceso es por `/registro/` (cierra a los 50 o el 15 nov; Plan Fundador = primeros 50). Propuesta: antes de subir cada video listo, cambiar la llamada a «Comenta CHECA y te mando el acceso» y el `dm.txt` al link de `/registro/` con su `utm_campaign` (modelo: carpeta 23). Confirmar redacción.
-3. **Video 20 «Cómo instalar Checa»:** explica instalar el APK, que se cierra el 15 nov. Propuesta: no subirlo; si hace falta, hacer uno nuevo «cómo entrar a la prueba en Google Play».
-4. **Borradores 24 y 25 (PERSONAL):** ¿se conservan? ¿cuál conserva el 25? ¿se hace su versión CHECA primero (regla: la v1 es de CHECA y la v2 de PERSONAL)?
-5. **Aprobar el guion del 22** (o descartarlo; su dato «cuánto vale tu kilómetro» coincide con una búsqueda real de TikTok).
-6. **Horario:** el calendario sugiere 8 pm, sin datos que lo apoyen. Pedir las estadísticas de TikTok Studio de los últimos videos (la última captura es del 19 oct, `marketing/metricas/videos.csv`) para actualizar `propuesta-semana-19-oct.md` y escoger hora.
+## 3. Decisiones de Eduardo (30 oct 2026)
+1. **Desde el 25 oct no ha publicado nada.** Todo lo «listo» sigue sin subir; el atraso es de 5 días.
+2. **CTA nuevo: hecho.** En `copy.txt` y `dm.txt` de CHECA 14, 15, 19 y en el calendario web de C14, C15, C19, P10, P14 y P15, la llamada es «Comenta «CHECA» y te mando el acceso a la prueba en Google Play (solo Android).» y el DM manda a `/registro/` con su `utm_campaign` (modelo del 23). Ojo: **el cierre de los videos ya renderizados no cambia** y dice «Descarga CHECA» con el link de la web; la web ofrece el APK hasta el 15 nov. Si Eduardo quiere, se puede regrabar solo la pantalla final.
+   - **CHECA 17 «Cómo funciona Checa»: no subirlo tal cual.** Su voz termina con «pruébala 7 días sin costo» (ya no es la oferta) y no tiene `copy.txt`. Solo se actualizó su `dm.txt`. Rehacer el último corte o descartarlo (pendiente de Eduardo).
+3. **Video 20 «Cómo instalar Checa»: descartado.** Explica instalar el APK, que se cierra el 15 nov. La carpeta se conserva sin subirse. Si hace falta, hacer uno nuevo «cómo entrar a la prueba en Google Play».
+4. **Borradores 24 y 25 de PERSONAL (Eduardo no los recordaba).** Son **tres versiones de la misma idea** («aceptaste un viaje de 60 que te deja 38») y las tres cierran con la campaña vieja «Busco 50 conductores, 3 meses gratis, comenta YO»: `24 - Viaje de 60 que se queda en 38`, `25 - Checa lee la oferta en 3 segundos` y `25 - Pagar gasolina antes de aceptar` (Remotion). **Recomendación: descartar las tres;** el video 26 ya cuenta esa idea con mejor gancho y el CTA vigente es otro. Pendiente de que Eduardo lo confirme; si no, conservar solo una y renumerarla.
+5. **Estadísticas de TikTok: no por ahora.** Se sigue sin horario medido (usar 8 pm) y se retoma la medición del domingo cuando él quiera.
+6. **Falta decidir:** aprobar o descartar el guion del 22 «Cuánto vale tu kilómetro» (CHECA y PERSONAL).
 
 ## 4. Plan en tres fases
 **Fase 1 — Subir lo que ya está hecho (30 oct – 5 nov).** Un video diario por cuenta, solo venta (los de consejo están descartados). Propuesta, a ajustar con la respuesta 1 de §3:
@@ -58,7 +59,7 @@ Regla: tras confirmar con Eduardo, actualizar **ambos** (el `data.json` con comm
 | sáb 31 oct | 15 Desgaste y renta | 14 Miedo a rechazar |
 | dom 1 nov | **26 Dos ofertas** (el más fuerte; antes: su copy y su dm) | 15 Desgaste y renta |
 | lun 2 nov | 19 Checa lee la oferta | 26 v2 (crearla antes, ver Fase 2) |
-| mar 3 nov | 17 Cómo funciona Checa | por definir (22 v2 si se aprueba) |
+| mar 3 nov | 17 solo si se rehace su cierre; si no, 22 v1 | 22 v2 si se aprueba |
 Antes de cada subida: revisar el `copy.txt` (CTA de §3.2), pasar el video al calendario web y marcar ✅ con la fecha.
 
 **Fase 2 — Crear lo que falta (en paralelo, un video a la vez).**
