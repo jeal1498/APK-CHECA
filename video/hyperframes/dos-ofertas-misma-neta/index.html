@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #0C0C10; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #0C0C10; }
+      .scene { position: absolute; inset: 0; width: 100%; height: 100%; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="7.066" data-width="1080" data-height="1920">
+      <div id="el-e01-tachado" class="scene" data-composition-id="e01-tachado" data-composition-src="compositions/frames/e01-tachado.html" data-start="0.0" data-duration="3.076" data-track-index="1"></div>
+      <audio id="el-e01-tachado-voice" data-audio-group="voiceover" src="assets/voice/01.wav" data-start="0.0" data-duration="2.926" data-track-index="10" data-volume="1"></audio>
+      <div id="el-e02-rutas" class="scene" data-composition-id="e02-rutas" data-composition-src="compositions/frames/e02-rutas.html" data-start="3.076" data-duration="3.99" data-track-index="0"></div>
+      <audio id="el-e02-rutas-voice" data-audio-group="voiceover" src="assets/voice/02.wav" data-start="3.076" data-duration="3.39" data-track-index="10" data-volume="1"></audio>
+      <audio id="el-sfx-0" src="assets/sfx/popup-entra.mp3" data-start="0.0" data-duration="0.34" data-track-index="30" data-volume="0.4"></audio>
+      <audio id="el-sfx-1" src="assets/sfx/rechazar.mp3" data-start="1.6" data-duration="0.836" data-track-index="31" data-volume="0.4"></audio>
+      <audio id="el-sfx-2" src="assets/sfx/numero-sube.mp3" data-start="1.75" data-duration="0.94" data-track-index="32" data-volume="0.35"></audio>
+      <audio id="el-sfx-3" src="assets/sfx/sello.mp3" data-start="4.916" data-duration="0.549" data-track-index="33" data-volume="0.4"></audio>
+      <div id="el-captions" class="scene" data-composition-id="captions" data-composition-src="compositions/captions.html" data-start="0" data-duration="7.066" data-track-index="20" data-track-kind="captions"></div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+      window.__timelines["main"].to({}, { duration: 7.066 }, 0);
+    </script>
+  </body>
+</html>
