@@ -11,6 +11,7 @@ Uso: python3 -I video/scripts/checa.py <comando> ...
   tabla <guion.md> [--guardar]             tabla de animaciones a partir del «Guión Desglosado»
   hecho <carpeta> <AAAA-MM-DD> [tipo]      registra el video «listo» en el calendario web y en calendario.md
   publicado <carpeta> <AAAA-MM-DD>         lo marca «Publicado» en los dos calendarios
+  calidad <carpeta> [proyecto] [--camara]  control de calidad automático de un video terminado (falla si algo no cumple)
   subir "<mensaje>"                        commit y push (main y rama actual) en APK-CHECA y PWA-Checa-Multimedia
 
 <proyecto> es un nombre (video/hyperframes/<nombre>) o una ruta. <carpeta> es marketing/videos/CHECA|PERSONAL/NN - Nombre.
@@ -295,8 +296,66 @@ def cmd_subir(args):
         print(f"subido: {os.path.basename(repo)} (main{', ' + rama if rama and rama != 'main' else ''})")
 
 
+# ---------- control de calidad ----------
+CTA_VOZ = "Comenta CHECA y te paso el acceso a la prueba en Google Play"
+
+
+def cmd_calidad(args):
+    camara = "--camara" in args
+    args = [a for a in args if a != "--camara"]
+    d, cuenta, nn, nombre = carpeta(args[0])
+    proy = proyecto(args[1]) if len(args) > 1 else None
+    res = []
+    ok = lambda cond, txt: res.append((bool(cond), txt))
+    leer = lambda f: open(f, encoding="utf-8").read() if os.path.exists(f) else ""
+    for x in ("video.mp4", "portada.jpg", "copy.txt", "dm.txt", "guion.md"):
+        ok(os.path.exists(os.path.join(d, x)), f"existe {x}")
+    mp4, por = os.path.join(d, "video.mp4"), os.path.join(d, "portada.jpg")
+    if os.path.exists(mp4):
+        info = json.loads(subprocess.check_output(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=pix_fmt,profile,width,height:format=duration", "-of", "json", mp4]))
+        v, dur = info["streams"][0], float(info["format"]["duration"])
+        ok(v["pix_fmt"] == "yuv420p" and v.get("profile") == "High", f"mp4 yuv420p High ({v['pix_fmt']}, {v.get('profile')})")
+        ok((v["width"], v["height"]) == (1080, 1920), f"mp4 1080x1920 ({v['width']}x{v['height']})")
+        ok(20 <= dur <= 60, f"duración razonable ({dur:.1f} s)")
+        if os.path.exists(por):
+            r = subprocess.run(["ffmpeg", "-i", mp4, "-i", por, "-lavfi", "[0:v]trim=end_frame=1,setpts=PTS-STARTPTS[a];[1:v]scale=1080:1920[b];[a][b]psnr", "-f", "null", "-"], capture_output=True, text=True)
+            m = re.search(r"average:([0-9.]+|inf)", r.stderr)
+            psnr = float("inf") if m and m.group(1) == "inf" else float(m.group(1)) if m else 0
+            ok(psnr > 25, f"la portada es el primer cuadro (PSNR {psnr:.1f})")
+    copy = leer(os.path.join(d, "copy.txt"))
+    ok("Comenta «CHECA»" in copy and "Google Play" in copy, "copy con el CTA vigente (Comenta «CHECA»… Google Play)")
+    ok("ejemplo" in copy.lower(), "copy dice «números de ejemplo»")
+    ok(camara or not re.search(r"soy eduardo|armé checa", copy, re.I), "copy sin «Soy Eduardo» (video sin su cara)")
+    ok(not re.search(r"gratis|sin costo|\$\s?\d+\s?(al mes|/mes)", copy, re.I), "copy sin «gratis» ni precios")
+    dm = leer(os.path.join(d, "dm.txt"))
+    fuente = "tiktok" if cuenta == "CHECA" else "tiktok-personal"
+    ok(f"utm_source={fuente}&utm_campaign={slug(nombre)}" in dm, f"dm con utm_source={fuente} y utm_campaign={slug(nombre)}")
+    if proy:
+        voz = [l.strip() for l in leer(os.path.join(proy, "SCRIPT.md")).split("\n") if l.startswith("    ")]
+        ok(voz and not any("$" in l for l in voz), "voz sin «$» (montos sin moneda)")
+        ok(voz and voz[-1].rstrip(".") == CTA_VOZ, "la última línea de voz es el CTA vigente")
+        esc = json.loads(leer(os.path.join(proy, "escenas.json")) or "[]")
+        pops = []
+        for e in esc:
+            pops += ([e["popup"]] if "popup" in e else []) + e.get("popups", [])
+        ok(all(p.get("app", "OFERTA") == "OFERTA" for p in pops), "pop-ups con «OFERTA» (sin nombres de apps)")
+        ok(all(p["viaje"] - p["gasolina"] == p["neta"] for p in pops if "neta" in p), "neta = viaje − gasolina en todos los pop-ups")
+        ok(esc and esc[-1]["tipo"] == "cierre", "termina con la pantalla final")
+        pj = os.path.join(proy, "portada", "portada.json")
+        if os.path.exists(pj):
+            c = json.load(open(pj, encoding="utf-8"))
+            vis = " ".join([c["etiqueta"], " ".join(c["titulo"] if isinstance(c["titulo"], list) else [c["titulo"]]), c["precio"], c["linea"], c["recogida"], c["viaje"]])
+            ok(str(c["sello_valor"]) not in vis, "el sello de la portada esconde una cifra que no está a la vista")
+    for b, t in res:
+        print(("✓ " if b else "✗ ") + t)
+    malos = sum(1 for b, _ in res if not b)
+    print(f"{cuenta} {nn} «{nombre}»: {len(res) - malos}/{len(res)} bien")
+    if malos:
+        sys.exit(1)
+
+
 COMANDOS = {"nuevo": cmd_nuevo, "construir": cmd_construir, "portada": cmd_portada, "revisar": cmd_revisar, "entregar": cmd_entregar,
-            "dm": cmd_dm, "tabla": cmd_tabla, "hecho": cmd_hecho, "publicado": cmd_publicado, "subir": cmd_subir}
+            "dm": cmd_dm, "tabla": cmd_tabla, "hecho": cmd_hecho, "publicado": cmd_publicado, "subir": cmd_subir, "calidad": cmd_calidad}
 
 if __name__ == "__main__":
     if len(sys.argv) < 2 or sys.argv[1] not in COMANDOS:

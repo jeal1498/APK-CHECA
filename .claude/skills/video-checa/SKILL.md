@@ -21,6 +21,7 @@ Eduardo aprueba **dos veces por lote** y no cinco por video: así el tiempo no s
    - Entrega: `checa.py entregar <proyecto> <CHECA|PERSONAL> <NN>` (portada como primer cuadro; copia `video.mp4` y `portada.jpg`).
    - Copy y DM: escribe `copy.txt` y corre `checa.py dm <carpeta>`.
    Revisa tú cada hoja de cuadros y cada portada antes de seguir: él solo verá el resultado final, así que lo que se te pase llega hasta él.
+   **Control de calidad (siempre, en cada lote, aunque sea de un video):** `checa.py calidad <carpeta> <proyecto>` por video y un agente revisor con ojos frescos para todo el lote; cómo, en `references/calidad.md`. Solo con todo en ✓ y el revisor en «OK» se le manda el lote.
 3. **Aprobación 2 · revisión final:** un solo mensaje con todo el lote: por video, el mp4 (con `SendUserFile`; la portada ya va en el primer cuadro), el copy en texto y la fecha propuesta. Si algo no le gusta, se corrige **solo eso** (portada, una escena, una línea de voz o el copy) y se manda de nuevo solo lo corregido.
 4. **Hecho y subida:** con su «aprobado», `checa.py hecho <carpeta> <AAAA-MM-DD> [tipo]` por video y `checa.py subir "<mensaje con las líneas de atribución>"`. El `video.mp4` se commitea **una sola vez**, ya aprobado: hasta la aprobación 2 los mp4 viven en `renders/` y en la carpeta sin commitear (si un hook pide subir, apártalos con `mv` a `renders/`). «Publicado» lo marca Eduardo; cuando avise: `checa.py publicado <carpeta> <AAAA-MM-DD>`.
 `build.yml` ignora `marketing/**`, `video/**` y `.claude/**`: no hace falta `[skip ci]`.
@@ -28,7 +29,7 @@ Eduardo aprueba **dos veces por lote** y no cinco por video: así el tiempo no s
 Carpetas: `marketing/videos/CHECA/NN - Nombre/` y `marketing/videos/PERSONAL/NN - Nombre/` (`video.mp4`, `portada.jpg`, `copy.txt`, `dm.txt`, `guion.md`); la v2 usa el mismo `NN`.
 
 ## Herramienta: `video/scripts/checa.py`
-Todo lo repetible vive aquí (corre sin argumentos para ver la ayuda): `nuevo`, `construir`, `portada`, `revisar`, `entregar`, `dm`, `tabla`, `hecho`, `publicado`, `subir`. Úsala en vez de rehacer los pasos a mano: ya probó que da el mismo resultado y evita errores (p. ej. `portada` se niega si la cifra del sello ya está a la vista).
+Todo lo repetible vive aquí (corre sin argumentos para ver la ayuda): `nuevo`, `construir`, `portada`, `revisar`, `entregar`, `dm`, `tabla`, `calidad`, `hecho`, `publicado`, `subir`. Úsala en vez de rehacer los pasos a mano: ya probó que da el mismo resultado y evita errores (p. ej. `portada` se niega si la cifra del sello ya está a la vista).
 
 ## Marca (los dos modos)
 La fuente es `jeal1498/checa-web`, carpeta `marca/`. Para cualquier duda usa la skill `marca-checa`.
