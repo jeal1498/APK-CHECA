@@ -1,5 +1,7 @@
 # Guion · 25 - Checa lee la oferta en 3 segundos (PERSONAL, borrador)
 
+> **Descartado por Eduardo el 30 oct 2026:** usa la campaña vieja «Busco 50»; el video 26 cuenta la misma idea. Se conserva sin hacerse.
+
 **Estado:** borrador (29 oct 2026), formato de la skill `guion-vertical-checa`. Cifras de ejemplo: $60 y $38. Cambiar por un viaje real.
 
 **Concepto / Problema detectado en el repo:** durante una oferta el conductor tiene segundos para decidir, y la app de Uber o DiDi solo muestra el monto bruto. Checa lee la pantalla de la oferta y muestra la neta después de gasolina y desgaste, $/hora, $/km y semáforo (`CapturaService`, `RutaService`, `Parser`, `Popup`).

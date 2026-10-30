@@ -1,5 +1,7 @@
 # Guion · 25 - Pagar gasolina antes de aceptar (PERSONAL, borrador Remotion)
 
+> **Descartado por Eduardo el 30 oct 2026:** usa la campaña vieja «Busco 50»; el video 26 cuenta la misma idea. Se conserva sin hacerse.
+
 **Concepto / Problema detectado en el repo:** la oferta de Uber/DiDi muestra tarifa, minutos y km, pero no descuenta gasolina ni cuenta la recogida. Checa lee la pantalla (AccessibilityService + OCR) y calcula neta, $/h, $/km y semáforo antes de aceptar. Fricción: decidir en segundos con números incompletos.
 
 **Notas:** cifras de ejemplo ($60 → $38, gasolina −$22). Cambiar por un viaje real antes de grabar. Oferta de 3 meses gratis confirmada por Eduardo.

@@ -1,5 +1,7 @@
 # Guion · 24 - Viaje de 60 que se queda en 38 (PERSONAL, borrador)
 
+> **Descartado por Eduardo el 30 oct 2026:** usa la campaña vieja «Busco 50»; el video 26 cuenta la misma idea. Se conserva sin hacerse.
+
 **Estado:** borrador (28 oct 2026). Pendiente: tiempos y pausas, cifras de un viaje real, confirmar vigencia de la oferta.
 
 ## Guion (de corrido)
