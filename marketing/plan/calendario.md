@@ -81,7 +81,7 @@ Misma idea que cada video de CHECA, con otro gancho y otras palabras (reglas en 
 | 25 | — | Venta (descartados 30 oct, 2 borradores: campaña vieja) | `25 - Checa lee la oferta en 3 segundos` y `25 - Pagar gasolina antes de aceptar` |  | ❌ descartado |
 | 26 | lun 2 nov | Venta (v2) | `26 - Dos ofertas misma neta` | ✅ (hecho 30 oct) | |
 | 17 | mar 3 nov | Explicativo (v2, voz v3) | `17 - Cómo funciona Checa` | ✅ (hecho 30 oct) | |
-| 22 | por definir | Venta (v2, un día detrás de CHECA) | `22 - Cuánto vale tu kilómetro` | pendiente: guion v2 (gancho: «Te ofrecen 110 y te quedan 54») | |
+| 22 | jue 5 nov | Venta (v2, un día detrás de CHECA) | `22 - Cuánto vale tu kilómetro` | ✅ (hecho 30 oct) | |
 
 # Medición semanal (qué videos venden)
 
