@@ -32,13 +32,13 @@ Ajustes por defecto: 12 km/l, $24/l, meta $150/h y $8/km, recogida máx. 4 km.
 - $/h netos de la toma 0:21 = neta / min × 60 (A: 67.40/30·60 = $135; B: 67.60/15·60 = $270). Ajustar el texto si se redondea distinto.
 
 ## Versión final de la voz (31 s, proyecto `video/hyperframes/dos-ofertas-misma-neta/`)
-1. Te cae un viaje de 95 pesos, pero en tu bolsa nomás se quedan 67.
+1. Te cae un viaje de 95 pesos, [pause] pero en tu bolsa [sighs] nomás se quedan 67.
 2. La gasolina de la recogida y del viaje también la pagas tú.
 3. Y te va a tomar media hora.
-4. Ahora cae otra: 82 pesos. Parece peor.
+4. Ahora cae otra: 82 pesos. [sarcastic] Parece peor.
 5. Pero la recogida es corta y el viaje dura quince minutos.
-6. Restas la gasolina y te quedan 68. Uno más, en la mitad del tiempo.
+6. Restas la gasolina y te quedan [excited] 68. [pause] Uno más, en la mitad del tiempo.
 7. Checa te lo calcula en el pop-up, antes de aceptar.
 8. Con tus metas por hora y por kilómetro.
 9. Comenta CHECA y te paso el acceso a la prueba.
-Estado: video de prueba enviado; faltan portada, copy y aprobación de Eduardo.
+Voz: ElevenLabs v3 con Audio Tags (aprobada la muestra de la línea 1). Estado: video de prueba enviado; faltan portada, copy y aprobación de Eduardo.

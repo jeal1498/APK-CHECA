@@ -79,6 +79,14 @@ def tiempos(lineas):
             subprocess.run(["python3", "-I", EL, "voz", "assets/voice", f"{n:02d}", txt, VOZ_ID, "1.0"], check=True)
         a = json.load(open(b + ".json"))
         ch, st, en = a["c"], a["s"], a["e"]
+        # Audio Tags v3: los [corchetes] se dicen como emoción, no como texto; fuera de palabras y subtítulos.
+        keep, dentro = [], False
+        for c in ch:
+            if c == "[": dentro = True
+            keep.append(not dentro and c != "]")
+            if c == "]": dentro = False
+        en_fin = en[-1]
+        ch, st, en = [c for c, k in zip(ch, keep) if k], [x for x, k in zip(st, keep) if k], [x for x, k in zip(en, keep) if k]
         words, cur, s0, e0 = [], "", None, None
         for c, s, e in zip(ch, st, en):
             if c.isspace():
@@ -90,7 +98,7 @@ def tiempos(lineas):
                 cur += c; e0 = e
         if cur:
             words.append((cur, s0, e0))
-        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", b + ".mp3", "-t", str(round(en[-1] + 0.12, 3)), "-ar", "44100", "-ac", "1", b + ".wav"], check=True)
+        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", b + ".mp3", "-t", str(round(max(en[-1], en_fin) + 0.12, 3)), "-ar", "44100", "-ac", "1", b + ".wav"], check=True)
         voz = probe(b + ".wav")
         dur = round(voz + (PAD_FIN if n == len(lineas) else PAD), 3)
         out.append({"n": n, "start": round(t, 3), "dur": dur, "voice": voz,

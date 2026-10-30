@@ -14,9 +14,9 @@
     
   </style>
 
-  <div id="root" data-composition-id="e02-rutas" data-width="1080" data-height="1920" data-start="0" data-duration="3.54">
-    <div id="e02-rutas-g" class="clip G" data-start="0" data-duration="3.54" data-track-index="0"></div>
-    <div id="e02-rutas-mapa" class="clip" style="left:0;top:60px" data-start="0" data-duration="3.54" data-track-index="1" data-layout-allow-overflow><svg width="1080" height="960" viewBox="0 0 1080 960" aria-hidden="true">
+  <div id="root" data-composition-id="e02-rutas" data-width="1080" data-height="1920" data-start="0" data-duration="3.19">
+    <div id="e02-rutas-g" class="clip G" data-start="0" data-duration="3.19" data-track-index="0"></div>
+    <div id="e02-rutas-mapa" class="clip" style="left:0;top:60px" data-start="0" data-duration="3.19" data-track-index="1" data-layout-allow-overflow><svg width="1080" height="960" viewBox="0 0 1080 960" aria-hidden="true">
       <g stroke="#26262E" stroke-width="3" fill="none"><path d="M0 240 H1080M0 480 H1080M0 720 H1080M180 0 V960M450 0 V960M760 0 V960"/></g>
       <path id="e02-rutas-pr" d="M150 860 C 250 760, 200 640, 330 580" fill="none" stroke="#A3A3AD" stroke-width="12" stroke-linecap="round" stroke-dasharray="4 26"/>
       <path id="e02-rutas-pv" d="M330 580 C 470 510, 520 380, 680 340 S 900 200, 930 150" fill="none" stroke="#F4F4EF" stroke-width="14" stroke-linecap="round"/>
@@ -26,7 +26,7 @@
       <text id="e02-rutas-t1" x="290" y="800" font-family="JetBrains Mono" font-weight="700" font-size="34" fill="#A3A3AD" opacity="0">RECOGIDA 3.8 km</text>
       <text id="e02-rutas-t2" x="600" y="460" font-family="JetBrains Mono" font-weight="700" font-size="34" fill="#F4F4EF" opacity="0">VIAJE 10 km</text>
     </svg></div>
-    <div id="e02-rutas-gas" class="clip" style="left:0;right:0;top:1010px;display:flex;justify-content:center;opacity:0" data-start="0" data-duration="3.54" data-track-index="2" data-layout-allow-overflow><div style="display:flex;align-items:center;gap:22px;background:#2A0E10;border:3px solid #EF4444;border-radius:999px;padding:22px 44px"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20V5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v15M4 20h11M14 9h2.5a1.5 1.5 0 0 1 1.5 1.5V16a1.5 1.5 0 0 0 3 0V8l-3-3M7 8h5"/></svg><span style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:58px;color:#EF4444">Gasolina −$28</span></div></div>
+    <div id="e02-rutas-gas" class="clip" style="left:0;right:0;top:1010px;display:flex;justify-content:center;opacity:0" data-start="0" data-duration="3.19" data-track-index="2" data-layout-allow-overflow><div style="display:flex;align-items:center;gap:22px;background:#2A0E10;border:3px solid #EF4444;border-radius:999px;padding:22px 44px"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20V5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v15M4 20h11M14 9h2.5a1.5 1.5 0 0 1 1.5 1.5V16a1.5 1.5 0 0 0 3 0V8l-3-3M7 8h5"/></svg><span style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:58px;color:#EF4444">Gasolina −$28</span></div></div>
 
   </div>
 
@@ -35,20 +35,20 @@
     (function () {
       window.__timelines = window.__timelines || {};
       var tl = gsap.timeline({ paused: true });
-      var D = 3.54;
+      var D = 3.19;
       var pr = document.getElementById("e02-rutas-pr"), pv = document.getElementById("e02-rutas-pv");
       var Lv = pv.getTotalLength();
       gsap.set(pv, { strokeDasharray: Lv, strokeDashoffset: Lv });
-      tl.fromTo(pr, { opacity: 0 }, { opacity: 1, duration: 0.4 }, 0.6);
-      tl.to("#e02-rutas-t1", { opacity: 1, duration: 0.3 }, 0.6);
-      tl.to("#e02-rutas-c1", { opacity: 1, duration: 0.2 }, 0.9);
-      tl.to(pv, { strokeDashoffset: 0, duration: 0.8, ease: "power2.inOut" }, 1.48);
-      tl.to("#e02-rutas-t2", { opacity: 1, duration: 0.3 }, 1.78);
-      tl.to("#e02-rutas-c2", { opacity: 1, duration: 0.2 }, 2.23);
-      tl.fromTo("#e02-rutas-gas", { opacity: 0, y: 120, scale: 0.8 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.6)" }, 1.84);
+      tl.fromTo(pr, { opacity: 0 }, { opacity: 1, duration: 0.4 }, 0.53);
+      tl.to("#e02-rutas-t1", { opacity: 1, duration: 0.3 }, 0.53);
+      tl.to("#e02-rutas-c1", { opacity: 1, duration: 0.2 }, 0.83);
+      tl.to(pv, { strokeDashoffset: 0, duration: 0.8, ease: "power2.inOut" }, 1.25);
+      tl.to("#e02-rutas-t2", { opacity: 1, duration: 0.3 }, 1.55);
+      tl.to("#e02-rutas-c2", { opacity: 1, duration: 0.2 }, 2.0);
+      tl.fromTo("#e02-rutas-gas", { opacity: 0, y: 120, scale: 0.8 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.6)" }, 1.65);
       tl.to("#e02-rutas-mapa", { scale: 1.06, duration: 2.5, ease: "none" }, 0);
-      tl.to("#e02-rutas-gas", { scale: 1.15, duration: 0.15, yoyo: true, repeat: 1 }, 2.37);
-      tl.to("#e02-rutas-gas", { x: 12, duration: 0.05, yoyo: true, repeat: 5 }, 2.69);
+      tl.to("#e02-rutas-gas", { scale: 1.15, duration: 0.15, yoyo: true, repeat: 1 }, 2.19);
+      tl.to("#e02-rutas-gas", { x: 12, duration: 0.05, yoyo: true, repeat: 5 }, 2.51);
 
       window.__timelines["e02-rutas"] = tl;
     })();

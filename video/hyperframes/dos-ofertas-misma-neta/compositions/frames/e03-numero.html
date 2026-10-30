@@ -14,11 +14,11 @@
     
   </style>
 
-  <div id="root" data-composition-id="e03-numero" data-width="1080" data-height="1920" data-start="0" data-duration="1.775">
-    <div id="e03-numero-g" class="clip G" data-start="0" data-duration="1.775" data-track-index="0"></div>
-    <div id="e03-numero-k" class="etq clip" style="top:420px" data-start="0" data-duration="1.775" data-track-index="1">y te va a tomar</div>
-    <div id="e03-numero-n" class="mask clip" style="top:500px;height:340px" data-start="0" data-duration="1.775" data-track-index="2"><div style="font-size:250px;color:#FACC15">30 min</div></div>
-    <div class="etq clip" style="top:900px" data-start="0" data-duration="1.775" data-track-index="3">Números de ejemplo</div>
+  <div id="root" data-composition-id="e03-numero" data-width="1080" data-height="1920" data-start="0" data-duration="1.43">
+    <div id="e03-numero-g" class="clip G" data-start="0" data-duration="1.43" data-track-index="0"></div>
+    <div id="e03-numero-k" class="etq clip" style="top:420px" data-start="0" data-duration="1.43" data-track-index="1">y te va a tomar</div>
+    <div id="e03-numero-n" class="mask clip" style="top:500px;height:340px" data-start="0" data-duration="1.43" data-track-index="2"><div style="font-size:250px;color:#FACC15">30 min</div></div>
+    <div class="etq clip" style="top:900px" data-start="0" data-duration="1.43" data-track-index="3">Números de ejemplo</div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
@@ -26,7 +26,7 @@
     (function () {
       window.__timelines = window.__timelines || {};
       var tl = gsap.timeline({ paused: true });
-      var D = 1.775;
+      var D = 1.43;
       tl.fromTo("#e03-numero-k", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3 }, 0);
       tl.fromTo("#e03-numero-n > div", { yPercent: 120 }, { yPercent: 0, duration: 0.5, ease: "power4.out" }, 0.2);
 

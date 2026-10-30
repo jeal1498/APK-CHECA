@@ -8,7 +8,7 @@ Uso:
   python3 -I scripts/elevenlabs.py musica <carpeta> <archivo> "<prompt>" <segundos>
   python3 -I scripts/elevenlabs.py sfx    <carpeta> <archivo> "<texto>"  <segundos>
 """
-import base64, json, os, ssl, sys, urllib.request
+import base64, json, os, re, ssl, sys, urllib.request
 
 VOZ = "dlGxemPxFMTY7iXagmOj"  # Fernando Martínez, voz del narrador elegida por Eduardo
 CA = "/root/.ccr/ca-bundle.crt"
@@ -35,9 +35,12 @@ def main():
     if modo == "voz":
         voz = sys.argv[5] if len(sys.argv) > 5 else VOZ
         vel = float(sys.argv[6]) if len(sys.argv) > 6 else 1.15
+        # Audio Tags (p. ej. [pause], [sighs]) o ELEVEN_V3=1 → eleven_v3 (sin style ni speed); si no, multilingual v2.
+        v3 = os.environ.get("ELEVEN_V3") == "1" or re.search(r"\[[a-z ]+\]", texto)
+        ajustes = {"stability": 0.35, "similarity_boost": 0.8} if v3 else {"stability": 0.4, "similarity_boost": 0.8, "style": 0.35, "speed": vel}
         d = json.loads(post(f"/v1/text-to-speech/{voz}/with-timestamps?output_format=mp3_44100_128", {
-            "text": texto, "model_id": "eleven_multilingual_v2", "language_code": "es",
-            "voice_settings": {"stability": 0.4, "similarity_boost": 0.8, "style": 0.35, "speed": vel}}))
+            "text": texto, "model_id": "eleven_v3" if v3 else "eleven_multilingual_v2", "language_code": "es",
+            "voice_settings": ajustes}))
         open(base + ".mp3", "wb").write(base64.b64decode(d["audio_base64"]))
         a = d["alignment"]
         json.dump({"c": a["characters"], "s": a["character_start_times_seconds"], "e": a["character_end_times_seconds"]},
