@@ -1,5 +1,5 @@
 [
-  {"tipo": "tachado", "tarifa": 95, "neta": 67, "corte": "bolsa",
+  {"tipo": "tachado", "tarifa": 95, "neta": 67, "corte": "pero",
    "datos": ["8 min (3.8 km)", "22 min (10 km)"]},
   {"tipo": "rutas", "gasolina": "−$27.60", "km_rec": "3.8 km", "km_viaje": "10 km", "en_gas": "también", "en_tu": "pagas"}
 ]

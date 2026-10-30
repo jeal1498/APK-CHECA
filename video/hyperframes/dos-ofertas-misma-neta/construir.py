@@ -428,7 +428,7 @@ def sfx_escena(sc, e):
         tiempo = [0.0 if i == 0 else max(0, round(w[min(k, len(w) - 1)][1] - 0.05, 2)) for i, k in enumerate(e["en_palabra"])]
         return [(NIVEL_SFX[p.get("nivel", "verde")], round(t0 + 0.15, 2), 0.45) for p, t0 in zip(e["popups"], tiempo)]
     if tipo == "tachado":
-        return [("popup-entra", 0.0, 0.4), ("rechazar", pal(sc, e.get("corte", "quedan")), 0.4), ("numero-sube", pal(sc, e.get("corte", "quedan")) + 0.15, 0.35)]
+        return [("popup-entra", 0.3, 0.4), ("rechazar", pal(sc, e.get("corte", "pero")) + 0.15, 0.45), ("numero-sube", pal(sc, e.get("corte", "pero")) + 0.3, 0.35)]
     if tipo == "rutas":
         return [("sello", pal(sc, e.get("en_gas", "gasolina")), 0.4)]
     if tipo == "numero":
@@ -502,24 +502,34 @@ def esc_fin(sc, e, n):
 
 
 def esc_tachado(sc, e, n):
-    """Oferta con la tarifa que se tacha y un contador hasta lo que te queda."""
-    D = sc["dur"]; c = pal(sc, e.get("corte", "quedan"))
+    """Gancho: la oferta ya está en pantalla, la cámara se pega al monto, se tacha y un contador baja a lo que te queda."""
+    D = sc["dur"]; c = pal(sc, e.get("corte", "pero")); m = pal(sc, str(e["tarifa"])); fin = pal(sc, str(e["neta"])) + 0.25
     datos = "<br>".join(e["datos"])
-    card = f'<div class="of" style="width:760px;height:440px"><div class="l">NUEVA OFERTA</div><div class="f" id="{n}-tar">${e["tarifa"]}</div><div class="d">{datos}</div><div class="b">ACEPTAR</div></div>'
-    inner = clip(1, f"{n}-card", "left:160px;top:200px", card, D)
-    inner += f'    <svg id="{n}-tach" class="clip" style="left:180px;top:280px" width="420" height="140" viewBox="0 0 420 140" data-start="0" data-duration="{D}" data-track-index="2" aria-hidden="true"><path id="{n}-tl" d="M10 100 L405 35" fill="none" stroke="#EF4444" stroke-width="16" stroke-linecap="round" stroke-dasharray="420" stroke-dashoffset="420"/></svg>\n'
-    inner += f'    <div id="{n}-k" class="etq clip" style="top:720px;opacity:0" data-start="0" data-duration="{D}" data-track-index="3">te quedan</div>\n'
-    inner += clip(4, f"{n}-n", "left:0;right:0;top:770px;text-align:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:260px;letter-spacing:-.05em;line-height:1;color:#FACC15;opacity:0", f'$<span id="{n}-cnt">{e["tarifa"]}</span>', D)
-    inner += f'    <div id="{n}-pie" class="etq clip" style="top:1060px;font-size:24px;opacity:0" data-start="0" data-duration="{D}" data-track-index="5">Números de ejemplo</div>\n'
-    js = f"""      tl.fromTo("#{n}-card", {{ y: 260, opacity: 0, scale: 0.9 }}, {{ y: 0, opacity: 1, scale: 1, duration: 0.55, ease: "back.out(1.4)" }}, 0);
-      tl.to("#{n}-tl", {{ strokeDashoffset: 0, duration: 0.3, ease: "power2.out" }}, {c});
-      tl.to("#{n}-tar", {{ opacity: 0.45, duration: 0.3 }}, {c});
-      tl.to("#{n}-card", {{ y: -40, scale: 0.92, duration: 0.4, ease: "power3.out" }}, {c});
-      tl.to("#{n}-k", {{ opacity: 1, duration: 0.25 }}, {c});
-      tl.fromTo("#{n}-n", {{ opacity: 0, y: 80 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: "power4.out" }}, {c});
-      var o{n.replace('-', '_')} = {{ v: {e["tarifa"]} }};
-      tl.to(o{n.replace('-', '_')}, {{ v: {e["neta"]}, duration: 0.9, ease: "power2.out", onUpdate: function () {{ document.getElementById("{n}-cnt").textContent = Math.round(o{n.replace('-', '_')}.v); }} }}, {round(c + 0.15, 2)});
-      tl.to("#{n}-pie", {{ opacity: 1, duration: 0.3 }}, {round(c + 0.4, 2)});
+    tach = f'<svg style="position:absolute;left:20px;top:80px" width="420" height="140" viewBox="0 0 420 140" aria-hidden="true"><path id="{n}-tl" d="M10 100 L405 35" fill="none" stroke="#EF4444" stroke-width="16" stroke-linecap="round" stroke-dasharray="420" stroke-dashoffset="420"/></svg>'
+    card = f'<div class="of" style="width:760px;height:440px"><div class="l">NUEVA OFERTA</div><div class="f" id="{n}-tar">${e["tarifa"]}</div><div class="d">{datos}</div><div class="b" id="{n}-btn">ACEPTAR</div>{tach}</div>'
+    inner = clip(1, f"{n}-card", "left:160px;top:400px;transform-origin:50% 50%", card, D, ' data-layout-allow-overflow')
+    inner += clip(2, f"{n}-rip", "left:250px;top:720px;width:120px;height:120px;border-radius:50%;border:8px solid #F4F4EF;opacity:0", "", D)
+    inner += f'    <div id="{n}-h" class="mask clip" style="top:150px;height:170px" data-start="0" data-duration="{D}" data-track-index="3"><div style="font-size:150px;color:#EF4444">No son ${e["tarifa"]}</div></div>\n'
+    inner += f'    <div id="{n}-k" class="etq clip" style="top:720px;opacity:0" data-start="0" data-duration="{D}" data-track-index="4">te quedan</div>\n'
+    inner += clip(5, f"{n}-n", "left:0;right:0;top:770px;text-align:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:260px;letter-spacing:-.05em;line-height:1;color:#FACC15;opacity:0", f'$<span id="{n}-cnt">{e["tarifa"]}</span>', D)
+    inner += f'    <div id="{n}-pie" class="etq clip" style="top:1060px;font-size:24px;opacity:0" data-start="0" data-duration="{D}" data-track-index="6">Números de ejemplo</div>\n'
+    o = "o" + n.replace("-", "_")
+    js = f"""      tl.fromTo("#{n}-card", {{ scale: 1.25 }}, {{ scale: 1.1, duration: 0.35, ease: "power3.out" }}, 0);
+      tl.fromTo("#{n}-h > div", {{ yPercent: 120 }}, {{ yPercent: 0, duration: 0.3, ease: "power4.out" }}, 0);
+      tl.to("#{n}-btn", {{ scale: 0.9, duration: 0.08 }}, 0.35); tl.to("#{n}-btn", {{ scale: 1, duration: 0.15 }}, 0.43);
+      tl.fromTo("#{n}-rip", {{ scale: 0.3, opacity: 0.9 }}, {{ scale: 2.2, opacity: 0, duration: 0.45, ease: "power2.out" }}, 0.35);
+      tl.to("#{n}-card", {{ scale: 1.4, x: 110, y: 60, duration: 0.25, ease: "power4.out" }}, {m});
+      tl.to("#{n}-card", {{ x: 116, duration: 0.04, yoyo: true, repeat: 5 }}, {round(m + 0.3, 2)});
+      tl.to("#{n}-h", {{ opacity: 0, duration: 0.15 }}, {c});
+      tl.to("#{n}-card", {{ scale: 0.85, x: 0, y: -210, duration: 0.3, ease: "power4.out" }}, {c});
+      tl.to("#{n}-tl", {{ strokeDashoffset: 0, duration: 0.25, ease: "power2.out" }}, {round(c + 0.15, 2)});
+      tl.to("#{n}-tar", {{ opacity: 0.45, duration: 0.25 }}, {round(c + 0.15, 2)});
+      tl.to("#{n}-k", {{ opacity: 1, duration: 0.2 }}, {round(c + 0.2, 2)});
+      tl.fromTo("#{n}-n", {{ opacity: 0, y: 80 }}, {{ opacity: 1, y: 0, duration: 0.3, ease: "power4.out" }}, {round(c + 0.2, 2)});
+      var {o} = {{ v: {e["tarifa"]} }};
+      tl.to({o}, {{ v: {e["neta"]}, duration: {round(max(0.6, fin - c - 0.3), 2)}, ease: "power1.inOut", onUpdate: function () {{ document.getElementById("{n}-cnt").textContent = Math.round({o}.v); }} }}, {round(c + 0.3, 2)});
+      tl.to("#{n}-n", {{ scale: 1.12, duration: 0.12, yoyo: true, repeat: 1 }}, {round(fin, 2)});
+      tl.to("#{n}-pie", {{ opacity: 1, duration: 0.3 }}, {round(fin, 2)});
 """
     return marco(n, D, OF_CSS, inner, js)
 
