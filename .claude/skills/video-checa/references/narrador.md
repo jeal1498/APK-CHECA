@@ -3,13 +3,11 @@
 Para CHECA y su v2 de PERSONAL, sin la cara de Eduardo. Se usa solo HyperFrames con `construir.py`: arma escenas, voz, subtítulos e `index.html` desde dos archivos de texto, sin agentes. (El proceso viejo con agentes costó ~1.7 M de tokens; el 1Volt y el 3D quedaron en el historial de git. `referencia/` guarda cuadros de videos que a Eduardo le gustaron, solo como inspiración visual.)
 
 ## 1. Proyecto
-Copia el proyecto más completo y vacía su voz:
+Todos los videos usan un **motor compartido**: `video/hyperframes/_base/` (un solo `construir.py`, fuentes, sonidos, pop-up, subtítulos y plantilla de portada). Cada video solo guarda `SCRIPT.md`, `escenas.json`, `portada/portada.json`, `assets/voice/` y `tiempos.json`; lo demás se copia de la base al construir y git lo ignora. Así un arreglo al motor vale para todos los videos y no hay copias que diverjan.
 ```bash
-cp -r video/hyperframes/cuanto-vale-km-22 video/hyperframes/<tema>
-mv video/hyperframes/<tema>/assets/voice /tmp/voz-vieja-<tema>   # nunca rm con comodín: el entorno lo bloquea
-mkdir video/hyperframes/<tema>/assets/voice
+python3 -I video/scripts/checa.py nuevo <tema> [--desde <proyecto-parecido>]
 ```
-Cambia el nombre en `meta.json` y `package.json`. Para un explicador también sirve `como-funciona-17-v2/`.
+Los proyectos anteriores al 30 oct (`cuanto-vale-km-22`, `como-funciona-17-v2`…) conservan su copia vieja; sirven de ejemplo de `escenas.json`, pero no se construyen con la base.
 
 ## 2. SCRIPT.md y escenas.json
 - `SCRIPT.md`: una línea de voz por escena, con 4 espacios al inicio. Montos **sin moneda** («110», no «$110»): ElevenLabs leyó «dólares».
@@ -26,24 +24,22 @@ Cambia el nombre en `meta.json` y `package.json`. Para un explicador también si
 | `popup`, `duo`, `dos`, `tachado`, `numero`, `gancho` | Pop-ups, comparador, cifras grandes |
 | `cierre` | Pantalla final: `{"tipo": "cierre", "pil": "Comenta CHECA", "link": false}` |
 
-Toda palabra que se pase (`en_*`, `w_*`, `titulo_en`, `sfx`) tiene que existir en su línea de voz; si no, el script se detiene y dice cuál falta. Para un tipo nuevo, agrégalo a `construir.py` (y a la tabla `TIPOS`) en vez de escribir HTML a mano, porque `construir.py` borra y regenera `compositions/frames/`.
+Toda palabra que se pase (`en_*`, `w_*`, `titulo_en`, `sfx`) tiene que existir en su línea de voz; si no, el script se detiene y dice cuál falta. Para un tipo nuevo, agrégalo a `video/hyperframes/_base/construir.py` (y a la tabla `TIPOS`) en vez de escribir HTML a mano, porque el motor borra y regenera `compositions/frames/`.
 
 ## 3. Voz y revisión
 ```bash
-cd video/hyperframes/<tema>
-ELEVEN_V3=1 python3 -I construir.py --check
+ELEVEN_V3=1 python3 -I video/scripts/checa.py construir <tema> --check
 ```
-- Voz Fernando (`dlGxemPxFMTY7iXagmOj`) en **v3 en todas las líneas**: si se mezclan v2 y v3 se oyen dos voces distintas. Si cambia una línea, aparta `assets/voice` con `mv` y vuelve a correr.
+- Voz Fernando (`dlGxemPxFMTY7iXagmOj`) en **v3 en todas las líneas**: si se mezclan v2 y v3 se oyen dos voces distintas. Si cambia una línea, aparta `assets/voice` con `mv` y vuelve a correr (nunca `rm` con comodín: el entorno lo bloquea).
 - Si ElevenLabs responde 401 `quota_exceeded`, avisa a Eduardo (v3 gasta más créditos).
 - Los avisos de `text_occluded` e ids de Studio son normales; los errores no.
 
-## 4. Render
+## 4. Render y revisión
 ```bash
-ELEVEN_V3=1 setsid nohup python3 -I construir.py --render > renders/log.txt 2>&1 &
+ELEVEN_V3=1 setsid nohup python3 -I video/scripts/checa.py construir <tema> --render > /tmp/render-<tema>.log 2>&1 &
+python3 -I video/scripts/checa.py revisar video/hyperframes/<tema>/renders/video.mp4
 ```
-Tarda ~2 min; espera a que exista `renders/video.mp4` y termine el proceso. Luego:
-- Hoja de cuadros: `ffmpeg -ss <t> -i renders/video.mp4 -frames:v 1 -vf scale=240:-1 f<t>.png` en 10–12 tiempos y `hstack`; mírala con Read.
-- `ffprobe`: `yuv420p` y perfil High (un mp4 en 4:4:4 no se reproduce en el teléfono de Eduardo).
+El render tarda ~2 min (espera a que `renders/video.mp4` deje de crecer). `revisar` imprime duración y formato, falla si no es `yuv420p` High (el teléfono de Eduardo no reproduce otro) y deja una hoja de 10 cuadros para mirarla con Read.
 
 ## 5. Oficio (lo que ya funcionó)
 - Nada quieto en los primeros 3 s: flash en el cuadro 0, tarjeta con zoom, cifra que sube, cámara que sacude.

@@ -56,6 +56,7 @@ CTA final:
 - **Sin promesas:** nada de promesas de ganancia, ciudad, país, «gratis» ni precios.
 
 ## 6. Versiones
+- **Entrega v1 y v2 juntas:** cada tema se presenta con su guion CHECA y su v2 PERSONAL en el mismo mensaje (primero la v1, una línea «Versión 2», luego la v2), para que Eduardo apruebe los dos de una vez.
 - **v2 PERSONAL:** usa las mismas cifras que la v1, con otro gancho, otras palabras y otro orden. Por ejemplo, la v1 abre con la comparación y la v2 con lo que te queda. Lleva el mismo número de carpeta. Reglas en `marketing/plan/reglas-v2.md`.
 - **A/B:** el mismo texto y las mismas cifras; solo cambia la capa visual (A con cámara, B con gráficos).
 

@@ -12,16 +12,20 @@ Lleva un guion aprobado a un video terminado, con una aprobación de Eduardo en 
 - **Con Eduardo a cámara** (cuenta @Eduardoalv9802, tutoriales): lee `references/camara.md`. Para elegir qué escena acompaña cada frase usa `plantillas/guion-escenas.md`.
 
 ## Flujo por etapas (los dos modos)
-Avanza solo con su «aprobado» y no adelantes archivos de etapas futuras. Si adelantas, él revisa cosas que pueden cambiar y pierde tiempo.
-1. **Guion**, con la skill `guion-checa`.
-2. **Tabla de animaciones por toma**: una tabla corta en el chat (toma, frase, animación) y la versión completa en `guion.md`.
-3. **Portada**, antes que el video (ver «Portada»).
-4. **Video de prueba**: mándalo con `SendUserFile` desde `renders/`, que git ignora.
-5. **Primer cuadro**: con portada y video aprobados, corre `video/scripts/portada_primer_cuadro.sh <video.mp4> <portada.jpg> <salida.mp4>` y manda el resultado. Mientras esperas su aprobación, sube a git solo `portada.jpg` y deja el mp4 en `renders/`. Con su «aprobado», copia el mp4 como `video.mp4` y commitéalo **una sola vez**. Cada mp4 commiteado engorda el repo para siempre.
-6. **Copy y DM** (ver «Copy y DM»).
-7. **Hecho**: con el copy aprobado, registra el video en los calendarios (ver «Calendarios»). «Publicado» solo lo marca Eduardo cuando lo sube.
+Una aprobación de Eduardo por etapa, con **CHECA y su v2 PERSONAL juntos en cada etapa** (dos guiones, dos tablas, dos portadas, dos videos, dos copys): así son 5 aprobaciones por tema y no 10. No adelantes etapas: él revisaría cosas que aún pueden cambiar.
+1. **Guion** de las dos versiones con la skill `guion-checa`.
+2. **Tabla de animaciones**: `checa.py tabla <guion.md> --guardar` la saca del «Guión Desglosado» (no la reescribas a mano); en el chat va la tabla corta.
+3. **Portadas** (ver «Portada»), antes que el video.
+4. **Videos de prueba**: `SendUserFile` desde `renders/` (ignorado en git).
+5. **Con su «aprobado» del video, entrega sin volver a preguntar**: `checa.py entregar <proyecto> <CHECA|PERSONAL> <NN>` pone la portada aprobada como primer cuadro (0.2 s), copia `video.mp4` y `portada.jpg` a la carpeta y revisa el formato. Es un paso mecánico sobre dos cosas ya aprobadas; el mp4 se commitea **una sola vez** (cada mp4 commiteado engorda el repo para siempre).
+6. **Copy y DM**: escribe `copy.txt` y genera el DM con `checa.py dm <carpeta>`; Eduardo aprueba el copy.
+7. **Hecho**: `checa.py hecho <carpeta> <AAAA-MM-DD> [tipo]` (calendario web + `calendario.md`). «Publicado» lo marca Eduardo; cuando avise: `checa.py publicado <carpeta> <AAAA-MM-DD>`.
+8. **Subir**: `checa.py subir "<mensaje con las líneas de atribución>"` hace commit y push a `main` y a la rama de la sesión en los dos repos. `build.yml` ignora `marketing/**`, `video/**` y `.claude/**`: no hace falta `[skip ci]`.
 
-Carpetas: `marketing/videos/CHECA/NN - Nombre/` y `marketing/videos/PERSONAL/NN - Nombre/`. Cada una lleva `video.mp4`, `portada.jpg`, `copy.txt`, `dm.txt` y `guion.md`. La v2 usa el mismo `NN` que su original.
+Carpetas: `marketing/videos/CHECA/NN - Nombre/` y `marketing/videos/PERSONAL/NN - Nombre/` (`video.mp4`, `portada.jpg`, `copy.txt`, `dm.txt`, `guion.md`); la v2 usa el mismo `NN`.
+
+## Herramienta: `video/scripts/checa.py`
+Todo lo repetible vive aquí (corre sin argumentos para ver la ayuda): `nuevo`, `construir`, `portada`, `revisar`, `entregar`, `dm`, `tabla`, `hecho`, `publicado`, `subir`. Úsala en vez de rehacer los pasos a mano: ya probó que da el mismo resultado y evita errores (p. ej. `portada` se niega si la cifra del sello ya está a la vista).
 
 ## Marca (los dos modos)
 La fuente es `jeal1498/checa-web`, carpeta `marca/`. Para cualquier duda usa la skill `marca-checa`.
@@ -31,7 +35,7 @@ La fuente es `jeal1498/checa-web`, carpeta `marca/`. Para cualquier duda usa la 
 - **Mp4:** `yuv420p` con perfil High. Revísalo con `ffprobe` antes de mandarlo, porque el teléfono de Eduardo no reproduce 4:4:4.
 
 ## Portada
-- **Plantilla:** `video/hyperframes/cuanto-vale-km-22-v2/portada/portada.html`. Se renderiza con `r.js` y Playwright: `NODE_PATH=$(npm root -g) node r.js <ruta>/portada.html <salida.png>`, y luego `ffmpeg -q:v 3 portada.jpg`.
+- **Cómo:** escribe `portada/portada.json` en el proyecto y corre `checa.py portada <proyecto>`. Campos: `etiqueta`, `titulo` (lista de 1–2 líneas), `precio`, `linea`, `recogida`, `viaje`, `sello_texto`, `sello_valor` (la cifra real escondida) y, si hace falta, `titulo_px`. La plantilla es `video/hyperframes/_base/portada/portada.html`.
 - **Receta:**
   - Fondo asfalto y etiqueta mono gris.
   - Título enorme en Bricolage 800 hueso, de máx. 8 palabras, a 128–164 px según el largo.
@@ -53,12 +57,4 @@ La fuente es `jeal1498/checa-web`, carpeta `marca/`. Para cualquier duda usa la 
   - Con el UTM se cuenta qué video trae registros.
 
 ## Calendarios
-- **Calendario web** (`PWA-Checa-Multimedia/calendario-d4f81c/data.json`, el estado real):
-  1. Agrega la entrada copiando la forma de otra: `c`, `n`, `t`, `f`, `e: "listo"`, `p: null`, `tipo`, `copy`, `dm`, `th`, `v`, `mb`, `files`.
-  2. Copia el video a `v/CNN.mp4` o `v/PNN.mp4`.
-  3. Pon una miniatura de 360 px en `t/`.
-  4. Guarda con `indent=1`.
-- **`marketing/plan/calendario.md`:** agrega la fila con ✅ (hecho).
-- **Fecha:** elige el primer día libre de esa cuenta y díselo a Eduardo.
-- **Publicado:** cuando él avise que lo subió, pon `e: "pub"` y `p: <fecha>` en los dos calendarios.
-- **Git:** commit y push a `main` en los dos repos, y también la rama de la sesión. `build.yml` ignora `marketing/**`, `video/**` y `.claude/**`, así que no hace falta `[skip ci]`.
+- El estado real está en el calendario web (`PWA-Checa-Multimedia/calendario-d4f81c/data.json`); `calendario.md` lo acompaña. `checa.py hecho` y `checa.py publicado` actualizan los dos (entrada, mp4, miniatura y fila). Elige el primer día libre de esa cuenta y díselo a Eduardo.
