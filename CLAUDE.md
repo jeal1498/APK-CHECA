@@ -90,4 +90,5 @@ Pantallas, instalación en teléfonos (Play Protect, ajustes restringidos, Samsu
 | Tocar precios, Mercado Pago, invitaciones, la web o el marketing | `docs/web-y-ventas.md` |
 | Saber qué cambió en cada versión | `docs/historial-versiones.md` |
 | Ver la historia de los videos | `docs/videos-historia.md` y `marketing/plan/` |
-| Atención en TikTok y WhatsApp | `marketing/atencion/asistente.md` |
+| Atención en TikTok y WhatsApp | `marketing/atencion/asistente.md` y `prompt.md` |
+| Videos: proyectos viejos, calendario publicado y skills quitadas | `docs/videos-calendario-historia.md`, `docs/skills-borradas.md` |

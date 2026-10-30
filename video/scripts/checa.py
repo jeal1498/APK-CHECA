@@ -27,7 +27,7 @@ CAL_MD = os.path.join(ROOT, "marketing", "plan", "calendario.md")
 
 # Lo que se copia de la base en cada `construir` (git lo ignora dentro del proyecto).
 SYNC = ["assets/checa-popup.html", "assets/logo-checa.svg", "assets/fonts", "assets/sfx", "compositions/captions.html",
-        "hyperframes.json", "frame.md", "AGENTS.md", "CLAUDE.md", "alinear.py"]
+        "hyperframes.json", "frame.md", "alinear.py"]
 GITIGNORE = SYNC + ["compositions/", "index.html", "package.json", "meta.json", "portada/portada.jpg", "portada/_portada.html",
                     "renders/", ".hyperframes/", "node_modules/"]
 DIAS = ["lun", "mar", "mié", "jue", "vie", "sáb", "dom"]
