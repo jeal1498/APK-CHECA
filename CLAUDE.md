@@ -15,6 +15,7 @@ Lo vigente para trabajar en Checa. La historia con fecha y el detalle largo vive
 - `rm` con comodín está bloqueado en el entorno: usa `mv`. Tareas de más de 2 min, en segundo plano.
 
 ## Videos (TikTok, Reels, Shorts)
+- **Frase de arranque: «Lote de videos: …»** (con temas, o «propón los temas»). Al leerla: `git pull origin main` en los dos repos, lee `marketing/plan/plan-ponerse-al-dia.md`, invoca la skill `guion-checa` con la herramienta Skill y arranca el flujo de dos aprobaciones (abajo). Si no trae temas, propón 3–4 con lo que más retiene y espera su elección.
 - **Guiones:** siempre con la skill **`guion-checa`**. **Producción** (voz, escenas, portada, copy, calendarios y control de calidad): skill **`video-checa`** con la herramienta `video/scripts/checa.py` y el motor `video/hyperframes/_base/`.
 - **Flujo: dos aprobaciones por lote.** (1) Eduardo aprueba juntos los guiones del lote (cada tema con CHECA y su v2 PERSONAL); (2) Claude produce todo sin preguntar, pasa el control de calidad y le manda el lote completo para una sola revisión; se corrige solo lo que él marque. «Publicado» lo marca él.
 - **CTA vigente:** «Comenta CHECA y te paso el acceso a la prueba en Google Play». Cuentas: `@checa.driver` (Checa) y `@Eduardoalv9802` (personal).
