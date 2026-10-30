@@ -43,7 +43,7 @@ Sin link en la bio (TikTok pide constancia del SAT para cuenta de empresa): a qu
 | 18 | por definir | Venta | `18 - Cuánto ganas tú` |  | (ya está en PERSONAL) |
 | 20 | — | Tutorial (descartado 30 oct: explica el APK, que se cierra el 15 nov) | `20 - Cómo instalar Checa` |  | ❌ descartado |
 | 21 | sáb 17 oct | Campaña beta | `21 - Beta testers corto` | ✅ |✅ 17 oct (sin efectos de sonido) |
-| 22 | por definir | Venta (prueba del domingo 19 oct) | `22 - Cuánto vale tu kilómetro` | guion para aprobar | |
+| 22 | mié 4 nov | Venta (rehecho 30 oct, voz v3) | `22 - Cuánto vale tu kilómetro` | ✅ (hecho 30 oct) | |
 | 23 | dom 25 oct | Campaña testers (Eduardo a cámara; CHECA y v2 PERSONAL el mismo día) | `23 - Prueba en Google Play` | ✅ | ✅ publicado 25 oct |
 | 26 | dom 1 nov | Venta (Hyperframes, voz v3) | `26 - Dos ofertas misma neta` | ✅ (copy por aprobar) | |
 
@@ -81,7 +81,7 @@ Misma idea que cada video de CHECA, con otro gancho y otras palabras (reglas en 
 | 25 | — | Venta (descartados 30 oct, 2 borradores: campaña vieja) | `25 - Checa lee la oferta en 3 segundos` y `25 - Pagar gasolina antes de aceptar` |  | ❌ descartado |
 | 26 | lun 2 nov | Venta (v2) | `26 - Dos ofertas misma neta` | ✅ (hecho 30 oct) | |
 | 17 | mar 3 nov | Explicativo (v2, voz v3) | `17 - Cómo funciona Checa` | ✅ (hecho 30 oct) | |
-| 22 | por definir | Venta (v2, un día detrás de CHECA) | `22 - Cuánto vale tu kilómetro` | guion para aprobar | |
+| 22 | por definir | Venta (v2, un día detrás de CHECA) | `22 - Cuánto vale tu kilómetro` | pendiente: guion v2 (gancho: «Te ofrecen 110 y te quedan 54») | |
 
 # Medición semanal (qué videos venden)
 
