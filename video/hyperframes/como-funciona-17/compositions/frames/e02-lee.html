@@ -1,0 +1,47 @@
+<template>
+  <style>
+    @font-face{ font-family: 'Bricolage Grotesque'; font-weight: 800; font-display: block; src: url('assets/fonts/bricolage-grotesque-latin-800-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'DM Sans'; font-weight: 400; font-display: block; src: url('assets/fonts/dm-sans-latin-400-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'DM Sans'; font-weight: 700; font-display: block; src: url('assets/fonts/dm-sans-latin-700-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'JetBrains Mono'; font-weight: 500; font-display: block; src: url('assets/fonts/jetbrains-mono-latin-500-normal.woff2') format('woff2'); }
+    @font-face{ font-family: 'JetBrains Mono'; font-weight: 700; font-display: block; src: url('assets/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); }
+    #root { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; font-family: 'DM Sans', Arial, sans-serif; color: #F4F4EF; }
+    .clip { position: absolute; }
+    .G { inset: 0; background: #0C0C10; }
+    .etq { position: absolute; left: 0; right: 0; text-align: center; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 28px; letter-spacing: .12em; text-transform: uppercase; color: #A3A3AD; }
+    .mask { position: absolute; left: 0; right: 0; overflow: hidden; text-align: center; }
+    .mask > div { font-family: 'Bricolage Grotesque', 'Arial Black', sans-serif; font-weight: 800; letter-spacing: -0.045em; line-height: 1; white-space: nowrap; }
+    .of { position: relative; width: 640px; height: 420px; border-radius: 28px; background: #16161C; border: 2px solid #3A3A45; box-shadow: 0 30px 60px rgba(0,0,0,.6); }
+    .of .l { position: absolute; left: 40px; top: 30px; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 24px; letter-spacing: .14em; color: #A3A3AD; }
+    .of .f { position: absolute; left: 36px; top: 64px; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 150px; letter-spacing: -.05em; line-height: 1; }
+    .of .d { position: absolute; left: 40px; top: 214px; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 28px; color: #C9C9D1; line-height: 1.5; }
+    .of .b { position: absolute; left: 40px; top: 318px; background: #22C55E; color: #04210F; border-radius: 999px; padding: 10px 36px; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 38px; letter-spacing: .06em; }
+  </style>
+
+  <div id="root" data-composition-id="e02-lee" data-width="1080" data-height="1920" data-start="0" data-duration="2.07">
+    <div id="e02-lee-g" class="clip G" data-start="0" data-duration="2.07" data-track-index="0"></div>
+    <div id="e02-lee-of" class="clip" style="left:160px;top:470px" data-start="0" data-duration="2.07" data-track-index="1"><div class="of" style="width:760px;height:440px"><div class="l">NUEVA OFERTA</div><div class="f">$150</div><div class="d">A 6 min (3 km)<br>Viaje: 22 min (13 km)</div><div class="b">ACEPTAR</div></div></div>
+    <div id="e02-lee-sc" class="clip" style="left:140px;top:470px;width:800px;height:8px;border-radius:4px;background:#22C55E;box-shadow:0 0 30px #22C55E;opacity:0" data-start="0" data-duration="2.07" data-track-index="2"></div>
+    <div id="e02-lee-lg" class="clip" style="left:465px;top:130px" data-start="0" data-duration="2.07" data-track-index="3"><svg width="150" height="250" viewBox="0 0 60 100" aria-hidden="true"><rect x="6" y="2" width="48" height="96" rx="20" fill="#222826" stroke="#3A423F" stroke-width="1.6"/><circle cx="30" cy="26" r="9" fill="#4A2222"/><circle cx="30" cy="50" r="9" fill="#4A3C16"/><circle cx="30" cy="74" r="12" fill="#1D3A27"/><circle id="e02-lee-lr" cx="30" cy="26" r="9" fill="#EF4444" opacity="0"/><circle id="e02-lee-la" cx="30" cy="50" r="9" fill="#FACC15" opacity="0"/><circle id="e02-lee-lv" cx="30" cy="74" r="12" fill="#22C55E" opacity="0"/><path id="e02-lee-lk" d="M24 74.5l4.5 4.5L36.5 69" fill="none" stroke="#04210F" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="20" stroke-dashoffset="20"/></svg></div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      var D = 2.07;
+      tl.fromTo("#e02-lee-of", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.3, ease: "power4.out" }, 0);
+      tl.fromTo("#e02-lee-sc", { opacity: 1, y: 0 }, { opacity: 1, y: 440, duration: 1.1, ease: "power1.inOut" }, 0.03);
+      tl.to("#e02-lee-sc", { opacity: 0, duration: 0.2 }, 1.13);
+      tl.fromTo("#e02-lee-lg", { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 0.3 }, 0);
+      tl.set("#e02-lee-lr", { opacity: 1 }, 0.30000000000000004); tl.set("#e02-lee-lr", { opacity: 0 }, 0.6000000000000001);
+      tl.set("#e02-lee-la", { opacity: 1 }, 0.6000000000000001); tl.set("#e02-lee-la", { opacity: 0 }, 0.8999999999999999);
+      tl.set("#e02-lee-lv", { opacity: 1 }, 0.8999999999999999);
+      tl.to("#e02-lee-lk", { strokeDashoffset: 0, duration: 0.3, ease: "power2.out" }, 1.1);
+
+      window.__timelines["e02-lee"] = tl;
+    })();
+  </script>
+</template>
