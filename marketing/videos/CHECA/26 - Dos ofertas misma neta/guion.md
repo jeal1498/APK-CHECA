@@ -42,3 +42,4 @@ Ajustes por defecto: 12 km/l, $24/l, meta $150/h y $8/km, recogida máx. 4 km.
 8. Con tus metas por hora y por kilómetro.
 9. Comenta CHECA y te paso el acceso a la prueba.
 Voz: ElevenLabs v3 con Audio Tags (aprobada la muestra de la línea 1). Estado: video de prueba enviado; faltan portada, copy y aprobación de Eduardo.
+Actualización 30 oct: video (31.5 s, con la portada como primer cuadro) y portada «No son $95» aprobados por Eduardo y guardados aquí. Falta: copy.txt, dm.txt, calendarios y v2 PERSONAL (ver `marketing/plan/plan-ponerse-al-dia.md`).

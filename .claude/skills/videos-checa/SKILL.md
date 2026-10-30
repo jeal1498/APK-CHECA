@@ -65,6 +65,13 @@ Eduardo sube cada video a la cuenta de Checa y una **v2** a su TikTok personal. 
 - **Cuenta de ElevenLabs:** si responde 401 `quota_exceeded`, avisar a Eduardo (la clave «Claudio» tiene tope de créditos).
 - **Dos conversaciones:** la principal (guiones, v2, carpetas, skill) se cerró en esta fecha; la secundaria hace cambios puntuales (p. ej. subir videos sueltos). Cualquier sesión nueva que trabaje videos debe seguir esta skill y empezar con `git pull origin main`.
 
+## Novedades del 30 oct 2026 (video 26, `video/hyperframes/dos-ofertas-misma-neta/`)
+- **Plan para ponerse al día con los videos:** `marketing/plan/plan-ponerse-al-dia.md` (léelo al empezar). El estado real de publicación está en el calendario web (repo `PWA-Checa-Multimedia`, `calendario-d4f81c/data.json`); `calendario.md` va desfasado.
+- **Voz con Audio Tags (ElevenLabs v3):** `video/scripts/elevenlabs.py` usa `eleven_v3` si el texto trae `[pause]`, `[sighs]`, `[sarcastic]`, `[excited]`… o si se define `ELEVEN_V3=1` (v3 no acepta velocidad). Usa v3 en **todas** las líneas del video para no mezclar voces. `construir.py` de ese proyecto quita los `[tags]` de palabras y subtítulos. Máx. 1–2 tags por línea. Ejemplo aprobado por Eduardo: «Te cae un viaje de 95 pesos, [pause] pero en tu bolsa [sighs] nomás se quedan 67.»
+- **`construir.py` del 26** (copiar de ahí; aún no está en `checa-marca-v2`) suma escenas `tachado` (gancho con oferta, toque, acercamiento y contador), `rutas`, `dos` (fases `entra`, `datos`, `neta`), `duo` (dos pop-ups apilados con MEJOR), `numero` con `size`, `cierre` con `pil` y `"link": false`, y `--avance` para renderizar un tramo sin cierre.
+- **Gancho:** nada quieto en los primeros 3 s; arranca con texto, toque y acercamiento desde el cuadro 0.
+- **Portada** (oferta tipo app de viajes, sello «TE QUEDAN $▒▒»): `video/hyperframes/dos-ofertas-misma-neta/portada/portada.html`; se renderiza con Playwright (el Chrome de `/opt/pw-browsers` cambió de ruta).
+
 ## ⭐ Estilo HyperFrames (favorito de Eduardo, 14 oct 2026) — proceso ECONÓMICO
 
 Referencia: `marketing/videos/CHECA/17 - Cómo funciona Checa/video.mp4` (40 s, 9:16), proyecto **`video/hyperframes/checa-promo/`**. A Eduardo le gustó mucho. La primera vez costó ~1.7 M tokens (proceso completo de HyperFrames con 13 agentes); **no repetir eso**. Meta: **~150–300 mil tokens por video**.
