@@ -79,4 +79,4 @@ Antes de cada subida: revisar el `copy.txt` (CTA de §3.2), pasar el video al ca
 - Si ElevenLabs responde 401 `quota_exceeded`, avisar a Eduardo (v3 gasta más créditos que v2).
 
 ## Avance al 30 oct 2026 (noche)
-Hecho: copy y DM del 26; calendarios con fechas de la Fase 1; 17 rehecho; 26 v2 hecha; cierre nuevo en C14, C15, C19, P10, P14, P15; 24 y 25 descartados. Pendiente: subir los videos (calendario de arriba), v2 PERSONAL del 17, decidir el guion del 22 y los videos nuevos de urgencia. Detalle en `CLAUDE.md` («Videos — puesta al día»).
+Hecho: copy y DM del 26; calendarios con fechas de la Fase 1; 17 rehecho; 26 v2 hecha; cierre nuevo en C14, C15, C19, P10, P14, P15; 24 y 25 descartados. PERSONAL 17 v2 hecho y en el calendario web (3 nov). Pendiente: subir los videos (calendario de arriba), decidir el guion del 22 y los videos nuevos de urgencia. Detalle en `CLAUDE.md` («Videos — puesta al día»).
