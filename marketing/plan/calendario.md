@@ -20,8 +20,8 @@
 
 | # | Fecha | Tipo | Carpeta | Hecho | Publicado |
 |---|---|---|---|---|---|
-| 10 | vie 30 oct | Venta | `10 - Mejores horas` | ✅ | |
-| 14 | sáb 31 oct | Venta | `14 - Miedo a rechazar` | ✅ | |
+| 10 | vie 30 oct | Venta | `10 - Mejores horas` | ✅ | ✅ |
+| 14 | sáb 31 oct | Venta | `14 - Miedo a rechazar` | ✅ | ✅ |
 | 15 | dom 1 nov | Venta | `15 - Desgaste y renta` | ✅ | |
 | 26 | lun 2 nov | Venta (v2) | `26 - Dos ofertas misma neta` | ✅ (hecho 30 oct) | |
 | 17 | mar 3 nov | Explicativo (v2, voz v3) | `17 - Cómo funciona Checa` | ✅ (hecho 30 oct) | |
