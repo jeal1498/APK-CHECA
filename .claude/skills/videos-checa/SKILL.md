@@ -72,17 +72,6 @@ Eduardo sube cada video a la cuenta de Checa y una **v2** a su TikTok personal. 
 - **Gancho:** nada quieto en los primeros 3 s; arranca con texto, toque y acercamiento desde el cuadro 0.
 - **Portada** (oferta tipo app de viajes, sello «TE QUEDAN $▒▒»): `video/hyperframes/dos-ofertas-misma-neta/portada/portada.html`; se renderiza con Playwright (el Chrome de `/opt/pw-browsers` cambió de ruta).
 
-## Cómo le gustan los videos a Eduardo (30 oct 2026, video 17; vigente para todos)
-- **Los primeros 3 s son un golpe, no una entrada suave.** Del 17: «se sienten muy flojos» con una tarjeta que solo entraba y un título quieto. Lo que sí funcionó: flash en el cuadro 0, tarjeta que se estrella con zoom grande, monto que sube de $0, toque en «Aceptar» con ondita, cámara que se pega a la cifra y la sacude, y el título entra grande (blanco + amarillo) con sello «¿$?». Nada quieto ni vacío mientras la voz habla.
-- **Sin pausas largas de voz.** Un `[pause]` de v3 dejó 1.3 s de silencio con pantalla estática: no usar `[pause]` en el gancho (si hace falta, solo entre ideas y con algo moviéndose).
-- **Voz v3 en todas las líneas del video** (`ELEVEN_V3=1 python3 -I construir.py …`) para no mezclar voces; si cambia una línea, apartar su `NN.mp3/.json/.wav` con `mv` (no `rm` con comodín) y regenerar.
-- **Una idea por toma de ~3 s y algo cambia en cada toma.** Los pop-ups dicen «OFERTA» (no nombres de app); «Números de ejemplo» donde haya cifras; todo el contenido por encima de y≈1150 (subtítulos en 1160–1480).
-- **Formato del mp4:** siempre `yuv420p`, perfil High (`-pix_fmt yuv420p -profile:v high -movflags +faststart`). Un unido con `xfade` salió en 4:4:4 y el teléfono de Eduardo dijo «mi dispositivo no puede reproducirlo»; revisa con `ffprobe` antes de mandarlo.
-- **Rehacer un video viejo con el flujo nuevo:** `guion-remotion-checa` para el guion (cifras con las fórmulas del código) → tabla de animaciones → portada → video → copy, una aprobación por etapa. No pegar un cierre nuevo a un cuerpo de marca vieja.
-- **Plantilla con más tipos de escena: `video/hyperframes/como-funciona-17/construir.py`** (suma `oferta` con golpe, `lee`, `aviso`, `ticket`, `fichas`, `metas`, `horas`; `rutas` con `ficha`, `en_rec`, `en_viaje`; copiarla en vez de la del 26 para un explicador). `hyperframes check` marca un error de «texto oculto» si el cierre va solo: no pasa si el cierre va al final de un video completo.
-- **Portadas:** `portada/portada.html` del 17 es la tarjeta de oferta con título de pregunta y sello «TE QUEDAN $▒▒»; se renderiza con Playwright (`require('playwright')`, viewport 1080×1920).
-- **Descartes del 30 oct:** videos 20, PERSONAL 24 y 25 (campaña vieja «Busco 50»). CTA vigente: «Comenta CHECA y te paso el acceso a la prueba en Google Play».
-
 ## ⭐ Estilo HyperFrames (favorito de Eduardo, 14 oct 2026) — proceso ECONÓMICO
 
 Referencia: `marketing/videos/CHECA/17 - Cómo funciona Checa/video.mp4` (40 s, 9:16), proyecto **`video/hyperframes/checa-promo/`**. A Eduardo le gustó mucho. La primera vez costó ~1.7 M tokens (proceso completo de HyperFrames con 13 agentes); **no repetir eso**. Meta: **~150–300 mil tokens por video**.
