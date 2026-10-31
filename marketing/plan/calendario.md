@@ -10,7 +10,7 @@
 | # | Fecha | Tipo | Carpeta | Hecho | Publicado |
 |---|---|---|---|---|---|
 | 14 | vie 30 oct | Venta | `14 - Miedo a rechazar` | ✅ | |
-| 15 | sáb 31 oct | Venta | `15 - Desgaste y renta` | ✅ | |
+| 15 | mié 28 oct | Venta | `15 - Desgaste y renta` | ✅ | ✅ 28 oct |
 | 26 | lun 2 nov | Venta (Hyperframes, voz v3) | `26 - Dos ofertas misma neta` | ✅ | |
 | 19 | mar 3 nov | Venta | `19 - Checa lee la oferta` | ✅ (en calendario web) | |
 | 17 | mié 4 nov | Explicativo (rehecho 30 oct, voz v3) | `17 - Cómo funciona Checa` | ✅ (hecho 30 oct) | |
@@ -25,7 +25,7 @@
 | # | Fecha | Tipo | Carpeta | Hecho | Publicado |
 |---|---|---|---|---|---|
 | 10 | vie 30 oct | Venta | `10 - Mejores horas` | ✅ | ✅ |
-| 14 | sáb 31 oct | Venta | `14 - Miedo a rechazar` | ✅ | ✅ |
+| 14 | mié 28 oct | Venta | `14 - Miedo a rechazar` | ✅ | ✅ 28 oct |
 | 15 | lun 2 nov | Venta | `15 - Desgaste y renta` | ✅ | |
 | 26 | mar 3 nov | Venta (v2) | `26 - Dos ofertas misma neta` | ✅ (hecho 30 oct) | |
 | 17 | mié 4 nov | Explicativo (v2, voz v3) | `17 - Cómo funciona Checa` | ✅ (hecho 30 oct) | |
