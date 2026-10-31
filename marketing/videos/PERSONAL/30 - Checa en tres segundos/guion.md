@@ -1,6 +1,6 @@
 # Guion · 30 - Checa en tres segundos (PERSONAL, v2) — 31 oct 2026, skill `guion-checa`
 
-**Estado:** guion y piloto aprobados (31 oct 2026); video producido con control de calidad, falta la revisión final de Eduardo. Mismas cifras y estilo «iPhone» que la v1 de CHECA (ver su `guion.md`); abre con lo que te queda y cierra con la comparación.
+**Estado:** guion y piloto aprobados (31 oct 2026); video producido con control de calidad, aprobado por Eduardo el 31 oct 2026; para el lun 9 nov. Mismas cifras y estilo «iPhone» que la v1 de CHECA (ver su `guion.md`); abre con lo que te queda y cierra con la comparación.
 
 ## Números de ejemplo
 Iguales a la v1: A $108 → gasolina $24 → **$84 netos**, $295/h, $9/km, ACEPTAR. B $130 → gasolina $40 → $90 netos, recogida 5 km > 4 → RECHAZAR. Gana A.

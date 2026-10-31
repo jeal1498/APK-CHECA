@@ -1,6 +1,6 @@
 # Guion · 30 - Checa en tres segundos (CHECA) — 31 oct 2026, skill `guion-checa`
 
-**Estado:** guion y piloto aprobados (31 oct 2026); video producido con control de calidad, falta la revisión final de Eduardo. Pedido: «video promocional de cómo funciona Checa, nuevo, con estilo de iPhone».
+**Estado:** guion y piloto aprobados (31 oct 2026); video producido con control de calidad, aprobado por Eduardo el 31 oct 2026; para el lun 9 nov. Pedido: «video promocional de cómo funciona Checa, nuevo, con estilo de iPhone».
 
 Concepto / Problema detectado en el repo:
 El conductor tiene segundos para decidir y solo ve la tarifa bruta. Checa (`Parser.kt`) resta la gasolina de recogida + viaje, calcula $/h y $/km sobre km y min **totales**, pinta el semáforo (`nivel()`, `motivoFiltro()` con recogida máx.) y elige la mejor de dos (`Comparador.kt`: primero el nivel). Mismo explicador que el 17, pero con **estilo de anuncio de iPhone**: fondo negro (asfalto), un teléfono flotando que gira despacio con luz suave, frases de 2–4 palabras gigantes que entran una por una, mucho aire y cortes limpios.
