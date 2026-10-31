@@ -173,7 +173,7 @@ def esc_gancho(sc, e, nombre):
         inicio = [min(i, len(w) - 1) for i in e["en"]]
     size = e.get("size") or min(170, int(1000 / (max(len(l) for l in lineas) * 0.54)))
     alto = int(size * 1.04); alt_m = int(size * 1.3)
-    inner = "".join(f'    <div id="{nombre}-q{i}" class="mask clip" style="top:{300 + i * alto}px;height:{alt_m}px" data-start="0" data-duration="{D}" data-track-index="{i + 1}"><div style="font-size:{size}px;{"color:#FACC15;" if i == res else ""}">{l}</div></div>\n' for i, l in enumerate(lineas))
+    inner = "".join(f'    <div id="{nombre}-q{i}" class="mask clip" style="top:{300 + i * alto}px;height:{alt_m}px" data-start="0" data-duration="{D}" data-track-index="{i + 1}"><div style="font-size:{size}px;{"color:#FACC15;" if i == res else ("color:#EF4444;" if i in e.get("rojas", []) else "")}">{l}</div></div>\n' for i, l in enumerate(lineas))
     y = 300 + len(lineas) * alto + 40
     fd = e.get("fondo")
     if fd:  # oferta mal pagada de fondo (sin raya de carretera)
@@ -191,6 +191,11 @@ def esc_gancho(sc, e, nombre):
         js += f'      tl.fromTo("#{nombre}-fl", {{ opacity: 0.85 }}, {{ opacity: 0, duration: 0.25, ease: "power2.out" }}, 0);\n'
         js += f'      tl.fromTo("#{nombre}-q0 > div", {{ scale: 1.6 }}, {{ scale: 1, duration: 0.4, ease: "power4.out" }}, 0);\n'
         js += f'      tl.to("#{nombre}-q{res}", {{ x: 10, duration: 0.04, yoyo: true, repeat: 7 }}, {round(w[inicio[res]][1] + 0.4, 2)});\n'
+    if e.get("golpe_en"):  # golpe: todas las líneas dan un zoom corto y la resaltada tiembla
+        tg = pal(sc, e["golpe_en"])
+        for i in range(len(lineas)):
+            js += f'      tl.fromTo("#{nombre}-q{i}", {{ scale: 1.14 }}, {{ scale: 1, duration: 0.4, ease: "power4.out" }}, {tg});\n'
+        js += f'      tl.to("#{nombre}-q{res}", {{ x: 12, duration: 0.04, yoyo: true, repeat: 7 }}, {round(tg + 0.1, 2)});\n'
     return marco(nombre, D, OF_CSS if fd else "", inner, js)
 
 
@@ -240,7 +245,7 @@ def esc_cierre(sc, e, nombre):
     logo = '<svg id="N-lg" width="150" height="250" viewBox="0 0 60 100" aria-hidden="true"><rect x="6" y="2" width="48" height="96" rx="20" fill="#222826" stroke="#3A423F" stroke-width="1.6"/><circle cx="30" cy="26" r="9" fill="#4A2222"/><circle cx="30" cy="50" r="9" fill="#4A3C16"/><circle cx="30" cy="74" r="12" fill="#1D3A27"/><circle id="N-lr" cx="30" cy="26" r="9" fill="#EF4444" opacity="0"/><circle id="N-la" cx="30" cy="50" r="9" fill="#FACC15" opacity="0"/><circle id="N-lv" cx="30" cy="74" r="12" fill="#22C55E" opacity="0"/><path id="N-lk" d="M24 74.5l4.5 4.5L36.5 69" fill="none" stroke="#04210F" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="20" stroke-dashoffset="20"/></svg>'.replace("N-", nombre + "-")
     inner = f"""    <div id="{nombre}-lgw" class="clip" style="left:465px;top:190px" data-start="0" data-duration="{D}" data-track-index="1">{logo}</div>
     <div id="{nombre}-nom" class="mask clip" style="top:470px;height:150px" data-start="0" data-duration="{D}" data-track-index="2"><div style="font-size:140px">Checa</div></div>
-    <div id="{nombre}-pil" class="clip" style="left:290px;top:660px;width:500px;height:92px;border-radius:999px;background:#F4F4EF;color:#0C0C10;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;font-weight:700;font-size:44px" data-start="0" data-duration="{D}" data-track-index="3">{e.get("pil", "Descarga Checa")}</div>
+    <div id="{nombre}-pil" class="clip" style="left:290px;top:660px;width:500px;height:92px;border-radius:999px;background:{COLOR[e.get("pil_color", "hueso")]};color:#0C0C10;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;font-weight:700;font-size:44px" data-start="0" data-duration="{D}" data-track-index="3">{e.get("pil", "Descarga Checa")}</div>
     <div id="{nombre}-sa" class="etq clip" style="top:780px" data-start="0" data-duration="{D}" data-track-index="4">Solo Android</div>
     <div id="{nombre}-cu" class="clip" style="left:140px;right:140px;top:840px;text-align:center;font-family:'DM Sans',sans-serif;font-size:34px;line-height:1.5;color:#A3A3AD" data-start="0" data-duration="{D}" data-track-index="5">síguenos en tiktok<br><b style="font-family:'JetBrains Mono',monospace;font-size:42px;color:#F4F4EF">@checa.driver</b><br>creador de Checa<br><b style="font-family:'JetBrains Mono',monospace;font-size:42px;color:#F4F4EF">@Eduardoalv9802</b></div>
     <div id="{nombre}-li" class="clip" style="left:0;right:0;top:1100px;text-align:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:36px;color:#FACC15" data-start="0" data-duration="{D}" data-track-index="6">jeal1498.github.io/PWA-Checa-Multimedia</div>"""
@@ -1006,6 +1011,8 @@ def _pantalla(n, e):
          f'<div class="ofm" id="{n}-ofm"><div class="l">NUEVA OFERTA</div><div class="f">${cnt}</div><div class="d">{d}</div><div class="b">ACEPTAR</div></div>')
     if e.get("imagen"):  # captura real de la app (assets/img/...) en lugar del mapa y la oferta
         h = f'<img src="assets/img/{e["imagen"]}" style="position:absolute;inset:0;width:414px;height:874px" alt=""><div class="isla"></div>'
+        if e.get("imagen2"):
+            h += f'<img id="{n}-im2" src="assets/img/{e["imagen2"]}" style="position:absolute;inset:0;width:414px;height:874px;opacity:0" alt="">'
     pops = e.get("popups") or ([e["popup"]] if e.get("popup") else [])
     for i, p in enumerate(pops):
         validar_popup(p)
@@ -1066,6 +1073,11 @@ def esc_iphone(sc, e, n):
     else:
         js = f'      tl.fromTo("#{n}-ph", {{ y: 30, rotationY: {g0}, rotationX: 3, scale: 0.97 }}, {{ y: -10, rotationY: {g1}, rotationX: 0, scale: 1, duration: D, ease: "sine.inOut" }}, 0);\n'
         js += f'      tl.fromTo("#{n}-st", {{ opacity: 0 }}, {{ opacity: 1, duration: 0.18 }}, 0);\n'
+    if e.get("imagen2"):  # cambia de captura en una palabra
+        js += f'      tl.to("#{n}-im2", {{ opacity: 1, duration: 0.25 }}, {pal(sc, e["imagen2_en"])});\n'
+    if e.get("golpe_en"):
+        tg = pal(sc, e["golpe_en"])
+        js += f'      tl.fromTo("#{n}-st", {{ scale: 1.1 }}, {{ scale: 1, duration: 0.4, ease: "power4.out" }}, {tg});\n      tl.to("#{n}-st", {{ x: 12, duration: 0.04, yoyo: true, repeat: 5 }}, {round(tg + 0.1, 2)});\n'
     if e.get("zoom_en"):
         js += f'      tl.to("#{n}-st", {{ scale: {e.get("zoom", 1.3)}, y: {e.get("zoom_y", 120)}, duration: 0.7, ease: "power3.inOut" }}, {pal(sc, e["zoom_en"])});\n'
     if e.get("cuenta"):

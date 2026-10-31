@@ -8,6 +8,9 @@
    "gratis"
   ],
   "resalta": 3,
+  "rojas": [
+   0
+  ],
   "flash": true,
   "size": 140,
   "en": [
@@ -16,6 +19,7 @@
    4,
    6
   ],
+  "golpe_en": "apaga",
   "fondo": {
    "tarifa": 70,
    "d1": "A 3 min (1 km)",
@@ -24,7 +28,7 @@
  },
  {
   "tipo": "numero",
-  "etiqueta": "gasolina + desgaste, por km",
+  "etiqueta": "combustible + desgaste, por km",
   "numero": "$9",
   "size": 380,
   "color": "rojo",
@@ -38,64 +42,52 @@
   "d": "A 3 min (1 km)<br>Viaje: 25 min (12 km)",
   "cuenta": true,
   "ruta_en": "bolsa",
+  "luz": "rojo",
   "titulo": [
    [
-    "−$47 por viaje.",
+    "−$47 de tu bolsa.",
     "bolsa",
     "rojo"
    ]
   ],
-  "titulo_px": 110,
+  "titulo_px": 84,
   "chips": [
    [
     "$5.4/km",
     "por km",
     "rojo",
-    "tarifas",
+    "poniendo",
     30,
     460
-   ]
-  ],
-  "luz": "rojo"
- },
- {
-  "tipo": "iphone",
-  "imagen": "inicio.png",
-  "luz": "verde",
-  "ejemplo": false,
-  "titulo": [
-   [
-    "Ya no regales",
-    "regales",
-    "hueso"
-   ],
-   [
-    "tu esfuerzo.",
-    "esfuerzo",
-    "amarillo"
-   ]
-  ],
-  "titulo_px": 72,
-  "chips": [
-   [
-    "Checa",
-    "la app",
-    "verde",
-    "Checa",
-    640,
-    820
    ]
   ]
  },
  {
+  "tipo": "gancho",
+  "lineas": [
+   "Ya no regales",
+   "la chamba."
+  ],
+  "resalta": 1,
+  "golpe_en": "regales"
+ },
+ {
   "tipo": "iphone",
-  "imagen": "ajustes.png",
-  "luz": "amarillo",
+  "imagen": "inicio.png",
+  "imagen2": "ajustes.png",
+  "imagen2_en": "tarifa",
+  "golpe_en": "conviene",
+  "luz": "verde",
   "ejemplo": false,
   "titulo": [
    [
-    "Tu tarifa mínima.",
-    "tarifa",
+    "Checa:",
+    "Checa",
+    "verde"
+   ],
+   [
+    "tu mínimo.",
+    "mínima",
     "amarillo"
    ]
   ],
@@ -108,80 +100,21 @@
     "mínima",
     620,
     760
+   ],
+   [
+    "Sí conviene",
+    "el viaje",
+    "verde",
+    "conviene",
+    30,
+    430
    ]
-  ]
- },
- {
-  "tipo": "iphone_duo",
-  "popups": [
-   {
-    "nivel": "rojo",
-    "app": "OFERTA",
-    "neta": 33,
-    "viaje": 55,
-    "gasolina": 22,
-    "chips": [
-     [
-      "$143/h",
-      "por hora",
-      "mal"
-     ],
-     [
-      "$5.0/km",
-      "por km",
-      "mal"
-     ],
-     [
-      "23 min",
-      "11 km total",
-      ""
-     ]
-    ]
-   },
-   {
-    "nivel": "verde",
-    "app": "OFERTA",
-    "neta": 126,
-    "viaje": 150,
-    "gasolina": 24,
-    "chips": [
-     [
-      "$360/h",
-      "por hora",
-      "ok"
-     ],
-     [
-      "$12.5/km",
-      "por km",
-      "ok"
-     ],
-     [
-      "25 min",
-      "12 km total",
-      ""
-     ]
-    ]
-   }
-  ],
-  "ofertas": [
-   {
-    "tarifa": 55,
-    "d": "A 3 min (1 km)<br>Viaje: 20 min (10 km)"
-   },
-   {
-    "tarifa": 150,
-    "d": "A 3 min (1 km)<br>Viaje: 22 min (11 km)"
-   }
-  ],
-  "entra_en": "avisa",
-  "gana": [
-   1,
-   "conviene"
   ]
  },
  {
   "tipo": "cierre",
   "pil": "Comenta CHECA",
+  "pil_color": "amarillo",
   "link": false,
   "flecha": true
  }
