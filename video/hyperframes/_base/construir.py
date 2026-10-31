@@ -463,6 +463,8 @@ def sfx_escena(sc, e):
         return [("popup-entra", pal(sc, e.get("entra", 0)), 0.4), ("popup-entra", pal(sc, e.get("entra", 0)) + 0.35, 0.3), ("aceptar", pal(sc, e.get("entra", 0)) + 0.8, 0.45)]
     if tipo == "numero":
         return [("numero-sube", 0.2, 0.4)]
+    if tipo == "iphone_gancho":
+        return [("popup-entra", 0.0, 0.4), ("numero-sube", pal(sc, str(e["tarifa"])) - 0.2, 0.35), ("sello", pal(sc, "tres"), 0.35)]
     if tipo in ("cierre", "logo"):
         return [("logo-semaforo", 0.0, 0.5)]
     return []
@@ -909,7 +911,57 @@ def esc_reloj15(sc, e, n):
 
 
 
-TIPOS = {"comparar": esc_comparar, "cuenta": esc_cuenta, "meta": esc_meta, "reloj15": esc_reloj15, "oferta": esc_oferta, "lee": esc_lee, "aviso": esc_aviso, "ticket": esc_ticket, "fichas": esc_fichas, "metas": esc_metas, "horas": esc_horas, "hook": esc_hook, "anillo": esc_anillo, "datos": esc_datos, "logo": esc_logo, "escaneo": esc_escaneo, "voz": esc_voz, "popup_oferta": esc_popup_oferta, "reloj": esc_reloj, "seguir": esc_seguir, "gancho": esc_gancho, "numero": esc_numero, "popup": esc_popup, "estados": esc_estados, "cierre": esc_cierre, "paso": esc_paso, "listo": esc_listo, "fin": esc_fin, "tachado": esc_tachado, "rutas": esc_rutas, "dos": esc_dos, "duo": esc_duo}
+IPH_CSS = """.iph-s { perspective: 1800px; }
+    .iph { position: absolute; width: 440px; height: 900px; border-radius: 78px; padding: 13px; box-sizing: border-box; background: linear-gradient(140deg, #4A4A52 0%, #1A1A20 35%, #2C2C33 70%, #55555E 100%); box-shadow: 0 70px 140px rgba(0,0,0,.75), inset 0 0 0 2px #5C5C66; transform-style: preserve-3d; }
+    .iph .scr { position: relative; width: 100%; height: 100%; border-radius: 66px; overflow: hidden; background: #111116; }
+    .iph .isla { position: absolute; top: 20px; left: 50%; width: 128px; height: 38px; margin-left: -64px; border-radius: 20px; background: #000; }
+    .iph .brillo { position: absolute; inset: 0; border-radius: 66px; background: linear-gradient(115deg, rgba(255,255,255,.10) 0%, rgba(255,255,255,0) 38%); }
+    .iph .ofm { position: absolute; left: 18px; right: 18px; bottom: 22px; border-radius: 34px; background: #16161C; border: 2px solid #3A3A45; padding: 24px 26px; }
+    .iph .ofm .l { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 17px; letter-spacing: .14em; color: #A3A3AD; }
+    .iph .ofm .f { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 104px; letter-spacing: -.05em; line-height: 1.02; margin-top: 6px; }
+    .iph .ofm .d { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 19px; color: #C9C9D1; line-height: 1.55; margin-top: 4px; }
+    .iph .ofm .b { margin-top: 16px; background: #22C55E; color: #04210F; border-radius: 999px; padding: 12px 0; text-align: center; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 30px; letter-spacing: .06em; }
+    .big { position: absolute; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 820px; line-height: 1; letter-spacing: -.06em; background: linear-gradient(180deg, #F4F4EF 10%, #3A3A45 95%); -webkit-background-clip: text; background-clip: text; color: transparent; }"""
+
+
+def iphone(n, tarifa, d):
+    mapa = ('<svg width="414" height="874" viewBox="0 0 414 874" style="position:absolute;inset:0" aria-hidden="true">'
+            '<g stroke="#22222B" stroke-width="14" fill="none"><path d="M-10 160 L430 240"/><path d="M90 -10 L150 520"/><path d="M-10 420 L430 360"/><path d="M300 -10 L260 520"/></g>'
+            f'<path id="{n}-ruta" d="M120 200 L140 380 L280 365 L300 150" stroke="#F4F4EF" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="700" stroke-dashoffset="700"/>'
+            '<circle cx="120" cy="200" r="12" fill="#F4F4EF"/><rect x="290" y="140" width="22" height="22" rx="4" fill="#F4F4EF"/></svg>')
+    return (f'<div class="iph" id="{n}-ph"><div class="scr">{mapa}<div class="isla"></div>'
+            f'<div class="ofm"><div class="l">NUEVA OFERTA</div><div class="f">$<span id="{n}-cnt">0</span></div><div class="d">{d}</div><div class="b" id="{n}-btn">ACEPTAR</div></div>'
+            f'<div class="brillo"></div></div></div>')
+
+
+def esc_iphone_gancho(sc, e, n):
+    """Gancho estilo anuncio de teléfono: flash, el teléfono entra girando en 3D, el monto sube y un número gigante cuenta 3 → 2 → 1."""
+    D = sc["dur"]; m = pal(sc, str(e["tarifa"]))
+    cuenta = [pal(sc, w) for w in e.get("cuenta_en", ["tres", "segundos", "decidir"])]
+    inner = clip(1, f"{n}-luz", "left:-200px;top:-100px;width:1480px;height:1400px;background:radial-gradient(closest-side, #23232C 0%, rgba(12,12,16,0) 100%);opacity:0", "", D)
+    inner += "".join(clip(2 + i, f"{n}-n{i}", "left:30px;top:150px;opacity:0", f'<div class="big">{3 - i}</div>', D, ' data-layout-allow-overflow') for i in range(3))
+    inner += clip(5, f"{n}-seg", "left:70px;top:1040px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:30px;letter-spacing:.14em;color:#A3A3AD;opacity:0", e.get("etiqueta", "SEGUNDOS PARA DECIDIR"), D)
+    inner += clip(6, f"{n}-st", "left:0;top:0;width:1080px;height:1920px", f'<div class="iph-s" style="position:absolute;inset:0"><div style="position:absolute;left:575px;top:150px">{iphone(n, e["tarifa"], e.get("d", "A 4 min (2 km)<br>Viaje: 18 min (10 km)"))}</div></div>', D, ' data-layout-allow-overflow')
+    inner += clip(7, f"{n}-flash", "inset:0;background:#F4F4EF;opacity:0", "", D)
+    js = f"""      tl.fromTo("#{n}-flash", {{ opacity: 0.9 }}, {{ opacity: 0, duration: 0.3, ease: "power2.out" }}, 0);
+      tl.fromTo("#{n}-luz", {{ opacity: 0, scale: 0.6 }}, {{ opacity: 1, scale: 1, duration: 0.8, ease: "power2.out" }}, 0);
+      tl.fromTo("#{n}-ph", {{ y: 520, scale: 1.45, rotationY: 38, rotationX: 14, rotationZ: -6 }}, {{ y: 0, scale: 1, rotationY: -14, rotationX: 4, rotationZ: 0, duration: 0.75, ease: "power4.out" }}, 0);
+      tl.to("#{n}-ph", {{ rotationY: -6, rotationX: 0, y: -18, duration: D - 0.75, ease: "sine.inOut" }}, 0.75);
+      var cn = {{ v: 0 }};
+      tl.to(cn, {{ v: {e["tarifa"]}, duration: 0.6, ease: "power2.out", onUpdate: function () {{ document.getElementById("{n}-cnt").textContent = Math.round(cn.v); }} }}, {round(max(0.2, m - 0.3), 2)});
+      tl.to("#{n}-ruta", {{ strokeDashoffset: 0, duration: 0.9, ease: "power2.inOut" }}, 0.3);
+      tl.to("#{n}-btn", {{ scale: 0.92, duration: 0.08, yoyo: true, repeat: 1 }}, {round(m + 0.35, 2)});
+      tl.fromTo("#{n}-seg", {{ opacity: 0, y: 30 }}, {{ opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }}, {cuenta[0]});
+"""
+    for i, t in enumerate(cuenta):
+        js += f'      tl.fromTo("#{n}-n{i}", {{ opacity: 0, scale: 1.25, filter: "blur(30px)" }}, {{ opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.3, ease: "power3.out" }}, {t});\n'
+        if i:
+            js += f'      tl.to("#{n}-n{i - 1}", {{ opacity: 0, scale: 0.85, filter: "blur(20px)", duration: 0.2 }}, {t});\n'
+        js += f'      tl.to("#{n}-st", {{ x: 12, duration: 0.04, yoyo: true, repeat: 5 }}, {round(t + 0.05, 2)});\n'
+    return marco(n, D, IPH_CSS, inner, js)
+
+
+TIPOS = {"iphone_gancho": esc_iphone_gancho, "comparar": esc_comparar, "cuenta": esc_cuenta, "meta": esc_meta, "reloj15": esc_reloj15, "oferta": esc_oferta, "lee": esc_lee, "aviso": esc_aviso, "ticket": esc_ticket, "fichas": esc_fichas, "metas": esc_metas, "horas": esc_horas, "hook": esc_hook, "anillo": esc_anillo, "datos": esc_datos, "logo": esc_logo, "escaneo": esc_escaneo, "voz": esc_voz, "popup_oferta": esc_popup_oferta, "reloj": esc_reloj, "seguir": esc_seguir, "gancho": esc_gancho, "numero": esc_numero, "popup": esc_popup, "estados": esc_estados, "cierre": esc_cierre, "paso": esc_paso, "listo": esc_listo, "fin": esc_fin, "tachado": esc_tachado, "rutas": esc_rutas, "dos": esc_dos, "duo": esc_duo}
 
 
 # ---------- subtítulos ----------
