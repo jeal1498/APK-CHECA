@@ -1004,6 +1004,8 @@ def _pantalla(n, e):
             '<circle cx="120" cy="200" r="12" fill="#F4F4EF"/><rect x="290" y="140" width="22" height="22" rx="4" fill="#F4F4EF"/></svg>')
     h = (f'{mapa}<div class="isla"></div>'
          f'<div class="ofm" id="{n}-ofm"><div class="l">NUEVA OFERTA</div><div class="f">${cnt}</div><div class="d">{d}</div><div class="b">ACEPTAR</div></div>')
+    if e.get("imagen"):  # captura real de la app (assets/img/...) en lugar del mapa y la oferta
+        h = f'<img src="assets/img/{e["imagen"]}" style="position:absolute;inset:0;width:414px;height:874px" alt=""><div class="isla"></div>'
     pops = e.get("popups") or ([e["popup"]] if e.get("popup") else [])
     for i, p in enumerate(pops):
         validar_popup(p)

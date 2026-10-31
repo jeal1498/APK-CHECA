@@ -59,20 +59,57 @@
   "luz": "rojo"
  },
  {
-  "tipo": "gancho",
-  "lineas": [
-   "Ya no regales",
-   "tu esfuerzo"
+  "tipo": "iphone",
+  "imagen": "inicio.png",
+  "luz": "verde",
+  "ejemplo": false,
+  "titulo": [
+   [
+    "Ya no regales",
+    "regales",
+    "hueso"
+   ],
+   [
+    "tu esfuerzo.",
+    "esfuerzo",
+    "amarillo"
+   ]
   ],
-  "resalta": 1
+  "titulo_px": 72,
+  "chips": [
+   [
+    "Checa",
+    "la app",
+    "verde",
+    "Checa",
+    640,
+    820
+   ]
+  ]
  },
  {
-  "tipo": "numero",
-  "etiqueta": "tu mínimo por kilómetro",
-  "numero": "$10/km",
-  "size": 230,
-  "color": "amarillo",
-  "pie": "Números de ejemplo"
+  "tipo": "iphone",
+  "imagen": "ajustes.png",
+  "luz": "amarillo",
+  "ejemplo": false,
+  "titulo": [
+   [
+    "Tu tarifa mínima.",
+    "tarifa",
+    "amarillo"
+   ]
+  ],
+  "titulo_px": 84,
+  "chips": [
+   [
+    "$10/km",
+    "tu mínimo",
+    "amarillo",
+    "mínima",
+    620,
+    760
+   ]
+  ]
  },
  {
   "tipo": "iphone_duo",
