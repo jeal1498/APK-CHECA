@@ -12,13 +12,14 @@
 | 14 | vie 30 oct | Venta | `14 - Miedo a rechazar` | ✅ | ✅ 30 oct |
 | 15 | mié 28 oct | Venta | `15 - Desgaste y renta` | ✅ | ✅ 28 oct |
 | 26 | sáb 31 oct | Venta (Hyperframes, voz v3) | `26 - Dos ofertas misma neta` | ✅ | ✅ 31 oct |
-| 19 | dom 1 nov | Venta | `19 - Checa lee la oferta` | ✅ (en calendario web) | |
-| 17 | lun 2 nov | Explicativo (rehecho 30 oct, voz v3) | `17 - Cómo funciona Checa` | ✅ (hecho 30 oct) | |
-| 22 | mar 3 nov | Venta (rehecho 30 oct, voz v3) | `22 - Cuánto vale tu kilómetro` | ✅ (hecho 30 oct) | |
-| 28 | mié 4 nov | Venta | `28 - El 1.4x que paga menos por hora` | ✅ (hecho 30 oct) | |
-| 29 | jue 5 nov | Aviso | `29 - Checa cambia de app` | ✅ (hecho 30 oct) | |
-| 30 | vie 6 nov | Venta | `30 - Checa en tres segundos` | ✅ (hecho 31 oct) | |
-| 31 | sáb 7 nov | Venta | `31 - Este viaje sí rinde` | ✅ (hecho 31 oct) | |
+| 19 | lun 2 nov | Venta | `19 - Checa lee la oferta` | ✅ (en calendario web) | |
+| 17 | mar 3 nov | Explicativo (rehecho 30 oct, voz v3) | `17 - Cómo funciona Checa` | ✅ (hecho 30 oct) | |
+| 22 | mié 4 nov | Venta (rehecho 30 oct, voz v3) | `22 - Cuánto vale tu kilómetro` | ✅ (hecho 30 oct) | |
+| 28 | jue 5 nov | Venta | `28 - El 1.4x que paga menos por hora` | ✅ (hecho 30 oct) | |
+| 29 | vie 6 nov | Aviso | `29 - Checa cambia de app` | ✅ (hecho 30 oct) | |
+| 30 | sáb 7 nov | Venta | `30 - Checa en tres segundos` | ✅ (hecho 31 oct) | |
+| 31 | dom 8 nov | Venta | `31 - Este viaje sí rinde` | ✅ (hecho 31 oct) | |
+| 32 | dom 1 nov | Venta | `32 - Respuesta costo por km` | ✅ (hecho 31 oct) | |
 
 # PERSONAL · cuenta personal de Eduardo (v2)
 
