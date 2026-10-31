@@ -1,0 +1,14 @@
+{
+ "etiqueta": "OFERTA DE 70",
+ "titulo": [
+  "Menos de 10 por km:",
+  "apaga el carro"
+ ],
+ "precio": "$70.00",
+ "linea": "13 km en total",
+ "recogida": "A 3 min (1 km)",
+ "viaje": "Viaje: 25 min (12 km)",
+ "sello_texto": "DE TU BOLSA",
+ "sello_valor": "47",
+ "titulo_px": 100
+}

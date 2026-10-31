@@ -1,0 +1,137 @@
+[
+ {
+  "tipo": "gancho",
+  "lineas": [
+   "Si aceptas viajes",
+   "de menos de 10",
+   "pesos el kilómetro,",
+   "apaga el carro"
+  ],
+  "resalta": 3,
+  "flash": true
+ },
+ {
+  "tipo": "numero",
+  "etiqueta": "gasolina + desgaste, por km",
+  "numero": "$9",
+  "size": 380,
+  "color": "rojo",
+  "pie": "Números de ejemplo"
+ },
+ {
+  "tipo": "iphone",
+  "entra": "golpe",
+  "tarifa": 70,
+  "d": "A 3 min (1 km)<br>Viaje: 25 min (12 km)",
+  "cuenta": true,
+  "ruta_en": "bolsa",
+  "titulo": [
+   [
+    "−$47 por viaje.",
+    "bolsa",
+    "rojo"
+   ]
+  ],
+  "titulo_px": 110,
+  "chips": [
+   [
+    "$5.4/km",
+    "por km",
+    "rojo",
+    "tarifas",
+    30,
+    460
+   ]
+  ],
+  "luz": "rojo"
+ },
+ {
+  "tipo": "gancho",
+  "lineas": [
+   "Ya no regales",
+   "tu esfuerzo"
+  ],
+  "resalta": 1
+ },
+ {
+  "tipo": "numero",
+  "etiqueta": "tu mínimo por kilómetro",
+  "numero": "$10/km",
+  "size": 230,
+  "color": "amarillo",
+  "pie": "Números de ejemplo"
+ },
+ {
+  "tipo": "iphone_duo",
+  "popups": [
+   {
+    "nivel": "rojo",
+    "app": "OFERTA",
+    "neta": 33,
+    "viaje": 55,
+    "gasolina": 22,
+    "chips": [
+     [
+      "$143/h",
+      "por hora",
+      "mal"
+     ],
+     [
+      "$5.0/km",
+      "por km",
+      "mal"
+     ],
+     [
+      "23 min",
+      "11 km total",
+      ""
+     ]
+    ]
+   },
+   {
+    "nivel": "verde",
+    "app": "OFERTA",
+    "neta": 126,
+    "viaje": 150,
+    "gasolina": 24,
+    "chips": [
+     [
+      "$360/h",
+      "por hora",
+      "ok"
+     ],
+     [
+      "$12.5/km",
+      "por km",
+      "ok"
+     ],
+     [
+      "25 min",
+      "12 km total",
+      ""
+     ]
+    ]
+   }
+  ],
+  "ofertas": [
+   {
+    "tarifa": 55,
+    "d": "A 3 min (1 km)<br>Viaje: 20 min (10 km)"
+   },
+   {
+    "tarifa": 150,
+    "d": "A 3 min (1 km)<br>Viaje: 22 min (11 km)"
+   }
+  ],
+  "entra_en": "avisa",
+  "gana": [
+   1,
+   "conviene"
+  ]
+ },
+ {
+  "tipo": "cierre",
+  "pil": "Comenta CHECA",
+  "link": false
+ }
+]
