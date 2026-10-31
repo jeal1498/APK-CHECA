@@ -1,11 +1,11 @@
 # Reporte de Checa (web + app) · últimos 30 días
 
-Generado: 2026-10-30 18:16 UTC. Cuenta visitas únicas (una por pestaña).
+Generado: 2026-10-31 17:24 UTC. Cuenta visitas únicas (una por pestaña).
 
 ## Resumen
 | visitas | descargas | cuentas_nuevas | pagos | ingresos | licencias_activas |
 | --- | --- | --- | --- | --- | --- |
-| 589 | 261 | 43 | 0 | 0 | 3 |
+| 593 | 261 | 43 | 0 | 0 | 3 |
 
 # App
 
@@ -102,7 +102,7 @@ Sin datos todavía.
 ## Embudo
 | evento | visitas | veces |
 | --- | --- | --- |
-| visita | 589 | 826 |
+| visita | 593 | 830 |
 | descarga | 261 | 294 |
 | clic_descargar | 121 | 132 |
 | descarga_instalar | 69 | 147 |
@@ -114,10 +114,10 @@ Sin datos todavía.
 ## Por fuente (visitas → descargas)
 | fuente | campana | visitas | descargas |
 | --- | --- | --- | --- |
-| directo |  | 449 | 196 |
-| tiktok |  | 96 | 54 |
+| directo |  | 450 | 196 |
+| tiktok |  | 97 | 54 |
+| tiktok | prueba-en-google-play | 17 | 0 |
 | app | compartir | 17 | 9 |
-| tiktok | prueba-en-google-play | 15 | 0 |
 | facebook | beta | 6 | 2 |
 | prueba |  | 3 | 1 |
 | chatgpt.com |  | 2 | 0 |
@@ -127,8 +127,8 @@ Sin datos todavía.
 ## Por dispositivo
 | dispositivo | visitas | descargas |
 | --- | --- | --- |
-| android | 492 | 261 |
-| iphone | 56 | 0 |
+| android | 495 | 261 |
+| iphone | 57 | 0 |
 | pc | 42 | 0 |
 
 ## Qué botón lleva a descargar
@@ -150,6 +150,8 @@ Sin datos todavía.
 ## Por día
 | dia | visitas | descargas |
 | --- | --- | --- |
+| 2026-10-31 | 1 | 0 |
+| 2026-10-30 | 3 | 0 |
 | 2026-10-29 | 3 | 0 |
 | 2026-10-28 | 4 | 1 |
 | 2026-10-27 | 4 | 1 |
