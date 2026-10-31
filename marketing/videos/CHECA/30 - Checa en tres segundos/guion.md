@@ -1,6 +1,6 @@
 # Guion · 30 - Checa en tres segundos (CHECA) — 31 oct 2026, skill `guion-checa`
 
-**Estado:** propuesto (falta aprobación 1 de Eduardo). Pedido: «video promocional de cómo funciona Checa, nuevo, con estilo de iPhone».
+**Estado:** guion y piloto aprobados (31 oct 2026); video producido con control de calidad, falta la revisión final de Eduardo. Pedido: «video promocional de cómo funciona Checa, nuevo, con estilo de iPhone».
 
 Concepto / Problema detectado en el repo:
 El conductor tiene segundos para decidir y solo ve la tarifa bruta. Checa (`Parser.kt`) resta la gasolina de recogida + viaje, calcula $/h y $/km sobre km y min **totales**, pinta el semáforo (`nivel()`, `motivoFiltro()` con recogida máx.) y elige la mejor de dos (`Comparador.kt`: primero el nivel). Mismo explicador que el 17, pero con **estilo de anuncio de iPhone**: fondo negro (asfalto), un teléfono flotando que gira despacio con luz suave, frases de 2–4 palabras gigantes que entran una por una, mucho aire y cortes limpios.
@@ -36,3 +36,18 @@ Guión Desglosado:
 
 CTA final:
 «Comenta CHECA y te paso el acceso a la prueba en Google Play.»
+
+## Tabla de animaciones por toma (sacada del desglose)
+| Toma | Frase | Animación |
+|---|---|---|
+| 0:00–0:03 | «Te ofrecen 108. Tienes tres segundos para decidir.» | Flash en el cuadro 0; teléfono entra girando desde abajo con zoom; en su pantalla la tarjeta «$108.00 · Aceptar»; un «3» gigante detrás cuenta 3 → 2 → 1 con cada golpe y la cámara sacude |
+| 0:03–0:06 | «La app Checa lee la oferta por ti.» | Teléfono de frente, giro lento; línea de escaneo verde baja por la pantalla; título keynote «Lee.» entra desde máscara |
+| 0:06–0:09 | «Le resta la gasolina de todo el camino.» | Zoom a la pantalla; ticket «Viaje $108 · Gasolina −$24» con la gasolina cayendo en rojo; título «Calcula.» |
+| 0:09–0:12 | «Te quedan 84. Al instante.» | El teléfono se hace a un lado y sale «$84 netos» gigante en verde, contador 108 → 84; «Números de ejemplo» |
+| 0:12–0:15 | «Por hora, 295. Por kilómetro, 9.» | Fichas «$295/h» y «$9/km» flotan una por una en su palabra, borde verde, push-in lento |
+| 0:15–0:18 | «Verde, acéptalo. Amarillo, piénsalo. Rojo, déjalo pasar.» | Pantalla del teléfono cambia de pop-up en cada color: ACEPTAR → CONSIDERAR → RECHAZAR, mismo tamaño |
+| 0:18–0:21 | «Caen dos ofertas: 130 y 108. Gana la de 108.» | Dos teléfonos lado a lado entran con stagger; el de $108 (ACEPTAR, $84 netos) se adelanta con ★ MEJOR; el de $130 se apaga |
+| 0:21–0:24 | «La de 130 trae la recogida lejos.» | Zoom al pop-up de $130: RECHAZAR $90 netos, ficha roja «recogida 5 km» que late |
+| 0:24–0:27 | «Tus metas. Tu semáforo.» | Tarjetas «Meta por hora $150» y «Meta por km $8» flotan girando, el valor sube con interpolate |
+| 0:27–0:30 | «Checa: lee, calcula y decide.» | Toma de producto: teléfono gira 360° despacio y queda de frente con el pop-up verde; las tres palabras entran una por una en su palabra |
+| 0:30–0:33 | «Comenta CHECA y te paso el acceso a la prueba en Google Play.» | Pantalla final estándar: logo rojo → ámbar → verde → ✓, pastilla «Comenta CHECA», sin link |

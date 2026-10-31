@@ -1,13 +1,2 @@
-{
- "etiqueta": "OFERTA DE 110",
- "titulo": [
-  "Te ofrecen 110",
-  "y te quedan 54"
- ],
- "precio": "$110.00",
- "linea": "28 km en total",
- "recogida": "A 6 min (3 km)",
- "viaje": "Viaje: 40 min (25 km)",
- "sello_texto": "CADA KM VALE",
- "sello_valor": "3.93"
-}
+{"etiqueta": "OFERTA DE 108", "titulo": ["Tres segundos", "para decidir"], "precio": "$108.00", "linea": "12 km en total",
+ "recogida": "A 4 min (2 km)", "viaje": "Viaje: 18 min (10 km)", "sello_texto": "TE QUEDAN", "sello_valor": "84"}

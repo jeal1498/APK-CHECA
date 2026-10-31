@@ -463,6 +463,18 @@ def sfx_escena(sc, e):
         return [("popup-entra", pal(sc, e.get("entra", 0)), 0.4), ("popup-entra", pal(sc, e.get("entra", 0)) + 0.35, 0.3), ("aceptar", pal(sc, e.get("entra", 0)) + 0.8, 0.45)]
     if tipo == "numero":
         return [("numero-sube", 0.2, 0.4)]
+    if tipo == "iphone":
+        out = [("popup-entra", pal(sc, e["popup_en"]), 0.4)] if e.get("popup_en") else []
+        if e.get("en_palabra"):
+            out += [(NIVEL_SFX[p.get("nivel", "verde")], pal(sc, w) + 0.15, 0.45) for p, w in zip(e["popups"], e["en_palabra"])]
+        out += [("sello", pal(sc, c[3]), 0.35) for c in e.get("chips", [])]
+        return out[:3]
+    if tipo == "iphone_duo":
+        out = [("popup-entra", pal(sc, e["entra_en"]), 0.4)] if e.get("entra_en") is not None else []
+        if e.get("gana"):
+            out.append(("aceptar", pal(sc, e["gana"][1]) + 0.15, 0.45))
+        out += [("sello", pal(sc, c[3]), 0.35) for c in e.get("chips", [])]
+        return out[:3]
     if tipo == "iphone_gancho":
         return [("popup-entra", 0.0, 0.4), ("numero-sube", pal(sc, str(e["tarifa"])) - 0.2, 0.35), ("sello", pal(sc, "tres"), 0.35)]
     if tipo in ("cierre", "logo"):
@@ -943,6 +955,7 @@ def esc_iphone_gancho(sc, e, n):
     inner += clip(5, f"{n}-seg", "left:70px;top:1040px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:30px;letter-spacing:.14em;color:#A3A3AD;opacity:0", e.get("etiqueta", "SEGUNDOS PARA DECIDIR"), D)
     inner += clip(6, f"{n}-st", "left:0;top:0;width:1080px;height:1920px", f'<div class="iph-s" style="position:absolute;inset:0"><div style="position:absolute;left:575px;top:150px">{iphone(n, e["tarifa"], e.get("d", "A 4 min (2 km)<br>Viaje: 18 min (10 km)"))}</div></div>', D, ' data-layout-allow-overflow')
     inner += clip(7, f"{n}-flash", "inset:0;background:#F4F4EF;opacity:0", "", D)
+    inner += f'    <div class="etq clip" style="top:1170px;font-size:22px;opacity:.8" data-start="0" data-duration="{D}" data-track-index="30">Números de ejemplo</div>\n'
     js = f"""      tl.fromTo("#{n}-flash", {{ opacity: 0.9 }}, {{ opacity: 0, duration: 0.3, ease: "power2.out" }}, 0);
       tl.fromTo("#{n}-luz", {{ opacity: 0, scale: 0.6 }}, {{ opacity: 1, scale: 1, duration: 0.8, ease: "power2.out" }}, 0);
       tl.fromTo("#{n}-ph", {{ y: 520, scale: 1.45, rotationY: 38, rotationX: 14, rotationZ: -6 }}, {{ y: 0, scale: 1, rotationY: -14, rotationX: 4, rotationZ: 0, duration: 0.75, ease: "power4.out" }}, 0);
@@ -961,7 +974,130 @@ def esc_iphone_gancho(sc, e, n):
     return marco(n, D, IPH_CSS, inner, js)
 
 
-TIPOS = {"iphone_gancho": esc_iphone_gancho, "comparar": esc_comparar, "cuenta": esc_cuenta, "meta": esc_meta, "reloj15": esc_reloj15, "oferta": esc_oferta, "lee": esc_lee, "aviso": esc_aviso, "ticket": esc_ticket, "fichas": esc_fichas, "metas": esc_metas, "horas": esc_horas, "hook": esc_hook, "anillo": esc_anillo, "datos": esc_datos, "logo": esc_logo, "escaneo": esc_escaneo, "voz": esc_voz, "popup_oferta": esc_popup_oferta, "reloj": esc_reloj, "seguir": esc_seguir, "gancho": esc_gancho, "numero": esc_numero, "popup": esc_popup, "estados": esc_estados, "cierre": esc_cierre, "paso": esc_paso, "listo": esc_listo, "fin": esc_fin, "tachado": esc_tachado, "rutas": esc_rutas, "dos": esc_dos, "duo": esc_duo}
+def _pantalla(n, e):
+    """Contenido de la pantalla del teléfono: mapa + oferta, y encima un pop-up o varios (estados)."""
+    t, d = e.get("tarifa", 108), e.get("d", "A 4 min (2 km)<br>Viaje: 18 min (10 km)")
+    cnt = f'<span id="{n}-cnt">{0 if e.get("cuenta") else t}</span>'
+    mapa = ('<svg width="414" height="874" viewBox="0 0 414 874" style="position:absolute;inset:0" aria-hidden="true">'
+            '<g stroke="#22222B" stroke-width="14" fill="none"><path d="M-10 160 L430 240"/><path d="M90 -10 L150 520"/><path d="M-10 420 L430 360"/><path d="M300 -10 L260 520"/></g>'
+            f'<path id="{n}-ruta" d="M120 200 L140 380 L280 365 L300 150" stroke="#F4F4EF" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="700" stroke-dashoffset="{700 if e.get("ruta_en") else 0}"/>'
+            '<circle cx="120" cy="200" r="12" fill="#F4F4EF"/><rect x="290" y="140" width="22" height="22" rx="4" fill="#F4F4EF"/></svg>')
+    h = (f'{mapa}<div class="isla"></div>'
+         f'<div class="ofm" id="{n}-ofm"><div class="l">NUEVA OFERTA</div><div class="f">${cnt}</div><div class="d">{d}</div><div class="b">ACEPTAR</div></div>')
+    pops = e.get("popups") or ([e["popup"]] if e.get("popup") else [])
+    for i, p in enumerate(pops):
+        validar_popup(p)
+        h += f'<div id="{n}-pp{i}" style="position:absolute;left:18px;top:84px;opacity:{0 if (i or e.get("popup_en") or e.get("en_palabra")) else 1}">{popup(p, 0.44)}</div>'
+    if e.get("escaneo_en"):
+        h += f'<div id="{n}-sc" style="position:absolute;left:10px;right:10px;top:520px;height:6px;border-radius:3px;background:#22C55E;box-shadow:0 0 26px #22C55E;opacity:0"></div>'
+    return f'<div class="scr">{h}<div class="brillo"></div></div>'
+
+
+def _chips(sc, e, n, base=20):
+    """Fichas flotantes que salen del teléfono en su palabra: [texto, etiqueta, color, palabra, x, y]."""
+    inner, js = "", ""
+    for i, (txt, lab, col, w, x, y) in enumerate(e.get("chips", [])):
+        c = COLOR[col]
+        html = (f"<div style=\"font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:84px;letter-spacing:-.04em;line-height:1;color:{c}\">{txt}</div>"
+                f"<div style=\"font-family:'JetBrains Mono',monospace;font-weight:700;font-size:24px;letter-spacing:.12em;color:#A3A3AD;margin-top:8px;text-transform:uppercase\">{lab}</div>")
+        inner += clip(base + i, f"{n}-c{i}", f"left:{x}px;top:{y}px;padding:26px 34px;border-radius:34px;background:rgba(22,22,28,.92);border:3px solid {c};box-shadow:0 30px 70px rgba(0,0,0,.6);opacity:0", html, sc["dur"])
+        t = pal(sc, w)
+        js += f'      tl.fromTo("#{n}-c{i}", {{ opacity: 0, scale: 0.6, x: {-80 if x < 400 else 80}, filter: "blur(16px)" }}, {{ opacity: 1, scale: 1, x: 0, filter: "blur(0px)", duration: 0.45, ease: "back.out(1.6)" }}, {t});\n'
+    return inner, js
+
+
+def _titulo(sc, e, n, idx=10):
+    """Título tipo keynote arriba: partes [texto, palabra, color] que entran desde máscara con desenfoque."""
+    partes = e.get("titulo") or []
+    if isinstance(partes, str):
+        partes = [[partes, e.get("titulo_en", 0), e.get("titulo_color", "hueso")]]
+    if not partes:
+        return "", ""
+    px = e.get("titulo_px", 140)
+    spans = "".join(f'<span id="{n}-t{i}" style="display:inline-block;color:{COLOR[c]};margin:0 .12em">{t}</span>' for i, (t, w, c) in enumerate(partes))
+    inner = f'    <div class="mask clip" style="top:60px;height:{int(px * 1.25)}px" data-start="0" data-duration="{sc["dur"]}" data-track-index="{idx}"><div style="font-size:{px}px">{spans}</div></div>\n'
+    js = "".join(f'      tl.fromTo("#{n}-t{i}", {{ yPercent: 110, opacity: 0, filter: "blur(14px)" }}, {{ yPercent: 0, opacity: 1, filter: "blur(0px)", duration: 0.5, ease: "power4.out" }}, {pal(sc, w)});\n' for i, (t, w, c) in enumerate(partes))
+    return inner, js
+
+
+def esc_iphone(sc, e, n):
+    """Estilo anuncio de teléfono: título keynote arriba, el teléfono flota y gira despacio; en su pantalla la oferta,
+    un pop-up que cae («popup_en»), estados que cambian («en_palabra») o un escaneo; fichas flotantes («chips»); luz de color atrás."""
+    D = sc["dur"]; x = e.get("x", 320); g0, g1 = e.get("giro", [-14, -4])
+    luz = COLOR[e.get("luz", "hueso")]
+    inner = clip(1, f"{n}-luz", f"left:-200px;top:0;width:1480px;height:1400px;background:radial-gradient(closest-side, {luz}2A 0%, rgba(12,12,16,0) 100%)", "", D)
+    inner += clip(2, f"{n}-st", "left:0;top:0;width:1080px;height:1920px", f'<div class="iph-s" style="position:absolute;inset:0"><div style="position:absolute;left:{x}px;top:250px"><div class="iph" id="{n}-ph">{_pantalla(n, e)}</div></div></div>', D, ' data-layout-allow-overflow')
+    ti, tj = _titulo(sc, e, n)
+    ci, cj = _chips(sc, e, n)
+    inner += ti + ci
+    if e.get("ejemplo", True):
+        inner += f'    <div class="etq clip" style="top:1170px;font-size:22px;opacity:.8" data-start="0" data-duration="{D}" data-track-index="30">Números de ejemplo</div>\n'
+    entra = e.get("entra", "suave")
+    if entra == "golpe":
+        inner += clip(31, f"{n}-flash", "inset:0;background:#F4F4EF;opacity:0", "", D)
+        js = f'''      tl.fromTo("#{n}-flash", {{ opacity: 0.9 }}, {{ opacity: 0, duration: 0.3, ease: "power2.out" }}, 0);
+      tl.fromTo("#{n}-ph", {{ y: 520, scale: 1.45, rotationY: 38, rotationX: 14, rotationZ: -6 }}, {{ y: 0, scale: 1, rotationY: {g0}, rotationX: 3, rotationZ: 0, duration: 0.75, ease: "power4.out" }}, 0);
+      tl.to("#{n}-ph", {{ rotationY: {g1}, rotationX: 0, y: -18, duration: D - 0.75, ease: "sine.inOut" }}, 0.75);
+'''
+    elif entra == "giro":
+        js = f'      tl.fromTo("#{n}-ph", {{ y: 80, scale: 0.9, rotationY: 70, rotationX: 8 }}, {{ y: 0, scale: 1, rotationY: {g1}, rotationX: 0, duration: 1.3, ease: "power3.out" }}, 0);\n'
+    else:
+        js = f'      tl.fromTo("#{n}-ph", {{ y: 30, rotationY: {g0}, rotationX: 3, scale: 0.97 }}, {{ y: -10, rotationY: {g1}, rotationX: 0, scale: 1, duration: D, ease: "sine.inOut" }}, 0);\n'
+        js += f'      tl.fromTo("#{n}-st", {{ opacity: 0 }}, {{ opacity: 1, duration: 0.18 }}, 0);\n'
+    if e.get("zoom_en"):
+        js += f'      tl.to("#{n}-st", {{ scale: {e.get("zoom", 1.3)}, y: {e.get("zoom_y", 120)}, duration: 0.7, ease: "power3.inOut" }}, {pal(sc, e["zoom_en"])});\n'
+    if e.get("cuenta"):
+        js += f'      var cn = {{ v: 0 }};\n      tl.to(cn, {{ v: {e["tarifa"]}, duration: 0.6, ease: "power2.out", onUpdate: function () {{ document.getElementById("{n}-cnt").textContent = Math.round(cn.v); }} }}, 0.1);\n'
+    if e.get("ruta_en"):
+        js += f'      tl.to("#{n}-ruta", {{ strokeDashoffset: 0, duration: 0.9, ease: "power2.inOut" }}, {pal(sc, e["ruta_en"])});\n'
+    if e.get("escaneo_en"):
+        t = pal(sc, e["escaneo_en"])
+        js += f'      tl.fromTo("#{n}-sc", {{ opacity: 1, y: 0 }}, {{ opacity: 1, y: 320, duration: 1.0, ease: "power1.inOut" }}, {t});\n      tl.to("#{n}-sc", {{ opacity: 0, duration: 0.2 }}, {round(t + 1.0, 2)});\n'
+    if e.get("popup_en"):
+        js += f'      tl.fromTo("#{n}-pp0", {{ y: -70, opacity: 0 }}, {{ y: 0, opacity: 1, duration: 0.45, ease: "power4.out" }}, {pal(sc, e["popup_en"])});\n'
+    if e.get("en_palabra"):
+        ts = [pal(sc, w) for w in e["en_palabra"]]
+        for i, t in enumerate(ts):
+            js += f'      tl.fromTo("#{n}-pp{i}", {{ y: 40, opacity: 0 }}, {{ y: 0, opacity: 1, duration: 0.3, ease: "power4.out" }}, {t});\n'
+            if i + 1 < len(ts):
+                js += f'      tl.to("#{n}-pp{i}", {{ opacity: 0, duration: 0.12 }}, {round(ts[i + 1] - 0.02, 2)});\n'
+            c = COLOR[e["popups"][i].get("nivel", "verde")]
+            js += f'      tl.to("#{n}-luz", {{ background: "radial-gradient(closest-side, {c}3A 0%, rgba(12,12,16,0) 100%)", duration: 0.3 }}, {t});\n'
+    return marco(n, D, IPH_CSS + "\n    " + css_popup(), inner, tj + cj + js)
+
+
+def esc_iphone_duo(sc, e, n):
+    """Dos teléfonos lado a lado con su pop-up. «destaca»: [i, palabra] (brilla); «gana»: [i, palabra] (★ MEJOR al frente, el otro se apaga)."""
+    D = sc["dur"]; ps = e["popups"]; ofs = e.get("ofertas", [{}, {}])
+    inner = ""
+    for i, p in enumerate(ps):
+        x = 100 + i * 470
+        sub = dict(ofs[i], popup=p)
+        inner += clip(1 + i, f"{n}-w{i}", f"left:{x}px;top:250px;width:440px;height:900px;transform-origin:50% 0", f'<div class="iph-s" style="position:absolute;inset:0"><div class="iph" id="{n}-ph{i}">{_pantalla(f"{n}{i}", sub)}</div></div>', D, ' data-layout-allow-overflow')
+        inner += clip(4 + i, f"{n}-g{i}", f"left:{x - 60}px;top:200px;width:560px;height:920px;border-radius:120px;background:radial-gradient(closest-side, #F4F4EF33 0%, rgba(12,12,16,0) 100%);opacity:0", "", D)
+    ci, cj = _chips(sc, e, n)
+    ti, tj = _titulo(sc, e, n)
+    inner += ci + ti
+    inner += f'    <div class="etq clip" style="top:1170px;font-size:22px;opacity:.8" data-start="0" data-duration="{D}" data-track-index="30">Números de ejemplo</div>\n'
+    js = "".join(f'      tl.set("#{n}-w{i}", {{ scale: 0.86 }}, 0);\n' for i in range(2))
+    te = pal(sc, e["entra_en"]) if e.get("entra_en") is not None else None
+    for i in range(2):
+        if te is not None:
+            js += f'      tl.fromTo("#{n}-w{i}", {{ y: 260, opacity: 0, rotationY: {30 if i else -30} }}, {{ y: 0, opacity: 1, rotationY: 0, duration: 0.6, ease: "power4.out" }}, {round(te + 0.25 * i, 2)});\n'
+        js += f'      tl.fromTo("#{n}-ph{i}", {{ rotationY: {8 if i else -8} }}, {{ rotationY: {-4 if i else 4}, duration: D, ease: "sine.inOut" }}, 0);\n'
+    if e.get("destaca"):
+        i, w = e["destaca"]; t = pal(sc, w)
+        js += f'      tl.to("#{n}-g{i}", {{ opacity: 1, duration: 0.3 }}, {t});\n      tl.to("#{n}-w{i}", {{ scale: 0.92, duration: 0.4, ease: "power3.out" }}, {t});\n      tl.to("#{n}-w{1 - i}", {{ opacity: 0.55, duration: 0.3 }}, {t});\n'
+    if e.get("gana"):
+        i, w = e["gana"]; t = pal(sc, w)
+        inner += clip(8, f"{n}-mj", f"left:{100 + i * 470 + 95}px;top:180px;padding:12px 30px;border-radius:999px;background:#F4F4EF;color:#0C0C10;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:44px;letter-spacing:.04em;opacity:0", "★ MEJOR", D)
+        js += (f'      tl.to("#{n}-g{1 - i}", {{ opacity: 0, duration: 0.2 }}, {t});\n      tl.to("#{n}-w{1 - i}", {{ opacity: 0.3, scale: 0.8, duration: 0.4 }}, {t});\n'
+               f'      tl.to("#{n}-w{i}", {{ opacity: 1, scale: 0.95, duration: 0.45, ease: "back.out(1.6)" }}, {t});\n      tl.to("#{n}-g{i}", {{ opacity: 1, duration: 0.3 }}, {t});\n'
+               f'      tl.fromTo("#{n}-mj", {{ opacity: 0, y: 30, scale: 0.7 }}, {{ opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(2)" }}, {round(t + 0.15, 2)});\n')
+    return marco(n, D, IPH_CSS + "\n    " + css_popup(), inner, tj + cj + js)
+
+
+TIPOS = {"iphone_gancho": esc_iphone_gancho, "iphone": esc_iphone, "iphone_duo": esc_iphone_duo, "comparar": esc_comparar, "cuenta": esc_cuenta, "meta": esc_meta, "reloj15": esc_reloj15, "oferta": esc_oferta, "lee": esc_lee, "aviso": esc_aviso, "ticket": esc_ticket, "fichas": esc_fichas, "metas": esc_metas, "horas": esc_horas, "hook": esc_hook, "anillo": esc_anillo, "datos": esc_datos, "logo": esc_logo, "escaneo": esc_escaneo, "voz": esc_voz, "popup_oferta": esc_popup_oferta, "reloj": esc_reloj, "seguir": esc_seguir, "gancho": esc_gancho, "numero": esc_numero, "popup": esc_popup, "estados": esc_estados, "cierre": esc_cierre, "paso": esc_paso, "listo": esc_listo, "fin": esc_fin, "tachado": esc_tachado, "rutas": esc_rutas, "dos": esc_dos, "duo": esc_duo}
 
 
 # ---------- subtítulos ----------

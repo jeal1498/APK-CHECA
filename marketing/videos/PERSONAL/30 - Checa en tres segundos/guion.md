@@ -1,6 +1,6 @@
 # Guion · 30 - Checa en tres segundos (PERSONAL, v2) — 31 oct 2026, skill `guion-checa`
 
-**Estado:** propuesto (falta aprobación 1 de Eduardo). Mismas cifras y estilo «iPhone» que la v1 de CHECA (ver su `guion.md`); abre con lo que te queda y cierra con la comparación.
+**Estado:** guion y piloto aprobados (31 oct 2026); video producido con control de calidad, falta la revisión final de Eduardo. Mismas cifras y estilo «iPhone» que la v1 de CHECA (ver su `guion.md`); abre con lo que te queda y cierra con la comparación.
 
 ## Números de ejemplo
 Iguales a la v1: A $108 → gasolina $24 → **$84 netos**, $295/h, $9/km, ACEPTAR. B $130 → gasolina $40 → $90 netos, recogida 5 km > 4 → RECHAZAR. Gana A.
@@ -22,3 +22,17 @@ Guión Desglosado:
 
 CTA final:
 «Comenta CHECA y te paso el acceso a la prueba en Google Play.»
+
+## Tabla de animaciones por toma (sacada del desglose)
+| Toma | Frase | Animación |
+|---|---|---|
+| 0:00–0:03 | «De un viaje de 108, te quedan 84.» | Flash; «$84 netos» gigante en verde se estrella con zoom; contador 108 → 84; teléfono entra girando detrás |
+| 0:03–0:06 | «Y lo sabes antes de aceptar.» | Teléfono de frente, pop-up ACEPTAR cae con spring sobre la oferta; «Números de ejemplo» |
+| 0:06–0:09 | «Checa lee la oferta en cuanto llega.» | Giro lento; escaneo verde; título keynote «En cuanto llega.» |
+| 0:09–0:12 | «Saca la gasolina, la hora y el kilómetro.» | Tres fichas salen de la pantalla en su palabra: «−$24 gasolina», «$295/h», «$9/km» |
+| 0:12–0:15 | «Un color te dice qué hacer.» | Teléfono gira; la franja del pop-up cambia de color con un barrido |
+| 0:15–0:18 | «Verde, va. Amarillo, ojo. Rojo, siguiente.» | ACEPTAR → CONSIDERAR → RECHAZAR en la pantalla, uno por palabra |
+| 0:18–0:21 | «Ahora, dos ofertas al mismo tiempo. La de 130 parece mejor.» | Dos teléfonos lado a lado; tarjeta $130 brilla primero |
+| 0:21–0:25 | «Pero la recogida queda lejos, y gana la de 108.» | $130 pasa a RECHAZAR con ficha roja «recogida 5 km»; el de $108 se adelanta con ★ MEJOR |
+| 0:25–0:28 | «Tú pones las metas.» | Tarjetas «Meta por hora $150» y «Meta por km $8» flotando, valores que suben |
+| 0:28–0:31 | «Comenta CHECA y te paso el acceso a la prueba en Google Play.» | Pantalla final estándar, pastilla «Comenta CHECA», sin link |
