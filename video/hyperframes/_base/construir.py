@@ -169,19 +169,29 @@ def esc_gancho(sc, e, nombre):
     inicio, k = [], 0
     for l in lineas:
         inicio.append(min(k, len(w) - 1)); k += len(l.split())
-    size = min(170, int(1000 / (max(len(l) for l in lineas) * 0.54)))
+    if e.get("en"):  # «en»: palabra de la voz en que entra cada línea
+        inicio = [min(i, len(w) - 1) for i in e["en"]]
+    size = e.get("size") or min(170, int(1000 / (max(len(l) for l in lineas) * 0.54)))
     alto = int(size * 1.04); alt_m = int(size * 1.3)
     inner = "".join(f'    <div id="{nombre}-q{i}" class="mask clip" style="top:{300 + i * alto}px;height:{alt_m}px" data-start="0" data-duration="{D}" data-track-index="{i + 1}"><div style="font-size:{size}px;{"color:#FACC15;" if i == res else ""}">{l}</div></div>\n' for i, l in enumerate(lineas))
     y = 300 + len(lineas) * alto + 40
-    inner += f'    <svg id="{nombre}-raya" class="clip" style="left:0;top:{y}px" width="1080" height="120" viewBox="0 0 1080 120" data-start="0" data-duration="{D}" data-track-index="9" aria-hidden="true"><defs><clipPath id="{nombre}-rc"><rect id="{nombre}-rcr" x="0" y="0" width="0" height="120"/></clipPath></defs><g clip-path="url(#{nombre}-rc)"><path d="M-20 90C220 90 300 20 540 28C780 36 860 100 1100 70" fill="none" stroke="#FACC15" stroke-width="8" stroke-dasharray="2 22" stroke-linecap="round"/><circle cx="540" cy="28" r="14" fill="#22C55E"/></g></svg>'
+    fd = e.get("fondo")
+    if fd:  # oferta mal pagada de fondo (sin raya de carretera)
+        inner += clip(10, f"{nombre}-luz", "left:-200px;top:760px;width:1480px;height:700px;background:radial-gradient(closest-side, #EF44442E 0%, rgba(12,12,16,0) 100%)", "", D)
+        inner += clip(11, f"{nombre}-fd", "left:397px;top:930px;width:286px;height:188px", '<div style="transform:scale(.62);transform-origin:0 0;width:461px;height:303px">' + _tarjeta(fd["tarifa"], fd["d1"], fd["d2"]) + '</div>', D, ' data-layout-allow-overflow')
+        inner += f'    <div class="etq clip" style="top:1125px;font-size:22px;opacity:.8" data-start="0" data-duration="{D}" data-track-index="30">Números de ejemplo</div>\n'
+    if not fd: inner += f'    <svg id="{nombre}-raya" class="clip" style="left:0;top:{y}px" width="1080" height="120" viewBox="0 0 1080 120" data-start="0" data-duration="{D}" data-track-index="9" aria-hidden="true"><defs><clipPath id="{nombre}-rc"><rect id="{nombre}-rcr" x="0" y="0" width="0" height="120"/></clipPath></defs><g clip-path="url(#{nombre}-rc)"><path d="M-20 90C220 90 300 20 540 28C780 36 860 100 1100 70" fill="none" stroke="#FACC15" stroke-width="8" stroke-dasharray="2 22" stroke-linecap="round"/><circle cx="540" cy="28" r="14" fill="#22C55E"/></g></svg>'
     js = "".join(f'      tl.fromTo("#{nombre}-q{i} > div", {{ yPercent: 120 }}, {{ yPercent: 0, duration: 0.45, ease: "power4.out" }}, {max(0, round(w[inicio[i]][1] - 0.05, 2))});\n' for i in range(len(lineas)))
-    js += f'      tl.fromTo("#{nombre}-rcr", {{ attr: {{ width: 0 }} }}, {{ attr: {{ width: 1080 }}, duration: 1.4, ease: "power2.out" }}, 0.3);\n'
+    if not fd:
+        js += f'      tl.fromTo("#{nombre}-rcr", {{ attr: {{ width: 0 }} }}, {{ attr: {{ width: 1080 }}, duration: 1.4, ease: "power2.out" }}, 0.3);\n'
+    else:
+        js += f'      tl.fromTo("#{nombre}-fd", {{ y: 90, opacity: 0, rotation: -4 }}, {{ y: 0, opacity: 1, rotation: -2, duration: 0.45, ease: "power4.out" }}, 0.15);\n      tl.fromTo("#{nombre}-luz", {{ opacity: 0 }}, {{ opacity: 1, duration: 0.5 }}, 0);\n'
     if e.get("flash"):  # gancho con golpe: flash en el cuadro 0 y la cámara sacude la línea resaltada
         inner += clip(20, f"{nombre}-fl", "inset:0;background:#F4F4EF;opacity:0", "", D)
         js += f'      tl.fromTo("#{nombre}-fl", {{ opacity: 0.85 }}, {{ opacity: 0, duration: 0.25, ease: "power2.out" }}, 0);\n'
         js += f'      tl.fromTo("#{nombre}-q0 > div", {{ scale: 1.6 }}, {{ scale: 1, duration: 0.4, ease: "power4.out" }}, 0);\n'
         js += f'      tl.to("#{nombre}-q{res}", {{ x: 10, duration: 0.04, yoyo: true, repeat: 7 }}, {round(w[inicio[res]][1] + 0.4, 2)});\n'
-    return marco(nombre, D, "", inner, js)
+    return marco(nombre, D, OF_CSS if fd else "", inner, js)
 
 
 def esc_numero(sc, e, nombre):
@@ -189,7 +199,13 @@ def esc_numero(sc, e, nombre):
     inner = f"""    <div id="{nombre}-k" class="etq clip" style="top:420px" data-start="0" data-duration="{D}" data-track-index="1">{e["etiqueta"]}</div>
     <div id="{nombre}-n" class="mask clip" style="top:500px;height:340px" data-start="0" data-duration="{D}" data-track-index="2"><div style="font-size:{e.get("size", 300)}px;color:{col}">{e["numero"]}</div></div>
     <div class="etq clip" style="top:900px" data-start="0" data-duration="{D}" data-track-index="3">{e.get("pie", "Números de ejemplo")}</div>"""
+    if e.get("icono") == "calculadora":
+        teclas = "".join(f'<rect class="{nombre}-tk" x="{14 + (i % 3) * 30}" y="{62 + (i // 3) * 26}" width="22" height="18" rx="5" fill="#3A3A45"/>' for i in range(9))
+        svg = f'<svg width="170" height="220" viewBox="0 0 100 130" aria-hidden="true"><rect x="2" y="2" width="96" height="126" rx="14" fill="#16161C" stroke="#F4F4EF" stroke-width="3"/><rect x="12" y="12" width="76" height="36" rx="6" fill="#0C0C10"/><text x="82" y="40" text-anchor="end" font-family="JetBrains Mono" font-weight="700" font-size="22" fill="#EF4444">−47</text>{teclas}</svg>'
+        inner += clip(5, f"{nombre}-ic", "left:455px;top:930px;width:170px;height:220px;opacity:0", svg, D)
     js = f'      tl.fromTo("#{nombre}-k", {{ opacity: 0, y: 20 }}, {{ opacity: 1, y: 0, duration: 0.3 }}, 0);\n      tl.fromTo("#{nombre}-n > div", {{ yPercent: 120 }}, {{ yPercent: 0, duration: 0.5, ease: "power4.out" }}, 0.2);\n'
+    if e.get("icono") == "calculadora":
+        js += f'      tl.fromTo("#{nombre}-ic", {{ opacity: 0, y: 40, rotation: -8 }}, {{ opacity: 1, y: 0, rotation: 0, duration: 0.4, ease: "back.out(1.6)" }}, 0.9);\n      tl.fromTo(".{nombre}-tk", {{ fill: "#3A3A45" }}, {{ fill: "#EF4444", duration: 0.12, stagger: 0.09, yoyo: true, repeat: 1 }}, 1.1);\n'
     return marco(nombre, D, "", inner, js)
 
 
@@ -240,6 +256,10 @@ def esc_cierre(sc, e, nombre):
       tl.fromTo("#{n}-cu", {{ opacity: 0, y: 20 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: "power4.out" }}, 2.1);
       tl.fromTo("#{n}-li", {{ opacity: 0 }}, {{ opacity: 1, duration: 0.4 }}, 2.6);
 """
+    if e.get("flecha"):  # flecha que rebota hacia los comentarios y píldora que parpadea
+        flecha = '<svg width="170" height="170" viewBox="0 0 100 100" aria-hidden="true"><path d="M20 20 L70 70 M70 36 L70 70 L36 70" fill="none" stroke="#FACC15" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+        inner += "\n" + clip(7, f"{nombre}-fl", "left:790px;top:1000px;width:170px;height:170px;opacity:0", flecha, D)
+        js += f'      tl.fromTo("#{n}-fl", {{ opacity: 0 }}, {{ opacity: 1, duration: 0.25 }}, 2.0);\n      tl.to("#{n}-fl", {{ x: 26, y: 26, duration: 0.3, yoyo: true, repeat: 7, ease: "sine.inOut" }}, 2.2);\n      tl.to("#{n}-pil", {{ opacity: 0.6, duration: 0.3, yoyo: true, repeat: 7 }}, 2.0);\n'
     if e.get("link") is False:
         inner = "\n".join(l for l in inner.split("\n") if f'id="{nombre}-li"' not in l)
         inner = inner.replace('</b></div>', '</b></div>', 1)

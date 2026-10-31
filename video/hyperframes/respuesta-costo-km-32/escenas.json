@@ -2,13 +2,25 @@
  {
   "tipo": "gancho",
   "lineas": [
-   "Si aceptas viajes",
-   "de menos de 10",
-   "pesos el kilómetro,",
-   "apaga el carro"
+   "Menos de $10",
+   "el km =",
+   "Trabajando",
+   "gratis"
   ],
   "resalta": 3,
-  "flash": true
+  "flash": true,
+  "size": 140,
+  "en": [
+   0,
+   2,
+   4,
+   6
+  ],
+  "fondo": {
+   "tarifa": 70,
+   "d1": "A 3 min (1 km)",
+   "d2": "Viaje: 25 min (12 km)"
+  }
  },
  {
   "tipo": "numero",
@@ -16,7 +28,8 @@
   "numero": "$9",
   "size": 380,
   "color": "rojo",
-  "pie": "Números de ejemplo"
+  "pie": "Números de ejemplo",
+  "icono": "calculadora"
  },
  {
   "tipo": "iphone",
@@ -132,6 +145,7 @@
  {
   "tipo": "cierre",
   "pil": "Comenta CHECA",
-  "link": false
+  "link": false,
+  "flecha": true
  }
 ]
