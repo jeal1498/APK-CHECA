@@ -20,7 +20,7 @@ Lo vigente para trabajar en Checa. La historia con fecha y el detalle largo vive
 - **Flujo: dos aprobaciones por lote.** (1) Eduardo aprueba juntos los guiones del lote (cada tema con CHECA y su v2 PERSONAL); (2) Claude produce todo sin preguntar, pasa el control de calidad y le manda el lote completo para una sola revisión; se corrige solo lo que él marque. «Publicado» lo marca él.
 - **CTA vigente:** «Comenta CHECA y te paso el acceso a la prueba en Google Play». Cuentas: `@checa.driver` (Checa) y `@Eduardoalv9802` (personal).
 - **Estado:** el real está en el calendario web (`PWA-Checa-Multimedia/calendario-d4f81c/data.json`); `marketing/plan/calendario.md` lo acompaña y `marketing/plan/plan-ponerse-al-dia.md` tiene el plan. Al empezar: `git pull origin main` en los dos repos.
-- **Los domingos no se sube video** (Eduardo, 30 oct): son para analizar métricas y producir los videos de la semana siguiente.
+- **Se sube video todos los días, domingos incluidos** (Eduardo, 31 oct; antes los domingos no se subía).
 - El `video.mp4` se commitea **una sola vez**, ya aprobado (cada mp4 commiteado engorda el repo para siempre).
 
 ## Entorno y compilación
