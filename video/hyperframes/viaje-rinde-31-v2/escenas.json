@@ -1,0 +1,311 @@
+[
+ {
+  "tipo": "iphone",
+  "entra": "golpe",
+  "tarifa": 151,
+  "d": "A 5 min (2 km)<br>Viaje: 37 min (16 km)",
+  "cuenta": true,
+  "popup": {
+   "nivel": "verde",
+   "app": "OFERTA",
+   "neta": 115,
+   "viaje": 151,
+   "gasolina": 36,
+   "chips": [
+    [
+     "$216/h",
+     "por hora",
+     "ok"
+    ],
+    [
+     "$8.4/km",
+     "por km",
+     "ok"
+    ],
+    [
+     "42 min",
+     "18 km total",
+     ""
+    ]
+   ]
+  },
+  "popup_en": "quedan",
+  "luz": "verde",
+  "titulo": [
+   [
+    "$115 netos.",
+    "115",
+    "verde"
+   ]
+  ]
+ },
+ {
+  "tipo": "iphone",
+  "tarifa": 151,
+  "d": "A 5 min (2 km)<br>Viaje: 37 min (16 km)",
+  "popup": {
+   "nivel": "verde",
+   "app": "OFERTA",
+   "neta": 115,
+   "viaje": 151,
+   "gasolina": 36,
+   "chips": [
+    [
+     "$216/h",
+     "por hora",
+     "ok"
+    ],
+    [
+     "$8.4/km",
+     "por km",
+     "ok"
+    ],
+    [
+     "42 min",
+     "18 km total",
+     ""
+    ]
+   ]
+  },
+  "luz": "verde",
+  "giro": [
+   2,
+   -8
+  ],
+  "titulo": [
+   [
+    "Verde.",
+    "verde",
+    "verde"
+   ]
+  ],
+  "chips": [
+   [
+    "$216/h",
+    "por hora",
+    "verde",
+    "hora",
+    30,
+    460
+   ],
+   [
+    "$8.4/km",
+    "por km",
+    "verde",
+    "kilómetro",
+    650,
+    720
+   ]
+  ]
+ },
+ {
+  "tipo": "iphone",
+  "entra": "golpe",
+  "tarifa": 48,
+  "d": "A 5 min (2 km)<br>Viaje: 22 min (10 km)",
+  "cuenta": true,
+  "ruta_en": "otra",
+  "titulo": [
+   [
+    "Ahora otra.",
+    "ahora",
+    "hueso"
+   ]
+  ]
+ },
+ {
+  "tipo": "iphone",
+  "tarifa": 48,
+  "d": "A 5 min (2 km)<br>Viaje: 22 min (10 km)",
+  "popup": {
+   "nivel": "rojo",
+   "app": "OFERTA",
+   "neta": 24,
+   "viaje": 48,
+   "gasolina": 24,
+   "chips": [
+    [
+     "$107/h",
+     "por hora",
+     "mal"
+    ],
+    [
+     "$4.0/km",
+     "por km",
+     "mal"
+    ],
+    [
+     "27 min",
+     "12 km total",
+     ""
+    ]
+   ]
+  },
+  "popup_en": "quedan",
+  "luz": "rojo",
+  "titulo": [
+   [
+    "$24 netos.",
+    "24",
+    "rojo"
+   ]
+  ],
+  "chips": [
+   [
+    "$107/h",
+    "por hora",
+    "rojo",
+    "107",
+    620,
+    760
+   ]
+  ]
+ },
+ {
+  "tipo": "iphone",
+  "tarifa": 48,
+  "d": "A 5 min (2 km)<br>Viaje: 22 min (10 km)",
+  "popup": {
+   "nivel": "rojo",
+   "app": "OFERTA",
+   "neta": 24,
+   "viaje": 48,
+   "gasolina": 24,
+   "chips": [
+    [
+     "$107/h",
+     "por hora",
+     "mal"
+    ],
+    [
+     "$4.0/km",
+     "por km",
+     "mal"
+    ],
+    [
+     "27 min",
+     "12 km total",
+     ""
+    ]
+   ]
+  },
+  "luz": "rojo",
+  "giro": [
+   2,
+   -8
+  ],
+  "titulo": [
+   [
+    "Rojo.",
+    "rojo",
+    "rojo"
+   ]
+  ],
+  "chips": [
+   [
+    "$4.0/km",
+    "por km",
+    "rojo",
+    "kilómetro",
+    30,
+    460
+   ],
+   [
+    "$8/km",
+    "tu meta",
+    "hueso",
+    "meta",
+    680,
+    720
+   ]
+  ]
+ },
+ {
+  "tipo": "iphone_duo",
+  "popups": [
+   {
+    "nivel": "verde",
+    "app": "OFERTA",
+    "neta": 115,
+    "viaje": 151,
+    "gasolina": 36,
+    "chips": [
+     [
+      "$216/h",
+      "por hora",
+      "ok"
+     ],
+     [
+      "$8.4/km",
+      "por km",
+      "ok"
+     ],
+     [
+      "42 min",
+      "18 km total",
+      ""
+     ]
+    ]
+   },
+   {
+    "nivel": "rojo",
+    "app": "OFERTA",
+    "neta": 24,
+    "viaje": 48,
+    "gasolina": 24,
+    "chips": [
+     [
+      "$107/h",
+      "por hora",
+      "mal"
+     ],
+     [
+      "$4.0/km",
+      "por km",
+      "mal"
+     ],
+     [
+      "27 min",
+      "12 km total",
+      ""
+     ]
+    ]
+   }
+  ],
+  "ofertas": [
+   {
+    "tarifa": 151,
+    "d": "A 5 min (2 km)<br>Viaje: 37 min (16 km)"
+   },
+   {
+    "tarifa": 48,
+    "d": "A 5 min (2 km)<br>Viaje: 22 min (10 km)"
+   }
+  ],
+  "entra_en": "dos",
+  "gana": [
+   0,
+   "conviene"
+  ]
+ },
+ {
+  "tipo": "iphone",
+  "entra": "giro",
+  "tarifa": 151,
+  "d": "A 5 min (2 km)<br>Viaje: 37 min (16 km)",
+  "escaneo_en": "lee",
+  "titulo": [
+   [
+    "Sin internet.",
+    "internet",
+    "hueso"
+   ]
+  ],
+  "titulo_px": 120
+ },
+ {
+  "tipo": "cierre",
+  "pil": "Comenta CHECA",
+  "link": false
+ }
+]
