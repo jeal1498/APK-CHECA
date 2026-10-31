@@ -11,7 +11,7 @@
 |---|---|---|---|---|---|
 | 14 | vie 30 oct | Venta | `14 - Miedo a rechazar` | ✅ | ✅ 30 oct |
 | 15 | mié 28 oct | Venta | `15 - Desgaste y renta` | ✅ | ✅ 28 oct |
-| 26 | sáb 31 oct | Venta (Hyperframes, voz v3) | `26 - Dos ofertas misma neta` | ✅ | |
+| 26 | sáb 31 oct | Venta (Hyperframes, voz v3) | `26 - Dos ofertas misma neta` | ✅ | ✅ 31 oct |
 | 19 | dom 1 nov | Venta | `19 - Checa lee la oferta` | ✅ (en calendario web) | |
 | 17 | lun 2 nov | Explicativo (rehecho 30 oct, voz v3) | `17 - Cómo funciona Checa` | ✅ (hecho 30 oct) | |
 | 22 | mar 3 nov | Venta (rehecho 30 oct, voz v3) | `22 - Cuánto vale tu kilómetro` | ✅ (hecho 30 oct) | |
@@ -26,7 +26,7 @@
 |---|---|---|---|---|---|
 | 10 | vie 30 oct | Venta | `10 - Mejores horas` | ✅ | ✅ |
 | 14 | mié 28 oct | Venta | `14 - Miedo a rechazar` | ✅ | ✅ 28 oct |
-| 15 | sáb 31 oct | Venta | `15 - Desgaste y renta` | ✅ | |
+| 15 | sáb 31 oct | Venta | `15 - Desgaste y renta` | ✅ | ✅ 31 oct |
 | 26 | dom 1 nov | Venta (v2) | `26 - Dos ofertas misma neta` | ✅ (hecho 30 oct) | |
 | 17 | lun 2 nov | Explicativo (v2, voz v3) | `17 - Cómo funciona Checa` | ✅ (hecho 30 oct) | |
 | 22 | mié 4 nov | Venta (v2, un día detrás de CHECA) | `22 - Cuánto vale tu kilómetro` | ✅ (hecho 30 oct) | |
