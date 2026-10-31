@@ -17,6 +17,7 @@
 | 22 | jue 5 nov | Venta (rehecho 30 oct, voz v3) | `22 - Cuánto vale tu kilómetro` | ✅ (hecho 30 oct) | |
 | 28 | vie 6 nov | Venta | `28 - El 1.4x que paga menos por hora` | ✅ (hecho 30 oct) | |
 | 29 | sáb 7 nov | Aviso | `29 - Checa cambia de app` | ✅ (hecho 30 oct) | |
+| 31 | lun 9 nov | Venta | `31 - Este viaje sí rinde` | ✅ (hecho 31 oct) | |
 
 # PERSONAL · cuenta personal de Eduardo (v2)
 
