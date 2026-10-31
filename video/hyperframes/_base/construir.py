@@ -200,9 +200,9 @@ def esc_numero(sc, e, nombre):
     <div id="{nombre}-n" class="mask clip" style="top:500px;height:340px" data-start="0" data-duration="{D}" data-track-index="2"><div style="font-size:{e.get("size", 300)}px;color:{col}">{e["numero"]}</div></div>
     <div class="etq clip" style="top:900px" data-start="0" data-duration="{D}" data-track-index="3">{e.get("pie", "Números de ejemplo")}</div>"""
     if e.get("icono") == "calculadora":
-        teclas = "".join(f'<rect class="{nombre}-tk" x="{14 + (i % 3) * 30}" y="{62 + (i // 3) * 26}" width="22" height="18" rx="5" fill="#3A3A45"/>' for i in range(9))
-        svg = f'<svg width="170" height="220" viewBox="0 0 100 130" aria-hidden="true"><rect x="2" y="2" width="96" height="126" rx="14" fill="#16161C" stroke="#F4F4EF" stroke-width="3"/><rect x="12" y="12" width="76" height="36" rx="6" fill="#0C0C10"/><text x="82" y="40" text-anchor="end" font-family="JetBrains Mono" font-weight="700" font-size="22" fill="#EF4444">−47</text>{teclas}</svg>'
-        inner += clip(5, f"{nombre}-ic", "left:455px;top:930px;width:170px;height:220px;opacity:0", svg, D)
+        teclas = "".join(f'<rect class="{nombre}-tk" x="{14 + (i % 3) * 26}" y="{58 + (i // 3) * 24}" width="22" height="16" rx="5" fill="#3A3A45"/>' for i in range(9))
+        svg = f'<svg width="150" height="203" viewBox="0 0 100 135" aria-hidden="true"><rect x="2" y="2" width="96" height="131" rx="14" fill="#16161C" stroke="#F4F4EF" stroke-width="3"/><rect x="12" y="12" width="76" height="36" rx="6" fill="#0C0C10"/><text x="82" y="40" text-anchor="end" font-family="JetBrains Mono" font-weight="700" font-size="22" fill="#EF4444">−47</text>{teclas}</svg>'
+        inner += clip(5, f"{nombre}-ic", "left:465px;top:985px;width:150px;height:203px;opacity:0", svg, D)
     js = f'      tl.fromTo("#{nombre}-k", {{ opacity: 0, y: 20 }}, {{ opacity: 1, y: 0, duration: 0.3 }}, 0);\n      tl.fromTo("#{nombre}-n > div", {{ yPercent: 120 }}, {{ yPercent: 0, duration: 0.5, ease: "power4.out" }}, 0.2);\n'
     if e.get("icono") == "calculadora":
         js += f'      tl.fromTo("#{nombre}-ic", {{ opacity: 0, y: 40, rotation: -8 }}, {{ opacity: 1, y: 0, rotation: 0, duration: 0.4, ease: "back.out(1.6)" }}, 0.9);\n      tl.fromTo(".{nombre}-tk", {{ fill: "#3A3A45" }}, {{ fill: "#EF4444", duration: 0.12, stagger: 0.09, yoyo: true, repeat: 1 }}, 1.1);\n'
