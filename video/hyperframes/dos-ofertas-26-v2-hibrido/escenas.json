@@ -2,6 +2,7 @@
  {
   "tipo": "telefono",
   "adelanto": 0.04,
+  "destello": 0.08,
   "golpes": [
    {
     "en": "82",
@@ -47,6 +48,7 @@
  {
   "tipo": "telefono",
   "adelanto": 0.04,
+  "destello": 0.08,
   "golpes": [
    {
     "en": "mismo",
@@ -93,7 +95,8 @@
     "x": 60,
     "y": 760,
     "k": 1.0,
-    "fija": false
+    "fija": false,
+    "dim_en": "95."
    },
    {
     "oferta": {
@@ -107,13 +110,16 @@
     "x": 580,
     "y": 760,
     "k": 1.0,
-    "fija": false
+    "fija": false,
+    "zoom": 1.18,
+    "zoom_en": "95."
    }
   ]
  },
  {
   "tipo": "telefono",
   "adelanto": 0.04,
+  "destello": 0.08,
   "golpes": [
    {
     "en": "agarra",
@@ -155,7 +161,7 @@
     "y": 760,
     "k": 1.0,
     "fija": true,
-    "dim_en": "95."
+    "dim_en": 0
    },
    {
     "oferta": {
@@ -169,13 +175,15 @@
     "x": 580,
     "y": 760,
     "k": 1.0,
-    "fija": true
+    "fija": true,
+    "zoom": 1.18
    }
   ]
  },
  {
   "tipo": "telefono",
   "adelanto": 0.04,
+  "destello": 0.08,
   "golpes": [
    {
     "en": "lejos",
@@ -233,13 +241,15 @@
     "x": 580,
     "y": 760,
     "k": 1.0,
-    "fija": true
+    "fija": true,
+    "zoom": 1.18
    }
   ]
  },
  {
   "tipo": "telefono",
   "adelanto": 0.04,
+  "destello": 0.08,
   "golpes": [
    {
     "en": "gasolina",
@@ -309,13 +319,15 @@
     "x": 580,
     "y": 760,
     "k": 1.0,
-    "fija": true
+    "fija": true,
+    "zoom": 1.18
    }
   ]
  },
  {
   "tipo": "telefono",
   "adelanto": 0.04,
+  "destello": 0.08,
   "golpes": [
    {
     "en": "82",
@@ -368,7 +380,8 @@
     "x": 60,
     "y": 760,
     "k": 1.0,
-    "fija": true
+    "fija": true,
+    "zoom": 1.18
    },
    {
     "oferta": {
@@ -390,6 +403,7 @@
  {
   "tipo": "telefono",
   "adelanto": 0.04,
+  "destello": 0.08,
   "golpes": [
    {
     "en": "gasolina",
@@ -457,7 +471,8 @@
     "x": 60,
     "y": 760,
     "k": 1.0,
-    "fija": true
+    "fija": true,
+    "zoom": 1.18
    },
    {
     "oferta": {
@@ -479,6 +494,7 @@
  {
   "tipo": "telefono",
   "adelanto": 0.04,
+  "destello": 0.08,
   "golpes": [
    {
     "en": "checa",
@@ -607,6 +623,7 @@
  {
   "tipo": "cierre",
   "adelanto": 0.04,
+  "destello": 0.08,
   "pil": "Comenta CHECA",
   "pil_color": "amarillo",
   "link": false,

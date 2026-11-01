@@ -1239,9 +1239,18 @@ def esc_telefono(sc, e, n):
         tid = f"{n}-t{i}"
         inner += clip(2 + i, tid, f"left:{x}px;top:{y}px;width:440px;height:900px", f'<div class="iph" id="{tid}-ph" style="left:0;top:0">{_pantalla(f"{n}{i}", sub)}</div>', D, " data-layout-allow-overflow data-layout-ignore")
         te = pal(sc, t["entra_en"], adel=e.get("adelanto", 0.25)) if t.get("entra_en") is not None else 0
-        js += f'      tl.set("#{tid}", {{ scale: {k}, transformOrigin: "0 0" }}, 0);\n'
+        z = t.get("zoom")  # factor de acercamiento (p. ej. 1.2) sobre el centro del teléfono; «zoom_en»: palabra donde se acerca (si falta, ya viene acercado)
+        k2 = round(k * z, 3) if z else k
+        dx, dy = (-220 * (k2 - k), -450 * (k2 - k)) if z else (0, 0)
+        ya = bool(z) and t.get("zoom_en") is None
+        js += f'      tl.set("#{tid}", {{ scale: {k2 if ya else k}, transformOrigin: "0 0", x: {round(dx, 1) if ya else 0} }}, 0);\n'
+        y0 = round(dy, 1) if ya else 0
         if not t.get("fija"):  # fija: el teléfono ya estaba en pantalla en la escena anterior
-            js += f'      tl.fromTo("#{tid}", {{ y: 1200 }}, {{ y: 0, duration: 0.5, ease: "power3.out" }}, {te});\n'
+            js += f'      tl.fromTo("#{tid}", {{ y: {y0 + 1200} }}, {{ y: {y0}, duration: 0.5, ease: "power3.out" }}, {te});\n'
+        else:
+            js += f'      tl.set("#{tid}", {{ y: {y0} }}, 0);\n'
+        if z and not ya:
+            js += f'      tl.to("#{tid}", {{ scale: {k2}, x: {round(dx, 1)}, y: {round(dy, 1)}, duration: 0.45, ease: "power3.out" }}, {pal(sc, t["zoom_en"], adel=e.get("adelanto", 0.25))});\n'
         if t.get("dim_en") is not None:
             js += f'      tl.to("#{tid}", {{ opacity: 0.5, duration: 0.3 }}, {pal(sc, t["dim_en"], adel=e.get("adelanto", 0.25))});\n'
         if t.get("popup"):
@@ -1313,7 +1322,7 @@ def golpes(sc, e, n):
         inner += clip(41 + i, gid, estilo, cuerpo, D, " data-layout-allow-overflow data-layout-allow-overlap")
         base = 'scale: 1.9' if k != "apagon" else 'scale: 1.0'
         js += f'      tl.fromTo("#{gid}", {{ opacity: 0, {base} }}, {{ opacity: 1, scale: 1, duration: {0.06 if k == "apagon" else 0.24}, ease: "power4.out" }}, {t});\n'
-        js += f'      tl.fromTo("#{n}-gfl", {{ opacity: {0.7 if k == "apagon" else 0.5} }}, {{ opacity: 0, duration: 0.28, ease: "power2.out" }}, {t});\n'
+        js += f'      tl.fromTo("#{n}-gfl", {{ opacity: {e.get("destello", 0.7 if k == "apagon" else 0.5)} }}, {{ opacity: 0, duration: 0.28, ease: "power2.out" }}, {t});\n'
         js += f'      tl.to("#{gid}", {{ x: 16, duration: 0.04, yoyo: true, repeat: 7 }}, {round(t + 0.2, 2)});\n'
         if fin is not None:
             js += f'      tl.to("#{gid}", {{ opacity: 0, duration: 0.1 }}, {round(fin - 0.04, 2)});\n'
