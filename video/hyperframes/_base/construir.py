@@ -1013,6 +1013,51 @@ def esc_iphone_gancho(sc, e, n):
     return marco(n, D, IPH_CSS, inner, js)
 
 
+OFR_CSS = """.orl { --u: .38333px; position: absolute; inset: 0; background: #F3F4F8; font-family: 'DM Sans', sans-serif; color: #000; }
+    .orl svg.mp { position: absolute; left: 0; top: 0; width: 414px; height: 874px; }
+    .orl .cd { position: absolute; left: calc(var(--u)*50); top: calc(var(--u)*212); width: calc(var(--u)*980); height: calc(var(--u)*1481); box-sizing: border-box; background: #fff; border: calc(var(--u)*5) solid #000; border-radius: calc(var(--u)*42); }
+    .orl .cd > * { position: absolute; }
+    .orl .tg { left: calc(var(--u)*41); top: calc(var(--u)*41); height: calc(var(--u)*84); padding: 0 calc(var(--u)*26); background: #000; border-radius: calc(var(--u)*12); color: #fff; font-size: calc(var(--u)*47); font-weight: 500; display: flex; align-items: center; gap: calc(var(--u)*18); }
+    .orl .tg svg { width: calc(var(--u)*36); height: calc(var(--u)*36); }
+    .orl .xx { right: calc(var(--u)*41); top: calc(var(--u)*41); width: calc(var(--u)*140); height: calc(var(--u)*140); border-radius: calc(var(--u)*18); background: #F5F5F5; display: flex; align-items: center; justify-content: center; }
+    .orl .xx svg { width: calc(var(--u)*52); height: calc(var(--u)*52); }
+    .orl .pr { left: calc(var(--u)*41); top: calc(var(--u)*148); font-size: calc(var(--u)*158); font-weight: 700; letter-spacing: -.05em; line-height: 1; white-space: nowrap; }
+    .orl .vf { left: calc(var(--u)*43); top: calc(var(--u)*330); height: calc(var(--u)*104); padding: 0 calc(var(--u)*40) 0 calc(var(--u)*38); background: #F2F2F2; border-radius: 999px; display: flex; align-items: center; gap: calc(var(--u)*26); font-size: calc(var(--u)*52); white-space: nowrap; }
+    .orl .vf svg { width: calc(var(--u)*62); height: calc(var(--u)*70); }
+    .orl .es { left: calc(var(--u)*43); top: calc(var(--u)*466); display: flex; align-items: center; gap: calc(var(--u)*24); font-size: calc(var(--u)*52); color: #545454; }
+    .orl .es svg { width: calc(var(--u)*42); height: calc(var(--u)*42); }
+    .orl .ln { left: 0; right: 0; top: calc(var(--u)*550); height: calc(var(--u)*3); background: #EBEBEB; }
+    .orl .rl { left: calc(var(--u)*76); top: calc(var(--u)*693); width: calc(var(--u)*5); height: calc(var(--u)*531); background: #000; }
+    .orl .dt { left: calc(var(--u)*61); top: calc(var(--u)*676); width: calc(var(--u)*34); height: calc(var(--u)*34); border-radius: 50%; background: #000; }
+    .orl .sq { left: calc(var(--u)*61); top: calc(var(--u)*1207); width: calc(var(--u)*34); height: calc(var(--u)*34); border-radius: calc(var(--u)*3); background: #000; }
+    .orl .tx { left: calc(var(--u)*138); width: calc(var(--u)*800); font-size: calc(var(--u)*52); line-height: 1.38; white-space: nowrap; }
+    .orl .tx b { display: block; font-weight: 500; }
+    .orl .tx span { display: block; color: #545454; }
+    .orl .bt { left: calc(var(--u)*41); top: calc(var(--u)*1290); width: calc(var(--u)*888); height: calc(var(--u)*150); background: #000; border-radius: calc(var(--u)*16); overflow: hidden; display: flex; align-items: center; justify-content: center; color: #fff; font-size: calc(var(--u)*62); font-weight: 500; }
+    .orl .bt i { position: absolute; right: 0; top: 0; bottom: 0; width: 67%; background: #3B3B3B; }
+    .orl .bt span { position: relative; }"""
+
+
+def oferta_real(o):
+    """Oferta con el formato de la app de viajes real (sin logo ni nombre): o = {precio, rating, a, a_dir, viaje, v_dir} (a_dir/v_dir con <br>)."""
+    estrella = '<svg viewBox="0 0 24 24" fill="#000"><path d="M12 1.5l3.2 7.2 7.8.8-5.9 5.2 1.7 7.7L12 18.4 5.2 22.4l1.7-7.7L1 9.5l7.8-.8z"/></svg>'
+    escudo = '<svg viewBox="0 0 20 22"><path d="M10 1l8 3v6c0 5-3.4 9.2-8 11-4.6-1.8-8-6-8-11V4z" fill="#2F6FEB"/><path d="M6.2 11l2.6 2.6L13.8 8.4" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    mapa = ('<svg class="mp" viewBox="0 112 1080 1626" preserveAspectRatio="none"><rect width="1080" height="1890" fill="#F3F4F8"/>'
+            '<path d="M0 0H330Q300 80 200 130 90 170 0 150Z" fill="#CFE3F6"/><path d="M700 330H1080V520H760Z" fill="#DDEFE0"/>'
+            '<g stroke="#E3E6EE" stroke-width="30" fill="none"><path d="M0 250L1080 130"/><path d="M150 0L240 700"/><path d="M780 0L700 500"/></g>'
+            '<g stroke="#fff" stroke-width="22" fill="none"><path d="M0 250L1080 130"/><path d="M150 0L240 700"/><path d="M780 0L700 500"/><path d="M420 0L470 700"/><path d="M0 120L1080 40"/></g>'
+            '<g transform="translate(0,112)"><path d="M475 100L475 40H600" stroke="#000" stroke-width="12" fill="none" stroke-linecap="square"/><circle cx="475" cy="100" r="22" fill="#2F6FEB" stroke="#fff" stroke-width="7"/><circle cx="592" cy="36" r="52" fill="#000"/><rect x="574" y="18" width="36" height="36" rx="5" fill="#fff"/></g></svg>')
+    return (f'<div class="orl">{mapa}<div class="cd">'
+            f'<div class="tg"><svg viewBox="0 0 16 16" fill="#fff"><circle cx="8" cy="4.6" r="3.2"/><path d="M1.8 15c0-3.6 2.8-5.6 6.2-5.6s6.2 2 6.2 5.6z"/></svg>Viaje</div>'
+            f'<div class="xx"><svg viewBox="0 0 16 16" fill="none" stroke="#000" stroke-width="2.1" stroke-linecap="square"><path d="M2 2l12 12M14 2L2 14"/></svg></div>'
+            f'<div class="pr">MXN<span id="{o["id"]}-cnt">{o["precio"]}</span>.00</div><div class="vf">{escudo}Identidad verificada</div>'
+            f'<div class="es">{estrella}{o["rating"]}</div><div class="ln"></div><div class="rl"></div><div class="dt"></div><div class="sq"></div>'
+            f'<div class="tx" style="top:calc(var(--u)*585)"><b>{o["a"]}</b><span>{o["a_dir"]}</span></div>'
+            f'<div class="tx" style="top:calc(var(--u)*900)"><b>{o["viaje"]}</b><span>{o["v_dir"]}</span></div>'
+            f'<div class="bt"><i></i><span>Viaje disponible</span></div></div></div>')
+
+
+
 def _pantalla(n, e):
     """Contenido de la pantalla del teléfono: mapa + oferta, y encima un pop-up o varios (estados)."""
     t, d = e.get("tarifa", 108), e.get("d", "A 4 min (2 km)<br>Viaje: 18 min (10 km)")
@@ -1027,6 +1072,8 @@ def _pantalla(n, e):
         h = f'<img src="assets/img/{e["imagen"]}" style="position:absolute;inset:0;width:414px;height:874px" alt=""><div class="isla"></div>'
         if e.get("imagen2"):
             h += f'<img id="{n}-im2" src="assets/img/{e["imagen2"]}" style="position:absolute;inset:0;width:414px;height:874px;opacity:0" alt="">'
+    if e.get("oferta_real"):
+        h = oferta_real(dict(e["oferta_real"], id=n)) + '<div class="isla"></div>'
     pops = e.get("popups") or ([e["popup"]] if e.get("popup") else [])
     for i, p in enumerate(pops):
         validar_popup(p)
@@ -1069,7 +1116,7 @@ def esc_iphone(sc, e, n):
     D = sc["dur"]; x = e.get("x", 320); g0, g1 = e.get("giro", [-14, -4])
     luz = COLOR[e.get("luz", "hueso")]
     inner = clip(1, f"{n}-luz", f"left:-200px;top:0;width:1480px;height:1400px;background:radial-gradient(closest-side, {luz}2A 0%, rgba(12,12,16,0) 100%)", "", D)
-    inner += clip(2, f"{n}-st", "left:0;top:0;width:1080px;height:1920px", f'<div class="iph-s" style="position:absolute;inset:0"><div style="position:absolute;left:{x}px;top:250px"><div class="iph" id="{n}-ph">{_pantalla(n, e)}</div></div></div>', D, ' data-layout-allow-overflow')
+    inner += clip(2, f"{n}-st", "left:0;top:0;width:1080px;height:1920px", f'<div class="iph-s" style="position:absolute;inset:0"><div style="position:absolute;left:{x}px;top:250px"><div class="iph" id="{n}-ph">{_pantalla(n, e)}</div></div></div>', D, ' data-layout-allow-overflow' + (' data-layout-ignore' if e.get('golpes') else ''))
     ti, tj = _titulo(sc, e, n)
     ci, cj = _chips(sc, e, n)
     inner += ti + ci
@@ -1111,17 +1158,20 @@ def esc_iphone(sc, e, n):
                 js += f'      tl.to("#{n}-pp{i}", {{ opacity: 0, duration: 0.12 }}, {round(ts[i + 1] - 0.02, 2)});\n'
             c = COLOR[e["popups"][i].get("nivel", "verde")]
             js += f'      tl.to("#{n}-luz", {{ background: "radial-gradient(closest-side, {c}3A 0%, rgba(12,12,16,0) 100%)", duration: 0.3 }}, {t});\n'
-    return marco(n, D, IPH_CSS + "\n    " + css_popup(), inner, tj + cj + js)
+    if e.get("golpes"):
+        gi, gj = golpes(sc, e, n)
+        inner += gi; js += gj
+    return marco(n, D, IPH_CSS + "\n    " + OFR_CSS + "\n    " + css_popup(), inner, tj + cj + js)
 
 
 def esc_iphone_duo(sc, e, n):
     """Dos teléfonos lado a lado con su pop-up. «destaca»: [i, palabra] (brilla); «gana»: [i, palabra] (★ MEJOR al frente, el otro se apaga)."""
-    D = sc["dur"]; ps = e["popups"]; ofs = e.get("ofertas", [{}, {}])
+    D = sc["dur"]; ps = e.get("popups") or [None, None]; ofs = e.get("ofertas", [{}, {}])
     inner = ""
     for i, p in enumerate(ps):
         x = 100 + i * 470
-        sub = dict(ofs[i], popup=p)
-        inner += clip(1 + i, f"{n}-w{i}", f"left:{x}px;top:250px;width:440px;height:900px;transform-origin:50% 0", f'<div class="iph-s" style="position:absolute;inset:0"><div class="iph" id="{n}-ph{i}">{_pantalla(f"{n}{i}", sub)}</div></div>', D, ' data-layout-allow-overflow')
+        sub = dict(ofs[i], popup=p) if p else dict(ofs[i])
+        inner += clip(1 + i, f"{n}-w{i}", f"left:{x}px;top:250px;width:440px;height:900px;transform-origin:50% 0", f'<div class="iph-s" style="position:absolute;inset:0"><div class="iph" id="{n}-ph{i}">{_pantalla(f"{n}{i}", sub)}</div></div>', D, ' data-layout-allow-overflow' + (' data-layout-ignore' if e.get('golpes') else ''))
         inner += clip(4 + i, f"{n}-g{i}", f"left:{x - 60}px;top:200px;width:560px;height:920px;border-radius:120px;background:radial-gradient(closest-side, #F4F4EF33 0%, rgba(12,12,16,0) 100%);opacity:0", "", D)
     ci, cj = _chips(sc, e, n)
     ti, tj = _titulo(sc, e, n)
@@ -1142,7 +1192,10 @@ def esc_iphone_duo(sc, e, n):
         js += (f'      tl.to("#{n}-g{1 - i}", {{ opacity: 0, duration: 0.2 }}, {t});\n      tl.to("#{n}-w{1 - i}", {{ opacity: 0.3, scale: 0.8, duration: 0.4 }}, {t});\n'
                f'      tl.to("#{n}-w{i}", {{ opacity: 1, scale: 0.95, duration: 0.45, ease: "back.out(1.6)" }}, {t});\n      tl.to("#{n}-g{i}", {{ opacity: 1, duration: 0.3 }}, {t});\n'
                f'      tl.fromTo("#{n}-mj", {{ opacity: 0, y: 30, scale: 0.7 }}, {{ opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(2)" }}, {round(t + 0.15, 2)});\n')
-    return marco(n, D, IPH_CSS + "\n    " + css_popup(), inner, tj + cj + js)
+    if e.get("golpes"):
+        gi, gj = golpes(sc, e, n)
+        inner += gi; js += gj
+    return marco(n, D, IPH_CSS + "\n    " + OFR_CSS + "\n    " + css_popup(), inner, tj + cj + js)
 
 
 # ---------- gráficos de impacto (1 nov 2026): golpes visuales que caen en la palabra que la voz enfatiza ----------
@@ -1199,7 +1252,7 @@ def golpes(sc, e, n):
                 cuerpo += f'<div id="{gid}-fl" style="position:absolute;right:40px;bottom:-40px">{FLECHA}</div>'
                 extra_js += f'      tl.to("#{gid}-fl", {{ x: 28, y: 28, duration: 0.28, yoyo: true, repeat: 7, ease: "sine.inOut" }}, {round(t + 0.3, 2)});\n'
         estilo = f"left:0;width:1080px;top:{top}px;height:{alto}px;display:flex;flex-direction:column;align-items:center;justify-content:{'flex-start;padding-top:330px;box-sizing:border-box' if k == 'apagon' else 'center'};opacity:0"
-        inner += clip(41 + i, gid, estilo, cuerpo, D, " data-layout-allow-overflow")
+        inner += clip(41 + i, gid, estilo, cuerpo, D, " data-layout-allow-overflow data-layout-allow-overlap")
         base = 'scale: 1.9' if k != "apagon" else 'scale: 1.0'
         js += f'      tl.fromTo("#{gid}", {{ opacity: 0, {base} }}, {{ opacity: 1, scale: 1, duration: {0.06 if k == "apagon" else 0.24}, ease: "power4.out" }}, {t});\n'
         js += f'      tl.fromTo("#{n}-gfl", {{ opacity: {0.7 if k == "apagon" else 0.5} }}, {{ opacity: 0, duration: 0.28, ease: "power2.out" }}, {t});\n'

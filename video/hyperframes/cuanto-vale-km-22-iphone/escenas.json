@@ -1,0 +1,374 @@
+[
+ {
+  "tipo": "iphone_duo",
+  "ofertas": [
+   {
+    "oferta_real": {
+     "precio": 110,
+     "rating": "4.92",
+     "a": "A 6 min (3.0 km)",
+     "a_dir": "Avenida Benito Juárez,<br>Col. Centro / Sector Norte<br>de la zona poniente",
+     "viaje": "Viaje: 40 min (25.0 km)",
+     "v_dir": "Calle Hidalgo &amp; Avenida II,<br>56337 Col. Jardines, Sector Sur<br>- Col. Jardines / Sector Sur<br>de la zona oriente"
+    }
+   },
+   {
+    "oferta_real": {
+     "precio": 90,
+     "rating": "5.00",
+     "a": "A 4 min (2.0 km)",
+     "a_dir": "Calle Fresno &amp; Avenida II,<br>Col. Norte / Sector Centro<br>de la zona poniente",
+     "viaje": "Viaje: 20 min (13.0 km)",
+     "v_dir": "Avenida Reforma 1204,<br>56337 Col. Centro, Sector Sur<br>- Col. Centro / Sector Sur<br>de la zona oriente"
+    }
+   }
+  ],
+  "entra_en": "oferta",
+  "destaca": [
+   0,
+   "peor"
+  ],
+  "golpes": [
+   {
+    "en": "110",
+    "kind": "texto",
+    "glow": "hueso",
+    "lineas": [
+     [
+      "$110",
+      "hueso",
+      460
+     ]
+    ],
+    "sub": "PAGA MÁS"
+   },
+   {
+    "en": "90,",
+    "kind": "texto",
+    "glow": "hueso",
+    "lineas": [
+     [
+      "$90",
+      "hueso",
+      460
+     ]
+    ],
+    "sub": "QUE UNA DE"
+   },
+   {
+    "en": "peor",
+    "kind": "texto",
+    "glow": "rojo",
+    "lineas": [
+     [
+      "EL PEOR",
+      "rojo",
+      230
+     ]
+    ],
+    "sub": "VIAJE DE LOS DOS"
+   }
+  ]
+ },
+ {
+  "tipo": "iphone",
+  "entra": "golpe",
+  "oferta_real": {
+   "precio": 110,
+   "rating": "4.92",
+   "a": "A 6 min (3.0 km)",
+   "a_dir": "Avenida Benito Juárez,<br>Col. Centro / Sector Norte<br>de la zona poniente",
+   "viaje": "Viaje: 40 min (25.0 km)",
+   "v_dir": "Calle Hidalgo &amp; Avenida II,<br>56337 Col. Jardines, Sector Sur<br>- Col. Jardines / Sector Sur<br>de la zona oriente"
+  },
+  "luz": "rojo",
+  "golpes": [
+   {
+    "en": "28",
+    "kind": "texto",
+    "glow": "hueso",
+    "lineas": [
+     [
+      "28 KM",
+      "hueso",
+      330
+     ]
+    ],
+    "sub": "LOS 110 SON"
+   },
+   {
+    "en": "3.93",
+    "kind": "texto",
+    "glow": "rojo",
+    "lineas": [
+     [
+      "$3.93",
+      "rojo",
+      400
+     ]
+    ],
+    "sub": "POR KILÓMETRO"
+   },
+   {
+    "en": "54.",
+    "kind": "texto",
+    "glow": "verde",
+    "lineas": [
+     [
+      "$54",
+      "verde",
+      460
+     ]
+    ],
+    "sub": "TE QUEDAN"
+   }
+  ]
+ },
+ {
+  "tipo": "iphone",
+  "entra": "golpe",
+  "oferta_real": {
+   "precio": 90,
+   "rating": "5.00",
+   "a": "A 4 min (2.0 km)",
+   "a_dir": "Calle Fresno &amp; Avenida II,<br>Col. Norte / Sector Centro<br>de la zona poniente",
+   "viaje": "Viaje: 20 min (13.0 km)",
+   "v_dir": "Avenida Reforma 1204,<br>56337 Col. Centro, Sector Sur<br>- Col. Centro / Sector Sur<br>de la zona oriente"
+  },
+  "luz": "verde",
+  "golpes": [
+   {
+    "en": "15",
+    "kind": "texto",
+    "glow": "hueso",
+    "lineas": [
+     [
+      "15 KM",
+      "hueso",
+      330
+     ]
+    ],
+    "sub": "LOS 90 SON"
+   },
+   {
+    "en": "6",
+    "kind": "texto",
+    "glow": "verde",
+    "lineas": [
+     [
+      "$6",
+      "verde",
+      560
+     ]
+    ],
+    "sub": "POR KILÓMETRO"
+   },
+   {
+    "en": "60.",
+    "kind": "texto",
+    "glow": "verde",
+    "lineas": [
+     [
+      "$60",
+      "verde",
+      460
+     ]
+    ],
+    "sub": "TE QUEDAN"
+   }
+  ]
+ },
+ {
+  "tipo": "impacto",
+  "ejemplo": false,
+  "golpes": [
+   {
+    "en": "meta",
+    "kind": "captura",
+    "img": "ajustes.png",
+    "glow": "amarillo",
+    "chip": [
+     "$5/km",
+     "amarillo"
+    ],
+    "y": 280,
+    "h": 800
+   },
+   {
+    "en": "sirve",
+    "kind": "texto",
+    "glow": "verde",
+    "lineas": [
+     [
+      "TE SIRVE",
+      "verde",
+      200
+     ]
+    ]
+   },
+   {
+    "en": "caro.",
+    "kind": "texto",
+    "glow": "rojo",
+    "lineas": [
+     [
+      "TE SALE",
+      "rojo",
+      190
+     ],
+     [
+      "CARO",
+      "rojo",
+      260
+     ]
+    ],
+    "icono": "dinero",
+    "icono_color": "rojo"
+   }
+  ]
+ },
+ {
+  "tipo": "impacto",
+  "ejemplo": false,
+  "golpes": [
+   {
+    "en": "segundos,",
+    "kind": "texto",
+    "glow": "amarillo",
+    "lineas": [
+     [
+      "EN SEGUNDOS",
+      "amarillo",
+      150
+     ]
+    ],
+    "icono": "hora"
+   },
+   {
+    "en": "nadie",
+    "kind": "texto",
+    "glow": "rojo",
+    "lineas": [
+     [
+      "NADIE",
+      "rojo",
+      300
+     ]
+    ]
+   },
+   {
+    "en": "cuenta.",
+    "kind": "texto",
+    "glow": "hueso",
+    "lineas": [
+     [
+      "ESA CUENTA",
+      "hueso",
+      190
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "tipo": "iphone",
+  "entra": "golpe",
+  "oferta_real": {
+   "precio": 90,
+   "rating": "5.00",
+   "a": "A 4 min (2.0 km)",
+   "a_dir": "Calle Fresno &amp; Avenida II,<br>Col. Norte / Sector Centro<br>de la zona poniente",
+   "viaje": "Viaje: 20 min (13.0 km)",
+   "v_dir": "Avenida Reforma 1204,<br>56337 Col. Centro, Sector Sur<br>- Col. Centro / Sector Sur<br>de la zona oriente"
+  },
+  "luz": "verde",
+  "popup": {
+   "nivel": "verde",
+   "app": "OFERTA",
+   "neta": 60,
+   "viaje": 90,
+   "gasolina": 30,
+   "chips": [
+    [
+     "$225/h",
+     "por hora",
+     "ok"
+    ],
+    [
+     "$6/km",
+     "por km",
+     "ok"
+    ],
+    [
+     "24 min",
+     "15 km total",
+     ""
+    ]
+   ]
+  },
+  "popup_en": "checa",
+  "golpes": [
+   {
+    "en": "checa",
+    "kind": "logo",
+    "glow": "verde",
+    "lineas": [
+     [
+      "Checa",
+      "verde",
+      200
+     ]
+    ]
+   },
+   {
+    "en": "recogida",
+    "kind": "texto",
+    "glow": "amarillo",
+    "lineas": [
+     [
+      "RECOGIDA",
+      "amarillo",
+      160
+     ]
+    ],
+    "sub": "INCLUIDA",
+    "icono": "km"
+   },
+   {
+    "en": "aceptes.",
+    "kind": "texto",
+    "glow": "verde",
+    "lineas": [
+     [
+      "ACEPTES",
+      "verde",
+      200
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "tipo": "cierre",
+  "pil": "Comenta CHECA",
+  "pil_color": "amarillo",
+  "link": false,
+  "flecha": true,
+  "golpes": [
+   {
+    "en": "checa",
+    "kind": "texto",
+    "glow": "amarillo",
+    "flecha": true,
+    "lineas": [
+     [
+      "CHECA",
+      "amarillo",
+      320
+     ]
+    ],
+    "hasta": "acceso"
+   }
+  ]
+ }
+]
