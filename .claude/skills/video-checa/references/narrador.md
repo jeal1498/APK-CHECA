@@ -51,3 +51,23 @@ El render tarda ~2 min (espera a que `renders/video.mp4` deje de crecer). `revis
 
 ## 6. Videos de la web
 Mismo proceso, con `{"tipo": "cierre", "sin_redes": true}`. Ejemplos: `video/hyperframes/checa-oferta-web/` y `video/tutorial-instalar/README-v2.md`.
+
+## 7. Énfasis de Eduardo (31 oct 2026)
+Eduardo marca el énfasis (lo escribe Gémini) en una lista bajo cada línea de voz, **sin cambiar el texto**; si el texto cambia, se avisa y se compara con el aprobado:
+```
+L3: Nomás estás poniendo de tu bolsa.
+  voz: tono cansado y molesto, más lento
+  fuerte: "tu bolsa"
+  pausa: antes de "cada"
+  tono: cansado
+  pantalla: "tu bolsa" = rojo | "regales" = golpe
+```
+- `fuerte` → MAYÚSCULAS en `SCRIPT.md` (salen también en los subtítulos); `pausa` → «...» antes de la palabra; `tono`/`voz` → etiquetas de ElevenLabs v3 al inicio de la línea (`[urgent]`, `[firm]`, `[tired]`, `[angry]`, `[calm]`, `[slowly]`, `[quickly]`; no salen en subtítulos). El volumen de una sola palabra no se fija: se aproxima con mayúsculas y etiquetas. No pongas «CHECA» ni «Checa» en mayúsculas si no hace falta (v3 podría deletrearlo).
+- `pantalla` → color (`rojo`, `amarillo`, `verde`) o `golpe` (zoom + sacudida) en esa palabra.
+- Si falta una palabra de la lista en la línea, se avisa en vez de adivinar. Regenerar voces gasta créditos de ElevenLabs: cambia solo las líneas necesarias (aparta `assets/voice` con `mv`).
+
+## 8. Gráficos de impacto (1 nov 2026)
+Donde hay énfasis, el gráfico tiene que pesar tanto como la voz. Escena `impacto` (y `cierre` con `golpes`): lista `golpes`, cada uno `{"en": palabra, "kind": ...}` que cae en esa palabra con zoom, destello y sacudida y deja su lugar al siguiente.
+- `kind`: `texto` (líneas `[texto, color, px]`, `icono`, `sub`, `billetes`, `flecha`, `glow`), `apagon` (negro + ícono de apagado), `logo` (semáforo que se enciende), `captura` (`img` de `assets/img/`, `chip`) y `popup`.
+- Cifra gigante en rojo para lo que pierdes, verde para lo que ganas; un golpe por palabra enfatizada, con pocos elementos a la vez. Tamaños seguros: «$10» 560 px, «$9» 620 px, «−$47» 420 px, «CHECA» 320 px.
+- Cuando la voz nombra la app, se muestra la app real (capturas de `docs/google-play/graficos/`, sin «Uber» ni «DiDi»; se tapa ese texto). Ejemplo: `video/hyperframes/respuesta-costo-km-32/`.
