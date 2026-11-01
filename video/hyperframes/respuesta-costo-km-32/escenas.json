@@ -30,7 +30,7 @@
   "tipo": "numero",
   "etiqueta": "combustible + desgaste, por km",
   "numero": "$9",
-  "size": 380,
+  "size": 330,
   "color": "rojo",
   "pie": "Números de ejemplo",
   "icono": "calculadora"

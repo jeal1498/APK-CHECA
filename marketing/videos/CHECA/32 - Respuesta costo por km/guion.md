@@ -11,3 +11,5 @@ Los énfasis los escribió Gémini; MAYÚSCULAS = fuerza en la voz, «...» = pa
 
 **Cifras (ejemplo):** costo ≈ 9/km. 70 por 13 km: 13 × 9 = 117; 70 − 117 = −47; 70 ÷ 13 = 5.4/km.
 **Nota:** la última línea no es el CTA estándar («te paso el acceso a la prueba en Google Play»); es decisión de Eduardo.
+
+**Dirección de voz (1 nov):** L1 urgente, más volumen en «10 varos», «apaga» fuerte · L2 firme y seria · L3 cansado, molesto y más lento · L4 enojado y determinante · L5 firme, seguro y más rápido · L6 clara y directa (sin etiqueta: se acabaron los créditos de ElevenLabs).
