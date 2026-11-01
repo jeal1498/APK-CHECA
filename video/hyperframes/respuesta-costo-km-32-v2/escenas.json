@@ -6,21 +6,27 @@
    {
     "en": 0,
     "kind": "texto",
+    "glow": "hueso",
+    "lineas": [
+     [
+      "VIAJES",
+      "hueso",
+      230
+     ]
+    ],
+    "sub": "QUE TE CAEN"
+   },
+   {
+    "en": "menos",
+    "kind": "texto",
     "glow": "amarillo",
     "lineas": [
      [
-      "VIAJES CORTOS",
-      "hueso",
-      110
-     ],
-     [
-      "PAGAN POCO",
+      "MENOS DE",
       "amarillo",
-      110
+      170
      ]
-    ],
-    "icono": "km",
-    "icono_color": "amarillo"
+    ]
    },
    {
     "en": "varos",
@@ -28,12 +34,12 @@
     "glow": "rojo",
     "lineas": [
      [
-      "<$10",
+      "$10",
       "rojo",
-      480
+      560
      ]
     ],
-    "sub": "POR KILÓMETRO"
+    "sub": "EL KILÓMETRO"
    },
    {
     "en": "apaga",
@@ -52,9 +58,9 @@
     "glow": "amarillo",
     "lineas": [
      [
-      "GASOLINA",
+      "COMBUSTIBLE",
       "amarillo",
-      150
+      120
      ]
     ],
     "icono": "gas",
@@ -63,16 +69,27 @@
    {
     "en": "desgaste",
     "kind": "texto",
-    "glow": "rojo",
+    "glow": "amarillo",
     "lineas": [
      [
-      "DESGASTE",
-      "rojo",
-      150
+      "+ DESGASTE",
+      "hueso",
+      130
+     ]
+    ]
+   },
+   {
+    "en": "cada",
+    "kind": "texto",
+    "glow": "hueso",
+    "lineas": [
+     [
+      "CADA KM",
+      "hueso",
+      230
      ]
     ],
-    "icono": "km",
-    "icono_color": "rojo"
+    "sub": "YA TE CUESTA"
    },
    {
     "en": "9",
@@ -80,12 +97,12 @@
     "glow": "rojo",
     "lineas": [
      [
-      "≈ $9",
+      "$9",
       "rojo",
-      600
+      620
      ]
     ],
-    "sub": "TE CUESTA CADA KM"
+    "sub": "CASI 9 PESOS"
    }
   ]
  },
@@ -94,35 +111,30 @@
   "ejemplo": true,
   "golpes": [
    {
-    "en": 0,
+    "en": "poniendo",
     "kind": "texto",
-    "glow": "hueso",
+    "glow": "amarillo",
     "lineas": [
      [
-      "Pagan menos",
+      "PONIENDO",
       "hueso",
-      130
-     ],
-     [
-      "de lo que gastas",
-      "rojo",
-      120
+      170
      ]
-    ]
+    ],
+    "icono": "dinero",
+    "icono_color": "amarillo"
    },
    {
-    "en": "bolsa",
+    "en": "tu",
     "kind": "texto",
     "glow": "rojo",
     "lineas": [
      [
-      "TU BOLSA",
+      "DE TU BOLSA",
       "rojo",
-      230
+      150
      ]
     ],
-    "icono": "dinero",
-    "icono_color": "rojo",
     "billetes": true
    }
   ]
@@ -132,34 +144,32 @@
   "golpes": [
    {
     "en": "regales",
-    "kind": "captura",
-    "img": "rechazar.png",
+    "kind": "texto",
     "glow": "rojo",
-    "chip": [
-     "NO",
-     "rojo"
+    "lineas": [
+     [
+      "REGALES",
+      "rojo",
+      210
+     ]
     ],
-    "y": 230,
-    "h": 900
+    "icono": "dinero",
+    "icono_color": "rojo",
+    "billetes": true
    },
    {
     "en": "chamba",
     "kind": "texto",
-    "glow": "verde",
+    "glow": "amarillo",
     "lineas": [
      [
-      "TU CHAMBA",
-      "verde",
-      190
-     ],
-     [
-      "VALE MÁS",
-      "hueso",
-      120
+      "LA CHAMBA",
+      "amarillo",
+      170
      ]
     ],
     "icono": "hora",
-    "icono_color": "verde"
+    "icono_color": "amarillo"
    }
   ]
  },
@@ -179,19 +189,19 @@
     ]
    },
    {
-    "en": "mínima",
+    "en": "tarifa",
     "kind": "captura",
     "img": "metas.png",
     "glow": "amarillo",
     "chip": [
-     "TU MÍNIMA",
+     "MÍNIMA",
      "amarillo"
     ],
     "y": 280,
     "h": 800
    },
    {
-    "en": "conviene",
+    "en": "avisa",
     "kind": "popup",
     "glow": "verde",
     "popup": {
@@ -218,15 +228,27 @@
       ]
      ]
     },
-    "y": 230,
-    "h": 900,
+    "y": 330,
+    "h": 700
+   },
+   {
+    "en": "conviene",
+    "kind": "texto",
+    "glow": "verde",
     "lineas": [
      [
-      "SÍ CONVIENE",
+      "SÍ",
       "verde",
-      130
+      300
+     ],
+     [
+      "CONVIENE",
+      "verde",
+      170
      ]
-    ]
+    ],
+    "icono": "dinero",
+    "icono_color": "verde"
    }
   ]
  },
