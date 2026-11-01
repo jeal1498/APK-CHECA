@@ -19,7 +19,7 @@
 | 29 | vie 6 nov | Aviso | `29 - Checa cambia de app` | ✅ (hecho 30 oct) | |
 | 30 | sáb 7 nov | Venta | `30 - Checa en tres segundos` | ✅ (hecho 31 oct) | |
 | 31 | dom 8 nov | Venta | `31 - Este viaje sí rinde` | ✅ (hecho 31 oct) | |
-| 32 | dom 1 nov | Venta | `32 - Respuesta costo por km` | ✅ (hecho 31 oct) | |
+| 32 | dom 1 nov | Venta | `32 - Respuesta costo por km` | ✅ (hecho 1 nov) | |
 
 # PERSONAL · cuenta personal de Eduardo (v2)
 
