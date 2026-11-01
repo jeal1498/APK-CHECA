@@ -1,14 +1,14 @@
 {
- "etiqueta": "OFERTA DE 70",
+ "etiqueta": "OFERTA DE 62",
  "titulo": [
-  "Menos de 10 por km:",
-  "apágale a la app"
+  "Pagan menos de 10",
+  "por km: apágala"
  ],
- "precio": "$70.00",
- "linea": "13 km en total",
- "recogida": "A 3 min (1 km)",
- "viaje": "Viaje: 25 min (12 km)",
- "sello_texto": "TE CUESTA",
- "sello_valor": "9",
- "titulo_px": 100
+ "precio": "$62.00",
+ "linea": "10 km en total",
+ "recogida": "A 2 min (1 km)",
+ "viaje": "Viaje: 20 min (9 km)",
+ "sello_texto": "TE FALTAN",
+ "sello_valor": "28",
+ "titulo_px": 110
 }

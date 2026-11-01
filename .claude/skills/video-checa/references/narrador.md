@@ -71,3 +71,14 @@ Donde hay énfasis, el gráfico tiene que pesar tanto como la voz. Escena `impac
 - `kind`: `texto` (líneas `[texto, color, px]`, `icono`, `sub`, `billetes`, `flecha`, `glow`), `apagon` (negro + ícono de apagado), `logo` (semáforo que se enciende), `captura` (`img` de `assets/img/`, `chip`) y `popup`.
 - Cifra gigante en rojo para lo que pierdes, verde para lo que ganas; un golpe por palabra enfatizada, con pocos elementos a la vez. Tamaños seguros: «$10» 560 px, «$9» 620 px, «−$47» 420 px, «CHECA» 320 px.
 - Cuando la voz nombra la app, se muestra la app real (capturas de `docs/google-play/graficos/`, sin «Uber» ni «DiDi»; se tapa ese texto). Ejemplo: `video/hyperframes/respuesta-costo-km-32/`.
+
+### Aprendizajes de la v2 del 32 (1 nov 2026, aprobada por Eduardo: «exactamente como quiero los videos»)
+- **Una v2 con el mismo audio** se hace con `checa.py nuevo <tema>-v2 --desde <tema>`, copiando `assets/voice/` y `tiempos.json` (no se regasta voz); solo cambian `escenas.json` y la portada. Si cambias de proyecto, vuelve a correr `construir` para regenerar subtítulos y escenas.
+- **El gráfico dice lo que dice la voz, palabra por palabra.** Mi primer intento puso textos que la voz no pronuncia («VIAJES CORTOS», «Pagan menos de lo que gastas», «TU CHAMBA VALE MÁS») y Eduardo lo rechazó: «no son alusivos a lo que dice la voz». Regla: el texto de cada golpe es la palabra o frase exacta que suena en ese instante (`VIAJES` → `MENOS DE` → `$10` → apagón; `COMBUSTIBLE` → `+ DESGASTE` → `CADA KM` → `$9`; `PONIENDO` → `DE TU BOLSA`; `REGALES` → `LA CHAMBA`).
+- **Un golpe por palabra con peso**, uno solo en pantalla a la vez; la cifra o el verbo grande y, debajo, un `sub` en mono con la frase de apoyo («EL KILÓMETRO», «YA TE CUESTA», «CASI 9 PESOS»).
+- **Íconos solo si significan lo que se dice:** gasolina para combustible, billete/dinero para «poniendo» y «regales», reloj para «chamba». El ícono de ruta (`km`) no dice nada: no lo uses de adorno.
+- **Capturas con chips cortos** («MÍNIMA», un chip largo se encima con la captura). Sin «NO» ni etiquetas que la voz no dice. En el bloque de Checa, el orden de la voz manda: logo en «Checa», captura de metas en «tarifa», pop-up en «avisa», «SÍ CONVIENE» en «conviene».
+- **Pop-up de ejemplo con cifras que cuadren** (120 − 22 = 98; 11 km → gasolina 22; $10.9/km; $257/h).
+- **Portada de la v2 distinta a la v1:** otro título, otra tarjeta y otra cifra escondida que cuadre (62 por 10 km × 9 = 90 → «TE FALTAN 28»).
+- **Palabras con acento** se pasan tal cual en `en` («mínima» falla; «mínima» con acento coincide con la línea). Si el script se detiene con «No encuentro…», copia la palabra de la lista que imprime.
+- **Revisa la hoja de cuadros antes de mandar** y manda el mp4 solo cuando cada gráfico coincide con la palabra de su subtítulo.
