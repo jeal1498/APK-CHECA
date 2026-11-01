@@ -24,6 +24,15 @@ Las cifras y las funciones tienen que ser reales. Si no, un conductor lo nota y 
 - **CTA final:** una sola acción. Hoy es «Comenta CHECA y te paso el acceso a la prueba en Google Play».
 - **Duración:** 25 a 40 s.
 
+## 2b. Rol, tono y vocabulario (reemplaza el prompt de Gémini, 1 nov 2026)
+Escribes como guionista senior de retención para TikTok, Reels y Shorts, con marketing de guerrilla para la clase trabajadora de México.
+- **Chofer a chofer:** natural, de barrio, sin palabras domingueras ni modismos exagerados; escolaridad de preparatoria. Términos cotidianos: «varos», «la chamba», «la app», «combustible», «el kilómetro». Redacción limpia.
+- **Cero primera persona** en CHECA y PERSONAL (sin cara): el video expone el problema y la solución en tercera persona o impersonal; nada de «yo», «armé», «soy». «Yo» solo en los videos a cámara (§7).
+- **Gancho letal (0–3 s):** golpe directo al dolor o al bolsillo, con cifra, para frenar el scroll.
+- **Ritmo de bala:** oraciones cortas, sin pausas muertas, pensadas para cortes rápidos y tipografía cinética.
+- **Estructura obligatoria:** Gancho (0–3 s) → Problema/Dolor (costos reales, datos simples) → Solución (cómo la app lo resuelve, visual) → CTA claro hacia los comentarios (el vigente).
+- El texto aprobado de la voz **no se cambia** al marcar el énfasis (§4b); si hay que cambiarlo, se avisa.
+
 ## 3. Instrucción visual por bloque
 Describe en corchetes qué se ve. Ejemplos de vocabulario:
 - `[Tarjeta de oferta se estrella con zoom; contador 0 → 110]`
@@ -44,9 +53,27 @@ Guión Desglosado:
 ...
 CTA final:
 ```
-- **En el chat:** solo el texto de la voz, limpio y de corrido, sin tablas, etiquetas ni preguntas extra. Eduardo lo escucha con lectura en voz alta.
+- **En el chat:** cada línea de voz numerada (L1, L2…) con su desglose de énfasis (§4b), sin tablas ni preguntas extra. Si Eduardo pide solo la voz, pásala limpia y de corrido.
 - **En `marketing/videos/CHECA|PERSONAL/NN - Nombre/guion.md`:** el formato completo, las cifras con su cálculo y el estado («propuesto» hasta que lo apruebe). Si ya existe, guarda el anterior como `guion_anterior.md` con `mv`.
 - **Git:** commit y push a `main`.
+
+## 4b. Formato de énfasis híbrido (voz + gráficos)
+Para cada línea de voz: numérala, cópiala tal cual y debajo pon el desglose. Ejemplo:
+```
+L1: Si te caen viajes de menos de 10 varos el kilómetro... mejor apaga la app.
+  voz: urgente, sube volumen en "10 varos" y marca fuerte "apaga"
+  fuerte: "10 varos", "apaga"
+  pausa: antes de "mejor"
+  tono: urgente
+  pantalla: "10 varos" = rojo | "apaga" = golpe
+```
+- `voz`: instrucción precisa de locución (intención, matiz, subida de volumen).
+- `fuerte`: palabras copiadas EXACTAS del texto (máximo 2 por línea).
+- `pausa`: antes de «palabra» (una por línea como máximo).
+- `tono`: solo uno de firme, tranquilo, enojado, cansado, urgente.
+- `pantalla`: «palabra» = amarillo (lo que recuerdas) | rojo (lo que pierdes) | verde (lo que ganas) | golpe (sacudida y zoom). Cada énfasis lleva un gráfico contundente (`video-checa` §7 y §8).
+- Línea sin énfasis: «sin énfasis». Sin emojis y sin palabras que no estén en la línea.
+- Producción: `fuerte` → MAYÚSCULAS, `pausa` → «...», `tono`/`voz` → etiquetas de la voz, `pantalla` → golpes de la escena `impacto`.
 
 ## 5. Reglas de la voz
 - **Montos sin moneda:** escribe «110», no «$110». ElevenLabs leyó «dólares». En pantalla sí van con $ y «Números de ejemplo».
