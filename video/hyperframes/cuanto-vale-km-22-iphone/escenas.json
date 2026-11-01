@@ -72,7 +72,8 @@
     ],
     "sub": "VIAJE DE LOS DOS"
    }
-  ]
+  ],
+  "adelanto": 0.04
  },
  {
   "tipo": "telefono",
@@ -129,7 +130,8 @@
     ],
     "sub": "TE QUEDAN"
    }
-  ]
+  ],
+  "adelanto": 0.04
  },
  {
   "tipo": "telefono",
@@ -187,7 +189,8 @@
     ],
     "sub": "TE QUEDAN"
    }
-  ]
+  ],
+  "adelanto": 0.04
  },
  {
   "tipo": "impacto",
@@ -236,7 +239,8 @@
     "icono": "dinero",
     "icono_color": "rojo"
    }
-  ]
+  ],
+  "adelanto": 0.04
  },
  {
   "tipo": "impacto",
@@ -279,7 +283,8 @@
      ]
     ]
    }
-  ]
+  ],
+  "adelanto": 0.04
  },
  {
   "tipo": "telefono",
@@ -359,7 +364,8 @@
      ]
     ]
    }
-  ]
+  ],
+  "adelanto": 0.04
  },
  {
   "tipo": "cierre",
@@ -382,6 +388,7 @@
     ],
     "hasta": "acceso"
    }
-  ]
+  ],
+  "adelanto": 0.04
  }
 ]

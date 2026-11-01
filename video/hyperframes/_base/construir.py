@@ -279,7 +279,7 @@ def esc_cierre(sc, e, nombre):
 
 
 # ---------- escenas adicionales (v2 del 08, 17 oct 2026) ----------
-def pal(sc, k, defecto=None):
+def pal(sc, k, defecto=None, adel=0.25):
     """Segundo en que entra algo ligado a una palabra (0.25 s antes, para que se sienta sincronizado)."""
     w = sc["words"]
     if isinstance(k, int):
@@ -288,7 +288,7 @@ def pal(sc, k, defecto=None):
         n = re.sub(r"[^\w]", "", k.lower())
         i = next((j for j, x in enumerate(w) if re.sub(r"[^\w]", "", x[0].lower()).startswith(n)), None)
         assert i is not None, f"No encuentro «{k}» en la línea {sc['n']}: {[x[0] for x in w]}"
-    return max(0, round(w[min(i, len(w) - 1)][1] - 0.25, 2))
+    return max(0, round(w[min(i, len(w) - 1)][1] - adel, 2))
 
 
 ICONOS = {
@@ -1237,13 +1237,13 @@ def esc_telefono(sc, e, n):
             sub["popup_app"] = t["popup"]
         tid = f"{n}-t{i}"
         inner += clip(2 + i, tid, f"left:{x}px;top:{y}px;width:440px;height:900px", f'<div class="iph" id="{tid}-ph" style="left:0;top:0">{_pantalla(f"{n}{i}", sub)}</div>', D, " data-layout-allow-overflow data-layout-ignore")
-        te = pal(sc, t["entra_en"]) if t.get("entra_en") is not None else 0
+        te = pal(sc, t["entra_en"], adel=e.get("adelanto", 0.25)) if t.get("entra_en") is not None else 0
         js += f'      tl.set("#{tid}", {{ scale: {k}, transformOrigin: "0 0" }}, 0);\n'
         js += f'      tl.fromTo("#{tid}", {{ y: 1200 }}, {{ y: 0, duration: 0.5, ease: "power3.out" }}, {te});\n'
         if t.get("dim_en") is not None:
-            js += f'      tl.to("#{tid}", {{ opacity: 0.5, duration: 0.3 }}, {pal(sc, t["dim_en"])});\n'
+            js += f'      tl.to("#{tid}", {{ opacity: 0.5, duration: 0.3 }}, {pal(sc, t["dim_en"], adel=e.get("adelanto", 0.25))});\n'
         if t.get("popup"):
-            js += f'      tl.fromTo("#{n}{i}-pa", {{ y: -70, opacity: 0 }}, {{ y: 0, opacity: 1, duration: 0.45, ease: "power4.out" }}, {pal(sc, t["popup_en"])});\n'
+            js += f'      tl.fromTo("#{n}{i}-pa", {{ y: -70, opacity: 0 }}, {{ y: 0, opacity: 1, duration: 0.45, ease: "power4.out" }}, {pal(sc, t["popup_en"], adel=e.get("adelanto", 0.25))});\n'
         if e.get("sale"):
             js += f'      tl.to("#{tid}", {{ y: 1200, duration: 0.35, ease: "power3.in" }}, {round(D - 0.4, 2)});\n'
     inner += f'    <div class="etq clip" style="top:30px;font-size:22px;opacity:.8" data-start="0" data-duration="{D}" data-track-index="30">Números de ejemplo</div>\n'
@@ -1262,11 +1262,12 @@ def golpes(sc, e, n):
     """e["golpes"]: lista de golpes {en: palabra, kind: texto|logo|captura|popup|apagon, ...}. Cada uno cae en su palabra
     (zoom + flash + sacudida) y deja su lugar al siguiente; el último dura hasta «hasta» o el fin de la escena."""
     D = sc["dur"]; gs = e["golpes"]; inner = ""; js = ""
-    ts = [pal(sc, g["en"]) for g in gs]
+    ad = e.get("adelanto", 0.25)  # segundos que el golpe se adelanta a su palabra (0.04 = cae justo con la voz)
+    ts = [pal(sc, g["en"], adel=ad) for g in gs]
     inner += clip(40, f"{n}-gfl", "inset:0;background:#F4F4EF;opacity:0", "", D)
     for i, g in enumerate(gs):
         t = ts[i]
-        fin = ts[i + 1] if i + 1 < len(gs) else (pal(sc, g["hasta"]) if g.get("hasta") else None)
+        fin = ts[i + 1] if i + 1 < len(gs) else (pal(sc, g["hasta"], adel=ad) if g.get("hasta") else None)
         gid, k = f"{n}-g{i}", g["kind"]
         col = COLOR[g.get("glow", "hueso")]
         brico = "font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;line-height:.95;white-space:nowrap;"
