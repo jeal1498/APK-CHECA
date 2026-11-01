@@ -1239,7 +1239,8 @@ def esc_telefono(sc, e, n):
         inner += clip(2 + i, tid, f"left:{x}px;top:{y}px;width:440px;height:900px", f'<div class="iph" id="{tid}-ph" style="left:0;top:0">{_pantalla(f"{n}{i}", sub)}</div>', D, " data-layout-allow-overflow data-layout-ignore")
         te = pal(sc, t["entra_en"], adel=e.get("adelanto", 0.25)) if t.get("entra_en") is not None else 0
         js += f'      tl.set("#{tid}", {{ scale: {k}, transformOrigin: "0 0" }}, 0);\n'
-        js += f'      tl.fromTo("#{tid}", {{ y: 1200 }}, {{ y: 0, duration: 0.5, ease: "power3.out" }}, {te});\n'
+        if not t.get("fija"):  # fija: el teléfono ya estaba en pantalla en la escena anterior
+            js += f'      tl.fromTo("#{tid}", {{ y: 1200 }}, {{ y: 0, duration: 0.5, ease: "power3.out" }}, {te});\n'
         if t.get("dim_en") is not None:
             js += f'      tl.to("#{tid}", {{ opacity: 0.5, duration: 0.3 }}, {pal(sc, t["dim_en"], adel=e.get("adelanto", 0.25))});\n'
         if t.get("popup"):

@@ -1,0 +1,457 @@
+[
+ {
+  "tipo": "telefono",
+  "adelanto": 0.04,
+  "golpes": [
+   {
+    "en": "95",
+    "kind": "texto",
+    "glow": "hueso",
+    "lineas": [
+     [
+      "$95",
+      "hueso",
+      250
+     ]
+    ],
+    "sub": "TE CAE"
+   },
+   {
+    "en": "bolsa",
+    "kind": "texto",
+    "glow": "amarillo",
+    "lineas": [
+     [
+      "TU BOLSA",
+      "amarillo",
+      200
+     ]
+    ]
+   },
+   {
+    "en": "67",
+    "kind": "texto",
+    "glow": "rojo",
+    "lineas": [
+     [
+      "$67",
+      "rojo",
+      250
+     ]
+    ],
+    "sub": "SE QUEDAN"
+   }
+  ],
+  "luz": "rojo",
+  "telefonos": [
+   {
+    "oferta": {
+     "precio": 95,
+     "rating": "4.88",
+     "a": "A 8 min (3.8 km)",
+     "a_dir": "Av. Benito Juárez",
+     "viaje": "Viaje: 22 min (10.0 km)",
+     "v_dir": "Calle Hidalgo"
+    }
+   }
+  ],
+  "ejemplo": true
+ },
+ {
+  "tipo": "impacto",
+  "adelanto": 0.04,
+  "golpes": [
+   {
+    "en": "gasolina",
+    "kind": "texto",
+    "glow": "amarillo",
+    "lineas": [
+     [
+      "GASOLINA",
+      "amarillo",
+      170
+     ]
+    ],
+    "icono": "gas"
+   },
+   {
+    "en": "recogida",
+    "kind": "texto",
+    "glow": "hueso",
+    "lineas": [
+     [
+      "RECOGIDA",
+      "hueso",
+      170
+     ]
+    ]
+   },
+   {
+    "en": "viaje",
+    "kind": "texto",
+    "glow": "hueso",
+    "lineas": [
+     [
+      "DEL VIAJE",
+      "hueso",
+      170
+     ]
+    ]
+   },
+   {
+    "en": "pagas",
+    "kind": "texto",
+    "glow": "rojo",
+    "lineas": [
+     [
+      "−$28",
+      "rojo",
+      420
+     ]
+    ],
+    "sub": "LA PAGAS TÚ"
+   }
+  ],
+  "ejemplo": true
+ },
+ {
+  "tipo": "impacto",
+  "adelanto": 0.04,
+  "golpes": [
+   {
+    "en": "media",
+    "kind": "texto",
+    "glow": "amarillo",
+    "lineas": [
+     [
+      "MEDIA HORA",
+      "amarillo",
+      190
+     ]
+    ],
+    "icono": "hora"
+   }
+  ]
+ },
+ {
+  "tipo": "telefono",
+  "adelanto": 0.04,
+  "golpes": [
+   {
+    "en": "otra:",
+    "kind": "texto",
+    "glow": "hueso",
+    "lineas": [
+     [
+      "OTRA",
+      "hueso",
+      230
+     ]
+    ]
+   },
+   {
+    "en": "82",
+    "kind": "texto",
+    "glow": "hueso",
+    "lineas": [
+     [
+      "$82",
+      "hueso",
+      250
+     ]
+    ],
+    "sub": "PESOS"
+   },
+   {
+    "en": "peor",
+    "kind": "texto",
+    "glow": "rojo",
+    "lineas": [
+     [
+      "PARECE PEOR",
+      "rojo",
+      150
+     ]
+    ]
+   }
+  ],
+  "luz": "hueso",
+  "telefonos": [
+   {
+    "oferta": {
+     "precio": 82,
+     "rating": "5.00",
+     "a": "A 4 min (1.2 km)",
+     "a_dir": "Calle Fresno",
+     "viaje": "Viaje: 11 min (6.0 km)",
+     "v_dir": "Av. Reforma"
+    }
+   }
+  ]
+ },
+ {
+  "tipo": "telefono",
+  "adelanto": 0.04,
+  "golpes": [
+   {
+    "en": "corta",
+    "kind": "texto",
+    "glow": "verde",
+    "lineas": [
+     [
+      "RECOGIDA CORTA",
+      "verde",
+      120
+     ]
+    ]
+   },
+   {
+    "en": "quince",
+    "kind": "texto",
+    "glow": "verde",
+    "lineas": [
+     [
+      "15 MIN",
+      "verde",
+      230
+     ]
+    ],
+    "sub": "EL VIAJE"
+   }
+  ],
+  "luz": "verde",
+  "telefonos": [
+   {
+    "oferta": {
+     "precio": 82,
+     "rating": "5.00",
+     "a": "A 4 min (1.2 km)",
+     "a_dir": "Calle Fresno",
+     "viaje": "Viaje: 11 min (6.0 km)",
+     "v_dir": "Av. Reforma"
+    },
+    "fija": true
+   }
+  ]
+ },
+ {
+  "tipo": "telefono",
+  "adelanto": 0.04,
+  "golpes": [
+   {
+    "en": "gasolina",
+    "kind": "texto",
+    "glow": "rojo",
+    "lineas": [
+     [
+      "−$14",
+      "rojo",
+      250
+     ]
+    ],
+    "sub": "LA GASOLINA"
+   },
+   {
+    "en": "68",
+    "kind": "texto",
+    "glow": "verde",
+    "lineas": [
+     [
+      "$68",
+      "verde",
+      250
+     ]
+    ],
+    "sub": "TE QUEDAN"
+   },
+   {
+    "en": "uno",
+    "kind": "texto",
+    "glow": "verde",
+    "lineas": [
+     [
+      "UNO MÁS",
+      "verde",
+      200
+     ]
+    ]
+   },
+   {
+    "en": "mitad",
+    "kind": "texto",
+    "glow": "amarillo",
+    "lineas": [
+     [
+      "LA MITAD",
+      "amarillo",
+      190
+     ]
+    ],
+    "sub": "DEL TIEMPO"
+   }
+  ],
+  "luz": "verde",
+  "telefonos": [
+   {
+    "oferta": {
+     "precio": 82,
+     "rating": "5.00",
+     "a": "A 4 min (1.2 km)",
+     "a_dir": "Calle Fresno",
+     "viaje": "Viaje: 11 min (6.0 km)",
+     "v_dir": "Av. Reforma"
+    },
+    "fija": true
+   }
+  ]
+ },
+ {
+  "tipo": "telefono",
+  "adelanto": 0.04,
+  "golpes": [
+   {
+    "en": "checa",
+    "kind": "texto",
+    "glow": "verde",
+    "lineas": [
+     [
+      "Checa",
+      "verde",
+      200
+     ]
+    ]
+   },
+   {
+    "en": "pop",
+    "kind": "texto",
+    "glow": "verde",
+    "lineas": [
+     [
+      "POP-UP",
+      "verde",
+      200
+     ]
+    ]
+   },
+   {
+    "en": "aceptar.",
+    "kind": "texto",
+    "glow": "verde",
+    "lineas": [
+     [
+      "ACEPTAR",
+      "verde",
+      200
+     ]
+    ]
+   }
+  ],
+  "luz": "verde",
+  "sale": true,
+  "telefonos": [
+   {
+    "oferta": {
+     "precio": 82,
+     "rating": "5.00",
+     "a": "A 4 min (1.2 km)",
+     "a_dir": "Calle Fresno",
+     "viaje": "Viaje: 11 min (6.0 km)",
+     "v_dir": "Av. Reforma"
+    },
+    "fija": true,
+    "popup": {
+     "app": "OFERTA",
+     "neta": 68,
+     "viaje": 82,
+     "gasolina": 14,
+     "chips": [
+      [
+       "$328/h",
+       "meta $150",
+       true
+      ],
+      [
+       "$11.4/km",
+       "meta $8",
+       true
+      ],
+      [
+       "15 min",
+       "7.2 km total",
+       false
+      ]
+     ]
+    },
+    "popup_en": "checa"
+   }
+  ]
+ },
+ {
+  "tipo": "impacto",
+  "adelanto": 0.04,
+  "golpes": [
+   {
+    "en": "metas",
+    "kind": "texto",
+    "glow": "amarillo",
+    "lineas": [
+     [
+      "TUS METAS",
+      "amarillo",
+      180
+     ]
+    ]
+   },
+   {
+    "en": "hora",
+    "kind": "texto",
+    "glow": "amarillo",
+    "lineas": [
+     [
+      "POR HORA",
+      "amarillo",
+      180
+     ]
+    ],
+    "icono": "hora"
+   },
+   {
+    "en": "kilómetro.",
+    "kind": "texto",
+    "glow": "amarillo",
+    "lineas": [
+     [
+      "POR KILÓMETRO",
+      "amarillo",
+      140
+     ]
+    ],
+    "icono": "km"
+   }
+  ]
+ },
+ {
+  "tipo": "cierre",
+  "adelanto": 0.04,
+  "pil": "Comenta CHECA",
+  "pil_color": "amarillo",
+  "link": false,
+  "flecha": true,
+  "golpes": [
+   {
+    "en": "checa",
+    "kind": "texto",
+    "glow": "amarillo",
+    "flecha": true,
+    "lineas": [
+     [
+      "CHECA",
+      "amarillo",
+      320
+     ]
+    ],
+    "hasta": "acceso"
+   }
+  ]
+ }
+]
