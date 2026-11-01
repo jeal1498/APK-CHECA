@@ -1015,47 +1015,70 @@ def esc_iphone_gancho(sc, e, n):
 
 OFR_CSS = """.orl { --u: .38333px; position: absolute; inset: 0; background: #F3F4F8; font-family: 'DM Sans', sans-serif; color: #000; }
     .orl svg.mp { position: absolute; left: 0; top: 0; width: 414px; height: 874px; }
-    .orl .cd { position: absolute; left: calc(var(--u)*50); top: calc(var(--u)*212); width: calc(var(--u)*980); height: calc(var(--u)*1481); box-sizing: border-box; background: #fff; border: calc(var(--u)*5) solid #000; border-radius: calc(var(--u)*42); }
+    .orl .cd { position: absolute; left: calc(var(--u)*50); top: calc(874px - var(--u)*1000 - 16px); width: calc(var(--u)*980); height: calc(var(--u)*1000); box-sizing: border-box; background: #fff; border: calc(var(--u)*5) solid #000; border-radius: calc(var(--u)*42); }
     .orl .cd > * { position: absolute; }
-    .orl .tg { left: calc(var(--u)*41); top: calc(var(--u)*41); height: calc(var(--u)*84); padding: 0 calc(var(--u)*26); background: #000; border-radius: calc(var(--u)*12); color: #fff; font-size: calc(var(--u)*47); font-weight: 500; display: flex; align-items: center; gap: calc(var(--u)*18); }
-    .orl .tg svg { width: calc(var(--u)*36); height: calc(var(--u)*36); }
+    .orl .tg { left: calc(var(--u)*41); top: calc(var(--u)*41); height: calc(var(--u)*84); padding: 0 calc(var(--u)*26); background: #000; border-radius: calc(var(--u)*12); color: #fff; font-size: calc(var(--u)*47); font-weight: 500; display: flex; align-items: center; }
     .orl .xx { right: calc(var(--u)*41); top: calc(var(--u)*41); width: calc(var(--u)*140); height: calc(var(--u)*140); border-radius: calc(var(--u)*18); background: #F5F5F5; display: flex; align-items: center; justify-content: center; }
     .orl .xx svg { width: calc(var(--u)*52); height: calc(var(--u)*52); }
     .orl .pr { left: calc(var(--u)*41); top: calc(var(--u)*148); font-size: calc(var(--u)*158); font-weight: 700; letter-spacing: -.05em; line-height: 1; white-space: nowrap; }
-    .orl .vf { left: calc(var(--u)*43); top: calc(var(--u)*330); height: calc(var(--u)*104); padding: 0 calc(var(--u)*40) 0 calc(var(--u)*38); background: #F2F2F2; border-radius: 999px; display: flex; align-items: center; gap: calc(var(--u)*26); font-size: calc(var(--u)*52); white-space: nowrap; }
-    .orl .vf svg { width: calc(var(--u)*62); height: calc(var(--u)*70); }
-    .orl .es { left: calc(var(--u)*43); top: calc(var(--u)*466); display: flex; align-items: center; gap: calc(var(--u)*24); font-size: calc(var(--u)*52); color: #545454; }
-    .orl .es svg { width: calc(var(--u)*42); height: calc(var(--u)*42); }
-    .orl .ln { left: 0; right: 0; top: calc(var(--u)*550); height: calc(var(--u)*3); background: #EBEBEB; }
-    .orl .rl { left: calc(var(--u)*76); top: calc(var(--u)*693); width: calc(var(--u)*5); height: calc(var(--u)*531); background: #000; }
-    .orl .dt { left: calc(var(--u)*61); top: calc(var(--u)*676); width: calc(var(--u)*34); height: calc(var(--u)*34); border-radius: 50%; background: #000; }
-    .orl .sq { left: calc(var(--u)*61); top: calc(var(--u)*1207); width: calc(var(--u)*34); height: calc(var(--u)*34); border-radius: calc(var(--u)*3); background: #000; }
+    .orl .es { left: calc(var(--u)*43); top: calc(var(--u)*330); font-size: calc(var(--u)*52); color: #545454; }
+    .orl .ln { left: 0; right: 0; top: calc(var(--u)*420); height: calc(var(--u)*3); background: #EBEBEB; }
+    .orl .rl { left: calc(var(--u)*76); top: calc(var(--u)*491); width: calc(var(--u)*5); height: calc(var(--u)*242); background: #000; }
+    .orl .dt { left: calc(var(--u)*61); top: calc(var(--u)*474); width: calc(var(--u)*34); height: calc(var(--u)*34); border-radius: 50%; background: #000; }
+    .orl .sq { left: calc(var(--u)*61); top: calc(var(--u)*716); width: calc(var(--u)*34); height: calc(var(--u)*34); border-radius: calc(var(--u)*3); background: #000; }
     .orl .tx { left: calc(var(--u)*138); width: calc(var(--u)*800); font-size: calc(var(--u)*52); line-height: 1.38; white-space: nowrap; }
     .orl .tx b { display: block; font-weight: 500; }
     .orl .tx span { display: block; color: #545454; }
-    .orl .bt { left: calc(var(--u)*41); top: calc(var(--u)*1290); width: calc(var(--u)*888); height: calc(var(--u)*150); background: #000; border-radius: calc(var(--u)*16); overflow: hidden; display: flex; align-items: center; justify-content: center; color: #fff; font-size: calc(var(--u)*62); font-weight: 500; }
+    .orl .bt { left: calc(var(--u)*41); top: calc(var(--u)*810); width: calc(var(--u)*888); height: calc(var(--u)*150); background: #000; border-radius: calc(var(--u)*16); overflow: hidden; display: flex; align-items: center; justify-content: center; color: #fff; font-size: calc(var(--u)*62); font-weight: 500; }
     .orl .bt i { position: absolute; right: 0; top: 0; bottom: 0; width: 67%; background: #3B3B3B; }
-    .orl .bt span { position: relative; }"""
+    .orl .bt span { position: relative; }
+    .pa { --f: .41042px; position: absolute; left: 10px; top: 84px; width: 394px; z-index: 2; filter: drop-shadow(0 calc(var(--f)*20) calc(var(--f)*40) rgba(0,0,0,.45)); font-family: 'DM Sans', sans-serif; }
+    .pa .ab { height: calc(var(--f)*113); background: #22C55E; border-radius: calc(var(--f)*46) calc(var(--f)*46) 0 0; display: flex; align-items: center; justify-content: space-between; padding: 0 calc(var(--f)*24); }
+    .pa .op { background: #0F1B14; color: #fff; border-radius: 999px; font-weight: 700; font-size: calc(var(--f)*28); padding: calc(var(--f)*8) calc(var(--f)*22); }
+    .pa .ac { font-size: calc(var(--f)*40); font-weight: 500; letter-spacing: calc(var(--f)*5); color: #0A1F10; }
+    .pa .ax { width: calc(var(--f)*60); display: flex; justify-content: center; }
+    .pa .ax svg { width: calc(var(--f)*36); height: calc(var(--f)*36); }
+    .pa .cu { background: #131716; border-radius: 0 0 calc(var(--f)*46) calc(var(--f)*46); padding: calc(var(--f)*26) calc(var(--f)*34) calc(var(--f)*34); text-align: center; color: #fff; }
+    .pa .an { font-size: calc(var(--f)*112); font-weight: 500; line-height: 1.05; }
+    .pa .an small { font-size: calc(var(--f)*36); color: #A3A3A3; font-weight: 400; margin-left: calc(var(--f)*18); }
+    .pa .al { font-size: calc(var(--f)*32); color: #C9C9C9; margin-top: calc(var(--f)*4); }
+    .pa .af { display: flex; gap: calc(var(--f)*18); margin-top: calc(var(--f)*28); }
+    .pa .ch { flex: 1; height: calc(var(--f)*132); border-radius: calc(var(--f)*28); background: #1A1F1D; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .pa .ch b { font-size: calc(var(--f)*40); font-weight: 500; color: #fff; white-space: nowrap; }
+    .pa .ch b.g { color: #22C55E; }
+    .pa .ch span { font-size: calc(var(--f)*27); color: #9A9A9A; margin-top: calc(var(--f)*6); white-space: nowrap; }"""
+
+
+def popup_app(p, pid):
+    """Pop-up como el de la app Android (captura real): franja ACEPTAR, «$x netos», línea de viaje/gasolina y tres fichas con su meta.
+    p = {neta, viaje, gasolina, app, chips: [[valor, meta, ok]]}; ok=True pinta el valor en verde."""
+    validar_popup(p)
+    fichas = "".join(f'<div class="ch"><b class="{"g" if ok else ""}">{v}</b><span>{m}</span></div>' for v, m, ok in p["chips"])
+    return (f'<div class="pa" id="{pid}"><div class="ab"><span class="op">{p.get("app", "OFERTA")}</span><span class="ac">ACEPTAR</span>'
+            f'<span class="ax"><svg viewBox="0 0 24 24"><path d="M5 5L19 19M19 5L5 19" stroke="#0A1F10" stroke-width="2.6" stroke-linecap="round"/></svg></span></div>'
+            f'<div class="cu"><div class="an">${p["neta"]}<small>netos</small></div><div class="al">Viaje ${p["viaje"]} &nbsp;·&nbsp; Gasolina −${p["gasolina"]}</div>'
+            f'<div class="af">{fichas}</div></div></div>')
+
+
+MAPA_TEL = ('<svg class="mp" viewBox="0 0 414 874" preserveAspectRatio="none"><rect width="414" height="874" fill="#F3F4F8"/>'
+            '<path d="M0 0H130Q110 40 70 60 30 70 0 64Z" fill="#CFE3F6"/><g stroke="#E3E6EE" stroke-width="12" fill="none"><path d="M0 130L414 90"/><path d="M60 0L90 400"/><path d="M300 0L270 400"/></g>'
+            '<g stroke="#fff" stroke-width="8" fill="none"><path d="M0 130L414 90"/><path d="M60 0L90 400"/><path d="M300 0L270 400"/><path d="M170 0L180 400"/></g>'
+            '<path d="M120 260L118 190L240 180" stroke="#000" stroke-width="5" fill="none"/><circle cx="120" cy="260" r="9" fill="#2F6FEB" stroke="#fff" stroke-width="3"/>'
+            '<circle cx="242" cy="180" r="18" fill="#000"/><rect x="235" y="173" width="14" height="14" rx="2" fill="#fff"/></svg>')
 
 
 def oferta_real(o):
-    """Oferta con el formato de la app de viajes real (sin logo ni nombre): o = {precio, rating, a, a_dir, viaje, v_dir} (a_dir/v_dir con <br>)."""
-    estrella = '<svg viewBox="0 0 24 24" fill="#000"><path d="M12 1.5l3.2 7.2 7.8.8-5.9 5.2 1.7 7.7L12 18.4 5.2 22.4l1.7-7.7L1 9.5l7.8-.8z"/></svg>'
-    escudo = '<svg viewBox="0 0 20 22"><path d="M10 1l8 3v6c0 5-3.4 9.2-8 11-4.6-1.8-8-6-8-11V4z" fill="#2F6FEB"/><path d="M6.2 11l2.6 2.6L13.8 8.4" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-    mapa = ('<svg class="mp" viewBox="0 112 1080 1626" preserveAspectRatio="none"><rect width="1080" height="1890" fill="#F3F4F8"/>'
-            '<path d="M0 0H330Q300 80 200 130 90 170 0 150Z" fill="#CFE3F6"/><path d="M700 330H1080V520H760Z" fill="#DDEFE0"/>'
-            '<g stroke="#E3E6EE" stroke-width="30" fill="none"><path d="M0 250L1080 130"/><path d="M150 0L240 700"/><path d="M780 0L700 500"/></g>'
-            '<g stroke="#fff" stroke-width="22" fill="none"><path d="M0 250L1080 130"/><path d="M150 0L240 700"/><path d="M780 0L700 500"/><path d="M420 0L470 700"/><path d="M0 120L1080 40"/></g>'
-            '<g transform="translate(0,112)"><path d="M475 100L475 40H600" stroke="#000" stroke-width="12" fill="none" stroke-linecap="square"/><circle cx="475" cy="100" r="22" fill="#2F6FEB" stroke="#fff" stroke-width="7"/><circle cx="592" cy="36" r="52" fill="#000"/><rect x="574" y="18" width="36" height="36" rx="5" fill="#fff"/></g></svg>')
-    return (f'<div class="orl">{mapa}<div class="cd">'
-            f'<div class="tg"><svg viewBox="0 0 16 16" fill="#fff"><circle cx="8" cy="4.6" r="3.2"/><path d="M1.8 15c0-3.6 2.8-5.6 6.2-5.6s6.2 2 6.2 5.6z"/></svg>Viaje</div>'
+    """Oferta con el formato de la app de viajes real (sin logo ni nombre), compacta y pegada al fondo de la pantalla:
+    o = {precio, rating, a, a_dir, viaje, v_dir}."""
+    estrella = '<svg viewBox="0 0 24 24" fill="#000" style="width:calc(var(--u)*42);height:calc(var(--u)*42);vertical-align:-.1em"><path d="M12 1.5l3.2 7.2 7.8.8-5.9 5.2 1.7 7.7L12 18.4 5.2 22.4l1.7-7.7L1 9.5l7.8-.8z"/></svg>'
+    return (f'<div class="orl">{MAPA_TEL}<div class="cd">'
+            f'<div class="tg">Viaje</div>'
             f'<div class="xx"><svg viewBox="0 0 16 16" fill="none" stroke="#000" stroke-width="2.1" stroke-linecap="square"><path d="M2 2l12 12M14 2L2 14"/></svg></div>'
-            f'<div class="pr">MXN<span id="{o["id"]}-cnt">{o["precio"]}</span>.00</div><div class="vf">{escudo}Identidad verificada</div>'
-            f'<div class="es">{estrella}{o["rating"]}</div><div class="ln"></div><div class="rl"></div><div class="dt"></div><div class="sq"></div>'
-            f'<div class="tx" style="top:calc(var(--u)*585)"><b>{o["a"]}</b><span>{o["a_dir"]}</span></div>'
-            f'<div class="tx" style="top:calc(var(--u)*900)"><b>{o["viaje"]}</b><span>{o["v_dir"]}</span></div>'
+            f'<div class="pr">MXN<span id="{o["id"]}-cnt">{o["precio"]}</span>.00</div>'
+            f'<div class="es">{estrella}&nbsp; {o["rating"]}</div><div class="ln"></div><div class="rl"></div><div class="dt"></div><div class="sq"></div>'
+            f'<div class="tx" style="top:calc(var(--u)*455)"><b>{o["a"]}</b><span>{o["a_dir"]}</span></div>'
+            f'<div class="tx" style="top:calc(var(--u)*625)"><b>{o["viaje"]}</b><span>{o["v_dir"]}</span></div>'
             f'<div class="bt"><i></i><span>Viaje disponible</span></div></div></div>')
-
 
 
 def _pantalla(n, e):
@@ -1074,6 +1097,8 @@ def _pantalla(n, e):
             h += f'<img id="{n}-im2" src="assets/img/{e["imagen2"]}" style="position:absolute;inset:0;width:414px;height:874px;opacity:0" alt="">'
     if e.get("oferta_real"):
         h = oferta_real(dict(e["oferta_real"], id=n)) + '<div class="isla"></div>'
+    if e.get("popup_app"):
+        h += popup_app(e["popup_app"], f"{n}-pa")
     pops = e.get("popups") or ([e["popup"]] if e.get("popup") else [])
     for i, p in enumerate(pops):
         validar_popup(p)
@@ -1198,6 +1223,36 @@ def esc_iphone_duo(sc, e, n):
     return marco(n, D, IPH_CSS + "\n    " + OFR_CSS + "\n    " + css_popup(), inner, tj + cj + js)
 
 
+def esc_telefono(sc, e, n):
+    """Teléfono que sube solo cuando hace falta: «telefonos»: lista de {oferta, popup (estilo app), popup_en, x, y, k, entra_en, dim_en};
+    «sale»: baja al final de la escena. Los golpes caen arriba (y 70, h 330) y el teléfono queda debajo, sin tapar nada."""
+    D = sc["dur"]
+    luz = COLOR[e.get("luz", "hueso")]
+    inner = clip(1, f"{n}-luz", f"left:-200px;top:300px;width:1480px;height:1400px;background:radial-gradient(closest-side, {luz}2A 0%, rgba(12,12,16,0) 100%)", "", D)
+    js = ""
+    for i, t in enumerate(e["telefonos"]):
+        x, y, k = t.get("x", 221), t.get("y", 430), t.get("k", 1.45)
+        sub = {"oferta_real": t["oferta"]}
+        if t.get("popup"):
+            sub["popup_app"] = t["popup"]
+        tid = f"{n}-t{i}"
+        inner += clip(2 + i, tid, f"left:{x}px;top:{y}px;width:440px;height:900px", f'<div class="iph" id="{tid}-ph" style="left:0;top:0">{_pantalla(f"{n}{i}", sub)}</div>', D, " data-layout-allow-overflow data-layout-ignore")
+        te = pal(sc, t["entra_en"]) if t.get("entra_en") is not None else 0
+        js += f'      tl.set("#{tid}", {{ scale: {k}, transformOrigin: "0 0" }}, 0);\n'
+        js += f'      tl.fromTo("#{tid}", {{ y: 1200 }}, {{ y: 0, duration: 0.5, ease: "power3.out" }}, {te});\n'
+        if t.get("dim_en") is not None:
+            js += f'      tl.to("#{tid}", {{ opacity: 0.5, duration: 0.3 }}, {pal(sc, t["dim_en"])});\n'
+        if t.get("popup"):
+            js += f'      tl.fromTo("#{n}{i}-pa", {{ y: -70, opacity: 0 }}, {{ y: 0, opacity: 1, duration: 0.45, ease: "power4.out" }}, {pal(sc, t["popup_en"])});\n'
+        if e.get("sale"):
+            js += f'      tl.to("#{tid}", {{ y: 1200, duration: 0.35, ease: "power3.in" }}, {round(D - 0.4, 2)});\n'
+    inner += f'    <div class="etq clip" style="top:30px;font-size:22px;opacity:.8" data-start="0" data-duration="{D}" data-track-index="30">Números de ejemplo</div>\n'
+    for g in e["golpes"]:
+        g.setdefault("y", 70); g.setdefault("h", 330)
+    gi, gj = golpes(sc, e, n)
+    return marco(n, D, IPH_CSS + "\n    " + OFR_CSS + "\n    " + css_popup(), inner + gi, js + gj)
+
+
 # ---------- gráficos de impacto (1 nov 2026): golpes visuales que caen en la palabra que la voz enfatiza ----------
 POWER = '<svg width="{px}" height="{px}" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 3v9"/><path d="M7 6.2a8 8 0 1 0 10 0"/></svg>'
 FLECHA = '<svg width="200" height="200" viewBox="0 0 100 100" aria-hidden="true"><path d="M20 20 L70 70 M70 36 L70 70 L36 70" fill="none" stroke="#FACC15" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg>'
@@ -1271,7 +1326,7 @@ def esc_impacto(sc, e, n):
     return marco(n, D, css_popup(), inner, js)
 
 
-TIPOS = {"impacto": esc_impacto, "iphone_gancho": esc_iphone_gancho, "iphone": esc_iphone, "iphone_duo": esc_iphone_duo, "comparar": esc_comparar, "cuenta": esc_cuenta, "meta": esc_meta, "reloj15": esc_reloj15, "oferta": esc_oferta, "lee": esc_lee, "aviso": esc_aviso, "ticket": esc_ticket, "fichas": esc_fichas, "metas": esc_metas, "horas": esc_horas, "hook": esc_hook, "anillo": esc_anillo, "datos": esc_datos, "logo": esc_logo, "escaneo": esc_escaneo, "voz": esc_voz, "popup_oferta": esc_popup_oferta, "reloj": esc_reloj, "seguir": esc_seguir, "gancho": esc_gancho, "numero": esc_numero, "popup": esc_popup, "estados": esc_estados, "cierre": esc_cierre, "paso": esc_paso, "listo": esc_listo, "fin": esc_fin, "tachado": esc_tachado, "rutas": esc_rutas, "dos": esc_dos, "duo": esc_duo}
+TIPOS = {"telefono": esc_telefono, "impacto": esc_impacto, "iphone_gancho": esc_iphone_gancho, "iphone": esc_iphone, "iphone_duo": esc_iphone_duo, "comparar": esc_comparar, "cuenta": esc_cuenta, "meta": esc_meta, "reloj15": esc_reloj15, "oferta": esc_oferta, "lee": esc_lee, "aviso": esc_aviso, "ticket": esc_ticket, "fichas": esc_fichas, "metas": esc_metas, "horas": esc_horas, "hook": esc_hook, "anillo": esc_anillo, "datos": esc_datos, "logo": esc_logo, "escaneo": esc_escaneo, "voz": esc_voz, "popup_oferta": esc_popup_oferta, "reloj": esc_reloj, "seguir": esc_seguir, "gancho": esc_gancho, "numero": esc_numero, "popup": esc_popup, "estados": esc_estados, "cierre": esc_cierre, "paso": esc_paso, "listo": esc_listo, "fin": esc_fin, "tachado": esc_tachado, "rutas": esc_rutas, "dos": esc_dos, "duo": esc_duo}
 
 
 # ---------- subtítulos ----------
@@ -1308,6 +1363,10 @@ def armar_captions(T):
                            "text": " ".join(x["text"] for x in words), "words": words})
     cap = open("compositions/captions.html", encoding="utf-8").read()
     cap = re.sub(r"var GROUPS = \[.*?\];\n", lambda m: "var GROUPS = " + json.dumps(groups, ensure_ascii=False, separators=(",", ":")) + ";\n", cap, count=1, flags=re.S)
+    if os.path.exists("opciones.json"):  # p. ej. {"subs_top": 1745, "subs_h": 150}: subtítulos más abajo
+        op = json.load(open("opciones.json", encoding="utf-8"))
+        cap = re.sub(r"--cap-band-top: \d+px;", f"--cap-band-top: {op.get('subs_top', 1160)}px;", cap)
+        cap = re.sub(r"--cap-band-height: \d+px;", f"--cap-band-height: {op.get('subs_h', 320)}px;", cap)
     cap = re.sub(r"var DURATION = [0-9.]+;", f"var DURATION = {T['total']};", cap, count=1)
     cap = re.sub(r'(id="captions-root"[^>]*?data-duration=")[0-9.]+(")', lambda m: m.group(1) + str(T["total"]) + m.group(2), cap, count=1, flags=re.S)
     open("compositions/captions.html", "w", encoding="utf-8").write(cap)

@@ -1,32 +1,36 @@
 [
  {
-  "tipo": "iphone_duo",
-  "ofertas": [
+  "tipo": "telefono",
+  "luz": "rojo",
+  "telefonos": [
    {
-    "oferta_real": {
+    "oferta": {
      "precio": 110,
      "rating": "4.92",
      "a": "A 6 min (3.0 km)",
-     "a_dir": "Avenida Benito Juárez,<br>Col. Centro / Sector Norte<br>de la zona poniente",
+     "a_dir": "Av. Benito Juárez",
      "viaje": "Viaje: 40 min (25.0 km)",
-     "v_dir": "Calle Hidalgo &amp; Avenida II,<br>56337 Col. Jardines, Sector Sur<br>- Col. Jardines / Sector Sur<br>de la zona oriente"
-    }
+     "v_dir": "Calle Hidalgo"
+    },
+    "x": 60,
+    "y": 760,
+    "k": 1.0,
+    "dim_en": "peor"
    },
    {
-    "oferta_real": {
+    "oferta": {
      "precio": 90,
      "rating": "5.00",
      "a": "A 4 min (2.0 km)",
-     "a_dir": "Calle Fresno &amp; Avenida II,<br>Col. Norte / Sector Centro<br>de la zona poniente",
+     "a_dir": "Calle Fresno",
      "viaje": "Viaje: 20 min (13.0 km)",
-     "v_dir": "Avenida Reforma 1204,<br>56337 Col. Centro, Sector Sur<br>- Col. Centro / Sector Sur<br>de la zona oriente"
-    }
+     "v_dir": "Av. Reforma"
+    },
+    "x": 580,
+    "y": 760,
+    "k": 1.0,
+    "entra_en": "oferta"
    }
-  ],
-  "entra_en": "oferta",
-  "destaca": [
-   0,
-   "peor"
   ],
   "golpes": [
    {
@@ -37,7 +41,7 @@
      [
       "$110",
       "hueso",
-      460
+      250
      ]
     ],
     "sub": "PAGA MÁS"
@@ -50,7 +54,7 @@
      [
       "$90",
       "hueso",
-      460
+      250
      ]
     ],
     "sub": "QUE UNA DE"
@@ -63,7 +67,7 @@
      [
       "EL PEOR",
       "rojo",
-      230
+      200
      ]
     ],
     "sub": "VIAJE DE LOS DOS"
@@ -71,17 +75,20 @@
   ]
  },
  {
-  "tipo": "iphone",
-  "entra": "golpe",
-  "oferta_real": {
-   "precio": 110,
-   "rating": "4.92",
-   "a": "A 6 min (3.0 km)",
-   "a_dir": "Avenida Benito Juárez,<br>Col. Centro / Sector Norte<br>de la zona poniente",
-   "viaje": "Viaje: 40 min (25.0 km)",
-   "v_dir": "Calle Hidalgo &amp; Avenida II,<br>56337 Col. Jardines, Sector Sur<br>- Col. Jardines / Sector Sur<br>de la zona oriente"
-  },
+  "tipo": "telefono",
   "luz": "rojo",
+  "telefonos": [
+   {
+    "oferta": {
+     "precio": 110,
+     "rating": "4.92",
+     "a": "A 6 min (3.0 km)",
+     "a_dir": "Av. Benito Juárez",
+     "viaje": "Viaje: 40 min (25.0 km)",
+     "v_dir": "Calle Hidalgo"
+    }
+   }
+  ],
   "golpes": [
    {
     "en": "28",
@@ -91,7 +98,7 @@
      [
       "28 KM",
       "hueso",
-      330
+      230
      ]
     ],
     "sub": "LOS 110 SON"
@@ -104,7 +111,7 @@
      [
       "$3.93",
       "rojo",
-      400
+      250
      ]
     ],
     "sub": "POR KILÓMETRO"
@@ -117,7 +124,7 @@
      [
       "$54",
       "verde",
-      460
+      250
      ]
     ],
     "sub": "TE QUEDAN"
@@ -125,17 +132,21 @@
   ]
  },
  {
-  "tipo": "iphone",
-  "entra": "golpe",
-  "oferta_real": {
-   "precio": 90,
-   "rating": "5.00",
-   "a": "A 4 min (2.0 km)",
-   "a_dir": "Calle Fresno &amp; Avenida II,<br>Col. Norte / Sector Centro<br>de la zona poniente",
-   "viaje": "Viaje: 20 min (13.0 km)",
-   "v_dir": "Avenida Reforma 1204,<br>56337 Col. Centro, Sector Sur<br>- Col. Centro / Sector Sur<br>de la zona oriente"
-  },
+  "tipo": "telefono",
   "luz": "verde",
+  "telefonos": [
+   {
+    "oferta": {
+     "precio": 90,
+     "rating": "5.00",
+     "a": "A 4 min (2.0 km)",
+     "a_dir": "Calle Fresno",
+     "viaje": "Viaje: 20 min (13.0 km)",
+     "v_dir": "Av. Reforma"
+    }
+   }
+  ],
+  "sale": true,
   "golpes": [
    {
     "en": "15",
@@ -145,7 +156,7 @@
      [
       "15 KM",
       "hueso",
-      330
+      230
      ]
     ],
     "sub": "LOS 90 SON"
@@ -158,7 +169,7 @@
      [
       "$6",
       "verde",
-      560
+      250
      ]
     ],
     "sub": "POR KILÓMETRO"
@@ -171,7 +182,7 @@
      [
       "$60",
       "verde",
-      460
+      250
      ]
     ],
     "sub": "TE QUEDAN"
@@ -271,46 +282,49 @@
   ]
  },
  {
-  "tipo": "iphone",
-  "entra": "golpe",
-  "oferta_real": {
-   "precio": 90,
-   "rating": "5.00",
-   "a": "A 4 min (2.0 km)",
-   "a_dir": "Calle Fresno &amp; Avenida II,<br>Col. Norte / Sector Centro<br>de la zona poniente",
-   "viaje": "Viaje: 20 min (13.0 km)",
-   "v_dir": "Avenida Reforma 1204,<br>56337 Col. Centro, Sector Sur<br>- Col. Centro / Sector Sur<br>de la zona oriente"
-  },
+  "tipo": "telefono",
   "luz": "verde",
-  "popup": {
-   "nivel": "verde",
-   "app": "OFERTA",
-   "neta": 60,
-   "viaje": 90,
-   "gasolina": 30,
-   "chips": [
-    [
-     "$225/h",
-     "por hora",
-     "ok"
-    ],
-    [
-     "$6/km",
-     "por km",
-     "ok"
-    ],
-    [
-     "24 min",
-     "15 km total",
-     ""
-    ]
-   ]
-  },
-  "popup_en": "checa",
+  "sale": true,
+  "telefonos": [
+   {
+    "oferta": {
+     "precio": 90,
+     "rating": "5.00",
+     "a": "A 4 min (2.0 km)",
+     "a_dir": "Calle Fresno",
+     "viaje": "Viaje: 20 min (13.0 km)",
+     "v_dir": "Av. Reforma"
+    },
+    "popup": {
+     "app": "OFERTA",
+     "neta": 60,
+     "viaje": 90,
+     "gasolina": 30,
+     "chips": [
+      [
+       "$225/h",
+       "meta $150",
+       true
+      ],
+      [
+       "$6/km",
+       "meta $5",
+       true
+      ],
+      [
+       "24 min",
+       "15 km total",
+       false
+      ]
+     ]
+    },
+    "popup_en": "checa"
+   }
+  ],
   "golpes": [
    {
     "en": "checa",
-    "kind": "logo",
+    "kind": "texto",
     "glow": "verde",
     "lineas": [
      [
@@ -328,11 +342,10 @@
      [
       "RECOGIDA",
       "amarillo",
-      160
+      170
      ]
     ],
-    "sub": "INCLUIDA",
-    "icono": "km"
+    "sub": "INCLUIDA"
    },
    {
     "en": "aceptes.",
