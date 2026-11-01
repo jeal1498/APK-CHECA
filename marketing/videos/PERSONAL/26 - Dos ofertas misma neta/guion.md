@@ -1,5 +1,7 @@
 # Guion · 26 - Dos ofertas, misma neta (PERSONAL, v2) — hecho con `guion-remotion-checa` el 30 oct 2026; por aprobar
 
+> **Rehecho el 1 nov 2026 en estilo híbrido (aprobado por Eduardo):** misma voz y cifras. Teléfono con la oferta en la parte baja de su pantalla, zoom grande a la oferta mencionada, pop-up de la app, golpes arriba y subtítulos abajo. Las escenas vigentes están en `video/hyperframes/dos-ofertas-26-v2-hibrido/` (`SCRIPT.md` y `escenas.json`); lo de abajo es el guion original con el que se hizo la voz (sus escenas y el sello «¿POQUITO?» ya no aplican).
+
 Skill: `guion-remotion-checa` + reglas v2 (`marketing/plan/reglas-v2.md`). Misma idea y cifras que la v1 (`CHECA/26`), otro gancho y orden: abre con el $82 que «parece peor» y revela que deja más que el $95.
 
 Concepto / Problema detectado en el repo:
