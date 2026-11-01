@@ -261,6 +261,9 @@ def esc_cierre(sc, e, nombre):
       tl.fromTo("#{n}-cu", {{ opacity: 0, y: 20 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: "power4.out" }}, 2.1);
       tl.fromTo("#{n}-li", {{ opacity: 0 }}, {{ opacity: 1, duration: 0.4 }}, 2.6);
 """
+    if e.get("golpes"):
+        gi, gj = golpes(sc, e, nombre)
+        inner += "\n" + gi; js += gj
     if e.get("flecha"):  # flecha que rebota hacia los comentarios y píldora que parpadea
         flecha = '<svg width="170" height="170" viewBox="0 0 100 100" aria-hidden="true"><path d="M20 20 L70 70 M70 36 L70 70 L36 70" fill="none" stroke="#FACC15" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg>'
         inner += "\n" + clip(7, f"{nombre}-fl", "left:790px;top:1000px;width:170px;height:170px;opacity:0", flecha, D)
@@ -272,7 +275,7 @@ def esc_cierre(sc, e, nombre):
     if e.get("sin_redes"):  # versión para la web: sin cuentas ni link (la web no tiene salidas)
         inner = "\n".join(l for l in inner.split("\n") if f'id="{nombre}-cu"' not in l and f'id="{nombre}-li"' not in l)
         js = "".join(l for l in js.splitlines(True) if f'#{n}-cu' not in l and f'#{n}-li' not in l)
-    return marco(nombre, D, "", inner, js)
+    return marco(nombre, D, css_popup() if e.get("golpes") else "", inner, js)
 
 
 # ---------- escenas adicionales (v2 del 08, 17 oct 2026) ----------
@@ -467,6 +470,17 @@ def sfx_escena(sc, e):
             return []
         return [(x[0], pal(sc, x[1]) if isinstance(x[1], str) else float(x[1]), float(x[2]) if len(x) > 2 else 0.45) for x in e["sfx"]]
     tipo = e["tipo"]
+    if tipo == "impacto" or (tipo == "cierre" and e.get("golpes")):
+        out = []
+        for g in e["golpes"]:
+            t = pal(sc, g["en"])
+            if g["kind"] == "popup":
+                out += [("popup-entra", t, 0.4), (NIVEL_SFX[g["popup"].get("nivel", "verde")], t + 0.2, 0.45)]
+            elif g["kind"] == "logo":
+                out.append(("logo-semaforo", t, 0.5))
+            else:
+                out.append(("sello", t, 0.45))
+        return out[-3:] + ([("logo-semaforo", 0.0, 0.5)] if tipo == "cierre" and not e.get("golpes") else [])
     if tipo == "popup":
         return [("popup-entra", 0.0, 0.4), (NIVEL_SFX[e["popup"].get("nivel", "verde")], 0.45, 0.45)]
     if tipo == "estados":
@@ -1131,7 +1145,80 @@ def esc_iphone_duo(sc, e, n):
     return marco(n, D, IPH_CSS + "\n    " + css_popup(), inner, tj + cj + js)
 
 
-TIPOS = {"iphone_gancho": esc_iphone_gancho, "iphone": esc_iphone, "iphone_duo": esc_iphone_duo, "comparar": esc_comparar, "cuenta": esc_cuenta, "meta": esc_meta, "reloj15": esc_reloj15, "oferta": esc_oferta, "lee": esc_lee, "aviso": esc_aviso, "ticket": esc_ticket, "fichas": esc_fichas, "metas": esc_metas, "horas": esc_horas, "hook": esc_hook, "anillo": esc_anillo, "datos": esc_datos, "logo": esc_logo, "escaneo": esc_escaneo, "voz": esc_voz, "popup_oferta": esc_popup_oferta, "reloj": esc_reloj, "seguir": esc_seguir, "gancho": esc_gancho, "numero": esc_numero, "popup": esc_popup, "estados": esc_estados, "cierre": esc_cierre, "paso": esc_paso, "listo": esc_listo, "fin": esc_fin, "tachado": esc_tachado, "rutas": esc_rutas, "dos": esc_dos, "duo": esc_duo}
+# ---------- gráficos de impacto (1 nov 2026): golpes visuales que caen en la palabra que la voz enfatiza ----------
+POWER = '<svg width="{px}" height="{px}" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 3v9"/><path d="M7 6.2a8 8 0 1 0 10 0"/></svg>'
+FLECHA = '<svg width="200" height="200" viewBox="0 0 100 100" aria-hidden="true"><path d="M20 20 L70 70 M70 36 L70 70 L36 70" fill="none" stroke="#FACC15" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+
+
+def golpes(sc, e, n):
+    """e["golpes"]: lista de golpes {en: palabra, kind: texto|logo|captura|popup|apagon, ...}. Cada uno cae en su palabra
+    (zoom + flash + sacudida) y deja su lugar al siguiente; el último dura hasta «hasta» o el fin de la escena."""
+    D = sc["dur"]; gs = e["golpes"]; inner = ""; js = ""
+    ts = [pal(sc, g["en"]) for g in gs]
+    inner += clip(40, f"{n}-gfl", "inset:0;background:#F4F4EF;opacity:0", "", D)
+    for i, g in enumerate(gs):
+        t = ts[i]
+        fin = ts[i + 1] if i + 1 < len(gs) else (pal(sc, g["hasta"]) if g.get("hasta") else None)
+        gid, k = f"{n}-g{i}", g["kind"]
+        col = COLOR[g.get("glow", "hueso")]
+        brico = "font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;line-height:.95;white-space:nowrap;"
+        mono = "font-family:'JetBrains Mono',monospace;font-weight:700;"
+        cuerpo = f'<div style="position:absolute;left:-300px;top:-320px;width:1680px;height:1400px;background:radial-gradient(closest-side, {col}38 0%, rgba(12,12,16,0) 100%)"></div>'
+        top, alto = g.get("y", 300), g.get("h", 760)
+        extra_js = ""
+        if k == "apagon":
+            top, alto = 0, 1920
+            cuerpo = (f'<div style="position:absolute;inset:0;background:#000"></div>'
+                      f'<div id="{gid}-ic" style="position:relative">{POWER.format(px=420)}</div>'
+                      f'<div id="{gid}-tx" style="position:relative;{brico}font-size:230px;color:#F4F4EF;margin-top:30px">{g.get("texto", "APAGA")}</div>')
+            extra_js = f'      tl.fromTo("#{gid}-ic", {{ scale: 2.2 }}, {{ scale: 1, duration: 0.3, ease: "power4.out" }}, {t});\n      tl.to("#{gid}-ic", {{ opacity: 0.25, duration: 0.08, yoyo: true, repeat: 5 }}, {round(t + 0.35, 2)});\n'
+        else:
+            if g.get("icono"):
+                cuerpo += f'<div style="position:relative;margin-bottom:10px">{ic(g["icono"], 330, COLOR[g.get("icono_color", "hueso")])}</div>'
+            if k == "logo":
+                cuerpo += f'<div style="position:relative">{logo_svg(gid + "-lg", 300, 500)}</div>'
+                extra_js += js_logo(gid + "-lg", t)
+            if k == "captura":
+                cuerpo += (f'<div style="position:relative;width:780px;height:720px;border-radius:44px;overflow:hidden;border:4px solid #3A3A45;box-shadow:0 40px 90px rgba(0,0,0,.7)">'
+                           f'<img src="assets/img/{g["img"]}" style="width:780px;display:block" alt=""></div>')
+                if g.get("chip"):
+                    cuerpo += (f'<div style="position:absolute;right:20px;bottom:30px;padding:20px 40px;border-radius:34px;background:#16161C;border:4px solid {COLOR[g["chip"][1]]};{brico}font-size:150px;color:{COLOR[g["chip"][1]]}">{g["chip"][0]}</div>')
+            if k == "popup":
+                validar_popup(g["popup"])
+                cuerpo += f'<div style="position:relative">{popup(g["popup"])}</div>'
+            for txt, c, size in g.get("lineas", []):
+                cuerpo += f'<div style="position:relative;{brico}font-size:{size}px;color:{COLOR[c]}">{txt}</div>'
+            if g.get("sub"):
+                cuerpo += f'<div style="position:relative;{mono}font-size:44px;letter-spacing:.14em;color:#A3A3AD;margin-top:24px">{g["sub"]}</div>'
+            if g.get("billetes"):
+                for j in range(8):
+                    x = 90 + j * 120
+                    cuerpo += f'<div class="{gid}-bi" style="position:absolute;left:{x}px;top:-120px;opacity:0">{ic("dinero", 110, "#EF4444")}</div>'
+                extra_js += f'      tl.fromTo(".{gid}-bi", {{ y: -60, opacity: 1, rotation: -20 }}, {{ y: 900, opacity: 0.9, rotation: 25, duration: 1.1, stagger: 0.07, ease: "power1.in" }}, {round(t + 0.1, 2)});\n'
+            if g.get("flecha"):
+                cuerpo += f'<div id="{gid}-fl" style="position:absolute;right:40px;bottom:-40px">{FLECHA}</div>'
+                extra_js += f'      tl.to("#{gid}-fl", {{ x: 28, y: 28, duration: 0.28, yoyo: true, repeat: 7, ease: "sine.inOut" }}, {round(t + 0.3, 2)});\n'
+        estilo = f"left:0;width:1080px;top:{top}px;height:{alto}px;display:flex;flex-direction:column;align-items:center;justify-content:{'flex-start;padding-top:330px;box-sizing:border-box' if k == 'apagon' else 'center'};opacity:0"
+        inner += clip(41 + i, gid, estilo, cuerpo, D, " data-layout-allow-overflow")
+        base = 'scale: 1.9' if k != "apagon" else 'scale: 1.0'
+        js += f'      tl.fromTo("#{gid}", {{ opacity: 0, {base} }}, {{ opacity: 1, scale: 1, duration: {0.06 if k == "apagon" else 0.24}, ease: "power4.out" }}, {t});\n'
+        js += f'      tl.fromTo("#{n}-gfl", {{ opacity: {0.7 if k == "apagon" else 0.5} }}, {{ opacity: 0, duration: 0.28, ease: "power2.out" }}, {t});\n'
+        js += f'      tl.to("#{gid}", {{ x: 16, duration: 0.04, yoyo: true, repeat: 7 }}, {round(t + 0.2, 2)});\n'
+        if fin is not None:
+            js += f'      tl.to("#{gid}", {{ opacity: 0, duration: 0.1 }}, {round(fin - 0.04, 2)});\n'
+        js += extra_js
+    return inner, js
+
+
+def esc_impacto(sc, e, n):
+    D = sc["dur"]
+    inner, js = golpes(sc, e, n)
+    if e.get("ejemplo"):
+        inner += f'    <div class="etq clip" style="top:1110px;font-size:24px" data-start="0" data-duration="{D}" data-track-index="60">Números de ejemplo</div>\n'
+    return marco(n, D, css_popup(), inner, js)
+
+
+TIPOS = {"impacto": esc_impacto, "iphone_gancho": esc_iphone_gancho, "iphone": esc_iphone, "iphone_duo": esc_iphone_duo, "comparar": esc_comparar, "cuenta": esc_cuenta, "meta": esc_meta, "reloj15": esc_reloj15, "oferta": esc_oferta, "lee": esc_lee, "aviso": esc_aviso, "ticket": esc_ticket, "fichas": esc_fichas, "metas": esc_metas, "horas": esc_horas, "hook": esc_hook, "anillo": esc_anillo, "datos": esc_datos, "logo": esc_logo, "escaneo": esc_escaneo, "voz": esc_voz, "popup_oferta": esc_popup_oferta, "reloj": esc_reloj, "seguir": esc_seguir, "gancho": esc_gancho, "numero": esc_numero, "popup": esc_popup, "estados": esc_estados, "cierre": esc_cierre, "paso": esc_paso, "listo": esc_listo, "fin": esc_fin, "tachado": esc_tachado, "rutas": esc_rutas, "dos": esc_dos, "duo": esc_duo}
 
 
 # ---------- subtítulos ----------

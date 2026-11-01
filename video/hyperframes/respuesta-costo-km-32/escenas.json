@@ -1,114 +1,235 @@
 [
  {
-  "tipo": "gancho",
-  "lineas": [
-   "Menos de $10",
-   "el km =",
-   "Trabajando",
-   "gratis"
-  ],
-  "resalta": 3,
-  "rojas": [
-   0
-  ],
-  "flash": true,
-  "size": 140,
-  "en": [
-   0,
-   2,
-   4,
-   6
-  ],
-  "golpe_en": "apaga",
-  "fondo": {
-   "tarifa": 70,
-   "d1": "A 3 min (1 km)",
-   "d2": "Viaje: 25 min (12 km)"
-  }
- },
- {
-  "tipo": "numero",
-  "etiqueta": "combustible + desgaste, por km",
-  "numero": "$9",
-  "size": 330,
-  "color": "rojo",
-  "pie": "Números de ejemplo",
-  "icono": "calculadora"
- },
- {
-  "tipo": "iphone",
-  "entra": "golpe",
-  "tarifa": 70,
-  "d": "A 3 min (1 km)<br>Viaje: 25 min (12 km)",
-  "cuenta": true,
-  "ruta_en": "bolsa",
-  "luz": "rojo",
-  "titulo": [
-   [
-    "−$47 de tu bolsa.",
-    "bolsa",
-    "rojo"
-   ]
-  ],
-  "titulo_px": 84,
-  "chips": [
-   [
-    "$5.4/km",
-    "por km",
-    "rojo",
-    "poniendo",
-    30,
-    460
-   ]
+  "tipo": "impacto",
+  "ejemplo": true,
+  "golpes": [
+   {
+    "en": 0,
+    "kind": "texto",
+    "glow": "rojo",
+    "y": 300,
+    "h": 760,
+    "lineas": [
+     [
+      "Menos de $10",
+      "hueso",
+      120
+     ],
+     [
+      "el km =",
+      "hueso",
+      120
+     ],
+     [
+      "Trabajando",
+      "hueso",
+      120
+     ],
+     [
+      "gratis",
+      "amarillo",
+      170
+     ]
+    ]
+   },
+   {
+    "en": "varos",
+    "kind": "texto",
+    "glow": "rojo",
+    "lineas": [
+     [
+      "$10",
+      "rojo",
+      560
+     ]
+    ],
+    "sub": "VAROS EL KILÓMETRO"
+   },
+   {
+    "en": "apaga",
+    "kind": "apagon",
+    "texto": "APAGA"
+   }
   ]
  },
  {
-  "tipo": "gancho",
-  "lineas": [
-   "Ya no regales",
-   "la chamba."
-  ],
-  "resalta": 1,
-  "golpe_en": "regales"
+  "tipo": "impacto",
+  "ejemplo": true,
+  "golpes": [
+   {
+    "en": "combustible",
+    "kind": "texto",
+    "glow": "amarillo",
+    "icono": "gas",
+    "lineas": [
+     [
+      "COMBUSTIBLE",
+      "hueso",
+      120
+     ]
+    ]
+   },
+   {
+    "en": "desgaste",
+    "kind": "texto",
+    "glow": "amarillo",
+    "icono": "km",
+    "lineas": [
+     [
+      "+ DESGASTE",
+      "amarillo",
+      130
+     ]
+    ]
+   },
+   {
+    "en": "9",
+    "kind": "texto",
+    "glow": "rojo",
+    "lineas": [
+     [
+      "$9",
+      "rojo",
+      620
+     ]
+    ],
+    "sub": "POR KILÓMETRO"
+   }
+  ]
  },
  {
-  "tipo": "iphone",
-  "imagen": "inicio.png",
-  "imagen2": "ajustes.png",
-  "imagen2_en": "tarifa",
-  "golpe_en": "conviene",
-  "luz": "verde",
-  "ejemplo": false,
-  "titulo": [
-   [
-    "Checa:",
-    "Checa",
-    "verde"
-   ],
-   [
-    "tu mínimo.",
-    "mínima",
-    "amarillo"
-   ]
-  ],
-  "titulo_px": 84,
-  "chips": [
-   [
-    "$10/km",
-    "tu mínimo",
-    "amarillo",
-    "mínima",
-    620,
-    760
-   ],
-   [
-    "Sí conviene",
-    "el viaje",
-    "verde",
-    "conviene",
-    30,
-    430
-   ]
+  "tipo": "impacto",
+  "ejemplo": true,
+  "golpes": [
+   {
+    "en": 0,
+    "kind": "texto",
+    "glow": "hueso",
+    "lineas": [
+     [
+      "Paga $70",
+      "hueso",
+      150
+     ],
+     [
+      "Cuesta $117",
+      "rojo",
+      150
+     ]
+    ]
+   },
+   {
+    "en": "tu",
+    "kind": "texto",
+    "glow": "rojo",
+    "billetes": true,
+    "lineas": [
+     [
+      "−$47",
+      "rojo",
+      420
+     ]
+    ],
+    "sub": "DE TU BOLSA"
+   }
+  ]
+ },
+ {
+  "tipo": "impacto",
+  "golpes": [
+   {
+    "en": "regales",
+    "kind": "texto",
+    "glow": "rojo",
+    "icono": "dinero",
+    "icono_color": "rojo",
+    "lineas": [
+     [
+      "REGALES",
+      "rojo",
+      210
+     ]
+    ]
+   },
+   {
+    "en": "chamba",
+    "kind": "texto",
+    "glow": "amarillo",
+    "lineas": [
+     [
+      "LA CHAMBA",
+      "amarillo",
+      170
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "tipo": "impacto",
+  "golpes": [
+   {
+    "en": "checa",
+    "kind": "logo",
+    "glow": "verde",
+    "lineas": [
+     [
+      "Checa",
+      "verde",
+      200
+     ]
+    ]
+   },
+   {
+    "en": "tarifa",
+    "kind": "captura",
+    "img": "ajustes.png",
+    "glow": "amarillo",
+    "chip": [
+     "$10/km",
+     "amarillo"
+    ],
+    "y": 280,
+    "h": 800
+   },
+   {
+    "en": "conviene",
+    "kind": "popup",
+    "glow": "verde",
+    "popup": {
+     "nivel": "verde",
+     "app": "OFERTA",
+     "neta": 126,
+     "viaje": 150,
+     "gasolina": 24,
+     "chips": [
+      [
+       "$360/h",
+       "por hora",
+       "ok"
+      ],
+      [
+       "$12.5/km",
+       "por km",
+       "ok"
+      ],
+      [
+       "25 min",
+       "12 km total",
+       ""
+      ]
+     ]
+    },
+    "y": 230,
+    "h": 900,
+    "lineas": [
+     [
+      "SÍ CONVIENE",
+      "verde",
+      130
+     ]
+    ]
+   }
   ]
  },
  {
@@ -116,6 +237,22 @@
   "pil": "Comenta CHECA",
   "pil_color": "amarillo",
   "link": false,
-  "flecha": true
+  "flecha": true,
+  "golpes": [
+   {
+    "en": "checa",
+    "kind": "texto",
+    "glow": "amarillo",
+    "flecha": true,
+    "lineas": [
+     [
+      "CHECA",
+      "amarillo",
+      320
+     ]
+    ],
+    "hasta": "mandamos"
+   }
+  ]
  }
 ]
