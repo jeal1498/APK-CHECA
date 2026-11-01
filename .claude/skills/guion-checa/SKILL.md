@@ -5,7 +5,7 @@ description: Escribe los guiones de video vertical de Checa para TikTok, Reels y
 
 # Guion Checa
 
-Escribe guiones que retienen a un conductor de Uber o DiDi en los primeros segundos y le muestran algo que Checa de verdad hace. El tono es de creador a creador: directo, sin tono de anuncio. Evita «revoluciona», «la solución definitiva», «no te lo pierdas», «descubre» e «increíble», además de emojis, saludos e intros. Esas fórmulas suenan a publicidad y el conductor se va.
+Escribe guiones que retienen a un conductor de Uber o DiDi en los primeros segundos y le muestran algo que Checa de verdad hace. El tono es de creador a creador: directo, sin tono de anuncio. Evita «revoluciona», «la solución definitiva», «no te lo pierdas», «descubre» e «increíble», además de emojis, saludos e intros. Esas fórmulas suenan a publicidad y el conductor se va. Esto convive con el vocabulario de barrio de §2b: lo prohibido es el tono de anuncio, no el habla de chofer.
 
 ## 1. Lee el código antes de escribir
 Las cifras y las funciones tienen que ser reales. Si no, un conductor lo nota y se pierde la confianza.
@@ -26,7 +26,7 @@ Las cifras y las funciones tienen que ser reales. Si no, un conductor lo nota y 
 
 ## 2b. Rol, tono y vocabulario (reemplaza el prompt de Gémini, 1 nov 2026)
 Escribes como guionista senior de retención para TikTok, Reels y Shorts, con marketing de guerrilla para la clase trabajadora de México.
-- **Chofer a chofer:** natural, de barrio, sin palabras domingueras ni modismos exagerados; escolaridad de preparatoria. Términos cotidianos: «varos», «la chamba», «la app», «combustible», «el kilómetro». Redacción limpia.
+- **Chofer a chofer:** natural, de barrio, sin palabras domingueras ni modismos exagerados; escolaridad de preparatoria. Términos cotidianos permitidos: «varos», «la chamba», «la app», «combustible», «el kilómetro», «nomás», «solita». Redacción limpia. Fuera: modismos exagerados o de otra región, groserías y tono de anuncio (§intro). Si dudas de una palabra, usa la neutra.
 - **Cero primera persona** en CHECA y PERSONAL (sin cara): el video expone el problema y la solución en tercera persona o impersonal; nada de «yo», «armé», «soy». «Yo» solo en los videos a cámara (§7).
 - **Gancho letal (0–3 s):** golpe directo al dolor o al bolsillo, con cifra, para frenar el scroll.
 - **Ritmo de bala:** oraciones cortas, sin pausas muertas, pensadas para cortes rápidos y tipografía cinética.
@@ -45,28 +45,30 @@ Describe en corchetes qué se ve. Ejemplos de vocabulario:
 El color solo decide (verde, amarillo, rojo) y el resto va en asfalto, tablero y hueso. Los pop-ups dicen «OFERTA», nunca el nombre de una app. Todo lo importante va por encima de y≈1150. Los tipos de escena que ya existen están en `video-checa` (`references/narrador.md`), así que úsalos para que el guion se pueda producir sin código nuevo.
 
 ## 4. Formato de entrega (exacto)
+Un solo formato, el mismo en el chat y en el `guion.md`: cada línea de voz va numerada, con su tiempo, su visual y su énfasis (reglas en §4b).
 ```
 Concepto / Problema detectado en el repo:
+Cifras (con su cálculo):
 Guión Desglosado:
-- `0:00 - 0:03` | Audio: [...] | Remotion / Visual: [...]
-- `0:03 - 0:06` | Audio: [...] | Remotion / Visual: [...]
-...
-CTA final:
-```
-- **En el chat:** cada línea de voz numerada (L1, L2…) con su desglose de énfasis (§4b), sin tablas ni preguntas extra. Si Eduardo pide solo la voz, pásala limpia y de corrido.
-- **En `marketing/videos/CHECA|PERSONAL/NN - Nombre/guion.md`:** el formato completo, las cifras con su cálculo y el estado («propuesto» hasta que lo apruebe). Si ya existe, guarda el anterior como `guion_anterior.md` con `mv`.
-- **Git:** commit y push a `main`.
-
-## 4b. Formato de énfasis híbrido (voz + gráficos)
-Para cada línea de voz: numérala, cópiala tal cual y debajo pon el desglose. Ejemplo:
-```
-L1: Si te caen viajes de menos de 10 varos el kilómetro... mejor apaga la app.
+L1 | 0:00 - 0:03 | Visual: [flash; tarjeta OFERTA se estrella con zoom; contador 0 → 70]
+  texto: Si te caen viajes de menos de 10 varos el kilómetro... mejor apaga la app.
   voz: urgente, sube volumen en "10 varos" y marca fuerte "apaga"
   fuerte: "10 varos", "apaga"
   pausa: antes de "mejor"
   tono: urgente
   pantalla: "10 varos" = rojo | "apaga" = golpe
+L2 | 0:03 - 0:06 | Visual: [...]
+  texto: ...
+  ...
+CTA final:
 ```
+- **En el chat:** el mismo formato, sin tablas ni preguntas extra. Si Eduardo pide solo la voz, pásala limpia y de corrido (sin las marcas).
+- **`pantalla` y `Visual` no se repiten:** `Visual` describe la escena completa; `pantalla` marca solo el color o golpe de cada palabra enfatizada.
+- **En `marketing/videos/CHECA|PERSONAL/NN - Nombre/guion.md`:** el formato completo, las cifras con su cálculo y el estado («propuesto» hasta que lo apruebe). Si ya existe, guarda el anterior como `guion_anterior.md` con `mv`.
+- **Git:** commit y push a `main`.
+
+## 4b. Formato de énfasis híbrido (voz + gráficos)
+Cada línea de voz del §4 lleva este desglose (el ejemplo completo está allí). Reglas:
 - `voz`: instrucción precisa de locución (intención, matiz, subida de volumen).
 - `fuerte`: palabras copiadas EXACTAS del texto (máximo 2 por línea).
 - `pausa`: antes de «palabra» (una por línea como máximo).
