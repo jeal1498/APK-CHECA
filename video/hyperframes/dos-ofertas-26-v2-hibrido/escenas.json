@@ -96,7 +96,13 @@
     "y": 760,
     "k": 1.0,
     "fija": false,
-    "dim_en": "95."
+    "dim_en": "95.",
+    "mover": {
+     "en": "95.",
+     "x": -250,
+     "y": 900,
+     "k": 0.8
+    }
    },
    {
     "oferta": {
@@ -111,8 +117,12 @@
     "y": 760,
     "k": 1.0,
     "fija": false,
-    "zoom": 1.18,
-    "zoom_en": "95."
+    "mover": {
+     "en": "95.",
+     "x": 221,
+     "y": 430,
+     "k": 1.45
+    }
    }
   ]
  },
@@ -157,11 +167,11 @@
      "viaje": "Viaje: 11 min (6.0 km)",
      "v_dir": "Av. Reforma"
     },
-    "x": 60,
-    "y": 760,
-    "k": 1.0,
-    "fija": true,
-    "dim_en": 0
+    "x": -250,
+    "y": 900,
+    "k": 0.8,
+    "dim_en": 0,
+    "fija": true
    },
    {
     "oferta": {
@@ -172,11 +182,10 @@
      "viaje": "Viaje: 22 min (10.0 km)",
      "v_dir": "Calle Hidalgo"
     },
-    "x": 580,
-    "y": 760,
-    "k": 1.0,
-    "fija": true,
-    "zoom": 1.18
+    "x": 221,
+    "y": 430,
+    "k": 1.45,
+    "fija": true
    }
   ]
  },
@@ -223,11 +232,11 @@
      "viaje": "Viaje: 11 min (6.0 km)",
      "v_dir": "Av. Reforma"
     },
-    "x": 60,
-    "y": 760,
-    "k": 1.0,
-    "fija": true,
-    "dim_en": 0
+    "x": -250,
+    "y": 900,
+    "k": 0.8,
+    "dim_en": 0,
+    "fija": true
    },
    {
     "oferta": {
@@ -238,11 +247,10 @@
      "viaje": "Viaje: 22 min (10.0 km)",
      "v_dir": "Calle Hidalgo"
     },
-    "x": 580,
-    "y": 760,
-    "k": 1.0,
-    "fija": true,
-    "zoom": 1.18
+    "x": 221,
+    "y": 430,
+    "k": 1.45,
+    "fija": true
    }
   ]
  },
@@ -301,11 +309,11 @@
      "viaje": "Viaje: 11 min (6.0 km)",
      "v_dir": "Av. Reforma"
     },
-    "x": 60,
-    "y": 760,
-    "k": 1.0,
-    "fija": true,
-    "dim_en": 0
+    "x": -250,
+    "y": 900,
+    "k": 0.8,
+    "dim_en": 0,
+    "fija": true
    },
    {
     "oferta": {
@@ -316,11 +324,10 @@
      "viaje": "Viaje: 22 min (10.0 km)",
      "v_dir": "Calle Hidalgo"
     },
-    "x": 580,
-    "y": 760,
-    "k": 1.0,
-    "fija": true,
-    "zoom": 1.18
+    "x": 221,
+    "y": 430,
+    "k": 1.45,
+    "fija": true
    }
   ]
  },
@@ -370,21 +377,6 @@
   "telefonos": [
    {
     "oferta": {
-     "precio": 82,
-     "rating": "5.00",
-     "a": "A 4 min (1.2 km)",
-     "a_dir": "Calle Fresno",
-     "viaje": "Viaje: 11 min (6.0 km)",
-     "v_dir": "Av. Reforma"
-    },
-    "x": 60,
-    "y": 760,
-    "k": 1.0,
-    "fija": true,
-    "zoom": 1.18
-   },
-   {
-    "oferta": {
      "precio": 95,
      "rating": "4.88",
      "a": "A 8 min (3.8 km)",
@@ -392,11 +384,25 @@
      "viaje": "Viaje: 22 min (10.0 km)",
      "v_dir": "Calle Hidalgo"
     },
-    "x": 580,
-    "y": 760,
-    "k": 1.0,
-    "fija": true,
-    "dim_en": 0
+    "x": 890,
+    "y": 900,
+    "k": 0.8,
+    "dim_en": 0,
+    "fija": true
+   },
+   {
+    "oferta": {
+     "precio": 82,
+     "rating": "5.00",
+     "a": "A 4 min (1.2 km)",
+     "a_dir": "Calle Fresno",
+     "viaje": "Viaje: 11 min (6.0 km)",
+     "v_dir": "Av. Reforma"
+    },
+    "x": 221,
+    "y": 430,
+    "k": 1.45,
+    "fija": true
    }
   ]
  },
@@ -461,21 +467,6 @@
   "telefonos": [
    {
     "oferta": {
-     "precio": 82,
-     "rating": "5.00",
-     "a": "A 4 min (1.2 km)",
-     "a_dir": "Calle Fresno",
-     "viaje": "Viaje: 11 min (6.0 km)",
-     "v_dir": "Av. Reforma"
-    },
-    "x": 60,
-    "y": 760,
-    "k": 1.0,
-    "fija": true,
-    "zoom": 1.18
-   },
-   {
-    "oferta": {
      "precio": 95,
      "rating": "4.88",
      "a": "A 8 min (3.8 km)",
@@ -483,11 +474,25 @@
      "viaje": "Viaje: 22 min (10.0 km)",
      "v_dir": "Calle Hidalgo"
     },
-    "x": 580,
-    "y": 760,
-    "k": 1.0,
-    "fija": true,
-    "dim_en": 0
+    "x": 890,
+    "y": 900,
+    "k": 0.8,
+    "dim_en": 0,
+    "fija": true
+   },
+   {
+    "oferta": {
+     "precio": 82,
+     "rating": "5.00",
+     "a": "A 4 min (1.2 km)",
+     "a_dir": "Calle Fresno",
+     "viaje": "Viaje: 11 min (6.0 km)",
+     "v_dir": "Av. Reforma"
+    },
+    "x": 221,
+    "y": 430,
+    "k": 1.45,
+    "fija": true
    }
   ]
  },

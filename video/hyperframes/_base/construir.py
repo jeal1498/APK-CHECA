@@ -1251,6 +1251,9 @@ def esc_telefono(sc, e, n):
             js += f'      tl.set("#{tid}", {{ y: {y0} }}, 0);\n'
         if z and not ya:
             js += f'      tl.to("#{tid}", {{ scale: {k2}, x: {round(dx, 1)}, y: {round(dy, 1)}, duration: 0.45, ease: "power3.out" }}, {pal(sc, t["zoom_en"], adel=e.get("adelanto", 0.25))});\n'
+        m = t.get("mover")  # mover: {en, x, y, k}: el teléfono viaja a otra posición/escala en esa palabra
+        if m:
+            js += f'      tl.to("#{tid}", {{ scale: {m["k"]}, x: {m["x"] - x}, y: {m["y"] - y}, duration: 0.5, ease: "power3.out" }}, {pal(sc, m["en"], adel=e.get("adelanto", 0.25))});\n'
         if t.get("dim_en") is not None:
             js += f'      tl.to("#{tid}", {{ opacity: 0.5, duration: 0.3 }}, {pal(sc, t["dim_en"], adel=e.get("adelanto", 0.25))});\n'
         if t.get("popup"):
