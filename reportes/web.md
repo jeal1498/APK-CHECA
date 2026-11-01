@@ -1,11 +1,11 @@
 # Reporte de Checa (web + app) · últimos 30 días
 
-Generado: 2026-10-31 17:24 UTC. Cuenta visitas únicas (una por pestaña).
+Generado: 2026-11-01 18:09 UTC. Cuenta visitas únicas (una por pestaña).
 
 ## Resumen
 | visitas | descargas | cuentas_nuevas | pagos | ingresos | licencias_activas |
 | --- | --- | --- | --- | --- | --- |
-| 593 | 261 | 43 | 0 | 0 | 3 |
+| 594 | 262 | 43 | 0 | 0 | 3 |
 
 # App
 
@@ -102,8 +102,8 @@ Sin datos todavía.
 ## Embudo
 | evento | visitas | veces |
 | --- | --- | --- |
-| visita | 593 | 830 |
-| descarga | 261 | 294 |
+| visita | 594 | 831 |
+| descarga | 262 | 295 |
 | clic_descargar | 121 | 132 |
 | descarga_instalar | 69 | 147 |
 | video_play | 68 | 72 |
@@ -114,7 +114,7 @@ Sin datos todavía.
 ## Por fuente (visitas → descargas)
 | fuente | campana | visitas | descargas |
 | --- | --- | --- | --- |
-| directo |  | 450 | 196 |
+| directo |  | 451 | 197 |
 | tiktok |  | 97 | 54 |
 | tiktok | prueba-en-google-play | 17 | 0 |
 | app | compartir | 17 | 9 |
@@ -127,14 +127,14 @@ Sin datos todavía.
 ## Por dispositivo
 | dispositivo | visitas | descargas |
 | --- | --- | --- |
-| android | 495 | 261 |
+| android | 496 | 262 |
 | iphone | 57 | 0 |
 | pc | 42 | 0 |
 
 ## Qué botón lleva a descargar
 | boton | descargas |
 | --- | --- |
-| fijo | 83 |
+| fijo | 84 |
 | hero | 80 |
 | tiktok | 52 |
 | app | 33 |
@@ -150,7 +150,7 @@ Sin datos todavía.
 ## Por día
 | dia | visitas | descargas |
 | --- | --- | --- |
-| 2026-10-31 | 1 | 0 |
+| 2026-10-31 | 2 | 1 |
 | 2026-10-30 | 3 | 0 |
 | 2026-10-29 | 3 | 0 |
 | 2026-10-28 | 4 | 1 |
