@@ -1,0 +1,631 @@
+[
+ {
+  "tipo": "telefono",
+  "adelanto": 0.04,
+  "golpes": [
+   {
+    "en": "82",
+    "kind": "texto",
+    "glow": "hueso",
+    "lineas": [
+     [
+      "$82",
+      "hueso",
+      250
+     ]
+    ],
+    "sub": "TE CAE"
+   },
+   {
+    "en": "poquito.",
+    "kind": "texto",
+    "glow": "amarillo",
+    "lineas": [
+     [
+      "POQUITO",
+      "amarillo",
+      200
+     ]
+    ]
+   }
+  ],
+  "luz": "hueso",
+  "telefonos": [
+   {
+    "oferta": {
+     "precio": 82,
+     "rating": "5.00",
+     "a": "A 4 min (1.2 km)",
+     "a_dir": "Calle Fresno",
+     "viaje": "Viaje: 11 min (6.0 km)",
+     "v_dir": "Av. Reforma"
+    }
+   }
+  ],
+  "ejemplo": true
+ },
+ {
+  "tipo": "telefono",
+  "adelanto": 0.04,
+  "golpes": [
+   {
+    "en": "mismo",
+    "kind": "texto",
+    "glow": "amarillo",
+    "lineas": [
+     [
+      "AL MISMO",
+      "amarillo",
+      150
+     ],
+     [
+      "TIEMPO",
+      "amarillo",
+      150
+     ]
+    ]
+   },
+   {
+    "en": "95.",
+    "kind": "texto",
+    "glow": "hueso",
+    "lineas": [
+     [
+      "$95",
+      "hueso",
+      250
+     ]
+    ],
+    "sub": "OTRA DE"
+   }
+  ],
+  "luz": "hueso",
+  "telefonos": [
+   {
+    "oferta": {
+     "precio": 82,
+     "rating": "5.00",
+     "a": "A 4 min (1.2 km)",
+     "a_dir": "Calle Fresno",
+     "viaje": "Viaje: 11 min (6.0 km)",
+     "v_dir": "Av. Reforma"
+    },
+    "x": 60,
+    "y": 760,
+    "k": 1.0,
+    "fija": false
+   },
+   {
+    "oferta": {
+     "precio": 95,
+     "rating": "4.88",
+     "a": "A 8 min (3.8 km)",
+     "a_dir": "Av. Benito Juárez",
+     "viaje": "Viaje: 22 min (10.0 km)",
+     "v_dir": "Calle Hidalgo"
+    },
+    "x": 580,
+    "y": 760,
+    "k": 1.0,
+    "fija": false
+   }
+  ]
+ },
+ {
+  "tipo": "telefono",
+  "adelanto": 0.04,
+  "golpes": [
+   {
+    "en": "agarra",
+    "kind": "texto",
+    "glow": "hueso",
+    "lineas": [
+     [
+      "AGARRA",
+      "hueso",
+      230
+     ]
+    ]
+   },
+   {
+    "en": "95.",
+    "kind": "texto",
+    "glow": "hueso",
+    "lineas": [
+     [
+      "$95",
+      "hueso",
+      250
+     ]
+    ]
+   }
+  ],
+  "luz": "hueso",
+  "telefonos": [
+   {
+    "oferta": {
+     "precio": 82,
+     "rating": "5.00",
+     "a": "A 4 min (1.2 km)",
+     "a_dir": "Calle Fresno",
+     "viaje": "Viaje: 11 min (6.0 km)",
+     "v_dir": "Av. Reforma"
+    },
+    "x": 60,
+    "y": 760,
+    "k": 1.0,
+    "fija": true,
+    "dim_en": "95."
+   },
+   {
+    "oferta": {
+     "precio": 95,
+     "rating": "4.88",
+     "a": "A 8 min (3.8 km)",
+     "a_dir": "Av. Benito Juárez",
+     "viaje": "Viaje: 22 min (10.0 km)",
+     "v_dir": "Calle Hidalgo"
+    },
+    "x": 580,
+    "y": 760,
+    "k": 1.0,
+    "fija": true
+   }
+  ]
+ },
+ {
+  "tipo": "telefono",
+  "adelanto": 0.04,
+  "golpes": [
+   {
+    "en": "lejos",
+    "kind": "texto",
+    "glow": "rojo",
+    "lineas": [
+     [
+      "LEJOS",
+      "rojo",
+      250
+     ]
+    ],
+    "sub": "RECOGES"
+   },
+   {
+    "en": "treinta",
+    "kind": "texto",
+    "glow": "amarillo",
+    "lineas": [
+     [
+      "30 MIN",
+      "amarillo",
+      230
+     ]
+    ],
+    "sub": "CASI"
+   }
+  ],
+  "luz": "rojo",
+  "telefonos": [
+   {
+    "oferta": {
+     "precio": 82,
+     "rating": "5.00",
+     "a": "A 4 min (1.2 km)",
+     "a_dir": "Calle Fresno",
+     "viaje": "Viaje: 11 min (6.0 km)",
+     "v_dir": "Av. Reforma"
+    },
+    "x": 60,
+    "y": 760,
+    "k": 1.0,
+    "fija": true,
+    "dim_en": 0
+   },
+   {
+    "oferta": {
+     "precio": 95,
+     "rating": "4.88",
+     "a": "A 8 min (3.8 km)",
+     "a_dir": "Av. Benito Juárez",
+     "viaje": "Viaje: 22 min (10.0 km)",
+     "v_dir": "Calle Hidalgo"
+    },
+    "x": 580,
+    "y": 760,
+    "k": 1.0,
+    "fija": true
+   }
+  ]
+ },
+ {
+  "tipo": "telefono",
+  "adelanto": 0.04,
+  "golpes": [
+   {
+    "en": "gasolina",
+    "kind": "texto",
+    "glow": "amarillo",
+    "lineas": [
+     [
+      "GASOLINA",
+      "amarillo",
+      150
+     ]
+    ],
+    "icono": "gas"
+   },
+   {
+    "en": "recorrido,",
+    "kind": "texto",
+    "glow": "amarillo",
+    "lineas": [
+     [
+      "TODO EL RECORRIDO",
+      "amarillo",
+      110
+     ]
+    ]
+   },
+   {
+    "en": "67.",
+    "kind": "texto",
+    "glow": "rojo",
+    "lineas": [
+     [
+      "$67",
+      "rojo",
+      250
+     ]
+    ],
+    "sub": "TE QUEDAN"
+   }
+  ],
+  "luz": "rojo",
+  "telefonos": [
+   {
+    "oferta": {
+     "precio": 82,
+     "rating": "5.00",
+     "a": "A 4 min (1.2 km)",
+     "a_dir": "Calle Fresno",
+     "viaje": "Viaje: 11 min (6.0 km)",
+     "v_dir": "Av. Reforma"
+    },
+    "x": 60,
+    "y": 760,
+    "k": 1.0,
+    "fija": true,
+    "dim_en": 0
+   },
+   {
+    "oferta": {
+     "precio": 95,
+     "rating": "4.88",
+     "a": "A 8 min (3.8 km)",
+     "a_dir": "Av. Benito Juárez",
+     "viaje": "Viaje: 22 min (10.0 km)",
+     "v_dir": "Calle Hidalgo"
+    },
+    "x": 580,
+    "y": 760,
+    "k": 1.0,
+    "fija": true
+   }
+  ]
+ },
+ {
+  "tipo": "telefono",
+  "adelanto": 0.04,
+  "golpes": [
+   {
+    "en": "82",
+    "kind": "texto",
+    "glow": "verde",
+    "lineas": [
+     [
+      "EL DE 82",
+      "verde",
+      190
+     ]
+    ]
+   },
+   {
+    "en": "cerca,",
+    "kind": "texto",
+    "glow": "verde",
+    "lineas": [
+     [
+      "CERCA",
+      "verde",
+      230
+     ]
+    ]
+   },
+   {
+    "en": "quince",
+    "kind": "texto",
+    "glow": "verde",
+    "lineas": [
+     [
+      "15 MIN",
+      "verde",
+      230
+     ]
+    ]
+   }
+  ],
+  "luz": "verde",
+  "telefonos": [
+   {
+    "oferta": {
+     "precio": 82,
+     "rating": "5.00",
+     "a": "A 4 min (1.2 km)",
+     "a_dir": "Calle Fresno",
+     "viaje": "Viaje: 11 min (6.0 km)",
+     "v_dir": "Av. Reforma"
+    },
+    "x": 60,
+    "y": 760,
+    "k": 1.0,
+    "fija": true
+   },
+   {
+    "oferta": {
+     "precio": 95,
+     "rating": "4.88",
+     "a": "A 8 min (3.8 km)",
+     "a_dir": "Av. Benito Juárez",
+     "viaje": "Viaje: 22 min (10.0 km)",
+     "v_dir": "Calle Hidalgo"
+    },
+    "x": 580,
+    "y": 760,
+    "k": 1.0,
+    "fija": true,
+    "dim_en": 0
+   }
+  ]
+ },
+ {
+  "tipo": "telefono",
+  "adelanto": 0.04,
+  "golpes": [
+   {
+    "en": "gasolina",
+    "kind": "texto",
+    "glow": "rojo",
+    "lineas": [
+     [
+      "−$14",
+      "rojo",
+      250
+     ]
+    ],
+    "sub": "LA GASOLINA"
+   },
+   {
+    "en": "68.",
+    "kind": "texto",
+    "glow": "verde",
+    "lineas": [
+     [
+      "$68",
+      "verde",
+      250
+     ]
+    ],
+    "sub": "TE QUEDAN"
+   },
+   {
+    "en": "uno",
+    "kind": "texto",
+    "glow": "verde",
+    "lineas": [
+     [
+      "UNO MÁS",
+      "verde",
+      200
+     ]
+    ]
+   },
+   {
+    "en": "mitad",
+    "kind": "texto",
+    "glow": "amarillo",
+    "lineas": [
+     [
+      "LA MITAD",
+      "amarillo",
+      190
+     ]
+    ],
+    "sub": "DEL TIEMPO"
+   }
+  ],
+  "luz": "verde",
+  "telefonos": [
+   {
+    "oferta": {
+     "precio": 82,
+     "rating": "5.00",
+     "a": "A 4 min (1.2 km)",
+     "a_dir": "Calle Fresno",
+     "viaje": "Viaje: 11 min (6.0 km)",
+     "v_dir": "Av. Reforma"
+    },
+    "x": 60,
+    "y": 760,
+    "k": 1.0,
+    "fija": true
+   },
+   {
+    "oferta": {
+     "precio": 95,
+     "rating": "4.88",
+     "a": "A 8 min (3.8 km)",
+     "a_dir": "Av. Benito Juárez",
+     "viaje": "Viaje: 22 min (10.0 km)",
+     "v_dir": "Calle Hidalgo"
+    },
+    "x": 580,
+    "y": 760,
+    "k": 1.0,
+    "fija": true,
+    "dim_en": 0
+   }
+  ]
+ },
+ {
+  "tipo": "telefono",
+  "adelanto": 0.04,
+  "golpes": [
+   {
+    "en": "checa",
+    "kind": "texto",
+    "glow": "verde",
+    "lineas": [
+     [
+      "Checa",
+      "verde",
+      200
+     ]
+    ]
+   },
+   {
+    "en": "calcula",
+    "kind": "texto",
+    "glow": "verde",
+    "lineas": [
+     [
+      "CALCULA",
+      "verde",
+      200
+     ]
+    ]
+   },
+   {
+    "en": "conviene.",
+    "kind": "texto",
+    "glow": "verde",
+    "lineas": [
+     [
+      "CONVIENE",
+      "verde",
+      200
+     ]
+    ]
+   }
+  ],
+  "luz": "verde",
+  "sale": true,
+  "telefonos": [
+   {
+    "oferta": {
+     "precio": 82,
+     "rating": "5.00",
+     "a": "A 4 min (1.2 km)",
+     "a_dir": "Calle Fresno",
+     "viaje": "Viaje: 11 min (6.0 km)",
+     "v_dir": "Av. Reforma"
+    },
+    "x": 60,
+    "y": 760,
+    "k": 1.0,
+    "fija": true,
+    "popup": {
+     "nivel": "verde",
+     "app": "OFERTA",
+     "neta": 68,
+     "viaje": 82,
+     "gasolina": 14,
+     "chips": [
+      [
+       "$328/h",
+       "meta $150",
+       true
+      ],
+      [
+       "$11.4/km",
+       "meta $8",
+       true
+      ],
+      [
+       "15 min",
+       "7.2 km total",
+       false
+      ]
+     ]
+    },
+    "popup_en": "checa"
+   },
+   {
+    "oferta": {
+     "precio": 95,
+     "rating": "4.88",
+     "a": "A 8 min (3.8 km)",
+     "a_dir": "Av. Benito Juárez",
+     "viaje": "Viaje: 22 min (10.0 km)",
+     "v_dir": "Calle Hidalgo"
+    },
+    "x": 580,
+    "y": 760,
+    "k": 1.0,
+    "fija": true,
+    "popup": {
+     "nivel": "amarillo",
+     "app": "OFERTA",
+     "neta": 67,
+     "viaje": 95,
+     "gasolina": 28,
+     "chips": [
+      [
+       "$190/h",
+       "meta $150",
+       true
+      ],
+      [
+       "$6.9/km",
+       "meta $8",
+       false
+      ],
+      [
+       "30 min",
+       "13.8 km total",
+       false
+      ]
+     ]
+    },
+    "popup_en": "checa"
+   }
+  ]
+ },
+ {
+  "tipo": "seguir",
+  "sfx": false
+ },
+ {
+  "tipo": "cierre",
+  "adelanto": 0.04,
+  "pil": "Comenta CHECA",
+  "pil_color": "amarillo",
+  "link": false,
+  "flecha": true,
+  "golpes": [
+   {
+    "en": "checa",
+    "kind": "texto",
+    "glow": "amarillo",
+    "flecha": true,
+    "lineas": [
+     [
+      "CHECA",
+      "amarillo",
+      320
+     ]
+    ],
+    "hasta": "acceso"
+   }
+  ]
+ }
+]

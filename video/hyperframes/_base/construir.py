@@ -1054,8 +1054,9 @@ def popup_app(p, pid):
     p = {neta, viaje, gasolina, app, chips: [[valor, meta, ok]]}; ok=True pinta el valor en verde."""
     validar_popup(p)
     fichas = "".join(f'<div class="ch"><b class="{"g" if ok else ""}">{v}</b><span>{m}</span></div>' for v, m, ok in p["chips"])
-    return (f'<div class="pa" id="{pid}"><div class="ab"><span class="op">{p.get("app", "OFERTA")}</span><span class="ac">ACEPTAR</span>'
-            f'<span class="ax"><svg viewBox="0 0 24 24"><path d="M5 5L19 19M19 5L5 19" stroke="#0A1F10" stroke-width="2.6" stroke-linecap="round"/></svg></span></div>'
+    niv = {"verde": ("#22C55E", "ACEPTAR", "#0A1F10"), "amarillo": ("#FACC15", "CONSIDERAR", "#2B2200"), "rojo": ("#EF4444", "RECHAZAR", "#1F0000")}[p.get("nivel", "verde")]
+    return (f'<div class="pa" id="{pid}"><div class="ab" style="background:{niv[0]}"><span class="op">{p.get("app", "OFERTA")}</span><span class="ac" style="color:{niv[2]}">{niv[1]}</span>'
+            f'<span class="ax"><svg viewBox="0 0 24 24"><path d="M5 5L19 19M19 5L5 19" stroke="{niv[2]}" stroke-width="2.6" stroke-linecap="round"/></svg></span></div>'
             f'<div class="cu"><div class="an">${p["neta"]}<small>netos</small></div><div class="al">Viaje ${p["viaje"]} &nbsp;·&nbsp; Gasolina −${p["gasolina"]}</div>'
             f'<div class="af">{fichas}</div></div></div>')
 
