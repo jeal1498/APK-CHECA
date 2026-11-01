@@ -8,7 +8,7 @@ description: Produce los videos de Checa para TikTok, Reels y Shorts con la marc
 Lleva un guion aprobado a un video terminado, con una aprobación de Eduardo en cada etapa. Él revisa desde el teléfono y escucha el chat en voz alta. Por eso cada entrega es un archivo o un texto corto, sin explicaciones largas.
 
 ## Elige el modo
-- **Sin la cara de Eduardo** (CHECA y su v2 PERSONAL): lee `references/narrador.md`. Regla de oro de los gráficos (Eduardo, 1 nov): cada gráfico dice **exactamente lo que dice la voz en ese instante**, nunca texto que la voz no pronuncia; detalle en `narrador.md` §8 y «Aprendizajes de la v2 del 32». Estilo **híbrido teléfono + golpes** (1 nov, CHECA 22): `narrador.md` §9; muestra primero una imagen de cuadros para su visto bueno. Una v2 con el mismo audio reutiliza `assets/voice` y `tiempos.json`.
+- **Sin la cara de Eduardo** (CHECA y su v2 PERSONAL): lee `references/narrador.md`. Regla de oro de los gráficos (Eduardo, 1 nov): cada gráfico dice **exactamente lo que dice la voz en ese instante**, nunca texto que la voz no pronuncia; detalle en `narrador.md` §8 y «Aprendizajes de la v2 del 32». Estilo **híbrido teléfono + golpes** (1 nov, CHECA 22): `narrador.md` §9; reglas de coherencia y ritmo (cada cosa en su palabra, hook, loop): §10; muestra primero una imagen de cuadros para su visto bueno. Una v2 con el mismo audio reutiliza `assets/voice` y `tiempos.json`.
 - **Con Eduardo a cámara** (cuenta @Eduardoalv9802, tutoriales): lee `references/camara.md`. Para elegir qué escena acompaña cada frase usa `plantillas/guion-escenas.md`.
 
 ## Flujo: dos aprobaciones por lote (Eduardo, 30 oct 2026)
@@ -21,7 +21,7 @@ Eduardo aprueba **dos veces por lote** y no cinco por video: así el tiempo no s
    - Entrega: `checa.py entregar <proyecto> <CHECA|PERSONAL> <NN>` (portada como primer cuadro; copia `video.mp4` y `portada.jpg`).
    - Copy y DM: escribe `copy.txt` y corre `checa.py dm <carpeta>`.
    Revisa tú cada hoja de cuadros y cada portada antes de seguir: él solo verá el resultado final, así que lo que se te pase llega hasta él.
-   **Control de calidad (siempre, en cada lote, aunque sea de un video):** `checa.py calidad <carpeta> <proyecto>` por video y un agente revisor con ojos frescos para todo el lote; cómo, en `references/calidad.md`. Solo con todo en ✓ y el revisor en «OK» se le manda el lote.
+   **Control de calidad (siempre, en cada lote, aunque sea de un video):** `checa.py calidad <carpeta> <proyecto>` por video, un agente revisor con ojos frescos y una **auditoría visual de coherencia y ritmo** (el prompt de Eduardo) para todo el lote; cómo, en `references/calidad.md`. Solo con todo en ✓ y los dos agentes en «OK» se le manda el lote.
 3. **Aprobación 2 · revisión final:** un solo mensaje con todo el lote: por video, el mp4 (con `SendUserFile`; la portada ya va en el primer cuadro), el copy en texto y la fecha propuesta. Si algo no le gusta, se corrige **solo eso** (portada, una escena, una línea de voz o el copy) y se manda de nuevo solo lo corregido.
 4. **Hecho y subida:** con su «aprobado», `checa.py hecho <carpeta> <AAAA-MM-DD> [tipo]` por video y `checa.py subir "<mensaje con las líneas de atribución>"`. El `video.mp4` se commitea **una sola vez**, ya aprobado: hasta la aprobación 2 los mp4 viven en `renders/` y en la carpeta sin commitear (si un hook pide subir, apártalos con `mv` a `renders/`). «Publicado» lo marca Eduardo; cuando avise: `checa.py publicado <carpeta> <AAAA-MM-DD>`.
 `build.yml` ignora `marketing/**`, `video/**` y `.claude/**`: no hace falta `[skip ci]`.
