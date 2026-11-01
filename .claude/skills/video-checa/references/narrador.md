@@ -80,5 +80,5 @@ Donde hay énfasis, el gráfico tiene que pesar tanto como la voz. Escena `impac
 - **Capturas con chips cortos** («MÍNIMA», un chip largo se encima con la captura). Sin «NO» ni etiquetas que la voz no dice. En el bloque de Checa, el orden de la voz manda: logo en «Checa», captura de metas en «tarifa», pop-up en «avisa», «SÍ CONVIENE» en «conviene».
 - **Pop-up de ejemplo con cifras que cuadren** (120 − 22 = 98; 11 km → gasolina 22; $10.9/km; $257/h).
 - **Portada de la v2 distinta a la v1:** otro título, otra tarjeta y otra cifra escondida que cuadre (62 por 10 km × 9 = 90 → «TE FALTAN 28»).
-- **Palabras con acento** se pasan tal cual en `en` («mínima» falla; «mínima» con acento coincide con la línea). Si el script se detiene con «No encuentro…», copia la palabra de la lista que imprime.
+- **Palabras con acento:** en `en` se escriben igual que en la línea de voz («mínima», no «minima»). Si el script dice «No encuentro…», copia la palabra de la lista que imprime.
 - **Revisa la hoja de cuadros antes de mandar** y manda el mp4 solo cuando cada gráfico coincide con la palabra de su subtítulo.
