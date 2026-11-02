@@ -1,0 +1,280 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:"Bricolage Grotesque";font-weight:800;src:url(../_base/assets/fonts/bricolage-grotesque-latin-800-normal.woff2)}
+@font-face{font-family:"DM Sans";font-weight:400;src:url(../_base/assets/fonts/dm-sans-latin-400-normal.woff2)}
+@font-face{font-family:"DM Sans";font-weight:500;src:url(../_base/assets/fonts/dm-sans-latin-500-normal.woff2)}
+@font-face{font-family:"DM Sans";font-weight:700;src:url(../_base/assets/fonts/dm-sans-latin-700-normal.woff2)}
+@font-face{font-family:"JetBrains Mono";font-weight:500;src:url(../_base/assets/fonts/jetbrains-mono-latin-500-normal.woff2)}
+@font-face{font-family:"JetBrains Mono";font-weight:700;src:url(../_base/assets/fonts/jetbrains-mono-latin-700-normal.woff2)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#0C0C10;font-family:"DM Sans",sans-serif;color:#F4F4EF}
+#st{position:absolute;inset:0;overflow:hidden;background:radial-gradient(120% 70% at 50% 40%,#17171f 0%,#0C0C10 70%)}
+.bk{position:absolute;border-radius:50%;filter:blur(46px)}
+.capa{position:absolute;inset:0}
+/* escena 1-2 */
+#mundo{perspective:2200px}
+#tel{position:absolute;left:280px;top:430px;width:520px;height:1060px;border-radius:78px;background:#101014;border:10px solid #5A5A68;box-shadow:0 60px 120px rgba(0,0,0,.7),inset 0 0 0 2px #3a3a44;transform-style:preserve-3d;overflow:hidden}
+#tel .isla{position:absolute;top:22px;left:50%;width:150px;height:40px;margin-left:-75px;background:#000;border-radius:30px;z-index:3}
+#pant{position:absolute;inset:0;background:
+ linear-gradient(115deg,transparent 46%,#23232c 46.5%,#23232c 49%,transparent 49.5%),
+ linear-gradient(25deg,transparent 60%,#202028 60.5%,#202028 63%,transparent 63.5%),
+ linear-gradient(160deg,transparent 30%,#1d1d25 30.5%,#1d1d25 32%,transparent 32.5%),#15151b}
+#ruta{position:absolute;inset:0}
+#oferta{position:absolute;left:18px;right:18px;bottom:18px;height:440px;background:#F4F4EF;color:#0C0C10;border-radius:44px;padding:34px 34px}
+#oferta .m{font-family:"Bricolage Grotesque";font-weight:800;font-size:96px;letter-spacing:-3px;line-height:1}
+#oferta .tr{display:flex;align-items:center;gap:14px;font-size:38px;margin-top:22px;color:#33333b}
+#oferta .pt{width:16px;height:16px;border-radius:50%;background:#0C0C10;flex:none}
+#oferta .pt.b{background:none;border:4px solid #0C0C10;border-radius:3px}
+#oferta .btn{position:absolute;left:34px;right:34px;bottom:30px;height:96px;border-radius:999px;background:#0C0C10;color:#F4F4EF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:36px}
+.bur{position:absolute;padding:22px 34px;border-radius:44px;font-size:40px;font-weight:500;white-space:nowrap;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+#b1{left:70px;top:250px;background:#2A2A33;color:#F4F4EF;border-bottom-left-radius:12px}
+#b2{right:70px;top:370px;background:#22C55E;color:#04210F;font-weight:700;border-bottom-right-radius:12px}
+/* pop-up (marca v2) */
+#popw{position:absolute;left:110px;top:480px;width:860px;transform-origin:50% 60%}
+.cp{--u:1;width:860px;height:640px;border-radius:44px;background:#16161C;border:6px solid #2A2A33;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 40px 100px rgba(0,0,0,.75),0 0 120px rgba(34,197,94,.18);position:relative}
+.cp-banda{flex:none;height:100px;display:flex;align-items:center;justify-content:center;background:#22C55E;color:#04210F;position:relative}
+.cp-x{position:absolute;right:34px;top:28px}
+.cp-accion{font-family:"Bricolage Grotesque";font-size:50px;font-weight:800;letter-spacing:5px}
+.cp-cuerpo{flex:1;padding:30px;text-align:center;display:flex;flex-direction:column;justify-content:space-between}
+.cp-neta{font-family:"Bricolage Grotesque";font-weight:800;font-size:150px;line-height:1;letter-spacing:-6px}
+.cp-neta small{font-family:"JetBrains Mono";font-weight:500;font-size:.2em;letter-spacing:0;color:#A3A3AD}
+.cp-linea{font-size:40px;color:#C8C8D0;white-space:nowrap}
+.cp-fichas{display:flex;gap:20px}
+.cp-ficha{flex:1;height:150px;border-radius:28px;background:#1B1B22;border:3px solid #1B1B22;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.cp-ficha b{font-family:"JetBrains Mono";font-weight:700;font-size:44px;white-space:nowrap}
+.cp-ficha span{font-size:34px;color:#C8C8D0;margin-top:4px}
+.cp-ok{background:#12301F;border-color:#22C55E}.cp-ok b{color:#22C55E}
+/* escena 3 */
+#frase{perspective:1800px}
+#fr{position:absolute;left:0;right:0;top:640px;text-align:center;font-family:"Bricolage Grotesque";font-weight:800;font-size:150px;line-height:1.02;letter-spacing:-5px}
+#fr div{will-change:transform}
+#l2{color:#22C55E}
+#puntos{position:absolute;left:0;right:0;top:500px;display:flex;justify-content:center;gap:34px}
+#puntos i{width:44px;height:44px;border-radius:50%}
+/* escena 4 */
+#logo{position:absolute;left:50%;top:760px;width:920px;margin-left:-460px}
+#tag{position:absolute;left:0;right:0;top:1060px;text-align:center;font-size:52px;font-weight:500;color:#A3A3AD}
+#tag b{color:#F4F4EF;font-weight:700}
+#flash{position:absolute;inset:0;background:#F4F4EF;opacity:0;pointer-events:none}
+#cap{position:absolute;left:60px;right:60px;top:1250px;text-align:center;font-family:"Bricolage Grotesque";font-weight:800;font-size:84px;line-height:1.05;letter-spacing:-2px;text-shadow:0 6px 30px rgba(0,0,0,.8)}
+#cap em{font-style:normal;color:#22C55E}
+#vel{position:absolute;inset:0;background:#0C0C10}
+#logo{top:800px!important}
+.cp-linea b{color:#F4F4EF}
+#hook{position:absolute;left:0;right:0;top:300px;text-align:center;font-family:"Bricolage Grotesque";font-weight:800;font-size:165px;letter-spacing:-6px;color:#FACC15;text-shadow:0 10px 60px rgba(0,0,0,.9);z-index:5}
+#tag{position:absolute;left:0;right:0;top:1090px;text-align:center;font-size:56px;font-weight:500;color:#A3A3AD;z-index:6}
+#tag b{color:#F4F4EF;font-weight:700}
+#e12{will-change:transform}
+
+#cam{position:absolute;inset:0;perspective:2400px}
+#world{position:absolute;inset:0;transform-style:preserve-3d}
+#tel,#popw{transform-style:preserve-3d}
+#hook,#gol{position:absolute;left:0;right:0;text-align:center;font-family:"Bricolage Grotesque";font-weight:800;letter-spacing:-5px;text-shadow:0 10px 60px rgba(0,0,0,.9);z-index:5;white-space:nowrap}
+#hook{top:205px;font-size:128px;color:#FACC15}
+#gol{top:140px;font-size:130px;color:#F4F4EF}
+#cap{z-index:7}
+.cp-banda.gris{background:#2A2A33!important;color:#A3A3AD!important}
+.cp-rojo .cp-banda{background:#EF4444!important;color:#1F0000!important}
+.cp-amarillo .cp-banda{background:#FACC15!important;color:#2B2200!important}
+.cp-mal{background:#3A1414!important;border-color:#EF4444!important}.cp-mal b{color:#EF4444!important}
+#metas{position:absolute;inset:0;background:#15151b;padding:140px 36px 0}
+#metas h4{font-family:"Bricolage Grotesque";font-size:46px;margin-bottom:34px}
+.mt{background:#1B1B22;border-radius:30px;padding:30px;margin-bottom:26px}
+.mt span{font-size:28px;color:#8A8A95}
+.mt b{display:block;font-family:"JetBrains Mono";font-size:64px;color:#22C55E;margin-top:8px}
+.mt .bar{height:12px;border-radius:6px;background:#2A2A33;margin-top:18px;position:relative}
+.mt .bar i{position:absolute;left:0;top:0;bottom:0;border-radius:6px;background:#22C55E}
+#vozic svg{width:170px;height:131px}#vozic{position:absolute;left:0;right:0;top:1090px;text-align:center;z-index:4}
+#stamp{position:absolute;left:230px;top:1090px;padding:26px 44px;border-radius:999px;background:#EF4444;color:#fff;font-family:"Bricolage Grotesque";font-weight:800;font-size:64px;z-index:6;white-space:nowrap}
+#ring{position:absolute;right:110px;top:320px;z-index:6}
+#sub10{position:absolute;left:0;right:0;top:1240px;text-align:center;z-index:6;font-size:44px;color:#A3A3AD;line-height:1.5}
+#sub10 b{color:#F4F4EF}
+#pill{position:absolute;left:50%;top:1060px;margin-left:-300px;width:600px;padding:26px 0;border-radius:999px;background:#F4F4EF;color:#0C0C10;text-align:center;font-size:56px;font-weight:700;z-index:6}
+
+#wash{position:absolute;inset:0;opacity:0;z-index:8;pointer-events:none}
+#prog{position:absolute;left:0;top:0;height:8px;width:0;background:#22C55E;z-index:9}
+
+#ml{position:absolute;left:0;right:0;top:160px;text-align:center;opacity:0;z-index:5}
+#chip{position:absolute;left:150px;top:395px;width:780px;height:140px;border-radius:34px;background:#F4F4EF;color:#0C0C10;display:flex;align-items:center;justify-content:space-between;padding:0 34px;opacity:0;transform-style:preserve-3d}
+#chipclip{position:absolute;inset:0;border-radius:34px;overflow:hidden}
+#scan{position:absolute;top:0;bottom:0;width:110px;left:-120px;background:linear-gradient(90deg,transparent,rgba(34,197,94,.75),transparent)}
+#cprice{font-family:"Bricolage Grotesque";font-weight:800;font-size:76px;letter-spacing:-3px;line-height:1}
+#csub{font-size:28px;color:#33333b;margin-top:6px}
+#cbtn{background:#0C0C10;color:#F4F4EF;font-weight:700;font-size:36px;padding:22px 44px;border-radius:999px}
+#ban{position:absolute;left:566px;top:10px;opacity:0}
+#cur{position:absolute;left:0;top:0;opacity:0}
+#popw{top:560px!important}
+#oferta .m{font-size:104px!important}
+#vozic{height:131px;top:345px!important}#vozic svg{position:absolute;left:50%;margin-left:-85px;top:0;opacity:0}
+#logo{width:760px!important;margin-left:-380px!important;top:700px!important}
+#pill{top:940px!important}
+#gp{position:absolute;left:50%;top:1070px;margin-left:-250px;width:500px;padding:14px 0;border-radius:999px;background:#1B1B22;border:3px solid #2A2A33;color:#F4F4EF;display:flex;align-items:center;justify-content:center;gap:18px;font-size:48px;font-weight:700;z-index:6;opacity:0}
+#sub10{top:1175px!important}
+.mt{transition:none}
+</style></head><body><div id="st">
+<div id="bks" class="capa"></div>
+<div id="cam"><div id="world">
+ <div id="tel"><div class="isla"></div><div id="pant">
+  <svg id="ruta" viewBox="0 0 500 1040"><path id="rp" d="M110 120 C 180 260, 330 240, 360 380 S 230 520, 300 600" fill="none" stroke="#F4F4EF" stroke-width="10" stroke-linecap="round" stroke-dasharray="900" stroke-dashoffset="900"/><circle cx="110" cy="120" r="16" fill="#F4F4EF"/><rect x="286" y="586" width="28" height="28" rx="5" fill="#0C0C10" stroke="#F4F4EF" stroke-width="6"/></svg>
+  <div id="oferta"><div class="m" id="om">$180.00</div><div class="tr"><span class="pt"></span><span id="o1">8 min (3 km)</span></div><div class="tr"><span class="pt b"></span><span id="o2">67 min (37 km)</span></div><div class="btn">Aceptar</div></div>
+  <div id="metas"><h4>Mis metas</h4><div class="mt" id="rk"><span>Por km</span><b id="mk">$8/km</b><div class="bar"><i id="mkb" style="width:30%"></i></div></div><div class="mt" id="rh"><span>Por hora</span><b id="mh">$150/h</b><div class="bar"><i id="mhb" style="width:40%"></i></div></div></div>
+ </div></div>
+ <div id="popw"><div class="cp cp-verde" id="cp">
+  <div class="cp-banda" id="cb"><div class="cp-accion" id="ca">ACEPTAR</div><svg class="cp-x" width="44" height="44" viewBox="0 0 24 24"><path d="M6 6 L18 18 M18 6 L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div>
+  <div class="cp-cuerpo"><div class="cp-neta"><span id="neta">$100</span><small id="nl">&nbsp;netos</small></div>
+   <div class="cp-linea">Viaje <span id="pv">$180</span>&nbsp;·&nbsp;<span id="gas" style="display:inline-block">Gasolina −$80</span></div>
+   <div class="cp-fichas"><div class="cp-ficha" id="f1"><b id="fh">$80/h</b><span>por hora</span></div><div class="cp-ficha" id="f2"><b id="fk">$2.5/km</b><span>por km</span></div><div class="cp-ficha" id="f3"><b id="fm">75 min</b><span id="fkm">40 km total</span></div></div></div></div></div>
+<div id="chip"><div id="chipclip"><div id="scan"></div></div><div><div id="cprice">$180.00</div><div id="csub">8 min (3 km) · 67 min (37 km)</div></div><div id="cbtn">Aceptar</div>
+  <svg id="ban" width="120" height="120" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="#EF4444" stroke-width="10"/><path d="M20 80 L80 20" stroke="#EF4444" stroke-width="10" stroke-linecap="round"/></svg>
+  <svg id="cur" width="64" height="64" viewBox="0 0 50 60"><path d="M6 4 L6 46 L18 36 L26 54 L34 50 L26 33 L42 32 Z" fill="#fff" stroke="#0C0C10" stroke-width="3" stroke-linejoin="round"/></svg></div>
+</div></div>
+<div id="stamp">te quedan $100</div>
+<svg id="ring" width="190" height="190" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="#0C0C10aa" stroke="#2A2A33" stroke-width="8"/><circle id="rc" cx="50" cy="50" r="42" fill="none" stroke="#EF4444" stroke-width="8" stroke-linecap="round" stroke-dasharray="264" transform="rotate(-90 50 50)"/><text id="rt" x="50" y="62" text-anchor="middle" font-family="JetBrains Mono" font-weight="700" font-size="34" fill="#F4F4EF">10 s</text></svg>
+<div id="vozic"><svg id="eye" width="170" height="131" viewBox="0 0 130 100"><path d="M8 50 Q65 -5 122 50 Q65 105 8 50Z" fill="none" stroke="#F4F4EF" stroke-width="7"/><circle cx="65" cy="50" r="16" fill="#F4F4EF"/><path d="M20 90 L110 10" stroke="#EF4444" stroke-width="9" stroke-linecap="round"/></svg><svg id="spk" width="170" height="131" viewBox="0 0 130 100"><path d="M10 38 H34 L58 14 V86 L34 62 H10 Z" fill="#22C55E"/><path id="w1" d="M72 34 Q86 50 72 66" fill="none" stroke="#22C55E" stroke-width="7" stroke-linecap="round"/><path id="w2" d="M84 22 Q108 50 84 78" fill="none" stroke="#22C55E" stroke-width="7" stroke-linecap="round"/><path id="w3" d="M96 10 Q130 50 96 90" fill="none" stroke="#22C55E" stroke-width="7" stroke-linecap="round"/></svg></div>
+<div id="ml"><svg viewBox="0 0 460 120" width="640"><g transform="scale(1.2)"><rect x="6" y="2" width="48" height="96" rx="20" fill="#222826" stroke="#3A423F" stroke-width="1.6"/><circle cx="30" cy="26" r="9" fill="#EF4444"/><circle cx="30" cy="50" r="9" fill="#FACC15"/><circle cx="30" cy="74" r="12" fill="#22C55E"/><path d="M24 74.5l4.5 4.5L36.5 69" fill="none" stroke="#04210F" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></g><text x="96" y="86" font-family="Bricolage Grotesque" font-weight="800" font-size="84" letter-spacing="-3.4" fill="#F4F4EF">Checa</text></svg></div><div id="hook">¿LO ACEPTAS?</div><div id="gol"></div><div id="cap"></div>
+<div id="e4" class="capa"><div id="vel"></div>
+ <svg id="logo" viewBox="0 0 460 120"><g transform="scale(1.2)"><rect x="6" y="2" width="48" height="96" rx="20" fill="#222826" stroke="#3A423F" stroke-width="1.6"/><circle id="lr" cx="30" cy="26" r="9" fill="#EF4444"/><circle id="la" cx="30" cy="50" r="9" fill="#FACC15"/><circle id="lv" cx="30" cy="74" r="12" fill="#22C55E"/><path id="lc" d="M24 74.5l4.5 4.5L36.5 69" fill="none" stroke="#04210F" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="22" stroke-dashoffset="22"/></g><text x="96" y="86" font-family="Bricolage Grotesque" font-weight="800" font-size="84" letter-spacing="-3.4" fill="#F4F4EF">Checa</text></svg>
+ <div id="pill">Comenta <b>CHECA</b></div><div id="gp"><svg width="54" height="54" viewBox="0 0 48 48"><path d="M8 4 L40 24 L8 44Z" fill="#22C55E"/><path d="M8 4 L28 24 L8 44Z" fill="#38BDF8"/><path d="M28 24 L40 24 L34 18Z" fill="#FACC15"/><path d="M28 24 L40 24 L34 30Z" fill="#EF4444"/></svg>Google Play</div>
+ <div id="sub10">Solo Android<br><b>@checa.driver</b> · <b>@Eduardoalv9802</b></div></div>
+<div id="wash"></div><div id="prog"></div><div id="flash"></div></div>
+<script>
+const CAPS=[[0.02, 0.94, "<em>Aceptas</em> un viaje"], [0.96, 1.64, "<em>porque</em> se ve"], [1.66, 2.2199999999999998, "buen <em>billete…</em>"], [2.2399999999999998, 2.65, "y a <em>la</em>"], [2.67, 3.09, "<em>hora</em> de la"], [3.11, 4.68, "verdad sales <em>perdiendo.</em>"], [5.11, 5.990000000000001, "Casi <em>siempre</em> pasa"], [6.010000000000001, 6.450000000000001, "<em>igual:</em>"], [6.470000000000001, 7.050000000000001, "la <em>oferta</em> te"], [7.07, 7.790000000000001, "cae <em>manejando</em>"], [7.8100000000000005, 8.16, "y no <em>hay</em>"], [8.18, 9.35, "tiempo de <em>calcular.</em>"], [9.700000000000001, 10.41, "Para eso <em>existe</em>"], [10.43, 11.190000000000001, "la app <em>Checa.</em>"], [11.21, 11.840000000000002, "<em>Mira</em> qué hace"], [11.860000000000001, 12.79, "con esa <em>oferta.</em>"], [13.15, 13.760000000000002, "Lee la <em>oferta</em>"], [13.780000000000001, 14.15, "<em>por</em> ti y"], [14.17, 14.950000000000001, "te dice <em>cuánto</em>"], [14.97, 15.96, "te queda <em>limpio,</em>"], [15.98, 16.400000000000002, "ya <em>sin</em> la"], [16.42, 17.11, "<em>gasolina.</em>"], [17.57, 18.29, "Ciento <em>ochenta</em> se"], [18.31, 18.96, "ven <em>bien,</em>"], [18.98, 19.39, "pero te <em>quedan</em>"], [19.41, 20.1, "<em>cien</em> en una"], [20.12, 21.19, "hora y <em>cuarto.</em>"], [21.21, 21.830000000000002, "<em>Rojo.</em>"], [22.19, 22.470000000000002, "<em>Otro,</em>"], [22.490000000000002, 23.02, "de <em>noventa</em> y"], [23.04, 23.82, "seis <em>pesos,</em>"], [23.84, 24.6, "te deja <em>ochenta</em>"], [24.62, 25.37, "en <em>diecisiete</em>"], [25.39, 26.03, "<em>minutos.</em>"], [26.05, 26.52, "<em>Verde.</em>"], [26.81, 27.5, "Tú <em>pones</em> la"], [27.52, 27.87, "<em>vara:</em>"], [27.89, 28.880000000000003, "cuánto <em>quieres</em> ganar"], [28.900000000000002, 29.470000000000002, "por <em>kilómetro</em>"], [29.490000000000002, 30.27, "y por <em>hora.</em>"], [30.73, 31.240000000000002, "Y ni <em>miras</em>"], [31.26, 32.11999999999999, "la <em>pantalla:</em>"], [32.13999999999999, 32.57999999999999, "la <em>app</em> te"], [32.599999999999994, 33.169999999999995, "<em>dice</em> en voz"], [33.19, 34.269999999999996, "alta <em>aceptar,</em>"], [34.29, 35.65, "<em>considerar</em> o rechazar."], [35.94, 36.239999999999995, "<em>Ojo:</em>"], [36.26, 37.16, "Checa no <em>acepta</em>"], [37.18, 37.99999999999999, "los <em>viajes</em> por"], [38.019999999999996, 38.35999999999999, "<em>ti,</em>"], [38.379999999999995, 39.029999999999994, "<em>solo</em> te dice"], [39.05, 39.839999999999996, "cuál <em>conviene</em>"], [39.86, 40.41, "y <em>cuál</em> no."], [40.43, 41.169999999999995, "<em>Comenta</em> CHECA y"], [41.19, 41.629999999999995, "te <em>paso</em> el"], [41.65, 42.14999999999999, "<em>acceso</em> a la"], [42.169999999999995, 42.96999999999999, "<em>prueba</em> en Google"], [42.989999999999995, 43.419999999999995, "<em>Play.</em>"]], W={"aceptas": [0.04], "un": [0.49], "viaje": [0.63], "porque": [0.98], "se": [1.4, 18.19], "ve": [1.54], "buen": [1.68], "billete": [1.96], "y": [2.26, 7.83, 14.13, 20.46, 23.01, 29.51, 30.75, 39.88, 41.15], "a": [2.53, 42.02], "la": [2.58, 3.02, 6.49, 10.45, 13.27, 16.31, 27.36, 31.28, 32.16, 42.08], "hora": [2.69, 20.14, 29.76], "de": [2.91, 8.58, 22.51], "verdad": [3.13], "sales": [3.52], "perdiendo": [4.03], "casi": [5.13], "siempre": [5.32], "pasa": [5.77], "igual": [6.03], "oferta": [6.61, 12.29, 13.4], "te": [6.97, 14.19, 14.99, 19.14, 23.86, 32.55, 38.67, 41.21], "cae": [7.09], "manejando": [7.27], "no": [7.9, 36.63, 40.22], "hay": [8.01], "tiempo": [8.2], "calcular": [8.7], "para": [9.72], "eso": [9.88], "existe": [10.07], "app": [10.57, 32.29], "checa": [10.78, 36.28, 40.86], "mira": [11.23], "qué": [11.52], "hace": [11.65], "con": [11.88], "esa": [12.07], "lee": [13.17], "por": [13.8, 28.92, 29.6, 37.83], "ti": [14.0, 38.04], "dice": [14.32, 32.62, 38.8], "cuánto": [14.59, 27.91], "queda": [15.12], "limpio": [15.46], "ya": [16.0], "sin": [16.11], "gasolina": [16.44], "ciento": [17.59], "ochenta": [17.87, 24.17], "ven": [18.33], "bien": [18.54], "pero": [19.0], "quedan": [19.21], "cien": [19.43], "en": [19.79, 24.64, 32.88, 42.54], "una": [19.93], "cuarto": [20.54], "rojo": [21.23], "otro": [22.21], "noventa": [22.62], "seis": [23.06], "pesos": [23.29], "deja": [23.91], "diecisiete": [24.77], "minutos": [25.41], "verde": [26.07], "tú": [26.83], "pones": [26.91], "vara": [27.54], "quieres": [28.36], "ganar": [28.69], "kilómetro": [29.06], "ni": [30.81], "miras": [30.92], "pantalla": [31.45], "voz": [33.01], "alta": [33.21], "aceptar": [33.51], "considerar": [34.31], "o": [34.93], "rechazar": [34.99], "ojo": [35.96], "acepta": [36.77], "los": [37.2], "viajes": [37.41], "solo": [38.4], "cuál": [39.07, 39.95], "conviene": [39.34], "comenta": [40.45], "paso": [41.32], "el": [41.56], "acceso": [41.67], "prueba": [42.19], "google": [42.66], "play": [43.01]};
+const $=id=>document.getElementById(id);
+const cl=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const p=(t,a,b)=>cl((t-a)/(b-a));
+const eo=x=>1-Math.pow(1-x,3), eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const back=x=>{const c=1.7;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
+const lerp=(a,b,x)=>a+(b-a)*x;
+const w1=(k,i=0)=>(W[k]||[0])[i]; // tiempo de una palabra
+const CUT=[0,5.07,9.63,13.14,17.54,22.16,26.83,30.75,35.96,40.45,43.4];
+const B=[[120,300,180,'#22C55E',.10],[900,260,240,'#F4F4EF',.06],[820,1500,300,'#22C55E',.08],[160,1600,220,'#FACC15',.05],[540,980,420,'#F4F4EF',.035],[980,900,140,'#EF4444',.05],[300,800,120,'#F4F4EF',.07]];
+B.forEach(()=>{const d=document.createElement('div');d.className='bk';$('bks').appendChild(d)});
+function pop(o){ // nivel y cifras del pop-up
+  const c=$('cp');c.className='cp cp-'+o.l;const cb=$('cb');cb.className='cp-banda'+(o.l=='gris'?' gris':'');
+  $('ca').textContent=o.txt;$('pv').textContent=o.v;$('gas').textContent=o.g;
+  ['f1','f2','f3'].forEach((id,i)=>$(id).className='cp-ficha'+(o.ok?(i<2?' cp-ok':''):(i<2?' cp-mal':'')));
+  $('fh').textContent=o.h;$('fk').textContent=o.k;$('fm').textContent=o.m;$('fkm').textContent=o.km;}
+const P={
+ gris:{l:'gris',txt:'CHECA',v:'$180',g:'Gasolina −$80',ok:0,h:'$80/h',k:'$2.5/km',m:'75 min',km:'40 km total'},
+ rojo:{l:'rojo',txt:'RECHAZAR',v:'$180',g:'Gasolina −$80',ok:0,h:'$80/h',k:'$2.5/km',m:'75 min',km:'40 km total'},
+ verde:{l:'verde',txt:'ACEPTAR',v:'$96',g:'Gasolina −$16',ok:1,h:'$282/h',k:'$10/km',m:'17 min',km:'8 km total'},
+ amar:{l:'amarillo',txt:'CONSIDERAR',v:'$120',g:'Gasolina −$40',ok:1,h:'$160/h',k:'$6/km',m:'30 min',km:'20 km total'}};
+function escena(t){let s=0;for(let i=0;i<CUT.length-1;i++)if(t>=CUT[i])s=i;return s}
+function golpe(txt,a,b,col){const g=$('gol');if(t_>=a&&t_<b){const k=back(p(t_,a,a+.16));g.textContent=txt;g.style.fontSize=(txt.length>14?'96px':(txt.length>9?'108px':'130px'));g.style.color=col||'#F4F4EF';g.style.opacity=cl(k*2)*(1-p(t_,b-.12,b));g.style.transform=`scale(${lerp(2,1,eo(p(t_,a,a+.14)))}) rotate(${lerp(-5,-1.5,p(t_,a,b))}deg)`;return 1}return 0}
+let t_=0;
+function set(t){
+  t_=t;const s=escena(t),ts=t-CUT[s];
+  [...$('bks').children].forEach((d,i)=>{const b=B[i];const x=b[0]+Math.sin(t*.9+i)*30,y=b[1]+Math.cos(t*.7+i*2)*24-t*8;d.style.cssText=`left:${x-b[2]/2}px;top:${y-b[2]/2}px;width:${b[2]}px;height:${b[2]}px;background:${b[3]};opacity:${b[4]}`});
+  // ===== cámara: órbita lenta + golpe de escala al cambiar de escena
+  const punch=Math.max(0,1-ts/.35);
+  const orb=Math.sin(t*.55)*10;
+  const ZS=[1,1,1.0,1.08,1.1,1.08,1.1,1.0,1.06,1],zs=lerp(1,ZS[s],eio(p(ts,0,1.4)));
+  const pk3=Math.pow(punch,2),sg=(s%2?1:-1),mode=s%3;
+  const shk=Math.max(0,1-Math.abs(t-w1('rojo'))/.3)*12;
+  $('world').style.transform=`translate(${(mode==0?sg*340*Math.pow(punch,3):0)+Math.sin(t*95)*shk}px,${Math.cos(t*85)*shk}px) scale(${zs*(1+.03*Math.sin(t*.8)+(mode==1?.38*pk3:.05*eo(punch)))}) rotateZ(${(mode==2?sg*7*pk3:0)+sg*1.6*Math.sin(Math.min(ts,2.5)*1.3)}deg) rotateY(${orb}deg) rotateX(${Math.cos(t*.4)*3}deg)`;
+  // ===== teléfono
+  const tin=eo(p(t,0,.25)), tout=p(t,40.3,40.8);
+  const dolly=s==2?eio(p(ts,.2,2.8))*120:(s==9?0:0);
+  $('tel').style.transform=`translateZ(${lerp(-380,-60,tin)-dolly*0}px) rotateY(${lerp(-32,-10,eio(p(t,0,1.2)))+Math.sin(t*.9)*5}deg) rotateX(${lerp(24,6,eio(p(t,0,1.5)))}deg) translateY(${Math.sin(t*2)*10-(s==6?40:0)-(s<2?165:0)}px) scale(${s==6?1.12:(s<2?.84:1)}) translateX(${Math.sin(t*70)*14*Math.max(0,1-Math.abs(t-w1('cae'))/.25)}px)`;
+  $('tel').style.opacity=(.75+.25*tin)*(1-tout)*(s>=2&&s<9&&s!=6?0:1);
+  $('rp').style.strokeDashoffset=900*(1-eio(s==0?p(t,.1,1.1):(s==1?p(t,5.2,6.4):1)));
+  $('oferta').style.transform=`translateY(${s==1?lerp(-330,0,back(p(t,w1('cae')-.2,w1('cae')+.2))):lerp(110,0,back(p(t,0,.3)))}px) scale(${1+.22*Math.sin(Math.PI*p(t,1.05,1.65))})`;$('oferta').style.opacity=(s==1&&t<w1('cae')-.25)?0:1;$('oferta').style.display=(s==6)?'none':'block';
+  $('metas').style.display=(s==6)?'block':'none';
+  // tarifa mostrada en la oferta
+  $('om').textContent=(s>=5&&s<8)?'$96.00':'$180.00';$('o1').textContent=(s>=5&&s<8)?'3 min (1 km)':'8 min (3 km)';$('o2').textContent=(s>=5&&s<8)?'14 min (7 km)':'67 min (37 km)';
+  // ===== pop-up (cada dato entra en su palabra) y tarjeta de oferta
+  const pin=p(t,w1('mira')-.05,w1('mira')+.35), pout=p(t,40.3,40.7);
+  const NEU={l:'gris',txt:'CHECA',v:'$96',g:'Gasolina −$16',ok:1,h:'$282/h',k:'$10/km',m:'17 min',km:'8 km total'};
+  let st=P.gris;
+  if(s==4)st=t<w1('rojo')?P.gris:P.rojo;
+  if(s==5)st=t<w1('verde')?NEU:P.verde;
+  if(s==6)st=P.verde;
+  if(s==7){const a=w1('aceptar')-.05,c=w1('considerar'),r=w1('rechazar');st=t<a?NEU:(t<c?P.verde:(t<r?P.amar:P.rojo))}
+  if(s==8)st=t<w1('cuál',0)?NEU:(t<w1('cuál',1)?P.verde:P.rojo);
+  pop(st);
+  let neta='$100',lab='\u00a0netos',gv=1,bump=-9,pvt=st.v;
+  if(s==2){neta='···';gv=0}
+  if(s==3){gv=t>=w1('gasolina')-.05?1:0;const l=w1('limpio');
+    if(t<w1('cuánto',0)-.05)neta='···';else{neta='$'+Math.round(lerp(180,100,eo(p(t,w1('queda')-.05,l+.25))));lab=t<l?'\u00a0viaje':'\u00a0netos';if(t>=l)bump=l}}
+  if(s==4)bump=w1('cien');
+  if(s==5){const o=w1('ochenta',1);pvt=t<w1('noventa')-.1?'···':'$96';neta=t<o-.05?'···':'$80';gv=t>=o-.05?1:0;if(t>=o)bump=o}
+  if(s==7||s==8)neta=st==P.rojo?'$100':'$80';
+  $('pv').textContent=pvt;$('neta').textContent=neta;$('nl').textContent=lab;
+  $('gas').style.visibility=gv?'visible':'hidden';$('gas').style.color=(s>=3&&gv)?'#EF4444':'';
+  $('neta').style.display='inline-block';$('neta').style.transform=`scale(${1+(t>=bump?.28*Math.max(0,1-(t-bump)/.28):0)})`;
+  const pb=back(pin);
+  $('popw').style.opacity=cl(pin*3)*(1-pout)*(s==6?0:1);
+  $('popw').style.transform=`translateZ(${lerp(40,170,eio(p(t,11,12)))}px) translateY(${lerp(520,0,pb)}px) rotateX(${lerp(35,0,eo(pin))}deg) scale(${lerp(.7,1,pb)})`;
+  const fa=s==4?w1('hora',1)-.05:(s==5?w1('diecisiete')-.05:-9);
+  [['f1',0],['f2',.14],['f3',.28]].forEach(([id,d])=>{const k=s>=6?1:(s>=4?back(p(t,fa+d,fa+d+.25)):0);$(id).style.transform=`scale(${lerp(.6,1,k)})`;$(id).style.opacity=cl(k*2)});
+  // tarjeta de oferta (la "esa oferta" de la voz) siempre visible junto al pop-up
+  const cop=Math.max(p(t,9.7,10.0)*(1-p(t,26.83,27.1)),p(t,35.96,36.25)*(1-p(t,40.3,40.6)));
+  const big=(s<5)||(s==5&&t<w1('noventa')-.15)||(s==8&&st==P.rojo);
+  $('cprice').textContent=big?'$180.00':'$96.00';$('csub').textContent=big?'8 min (3 km) · 67 min (37 km)':'3 min (1 km) · 14 min (7 km)';
+  const gl=Math.max(0,Math.sin(Math.PI*p(t,w1('ochenta',0)-.1,w1('ochenta',0)+1.0))),es=Math.sin(Math.PI*p(t,w1('esa')-.1,w1('esa')+.6));
+  const c0=s>=8?35.96:9.7;
+  $('chip').style.opacity=cop;
+  $('chip').style.transform=`translateZ(170px) translateY(${lerp(-50,0,eo(p(t,c0,c0+.3)))}px) scale(${1+.07*es+.05*gl})`;
+  $('chip').style.boxShadow=`0 20px 60px rgba(0,0,0,.5),0 0 ${60*gl}px ${12*gl}px rgba(34,197,94,${.55*gl})`;
+  $('scan').style.left=lerp(-120,780,p(t,13.2,14.2))+'px';$('scan').style.opacity=(t>=13.2&&t<14.25)?1:0;
+  const ac=w1('acepta'),cu=p(t,ac-1.1,ac-.1),bn=back(p(t,ac-.05,ac+.2));
+  $('cur').style.opacity=(s==8&&t<ac+1.8)?cl(cu*3):0;$('cur').style.transform=`translate(${lerp(300,615,eo(cu))}px,${lerp(260,66,eo(cu))}px)`;
+  $('ban').style.opacity=(s==8)?cl(bn*2)*(1-p(t,w1('ti',1)+.8,w1('ti',1)+1.2)):0;$('ban').style.transform=`scale(${lerp(1.8,1,bn)})`;
+  $('ml').style.opacity=p(t,w1('app')-.05,w1('app')+.1)*(1-p(t,11.35,11.6));$('ml').style.transform=`scale(${lerp(.6,1,back(p(t,w1('app')-.05,w1('app')+.25)))})`;
+  // ===== sello rojo "te quedan $100" en 'perdiendo'
+  const sp=w1('perdiendo');const sk=back(p(t,sp,sp+.2));$('stamp').style.opacity=(t>=sp&&t<5.0)?cl(sk*2):0;$('stamp').style.transform=`rotate(-6deg) scale(${lerp(2.2,1,sk)})`;
+  // ===== reloj de 10 s en escena 2 (manejando)
+  const rs=w1('manejando'),re_=w1('calcular')+.35;const rk=p(t,rs,re_);$('ring').style.opacity=(t>=rs-.1&&t<re_+.3)?1:0;$('rc').style.strokeDashoffset=264*rk;$('rt').textContent=Math.max(0,Math.ceil(10*(1-rk)))+' s';
+  // ===== golpes de texto
+  let g=0;
+  g|=golpe('SE VE BUENO',w1('buen')-.05,w1('buen')+.9,'#22C55E');
+  g|=golpe('PERDIENDO',sp-.05,sp+.8,'#EF4444');
+  g|=golpe('SIN TIEMPO',w1('tiempo')-.05,w1('tiempo')+.8,'#FACC15');
+  g|=golpe('SIN GASOLINA',w1('gasolina')-.05,w1('gasolina')+.8,'#EF4444');
+  g|=golpe('ROJO',w1('rojo'),w1('rojo')+.9,'#EF4444');
+  g|=golpe('VERDE',w1('verde'),w1('verde')+.9,'#22C55E');
+  g|=golpe('TÚ PONES LA VARA',w1('vara')-.8,w1('vara')+.8,'#FACC15');
+  g|=golpe('EN VOZ ALTA',w1('voz')-.05,w1('voz')+.8,'#22C55E');
+  g|=golpe('TÚ DECIDES',w1('ti',1),w1('ti',1)+1.0,'#F4F4EF');
+  if(!g)$('gol').style.opacity=0;
+  // hook
+  const ho=1-p(t,1.5,1.72);$('hook').style.opacity=ho;$('hook').style.transform=`scale(${1+.08*Math.max(0,1-t/.22)}) rotate(-3deg)`;
+  // ===== metas (escena 7)
+  if(s==6){const km=w1('kilómetro'),hr=w1('hora',2),ak=eio(p(t,km,km+.5)),ah=eio(p(t,hr,hr+.5));
+    $('mk').textContent='$'+(8+Math.round(2*ak))+'/km';$('mkb').style.width=(30+25*ak)+'%';$('mh').textContent='$'+(150+Math.round(50*ah))+'/h';$('mhb').style.width=(40+25*ah)+'%';
+    const gk=Math.max(0,Math.sin(Math.PI*p(t,km-.05,km+.8))),gh=Math.max(0,Math.sin(Math.PI*p(t,hr-.05,hr+.8)));
+    $('rk').style.transform=`scale(${1+.07*gk})`;$('rk').style.boxShadow=`0 0 ${30*gk}px rgba(34,197,94,${.7*gk})`;
+    $('rh').style.transform=`scale(${1+.07*gh})`;$('rh').style.boxShadow=`0 0 ${30*gh}px rgba(34,197,94,${.7*gh})`}
+  // ===== altavoz (escena 8)
+  $('eye').style.opacity=p(t,w1('miras')-.1,w1('miras')+.1)*(1-p(t,32.5,32.75));$('spk').style.opacity=p(t,w1('voz')-.15,w1('voz')+.05)*(1-p(t,35.3,35.55));$('vozic').style.opacity=1;
+  ['w1','w2','w3'].forEach((id,i)=>$(id).style.opacity=.3+.7*Math.max(0,Math.sin(t*12-i*1.2)));
+  $('vozic').style.transform=`translateZ(0) scale(${1+.05*Math.sin(t*12)})`;
+  // ===== subtítulos
+  const c=CAPS.find(x=>t>=x[0]&&t<x[1]);
+  if(c&&t<43.4){$('cap').innerHTML=c[2];const k=back(p(t,c[0],c[0]+.16));$('cap').style.opacity=cl(k*2)*(1-p(t,c[1]-.06,c[1]));$('cap').style.transform=`scale(${lerp(.9,1,k)})`}else $('cap').style.opacity=0;
+  // ===== cierre (CTA con logo)
+  const v=p(t,40.55,40.95);$('e4').style.opacity=v;$('vel').style.opacity=.9;
+  const lg=eo(p(t,40.55,41.1));$('logo').style.transform=`scale(${lerp(1.4,1,lg)})`;$('logo').style.filter=`blur(${lerp(18,0,lg)}px)`;$('logo').style.opacity=lg;
+  $('lc').style.strokeDashoffset=22*(1-eio(p(t,41.0,41.3)));
+  const pk=back(p(t,40.95,41.25));$('gp').style.opacity=cl(back(p(t,w1('google')-.05,w1('google')+.25))*2);$('gp').style.transform=`scale(${lerp(.7,1,back(p(t,w1('google')-.05,w1('google')+.25)))})`;$('pill').style.opacity=cl(pk*2);$('pill').style.transform=`scale(${lerp(.7,1,pk)*(t>42?1+.05*Math.sin((t-42)*7.5):1)})`;$('lv').style.opacity=t>41.6?.65+.35*Math.sin(t*7):1;
+  $('sub10').style.opacity=p(t,43.45,43.75);
+  // destello en cada corte
+  const wr=w1('rojo'),wv=w1('verde');
+  const wa=Math.max(0,1-(t-wr)/.4)*(t>=wr),wb=Math.max(0,1-(t-wv)/.4)*(t>=wv);
+  $('wash').style.background=wa>0?'#EF4444':'#22C55E';$('wash').style.opacity=.3*Math.max(wa,wb);
+  $('prog').style.width=(t/45.0*100)+'%';
+  $('flash').style.opacity=Math.max(...CUT.slice(1,10).map(c=>.14*Math.max(0,1-Math.abs(t-c)/.1)));
+}
+const __base=set;
+function setLoop(t){
+  if(t<44.4){__base(t);return}
+  __base(0);                       // el cuadro final es idéntico al cuadro 0 (¿LO ACEPTAS? + $180)
+  const f=1-eio(p(t,44.4,44.95)); // el cierre se disuelve hacia el inicio
+  $('e4').style.opacity=f;$('vel').style.opacity=.9;
+  $('logo').style.transform='scale(1)';$('logo').style.filter='none';$('logo').style.opacity=1;$('lc').style.strokeDashoffset=0;
+  $('pill').style.opacity=1;$('pill').style.transform='scale(1)';$('gp').style.opacity=1;$('gp').style.transform='scale(1)';$('sub10').style.opacity=1;$('lv').style.opacity=1;
+  $('prog').style.width=(100*f)+'%';
+}
+window.set=setLoop;setLoop(0);
+</script></body></html>

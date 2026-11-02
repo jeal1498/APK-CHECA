@@ -1,5 +1,14 @@
 # Modo narrador de IA: pasos técnicos
 
+## 0. Único estilo vigente: A3 con loop (Eduardo, 2 nov 2026)
+Todos los videos nuevos sin su cara se hacen en **un solo estilo**: el del C19 aprobado como «A3 con loop». Referencia con código: `video/hyperframes/_a3-referencia/` (`README.md` explica cómo adaptarla). Los estilos de §8 (golpes del 32) y §9 (híbrido del 22) y los tipos de escena viejos del motor son **historia**: sirven para rehacer videos ya aprobados, no para videos nuevos.
+- **Cámara 3D:** teléfono que entra girando, órbita lenta, zoom por escena y tres cortes distintos (lateral, zoom y giro); lavado de color y sacudida en rojo/verde.
+- **Teléfono y tarjeta de oferta:** el teléfono con la oferta abre; después la **tarjeta de oferta** (precio, minutos/km y botón «Aceptar») queda arriba y el **pop-up** de la app abajo. La tarjeta es «esa oferta» de la voz.
+- **Golpes de texto** arriba (y≈140) que caen en su palabra, sobre cajas oscuras; subtítulos en **y=1250** (nunca en la franja baja de TikTok); barra de progreso verde arriba.
+- **Hook:** cuadro 0 ya con el texto del gancho y la oferta grande; **cierre:** logo, «Comenta CHECA» y chip de Google Play; **loop:** el último cuadro es igual al primero.
+- Reglas de coherencia y ritmo: §10 (cada cosa en su palabra, sin etiquetas falsas, un gráfico para cada idea).
+- Revisión: el agente de `calidad.md` §1 sobre el plan y la voz, y `checa.py auditar` después del render.
+
 Para CHECA y su v2 de PERSONAL, sin la cara de Eduardo. Se usa solo HyperFrames con `construir.py`: arma escenas, voz, subtítulos e `index.html` desde dos archivos de texto, sin agentes. (El proceso viejo con agentes costó ~1.7 M de tokens; el 1Volt y el 3D quedaron en el historial de git. `referencia/` guarda cuadros de videos que a Eduardo le gustaron, solo como inspiración visual.)
 
 ## 1. Proyecto
@@ -44,7 +53,7 @@ El render tarda ~2 min (espera a que `renders/video.mp4` deje de crecer). `revis
 ## 5. Oficio (lo que ya funcionó)
 - Nada quieto en los primeros 3 s: flash en el cuadro 0, tarjeta con zoom, cifra que sube, cámara que sacude.
 - Cada texto entra ~0.25 s antes de su palabra (`pal()` ya lo hace); si entra justo en la palabra se siente atrasado.
-- Todo lo importante por encima de y≈1150; los subtítulos van en 1160–1480.
+- Todo lo importante por encima de y≈1150; los subtítulos van en **y=1250** (§0; antes 1160–1480).
 - Pop-ups con «OFERTA», nunca nombres de apps; «Números de ejemplo» donde haya cifras; neta = viaje − gasolina (`validar_popup` lo revisa).
 - Sin música; los efectos de sonido oficiales los pone `construir.py` (máx. 3 por escena, volumen 0.3–0.5).
 - Recursos de movimiento que le gustan: texto que sube desde una máscara, un elemento que empuja al siguiente, cámara que sigue lo importante, un objeto que se transforma en la siguiente escena y entradas sincronizadas con la palabra.
@@ -66,7 +75,7 @@ L3: Nomás estás poniendo de tu bolsa.
 - `pantalla` → color (`rojo`, `amarillo`, `verde`) o `golpe` (zoom + sacudida) en esa palabra.
 - Si falta una palabra de la lista en la línea, se avisa en vez de adivinar. Regenerar voces gasta créditos de ElevenLabs: cambia solo las líneas necesarias (aparta `assets/voice` con `mv`).
 
-## 8. Gráficos de impacto (1 nov 2026)
+## 8. Gráficos de impacto (1 nov 2026) — historia, no para videos nuevos (§0)
 Donde hay énfasis, el gráfico tiene que pesar tanto como la voz. Escena `impacto` (y `cierre` con `golpes`): lista `golpes`, cada uno `{"en": palabra, "kind": ...}` que cae en esa palabra con zoom, destello y sacudida y deja su lugar al siguiente.
 - `kind`: `texto` (líneas `[texto, color, px]`, `icono`, `sub`, `billetes`, `flecha`, `glow`), `apagon` (negro + ícono de apagado), `logo` (semáforo que se enciende), `captura` (`img` de `assets/img/`, `chip`) y `popup`.
 - Cifra gigante en rojo para lo que pierdes, verde para lo que ganas; un golpe por palabra enfatizada, con pocos elementos a la vez. Tamaños seguros: «$10» 560 px, «$9» 620 px, «−$47» 420 px, «CHECA» 320 px.
@@ -83,7 +92,7 @@ Donde hay énfasis, el gráfico tiene que pesar tanto como la voz. Escena `impac
 - **Palabras con acento:** en `en` se escriben igual que en la línea de voz («mínima», no «minima»). Si el script dice «No encuentro…», copia la palabra de la lista que imprime.
 - **Revisa la hoja de cuadros antes de mandar** y manda el mp4 solo cuando cada gráfico coincide con la palabra de su subtítulo.
 
-## 9. Híbrido teléfono + golpes (1 nov 2026, CHECA 22; Eduardo: «ahora sí es correcto»)
+## 9. Híbrido teléfono + golpes (1 nov 2026, CHECA 22) — historia, no para videos nuevos (§0)
 Estilo que se elige por video: el teléfono dibujado del 30 aparece **solo cuando hace falta** y los golpes del 32 caen arriba. Ejemplo: `video/hyperframes/cuanto-vale-km-22-iphone/`.
 - **Flujo:** antes de renderizar, haz una **imagen de cuadros (storyboard)** con la distribución (Playwright sobre un HTML) y que Eduardo la apruebe. Así se evitaron muchas vueltas.
 - **Escena `telefono`:** `{"tipo":"telefono","luz":"rojo|verde","sale":true,"telefonos":[{"oferta":{...},"popup":{...},"popup_en":"checa","x":342,"y":410,"k":0.9,"entra_en":"palabra","dim_en":"palabra"}],"golpes":[...]}`. El teléfono sube desde abajo; `sale` lo baja al final (úsalo si la escena siguiente no lleva teléfono). El teléfono mide 440×900 por `k` y crece desde su esquina de arriba a la izquierda: con `y` 410 y `k` 0.9 termina en y≈1220. Dos teléfonos en la misma escena: `x` 120 y 573, `y` 410, `k` 0.88. (Antes de las reglas del 2 nov era `x` 221, `y` 430, `k` 1.45 y bajaba hasta y≈1735; los videos ya aprobados no cambian.)
