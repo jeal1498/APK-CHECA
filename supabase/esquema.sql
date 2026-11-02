@@ -263,3 +263,8 @@ drop policy if exists "la web registra testers" on public.testers;
 create policy "la web registra testers" on public.testers
   for insert to anon
   with check (estado = 'pendiente' and creado > now() - interval '1 minute' and public.registro_abierto());
+
+-- ===================== Testers: número de WhatsApp =====================
+-- La página de registro ahora pide el WhatsApp (solo dígitos, 10 a 15). Filas anteriores quedan en null.
+alter table public.testers add column if not exists whatsapp text
+  check (whatsapp is null or whatsapp ~ '^[0-9]{10,15}$');
