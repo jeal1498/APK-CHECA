@@ -6,6 +6,7 @@ Uso: python3 -I video/scripts/checa.py construir <proyecto> [--check|--render]  
   python3 -I construir.py --check    # además corre `hyperframes check`
   python3 -I construir.py --render   # además renderiza a renders/video.mp4
   python3 -I construir.py --sin-sfx  # sin efectos de sonido (por defecto se agregan los oficiales)
+  python3 -I construir.py --solo-tiempos  # solo voz y tiempos.json (para el estilo A3: `checa.py a3`)
 
 SCRIPT.md: una línea de voz por escena, con 4 espacios al inicio.
 escenas.json: lista con un objeto por línea, en el mismo orden. Tipos:
@@ -1429,6 +1430,11 @@ def armar_index(T, nombres, sfx=None):
 def main():
     args = sys.argv[1:]
     lineas = leer_guion()
+    if "--solo-tiempos" in args:  # estilo A3 (checa.py a3): solo la voz y tiempos.json, sin escenas del motor
+        T = tiempos(lineas)
+        json.dump(T, open("tiempos.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+        print(f"tiempos.json: {len(T['scenes'])} líneas, {T['total']:.1f} s")
+        return
     escenas = json.load(open("escenas.json", encoding="utf-8"))
     assert len(lineas) == len(escenas), f"SCRIPT.md tiene {len(lineas)} líneas y escenas.json {len(escenas)} escenas"
     assert "--avance" in args or escenas[-1]["tipo"] in ("cierre", "fin")

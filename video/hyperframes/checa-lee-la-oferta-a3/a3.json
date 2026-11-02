@@ -1,0 +1,481 @@
+{
+ "hook": "¿LO ACEPTAS?",
+ "lineas": [
+  {
+   "vista": "telefono",
+   "zoom": 1.0,
+   "tel": {
+    "oferta": {
+     "precio": "$180.00",
+     "l1": "8 min (3 km)",
+     "l2": "67 min (37 km)"
+    },
+    "ruta": [
+     0.1,
+     1.1
+    ],
+    "zoom": [
+     1.05,
+     1.65
+    ]
+   },
+   "golpes": [
+    {
+     "en": "buen",
+     "texto": "SE VE BUENO",
+     "color": "verde"
+    },
+    {
+     "en": "perdiendo",
+     "texto": "PERDIENDO",
+     "color": "rojo",
+     "a": 0.8
+    }
+   ],
+   "sello": {
+    "en": "perdiendo",
+    "texto": "te quedan $100"
+   }
+  },
+  {
+   "vista": "telefono",
+   "zoom": 1.0,
+   "tel": {
+    "oferta": {
+     "precio": "$180.00",
+     "l1": "8 min (3 km)",
+     "l2": "67 min (37 km)"
+    },
+    "cae": "cae",
+    "ruta": [
+     0.13,
+     1.33
+    ]
+   },
+   "reloj": {
+    "de": "manejando",
+    "a": "calcular@+0.35",
+    "seg": 10
+   },
+   "golpes": [
+    {
+     "en": "tiempo",
+     "texto": "SIN TIEMPO",
+     "color": "amarillo",
+     "a": 0.8
+    }
+   ]
+  },
+  {
+   "vista": "pop",
+   "zoom": 1.0,
+   "ml": "app",
+   "chip": {
+    "kfs": [
+     {
+      "precio": "$180.00",
+      "sub": "8 min (3 km) · 67 min (37 km)"
+     }
+    ],
+    "pulso": "esa"
+   },
+   "popup": {
+    "entra": "mira@-0.05",
+    "estados": [
+     {
+      "nivel": "gris",
+      "pv": "$180",
+      "gas": null,
+      "neta": "···"
+     }
+    ]
+   }
+  },
+  {
+   "vista": "pop",
+   "zoom": 1.08,
+   "chip": {
+    "kfs": [
+     {
+      "precio": "$180.00",
+      "sub": "8 min (3 km) · 67 min (37 km)"
+     }
+    ],
+    "escaneo": [
+     0.06,
+     1.06
+    ]
+   },
+   "popup": {
+    "gas_en": "gasolina@-0.05",
+    "estados": [
+     {
+      "nivel": "gris",
+      "pv": "$180",
+      "gas": "Gasolina −$80",
+      "neta": "···"
+     },
+     {
+      "en": "cuánto@-0.05",
+      "nivel": "gris",
+      "pv": "$180",
+      "gas": "Gasolina −$80",
+      "nl": "viaje",
+      "neta": {
+       "cuenta": {
+        "de": 180,
+        "a": 100,
+        "en": "queda@-0.05",
+        "hasta": "limpio@+0.25"
+       }
+      }
+     },
+     {
+      "en": "limpio",
+      "nivel": "gris",
+      "pv": "$180",
+      "gas": "Gasolina −$80",
+      "bump": "limpio",
+      "neta": {
+       "cuenta": {
+        "de": 180,
+        "a": 100,
+        "en": "queda@-0.05",
+        "hasta": "limpio@+0.25"
+       }
+      }
+     }
+    ]
+   },
+   "golpes": [
+    {
+     "en": "gasolina",
+     "texto": "SIN GASOLINA",
+     "color": "rojo",
+     "a": 0.8
+    }
+   ]
+  },
+  {
+   "vista": "pop",
+   "zoom": 1.1,
+   "chip": {
+    "kfs": [
+     {
+      "precio": "$180.00",
+      "sub": "8 min (3 km) · 67 min (37 km)"
+     }
+    ],
+    "brillo": "ochenta"
+   },
+   "popup": {
+    "fichas": "hora@-0.05",
+    "estados": [
+     {
+      "nivel": "gris",
+      "neta": "$100",
+      "bump": "cien",
+      "pv": "$180",
+      "gas": "Gasolina −$80",
+      "ok": 0,
+      "h": "$80/h",
+      "k": "$2.5/km",
+      "m": "75 min",
+      "km": "40 km total"
+     },
+     {
+      "en": "rojo",
+      "nivel": "rojo",
+      "neta": "$100",
+      "pv": "$180",
+      "gas": "Gasolina −$80",
+      "ok": 0,
+      "h": "$80/h",
+      "k": "$2.5/km",
+      "m": "75 min",
+      "km": "40 km total"
+     }
+    ]
+   },
+   "golpes": [
+    {
+     "en": "rojo",
+     "texto": "ROJO",
+     "color": "rojo",
+     "de": 0,
+     "a": 0.9
+    }
+   ],
+   "lavado": [
+    {
+     "en": "rojo",
+     "color": "rojo"
+    }
+   ],
+   "sacude": [
+    "rojo"
+   ]
+  },
+  {
+   "vista": "pop",
+   "zoom": 1.08,
+   "chip": {
+    "kfs": [
+     {
+      "precio": "$180.00",
+      "sub": "8 min (3 km) · 67 min (37 km)"
+     },
+     {
+      "en": "noventa@-0.15",
+      "precio": "$96.00",
+      "sub": "3 min (1 km) · 14 min (7 km)"
+     }
+    ]
+   },
+   "popup": {
+    "gas_en": "ochenta@-0.05",
+    "fichas": "diecisiete@-0.05",
+    "estados": [
+     {
+      "nivel": "gris",
+      "neta": "···",
+      "pv": "···",
+      "gas": "Gasolina −$16",
+      "ok": 1,
+      "h": "$282/h",
+      "k": "$10/km",
+      "m": "17 min",
+      "km": "8 km total"
+     },
+     {
+      "en": "noventa@-0.1",
+      "nivel": "gris",
+      "neta": "···",
+      "pv": "$96",
+      "gas": "Gasolina −$16",
+      "ok": 1,
+      "h": "$282/h",
+      "k": "$10/km",
+      "m": "17 min",
+      "km": "8 km total"
+     },
+     {
+      "en": "ochenta@-0.05",
+      "nivel": "gris",
+      "neta": "$80",
+      "bump": "ochenta",
+      "pv": "$96",
+      "gas": "Gasolina −$16",
+      "ok": 1,
+      "h": "$282/h",
+      "k": "$10/km",
+      "m": "17 min",
+      "km": "8 km total"
+     },
+     {
+      "en": "verde",
+      "nivel": "verde",
+      "neta": "$80",
+      "pv": "$96",
+      "gas": "Gasolina −$16",
+      "ok": 1,
+      "h": "$282/h",
+      "k": "$10/km",
+      "m": "17 min",
+      "km": "8 km total"
+     }
+    ]
+   },
+   "golpes": [
+    {
+     "en": "verde",
+     "texto": "VERDE",
+     "color": "verde",
+     "de": 0,
+     "a": 0.9
+    }
+   ],
+   "lavado": [
+    {
+     "en": "verde",
+     "color": "verde"
+    }
+   ]
+  },
+  {
+   "vista": "metas",
+   "zoom": 1.1,
+   "metas": {
+    "km": "kilómetro",
+    "hora": "hora",
+    "km_v": [
+     8,
+     10
+    ],
+    "hora_v": [
+     150,
+     200
+    ]
+   },
+   "golpes": [
+    {
+     "en": "vara",
+     "texto": "TÚ PONES LA VARA",
+     "color": "amarillo",
+     "de": -0.8,
+     "a": 0.8
+    }
+   ]
+  },
+  {
+   "vista": "popup",
+   "zoom": 1.0,
+   "popup": {
+    "fichas": "siempre",
+    "estados": [
+     {
+      "nivel": "gris",
+      "neta": "$80",
+      "pv": "$96",
+      "gas": "Gasolina −$16",
+      "ok": 1,
+      "h": "$282/h",
+      "k": "$10/km",
+      "m": "17 min",
+      "km": "8 km total"
+     },
+     {
+      "en": "aceptar@-0.05",
+      "nivel": "verde",
+      "neta": "$80",
+      "pv": "$96",
+      "gas": "Gasolina −$16",
+      "ok": 1,
+      "h": "$282/h",
+      "k": "$10/km",
+      "m": "17 min",
+      "km": "8 km total"
+     },
+     {
+      "en": "considerar",
+      "nivel": "amarillo",
+      "neta": "$80",
+      "pv": "$120",
+      "gas": "Gasolina −$40",
+      "ok": 1,
+      "h": "$160/h",
+      "k": "$6/km",
+      "m": "30 min",
+      "km": "20 km total"
+     },
+     {
+      "en": "rechazar",
+      "nivel": "rojo",
+      "neta": "$100",
+      "pv": "$180",
+      "gas": "Gasolina −$80",
+      "ok": 0,
+      "h": "$80/h",
+      "k": "$2.5/km",
+      "m": "75 min",
+      "km": "40 km total"
+     }
+    ]
+   },
+   "ojo": {
+    "en": "miras",
+    "hasta": "voz@-0.51"
+   },
+   "altavoz": {
+    "en": "voz",
+    "hasta": "rechazar@+0.3"
+   },
+   "golpes": [
+    {
+     "en": "voz",
+     "texto": "EN VOZ ALTA",
+     "color": "verde",
+     "a": 0.8
+    }
+   ]
+  },
+  {
+   "vista": "pop",
+   "zoom": 1.06,
+   "chip": {
+    "kfs": [
+     {
+      "precio": "$96.00",
+      "sub": "3 min (1 km) · 14 min (7 km)"
+     },
+     {
+      "en": "cuál#1",
+      "precio": "$180.00",
+      "sub": "8 min (3 km) · 67 min (37 km)"
+     }
+    ]
+   },
+   "popup": {
+    "fichas": "siempre",
+    "estados": [
+     {
+      "nivel": "gris",
+      "neta": "$80",
+      "pv": "$96",
+      "gas": "Gasolina −$16",
+      "ok": 1,
+      "h": "$282/h",
+      "k": "$10/km",
+      "m": "17 min",
+      "km": "8 km total"
+     },
+     {
+      "en": "cuál",
+      "nivel": "verde",
+      "neta": "$80",
+      "pv": "$96",
+      "gas": "Gasolina −$16",
+      "ok": 1,
+      "h": "$282/h",
+      "k": "$10/km",
+      "m": "17 min",
+      "km": "8 km total"
+     },
+     {
+      "en": "cuál#1",
+      "nivel": "rojo",
+      "neta": "$100",
+      "pv": "$180",
+      "gas": "Gasolina −$80",
+      "ok": 0,
+      "h": "$80/h",
+      "k": "$2.5/km",
+      "m": "75 min",
+      "km": "40 km total"
+     }
+    ]
+   },
+   "cursor": {
+    "en": "acepta",
+    "ban_hasta": "ti@+0.8"
+   },
+   "golpes": [
+    {
+     "en": "ti",
+     "texto": "TÚ DECIDES",
+     "color": "hueso",
+     "de": 0,
+     "a": 1.0
+    }
+   ]
+  },
+  {
+   "vista": "cta",
+   "zoom": 1.0,
+   "cta": {
+    "pill": 0.5,
+    "google": "google"
+   }
+  }
+ ]
+}

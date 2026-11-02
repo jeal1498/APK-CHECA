@@ -1,0 +1,140 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:"Bricolage Grotesque";font-weight:800;src:url(__FUENTES__/bricolage-grotesque-latin-800-normal.woff2)}
+@font-face{font-family:"DM Sans";font-weight:400;src:url(__FUENTES__/dm-sans-latin-400-normal.woff2)}
+@font-face{font-family:"DM Sans";font-weight:500;src:url(__FUENTES__/dm-sans-latin-500-normal.woff2)}
+@font-face{font-family:"DM Sans";font-weight:700;src:url(__FUENTES__/dm-sans-latin-700-normal.woff2)}
+@font-face{font-family:"JetBrains Mono";font-weight:500;src:url(__FUENTES__/jetbrains-mono-latin-500-normal.woff2)}
+@font-face{font-family:"JetBrains Mono";font-weight:700;src:url(__FUENTES__/jetbrains-mono-latin-700-normal.woff2)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#0C0C10;font-family:"DM Sans",sans-serif;color:#F4F4EF}
+#st{position:absolute;inset:0;overflow:hidden;background:radial-gradient(120% 70% at 50% 40%,#17171f 0%,#0C0C10 70%)}
+.bk{position:absolute;border-radius:50%;filter:blur(46px)}
+.capa{position:absolute;inset:0}
+/* escena 1-2 */
+#mundo{perspective:2200px}
+#tel{position:absolute;left:280px;top:430px;width:520px;height:1060px;border-radius:78px;background:#101014;border:10px solid #5A5A68;box-shadow:0 60px 120px rgba(0,0,0,.7),inset 0 0 0 2px #3a3a44;transform-style:preserve-3d;overflow:hidden}
+#tel .isla{position:absolute;top:22px;left:50%;width:150px;height:40px;margin-left:-75px;background:#000;border-radius:30px;z-index:3}
+#pant{position:absolute;inset:0;background:
+ linear-gradient(115deg,transparent 46%,#23232c 46.5%,#23232c 49%,transparent 49.5%),
+ linear-gradient(25deg,transparent 60%,#202028 60.5%,#202028 63%,transparent 63.5%),
+ linear-gradient(160deg,transparent 30%,#1d1d25 30.5%,#1d1d25 32%,transparent 32.5%),#15151b}
+#ruta{position:absolute;inset:0}
+#oferta{position:absolute;left:18px;right:18px;bottom:18px;height:440px;background:#F4F4EF;color:#0C0C10;border-radius:44px;padding:34px 34px}
+#oferta .m{font-family:"Bricolage Grotesque";font-weight:800;font-size:96px;letter-spacing:-3px;line-height:1}
+#oferta .tr{display:flex;align-items:center;gap:14px;font-size:38px;margin-top:22px;color:#33333b}
+#oferta .pt{width:16px;height:16px;border-radius:50%;background:#0C0C10;flex:none}
+#oferta .pt.b{background:none;border:4px solid #0C0C10;border-radius:3px}
+#oferta .btn{position:absolute;left:34px;right:34px;bottom:30px;height:96px;border-radius:999px;background:#0C0C10;color:#F4F4EF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:36px}
+.bur{position:absolute;padding:22px 34px;border-radius:44px;font-size:40px;font-weight:500;white-space:nowrap;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+#b1{left:70px;top:250px;background:#2A2A33;color:#F4F4EF;border-bottom-left-radius:12px}
+#b2{right:70px;top:370px;background:#22C55E;color:#04210F;font-weight:700;border-bottom-right-radius:12px}
+/* pop-up (marca v2) */
+#popw{position:absolute;left:110px;top:480px;width:860px;transform-origin:50% 60%}
+.cp{--u:1;width:860px;height:640px;border-radius:44px;background:#16161C;border:6px solid #2A2A33;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 40px 100px rgba(0,0,0,.75),0 0 120px rgba(34,197,94,.18);position:relative}
+.cp-banda{flex:none;height:100px;display:flex;align-items:center;justify-content:center;background:#22C55E;color:#04210F;position:relative}
+.cp-x{position:absolute;right:34px;top:28px}
+.cp-accion{font-family:"Bricolage Grotesque";font-size:50px;font-weight:800;letter-spacing:5px}
+.cp-cuerpo{flex:1;padding:30px;text-align:center;display:flex;flex-direction:column;justify-content:space-between}
+.cp-neta{font-family:"Bricolage Grotesque";font-weight:800;font-size:150px;line-height:1;letter-spacing:-6px}
+.cp-neta small{font-family:"JetBrains Mono";font-weight:500;font-size:.2em;letter-spacing:0;color:#A3A3AD}
+.cp-linea{font-size:40px;color:#C8C8D0;white-space:nowrap}
+.cp-fichas{display:flex;gap:20px}
+.cp-ficha{flex:1;height:150px;border-radius:28px;background:#1B1B22;border:3px solid #1B1B22;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.cp-ficha b{font-family:"JetBrains Mono";font-weight:700;font-size:44px;white-space:nowrap}
+.cp-ficha span{font-size:34px;color:#C8C8D0;margin-top:4px}
+.cp-ok{background:#12301F;border-color:#22C55E}.cp-ok b{color:#22C55E}
+/* escena 3 */
+#frase{perspective:1800px}
+#fr{position:absolute;left:0;right:0;top:640px;text-align:center;font-family:"Bricolage Grotesque";font-weight:800;font-size:150px;line-height:1.02;letter-spacing:-5px}
+#fr div{will-change:transform}
+#l2{color:#22C55E}
+#puntos{position:absolute;left:0;right:0;top:500px;display:flex;justify-content:center;gap:34px}
+#puntos i{width:44px;height:44px;border-radius:50%}
+/* escena 4 */
+#logo{position:absolute;left:50%;top:760px;width:920px;margin-left:-460px}
+#tag{position:absolute;left:0;right:0;top:1060px;text-align:center;font-size:52px;font-weight:500;color:#A3A3AD}
+#tag b{color:#F4F4EF;font-weight:700}
+#flash{position:absolute;inset:0;background:#F4F4EF;opacity:0;pointer-events:none}
+#cap{position:absolute;left:60px;right:60px;top:1250px;text-align:center;font-family:"Bricolage Grotesque";font-weight:800;font-size:84px;line-height:1.05;letter-spacing:-2px;text-shadow:0 6px 30px rgba(0,0,0,.8)}
+#cap em{font-style:normal;color:#22C55E}
+#vel{position:absolute;inset:0;background:#0C0C10}
+#logo{top:800px!important}
+.cp-linea b{color:#F4F4EF}
+#hook{position:absolute;left:0;right:0;top:300px;text-align:center;font-family:"Bricolage Grotesque";font-weight:800;font-size:165px;letter-spacing:-6px;color:#FACC15;text-shadow:0 10px 60px rgba(0,0,0,.9);z-index:5}
+#tag{position:absolute;left:0;right:0;top:1090px;text-align:center;font-size:56px;font-weight:500;color:#A3A3AD;z-index:6}
+#tag b{color:#F4F4EF;font-weight:700}
+#e12{will-change:transform}
+
+#cam{position:absolute;inset:0;perspective:2400px}
+#world{position:absolute;inset:0;transform-style:preserve-3d}
+#tel,#popw{transform-style:preserve-3d}
+#hook,#gol{position:absolute;left:0;right:0;text-align:center;font-family:"Bricolage Grotesque";font-weight:800;letter-spacing:-5px;text-shadow:0 10px 60px rgba(0,0,0,.9);z-index:5;white-space:nowrap}
+#hook{top:205px;font-size:128px;color:#FACC15}
+#gol{top:140px;font-size:130px;color:#F4F4EF}
+#cap{z-index:7}
+.cp-banda.gris{background:#2A2A33!important;color:#A3A3AD!important}
+.cp-rojo .cp-banda{background:#EF4444!important;color:#1F0000!important}
+.cp-amarillo .cp-banda{background:#FACC15!important;color:#2B2200!important}
+.cp-mal{background:#3A1414!important;border-color:#EF4444!important}.cp-mal b{color:#EF4444!important}
+#metas{position:absolute;inset:0;background:#15151b;padding:140px 36px 0}
+#metas h4{font-family:"Bricolage Grotesque";font-size:46px;margin-bottom:34px}
+.mt{background:#1B1B22;border-radius:30px;padding:30px;margin-bottom:26px}
+.mt span{font-size:28px;color:#8A8A95}
+.mt b{display:block;font-family:"JetBrains Mono";font-size:64px;color:#22C55E;margin-top:8px}
+.mt .bar{height:12px;border-radius:6px;background:#2A2A33;margin-top:18px;position:relative}
+.mt .bar i{position:absolute;left:0;top:0;bottom:0;border-radius:6px;background:#22C55E}
+#vozic svg{width:170px;height:131px}#vozic{position:absolute;left:0;right:0;top:1090px;text-align:center;z-index:4}
+#stamp{position:absolute;left:230px;top:1090px;padding:26px 44px;border-radius:999px;background:#EF4444;color:#fff;font-family:"Bricolage Grotesque";font-weight:800;font-size:64px;z-index:6;white-space:nowrap}
+#ring{position:absolute;right:110px;top:320px;z-index:6}
+#sub10{position:absolute;left:0;right:0;top:1240px;text-align:center;z-index:6;font-size:44px;color:#A3A3AD;line-height:1.5}
+#sub10 b{color:#F4F4EF}
+#pill{position:absolute;left:50%;top:1060px;margin-left:-300px;width:600px;padding:26px 0;border-radius:999px;background:#F4F4EF;color:#0C0C10;text-align:center;font-size:56px;font-weight:700;z-index:6}
+
+#wash{position:absolute;inset:0;opacity:0;z-index:8;pointer-events:none}
+#prog{position:absolute;left:0;top:0;height:8px;width:0;background:#22C55E;z-index:9}
+
+#ml{position:absolute;left:0;right:0;top:160px;text-align:center;opacity:0;z-index:5}
+#chip{position:absolute;left:150px;top:395px;width:780px;height:140px;border-radius:34px;background:#F4F4EF;color:#0C0C10;display:flex;align-items:center;justify-content:space-between;padding:0 34px;opacity:0;transform-style:preserve-3d}
+#chipclip{position:absolute;inset:0;border-radius:34px;overflow:hidden}
+#scan{position:absolute;top:0;bottom:0;width:110px;left:-120px;background:linear-gradient(90deg,transparent,rgba(34,197,94,.75),transparent)}
+#cprice{font-family:"Bricolage Grotesque";font-weight:800;font-size:76px;letter-spacing:-3px;line-height:1}
+#csub{font-size:28px;color:#33333b;margin-top:6px}
+#cbtn{background:#0C0C10;color:#F4F4EF;font-weight:700;font-size:36px;padding:22px 44px;border-radius:999px}
+#ban{position:absolute;left:566px;top:10px;opacity:0}
+#cur{position:absolute;left:0;top:0;opacity:0}
+#popw{top:560px!important}
+#oferta .m{font-size:104px!important}
+#vozic{height:131px;top:345px!important}#vozic svg{position:absolute;left:50%;margin-left:-85px;top:0;opacity:0}
+#logo{width:760px!important;margin-left:-380px!important;top:700px!important}
+#pill{top:940px!important}
+#gp{position:absolute;left:50%;top:1070px;margin-left:-250px;width:500px;padding:14px 0;border-radius:999px;background:#1B1B22;border:3px solid #2A2A33;color:#F4F4EF;display:flex;align-items:center;justify-content:center;gap:18px;font-size:48px;font-weight:700;z-index:6;opacity:0}
+#sub10{top:1175px!important}
+.mt{transition:none}
+</style></head><body><div id="st">
+<div id="bks" class="capa"></div>
+<div id="cam"><div id="world">
+ <div id="tel"><div class="isla"></div><div id="pant">
+  <svg id="ruta" viewBox="0 0 500 1040"><path id="rp" d="M110 120 C 180 260, 330 240, 360 380 S 230 520, 300 600" fill="none" stroke="#F4F4EF" stroke-width="10" stroke-linecap="round" stroke-dasharray="900" stroke-dashoffset="900"/><circle cx="110" cy="120" r="16" fill="#F4F4EF"/><rect x="286" y="586" width="28" height="28" rx="5" fill="#0C0C10" stroke="#F4F4EF" stroke-width="6"/></svg>
+  <div id="oferta"><div class="m" id="om">$180.00</div><div class="tr"><span class="pt"></span><span id="o1">8 min (3 km)</span></div><div class="tr"><span class="pt b"></span><span id="o2">67 min (37 km)</span></div><div class="btn">Aceptar</div></div>
+  <div id="metas"><h4>Mis metas</h4><div class="mt" id="rk"><span>Por km</span><b id="mk">$8/km</b><div class="bar"><i id="mkb" style="width:30%"></i></div></div><div class="mt" id="rh"><span>Por hora</span><b id="mh">$150/h</b><div class="bar"><i id="mhb" style="width:40%"></i></div></div></div>
+ </div></div>
+ <div id="popw"><div class="cp cp-verde" id="cp">
+  <div class="cp-banda" id="cb"><div class="cp-accion" id="ca">ACEPTAR</div><svg class="cp-x" width="44" height="44" viewBox="0 0 24 24"><path d="M6 6 L18 18 M18 6 L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div>
+  <div class="cp-cuerpo"><div class="cp-neta"><span id="neta">$100</span><small id="nl">&nbsp;netos</small></div>
+   <div class="cp-linea">Viaje <span id="pv">$180</span>&nbsp;·&nbsp;<span id="gas" style="display:inline-block">Gasolina −$80</span></div>
+   <div class="cp-fichas"><div class="cp-ficha" id="f1"><b id="fh">$80/h</b><span>por hora</span></div><div class="cp-ficha" id="f2"><b id="fk">$2.5/km</b><span>por km</span></div><div class="cp-ficha" id="f3"><b id="fm">75 min</b><span id="fkm">40 km total</span></div></div></div></div></div>
+<div id="chip"><div id="chipclip"><div id="scan"></div></div><div><div id="cprice">$180.00</div><div id="csub">8 min (3 km) · 67 min (37 km)</div></div><div id="cbtn">Aceptar</div>
+  <svg id="ban" width="120" height="120" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="#EF4444" stroke-width="10"/><path d="M20 80 L80 20" stroke="#EF4444" stroke-width="10" stroke-linecap="round"/></svg>
+  <svg id="cur" width="64" height="64" viewBox="0 0 50 60"><path d="M6 4 L6 46 L18 36 L26 54 L34 50 L26 33 L42 32 Z" fill="#fff" stroke="#0C0C10" stroke-width="3" stroke-linejoin="round"/></svg></div>
+</div></div>
+<div id="stamp">te quedan $100</div>
+<svg id="ring" width="190" height="190" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="#0C0C10aa" stroke="#2A2A33" stroke-width="8"/><circle id="rc" cx="50" cy="50" r="42" fill="none" stroke="#EF4444" stroke-width="8" stroke-linecap="round" stroke-dasharray="264" transform="rotate(-90 50 50)"/><text id="rt" x="50" y="62" text-anchor="middle" font-family="JetBrains Mono" font-weight="700" font-size="34" fill="#F4F4EF">10 s</text></svg>
+<div id="vozic"><svg id="eye" width="170" height="131" viewBox="0 0 130 100"><path d="M8 50 Q65 -5 122 50 Q65 105 8 50Z" fill="none" stroke="#F4F4EF" stroke-width="7"/><circle cx="65" cy="50" r="16" fill="#F4F4EF"/><path d="M20 90 L110 10" stroke="#EF4444" stroke-width="9" stroke-linecap="round"/></svg><svg id="spk" width="170" height="131" viewBox="0 0 130 100"><path d="M10 38 H34 L58 14 V86 L34 62 H10 Z" fill="#22C55E"/><path id="w1" d="M72 34 Q86 50 72 66" fill="none" stroke="#22C55E" stroke-width="7" stroke-linecap="round"/><path id="w2" d="M84 22 Q108 50 84 78" fill="none" stroke="#22C55E" stroke-width="7" stroke-linecap="round"/><path id="w3" d="M96 10 Q130 50 96 90" fill="none" stroke="#22C55E" stroke-width="7" stroke-linecap="round"/></svg></div>
+<div id="ml"><svg viewBox="0 0 460 120" width="640"><g transform="scale(1.2)"><rect x="6" y="2" width="48" height="96" rx="20" fill="#222826" stroke="#3A423F" stroke-width="1.6"/><circle cx="30" cy="26" r="9" fill="#EF4444"/><circle cx="30" cy="50" r="9" fill="#FACC15"/><circle cx="30" cy="74" r="12" fill="#22C55E"/><path d="M24 74.5l4.5 4.5L36.5 69" fill="none" stroke="#04210F" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></g><text x="96" y="86" font-family="Bricolage Grotesque" font-weight="800" font-size="84" letter-spacing="-3.4" fill="#F4F4EF">Checa</text></svg></div><div id="hook">¿LO ACEPTAS?</div><div id="gol"></div><div id="cap"></div>
+<div id="e4" class="capa"><div id="vel"></div>
+ <svg id="logo" viewBox="0 0 460 120"><g transform="scale(1.2)"><rect x="6" y="2" width="48" height="96" rx="20" fill="#222826" stroke="#3A423F" stroke-width="1.6"/><circle id="lr" cx="30" cy="26" r="9" fill="#EF4444"/><circle id="la" cx="30" cy="50" r="9" fill="#FACC15"/><circle id="lv" cx="30" cy="74" r="12" fill="#22C55E"/><path id="lc" d="M24 74.5l4.5 4.5L36.5 69" fill="none" stroke="#04210F" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="22" stroke-dashoffset="22"/></g><text x="96" y="86" font-family="Bricolage Grotesque" font-weight="800" font-size="84" letter-spacing="-3.4" fill="#F4F4EF">Checa</text></svg>
+ <div id="pill">Comenta <b>CHECA</b></div><div id="gp"><svg width="54" height="54" viewBox="0 0 48 48"><path d="M8 4 L40 24 L8 44Z" fill="#22C55E"/><path d="M8 4 L28 24 L8 44Z" fill="#38BDF8"/><path d="M28 24 L40 24 L34 18Z" fill="#FACC15"/><path d="M28 24 L40 24 L34 30Z" fill="#EF4444"/></svg>Google Play</div>
+ <div id="sub10">Solo Android<br><b>@checa.driver</b> · <b>@Eduardoalv9802</b></div></div>
+<div id="wash"></div><div id="prog"></div><div id="flash"></div></div>

@@ -5,10 +5,10 @@ Eduardo solo ve el resultado final, así que cada lote pasa por **una revisión 
 ## 1. Antes de renderizar: un agente para todo el lote
 Para cada video, con la voz ya hecha:
 ```bash
-python3 -I video/scripts/checa.py construir <proyecto>     # sin --render: genera tiempos.json
-python3 -I video/scripts/checa.py plan <proyecto>          # renders/plan.md: cada palabra → el gráfico que entra
+python3 -I video/scripts/checa.py construir <proyecto> --solo-tiempos   # voz y tiempos.json
+python3 -I video/scripts/checa.py a3 <proyecto> --hoja                  # renders/plan.md (cada palabra → gráfico) y renders/storyboard-a3.png
 ```
-y el **storyboard** (imagen de cuadros con la distribución, `narrador.md` §9). Portada, `copy.txt` y `dm.txt` ya hechos.
+Portada, `copy.txt` y `dm.txt` ya hechos.
 
 Un solo agente para todo el lote (no uno por video), con `subagent_type: general-purpose` y `model: sonnet`. No hizo los videos, así que ve lo que a quien los hizo se le pasa. Prompt (parte A: cifras y marca; parte B: el de Eduardo, sin cambiarlo):
 
@@ -47,17 +47,16 @@ Un solo agente para todo el lote (no uno por video), con `subagent_type: general
 >
 > Responde por video: «OK» si no hay nada que corregir, o la lista de problemas (A y B) en orden de prioridad.
 
-Aplica lo que reporte en `escenas.json`, la portada o el copy (la voz es fija), vuelve a correr `construir` y `plan` de los que cambiaron y revisa tú que quedó. Si una propuesta choca con una regla de Eduardo (marca, «el gráfico dice lo que dice la voz», sin logos ajenos), gana la regla.
+Aplica lo que reporte en `a3.json`, la portada o el copy (la voz es fija), vuelve a correr `a3 --hoja` de los que cambiaron y revisa tú que quedó. Si una propuesta choca con una regla de Eduardo (marca, «el gráfico dice lo que dice la voz», sin logos ajenos), gana la regla.
 
 ## 2. Después de renderizar: revisión automática (por video, gratis)
 ```bash
-python3 -I video/scripts/checa.py construir <proyecto> --render
-python3 -I video/scripts/checa.py loop <proyecto>          # recorta la cola y funde el final con el primer cuadro
+python3 -I video/scripts/checa.py a3 <proyecto> --render   # ya trae el loop (el último cuadro es el primero)
 python3 -I video/scripts/checa.py auditar <proyecto>       # lo medible de la parte B
 python3 -I video/scripts/checa.py entregar <proyecto> <CHECA|PERSONAL> <NN>
 python3 -I video/scripts/checa.py calidad "marketing/videos/CHECA|PERSONAL/NN - Nombre" <proyecto> [--camara]
 ```
-- `loop` guarda el render original en `renders/video-sin-loop.mp4` y se puede volver a correr.
+- `checa.py loop <proyecto>` solo se usa para rehacer videos de estilos viejos (recorta la cola de 2 s del motor y funde el final; guarda el original en `renders/video-sin-loop.mp4`).
 - `auditar` usa `renders/video.mp4` (sin la portada). ✗ = se corrige antes de seguir: primer cuadro vacío, último cuadro distinto del primero, cola de más de 1.8 s, texto cortado en un borde por 1 s o más, golpes sin `"adelanto": 0.04`. ⚠ = míralo tú en la hoja de cuadros: subtítulos debajo de y=1450 o una palabra con golpe donde casi nada cambia (medición aproximada; puede marcar un resaltado sutil que sí está).
 - `calidad` revisa: archivos completos, mp4 `yuv420p` High 1080×1920 y duración, que el primer cuadro sea la portada, copy con el CTA vigente, «números de ejemplo», sin «Soy Eduardo» (salvo `--camara`) ni «gratis»/precios, DM con su utm, voz sin «$», la última línea de voz con el CTA, pop-ups con «OFERTA», neta = viaje − gasolina, pantalla final y que el sello de la portada no se delate.
 - Mira tú la hoja de cuadros con el segundo impreso, sobre todo donde `auditar` dio ⚠:

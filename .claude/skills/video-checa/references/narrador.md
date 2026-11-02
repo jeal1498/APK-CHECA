@@ -1,15 +1,27 @@
 # Modo narrador de IA: pasos técnicos
 
 ## 0. Único estilo vigente: A3 con loop (Eduardo, 2 nov 2026)
-Todos los videos nuevos sin su cara se hacen en **un solo estilo**: el del C19 aprobado como «A3 con loop». Referencia con código: `video/hyperframes/_a3-referencia/` (`README.md` explica cómo adaptarla). Los estilos de §8 (golpes del 32) y §9 (híbrido del 22) y los tipos de escena viejos del motor son **historia**: sirven para rehacer videos ya aprobados, no para videos nuevos.
-- **Cámara 3D:** teléfono que entra girando, órbita lenta, zoom por escena y tres cortes distintos (lateral, zoom y giro); lavado de color y sacudida en rojo/verde.
+Todos los videos nuevos sin su cara se hacen en **un solo estilo**: el del C19 aprobado como «A3 con loop». Lo genera el motor (`checa.py a3`) desde un archivo de datos; el ejemplo completo es `video/hyperframes/checa-lee-la-oferta-a3/` (`a3.json` + `tiempos.json`). Los estilos de §8 (golpes del 32) y §9 (híbrido del 22) y los tipos de escena viejos de `construir.py` son **historia**: sirven para rehacer videos ya aprobados, no para videos nuevos.
+- **Cámara 3D:** teléfono que entra girando, órbita lenta, zoom por línea y tres cortes distintos (lateral, zoom y giro); lavado de color y sacudida en rojo/verde.
 - **Teléfono y tarjeta de oferta:** el teléfono con la oferta abre; después la **tarjeta de oferta** (precio, minutos/km y botón «Aceptar») queda arriba y el **pop-up** de la app abajo. La tarjeta es «esa oferta» de la voz.
 - **Golpes de texto** arriba (y≈140) que caen en su palabra, sobre cajas oscuras; subtítulos en **y=1250** (nunca en la franja baja de TikTok); barra de progreso verde arriba.
-- **Hook:** cuadro 0 ya con el texto del gancho y la oferta grande; **cierre:** logo, «Comenta CHECA» y chip de Google Play; **loop:** el último cuadro es igual al primero.
-- Reglas de coherencia y ritmo: §10 (cada cosa en su palabra, sin etiquetas falsas, un gráfico para cada idea).
-- Revisión: el agente de `calidad.md` §1 sobre el plan y la voz, y `checa.py auditar` después del render.
+- **Hook:** cuadro 0 ya con el texto del gancho y la oferta; **cierre:** logo, «Comenta CHECA» y chip de Google Play; **loop:** el último cuadro es igual al primero (lo hace la página, no hace falta `checa.py loop`).
+- Reglas de coherencia y ritmo: §10.
 
-Para CHECA y su v2 de PERSONAL, sin la cara de Eduardo. Se usa solo HyperFrames con `construir.py`: arma escenas, voz, subtítulos e `index.html` desde dos archivos de texto, sin agentes. (El proceso viejo con agentes costó ~1.7 M de tokens; el 1Volt y el 3D quedaron en el historial de git. `referencia/` guarda cuadros de videos que a Eduardo le gustaron, solo como inspiración visual.)
+### Cómo se hace un video en este estilo
+1. Voz y tiempos: `SCRIPT.md` como siempre y `checa.py construir <proyecto> --solo-tiempos` (genera `assets/voice` y `tiempos.json`; no necesita `escenas.json`).
+2. Escribe `a3.json` en el proyecto (copia el del C19). Una entrada por línea de voz, en orden. Todo lo que entra se ata a una **palabra** de su línea: `"palabra"`, `"palabra#1"` (la segunda vez), `"palabra@-0.05"` (con desplazamiento en segundos) o un número (segundos desde el inicio de la línea). La palabra exacta manda sobre el prefijo.
+3. `checa.py a3 <proyecto>` compila la página y escribe `renders/plan.md` (cada palabra → lo que entra); `--hoja` agrega el storyboard de 20 cuadros (`renders/storyboard-a3.png`). Esto es lo que revisa el agente antes de renderizar (`calidad.md` §1).
+4. `checa.py a3 <proyecto> --render` (unos 15 min para 45 s, 4 procesos en paralelo) deja `renders/video.mp4` con voz, efectos oficiales y loop.
+
+### `a3.json`: qué lleva
+- Global: `hook` (texto del cuadro 0, que conecta con la primera frase), `total` (opcional; por defecto fin de la voz + 1.65 s), `voz` (opcional: wav ya mezclado en lugar de `assets/voice`), `sonidos` (opcional: lista propia de efectos).
+- Por línea: `vista` (`telefono` · `pop` = tarjeta de oferta + pop-up · `popup` = solo pop-up · `metas` · `cta` en la última) y `zoom` (1.0–1.1).
+  - `tel`: `oferta` {precio, l1, l2}, `cae` (la oferta cae y vibra), `ruta` [de, a], `zoom` [de, a].
+  - `chip`: `kfs` (lista de {`en`?, precio, sub}), `pulso`, `brillo`, `escaneo` [de, a].
+  - `popup`: `entra` (solo en la primera línea con pop-up), `gas_en`, `fichas` (`"siempre"` o palabra) y `estados` (lista de {`en`?, `nivel` gris/verde/amarillo/rojo, `pv`, `gas`, `neta` (texto o `{"cuenta": {de, a, en, hasta}}`), `nl`, `bump`, `ok`, `h`, `k`, `m`, `km`}). El número del neto es `···` hasta que la voz lo dice.
+  - Sueltos: `golpes` [{en, texto, color, de, a}], `lavado` [{en, color}], `sacude` [palabras], `ml` (logo del semáforo), `sello`, `reloj`, `ojo`, `altavoz`, `cursor` (cursor que se frena sobre «Aceptar» con 🚫), `metas`, `cta` {pill, google}.
+- Pendiente de la herramienta: otros tipos de gráfico se agregan a `video/hyperframes/_base/a3/runtime.js` y `a3.py`, no a cada video.
 
 ## 1. Proyecto
 Todos los videos usan un **motor compartido**: `video/hyperframes/_base/` (un solo `construir.py`, fuentes, sonidos, pop-up, subtítulos y plantilla de portada). Cada video solo guarda `SCRIPT.md`, `escenas.json`, `portada/portada.json`, `assets/voice/` y `tiempos.json`; lo demás se copia de la base al construir y git lo ignora. Así un arreglo al motor vale para todos los videos y no hay copias que diverjan.

@@ -12,6 +12,8 @@ Uso: python3 -I video/scripts/checa.py <comando> ...
   hecho <carpeta> <AAAA-MM-DD> [tipo]      registra el video «listo» en el calendario web y en calendario.md
   publicado <carpeta> <AAAA-MM-DD>         lo marca «Publicado» en los dos calendarios
   calidad <carpeta> [proyecto] [--camara]  control de calidad automático de un video terminado (falla si algo no cumple)
+  a3 <proyecto> [--hoja|--render]          estilo único A3 con loop: a3.json + tiempos.json → a3/index.html, plan (renders/plan.md),
+                                           --hoja = storyboard de 20 cuadros, --render = video completo (renders/video.mp4)
   plan <proyecto>                          tabla «palabra → gráfico» (renders/plan.md) para revisar antes de renderizar
   loop <proyecto>                          recorta la cola y funde el final con el primer cuadro (renders/video.mp4)
   auditar <proyecto> [video.mp4]           auditoría visual medible (narrador.md §10): primer cuadro, loop, cola, bordes,
@@ -376,6 +378,8 @@ def _desc(k, o):
 
 def cmd_plan(args):
     d = proyecto(args[0])
+    if os.path.exists(os.path.join(d, "a3.json")):  # estilo A3: el plan sale del compilador
+        return cmd_a3(args[:1])
     tj = os.path.join(d, "tiempos.json")
     if not os.path.exists(tj):
         fallar("falta tiempos.json: corre antes `checa.py construir <proyecto>` (sin --render)")
@@ -452,6 +456,74 @@ def cmd_loop(args):
     print(f"listo: {mp4} ({dur:.1f} s → {L:.1f} s; el último cuadro es el primero). Original: {orig}")
 
 
+# ---------- estilo A3 con loop (narrador.md §0) ----------
+def _a3_mod():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("a3", os.path.join(BASE, "a3", "a3.py"))
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    return m
+
+
+def _node_env():
+    return dict(os.environ, NODE_PATH=subprocess.check_output(["npm", "root", "-g"]).decode().strip())
+
+
+def cmd_a3(args):
+    d = proyecto(args[0])
+    if not os.path.exists(os.path.join(d, "a3.json")):
+        fallar("falta a3.json (ejemplo: video/hyperframes/checa-lee-la-oferta-a3/a3.json)")
+    if not os.path.exists(os.path.join(d, "tiempos.json")):
+        fallar("falta tiempos.json: corre antes `checa.py construir <proyecto>` (sin --render) para tener la voz y sus tiempos")
+    m = _a3_mod()
+    fuentes = os.path.relpath(os.path.join(BASE, "assets", "fonts"), os.path.join(d, "a3"))
+    D, plan = m.construir(d, fuentes)
+    os.makedirs(os.path.join(d, "renders"), exist_ok=True)
+    out = [f"# Plan palabra → gráfico (A3): {os.path.basename(d)} ({D['total']:.1f} s)", "",
+           "Segundos absolutos. Cada cosa entra en su palabra; lo que no aparece aquí se ve desde el inicio de su línea.", ""]
+    voz = {sc["n"]: " ".join(x[0] for x in sc["words"]) for sc in json.load(open(os.path.join(d, "tiempos.json"), encoding="utf-8"))["scenes"]}
+    ult = None
+    for t, n, txt in sorted(plan):
+        if n != ult:
+            out += ["", f"## Línea {n} · {D['lines'][n - 1]['start']:.1f} s · vista `{D['lines'][n - 1]['vista']}`", f"> {voz[n]}"]
+            ult = n
+        out.append(f"- {t:.1f} s → {txt}")
+    out += ["", f"Loop: de {D['total'] - .6:.1f} s a {D['total']:.1f} s el cierre se disuelve y el último cuadro es el primero."]
+    dest = os.path.join(d, "renders", "plan.md")
+    open(dest, "w", encoding="utf-8").write("\n".join(out) + "\n")
+    print("\n".join(out))
+    print(f"\nguardado: {dest} · página: {os.path.join(d, 'a3', 'index.html')}")
+    html = os.path.join(d, "a3", "index.html")
+    if "--hoja" in args:
+        n = 20
+        lista = sorted({min(int(D["total"] * 30) - 1, int((i + .5) * D["total"] * 30 / n)) for i in range(n)})
+        tmp = os.path.join(d, "renders", "_hoja")
+        shutil.rmtree(tmp, ignore_errors=True)
+        os.makedirs(tmp)
+        subprocess.run(["node", os.path.join(BASE, "a3", "cuadros.js"), html, tmp, ",".join(map(str, lista))], check=True, env=_node_env())
+        hoja = os.path.join(d, "renders", "storyboard-a3.png")
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-framerate", "1", "-pattern_type", "glob", "-i", os.path.join(tmp, "*.png"), "-vf",
+                        "scale=216:-1,tile=10x2", "-frames:v", "1", hoja], check=True)
+        shutil.rmtree(tmp, ignore_errors=True)
+        print(f"storyboard: {hoja} (20 cuadros, en orden, uno cada {D['total'] / n:.1f} s)")
+    if "--render" in args:
+        cuadros = os.path.join(d, "renders", "a3-cuadros")
+        shutil.rmtree(cuadros, ignore_errors=True)
+        os.makedirs(cuadros)
+        total = int(round(D["total"] * 30))
+        r = [round(total * i / 4) for i in range(5)]
+        env = _node_env()
+        ps = [subprocess.Popen(["node", os.path.join(BASE, "a3", "render.js"), html, cuadros, str(r[i]), str(r[i + 1])], env=env) for i in range(4)]
+        if any(p.wait() for p in ps) or len(os.listdir(cuadros)) != total:
+            fallar(f"el render de cuadros falló ({len(os.listdir(cuadros))}/{total})")
+        video = os.path.join(d, "renders", "video.mp4")
+        A = json.load(open(os.path.join(d, "a3.json"), encoding="utf-8"))
+        voz = ["--voz", os.path.join(d, A["voz"]) if not os.path.isabs(A["voz"]) else A["voz"]] if A.get("voz") else ["--proyecto", d]
+        subprocess.run(["python3", "-I", os.path.join(BASE, "a3", "mezclar.py"), cuadros, os.path.join(d, "a3", "sonidos.json"), video] + voz, check=True)
+        shutil.rmtree(cuadros, ignore_errors=True)
+        print(f"listo: {video} (con loop; no uses `checa.py loop`)")
+
+
 # ---------- auditoría visual medible (narrador.md §10, calidad.md §3) ----------
 CLAVES_PALABRA = ("en", "entra_en", "popup_en", "zoom_en", "dim_en")
 
@@ -509,6 +581,11 @@ def cmd_auditar(args):
         fallar(f"falta {mp4} (renderiza antes con `construir --render`; usa el render del proyecto, no el entregado con portada)")
     leer = lambda f: json.load(open(os.path.join(d, f), encoding="utf-8")) if os.path.exists(os.path.join(d, f)) else None
     tiempos, esc, op = leer("tiempos.json"), leer("escenas.json") or [], leer("opciones.json") or {}
+    a3 = os.path.exists(os.path.join(d, "a3.json"))
+    if a3:  # estilo A3: los puntos salen del compilador y los subtítulos siempre van en y=1250
+        m = _a3_mod()
+        _D, _plan = m.construir(d, os.path.relpath(os.path.join(BASE, "assets", "fonts"), os.path.join(d, "a3")))
+        op = {"subs_top": 1250}
     res = []
     ok = lambda cond, txt, aviso=False: res.append(("✓" if cond else ("⚠" if aviso else "✗"), txt))
     dur = float(json.loads(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "json", mp4]))["format"]["duration"])
@@ -534,10 +611,10 @@ def cmd_auditar(args):
     cortes = [i / 2 for i in range(1, len(pegado)) if pegado[i] and pegado[i - 1]]
     ok(not cortes, "nada cortado en los bordes" + (f" (revisa los segundos {', '.join(f'{t:.1f}' for t in cortes[:8])})" if cortes else ""))
     # 6. Adelanto: los golpes caen con la palabra, no 0.25 s antes
-    malos = [str(i + 1) for i, e in enumerate(esc) if (e.get("golpes") or e.get("telefonos")) and e.get("adelanto", 0.25) > 0.1]
+    malos = [] if a3 else [str(i + 1) for i, e in enumerate(esc) if (e.get("golpes") or e.get("telefonos")) and e.get("adelanto", 0.25) > 0.1]
     ok(not malos, "golpes y teléfonos con «adelanto» ≤ 0.1 s" + (f" (escenas {', '.join(malos)} sin \"adelanto\": 0.04)" if malos else ""))
     # 7. Algo pasa en cada palabra con golpe (±0.25 s)
-    if tiempos and esc:
+    if tiempos and (esc or a3):
         # cambio por zonas (rejilla 5×10, sin la banda de subtítulos): un logo o un chip chico también cuenta
         dd = abs(np.diff(g.astype(np.int16), axis=0))
         dd[:, top // 8: top // 8 + 42, :] = 0
@@ -545,7 +622,8 @@ def cmd_auditar(args):
         base = float(np.median(mov)) + 0.05
         fps = len(g) / dur
         quietas = []
-        for t, palabra, n in _palabras_con_golpe(esc, tiempos):
+        puntos = [(t, txt.split("«")[1].split("»")[0] if "«" in txt else txt[:22], n) for t, n, txt in _plan if "late" not in txt and "brilla" not in txt] if a3 else _palabras_con_golpe(esc, tiempos)
+        for t, palabra, n in puntos:
             a, b = int(max(0, (t - 0.25) * fps)), int(min(len(mov), (t + 0.25) * fps + 1))
             if a < b and mov[a:b].max() < 2.5 * base:
                 quietas.append(f"«{palabra}» {t:.1f} s (línea {n})")
@@ -559,7 +637,7 @@ def cmd_auditar(args):
 
 COMANDOS = {"nuevo": cmd_nuevo, "construir": cmd_construir, "portada": cmd_portada, "revisar": cmd_revisar, "entregar": cmd_entregar,
             "dm": cmd_dm, "tabla": cmd_tabla, "hecho": cmd_hecho, "publicado": cmd_publicado, "subir": cmd_subir, "calidad": cmd_calidad,
-            "auditar": cmd_auditar, "plan": cmd_plan, "loop": cmd_loop}
+            "auditar": cmd_auditar, "plan": cmd_plan, "loop": cmd_loop, "a3": cmd_a3}
 
 if __name__ == "__main__":
     if len(sys.argv) < 2 or sys.argv[1] not in COMANDOS:
