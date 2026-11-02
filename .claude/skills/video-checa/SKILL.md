@@ -14,14 +14,12 @@ Lleva un guion aprobado a un video terminado, con una aprobación de Eduardo en 
 ## Flujo: dos aprobaciones por lote (Eduardo, 30 oct 2026)
 Eduardo aprueba **dos veces por lote** y no cinco por video: así el tiempo no se le va en idas y vueltas. Un lote son los temas que él dé (3–4 lo normal), cada uno con CHECA y su v2 PERSONAL.
 1. **Aprobación 1 · guiones:** todos los guiones del lote en un solo mensaje, con la skill `guion-checa`. Si pide cambios, se corrigen solo esos y se vuelve a mostrar el lote.
-2. **Producción sin parar** (no le preguntes nada en medio), para cada video:
-   - Tabla de animaciones: `checa.py tabla <guion.md> --guardar` (no se reescribe a mano).
-   - Portada: `portada/portada.json` + `checa.py portada <proyecto>`.
-   - Video: `checa.py construir <proyecto> --render` y `checa.py revisar`.
-   - Entrega: `checa.py entregar <proyecto> <CHECA|PERSONAL> <NN>` (portada como primer cuadro; copia `video.mp4` y `portada.jpg`).
-   - Copy y DM: escribe `copy.txt` y corre `checa.py dm <carpeta>`.
+2. **Producción sin parar** (no le preguntes nada en medio), en este orden:
+   - **Plan de cada video:** tabla de animaciones (`checa.py tabla <guion.md> --guardar`, no se reescribe a mano), `escenas.json` con las reglas de `narrador.md` §10, portada (`portada/portada.json` + `checa.py portada <proyecto>`), copy (`copy.txt`) y DM (`checa.py dm <carpeta>`).
+   - **Voz y tiempos:** `checa.py construir <proyecto>` (sin render) y `checa.py plan <proyecto>` (tabla palabra → gráfico); storyboard.
+   - **Revisión antes de renderizar (un agente para todo el lote):** cifras y marca + el prompt de coherencia y ritmo de Eduardo, sobre el plan, el storyboard, la portada y el copy. Se corrige en el JSON, no en el video. Cómo, en `references/calidad.md` §1.
+   - **Render y cierre:** `checa.py construir <proyecto> --render`, `checa.py loop <proyecto>` y `checa.py auditar <proyecto>`; luego `checa.py entregar <proyecto> <CHECA|PERSONAL> <NN>` (portada como primer cuadro) y `checa.py calidad <carpeta> <proyecto>`. Todo en ✓ (`calidad.md` §2); si algo falla, se corrige y se renderiza **solo ese video**.
    Revisa tú cada hoja de cuadros y cada portada antes de seguir: él solo verá el resultado final, así que lo que se te pase llega hasta él.
-   **Control de calidad (siempre, en cada lote, aunque sea de un video):** `checa.py calidad <carpeta> <proyecto>` y `checa.py auditar <proyecto>` por video, un agente revisor con ojos frescos y una **auditoría visual de coherencia y ritmo** (el prompt de Eduardo) para todo el lote; cómo, en `references/calidad.md`. Solo con todo en ✓ y los dos agentes en «OK» se le manda el lote.
 3. **Aprobación 2 · revisión final:** un solo mensaje con todo el lote: por video, el mp4 (con `SendUserFile`; la portada ya va en el primer cuadro), el copy en texto y la fecha propuesta. Si algo no le gusta, se corrige **solo eso** (portada, una escena, una línea de voz o el copy) y se manda de nuevo solo lo corregido.
 4. **Hecho y subida:** con su «aprobado», `checa.py hecho <carpeta> <AAAA-MM-DD> [tipo]` por video y `checa.py subir "<mensaje con las líneas de atribución>"`. El `video.mp4` se commitea **una sola vez**, ya aprobado: hasta la aprobación 2 los mp4 viven en `renders/` y en la carpeta sin commitear (si un hook pide subir, apártalos con `mv` a `renders/`). «Publicado» lo marca Eduardo; cuando avise: `checa.py publicado <carpeta> <AAAA-MM-DD>`.
 `build.yml` ignora `marketing/**`, `video/**` y `.claude/**`: no hace falta `[skip ci]`.
@@ -29,7 +27,7 @@ Eduardo aprueba **dos veces por lote** y no cinco por video: así el tiempo no s
 Carpetas: `marketing/videos/CHECA/NN - Nombre/` y `marketing/videos/PERSONAL/NN - Nombre/` (`video.mp4`, `portada.jpg`, `copy.txt`, `dm.txt`, `guion.md`); la v2 usa el mismo `NN`.
 
 ## Herramienta: `video/scripts/checa.py`
-Todo lo repetible vive aquí (corre sin argumentos para ver la ayuda): `nuevo`, `construir`, `portada`, `revisar`, `entregar`, `dm`, `tabla`, `calidad`, `auditar`, `hecho`, `publicado`, `subir`. Úsala en vez de rehacer los pasos a mano: ya probó que da el mismo resultado y evita errores (p. ej. `portada` se niega si la cifra del sello ya está a la vista).
+Todo lo repetible vive aquí (corre sin argumentos para ver la ayuda): `nuevo`, `construir`, `plan`, `portada`, `revisar`, `loop`, `auditar`, `entregar`, `dm`, `tabla`, `calidad`, `hecho`, `publicado`, `subir`. Úsala en vez de rehacer los pasos a mano: ya probó que da el mismo resultado y evita errores (p. ej. `portada` se niega si la cifra del sello ya está a la vista).
 
 ## Marca (los dos modos)
 La fuente es `jeal1498/PWA-Checa-Multimedia`, carpeta `marca/`. Para cualquier duda usa la skill `marca-checa`.

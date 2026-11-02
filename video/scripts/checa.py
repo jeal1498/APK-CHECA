@@ -12,6 +12,8 @@ Uso: python3 -I video/scripts/checa.py <comando> ...
   hecho <carpeta> <AAAA-MM-DD> [tipo]      registra el video «listo» en el calendario web y en calendario.md
   publicado <carpeta> <AAAA-MM-DD>         lo marca «Publicado» en los dos calendarios
   calidad <carpeta> [proyecto] [--camara]  control de calidad automático de un video terminado (falla si algo no cumple)
+  plan <proyecto>                          tabla «palabra → gráfico» (renders/plan.md) para revisar antes de renderizar
+  loop <proyecto>                          recorta la cola y funde el final con el primer cuadro (renders/video.mp4)
   auditar <proyecto> [video.mp4]           auditoría visual medible (narrador.md §10): primer cuadro, loop, cola, bordes,
                                            subtítulos fuera de la franja de TikTok y que algo pase en cada palabra con golpe
   subir "<mensaje>"                        commit y push (main y rama actual) en APK-CHECA y PWA-Checa-Multimedia
@@ -356,6 +358,100 @@ def cmd_calidad(args):
         sys.exit(1)
 
 
+# ---------- plan y loop (revisión antes del render, narrador.md §10) ----------
+def _desc(k, o):
+    """Texto corto de lo que entra en pantalla."""
+    if k == "golpe":
+        lin = " / ".join(str(x[0]) if isinstance(x, list) else str(x) for x in o.get("lineas", []))
+        return f"golpe {o.get('kind', 'texto')}" + (f" «{lin}»" if lin else "") + (f" · sub «{o['sub']}»" if o.get("sub") else "")
+    if k == "popup_en":
+        pp = o.get("popup") or {}
+        chips = ", ".join(c[0] for c in pp.get("chips", []))
+        return f"pop-up: ${pp.get('neta')} netos · viaje ${pp.get('viaje')} · gasolina −${pp.get('gasolina')}" + (f" · {chips}" if chips else "")
+    if k == "entra_en":
+        of = o.get("oferta") or {}
+        return f"entra teléfono con oferta ${of.get('precio')}"
+    return {"zoom_en": "zoom al teléfono", "dim_en": "se apaga el teléfono"}.get(k, k)
+
+
+def cmd_plan(args):
+    d = proyecto(args[0])
+    tj = os.path.join(d, "tiempos.json")
+    if not os.path.exists(tj):
+        fallar("falta tiempos.json: corre antes `checa.py construir <proyecto>` (sin --render)")
+    T = json.load(open(tj, encoding="utf-8"))
+    esc = json.load(open(os.path.join(d, "escenas.json"), encoding="utf-8"))
+    out = [f"# Plan palabra → gráfico: {os.path.basename(d)} ({T['total']:.1f} s)", "",
+           "Segundos absolutos del video. Lo que no está ligado a una palabra se ve desde el inicio de su línea.", ""]
+
+    def seg(sc, k, adel):
+        w = sc["words"]
+        if isinstance(k, int):
+            j = min(k, len(w) - 1)
+        else:
+            n = re.sub(r"[^\w]", "", k.lower())
+            j = next((j for j, x in enumerate(w) if re.sub(r"[^\w]", "", x[0].lower()).startswith(n)), None)
+        return (None, k) if j is None else (round(sc["start"] + max(0, w[j][1] - adel), 2), w[j][0])
+
+    for sc, e in zip(T["scenes"], esc):
+        voz = " ".join(x[0] for x in sc["words"])
+        out.append(f"## Línea {sc['n']} · {sc['start']:.1f}–{sc['start'] + sc['dur']:.1f} s · `{e['tipo']}`")
+        out.append(f"> {voz}")
+        adel = e.get("adelanto", 0.25)
+        fijos = []
+        if e.get("luz"):
+            fijos.append(f"color de la escena: **{e['luz']}** desde el inicio (¿la voz ya dijo ese color?)")
+        items = []
+        for g in e.get("golpes", []):
+            if "en" in g:
+                items.append(seg(sc, g["en"], adel) + (_desc("golpe", g),))
+        for t in e.get("telefonos", []):
+            if t.get("entra_en") is None:
+                fijos.append(_desc("entra_en", t) + " (desde el inicio)")
+            for k in ("entra_en", "popup_en", "zoom_en", "dim_en"):
+                if t.get(k) is not None:
+                    items.append(seg(sc, t[k], adel) + (_desc(k, t),))
+        if "popup" in e and not e.get("telefonos"):
+            fijos.append(_desc("popup_en", e) + " (desde el inicio)")
+        for f in fijos:
+            out.append(f"- {sc['start']:.1f} s · {f}")
+        for t, w, txt in sorted(items, key=lambda x: (x[0] is None, x[0] or 0)):
+            out.append(f"- {t:.1f} s «{w}» → {txt}" if t is not None else f"- ⚠ no encuentro «{w}» en la voz → {txt}")
+        if not fijos and not items:
+            out.append("- (escena sin gráficos ligados a palabras)")
+        out.append("")
+    os.makedirs(os.path.join(d, "renders"), exist_ok=True)
+    dest = os.path.join(d, "renders", "plan.md")
+    open(dest, "w", encoding="utf-8").write("\n".join(out))
+    print("\n".join(out))
+    print(f"guardado: {dest}")
+
+
+def cmd_loop(args):
+    d = proyecto(args[0])
+    mp4 = os.path.join(d, "renders", "video.mp4")
+    if not os.path.exists(mp4):
+        fallar(f"falta {mp4}: renderiza antes con `construir --render`")
+    T = json.load(open(os.path.join(d, "tiempos.json"), encoding="utf-8"))
+    fin = max(sc["start"] + sc["words"][-1][2] for sc in T["scenes"] if sc.get("words"))
+    dur = float(json.loads(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "json", mp4]))["format"]["duration"])
+    L = round(min(dur, fin + 1.5), 2)  # ~1 s de cierre + 0.5 s de fundido al primer cuadro
+    orig = os.path.join(d, "renders", "video-sin-loop.mp4")
+    if not os.path.exists(orig):
+        shutil.copy(mp4, orig)  # el render original se guarda una vez; volver a correr parte de él
+    f0 = os.path.join(d, "renders", "_cuadro0.png")
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", orig, "-frames:v", "1", f0], check=True)
+    fc = (f"[0:v]trim=0:{L},setpts=PTS-STARTPTS,fps=30,format=yuv420p,setsar=1[a];"
+          f"[1:v]fps=30,format=yuv420p,setsar=1,trim=0:0.6,setpts=PTS-STARTPTS[b];"
+          f"[a][b]xfade=transition=fade:duration=0.4:offset={L - 0.5}[v];"
+          f"[0:a]atrim=0:{L},asetpts=PTS-STARTPTS,afade=t=out:st={L - 0.4}:d=0.4[au]")
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", orig, "-loop", "1", "-framerate", "30", "-t", "0.6", "-i", f0,
+                    "-filter_complex", fc, "-map", "[v]", "-map", "[au]", "-t", str(L), "-c:v", "libx264", "-profile:v", "high",
+                    "-pix_fmt", "yuv420p", "-crf", "17", "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", mp4], check=True)
+    os.remove(f0)
+    print(f"listo: {mp4} ({dur:.1f} s → {L:.1f} s; el último cuadro es el primero). Original: {orig}")
+
+
 # ---------- auditoría visual medible (narrador.md §10, calidad.md §3) ----------
 CLAVES_PALABRA = ("en", "entra_en", "popup_en", "zoom_en", "dim_en")
 
@@ -463,7 +559,7 @@ def cmd_auditar(args):
 
 COMANDOS = {"nuevo": cmd_nuevo, "construir": cmd_construir, "portada": cmd_portada, "revisar": cmd_revisar, "entregar": cmd_entregar,
             "dm": cmd_dm, "tabla": cmd_tabla, "hecho": cmd_hecho, "publicado": cmd_publicado, "subir": cmd_subir, "calidad": cmd_calidad,
-            "auditar": cmd_auditar}
+            "auditar": cmd_auditar, "plan": cmd_plan, "loop": cmd_loop}
 
 if __name__ == "__main__":
     if len(sys.argv) < 2 or sys.argv[1] not in COMANDOS:

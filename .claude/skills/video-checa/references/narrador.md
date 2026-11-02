@@ -94,7 +94,7 @@ Estilo que se elige por video: el teléfono dibujado del 30 aparece **solo cuand
 - **Revisor del motor:** el teléfono y los golpes se encima a propósito; el teléfono lleva `data-layout-ignore`. Si `check` marca `content_overlap`, no lo quites: separa zonas.
 
 ## 10. Coherencia y ritmo (1 nov 2026, C19 «A3», aprobado por Eduardo)
-Lo que salió de las auditorías visuales del C19 (`calidad.md` §3). Aplícalo **desde el primer render**, no esperes a que la auditoría lo marque.
+Lo que salió de las auditorías visuales del C19 (hoy se revisa antes del render: `calidad.md` §1). Aplícalo **desde el primer render**, no esperes a que la auditoría lo marque.
 - **Cada cosa entra en su palabra, nunca antes.** El color del pop-up (rojo, verde, amarillo) cambia en la palabra «Rojo», «Verde», «considerar»…; antes va neutro. Cifras y fichas aparecen en la palabra que las dice, con su valor final (nada de conteos que muestren números a medias como «$51/h»).
 - **Sin etiquetas falsas:** si el número todavía no es el neto, no lleva «netos» (usa «viaje» y cambia a «netos» en «limpio»). Mientras no se dice la cifra, muestra `···`.
 - **Lo que la voz nombra sigue en pantalla:** si dice «esa oferta», la tarjeta de la oferta queda visible junto al pop-up (tarjeta compacta arriba, con su botón «Aceptar»).
@@ -103,4 +103,4 @@ Lo que salió de las auditorías visuales del C19 (`calidad.md` §3). Aplícalo 
 - **Ritmo:** cámara distinta por escena (zoom, giro leve, corte lateral, zoom o giro alternados), lavado de color a pantalla completa en «Rojo»/«Verde» y sacudida en lo que pierde. Ningún tramo de más de ~1.5 s sin algo nuevo en su palabra.
 - **Legibilidad:** golpes que quepan en 1080 px (130 px hasta 9 letras, 108 px hasta 14, 96 px más largo); subtítulos con su parte de arriba en y≈1250 (fuera de la franja baja de TikTok); textos chicos de 34 px mínimo; nada de elementos semitransparentes «fantasma» detrás del pop-up.
 - **Anclajes:** barra de progreso verde de 8 px arriba; botón «Comenta CHECA» con pulso; el botón entra en «CHECA», no después.
-- **Cierre y loop:** máximo ~1 s después de la última palabra. En los últimos 0.5 s el cierre se disuelve y el **último cuadro es idéntico al primero** (compáralos: diferencia 0), con un whoosh que enlaza con el golpe del inicio.
+- **Cierre y loop:** máximo ~1 s después de la última palabra. En los últimos 0.5 s el cierre se disuelve y el **último cuadro es idéntico al primero**. Lo hace `checa.py loop <proyecto>` después del render (el motor deja 2 s de cola y no hace loop); `auditar` lo comprueba.

@@ -1,46 +1,27 @@
 # Control de calidad de un lote
 
-Eduardo solo ve el resultado final, así que antes de mandárselo cada lote pasa por tres revisiones. Corren **siempre, en cada lote, sin importar cuántos videos tenga** (aunque sea uno): son baratas y lo que se escape llega directo a él.
+Eduardo solo ve el resultado final, así que cada lote pasa por **una revisión antes de renderizar** (un agente) y **una revisión automática después** (gratis). Corren **siempre, en cada lote, aunque sea de un video**. La idea (Eduardo, 2 nov 2026): los errores de coherencia y ritmo se ven en el plan, y corregirlos en `escenas.json` cuesta segundos; corregirlos después del render cuesta otro render de 15–25 min.
 
-## 1. Revisión automática (por video, gratis)
+## 1. Antes de renderizar: un agente para todo el lote
+Para cada video, con la voz ya hecha:
 ```bash
-python3 -I video/scripts/checa.py calidad "marketing/videos/CHECA|PERSONAL/NN - Nombre" <proyecto> [--camara]
+python3 -I video/scripts/checa.py construir <proyecto>     # sin --render: genera tiempos.json
+python3 -I video/scripts/checa.py plan <proyecto>          # renders/plan.md: cada palabra → el gráfico que entra
 ```
-Revisa: archivos completos, mp4 `yuv420p` High 1080×1920 y duración, que el primer cuadro sea la portada, copy con el CTA vigente, «números de ejemplo», sin «Soy Eduardo» (salvo `--camara`) ni «gratis»/precios, DM con su utm, voz sin «$», la última línea de voz con el CTA, pop-ups con «OFERTA», neta = viaje − gasolina, pantalla final y que el sello de la portada no se delate. Si algo sale ✗, se corrige antes de seguir.
+y el **storyboard** (imagen de cuadros con la distribución, `narrador.md` §9). Portada, `copy.txt` y `dm.txt` ya hechos.
 
-## 2. Revisión con ojos frescos (un agente por lote)
-Un solo agente para todo el lote (no uno por video), con `subagent_type: general-purpose` y `model: sonnet`. No hizo los videos, así que ve lo que a quien los hizo se le pasa. Prompt:
+Un solo agente para todo el lote (no uno por video), con `subagent_type: general-purpose` y `model: sonnet`. No hizo los videos, así que ve lo que a quien los hizo se le pasa. Prompt (parte A: cifras y marca; parte B: el de Eduardo, sin cambiarlo):
 
-> Eres control de calidad de los videos de Checa (app para conductores de Uber/DiDi). Revisa estas carpetas: <lista de carpetas y proyectos>. Por cada video lee `guion.md`, `copy.txt`, `dm.txt`, el `SCRIPT.md` y `escenas.json` del proyecto, y mira con Read la portada (`portada.jpg`) y la hoja de cuadros (`renders/hoja.png` del proyecto; si falta, créala con `python3 -I video/scripts/checa.py revisar <video.mp4>`). Comprueba:
+> Revisa estos videos de Checa (app para conductores de Uber/DiDi) **antes de renderizarlos**: <lista de carpetas y proyectos>. Por cada video tienes `guion.md`, `copy.txt` y `dm.txt` de la carpeta, y del proyecto `SCRIPT.md` (la voz), `escenas.json`, `renders/plan.md` (cada palabra de la voz con su segundo y el gráfico que entra en ella; lo que no está ligado a una palabra se ve desde el inicio de su línea), el storyboard y `portada/portada.jpg` (míralos con Read). No cambies archivos.
+>
+> **Parte A · cifras y marca.**
 > 1. Las cifras son las mismas en la voz, las escenas, la portada y el copy, y cuadran con las fórmulas (gasolina = km totales ÷ 12 × 24; neta = tarifa − gasolina; $/km = tarifa ÷ km totales; $/h = tarifa ÷ min totales × 60).
 > 2. El gancho de la voz y el título de la portada cuentan lo mismo; la cifra escondida en el sello no aparece a la vista.
 > 3. CHECA y su v2 PERSONAL usan las mismas cifras pero distinto gancho, palabras y orden, y distinta portada.
 > 4. Nada de logos ni nombres de Uber/DiDi en pantalla, ciudad, país, «gratis», precios ni promesas de ganancia; sin «Soy Eduardo» en videos sin su cara; ortografía («checas», «que cheques»).
-> 5. En la hoja de cuadros: nada cortado, encimado ni ilegible; texto importante por encima de y≈1150; «Números de ejemplo» visible donde hay cifras.
-> No cambies archivos. Responde por video: «OK» o una lista corta de problemas con dónde están y cómo arreglarlos.
-
-Corrige lo que reporte y vuelve a correr la revisión automática de los videos que cambiaron.
-
-## 3. Auditoría visual: coherencia y ritmo (Eduardo, 1 nov 2026)
-Corre después de la 2, en cada lote. Revisa **cómo la imagen acompaña a la voz**, no las cifras ni el copy. Un agente para todo el lote (`subagent_type: general-purpose`, `model: sonnet`), distinto del de la revisión 2.
-
-**Antes del agente, la parte medible (gratis, segundos):**
-```bash
-python3 -I video/scripts/checa.py auditar <proyecto>
-```
-Usa `renders/video.mp4` del proyecto (sin la portada) con `tiempos.json`, `escenas.json` y `opciones.json`. ✗ = se corrige antes de seguir: primer cuadro vacío, último cuadro distinto del primero (loop), cola de más de 1.8 s, texto cortado en un borde por 1 s o más, escenas con golpes sin `"adelanto": 0.04`. ⚠ = aviso para revisar a ojo y pasárselo al agente: subtítulos debajo de y=1450 o una palabra con golpe en la que casi nada cambia en pantalla (es una medición aproximada: puede marcar un resaltado sutil que sí está).
-
-**Material que le preparas por video** (el agente no puede ver el mp4 corriendo):
-- Hoja de cuadros cada 0.5 s con el segundo impreso:
-  ```bash
-  ffmpeg -v error -y -i <video.mp4> -vf "fps=2,scale=180:-1,drawtext=text='%{pts\:flt}':fontcolor=yellow:fontsize=20:x=6:y=6,tile=10x10" renders/auditoria-%d.png
-  ```
-  (si el video dura más de 50 s, sale más de una hoja: `auditoria-1.png`, `auditoria-2.png`…).
-- `tiempos.json` del proyecto (cada palabra de la voz con su segundo) y `escenas.json`.
-
-**Prompt** (el de Eduardo, sin cambiarlo; arriba se agrega el material):
-
-> Revisa estos videos de Checa (app para conductores de Uber/DiDi): <lista de videos>. Por cada uno tienes la hoja de cuadros cada 0.5 s con el segundo impreso (`renders/auditoria-*.png`, míralas con Read), `tiempos.json` (cada palabra de la voz con su segundo) y `escenas.json`. Compara segundo a segundo lo que se ve con la palabra que suena en ese instante. No cambies archivos.
+> 5. En el storyboard: nada encimado ni ilegible; «Números de ejemplo» visible donde hay cifras.
+>
+> **Parte B · coherencia y ritmo.** Usa `renders/plan.md` como si fuera el video: compara segundo a segundo lo que entra en pantalla con la palabra que suena.
 >
 > Actúa como un Director Creativo experto en diseño visual de interfaces, edición y retención para TikTok / Reels (especializado en frameworks de código como Remotion e HyperFrames).
 >
@@ -64,6 +45,24 @@ Usa `renders/video.mp4` del proyecto (sin la portada) con `tiempos.json`, `escen
 >
 > Sé directo, con mentalidad de creador de contenido para redes, y ve al grano con las mejoras visuales y de coherencia.
 >
-> Responde por video: «OK» si no hay nada que corregir, o la lista de problemas en orden de prioridad.
+> Responde por video: «OK» si no hay nada que corregir, o la lista de problemas (A y B) en orden de prioridad.
 
-**Qué hacer con el reporte:** aplica lo que no cambie la voz (el audio es fijo), vuelve a renderizar solo los videos que cambiaron, repite la revisión 1 y vuelve a correr esta auditoría solo de esos videos. Con las tres en verde, manda el lote a Eduardo. Si una propuesta choca con una regla de Eduardo (marca, «el gráfico dice lo que dice la voz», sin logos ajenos), gana la regla.
+Aplica lo que reporte en `escenas.json`, la portada o el copy (la voz es fija), vuelve a correr `construir` y `plan` de los que cambiaron y revisa tú que quedó. Si una propuesta choca con una regla de Eduardo (marca, «el gráfico dice lo que dice la voz», sin logos ajenos), gana la regla.
+
+## 2. Después de renderizar: revisión automática (por video, gratis)
+```bash
+python3 -I video/scripts/checa.py construir <proyecto> --render
+python3 -I video/scripts/checa.py loop <proyecto>          # recorta la cola y funde el final con el primer cuadro
+python3 -I video/scripts/checa.py auditar <proyecto>       # lo medible de la parte B
+python3 -I video/scripts/checa.py entregar <proyecto> <CHECA|PERSONAL> <NN>
+python3 -I video/scripts/checa.py calidad "marketing/videos/CHECA|PERSONAL/NN - Nombre" <proyecto> [--camara]
+```
+- `loop` guarda el render original en `renders/video-sin-loop.mp4` y se puede volver a correr.
+- `auditar` usa `renders/video.mp4` (sin la portada). ✗ = se corrige antes de seguir: primer cuadro vacío, último cuadro distinto del primero, cola de más de 1.8 s, texto cortado en un borde por 1 s o más, golpes sin `"adelanto": 0.04`. ⚠ = míralo tú en la hoja de cuadros: subtítulos debajo de y=1450 o una palabra con golpe donde casi nada cambia (medición aproximada; puede marcar un resaltado sutil que sí está).
+- `calidad` revisa: archivos completos, mp4 `yuv420p` High 1080×1920 y duración, que el primer cuadro sea la portada, copy con el CTA vigente, «números de ejemplo», sin «Soy Eduardo» (salvo `--camara`) ni «gratis»/precios, DM con su utm, voz sin «$», la última línea de voz con el CTA, pop-ups con «OFERTA», neta = viaje − gasolina, pantalla final y que el sello de la portada no se delate.
+- Mira tú la hoja de cuadros con el segundo impreso, sobre todo donde `auditar` dio ⚠:
+  ```bash
+  ffmpeg -v error -y -i <proyecto>/renders/video.mp4 -vf "fps=2,scale=180:-1,drawtext=text='%{pts\:flt}':fontcolor=yellow:fontsize=20:x=6:y=6,tile=10x10" <proyecto>/renders/auditoria-%d.png
+  ```
+
+Con el agente en «OK», todo en ✓ y la hoja revisada, se le manda el lote a Eduardo. **Solo si algo falla aquí se vuelve a renderizar**, y solo ese video.
