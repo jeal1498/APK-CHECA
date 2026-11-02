@@ -268,3 +268,8 @@ create policy "la web registra testers" on public.testers
 -- La página de registro ahora pide el WhatsApp (solo dígitos, 10 a 15). Filas anteriores quedan en null.
 alter table public.testers add column if not exists whatsapp text
   check (whatsapp is null or whatsapp ~ '^[0-9]{10,15}$');
+
+-- El registro ya no pide correo (solo nombre y WhatsApp); el correo pasa a ser opcional.
+-- El WhatsApp no se repite: un registro repetido se toma como ya registrado.
+alter table public.testers alter column correo drop not null;
+create unique index if not exists testers_whatsapp_unico on public.testers (whatsapp);
