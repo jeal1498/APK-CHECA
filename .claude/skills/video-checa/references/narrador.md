@@ -6,6 +6,7 @@ Todos los videos nuevos sin su cara se hacen en **un solo estilo**: el del C19 a
 - **Teléfono y tarjeta de oferta:** el teléfono con la oferta abre; después la **tarjeta de oferta** (precio, minutos/km y botón «Aceptar») queda arriba y el **pop-up** de la app abajo. La tarjeta es «esa oferta» de la voz.
 - **Golpes de texto** arriba (y≈140) que caen en su palabra, sobre cajas oscuras; subtítulos en **y=1250** (nunca en la franja baja de TikTok); barra de progreso verde arriba.
 - **Hook:** cuadro 0 ya con el texto del gancho y la oferta; **cierre:** logo, «Comenta CHECA» y chip de Google Play; **loop:** el último cuadro es igual al primero (lo hace la página, no hace falta `checa.py loop`).
+- **«NÚMEROS DE EJEMPLO»:** letrero fijo (y≈1385, debajo de los subtítulos) visible en todo el video menos el cierre; lo pone la página, no hace falta pedirlo. La copy del video también lo dice: «… (números de ejemplo).»
 - Reglas de coherencia y ritmo: §10.
 
 ### Cómo se hace un video en este estilo

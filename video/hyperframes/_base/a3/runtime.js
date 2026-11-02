@@ -99,6 +99,7 @@ function set(t){
   // ===== cierre (CTA con logo)
   const C=D.cta;
   $('e4').style.opacity=p(t,C.t+.1,C.t+.5);$('vel').style.opacity=.9;
+  $('ejemplo').style.opacity=1-p(t,C.t+.1,C.t+.5);  // «Números de ejemplo» visible mientras haya cifras (todo menos el cierre)
   const lg=eo(p(t,C.t+.1,C.t+.65));$('logo').style.transform=`scale(${lerp(1.4,1,lg)})`;$('logo').style.filter=`blur(${lerp(18,0,lg)}px)`;$('logo').style.opacity=lg;
   $('lc').style.strokeDashoffset=22*(1-eio(p(t,C.t+.55,C.t+.85)));
   const pk=back(p(t,C.pill,C.pill+.3)),gq=C.gp!=null?back(p(t,C.gp-.05,C.gp+.25)):0;
