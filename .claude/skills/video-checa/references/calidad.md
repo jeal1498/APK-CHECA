@@ -24,6 +24,12 @@ Corrige lo que reporte y vuelve a correr la revisión automática de los videos 
 ## 3. Auditoría visual: coherencia y ritmo (Eduardo, 1 nov 2026)
 Corre después de la 2, en cada lote. Revisa **cómo la imagen acompaña a la voz**, no las cifras ni el copy. Un agente para todo el lote (`subagent_type: general-purpose`, `model: sonnet`), distinto del de la revisión 2.
 
+**Antes del agente, la parte medible (gratis, segundos):**
+```bash
+python3 -I video/scripts/checa.py auditar <proyecto>
+```
+Usa `renders/video.mp4` del proyecto (sin la portada) con `tiempos.json`, `escenas.json` y `opciones.json`. ✗ = se corrige antes de seguir: primer cuadro vacío, último cuadro distinto del primero (loop), cola de más de 1.8 s, texto cortado en un borde por 1 s o más, escenas con golpes sin `"adelanto": 0.04`. ⚠ = aviso para revisar a ojo y pasárselo al agente: subtítulos debajo de y=1450 o una palabra con golpe en la que casi nada cambia en pantalla (es una medición aproximada: puede marcar un resaltado sutil que sí está).
+
 **Material que le preparas por video** (el agente no puede ver el mp4 corriendo):
 - Hoja de cuadros cada 0.5 s con el segundo impreso:
   ```bash

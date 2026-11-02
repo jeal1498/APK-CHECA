@@ -12,6 +12,8 @@ Uso: python3 -I video/scripts/checa.py <comando> ...
   hecho <carpeta> <AAAA-MM-DD> [tipo]      registra el video «listo» en el calendario web y en calendario.md
   publicado <carpeta> <AAAA-MM-DD>         lo marca «Publicado» en los dos calendarios
   calidad <carpeta> [proyecto] [--camara]  control de calidad automático de un video terminado (falla si algo no cumple)
+  auditar <proyecto> [video.mp4]           auditoría visual medible (narrador.md §10): primer cuadro, loop, cola, bordes,
+                                           subtítulos fuera de la franja de TikTok y que algo pase en cada palabra con golpe
   subir "<mensaje>"                        commit y push (main y rama actual) en APK-CHECA y PWA-Checa-Multimedia
 
 <proyecto> es un nombre (video/hyperframes/<nombre>) o una ruta. <carpeta> es marketing/videos/CHECA|PERSONAL/NN - Nombre.
@@ -354,8 +356,114 @@ def cmd_calidad(args):
         sys.exit(1)
 
 
+# ---------- auditoría visual medible (narrador.md §10, calidad.md §3) ----------
+CLAVES_PALABRA = ("en", "entra_en", "popup_en", "zoom_en", "dim_en")
+
+
+def _cuadros(mp4, w, h, fps=None, gris=True):
+    """Cuadros del mp4 como arreglos numpy (w×h, gris o RGB)."""
+    import numpy as np
+    vf = (f"fps={fps}," if fps else "") + f"scale={w}:{h}"
+    fmt, c = ("gray", 1) if gris else ("rgb24", 3)
+    raw = subprocess.run(["ffmpeg", "-v", "error", "-i", mp4, "-vf", vf, "-f", "rawvideo", "-pix_fmt", fmt, "-"],
+                         capture_output=True, check=True).stdout
+    a = np.frombuffer(raw, np.uint8)
+    return a.reshape(-1, h, w) if gris else a.reshape(-1, h, w, c)
+
+
+def _palabras_con_golpe(esc, tiempos):
+    """(segundo absoluto, palabra, escena) de cada cosa que el guion ata a una palabra."""
+    sal = []
+    for i, e in enumerate(esc):
+        if i >= len(tiempos["scenes"]):
+            break
+        sc = tiempos["scenes"][i]
+        w = sc["words"]
+        claves = []
+
+        def juntar(o):
+            if isinstance(o, dict):
+                for k, v in o.items():
+                    if k in CLAVES_PALABRA and isinstance(v, (str, int)):
+                        claves.append(v)
+                    elif k == "en" and isinstance(v, list):
+                        claves.extend(x for x in v if isinstance(x, (str, int)))
+                    else:
+                        juntar(v)
+            elif isinstance(o, list):
+                for x in o:
+                    juntar(x)
+        juntar(e)
+        for k in claves:
+            if isinstance(k, int):
+                j = min(k, len(w) - 1)
+            else:
+                n = re.sub(r"[^\w]", "", k.lower())
+                j = next((j for j, x in enumerate(w) if re.sub(r"[^\w]", "", x[0].lower()).startswith(n)), None)
+            if j is not None:
+                sal.append((round(sc["start"] + w[j][1], 2), w[j][0], sc["n"]))
+    return sorted(set(sal))
+
+
+def cmd_auditar(args):
+    import numpy as np
+    d = proyecto(args[0])
+    mp4 = args[1] if len(args) > 1 else os.path.join(d, "renders", "video.mp4")
+    if not os.path.exists(mp4):
+        fallar(f"falta {mp4} (renderiza antes con `construir --render`; usa el render del proyecto, no el entregado con portada)")
+    leer = lambda f: json.load(open(os.path.join(d, f), encoding="utf-8")) if os.path.exists(os.path.join(d, f)) else None
+    tiempos, esc, op = leer("tiempos.json"), leer("escenas.json") or [], leer("opciones.json") or {}
+    res = []
+    ok = lambda cond, txt, aviso=False: res.append(("✓" if cond else ("⚠" if aviso else "✗"), txt))
+    dur = float(json.loads(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "json", mp4]))["format"]["duration"])
+    g = _cuadros(mp4, 135, 240)  # todos los cuadros, chicos y en gris
+    # 1. Hook: el primer cuadro ya trae contenido (nada de fundido desde negro)
+    f0 = g[0].astype(int)
+    tinta = float((abs(f0 - np.median(f0)) > 45).mean())
+    ok(tinta >= 0.03, f"el primer cuadro trae contenido ({tinta:.1%} de la imagen con texto o gráficos; mínimo 3 %)")
+    # 2. Loop: el último cuadro es igual al primero
+    dif = float(abs(g[0].astype(int) - g[-1].astype(int)).mean())
+    ok(dif <= 3, f"loop: el último cuadro es igual al primero (diferencia media {dif:.1f}; máximo 3)")
+    # 3. Cola: ~1 s después de la última palabra más ~0.6 s de disolución del loop
+    if tiempos:
+        fin = max(sc["start"] + sc["words"][-1][2] for sc in tiempos["scenes"] if sc.get("words"))
+        ok(dur - fin <= 1.8, f"cola de {dur - fin:.1f} s después de la última palabra (máximo 1.8 s con el loop)")
+    # 4. Subtítulos fuera de la franja baja de TikTok
+    top = op.get("subs_top", 1160)
+    ok(top <= 1450, f"subtítulos arriba de la franja de TikTok (empiezan en y={top}; máximo 1450)", aviso=True)
+    # 5. Nada cortado en los bordes: texto brillante pegado al borde izquierdo o derecho
+    c = _cuadros(mp4, 540, 960, fps=2, gris=False)
+    pegado = [bool((np.concatenate([f[60:900, :3], f[60:900, -3:]], axis=1).max(axis=2) > 200).sum() > 25) for f in c]
+    # solo cuenta si dura 1 s o más (en un corte lateral el contenido cruza el borde a propósito)
+    cortes = [i / 2 for i in range(1, len(pegado)) if pegado[i] and pegado[i - 1]]
+    ok(not cortes, "nada cortado en los bordes" + (f" (revisa los segundos {', '.join(f'{t:.1f}' for t in cortes[:8])})" if cortes else ""))
+    # 6. Adelanto: los golpes caen con la palabra, no 0.25 s antes
+    malos = [str(i + 1) for i, e in enumerate(esc) if (e.get("golpes") or e.get("telefonos")) and e.get("adelanto", 0.25) > 0.1]
+    ok(not malos, "golpes y teléfonos con «adelanto» ≤ 0.1 s" + (f" (escenas {', '.join(malos)} sin \"adelanto\": 0.04)" if malos else ""))
+    # 7. Algo pasa en cada palabra con golpe (±0.25 s)
+    if tiempos and esc:
+        # cambio por zonas (rejilla 5×10, sin la banda de subtítulos): un logo o un chip chico también cuenta
+        dd = abs(np.diff(g.astype(np.int16), axis=0))
+        dd[:, top // 8: top // 8 + 42, :] = 0
+        mov = np.r_[0, dd.reshape(len(dd), 10, 24, 5, 27).mean(axis=(2, 4)).max(axis=(1, 2))]
+        base = float(np.median(mov)) + 0.05
+        fps = len(g) / dur
+        quietas = []
+        for t, palabra, n in _palabras_con_golpe(esc, tiempos):
+            a, b = int(max(0, (t - 0.25) * fps)), int(min(len(mov), (t + 0.25) * fps + 1))
+            if a < b and mov[a:b].max() < 2.5 * base:
+                quietas.append(f"«{palabra}» {t:.1f} s (línea {n})")
+        ok(not quietas, "algo cambia en pantalla en cada palabra con golpe" + (": casi nada cambia en " + "; ".join(quietas[:6]) + " (revísalo a ojo)" if quietas else ""), aviso=True)
+    for b, t in res:
+        print(f"{b} {t}")
+    print(f"{os.path.basename(d)}: {sum(1 for b, _ in res if b == '✓')}/{len(res)} bien")
+    if any(b == "✗" for b, _ in res):
+        sys.exit(1)
+
+
 COMANDOS = {"nuevo": cmd_nuevo, "construir": cmd_construir, "portada": cmd_portada, "revisar": cmd_revisar, "entregar": cmd_entregar,
-            "dm": cmd_dm, "tabla": cmd_tabla, "hecho": cmd_hecho, "publicado": cmd_publicado, "subir": cmd_subir, "calidad": cmd_calidad}
+            "dm": cmd_dm, "tabla": cmd_tabla, "hecho": cmd_hecho, "publicado": cmd_publicado, "subir": cmd_subir, "calidad": cmd_calidad,
+            "auditar": cmd_auditar}
 
 if __name__ == "__main__":
     if len(sys.argv) < 2 or sys.argv[1] not in COMANDOS:
