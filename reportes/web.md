@@ -1,11 +1,11 @@
 # Reporte de Checa (web + app) · últimos 30 días
 
-Generado: 2026-11-02 21:58 UTC. Cuenta visitas únicas (una por pestaña).
+Generado: 2026-11-03 19:58 UTC. Cuenta visitas únicas (una por pestaña).
 
 ## Resumen
 | visitas | descargas | cuentas_nuevas | pagos | ingresos | licencias_activas |
 | --- | --- | --- | --- | --- | --- |
-| 606 | 262 | 44 | 0 | 0 | 3 |
+| 611 | 262 | 44 | 0 | 0 | 3 |
 
 # App
 
@@ -59,7 +59,7 @@ Generado: 2026-11-02 21:58 UTC. Cuenta visitas únicas (una por pestaña).
 | patpechluisfernando89@gmail.com | 10-18 21:35 | 10-18 21:35 | 1 | sin licencia |
 | carrasquedomiguel36@gmail.com | 10-18 21:24 | 10-18 21:24 | 1 | sin licencia |
 | carloshernandez.soles@gmail.com | 10-18 21:09 | 10-18 21:09 | 1 | sin licencia |
-| mcamposl0088@gmail.com | 10-18 19:57 | 10-28 22:05 | 2 | sin licencia |
+| mcamposl0088@gmail.com | 10-18 19:57 | 11-02 16:40 | 2 | sin licencia |
 | migajas.tlx@gmail.com | 10-18 13:24 | 10-18 13:24 | 1 | sin licencia |
 | dcisnerosdanys@gmail.com | 10-18 13:11 | 10-28 13:07 | 2 | sin licencia |
 | fercho75.1he@gmail.com | 10-17 21:02 | 10-17 21:02 | 1 | sin licencia |
@@ -104,7 +104,7 @@ Sin datos todavía.
 ## Embudo
 | evento | visitas | veces |
 | --- | --- | --- |
-| visita | 606 | 865 |
+| visita | 611 | 870 |
 | descarga | 262 | 295 |
 | clic_descargar | 122 | 134 |
 | descarga_instalar | 69 | 147 |
@@ -116,7 +116,7 @@ Sin datos todavía.
 ## Por fuente (visitas → descargas)
 | fuente | campana | visitas | descargas |
 | --- | --- | --- | --- |
-| directo |  | 456 | 197 |
+| directo |  | 461 | 197 |
 | tiktok |  | 97 | 54 |
 | tiktok | prueba-en-google-play | 21 | 0 |
 | app | compartir | 17 | 9 |
@@ -132,9 +132,9 @@ Sin datos todavía.
 ## Por dispositivo
 | dispositivo | visitas | descargas |
 | --- | --- | --- |
-| android | 505 | 262 |
+| android | 506 | 262 |
 | iphone | 57 | 0 |
-| pc | 45 | 0 |
+| pc | 49 | 0 |
 
 ## Qué botón lleva a descargar
 | boton | descargas |
@@ -155,7 +155,8 @@ Sin datos todavía.
 ## Por día
 | dia | visitas | descargas |
 | --- | --- | --- |
-| 2026-11-02 | 7 | 0 |
+| 2026-11-03 | 1 | 0 |
+| 2026-11-02 | 11 | 0 |
 | 2026-11-01 | 5 | 0 |
 | 2026-10-31 | 2 | 1 |
 | 2026-10-30 | 3 | 0 |
