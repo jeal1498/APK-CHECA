@@ -127,7 +127,7 @@ object Parser {
     /** true si el texto es solo un monto (la tarifa grande del OCR). */
     fun esMontoSolo(t: String, m: Moneda = Moneda.MXN): Boolean = reglasDe(m).montoGrande.matches(t)
 
-    private val noTarifa = Regex("""(adicional|/km|/h|aceptar|por inicio|propina|ganancia|hoy|semana|saldo|quedan|gasolina|netos|meta\s)""", RegexOption.IGNORE_CASE)
+    private val noTarifa = Regex("""(adicional|/km|/h|aceptar|considerar|rechazar|por inicio|propina|ganancia|hoy|semana|saldo|quedan|gasolina|netos|meta\s)""", RegexOption.IGNORE_CASE)
 
     // "5min (1.7km)", "A 5 min (1.6 km)", "Viaje: 8 min (3.2 km)", "2min (720m)", "1 h 5 min (40 km)"
     private val tramo = Regex(

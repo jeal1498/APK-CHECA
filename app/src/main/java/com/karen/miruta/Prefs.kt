@@ -114,15 +114,10 @@ class Prefs(context: Context) {
         get() = sp.getBoolean("monPend", false)
         set(v) { sp.edit().putBoolean("monPend", v).apply() }
 
-    /** Tamaño base del texto del pop-up, en sp. */
-    var tamanoTexto: Int
-        get() = sp.getInt("tam", 18)
-        set(v) { sp.edit().putInt("tam", v.coerceIn(TAM_MIN, TAM_MAX)).apply() }
-
-    /** Ancho máximo del pop-up en dp: 280 chico, 320 mediano, 360 grande (el de siempre). */
-    var anchoPopup: Int
-        get() = sp.getInt("anchoPop", 360)
-        set(v) { sp.edit().putInt("anchoPop", v).apply() }
+    /** Tamaño del pop-up en %: escala todo (ancho, letra y márgenes). 100 = el de siempre. */
+    var escalaPopup: Int
+        get() = sp.getInt("escPop", 100).coerceIn(ESC_MIN, ESC_MAX)
+        set(v) { sp.edit().putInt("escPop", v.coerceIn(ESC_MIN, ESC_MAX)).apply() }
 
     var duracionSeg: Int
         get() = sp.getInt("dur", 12)
@@ -241,13 +236,13 @@ class Prefs(context: Context) {
 
     companion object {
         private val AJUSTES_FLOAT = listOf("minKm", "minHora", "recMaxV", "recMinV", "kml", "precioL", "metaDia")
-        private val AJUSTES_INT = listOf("durMaxV", "durMinV", "criterio", "tam", "dur", "pos", "vol", "anchoPop")
+        private val AJUSTES_INT = listOf("durMaxV", "durMinV", "criterio", "tam", "dur", "pos", "vol", "escPop")
         private val AJUSTES_BOOL = listOf(
             "fKm", "fHora", "fRecMax", "fRecMin", "fDurMax", "fDurMin", "neta", "uber", "didi",
             "vib", "son", "voz", "avisoApertura"
         )
         const val SEP = "\n\n==========\n\n"
-        const val TAM_MIN = 10
-        const val TAM_MAX = 40
+        const val ESC_MIN = 70
+        const val ESC_MAX = 160
     }
 }

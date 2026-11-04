@@ -1199,23 +1199,8 @@ class MainActivity : Activity() {
         })
         val pop = tarjeta()
 
-        // Tamaño del pop-up: cambia el ancho; lo de adentro queda igual.
-        val anchos = listOf(280, 320, 360)
-        val cabAncho = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
-        cabAncho.addView(texto("Tamaño del pop-up", Tema.T_TEXTO, cTexto2, false), LinearLayout.LayoutParams(0, -2, 1f))
-        val notaAncho = texto("", 11f, cTenue, false).apply { typeface = Fuentes.numero }
-        cabAncho.addView(notaAncho)
-        fun pintarAncho() { notaAncho.text = "${prefs.anchoPopup} dp" + if (prefs.anchoPopup == 360) " · como antes" else "" }
-        pintarAncho()
-        pop.addView(cabAncho)
-        pop.addView(pildoras(listOf("Chico", "Mediano", "Grande"), { anchos.indexOf(prefs.anchoPopup) }) { i ->
-            prefs.anchoPopup = anchos[i]
-            pintarAncho()
-            refrescarVistaPrevia()
-        }, margenArriba(Tema.S1))
-        pop.addView(campoMeta("Tamaño de la letra", "", "", 1f, null, null,
-            { prefs.tamanoTexto.toFloat() }, { prefs.tamanoTexto = it.toInt(); refrescarVistaPrevia() },
-            Prefs.TAM_MIN.toFloat(), Prefs.TAM_MAX.toFloat()), margenArriba(12))
+        // Tamaño del pop-up: deslizador 70–160 % que escala todo (ancho y letra); 100 % = el de siempre.
+        pop.addView(tamanoPopup())
         pop.addView(campoMeta("Tiempo en pantalla", "", " s", 1f, null, null,
             { prefs.duracionSeg.toFloat() }, { prefs.duracionSeg = it.toInt() }, 3f, 60f), margenArriba(Tema.S1))
         pop.addView(campoMeta("Altura en la pantalla", "", " %", 1f, null, null,
@@ -3844,7 +3829,7 @@ class MainActivity : Activity() {
         val real = DisplayMetrics()
         @Suppress("DEPRECATION")
         windowManager.defaultDisplay.getRealMetrics(real)
-        val ancho = minOf((real.widthPixels * 0.94f).toInt(), dp(prefs.anchoPopup))
+        val ancho = minOf((real.widthPixels * 0.94f).toInt(), Popup.anchoPx(this, prefs))
         vistaPrevia.addView(v, FrameLayout.LayoutParams(ancho, -2, Gravity.CENTER_HORIZONTAL))
     }
 
@@ -4729,6 +4714,65 @@ class MainActivity : Activity() {
         fila.addView(sw)
         fila.setOnClickListener { sw.toggle() }
         return fila
+    }
+
+    /** «Tamaño del pop-up»: porcentaje en verde, Restablecer y deslizador de 70 % a 160 %. */
+    private fun tamanoPopup(): View {
+        val min = Prefs.ESC_MIN
+        val max = Prefs.ESC_MAX
+        val caja = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        val cab = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+        }
+        cab.addView(texto("Tamaño del pop-up", Tema.T_TEXTO, cTexto, false).apply { typeface = fuenteMedia },
+            LinearLayout.LayoutParams(0, -2, 1f))
+        val pct = texto("${prefs.escalaPopup} %", 16f, Tema.VERDE, true).apply { typeface = Fuentes.numero }
+        cab.addView(pct, LinearLayout.LayoutParams(-2, -2).apply { rightMargin = dp(Tema.S1) })
+        lateinit var barra: SeekBar
+        val restablecer = texto("Restablecer", 13f, cTexto, false).apply {
+            typeface = fuenteMedia
+            gravity = Gravity.CENTER
+            setPadding(dp(14), dp(8), dp(14), dp(8))
+            background = ripple(cTarjeta2, 50)
+            isClickable = true
+            setOnClickListener {
+                prefs.escalaPopup = 100
+                barra.progress = 100 - min
+                pct.text = "100 %"
+                refrescarVistaPrevia()
+            }
+        }
+        cab.addView(restablecer)
+        barra = SeekBar(this).apply {
+            this.max = max - min
+            progress = (prefs.escalaPopup - min).coerceIn(0, max - min)
+            progressTintList = ColorStateList.valueOf(Tema.VERDE)
+            thumbTintList = ColorStateList.valueOf(Tema.VERDE)
+            progressBackgroundTintList = ColorStateList.valueOf(Tema.BORDE)
+            setPadding(dp(4), dp(12), dp(4), dp(12))
+            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(sb: SeekBar?, p: Int, deUsuario: Boolean) {
+                    val v = p + min
+                    pct.text = "$v %"
+                    if (deUsuario) {
+                        prefs.escalaPopup = v
+                        refrescarVistaPrevia()
+                    }
+                }
+                override fun onStartTrackingTouch(sb: SeekBar?) {}
+                override fun onStopTrackingTouch(sb: SeekBar?) {}
+            })
+        }
+        val pie = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+        fun nota(s: String, g: Int) = texto(s, 11f, cTenue, false).apply { typeface = Fuentes.numero; gravity = g }
+        pie.addView(nota("$min %", Gravity.START), LinearLayout.LayoutParams(0, -2, 1f))
+        pie.addView(nota("100 % = actual", Gravity.CENTER), LinearLayout.LayoutParams(0, -2, 2f))
+        pie.addView(nota("$max %", Gravity.END), LinearLayout.LayoutParams(0, -2, 1f))
+        caja.addView(cab)
+        caja.addView(barra, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(Tema.S1) })
+        caja.addView(pie)
+        return caja
     }
 
     private fun deslizador(
