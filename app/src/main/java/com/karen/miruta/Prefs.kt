@@ -93,6 +93,27 @@ class Prefs(context: Context) {
         get() = sp.getFloat("precioL", 24f)
         set(v) { sp.edit().putFloat("precioL", v).apply() }
 
+    // ---------- Moneda (la de la cuenta vive en perfil_conductor, compartida con Clientela) ----------
+    var moneda: Moneda
+        get() = Moneda(
+            sp.getString("monCod", null) ?: "MXN",
+            sp.getString("monSim", null) ?: "$",
+            sp.getBoolean("monDesp", false),
+            sp.getString("monMil", null) ?: ",",
+            sp.getString("monDec", null) ?: ".",
+            sp.getInt("monDig", 0)
+        ).normalizada()
+        set(v) {
+            val m = v.normalizada()
+            sp.edit().putString("monCod", m.codigo).putString("monSim", m.simbolo).putBoolean("monDesp", m.despues)
+                .putString("monMil", m.miles).putString("monDec", m.decimal).putInt("monDig", m.decimales).apply()
+        }
+
+    /** La moneda se cambió en este equipo y falta subirla a la cuenta. */
+    var monedaPendiente: Boolean
+        get() = sp.getBoolean("monPend", false)
+        set(v) { sp.edit().putBoolean("monPend", v).apply() }
+
     /** Tamaño base del texto del pop-up, en sp. */
     var tamanoTexto: Int
         get() = sp.getInt("tam", 18)

@@ -519,7 +519,7 @@ class MainActivity : Activity() {
             prefs.kmPorLitro = it
             refrescarVistaPrevia()
         }, margenArriba(Tema.S1))
-        gas.addView(campoDato("Gasolina", prefs.precioLitro, "$", "/l") {
+        gas.addView(campoDato("Gasolina", prefs.precioLitro, simAntes(), simDespues("/l")) {
             prefs.precioLitro = it
             refrescarVistaPrevia()
         }, margenArriba(Tema.S1))
@@ -696,7 +696,7 @@ class MainActivity : Activity() {
         // La meta por hora se calcula sola: $/km × 20 (sigue siendo editable).
         var pintarHora: () -> Unit = {}
         t.addView(campoMeta(
-            "Por km", "$", "/km", 0.5f,
+            "Por km", simAntes(), simDespues("/km"), 0.5f,
             { prefs.filtroKm }, { prefs.filtroKm = it },
             { prefs.minPorKm }, { v ->
                 prefs.minPorKm = v
@@ -706,7 +706,7 @@ class MainActivity : Activity() {
             }
         ), margenArriba(Tema.S1))
         t.addView(campoMeta(
-            "Por hora", "$", "/h", 10f,
+            "Por hora", simAntes(), simDespues("/h"), 10f,
             { prefs.filtroHora }, { prefs.filtroHora = it },
             { prefs.minPorHora }, { prefs.minPorHora = it }
         ) { pintarHora = it }, margenArriba(Tema.S1))
@@ -1641,6 +1641,27 @@ class MainActivity : Activity() {
         grupo.addView(f)
     }
 
+    /** Moneda de los montos (la misma de Clientela; se guarda en la cuenta). */
+    private fun mostrarMoneda() {
+        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        cuerpo.addView(texto("Cómo lee Checa los montos de Uber y DiDi y cómo los muestra. " +
+            "Si usas Clientela con la misma cuenta, se cambia también ahí.", Tema.T_NOTA, cTenue, false))
+        val g = grupoFilas()
+        val actual = prefs.moneda.codigo
+        var d: Dialog? = null
+        for ((m, nombre) in Moneda.LISTA) {
+            filaMenu(g, if (m.codigo == actual) Icono.OK else Icono.FILTROS, nombre,
+                "${m.codigo} · ${m.monto(1234.5, 2)}", if (m.codigo == actual) cVerde else cTenue) {
+                if (m.codigo != actual) Cuenta.cambiarMoneda(this, m)
+                d?.dismiss()
+            }
+        }
+        cuerpo.addView(g, margenArriba(Tema.S2))
+        d = hoja("Moneda", null, cuerpo).apply {
+            setOnDismissListener { if (prefs.moneda.codigo != actual) { refrescarFiltrosYAjustes(); pintarCuenta() } }
+        }
+    }
+
     /** Qué apps lee Checa: Uber, DiDi o las dos. */
     private fun mostrarAppsLee() {
         val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
@@ -1667,6 +1688,9 @@ class MainActivity : Activity() {
         filaMenu(g, Icono.CUENTA, "Equipos",
             "${equipos.size} de ${Cuenta.maxEquipos(this)}" +
                 if (equipos.isEmpty()) "" else " · " + equipos.joinToString(", ") { it.visible() }) { mostrarEquipos() }
+        val mon = prefs.moneda
+        val nombreMon = Moneda.LISTA.firstOrNull { it.first.codigo == mon.codigo }?.second ?: mon.codigo
+        filaMenu(g, Icono.FILTROS, "Moneda", "$nombreMon · ${mon.monto(1234.5, 2)}") { mostrarMoneda() }
         filaMenu(g, Icono.ALERTA, "Ayuda y soporte", "Preguntas frecuentes y WhatsApp") { mostrarAyuda() }
         filaMenu(g, Icono.PLAY, "Guía de inicio", "Cómo usar Checa paso a paso") { mostrarGuia() }
         filaMenu(g, Icono.RELOJ, "Tus datos", "Qué guarda Checa y estadísticas") { mostrarTusDatos() }
@@ -4576,7 +4600,11 @@ class MainActivity : Activity() {
         return caja
     }
 
-    private fun dinero(v: Double, dec: Int = 2) = "$" + String.format(Locale.US, "%,.${dec}f", v)
+    private fun dinero(v: Double, dec: Int = 2) = prefs.moneda.monto(v, dec)
+    /** Símbolo antes del número en los campos («$»), o vacío si la moneda lo pone después. */
+    private fun simAntes() = prefs.moneda.let { if (it.despues) "" else it.simbolo }
+    /** Unidad del campo con el símbolo detrás si la moneda lo pone después («/l» o « €/l»). */
+    private fun simDespues(u: String) = prefs.moneda.let { if (it.despues) " ${it.simbolo}$u" else u }
 
     private fun dp(v: Int): Int = (v * resources.displayMetrics.density).toInt()
 

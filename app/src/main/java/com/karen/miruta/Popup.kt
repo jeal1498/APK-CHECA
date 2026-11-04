@@ -330,7 +330,8 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
 
         // Lo que te queda en grande, con «netos» en la misma línea (nunca un monto solo).
         val conNeta = prefs.mostrarNeta && prefs.kmPorLitro > 0
-        val valor = "$" + fmt(if (conNeta) o.neta(prefs) else o.tarifa, 2)
+        val mon = prefs.moneda
+        val valor = mon.monto(if (conNeta) o.neta(prefs) else o.tarifa, 2)
         val etiqueta = if (conNeta) "netos" else "tarifa"
         val grande = SpannableString("$valor  $etiqueta")
         grande.setSpan(RelativeSizeSpan(0.34f), valor.length, grande.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -349,13 +350,13 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         }
         if (conNeta) {
             linea.addView(txt(
-                "Viaje $" + fmt(o.tarifa, 2) + " · Gasolina −$" + fmt(o.gasolina(prefs), 2),
+                "Viaje " + mon.monto(o.tarifa, 2) + " · Gasolina −" + mon.monto(o.gasolina(prefs), 2),
                 0.72f, Tema.TENUE, Fuentes.texto
             ).apply { maxLines = 1 })
         }
         val rayo = when {
             o.multiplicador > 1.0 -> "⚡" + fmtX(o.multiplicador) + "x"
-            o.dinamica > 0 -> "⚡+$" + String.format(Locale.US, "%.0f", o.dinamica)
+            o.dinamica > 0 -> "⚡+" + mon.monto(o.dinamica, 0)
             else -> null
         }
         if (rayo != null) {
@@ -391,11 +392,11 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         val recFalla = prefs.filtroRecMax && o.recogidaKm > 0 && o.recogidaKm > prefs.recogidaMaxKm
         val durFalla = prefs.filtroDurMax && o.viajeMin > prefs.duracionMax
         val lista = listOf(
-            ficha("$" + fmt(o.porHora, 0) + "/h",
-                if (prefs.filtroHora) "meta $" + fmt(prefs.minPorHora.toDouble(), 0) else "por hora",
+            ficha(mon.tasa(o.porHora, 0, "/h"),
+                if (prefs.filtroHora) "meta " + mon.monto(prefs.minPorHora.toDouble(), 0) else "por hora",
                 if (prefs.filtroHora) o.porHora >= prefs.minPorHora else null),
-            ficha("$" + fmt(o.porKm, 2) + "/km",
-                if (prefs.filtroKm) "meta $" + fmtMin(prefs.minPorKm) else "por km",
+            ficha(mon.tasa(o.porKm, 2, "/km"),
+                if (prefs.filtroKm) "meta " + mon.monto(prefs.minPorKm.toDouble(), if (prefs.minPorKm % 1f == 0f) 0 else 1) else "por km",
                 if (prefs.filtroKm) o.porKm >= prefs.minPorKm else null),
             when {
                 recFalla -> ficha(fmt(o.recogidaKm, 1) + " km", "recogida máx. " + fmtMin(prefs.recogidaMaxKm), false)

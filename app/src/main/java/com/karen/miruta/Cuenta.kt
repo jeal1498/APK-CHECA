@@ -295,7 +295,7 @@ object Cuenta {
         val e = s.edit()
         if (s.getString("correo", null) != correo) {
             e.remove("lic_firma").remove("lic_vence").remove("lic_f").remove("lic_eq").remove("equipos").remove("quitado")
-                .remove("precio_beta").remove("ajustes_hash")
+                .remove("precio_beta").remove("ajustes_hash").remove("perfil_hash")
         }
         e.putString("correo", correo)
             .putString("acceso", j.getString("access_token"))
@@ -358,6 +358,7 @@ object Cuenta {
         sincronizarInvitacion(ctx, t)
         sincronizarPrecio(ctx, t)
         try { sincronizarAjustes(ctx, t) } catch (_: Exception) { }
+        try { sincronizarPerfil(ctx, t) } catch (_: Exception) { }
         return Resultado.Ok
     }
 
@@ -409,7 +410,70 @@ object Cuenta {
                 val local = Prefs(app).exportar()
                 if (canon(local) != sp(app).getString("ajustes_hash", null)) subirAjustes(app, token(app), local)
             } catch (_: Exception) { }
+            try {
+                if (canonPerfil(Prefs(app)) != sp(app).getString("perfil_hash", null)) sincronizarPerfil(app, token(app))
+            } catch (_: Exception) { }
         }.start()
+    }
+
+    // ------------------------------------------------------------------
+    // Perfil del conductor (compartido con Clientela): moneda y gasolina por km
+    // ------------------------------------------------------------------
+
+    /** Costo de gasolina por km (precio por litro ÷ km por litro), o null si falta un dato. */
+    private fun gasolinaKm(p: Prefs): Double? =
+        if (p.kmPorLitro > 0 && p.precioLitro > 0)
+            Math.round(p.precioLitro.toDouble() / p.kmPorLitro * 10_000) / 10_000.0
+        else null
+
+    private fun canonPerfil(p: Prefs): String = p.moneda.toString() + "|" + gasolinaKm(p)
+
+    /**
+     * La moneda la manda la cuenta, salvo que se haya cambiado aquí y falte subirla.
+     * La gasolina por km la escribe Checa (Clientela la lee para su cotizador).
+     */
+    private fun sincronizarPerfil(ctx: Context, t: String) {
+        val p = Prefs(ctx)
+        val filas = JSONArray(pedir("GET",
+            "/rest/v1/perfil_conductor?select=moneda,simbolo,simbolo_despues,sep_miles,sep_decimal,decimales,gasolina_km",
+            t, null))
+        val remoto = if (filas.length() > 0) filas.getJSONObject(0) else null
+        val sube = JSONObject()
+        val pendiente = p.monedaPendiente
+        if (pendiente) {
+            val m = p.moneda
+            sube.put("moneda", m.codigo).put("simbolo", m.simbolo).put("simbolo_despues", m.despues)
+                .put("sep_miles", m.miles).put("sep_decimal", m.decimal).put("decimales", m.decimales)
+        } else if (remoto != null) {
+            val m = Moneda(
+                remoto.optString("moneda", "MXN"), remoto.optString("simbolo", "$"),
+                remoto.optBoolean("simbolo_despues", false), remoto.optString("sep_miles", ","),
+                remoto.optString("sep_decimal", "."), remoto.optInt("decimales", 0)
+            ).normalizada()
+            if (m != p.moneda) {
+                p.moneda = m
+                sp(ctx).edit().putBoolean("ajustes_nuevos", true).commit()
+            }
+        }
+        val gk = gasolinaKm(p)
+        val gkRemoto = if (remoto == null || remoto.isNull("gasolina_km")) null else remoto.optDouble("gasolina_km")
+        if (gk != null && (gkRemoto == null || Math.abs(gk - gkRemoto) > 0.00005)) sube.put("gasolina_km", gk)
+        if (sube.length() > 0) {
+            pedir("POST", "/rest/v1/perfil_conductor?on_conflict=user_id", t, JSONArray().put(sube).toString(),
+                "resolution=merge-duplicates,return=minimal")
+            if (pendiente) p.monedaPendiente = false
+        }
+        sp(ctx).edit().putString("perfil_hash", canonPerfil(p)).commit()
+    }
+
+    /** Elige la moneda en este equipo y la sube a la cuenta (la ve también Clientela). */
+    fun cambiarMoneda(ctx: Context, m: Moneda) {
+        val p = Prefs(ctx)
+        p.moneda = m
+        p.monedaPendiente = true
+        if (!conectada(ctx)) return
+        val app = ctx.applicationContext
+        Thread { try { sincronizarPerfil(app, token(app)) } catch (_: Exception) { } }.start()
     }
 
     /** true una sola vez si se aplicaron ajustes de la cuenta (la pantalla debe repintarse). */

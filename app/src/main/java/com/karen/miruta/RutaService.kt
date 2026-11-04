@@ -242,7 +242,7 @@ class RutaService : AccessibilityService() {
                 val textos = LinkedHashSet<String>()
                 recolectar(raiz, textos, 0)
                 if (textos.isEmpty()) continue
-                val leida = Parser.analizar(textos.toList())
+                val leida = Parser.analizar(textos.toList(), prefs.moneda)
                 if (prefs.diagnostico && textos.any { TRAMO.containsMatchIn(it) }) {
                     val firma = leida?.let { "${it.tarifa}|${it.km}|${it.min}" } ?: "?"
                     if (Guardado.esNueva(app, leida != null, firma)) {

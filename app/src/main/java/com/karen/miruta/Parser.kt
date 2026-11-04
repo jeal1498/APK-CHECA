@@ -70,10 +70,64 @@ data class Oferta(
  * los tramos "N min (X km)" (ir por el pasajero + viaje).
  */
 object Parser {
-    private const val NUM = """(\d{1,3}(?:,\d{3})+(?:\.\d{1,2})?|\d+(?:\.\d{1,2})?)"""
-    private val montoSolo = Regex("""^\s*(?:MXN?\s?)?\$\s?$NUM\s*(?:[⚡x×\d.\s]*)$""")
-    private val monto = Regex("""(?<!\+)\$\s?$NUM(?!\s?/)""")
-    private val noTarifa = Regex("""(adicional|/km|/h|aceptar|por inicio|propina|ganancia|hoy|semana|saldo|quedan|gasolina|netos|meta \$)""", RegexOption.IGNORE_CASE)
+    /** Regex de montos para una moneda. Con pesos mexicanos son las de siempre. */
+    class Reglas(val moneda: Moneda) {
+        private val legado = moneda.codigo == "MXN" && moneda.simbolo == "$" && !moneda.despues &&
+            moneda.miles == "," && moneda.decimal == "."
+        private val num: String
+        private val pre: String
+        private val sim: String
+        val montoSolo: Regex
+        val monto: Regex
+        val incluido: Regex
+        /** Solo el monto, sin nada más (la tarifa grande, para ponerla primero). */
+        val montoGrande: Regex
+
+        init {
+            val d = sep(moneda.decimal)
+            val alt = """\d+(?:$d\d{1,2})?"""
+            num = if (moneda.miles.isEmpty()) "($alt)"
+                else """(\d{1,3}(?:${sep(moneda.miles)}\d{3})+(?:$d\d{1,2})?|$alt)"""
+            sim = moneda.simbolos().joinToString("|") { Regex.escape(it) }
+            pre = if (legado) """\$""" else """(?:${Regex.escape(moneda.codigo)}\s?)?(?:$sim)"""
+            val cola = """\s*(?:[⚡x×\d.\s]*)$"""
+            if (legado || !moneda.despues) {
+                val preSolo = if (legado) """(?:MXN?\s?)?\$""" else pre
+                montoSolo = Regex("""^\s*$preSolo\s?$num$cola""")
+                monto = Regex("""(?<!\+)$pre\s?$num(?!\s?/)""")
+                incluido = Regex("""\+?\s?$pre\s?$num\s*incluid""", RegexOption.IGNORE_CASE)
+                montoGrande = if (legado) Regex("""^\$\s?[\d,]+(?:\.\d{1,2})?$""")
+                    else Regex("""^\s*$pre\s?$num\s*$""")
+            } else {
+                // «12,50 €»; también se acepta «€12,50».
+                montoSolo = Regex("""^\s*(?:$num\s?(?:$sim)|$pre\s?$num)$cola""")
+                monto = Regex("""(?<![+\d.,])$num\s?(?:$sim)(?!\s?/)|(?<!\+)$pre\s?$num(?!\s?/)""")
+                incluido = Regex("""\+?\s?(?:$num\s?(?:$sim)|$pre\s?$num)\s*incluid""", RegexOption.IGNORE_CASE)
+                montoGrande = Regex("""^\s*(?:$num\s?(?:$sim)|$pre\s?$num)\s*$""")
+            }
+        }
+
+        /** El número del primer grupo que se llenó, ya como Double. */
+        fun valor(m: MatchResult): Double? {
+            val s = m.groupValues.drop(1).firstOrNull { it.isNotEmpty() } ?: return null
+            val sinMiles = if (moneda.miles.isEmpty()) s else s.replace(moneda.miles, "")
+            return sinMiles.replace(moneda.decimal, ".").toDoubleOrNull()
+        }
+
+        private fun sep(c: String) = if (c == ".") "\\." else c
+    }
+
+    @Volatile private var reglas = Reglas(Moneda.MXN)
+    private fun reglasDe(m: Moneda): Reglas {
+        val r = reglas
+        if (r.moneda == m) return r
+        return Reglas(m).also { reglas = it }
+    }
+
+    /** true si el texto es solo un monto (la tarifa grande del OCR). */
+    fun esMontoSolo(t: String, m: Moneda = Moneda.MXN): Boolean = reglasDe(m).montoGrande.matches(t)
+
+    private val noTarifa = Regex("""(adicional|/km|/h|aceptar|por inicio|propina|ganancia|hoy|semana|saldo|quedan|gasolina|netos|meta\s)""", RegexOption.IGNORE_CASE)
 
     // "5min (1.7km)", "A 5 min (1.6 km)", "Viaje: 8 min (3.2 km)", "2min (720m)", "1 h 5 min (40 km)"
     private val tramo = Regex(
@@ -85,12 +139,10 @@ object Parser {
     private val multi = Regex("""(?<![.,$])([1-4](?:[.,]\d{1,2})?)\s?[x×X](?![a-zA-Z0-9])""")
 
     // Uber: "+$62.00 incluido" = dinámica ya sumada en la tarifa (solo se muestra).
-    private val incluido = Regex("""\+?\s?\$\s?$NUM\s*incluid""", RegexOption.IGNORE_CASE)
-
-    private fun buscarDinamica(textos: List<String>): Double {
+    private fun buscarDinamica(textos: List<String>, r: Reglas): Double {
         for (t in textos) {
-            val m = incluido.find(t) ?: continue
-            val v = aNumero(m.groupValues[1]) ?: continue
+            val m = r.incluido.find(t) ?: continue
+            val v = r.valor(m) ?: continue
             if (v > 0) return v
         }
         return 0.0
@@ -108,8 +160,9 @@ object Parser {
         return 0.0
     }
 
-    fun analizar(textos: List<String>): Oferta? {
-        val tarifa = buscarTarifa(textos) ?: return null
+    fun analizar(textos: List<String>, moneda: Moneda = Moneda.MXN): Oferta? {
+        val r = reglasDe(moneda)
+        val tarifa = buscarTarifa(textos, r) ?: return null
 
         var km = 0.0
         var min = 0.0
@@ -141,15 +194,19 @@ object Parser {
 
         // Una oferta siempre trae 2 tramos (recogida + viaje); con 1 aceptamos también.
         if (tramos == 0) return null
-        if (tarifa < 10 || tarifa > 20000) return null
+        // Límites en pesos mexicanos; en otra moneda se convierten (aproximado) con más holgura.
+        val f = moneda.factor
+        val holgura = if (moneda.codigo == "MXN") 1.0 else 2.0
+        if (tarifa <= 0) return null
+        if (f != null && (tarifa * f < 10 / holgura || tarifa * f > 20000 * holgura)) return null
         if (km < 0.3 || km > 500) return null
         if (min < 1 || min > 600) return null
         // Con un solo tramo no sabemos cuál es la recogida.
         if (tramos < 2) { recKm = 0.0; recMin = 0.0 }
-        val dinamica = buscarDinamica(textos).let { if (it < tarifa) it else 0.0 }
+        val dinamica = buscarDinamica(textos, r).let { if (it < tarifa) it else 0.0 }
         val o = Oferta(tarifa, km, min, recKm, recMin, buscarMultiplicador(textos), dinamica)
         // Descarta lecturas imposibles.
-        if (o.porKm > 80 || o.porHora > 3000) return null
+        if (f != null && (o.porKm * f > 80 * holgura || o.porHora * f > 3000 * holgura)) return null
         return o
     }
 
@@ -158,19 +215,17 @@ object Parser {
     private fun corregirMinutos(t: String): String =
         minutosOcr.replace(t) { it.value.replace(Regex("[lI|]"), "1") }
 
-    private fun aNumero(s: String): Double? = s.replace(",", "").toDoubleOrNull()
-
-    private fun buscarTarifa(textos: List<String>): Double? {
+    private fun buscarTarifa(textos: List<String>, r: Reglas): Double? {
         // 1) Primer texto que es solo un monto (la tarifa grande va antes que los botones).
         for (t in textos) {
-            val m = montoSolo.find(t) ?: continue
-            return aNumero(m.groupValues[1])
+            val m = r.montoSolo.find(t) ?: continue
+            return r.valor(m)
         }
         // 2) Respaldo: primer monto dentro de un texto que no sea extra/bono/precio por km.
         for (t in textos) {
             if (noTarifa.containsMatchIn(t)) continue
-            val m = monto.find(t) ?: continue
-            return aNumero(m.groupValues[1])
+            val m = r.monto.find(t) ?: continue
+            return r.valor(m)
         }
         return null
     }

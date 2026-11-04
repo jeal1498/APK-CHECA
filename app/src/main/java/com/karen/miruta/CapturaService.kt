@@ -234,19 +234,21 @@ class CapturaService : Service() {
         }
     }
 
-    /** Corrige confusiones típicas del OCR: "S151.34" → "$151.34". */
-    private fun normalizar(s: String): String =
-        s.trim().replace(Regex("""^[S§]\s?(?=\d)"""), "\\$")
+    /** Corrige confusiones típicas del OCR: "S151.34" → "$151.34" (solo en monedas con «$»). */
+    private fun normalizar(s: String, conPeso: Boolean): String =
+        if (conPeso) s.trim().replace(Regex("""^[S§]\s?(?=\d)"""), "\\$") else s.trim()
 
     private fun procesarGrupo(grupo: List<Text.Line>, app: String?, zona: Rect?) {
+        val moneda = prefs.moneda
+        val conPeso = moneda.simbolos().contains("$")
         val ordenadas = grupo.sortedWith(compareBy({ it.boundingBox?.top ?: 0 }, { it.boundingBox?.left ?: 0 }))
         // La tarifa es el monto con letra más grande: se pone primero.
         val tarifa = ordenadas
-            .filter { soloMonto.matches(normalizar(it.text)) }
+            .filter { Parser.esMontoSolo(normalizar(it.text, conPeso), moneda) }
             .maxByOrNull { it.boundingBox?.height() ?: 0 }
-        val lineas = (listOfNotNull(tarifa) + ordenadas.filter { it !== tarifa }).map { normalizar(it.text) }
+        val lineas = (listOfNotNull(tarifa) + ordenadas.filter { it !== tarifa }).map { normalizar(it.text, conPeso) }
 
-        val oferta = Parser.analizar(lineas)
+        val oferta = Parser.analizar(lineas, moneda)
         // «Guardar pantallas de ofertas»: texto y foto (solo la zona de la app) de cada oferta distinta.
         if (prefs.diagnostico && lineas.any { tramoTexto.containsMatchIn(it) }) {
             val texto = lineas.take(40).joinToString("\n") + "\n\nCheca entendió: " +
@@ -359,7 +361,6 @@ class CapturaService : Service() {
         private const val ID_AVISO = 2
         private const val INTERVALO_MS = 1000L
         private val tramoTexto = Regex("""\d\s?min\s*\(""", RegexOption.IGNORE_CASE)
-        private val soloMonto = Regex("""^\$\s?[\d,]+(?:\.\d{1,2})?$""")
         @Volatile var corriendo = false
         /** Android cortó la lectura sin que el conductor la detuviera (Inicio lo avisa en amarillo). */
         @Volatile var cortada = false

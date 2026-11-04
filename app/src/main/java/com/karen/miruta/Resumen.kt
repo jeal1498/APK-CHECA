@@ -20,6 +20,7 @@ object Resumen {
     private const val ALTO = 1350
 
     fun compartir(ctx: Context, semana: Boolean) {
+        mon = Prefs(ctx).moneda
         val viajes = if (semana) Jornada.deSemana(ctx) else Jornada.deHoy(ctx)
         val t = Jornada.totales(viajes)
         try {
@@ -42,7 +43,8 @@ object Resumen {
         }
     }
 
-    private fun dinero(v: Double) = "$" + String.format(Locale.US, "%,.0f", v)
+    private var mon = Moneda.MXN
+    private fun dinero(v: Double) = mon.monto(v, 0)
 
     private fun texto(t: Totales, semana: Boolean) =
         "Mi ${if (semana) "semana" else "día"} con Checa: ${dinero(t.neta)} netos en ${t.viajes} viajes " +
@@ -163,7 +165,7 @@ object Resumen {
         val datos = listOf(
             "VIAJES" to t.viajes.toString(),
             "GASOLINA" to "−" + dinero(t.gasolina),
-            "NETO POR KM" to ("$" + String.format(Locale.US, "%.2f", t.netaPorKm))
+            "NETO POR KM" to mon.monto(t.netaPorKm, 2)
         )
         val top = y + 46f
         val w = (x1 - x0 - 48f) / 3f
