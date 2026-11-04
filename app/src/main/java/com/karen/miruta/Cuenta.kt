@@ -210,6 +210,7 @@ object Cuenta {
             Guardado.borrarTodo(app)
             Historial.borrar(app)
             Jornada.borrarPrivados(app)
+            Sos.borrarTodo(app)
             Prefs(app).borrarDiagnostico()
             Licencia.limpiarCache()
             principal.post { listo() }
@@ -299,6 +300,8 @@ object Cuenta {
                 .remove("precio_beta").remove("ajustes_hash").remove("perfil_hash")
                 .remove("vc_subidos").remove("vc_borrar")
             Jornada.borrarPrivados(ctx)
+            // Los contactos que se pusieron sin cuenta se quedan y se suben; los de otra cuenta, no.
+            if (s.getString("correo", null) != null) { e.remove("sos_pend"); Sos.borrarTodo(ctx) }
         }
         e.putString("correo", correo)
             .putString("acceso", j.getString("access_token"))
@@ -364,6 +367,7 @@ object Cuenta {
         try { sincronizarPerfil(ctx, t) } catch (_: Exception) { }
         try { sincronizarViajes(ctx, t) } catch (_: Exception) { }
         try { bajarPrivados(ctx, t) } catch (_: Exception) { }
+        try { sincronizarSos(ctx, t) } catch (_: Exception) { }
         return Resultado.Ok
     }
 
@@ -529,6 +533,35 @@ object Cuenta {
         val r = pedir("GET", "/rest/v1/viajes_privados?select=fecha,hora,precio,km:datos-%3E%3Ekm" +
             "&borrado=is.false&estado=eq.hecho&fecha=gte.$desde", t, null)
         Jornada.guardarPrivados(ctx, JSONArray(r).toString())
+    }
+
+    /**
+     * Contactos SOS: si cambiaron aquí, se suben (y se borran en la cuenta los que se quitaron);
+     * si no, se toman los de la cuenta.
+     */
+    @Synchronized
+    private fun sincronizarSos(ctx: Context, t: String) {
+        val remotos = Sos.desdeJson(JSONArray(pedir("GET", "/rest/v1/contactos_sos?select=id,nombre,telefono,relacion", t, null)))
+        if (!sp(ctx).getBoolean("sos_pend", false)) {
+            Sos.guardar(ctx, remotos, local = false)
+            return
+        }
+        val locales = Sos.contactos(ctx)
+        val ids = locales.map { it.id }.toSet()
+        for (r in remotos) if (r.id !in ids) pedir("DELETE", "/rest/v1/contactos_sos?id=eq.${r.id}", t, null)
+        if (locales.isNotEmpty()) {
+            pedir("POST", "/rest/v1/contactos_sos?on_conflict=user_id,id", t, Sos.aJson(locales).toString(),
+                "resolution=merge-duplicates,return=minimal")
+        }
+        sp(ctx).edit().putBoolean("sos_pend", false).commit()
+    }
+
+    /** Cambiaron los contactos SOS en este teléfono: se suben si hay cuenta. */
+    fun contactosCambiaron(ctx: Context) {
+        sp(ctx).edit().putBoolean("sos_pend", true).commit()
+        if (!conectada(ctx)) return
+        val app = ctx.applicationContext
+        Thread { try { sincronizarSos(app, token(app)) } catch (_: Exception) { } }.start()
     }
 
     /** Tras registrar un viaje: lo sube si hay cuenta (sin esperar). */

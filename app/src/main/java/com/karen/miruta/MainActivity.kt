@@ -492,6 +492,7 @@ class MainActivity : Activity() {
         mh.addView(mejoresHorasLista, margenArriba(10))
         col.addView(mh, margenTarjeta())
 
+        col.addView(tarjetaSos(), margenTarjeta())
         col.addView(tarjetaCompartir(), margenTarjeta())
         col.addView(tarjetaClientela(), margenTarjeta())
 
@@ -1697,6 +1698,9 @@ class MainActivity : Activity() {
         val mon = prefs.moneda
         val nombreMon = Moneda.LISTA.firstOrNull { it.first.codigo == mon.codigo }?.second ?: mon.codigo
         filaMenu(g, Icono.FILTROS, "Moneda", "$nombreMon · ${mon.monto(1234.5, 2)}") { mostrarMoneda() }
+        val nSos = Sos.contactos(this).size
+        filaMenu(g, Icono.ALERTA, "Contactos SOS", if (nSos == 0) "Agrega a quien avisar en una emergencia"
+            else "$nSos ${if (nSos == 1) "contacto" else "contactos"}", if (nSos == 0) cAmarillo else cTenue) { gestionarContactosSos() }
         filaMenu(g, Icono.ALERTA, "Ayuda y soporte", "Preguntas frecuentes y WhatsApp") { mostrarAyuda() }
         filaMenu(g, Icono.PLAY, "Guía de inicio", "Cómo usar Checa paso a paso") { mostrarGuia() }
         filaMenu(g, Icono.RELOJ, "Tus datos", "Qué guarda Checa y estadísticas") { mostrarTusDatos() }
@@ -2240,6 +2244,141 @@ class MainActivity : Activity() {
     }
 
     /** Tarjeta «Invita a un amigo» (Inicio y Cuenta); su contenido lo pinta [pintarInvitar]. */
+    // =====================================================================
+    // SOS: contactos de confianza, ubicación (solo al tocar), WhatsApp y llamada
+    // =====================================================================
+
+    private fun tarjetaSos(): View {
+        val t = tarjeta()
+        t.addView(cabeceraTarjeta(Icono.ALERTA, "SOS",
+            "Manda tu ubicación por WhatsApp a tus contactos o llama", false).first)
+        t.addView(boton("Pedir ayuda", cRojo, Color.WHITE) { pedirSos() }, LinearLayout.LayoutParams(-1, dp(52)).apply {
+            topMargin = dp(Tema.S1)
+        })
+        return t
+    }
+
+    private fun pedirSos() {
+        if (Sos.contactos(this).isEmpty()) { gestionarContactosSos(); return }
+        if (Sos.tienePermiso(this)) { mostrarSos(); return }
+        // Aviso antes del permiso: qué se usa y cuándo.
+        val c = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        c.addView(texto("Para mandar tu ubicación a tus contactos, Checa la lee solo cuando tocas SOS. " +
+            "No la sigue, no la guarda y no la usa en segundo plano.", Tema.T_TEXTO, cTexto2, false)
+            .apply { setLineSpacing(0f, 1.2f) })
+        var h: Dialog? = null
+        c.addView(boton("Permitir ubicación", cVerde, Color.BLACK) {
+            h?.dismiss()
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION), REQ_UBICACION)
+        }, LinearLayout.LayoutParams(-1, dp(48)).apply { topMargin = dp(Tema.S2) })
+        c.addView(botonContorno("Seguir sin ubicación") { h?.dismiss(); mostrarSos() },
+            LinearLayout.LayoutParams(-1, dp(48)).apply { topMargin = dp(Tema.S1) })
+        h = hoja("Tu ubicación", cRojo, c)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQ_UBICACION) mostrarSos()
+    }
+
+    private fun mostrarSos() {
+        val contactos = Sos.contactos(this)
+        val c = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        val estado = texto(if (Sos.tienePermiso(this)) "Buscando tu ubicación…" else "Sin ubicación: el mensaje pide que te llamen.",
+            Tema.T_NOTA, cTenue, false)
+        c.addView(estado)
+        var ubic: android.location.Location? = null
+        var lista = false
+        if (Sos.tienePermiso(this)) {
+            Sos.ubicacion(this) { l ->
+                ubic = l
+                lista = true
+                estado.text = if (l == null) "No se pudo obtener la ubicación: el mensaje pide que te llamen."
+                    else "Ubicación lista (±${l.accuracy.toInt()} m)"
+            }
+        } else lista = true
+        for (k in contactos) {
+            c.addView(texto(k.nombre + if (k.relacion.isNotEmpty()) " · ${k.relacion}" else "", Tema.T_SUB, cTexto, true),
+                margenArriba(Tema.S2))
+            c.addView(dosBotones(
+                boton("WhatsApp", cVerde, Color.BLACK) {
+                    if (!lista) Toast.makeText(this, "Aún sin ubicación: se manda sin ella", Toast.LENGTH_SHORT).show()
+                    if (!Sos.whatsapp(this, k, Sos.mensaje(ubic)))
+                        Toast.makeText(this, "No se pudo abrir WhatsApp", Toast.LENGTH_LONG).show()
+                },
+                botonContorno("Llamar") { Sos.llamar(this, k.telefono) }
+            ), margenArriba(Tema.S1))
+        }
+        val emerg = Sos.emergencias(prefs.moneda)
+        c.addView(boton("Llamar al $emerg", cRojo, Color.WHITE) { Sos.llamar(this, emerg) },
+            LinearLayout.LayoutParams(-1, dp(52)).apply { topMargin = dp(Tema.S2) })
+        c.addView(botonContorno("Mis contactos SOS") { gestionarContactosSos() },
+            LinearLayout.LayoutParams(-1, dp(48)).apply { topMargin = dp(Tema.S1) })
+        hoja("SOS", cRojo, c)
+    }
+
+    private fun gestionarContactosSos() {
+        val c = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        c.addView(texto("Hasta 5 personas de confianza. Con tu cuenta se guardan en la nube para no perderlas.",
+            Tema.T_NOTA, cTenue, false).apply { setLineSpacing(0f, 1.2f) })
+        var h: Dialog? = null
+        val lista = Sos.contactos(this)
+        val g = grupoFilas()
+        for (k in lista) {
+            filaMenu(g, Icono.CUENTA, k.nombre, "+${k.telefono}" + if (k.relacion.isNotEmpty()) " · ${k.relacion}" else "") {
+                AlertDialog.Builder(this)
+                    .setTitle("¿Quitar a ${k.nombre}?")
+                    .setPositiveButton("Quitar") { _, _ ->
+                        Sos.guardar(this, Sos.contactos(this).filter { it.id != k.id })
+                        h?.dismiss()
+                        gestionarContactosSos()
+                    }
+                    .setNegativeButton("Cancelar", null)
+                    .show()
+            }
+        }
+        if (lista.isNotEmpty()) c.addView(g, margenArriba(Tema.S2))
+        if (lista.size < 5) {
+            c.addView(boton("Agregar contacto", cVerde, Color.BLACK) { h?.dismiss(); agregarContactoSos() },
+                LinearLayout.LayoutParams(-1, dp(48)).apply { topMargin = dp(Tema.S2) })
+        }
+        h = hoja("Contactos SOS", cRojo, c)
+    }
+
+    private fun agregarContactoSos() {
+        fun campoSos(pista: String, tipo: Int) = EditText(this).apply {
+            hint = pista
+            setSingleLine()
+            inputType = tipo
+        }
+        val nombre = campoSos("Nombre", InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS)
+        val tel = campoSos(if (prefs.moneda.codigo == "MXN") "WhatsApp (10 dígitos)" else "WhatsApp con lada del país",
+            InputType.TYPE_CLASS_PHONE)
+        val rel = campoSos("Relación (opcional)", InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
+        val caja = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(20), dp(8), dp(20), 0)
+            addView(nombre); addView(tel); addView(rel)
+        }
+        AlertDialog.Builder(this)
+            .setTitle("Contacto SOS")
+            .setView(caja)
+            .setPositiveButton("Guardar") { _, _ ->
+                val n = nombre.text.toString().trim().take(80)
+                val t = Sos.normalizarTelefono(tel.text.toString(), prefs.moneda)
+                when {
+                    n.isEmpty() -> Toast.makeText(this, "Falta el nombre", Toast.LENGTH_LONG).show()
+                    t == null -> Toast.makeText(this, "Revisa el número (con lada del país)", Toast.LENGTH_LONG).show()
+                    else -> Sos.guardar(this, Sos.contactos(this) +
+                        ContactoSos(java.util.UUID.randomUUID().toString(), n, t, rel.text.toString().trim().take(40)))
+                }
+                gestionarContactosSos()
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
     /** Puente con Clientela (otra app, misma cuenta): abre la app si está instalada; si no, la web. */
     private fun tarjetaClientela(): View {
         val t = tarjeta()
@@ -4635,6 +4774,7 @@ class MainActivity : Activity() {
 
     companion object {
         private const val REQ_CAPTURA = 42
+        private const val REQ_UBICACION = 43
         /** La notificación «Checa no está leyendo» abre la app pidiendo iniciar la lectura. */
         const val EXTRA_AUTO_INICIAR = "auto_iniciar"
         /** La notificación «Hay una versión nueva» abre la app con la ventana para actualizar. */

@@ -10,6 +10,9 @@
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <!-- Para que la revisión de versión nueva siga programada después de reiniciar el teléfono. -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- SOS: ubicación solo al tocar «Pedir ayuda», en primer plano (sin ubicación en segundo plano). -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <queries>
         <intent>
