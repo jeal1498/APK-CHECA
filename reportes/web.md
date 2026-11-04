@@ -1,11 +1,11 @@
 # Reporte de Checa (web + app) · últimos 30 días
 
-Generado: 2026-11-03 19:58 UTC. Cuenta visitas únicas (una por pestaña).
+Generado: 2026-11-04 20:06 UTC. Cuenta visitas únicas (una por pestaña).
 
 ## Resumen
 | visitas | descargas | cuentas_nuevas | pagos | ingresos | licencias_activas |
 | --- | --- | --- | --- | --- | --- |
-| 611 | 262 | 44 | 0 | 0 | 3 |
+| 624 | 262 | 44 | 0 | 0 | 3 |
 
 # App
 
@@ -61,7 +61,7 @@ Generado: 2026-11-03 19:58 UTC. Cuenta visitas únicas (una por pestaña).
 | carloshernandez.soles@gmail.com | 10-18 21:09 | 10-18 21:09 | 1 | sin licencia |
 | mcamposl0088@gmail.com | 10-18 19:57 | 11-02 16:40 | 2 | sin licencia |
 | migajas.tlx@gmail.com | 10-18 13:24 | 10-18 13:24 | 1 | sin licencia |
-| dcisnerosdanys@gmail.com | 10-18 13:11 | 10-28 13:07 | 2 | sin licencia |
+| dcisnerosdanys@gmail.com | 10-18 13:11 | 11-04 12:28 | 2 | sin licencia |
 | fercho75.1he@gmail.com | 10-17 21:02 | 10-17 21:02 | 1 | sin licencia |
 | fran2026mx@gmail.com | 10-17 20:31 | 10-17 20:31 | 1 | sin licencia |
 | danvasquez.74625@gmail.com | 10-17 18:19 | 10-17 18:19 | 0 | sin licencia |
@@ -69,10 +69,10 @@ Generado: 2026-11-03 19:58 UTC. Cuenta visitas únicas (una por pestaña).
 | manuelneoss@gmail.com | 10-16 15:02 | 10-16 15:02 | 1 | sin licencia |
 | 2228265104z@gmail.com | 10-16 13:08 | 10-16 13:08 | 1 | sin licencia |
 | ivanmanuelzamoracortes240498@gmail.com | 10-16 09:33 | 10-16 09:33 | 1 | sin licencia |
-| edent402@gmail.com | 10-16 07:42 | 11-02 11:34 | 2 | sin licencia |
+| edent402@gmail.com | 10-16 07:42 | 11-04 12:54 | 2 | sin licencia |
 | lufercab@gmail.com | 10-15 18:21 | 10-15 18:21 | 1 | 20270113 |
 | landingbot01@gmail.com | 10-11 15:23 | 10-21 19:26 | 1 | sin licencia |
-| lalolopezxd@gmail.com | 10-11 15:08 | 10-19 18:43 | 2 | 99991231 |
+| lalolopezxd@gmail.com | 10-11 15:08 | 11-04 05:02 | 2 | 99991231 |
 
 ## Pagos por plan
 Sin datos todavía.
@@ -104,7 +104,7 @@ Sin datos todavía.
 ## Embudo
 | evento | visitas | veces |
 | --- | --- | --- |
-| visita | 611 | 870 |
+| visita | 624 | 883 |
 | descarga | 262 | 295 |
 | clic_descargar | 122 | 134 |
 | descarga_instalar | 69 | 147 |
@@ -116,9 +116,9 @@ Sin datos todavía.
 ## Por fuente (visitas → descargas)
 | fuente | campana | visitas | descargas |
 | --- | --- | --- | --- |
-| directo |  | 461 | 197 |
+| directo |  | 473 | 197 |
 | tiktok |  | 97 | 54 |
-| tiktok | prueba-en-google-play | 21 | 0 |
+| tiktok | prueba-en-google-play | 22 | 0 |
 | app | compartir | 17 | 9 |
 | facebook | beta | 6 | 2 |
 | web | cierre | 3 | 0 |
@@ -132,9 +132,9 @@ Sin datos todavía.
 ## Por dispositivo
 | dispositivo | visitas | descargas |
 | --- | --- | --- |
-| android | 506 | 262 |
+| android | 507 | 262 |
+| pc | 61 | 0 |
 | iphone | 57 | 0 |
-| pc | 49 | 0 |
 
 ## Qué botón lleva a descargar
 | boton | descargas |
@@ -155,7 +155,8 @@ Sin datos todavía.
 ## Por día
 | dia | visitas | descargas |
 | --- | --- | --- |
-| 2026-11-03 | 1 | 0 |
+| 2026-11-04 | 11 | 0 |
+| 2026-11-03 | 3 | 0 |
 | 2026-11-02 | 11 | 0 |
 | 2026-11-01 | 5 | 0 |
 | 2026-10-31 | 2 | 1 |
