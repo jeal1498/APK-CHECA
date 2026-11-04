@@ -41,7 +41,7 @@ jobs:
             if [ -z "${!v}" ]; then echo "Falta el secreto $v"; exit 1; fi
           done
           llave=$(printf '%s\n' "$LLAVE" | base64 -w0)
-          supabase secrets set --project-ref "$PROYECTO" \
+          supabase secrets set --yes --project-ref "$PROYECTO" \
             "MP_ACCESS_TOKEN=$MP_ACCESS_TOKEN" \
             "MP_WEBHOOK_SECRET=$MP_WEBHOOK_SECRET" \
             "LICENCIA_PRIVADA_B64=$llave"
@@ -49,7 +49,7 @@ jobs:
         run: |
           set -euo pipefail
           # Las dos revisan por su cuenta quién llama (mp-pago con la sesión, mp-webhook con Mercado Pago).
-          supabase functions deploy mp-pago --project-ref "$PROYECTO" --no-verify-jwt --use-api
-          supabase functions deploy mp-webhook --project-ref "$PROYECTO" --no-verify-jwt --use-api
+          supabase functions deploy mp-pago --yes --project-ref "$PROYECTO" --no-verify-jwt --use-api
+          supabase functions deploy mp-webhook --yes --project-ref "$PROYECTO" --no-verify-jwt --use-api
           # Esta función conserva la verificación JWT y valida además la sesión en el handler.
-          supabase functions deploy eliminar-cuenta --project-ref "$PROYECTO" --use-api
+          supabase functions deploy eliminar-cuenta --yes --project-ref "$PROYECTO" --use-api
