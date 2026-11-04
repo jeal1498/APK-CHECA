@@ -261,7 +261,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
                 // La mejor de dos lleva el borde más grueso.
                 setStroke(e(if (marca == MEJOR) 3.5f else 2.5f).coerceAtLeast(2), color)
             }
-            setPadding(e(12f), e(6f), e(4f), e(10f))
+            setPadding(e(10f), e(7f), e(6f), e(8f))
             elevation = dp(8).toFloat()
         }
 
@@ -279,7 +279,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
             segunda -> "2ª "
             else -> ""
         }
-        val cuerpo = "$accion: "
+        val cuerpo = "$accion "
         val sb = SpannableString(pre + cuerpo + valor + (if (rayo != null) "  $rayo" else ""))
         var i = 0
         if (pre.isNotEmpty()) {
@@ -299,18 +299,17 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
         }
-        fila1.addView(View(ctx), LinearLayout.LayoutParams(e(30f), 1))
         fila1.addView(txt(sb, 15f, Tema.HUESO, Fuentes.titulo).apply {
-            gravity = Gravity.CENTER
+            gravity = Gravity.START
             encoger(this, 9f)
         }, LinearLayout.LayoutParams(0, -2, 1f))
         // ✕ con zona de toque amplia.
         val cerrarBtn = ImageView(ctx).apply {
             setImageDrawable(Icono(Icono.CERRAR, Tema.HUESO))
-            setPadding(e(9f), e(9f), e(9f), e(9f))
+            setPadding(e(6f), e(6f), e(6f), e(6f))
             if (interactivo) setOnClickListener { ocultar() }
         }
-        fila1.addView(cerrarBtn, LinearLayout.LayoutParams(e(30f), e(30f)))
+        fila1.addView(cerrarBtn, LinearLayout.LayoutParams(e(24f), e(24f)))
         marco.addView(fila1, LinearLayout.LayoutParams(-1, -2))
 
         // Línea 2: $/h | $/km | min. Verde si cumple la meta, rojo si no, hueso si el filtro está apagado.
@@ -323,11 +322,11 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
             when {
                 // "rec." y "total" evitan que el lector tome estos datos como un tramo de la oferta.
                 recFalla -> (fmt(o.recogidaKm, 1) + " km rec.") to Tema.ROJO
-                durFalla -> (fmt(o.viajeMin, 0) + " min") to Tema.ROJO
-                else -> (fmt(o.min, 0) + " min") to Tema.HUESO
+                durFalla -> (fmt(o.viajeMin, 0) + "m") to Tema.ROJO
+                else -> (fmt(o.min, 0) + "m") to Tema.HUESO
             }
         )
-        val sep = " | "
+        val sep = " · "
         val linea = StringBuilder()
         val tramos = ArrayList<Triple<Int, Int, Int>>()
         datos.forEachIndexed { k, (t, c) ->
@@ -341,13 +340,13 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         while (true) {
             val k = linea.indexOf(sep, p)
             if (k < 0) break
-            sb2.setSpan(ForegroundColorSpan(Tema.BORDE), k, k + sep.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            sb2.setSpan(ForegroundColorSpan(Tema.TENUE), k, k + sep.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             p = k + sep.length
         }
-        marco.addView(txt(sb2, 12.5f, Tema.HUESO, Fuentes.numero).apply {
-            gravity = Gravity.CENTER
+        marco.addView(txt(sb2, 12f, Tema.HUESO, Fuentes.numero).apply {
+            gravity = Gravity.START
             encoger(this, 8f)
-        }, LinearLayout.LayoutParams(-1, -2).apply { topMargin = e(2f); rightMargin = e(8f) })
+        }, LinearLayout.LayoutParams(-1, -2).apply { topMargin = e(3f) })
 
         return marco
     }
@@ -392,7 +391,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         )
 
         /** Ancho del pop-up al 100 %, en dp; se multiplica por el tamaño elegido en Ajustes. */
-        const val ANCHO_BASE = 230
+        const val ANCHO_BASE = 190
 
         /** Ancho del pop-up en píxeles según el tamaño elegido (sin el tope de la pantalla). */
         fun anchoPx(c: Context, p: Prefs): Int =
