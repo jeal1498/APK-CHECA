@@ -208,6 +208,7 @@ class MainActivity : Activity() {
     override fun onResume() {
         super.onResume()
         actualizarAcceso()
+        Cuenta.actualizarPrivados(this) { pintarJornada() }
         // Ajustes cerró al instante la página del lector (ese teléfono no la soporta): se abre la lista.
         if (detalleAbiertoEn > 0L) {
             val rapido = android.os.SystemClock.elapsedRealtime() - detalleAbiertoEn < 1500
@@ -1424,7 +1425,9 @@ class MainActivity : Activity() {
         if (!::jornadaCaja.isInitialized) return
         val c = jornadaCaja
         c.removeAllViews()
-        val hoy = Jornada.totales(Jornada.deHoy(this))
+        val listaHoy = Jornada.deHoy(this)
+        val hoy = Jornada.totales(listaHoy)
+        val deClientela = listaHoy.count { it.app == Jornada.APP_CLIENTELA }
         val sem = Jornada.totales(Jornada.deSemana(this))
         val meta = prefs.metaDia.toDouble()
         // Lo que te queda hoy en grande y, al lado, contra qué meta.
@@ -1446,7 +1449,9 @@ class MainActivity : Activity() {
         c.addView(texto(
             when {
                 hoy.viajes == 0 -> "Marca los viajes que aceptas para llevar tu cuenta"
-                else -> "${hoy.viajes} ${if (hoy.viajes == 1) "viaje" else "viajes"} · gasolina −${dinero(hoy.gasolina, 0)}" +
+                else -> "${hoy.viajes} ${if (hoy.viajes == 1) "viaje" else "viajes"}" +
+                    (if (deClientela > 0) " ($deClientela de Clientela)" else "") +
+                    " · gasolina −${dinero(hoy.gasolina, 0)}" +
                     if (meta > 0 && hoy.neta >= meta) " · ¡meta cumplida!" else ""
             },
             Tema.T_NOTA, cTenue, false

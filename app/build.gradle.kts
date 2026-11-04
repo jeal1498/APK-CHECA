@@ -10,8 +10,8 @@ android {
     defaultConfig {
         minSdk = 26
         targetSdk = 36
-        versionCode = 78
-        versionName = "9.8"
+        versionCode = 79
+        versionName = "9.9"
     }
 
     buildFeatures { buildConfig = true }

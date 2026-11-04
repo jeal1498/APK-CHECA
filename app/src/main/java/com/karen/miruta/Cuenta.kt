@@ -209,6 +209,7 @@ object Cuenta {
             // Otra persona puede entrar después en este equipo: se borra lo guardado de esta cuenta.
             Guardado.borrarTodo(app)
             Historial.borrar(app)
+            Jornada.borrarPrivados(app)
             Prefs(app).borrarDiagnostico()
             Licencia.limpiarCache()
             principal.post { listo() }
@@ -296,6 +297,8 @@ object Cuenta {
         if (s.getString("correo", null) != correo) {
             e.remove("lic_firma").remove("lic_vence").remove("lic_f").remove("lic_eq").remove("equipos").remove("quitado")
                 .remove("precio_beta").remove("ajustes_hash").remove("perfil_hash")
+                .remove("vc_subidos").remove("vc_borrar")
+            Jornada.borrarPrivados(ctx)
         }
         e.putString("correo", correo)
             .putString("acceso", j.getString("access_token"))
@@ -359,6 +362,8 @@ object Cuenta {
         sincronizarPrecio(ctx, t)
         try { sincronizarAjustes(ctx, t) } catch (_: Exception) { }
         try { sincronizarPerfil(ctx, t) } catch (_: Exception) { }
+        try { sincronizarViajes(ctx, t) } catch (_: Exception) { }
+        try { bajarPrivados(ctx, t) } catch (_: Exception) { }
         return Resultado.Ok
     }
 
@@ -474,6 +479,87 @@ object Cuenta {
         if (!conectada(ctx)) return
         val app = ctx.applicationContext
         Thread { try { sincronizarPerfil(app, token(app)) } catch (_: Exception) { } }.start()
+    }
+
+    // ------------------------------------------------------------------
+    // «Mi día» unificado: viajes_checa (sube) y viajes_privados de Clientela (baja)
+    // ------------------------------------------------------------------
+
+    /** Id fijo por viaje (la hora de la oferta), para que subirlo dos veces no lo duplique. */
+    private fun idViaje(hora: Long): String =
+        java.util.UUID.nameUUIDFromBytes("checa-$hora".toByteArray()).toString()
+
+    private fun isoDe(ms: Long): String = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US)
+        .apply { timeZone = TimeZone.getTimeZone("UTC") }.format(Date(ms))
+
+    private fun conjunto(ctx: Context, k: String): MutableSet<String> =
+        HashSet(sp(ctx).getStringSet(k, emptySet()) ?: emptySet())
+
+    /** Sube los viajes aceptados que falten y borra los que se quitaron. */
+    @Synchronized
+    private fun sincronizarViajes(ctx: Context, t: String) {
+        val subidos = conjunto(ctx, "vc_subidos")
+        val borrar = conjunto(ctx, "vc_borrar")
+        for (h in borrar.toList()) {
+            val ms = h.toLongOrNull()
+            if (ms != null) pedir("DELETE", "/rest/v1/viajes_checa?id=eq.${idViaje(ms)}", t, null)
+            borrar.remove(h)
+            subidos.remove(h)
+        }
+        val locales = Jornada.todos(ctx)
+        val nuevos = locales.filter { it.hora.toString() !in subidos }
+        if (nuevos.isNotEmpty()) {
+            val filas = JSONArray()
+            for (v in nuevos) {
+                val app = v.app.lowercase(Locale.ROOT).let { if (it == "uber" || it == "didi") it else "otra" }
+                filas.put(JSONObject().put("id", idViaje(v.hora)).put("app", app).put("cuando", isoDe(v.hora))
+                    .put("tarifa", v.tarifa).put("km", v.km).put("gasolina", v.gasolina).put("neto", v.neta))
+            }
+            pedir("POST", "/rest/v1/viajes_checa?on_conflict=user_id,id", t, filas.toString(),
+                "resolution=merge-duplicates,return=minimal")
+            nuevos.forEach { subidos.add(it.hora.toString()) }
+        }
+        subidos.retainAll(locales.map { it.hora.toString() }.toSet())
+        sp(ctx).edit().putStringSet("vc_subidos", subidos).putStringSet("vc_borrar", borrar).commit()
+    }
+
+    /** Baja los viajes privados hechos de esta semana (Clientela) para sumarlos a «Mi día». */
+    private fun bajarPrivados(ctx: Context, t: String) {
+        val desde = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date(Jornada.inicioDeSemana()))
+        val r = pedir("GET", "/rest/v1/viajes_privados?select=fecha,hora,precio,km:datos-%3E%3Ekm" +
+            "&borrado=is.false&estado=eq.hecho&fecha=gte.$desde", t, null)
+        Jornada.guardarPrivados(ctx, JSONArray(r).toString())
+    }
+
+    /** Tras registrar un viaje: lo sube si hay cuenta (sin esperar). */
+    fun subirViajesLuego(ctx: Context) {
+        if (!conectada(ctx)) return
+        val app = ctx.applicationContext
+        Thread { try { sincronizarViajes(app, token(app)) } catch (_: Exception) { } }.start()
+    }
+
+    /** Tras quitar un viaje: si ya estaba en la cuenta, se borra allá también. */
+    fun viajeQuitado(ctx: Context, hora: Long) {
+        val h = hora.toString()
+        if (h !in conjunto(ctx, "vc_subidos")) return
+        val borrar = conjunto(ctx, "vc_borrar").apply { add(h) }
+        sp(ctx).edit().putStringSet("vc_borrar", borrar).commit()
+        subirViajesLuego(ctx)
+    }
+
+    /** Vuelve a bajar los viajes de Clientela (al abrir Inicio), sin esperar. */
+    fun actualizarPrivados(ctx: Context, listo: () -> Unit) {
+        if (!conectada(ctx)) return
+        val ahora = System.currentTimeMillis()
+        if (ahora - sp(ctx).getLong("priv_ms", 0L) < 120_000) return
+        sp(ctx).edit().putLong("priv_ms", ahora).apply()
+        val app = ctx.applicationContext
+        Thread {
+            try {
+                bajarPrivados(app, token(app))
+                principal.post { listo() }
+            } catch (_: Exception) { }
+        }.start()
     }
 
     /** true una sola vez si se aplicaron ajustes de la cuenta (la pantalla debe repintarse). */

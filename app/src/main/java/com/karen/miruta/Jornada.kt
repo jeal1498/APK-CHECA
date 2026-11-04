@@ -1,8 +1,11 @@
 package com.karen.miruta
 
 import android.content.Context
+import org.json.JSONArray
 import java.io.File
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 
 /** Un viaje que el conductor marcó como aceptado. [hora] es la misma de la oferta del historial. */
 data class Viaje(val hora: Long, val app: String, val tarifa: Double, val km: Double, val gasolina: Double) {
@@ -21,6 +24,9 @@ data class Totales(val viajes: Int, val tarifa: Double, val gasolina: Double, va
 object Jornada {
     private const val ARCHIVO = "viajes.txt"
     private const val DIAS_GUARDADOS = 60
+    /** Viajes privados de Clientela (hechos, de esta semana) que bajó la cuenta. Solo se leen. */
+    private const val PRIVADOS = "privados.json"
+    const val APP_CLIENTELA = "Clientela"
 
     private fun archivo(ctx: Context) = File(ctx.filesDir, ARCHIVO)
 
@@ -38,6 +44,34 @@ object Jornada {
         } catch (_: Exception) { emptyList() }
     }
 
+    /** Guarda lo que bajó la cuenta: [{fecha, hora, precio, km}]. */
+    fun guardarPrivados(ctx: Context, json: String) {
+        try { File(ctx.filesDir, PRIVADOS).writeText(json) } catch (_: Exception) { }
+    }
+
+    fun borrarPrivados(ctx: Context) { File(ctx.filesDir, PRIVADOS).delete() }
+
+    /** Viajes de Clientela como [Viaje]; la gasolina se calcula con los km/l y precio de ahora. */
+    fun privados(ctx: Context): List<Viaje> {
+        val f = File(ctx.filesDir, PRIVADOS)
+        if (!f.exists()) return emptyList()
+        val p = Prefs(ctx)
+        val fmt = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US)
+        return try {
+            val a = JSONArray(f.readText())
+            (0 until a.length()).mapNotNull { i ->
+                val o = a.optJSONObject(i) ?: return@mapNotNull null
+                val fecha = o.optString("fecha")
+                val hhmm = o.optString("hora").takeIf { Regex("^\\d{1,2}:\\d{2}").containsMatchIn(it) }?.take(5) ?: "12:00"
+                val hora = try { fmt.parse("$fecha $hhmm")?.time } catch (_: Exception) { null } ?: return@mapNotNull null
+                val precio = if (o.isNull("precio")) 0.0 else o.optDouble("precio", 0.0)
+                val km = (if (o.isNull("km")) "" else o.optString("km")).replace(",", ".").toDoubleOrNull() ?: 0.0
+                val gas = if (p.kmPorLitro > 0) km / p.kmPorLitro * p.precioLitro else 0.0
+                if (precio <= 0) null else Viaje(hora, APP_CLIENTELA, precio, km, gas)
+            }
+        } catch (_: Exception) { emptyList() }
+    }
+
     fun registrado(ctx: Context, hora: Long): Boolean = todos(ctx).any { it.hora == hora }
 
     /** Marca la oferta como aceptada; la gasolina se calcula con los km/l y precio de ahora. */
@@ -48,11 +82,13 @@ object Jornada {
             archivo(ctx).appendText("${r.hora}|${r.app.replace("|", "")}|${r.tarifa}|${r.km}|$gas\n")
             podar(ctx)
         } catch (_: Exception) { }
+        Cuenta.subirViajesLuego(ctx)
     }
 
     fun quitar(ctx: Context, hora: Long) {
         val quedan = todos(ctx).filter { it.hora != hora }
         try { escribir(ctx, quedan) } catch (_: Exception) { }
+        Cuenta.viajeQuitado(ctx, hora)
     }
 
     private fun escribir(ctx: Context, lista: List<Viaje>) {
@@ -81,9 +117,10 @@ object Jornada {
         set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
     }.timeInMillis
 
-    fun deHoy(ctx: Context): List<Viaje> = todos(ctx).filter { it.hora >= inicioDeHoy() }
+    /** Uber/DiDi de este teléfono + viajes privados de Clientela (si hay cuenta). */
+    fun deHoy(ctx: Context): List<Viaje> = (todos(ctx) + privados(ctx)).filter { it.hora >= inicioDeHoy() }
 
-    fun deSemana(ctx: Context): List<Viaje> = todos(ctx).filter { it.hora >= inicioDeSemana() }
+    fun deSemana(ctx: Context): List<Viaje> = (todos(ctx) + privados(ctx)).filter { it.hora >= inicioDeSemana() }
 
     fun totales(lista: List<Viaje>) = Totales(
         lista.size, lista.sumOf { it.tarifa }, lista.sumOf { it.gasolina }, lista.sumOf { it.km }
