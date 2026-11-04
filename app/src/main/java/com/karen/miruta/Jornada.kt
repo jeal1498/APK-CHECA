@@ -27,6 +27,8 @@ object Jornada {
     /** Viajes privados de Clientela (hechos, de esta semana) que bajó la cuenta. Solo se leen. */
     private const val PRIVADOS = "privados.json"
     const val APP_CLIENTELA = "Clientela"
+    /** Clientela en pausa (Eduardo, 4 nov 2026): sin tarjeta, sin viajes privados ni gasolina_km. true para reactivar. */
+    const val CLIENTELA_ACTIVA = false
 
     private fun archivo(ctx: Context) = File(ctx.filesDir, ARCHIVO)
 
@@ -53,6 +55,7 @@ object Jornada {
 
     /** Viajes de Clientela como [Viaje]; la gasolina se calcula con los km/l y precio de ahora. */
     fun privados(ctx: Context): List<Viaje> {
+        if (!CLIENTELA_ACTIVA) return emptyList()
         val f = File(ctx.filesDir, PRIVADOS)
         if (!f.exists()) return emptyList()
         val p = Prefs(ctx)

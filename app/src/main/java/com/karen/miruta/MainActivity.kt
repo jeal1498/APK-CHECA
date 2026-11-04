@@ -494,7 +494,7 @@ class MainActivity : Activity() {
 
         col.addView(tarjetaSos(), margenTarjeta())
         col.addView(tarjetaCompartir(), margenTarjeta())
-        col.addView(tarjetaClientela(), margenTarjeta())
+        if (Jornada.CLIENTELA_ACTIVA) col.addView(tarjetaClientela(), margenTarjeta())
 
         return scroll(col)
     }
@@ -1636,8 +1636,8 @@ class MainActivity : Activity() {
     /** Moneda de los montos (la misma de Clientela; se guarda en la cuenta). */
     private fun mostrarMoneda() {
         val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        cuerpo.addView(texto("Cómo lee Checa los montos de Uber y DiDi y cómo los muestra. " +
-            "Si usas Clientela con la misma cuenta, se cambia también ahí.", Tema.T_NOTA, cTenue, false))
+        cuerpo.addView(texto("Cómo lee Checa los montos de Uber y DiDi y cómo los muestra." +
+            (if (Jornada.CLIENTELA_ACTIVA) " Si usas Clientela con la misma cuenta, se cambia también ahí." else ""), Tema.T_NOTA, cTenue, false))
         val g = grupoFilas()
         val actual = prefs.moneda.codigo
         var d: Dialog? = null

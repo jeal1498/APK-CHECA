@@ -366,7 +366,7 @@ object Cuenta {
         try { sincronizarAjustes(ctx, t) } catch (_: Exception) { }
         try { sincronizarPerfil(ctx, t) } catch (_: Exception) { }
         try { sincronizarViajes(ctx, t) } catch (_: Exception) { }
-        try { bajarPrivados(ctx, t) } catch (_: Exception) { }
+        if (Jornada.CLIENTELA_ACTIVA) try { bajarPrivados(ctx, t) } catch (_: Exception) { }
         try { sincronizarSos(ctx, t) } catch (_: Exception) { }
         return Resultado.Ok
     }
@@ -466,7 +466,7 @@ object Cuenta {
         }
         val gk = gasolinaKm(p)
         val gkRemoto = if (remoto == null || remoto.isNull("gasolina_km")) null else remoto.optDouble("gasolina_km")
-        if (gk != null && (gkRemoto == null || Math.abs(gk - gkRemoto) > 0.00005)) sube.put("gasolina_km", gk)
+        if (Jornada.CLIENTELA_ACTIVA && gk != null && (gkRemoto == null || Math.abs(gk - gkRemoto) > 0.00005)) sube.put("gasolina_km", gk)
         if (sube.length() > 0) {
             pedir("POST", "/rest/v1/perfil_conductor?on_conflict=user_id", t, JSONArray().put(sube).toString(),
                 "resolution=merge-duplicates,return=minimal")
@@ -582,7 +582,7 @@ object Cuenta {
 
     /** Vuelve a bajar los viajes de Clientela (al abrir Inicio), sin esperar. */
     fun actualizarPrivados(ctx: Context, listo: () -> Unit) {
-        if (!conectada(ctx)) return
+        if (!Jornada.CLIENTELA_ACTIVA || !conectada(ctx)) return
         val ahora = System.currentTimeMillis()
         if (ahora - sp(ctx).getLong("priv_ms", 0L) < 120_000) return
         sp(ctx).edit().putLong("priv_ms", ahora).apply()
