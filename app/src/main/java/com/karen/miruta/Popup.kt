@@ -8,6 +8,7 @@ import android.graphics.Rect
 import android.util.DisplayMetrics
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.TypedValue
@@ -71,7 +72,11 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         @Suppress("DEPRECATION")
         wm.defaultDisplay.getRealMetrics(real)
         val area = zona ?: Rect(0, 0, real.widthPixels, real.heightPixels)
-        val ancho = minOf((area.width() * 0.94f).toInt(), anchoPx(ctx, prefs))
+        v.measure(
+            View.MeasureSpec.makeMeasureSpec((area.width() * 0.94f).toInt(), View.MeasureSpec.AT_MOST),
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        )
+        val ancho = v.measuredWidth.coerceAtLeast(dp(80))
         val lp = WindowManager.LayoutParams(
             ancho,
             WindowManager.LayoutParams.WRAP_CONTENT,
@@ -253,31 +258,33 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
                 setColor(fondo)
                 cornerRadius = e(14f).toFloat()
                 // La mejor de dos lleva el borde más grueso.
-                setStroke(e(if (marca == MEJOR) 3.5f else 2f).coerceAtLeast(2), color)
+                setStroke(e(if (marca == MEJOR) 4f else 2f).coerceAtLeast(2), color)
             }
-            elevation = dp(8).toFloat()
+            elevation = dp(if (marca == MEJOR) 12 else 8).toFloat()
+            // Brillo del color del semáforo alrededor de la mejor (Android 9+).
+            if (marca == MEJOR && Build.VERSION.SDK_INT >= 28) {
+                outlineSpotShadowColor = color
+                outlineAmbientShadowColor = color
+            }
         }
         val fila = LinearLayout(ctx).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
             minimumHeight = e(72f)
+            // Poco aire a los lados (≈ el de arriba y abajo); a la derecha cabe la ✕.
+            setPadding(e(11f), 0, e(22f), 0)
         }
-        marco.addView(fila, FrameLayout.LayoutParams(-1, -2))
+        marco.addView(fila, FrameLayout.LayoutParams(-2, -2))
 
         // Izquierda: monto neto y la acción debajo, centrados. Un solo texto de dos líneas:
         // así ningún texto del pop-up es «solo un monto» (el lector lo tomaría como tarifa).
         val conNeta = prefs.mostrarNeta && prefs.kmPorLitro > 0
         val valor = mon.monto(if (conNeta) o.neta(prefs) else o.tarifa, 0)
-        val pre = when {
-            marca == MEJOR -> "★ "
-            segunda -> "2ª "
-            else -> ""
-        }
         val sbIzq = SpannableStringBuilder(valor)
         sbIzq.setSpan(AbsoluteSizeSpan(spPx(28f), false), 0, valor.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         sbIzq.setSpan(ForegroundColorSpan(Tema.HUESO), 0, valor.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         val ini = sbIzq.length
-        sbIzq.append("\n").append(pre).append(accion)
+        sbIzq.append("\n").append(accion)
         sbIzq.setSpan(AbsoluteSizeSpan(spPx(9.5f), false), ini, sbIzq.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         sbIzq.setSpan(ForegroundColorSpan(color), ini, sbIzq.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         sbIzq.setSpan(StyleSpan(Typeface.BOLD), ini, sbIzq.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -289,9 +296,9 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
             maxLines = 2
             setLineSpacing(e(4f).toFloat(), 1f)
             letterSpacing = 0.02f
-            setPadding(e(4f), 0, e(4f), 0)
+            setPadding(0, 0, e(10f), 0)
         }
-        fila.addView(izq, LinearLayout.LayoutParams(e(84f), -2))
+        fila.addView(izq, LinearLayout.LayoutParams(-2, -2))
 
         // Línea fina del color del semáforo.
         fila.addView(View(ctx).apply { setBackgroundColor(Color.argb(90, Color.red(color), Color.green(color), Color.blue(color))) },
@@ -330,27 +337,9 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
             includeFontPadding = false
             maxLines = 3
             setLineSpacing(e(2f).toFloat(), 1f)
-            setPadding(e(10f), e(6f), e(14f), 0)
+            setPadding(e(10f), e(6f), 0, 0)
         }
-        fila.addView(der, LinearLayout.LayoutParams(0, -2, 1f))
-
-        // ⚡ chiquito arriba a la izquierda (solo si la oferta trae dinámica).
-        val rayo = when {
-            o.multiplicador > 1.0 -> "⚡" + fmtX(o.multiplicador) + "x"
-            o.dinamica > 0 -> "⚡+" + mon.monto(o.dinamica, 0)
-            else -> null
-        }
-        if (rayo != null) {
-            marco.addView(TextView(ctx).apply {
-                text = rayo
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(9f))
-                setTextColor(Tema.AMARILLO)
-                typeface = Fuentes.numero
-                includeFontPadding = false
-            }, FrameLayout.LayoutParams(-2, -2, Gravity.TOP or Gravity.START).apply {
-                leftMargin = e(8f); topMargin = e(5f)
-            })
-        }
+        fila.addView(der, LinearLayout.LayoutParams(-2, -2))
 
         // ✕ en la esquina (zona de toque de 24 dp escalada).
         val cerrarBtn = ImageView(ctx).apply {
@@ -359,7 +348,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
             if (interactivo) setOnClickListener { ocultar() }
         }
         marco.addView(cerrarBtn, FrameLayout.LayoutParams(e(24f), e(24f), Gravity.TOP or Gravity.END).apply {
-            topMargin = e(2f); rightMargin = e(3f)
+            topMargin = e(2f); rightMargin = e(2f)
         })
 
         return marco
@@ -403,12 +392,5 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
             (Color.green(a) * (1 - f) + Color.green(b) * f).toInt(),
             (Color.blue(a) * (1 - f) + Color.blue(b) * f).toInt()
         )
-
-        /** Ancho del pop-up al 100 %, en dp; se multiplica por el tamaño elegido en Ajustes. */
-        const val ANCHO_BASE = 175
-
-        /** Ancho del pop-up en píxeles según el tamaño elegido (sin el tope de la pantalla). */
-        fun anchoPx(c: Context, p: Prefs): Int =
-            (ANCHO_BASE * p.escalaPopup / 100f * c.resources.displayMetrics.density).toInt()
     }
 }

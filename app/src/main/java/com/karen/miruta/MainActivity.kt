@@ -3829,8 +3829,7 @@ class MainActivity : Activity() {
         val real = DisplayMetrics()
         @Suppress("DEPRECATION")
         windowManager.defaultDisplay.getRealMetrics(real)
-        val ancho = minOf((real.widthPixels * 0.94f).toInt(), Popup.anchoPx(this, prefs))
-        vistaPrevia.addView(v, FrameLayout.LayoutParams(ancho, -2, Gravity.CENTER_HORIZONTAL))
+        vistaPrevia.addView(v, FrameLayout.LayoutParams(-2, -2, Gravity.CENTER_HORIZONTAL))
     }
 
     private fun num(v: Float): String =
