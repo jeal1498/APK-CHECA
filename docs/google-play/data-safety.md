@@ -36,10 +36,29 @@
 - Play no cuenta como compartir las transferencias a un proveedor de servicios que procesa por tu cuenta (Supabase es el backend de Checa).
 - Google documenta que ML Kit no transfiere esos datos a terceros. **Confirmar:** si consideras que el envío de ML Kit a Google es compartir, marca «Compartido» en esas categorías.
 
+## Cambios por el puente con Clientela y SOS (4 nov 2026, versiones 9.7–10.0)
+Agregar en Play Console → Contenido de la app → Seguridad de los datos (todo «Recopilado», «Compartido: No», opcional, cifrado en tránsito, se puede borrar):
+| Categoría → tipo | Qué es | Propósitos |
+|---|---|---|
+| Info financiera → Otra información financiera | Viajes aceptados en `viajes_checa`: tarifa, gasolina y neto (ganancias del conductor) | Funcionalidad |
+| Actividad en la app → Otras acciones | Fecha, hora, app (Uber/DiDi) y km de cada viaje aceptado; moneda y gasolina por km en `perfil_conductor` | Funcionalidad; Personalización |
+| Info personal → Teléfono | Contactos SOS (`contactos_sos`): nombre y teléfono de terceros que agrega el conductor | Funcionalidad |
+| Info personal → Nombre | Nombre de los contactos SOS (ya estaba declarado por la cuenta: agregar el propósito si cambia) | Funcionalidad |
+| Info personal → Otra información | Relación del contacto SOS («mamá», etc.) | Funcionalidad |
+| Info personal → Teléfono y Nombre (si Play lo pide por Clientela) | `clientes` y `viajes_privados` los escribe **Clientela**, no Checa; Checa solo lee de `viajes_privados` fecha, hora, precio y km | Funcionalidad |
+
+**Ubicación:** la app ahora tiene `ACCESS_FINE_LOCATION`/`COARSE` (solo SOS, primer plano). Como **no sale del teléfono hacia nuestros servidores** (la pone el usuario en un mensaje de WhatsApp que él envía), según la regla de «recopilar» **no se declara** como recopilada; sí debe quedar explicada en Privacidad (hecho). Si Play la marca al revisar, declarar «Ubicación precisa · Recopilada · Funcionalidad · opcional». No requiere la declaración de ubicación en segundo plano.
+
+**Ficha y revisión:** el permiso de ubicación aparecerá en la ficha («Ubicación»). Si Play pide justificación: «Botón SOS: al tocar Pedir ayuda, se lee la ubicación una vez para enviarla por WhatsApp a un contacto de confianza; sin uso en segundo plano».
+
+**Eliminación:** al borrar el usuario de Auth se borran en cascada `perfil_conductor`, `clientes`, `viajes_privados`, `contactos_sos` y `viajes_checa` (ya en `eliminar-cuenta.html` y Privacidad).
+
+Antes de subir el AAB con la 10.0 (Eduardo, sin publicar sin su OK): actualizar este formulario.
+
 ## Qué NO se declara y por qué
 - **Texto, OCR y capturas de las ofertas:** se procesan solo en el teléfono. Con «Guardar pantallas de ofertas» se guardan localmente, máximo 7 días.
 - **Apps instaladas:** la app consulta las apps con lanzador solo para ubicar Uber y DiDi, sin enviarlas.
-- **Ubicación, contactos, mensajes, fotos, audio, calendario y archivos:** la app no tiene esos permisos.
+- **Contactos del teléfono, mensajes, fotos, audio, calendario y archivos:** la app no tiene esos permisos. (Ubicación: ver la sección del 4 nov.)
 - **Pagos y compras:** el flavor play no tiene pagos. Revisar al llegar Google Play Billing (Fase 7).
 - **Registro de testers y analítica de la página web:** ocurren en la web, no en la app.
 - **Reporte a soporte por WhatsApp:** lo inicia el usuario al compartir.
