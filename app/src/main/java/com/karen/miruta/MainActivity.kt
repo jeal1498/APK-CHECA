@@ -492,6 +492,7 @@ class MainActivity : Activity() {
         col.addView(mh, margenTarjeta())
 
         col.addView(tarjetaCompartir(), margenTarjeta())
+        col.addView(tarjetaClientela(), margenTarjeta())
 
         return scroll(col)
     }
@@ -2234,6 +2235,25 @@ class MainActivity : Activity() {
     }
 
     /** Tarjeta «Invita a un amigo» (Inicio y Cuenta); su contenido lo pinta [pintarInvitar]. */
+    /** Puente con Clientela (otra app, misma cuenta): abre la app si está instalada; si no, la web. */
+    private fun tarjetaClientela(): View {
+        val t = tarjeta()
+        t.addView(cabeceraTarjeta(Icono.CUENTA, "Clientela",
+            "Tus clientes, tu tarjeta con QR y el cotizador", true).first)
+        t.isClickable = true
+        t.setOnClickListener { abrirClientela() }
+        return t
+    }
+
+    private fun abrirClientela() {
+        val app = packageManager.getLaunchIntentForPackage(PAQUETE_CLIENTELA)
+        try {
+            startActivity(app ?: Intent(Intent.ACTION_VIEW, Uri.parse(URL_CLIENTELA)))
+        } catch (_: Exception) {
+            Toast.makeText(this, "No hay navegador para abrir Clientela", Toast.LENGTH_LONG).show()
+        }
+    }
+
     private fun tarjetaCompartir(): View {
         val t = tarjeta()
         cajasCompartir.add(t)
@@ -4616,6 +4636,8 @@ class MainActivity : Activity() {
         const val EXTRA_ACTUALIZAR = "actualizar"
         /** Desde cuántos días antes de que acabe la beta se avisa del cobro. */
         private const val DIAS_AVISO_FIN_BETA = 30
+        private const val PAQUETE_CLIENTELA = "com.jeal1498.clientela"
+        private const val URL_CLIENTELA = "https://jeal1498.github.io/PWA-Clientela/"
         /** Días de uso y ofertas leídas antes de pedir la opinión. */
         private const val DIAS_PARA_OPINION = 7
         private const val OFERTAS_PARA_OPINION = 10
