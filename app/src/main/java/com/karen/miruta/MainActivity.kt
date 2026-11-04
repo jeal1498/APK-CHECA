@@ -1693,7 +1693,7 @@ class MainActivity : Activity() {
     }
 
     // =====================================================================
-    // Ajustes → Lectura (permisos, bancos y ayuda con la lectura) y estado en Inicio
+    // Ajustes → Lectura (permisos y ayuda con la lectura) y estado en Inicio
     // =====================================================================
 
     private var cajaLecturaAjustes: LinearLayout? = null
@@ -1707,7 +1707,6 @@ class MainActivity : Activity() {
             if (prefs.uber || prefs.didi) cTenue else cAmarillo) { mostrarAppsLee() }
         filaMenu(g, Icono.OK, "Permisos", if (faltan == 0) "Todo listo" else "Falta $faltan",
             if (faltan == 0) cVerde else cAmarillo) { mostrarPermisos() }
-        filaMenu(g, Icono.PIN, "Apps de banco", "Pausa la lectura para usar tu banco") { mostrarBancos() }
         val guardadas = Guardado.lista(this)
         val noLeidas = guardadas.count { !it.leida }
         filaMenu(g, Icono.FILTROS, "Ayuda con la lectura",
@@ -2066,25 +2065,6 @@ class MainActivity : Activity() {
             pintarCuenta()
         }
         d.show()
-    }
-
-    private fun mostrarBancos() {
-        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        cuerpo.addView(texto(
-            "Algunos bancos (Nu, BBVA…) no abren mientras el lector está encendido. Páusalo, usa tu banco y " +
-                "al volver a Checa te pedirá activarlo otra vez.",
-            Tema.T_TEXTO, cTexto2, false
-        ).apply { setLineSpacing(0f, 1.2f) })
-        var d: Dialog? = null
-        cuerpo.addView(boton("Pausar lector para usar mi banco", cVerde, Color.BLACK) {
-            d?.dismiss()
-            pausarLector()
-        }, margenArriba(Tema.S2))
-        cuerpo.addView(boton("Volver a activar el lector", cTarjeta2, cTexto) {
-            d?.dismiss()
-            abrirAccesibilidad()
-        }, margenArriba(Tema.S1))
-        d = hoja("Apps de banco", null, cuerpo)
     }
 
     /** Qué guarda Checa, dónde y por cuánto tiempo; y borrar las estadísticas. */
