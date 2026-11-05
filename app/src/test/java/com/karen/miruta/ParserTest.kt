@@ -5,7 +5,7 @@ import org.junit.Test
 import java.io.File
 
 /**
- * Pruebas del lector con ofertas de ejemplo (`app/src/test/resources/ofertas/*.txt`).
+ * Pruebas del lector con ofertas de ejemplo (archivos .txt en `app/src/test/resources/ofertas/`).
  * Cada archivo: las líneas tal como las lee el OCR, luego una línea «---» y lo esperado
  * («tarifa=151.34 km=14.9 min=42 recKm=1.7 recMin=5», o «nada» si no es una oferta).
  * Las líneas que empiezan con # son comentarios. Para agregar un caso de «Guardar pantallas
