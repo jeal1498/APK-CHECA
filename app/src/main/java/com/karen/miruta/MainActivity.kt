@@ -4512,8 +4512,13 @@ class MainActivity : Activity() {
         }
         volverAtras = volver
         val mpm = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
+        // Android 14+: pide la pantalla completa (sin «compartir una sola app»), si no en pantalla
+        // dividida solo se vería una de las dos apps.
+        val pedir = if (Build.VERSION.SDK_INT >= 34)
+            mpm.createScreenCaptureIntent(android.media.projection.MediaProjectionConfig.createConfigForDefaultDisplay())
+        else mpm.createScreenCaptureIntent()
         @Suppress("DEPRECATION")
-        startActivityForResult(mpm.createScreenCaptureIntent(), REQ_CAPTURA)
+        startActivityForResult(pedir, REQ_CAPTURA)
     }
 
     @Deprecated("Deprecated in Java")

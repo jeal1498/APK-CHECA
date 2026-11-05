@@ -18,17 +18,25 @@ data class Registro(
 object Historial {
     private const val ARCHIVO = "historial.txt"
     private const val DIAS_GUARDADOS = 30
+    private const val MAX_OFERTAS = 2000
+    /** Escribe en otro hilo para no frenar el pop-up; uno solo, así las líneas no se mezclan. */
+    private val io = java.util.concurrent.Executors.newSingleThreadExecutor()
 
     private fun archivo(ctx: Context) = File(ctx.filesDir, ARCHIVO)
 
     fun registrar(ctx: Context, o: Oferta, app: String, nivel: Int) {
+        val linea = listOf(
+            System.currentTimeMillis(), app.replace("|", ""),
+            o.tarifa, o.km, o.min, nivel, o.recogidaKm, o.recogidaMin, o.multiplicador
+        ).joinToString("|")
+        val app0 = ctx.applicationContext
         try {
-            val linea = listOf(
-                System.currentTimeMillis(), app.replace("|", ""),
-                o.tarifa, o.km, o.min, nivel, o.recogidaKm, o.recogidaMin, o.multiplicador
-            ).joinToString("|")
-            archivo(ctx).appendText(linea + "\n")
-            podarSiHaceFalta(ctx)
+            io.execute {
+                try {
+                    archivo(app0).appendText(linea + "\n")
+                    podarSiHaceFalta(app0)
+                } catch (_: Exception) { }
+            }
         } catch (_: Exception) { }
     }
 
@@ -70,7 +78,9 @@ object Historial {
         val f = archivo(ctx)
         if (f.length() < 200_000) return
         val limite = System.currentTimeMillis() - DIAS_GUARDADOS * 86_400_000L
-        val quedan = todos(ctx).filter { it.hora >= limite }
+        // Además de los 30 días, un tope de ofertas: si no, con muchas ofertas el archivo
+        // nunca baja de 200 KB y se reescribiría completo en cada oferta (2000 ≈ 130 KB).
+        val quedan = todos(ctx).filter { it.hora >= limite }.takeLast(MAX_OFERTAS)
         f.writeText(quedan.joinToString("") {
             "${it.hora}|${it.app}|${it.tarifa}|${it.km}|${it.min}|${it.nivel}|${it.recogidaKm}|${it.recogidaMin}|${it.multiplicador}\n"
         })

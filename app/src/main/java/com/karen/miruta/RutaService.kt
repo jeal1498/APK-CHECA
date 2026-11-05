@@ -23,6 +23,8 @@ class RutaService : AccessibilityService() {
     private val activas = LinkedHashMap<String, Pair<Oferta, Rect?>>()
     private val ultimaFirma = HashMap<String, Pair<Oferta, Long>>()
     private val ultimoAviso = HashMap<String, Long>()
+    /** Última vez que Uber o DiDi mandó un evento (también al salir su oferta encima de otra app). */
+    @Volatile private var ultimoEventoApp = 0L
 
     override fun onServiceConnected() {
         super.onServiceConnected()
@@ -162,6 +164,28 @@ class RutaService : AccessibilityService() {
         return out.sortedByDescending { it.capa }
     }
 
+    /**
+     * Para ahorrar batería: false solo si es seguro que no hay Uber ni DiDi en pantalla
+     * (ninguna ventana suya, aunque sea una oferta encima de WhatsApp, y ningún evento
+     * suyo en 30 s). Ante cualquier duda devuelve true y se lee como siempre.
+     */
+    fun hayQueLeer(): Boolean {
+        if (!::prefs.isInitialized) return true
+        if (System.currentTimeMillis() - ultimoEventoApp < 30_000L) return true
+        return try {
+            val ventanas = windows ?: return true
+            var conocidas = 0
+            for (w in ventanas) {
+                val pkg = w.root?.packageName?.toString()
+                if (pkg != null) conocidas++
+                val nombre = ((pkg ?: "") + " " + (w.title?.toString() ?: "")).lowercase()
+                if (nombre.contains("uber") || nombre.contains("didi")) return true
+            }
+            // Si no se pudo ver ninguna ventana, no sabemos qué hay: se lee.
+            conocidas == 0
+        } catch (_: Exception) { true }
+    }
+
     // ------------------------------------------------------------------
     // Lectura por accesibilidad (cuando la app deja leer su texto)
     // ------------------------------------------------------------------
@@ -178,6 +202,7 @@ class RutaService : AccessibilityService() {
             }
         }
         if (nombreApp(pkg) == null) return
+        ultimoEventoApp = System.currentTimeMillis()
         if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) avisarApertura(nombreApp(pkg) ?: "?")
         if (pendiente) return
         pendiente = true

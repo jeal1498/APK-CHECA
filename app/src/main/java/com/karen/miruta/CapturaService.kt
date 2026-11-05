@@ -46,6 +46,8 @@ class CapturaService : Service() {
     private var capAncho = 0
     private var capAlto = 0
     private var divididaHasta = 0L
+    /** Lecturas seguidas que se saltaron por no haber Uber ni DiDi en pantalla. */
+    private var saltadas = 0
     /** Imagen que se está analizando y su escala, para recortar la foto de «Lo guardado». */
     private var bmpActual: Bitmap? = null
     private var escX = 1f
@@ -140,6 +142,14 @@ class CapturaService : Service() {
         revisarRotacion()
         val r = lector ?: return
         val img = try { r.acquireLatestImage() } catch (e: Exception) { null } ?: return
+        // Sin Uber ni DiDi en pantalla no se hace el OCR (ahorra batería). Por si Android no
+        // reporta alguna ventana, igual se lee 1 de cada 5 segundos.
+        if (RutaService.instancia?.hayQueLeer() == false && saltadas < SALTAR_MAX) {
+            saltadas++
+            img.close()
+            return
+        }
+        saltadas = 0
         val bmp: Bitmap
         try {
             val plano = img.planes[0]
@@ -360,6 +370,7 @@ class CapturaService : Service() {
         private const val CANAL_AVISO = "avisos"
         private const val ID_AVISO = 2
         private const val INTERVALO_MS = 1000L
+        private const val SALTAR_MAX = 4
         private val tramoTexto = Regex("""\d\s?min\s*\(""", RegexOption.IGNORE_CASE)
         @Volatile var corriendo = false
         /** Android cortó la lectura sin que el conductor la detuviera (Inicio lo avisa en amarillo). */
