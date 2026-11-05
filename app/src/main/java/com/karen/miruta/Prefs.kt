@@ -8,11 +8,11 @@ class Prefs(context: Context) {
         context.applicationContext.getSharedPreferences("cfg", Context.MODE_PRIVATE)
 
     var minPorKm: Float
-        get() = sp.getFloat("minKm", 8f)
+        get() = sp.getFloat("minKm", 10f)
         set(v) { sp.edit().putFloat("minKm", v).apply() }
 
     var minPorHora: Float
-        get() = sp.getFloat("minHora", 150f)
+        get() = sp.getFloat("minHora", 200f)
         set(v) { sp.edit().putFloat("minHora", v).apply() }
 
     /** Ya se le mostró la pantalla de permisos en este equipo. */

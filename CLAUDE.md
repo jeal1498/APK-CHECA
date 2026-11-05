@@ -34,7 +34,7 @@ Lo vigente para trabajar en Checa. La historia con fecha y el detalle largo vive
 - `versionCode` / `versionName` en `app/build.gradle.kts` (compartidos por los dos flavors): súbelos en cada versión y nunca bajes de 67. Historial en `docs/historial-versiones.md`.
 
 ## Estado actual (30 oct 2026)
-- **Versión:** `main` trae `versionCode` 85 / **10.5** (5 nov: desgaste por km en Mis metas › Tu auto, que se resta en la neta del pop-up; OCR se salta sin Uber/DiDi en pantalla, captura de pantalla completa en Android 14+ e historial en otro hilo; 4 nov: pop-up V2 de 175 dp con deslizador de tamaño y Clientela en pausa, en prueba; antes moneda, botón Clientela, «Mi día» unificado y SOS con ubicación al tocar; Seguridad de los datos por actualizar en Play Console según `docs/google-play/data-safety.md`). Último release del canal directo: **v80 (9.5)** (pendiente el de la 9.6). Play: AAB 74 (9.4) en Prueba interna y **Prueba cerrada «Alpha»** (México), ya disponible para testers.
+- **Versión:** `main` trae `versionCode` 86 / **10.6** (5 nov: metas por defecto $10/km y $200/h, ⚡ ya no tapa el monto, guía con el pop-up a su tamaño y «Entrar sin iniciar la lectura», sin «Apps de banco» en Ajustes; desgaste por km en Mis metas › Tu auto, que se resta en la neta del pop-up; OCR se salta sin Uber/DiDi en pantalla, captura de pantalla completa en Android 14+ e historial en otro hilo; 4 nov: pop-up V2 de 175 dp con deslizador de tamaño y Clientela en pausa, en prueba; antes moneda, botón Clientela, «Mi día» unificado y SOS con ubicación al tocar; Seguridad de los datos por actualizar en Play Console según `docs/google-play/data-safety.md`). Último release del canal directo: **v80 (9.5)** (pendiente el de la 9.6). Play: AAB 74 (9.4) en Prueba interna y **Prueba cerrada «Alpha»** (México), ya disponible para testers.
 - **Migración al canal Play (30 oct):** la 9.5 ya tiene release directo (v80) y la web manda a `/registro/`. La web cambió de nombre a `PWA-Checa-Multimedia`: la 9.6 corrige las direcciones dentro de la app y **necesita un release directo nuevo** (Eduardo lo lanza con «Run workflow» en `build.yml`; yo no tengo ese permiso).
 - **Google Play:** falta juntar **12 testers dentro 14 días seguidos** para pedir producción. `/registro/` (PWA-Checa-Multimedia) guarda nombre y Gmail en la tabla `testers` de Supabase y manda a la comunidad de WhatsApp; Eduardo pasa los correos a mano a la lista «Testers» de Play Console. El registro cierra al llegar a 50 o el 15 nov 2026.
 - **Fase 7 (Play Billing)** pendiente: debe estar lista antes del **1 feb 2027**, cuando termina la beta gratis (`Licencia.BETA_HASTA` = 31 ene 2027). Necesita su «adelante».
@@ -70,7 +70,7 @@ Pantallas, instalación en teléfonos (Play Protect, ajustes restringidos, Samsu
 - Pop-up: ningún texto puede ser *solo un monto* (el OCR lo tomaría como tarifa); por eso "Te quedan $x", "$x/h", "$x/km" y "… km total".
 
 ### Semáforo y filtros (solo 4)
-- **Por hora** ($150 por defecto) y **Por km** ($8): 🟢 si cumple todos los activos, 🟡 si cumple alguno, 🔴 si ninguno.
+- **Por hora** ($200 por defecto) y **Por km** ($10): 🟢 si cumple todos los activos, 🟡 si cumple alguno, 🔴 si ninguno.
 - **Recogida máx.** (2/3/4 km) y **Duración máx.** del viaje sin recogida (15/20/30 min): si fallan, la oferta va a 🔴 con su motivo.
 
 ## Licencias y precios (vigente)

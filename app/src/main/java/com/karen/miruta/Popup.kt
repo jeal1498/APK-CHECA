@@ -341,6 +341,8 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
             else -> null
         }
         if (rayo != null) {
+            // Baja la fila para que el ⚡ quede arriba del monto y no encima.
+            fila.setPadding(0, e(12f), 0, 0)
             marco.addView(TextView(ctx).apply {
                 text = rayo
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(9f))

@@ -1713,7 +1713,6 @@ class MainActivity : Activity() {
             if (prefs.uber || prefs.didi) cTenue else cAmarillo) { mostrarAppsLee() }
         filaMenu(g, Icono.OK, "Permisos", if (faltan == 0) "Todo listo" else "Falta $faltan",
             if (faltan == 0) cVerde else cAmarillo) { mostrarPermisos() }
-        filaMenu(g, Icono.PIN, "Apps de banco", "Pausa la lectura para usar tu banco") { mostrarBancos() }
         val guardadas = Guardado.lista(this)
         val noLeidas = guardadas.count { !it.leida }
         filaMenu(g, Icono.FILTROS, "Ayuda con la lectura",
@@ -2876,7 +2875,7 @@ class MainActivity : Activity() {
                     guiaHoraTocada = true
                     prefs.minPorHora = (prefs.minPorHora + 10f * signo).coerceIn(10f, 1000f)
                 }, margenArriba(Tema.ENTRE_TARJETAS))
-                c.addView(texto("Si no sabes, deja \$8/km y ajústalo después de unos días.", Tema.T_NOTA, cTenue, false),
+                c.addView(texto("Si no sabes, deja \$10/km y ajústalo después de unos días.", Tema.T_NOTA, cTenue, false),
                     margenArriba(Tema.S1))
                 // Tu auto, en la misma pantalla: para restar la gasolina y mostrar lo que te queda.
                 c.addView(etiqueta("TU AUTO"), margenArriba(Tema.S1))
@@ -2910,8 +2909,13 @@ class MainActivity : Activity() {
                 c.addView(titulo("Así se verá"), margenArriba(Tema.S1))
                 c.addView(parrafo("Cuando llegue una oferta, este aviso sale encima de Uber o DiDi y te dice «$accion» en voz alta."),
                     margenArriba(Tema.S2))
+                // Con su ancho real (como sale sobre Uber o DiDi), no estirado a toda la pantalla.
+                val anchoGuia = minOf((resources.displayMetrics.widthPixels * 0.94f).toInt(), Popup.anchoPx(this, prefs))
                 c.addView(Popup(this, prefs, WindowManager.LayoutParams.TYPE_APPLICATION).construir(o, false),
-                    margenArriba(Tema.S2))
+                    LinearLayout.LayoutParams(anchoGuia, -2).apply {
+                        gravity = Gravity.CENTER_HORIZONTAL
+                        topMargin = dp(Tema.S2)
+                    })
                 c.addView(texto("Oferta de ejemplo con tus metas. Si regresas y cambias tus metas, cambia el color.",
                     Tema.T_NOTA, cTenue, false).apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S1))
                 val t = tarjeta()
@@ -2925,7 +2929,13 @@ class MainActivity : Activity() {
                     guia?.dismiss()
                     iniciarCaptura()
                 }
-                guiaPie.addView(atras, margenArriba(Tema.S1))
+                guiaPie.addView(texto("Entrar sin iniciar la lectura", Tema.T_TEXTO, cTexto2, false).apply {
+                    typeface = fuenteMedia
+                    gravity = Gravity.CENTER
+                    minHeight = dp(Tema.ALTO_TOQUE)
+                    isClickable = true
+                    setOnClickListener { guia?.dismiss() }
+                }, margenArriba(Tema.S1))
             }
         }
     }
