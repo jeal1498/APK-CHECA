@@ -19,7 +19,11 @@ data class Oferta(
     fun gasolina(p: Prefs): Double =
         if (p.kmPorLitro > 0) km / p.kmPorLitro * p.precioLitro else 0.0
 
-    fun neta(p: Prefs): Double = tarifa - gasolina(p)
+    /** Desgaste del auto en todo el recorrido (recogida + viaje). */
+    fun desgaste(p: Prefs): Double = km * p.desgastePorKm
+
+    /** Lo que te queda: tarifa menos gasolina y desgaste. */
+    fun neta(p: Prefs): Double = tarifa - gasolina(p) - desgaste(p)
 
     /** Si la oferta no pasa los filtros de recogida o duración, dice por qué. */
     fun motivoFiltro(p: Prefs): String? {

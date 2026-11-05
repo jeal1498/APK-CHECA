@@ -266,7 +266,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
 
         // Izquierda: monto neto y la acción debajo, centrados. Un solo texto de dos líneas:
         // así ningún texto del pop-up es «solo un monto» (el lector lo tomaría como tarifa).
-        val conNeta = prefs.mostrarNeta && prefs.kmPorLitro > 0
+        val conNeta = prefs.mostrarNeta && (prefs.kmPorLitro > 0 || prefs.desgastePorKm > 0)
         val valor = mon.monto(if (conNeta) o.neta(prefs) else o.tarifa, 0)
         val pre = when {
             marca == MEJOR -> "★ "

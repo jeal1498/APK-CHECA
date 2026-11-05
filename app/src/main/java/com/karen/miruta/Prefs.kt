@@ -93,6 +93,11 @@ class Prefs(context: Context) {
         get() = sp.getFloat("precioL", 24f)
         set(v) { sp.edit().putFloat("precioL", v).apply() }
 
+    /** Desgaste del auto por km (llantas, aceite, mantenimiento). 0 = no se descuenta. */
+    var desgastePorKm: Float
+        get() = sp.getFloat("desgKm", 0f)
+        set(v) { sp.edit().putFloat("desgKm", v).apply() }
+
     // ---------- Moneda (la de la cuenta vive en perfil_conductor, compartida con Clientela) ----------
     var moneda: Moneda
         get() = Moneda(
@@ -235,7 +240,7 @@ class Prefs(context: Context) {
     }
 
     companion object {
-        private val AJUSTES_FLOAT = listOf("minKm", "minHora", "recMaxV", "recMinV", "kml", "precioL", "metaDia")
+        private val AJUSTES_FLOAT = listOf("minKm", "minHora", "recMaxV", "recMinV", "kml", "precioL", "metaDia", "desgKm")
         private val AJUSTES_INT = listOf("durMaxV", "durMinV", "criterio", "tam", "dur", "pos", "vol", "escPop")
         private val AJUSTES_BOOL = listOf(
             "fKm", "fHora", "fRecMax", "fRecMin", "fDurMax", "fDurMin", "neta", "uber", "didi",

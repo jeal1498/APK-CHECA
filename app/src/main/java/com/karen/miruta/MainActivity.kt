@@ -526,7 +526,13 @@ class MainActivity : Activity() {
             prefs.precioLitro = it
             refrescarVistaPrevia()
         }, margenArriba(Tema.S1))
-        gas.addView(interruptor("Mostrar lo que te queda", "Descuenta la gasolina en el pop-up", prefs.mostrarNeta) {
+        gas.addView(campoDato("Desgaste", prefs.desgastePorKm, simAntes(), simDespues("/km"), cero = true) {
+            prefs.desgastePorKm = it
+            refrescarVistaPrevia()
+        }, margenArriba(Tema.S1))
+        gas.addView(texto("Llantas, aceite y mantenimiento por cada km. Pon 0 para no descontarlo.",
+            Tema.T_NOTA, cTenue, false), margenArriba(4))
+        gas.addView(interruptor("Mostrar lo que te queda", "Descuenta gasolina y desgaste en el pop-up", prefs.mostrarNeta) {
             prefs.mostrarNeta = it
             refrescarVistaPrevia()
         }, margenArriba(4))
@@ -676,9 +682,9 @@ class MainActivity : Activity() {
                 "${num1(r.km)} km · ${r.min.toInt()} min en total"
             fila.addView(texto(detalle, Tema.T_NOTA, cTexto2, false), margenArriba(4))
             val extra = buildList {
-                if (prefs.mostrarNeta && prefs.kmPorLitro > 0) {
-                    val gas = r.km / prefs.kmPorLitro * prefs.precioLitro
-                    add("Te quedaban ${dinero(r.tarifa - gas)}")
+                if (prefs.mostrarNeta && (prefs.kmPorLitro > 0 || prefs.desgastePorKm > 0)) {
+                    val gas = if (prefs.kmPorLitro > 0) r.km / prefs.kmPorLitro * prefs.precioLitro else 0.0
+                    add("Te quedaban ${dinero(r.tarifa - gas - r.km * prefs.desgastePorKm)}")
                 }
                 if (r.multiplicador > 1.0) add("⚡ ${String.format(Locale.US, "%.1f", r.multiplicador)}x")
             }
@@ -836,7 +842,7 @@ class MainActivity : Activity() {
     }
 
     /** Campo de la marca v2: nombre a la izquierda y el dato editable a la derecha. */
-    private fun campoDato(titulo: String, valor: Float, pre: String, suf: String, cambio: (Float) -> Unit): View {
+    private fun campoDato(titulo: String, valor: Float, pre: String, suf: String, cero: Boolean = false, cambio: (Float) -> Unit): View {
         val fila = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
@@ -864,7 +870,7 @@ class MainActivity : Activity() {
                 override fun onTextChanged(a: CharSequence?, b: Int, c: Int, d: Int) {}
                 override fun afterTextChanged(e: Editable?) {
                     val v = e?.toString()?.replace(",", ".")?.toFloatOrNull() ?: return
-                    if (v > 0) cambio(v)
+                    if (v > 0 || (cero && v == 0f)) cambio(v)
                 }
             })
         }
