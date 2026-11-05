@@ -17,6 +17,7 @@ import android.view.WindowManager
 import com.google.mlkit.vision.text.Text
 import android.hardware.display.DisplayManager
 import android.hardware.display.VirtualDisplay
+import android.media.Image
 import android.media.ImageReader
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
@@ -53,10 +54,23 @@ class CapturaService : Service() {
     private var escX = 1f
     private var escY = 1f
 
+    /** Muestras de brillo de la última imagen a la que se le hizo OCR (filtro de cambios). */
+    @Volatile private var huellaOcr: IntArray? = null
+    /** Lecturas seguidas que se saltó el filtro de cambios por ser casi idénticas. */
+    private var saltosGate = 0
+    /** La última lectura vio un tramo «N min (» (hay una oferta en pantalla). */
+    @Volatile private var ofertaEnPantalla = false
+    /** Lecturas seguidas con tramo a la vista pero sin entender la oferta (se reintenta rápido). */
+    @Volatile private var fallos = 0
+    @Volatile private var leyoPasada = false
+
     private val ciclo = object : Runnable {
         override fun run() {
             leerPantalla()
-            handler?.postDelayed(this, INTERVALO_MS)
+            // Si se ve una oferta pero no se pudo leer, reintenta pronto (unas cuantas veces):
+            // suele ser un cuadro a medias de la animación o un OCR dudoso.
+            val rapido = fallos in 1..FALLOS_MAX
+            handler?.postDelayed(this, if (rapido) REINTENTO_MS else INTERVALO_MS)
         }
     }
 
@@ -129,6 +143,7 @@ class CapturaService : Service() {
         try {
             capAncho = dm.widthPixels
             capAlto = dm.heightPixels
+            huellaOcr = null
             val nuevo = ImageReader.newInstance(capAncho, capAlto, PixelFormat.RGBA_8888, 2)
             d.resize(capAncho, capAlto, dm.densityDpi)
             d.surface = nuevo.surface
@@ -150,6 +165,21 @@ class CapturaService : Service() {
             return
         }
         saltadas = 0
+        // Filtro de cambios (conservador): solo se salta el OCR si NO hay oferta a la vista,
+        // no hay lecturas fallidas pendientes y la pantalla es casi igual a la última leída.
+        // Con una oferta en pantalla siempre se lee (los cambios pueden ser solo unos dígitos).
+        // Como máximo se saltan GATE_MAX lecturas seguidas.
+        val hu = huella(img)
+        val previa = huellaOcr
+        if (hu != null && previa != null && previa.size == hu.size && !ofertaEnPantalla &&
+            fallos == 0 && saltosGate < GATE_MAX && parecidas(previa, hu)
+        ) {
+            saltosGate++
+            img.close()
+            return
+        }
+        saltosGate = 0
+        huellaOcr = hu
         val bmp: Bitmap
         try {
             val plano = img.planes[0]
@@ -158,9 +188,11 @@ class CapturaService : Service() {
             val anchoBuffer = rowStride / pixStride
             val completo = Bitmap.createBitmap(anchoBuffer, img.height, Bitmap.Config.ARGB_8888)
             completo.copyPixelsFromBuffer(plano.buffer)
-            bmp = if (anchoBuffer != img.width) {
+            val entero = if (anchoBuffer != img.width) {
                 Bitmap.createBitmap(completo, 0, 0, img.width, img.height).also { completo.recycle() }
             } else completo
+            // El OCR cuesta según los píxeles: se reduce el lado mayor (ya se escala al volver a coordenadas de pantalla).
+            bmp = reducir(entero)
         } catch (e: Exception) {
             return
         } finally {
@@ -184,6 +216,7 @@ class CapturaService : Service() {
                 bmpActual = bmp
                 escX = escalaX
                 escY = escalaY
+                leyoPasada = false
                 val zonas = RutaService.instancia?.zonasApps().orEmpty()
                 if (zonas.isEmpty()) {
                     // No sabemos dónde está cada app. En horizontal con dos ofertas
@@ -201,6 +234,10 @@ class CapturaService : Service() {
                     }
                     for ((z, ls) in grupos) procesarGrupo(ls, z.app, z.rect)
                 }
+                // ¿Hay una oferta a la vista (tramo «N min (»)? Si sí pero no se entendió, se reintenta rápido.
+                val hayTramo = todas.any { tramoTexto.containsMatchIn(it.text) }
+                ofertaEnPantalla = hayTramo
+                fallos = if (hayTramo && !leyoPasada) minOf(fallos + 1, 99) else 0
             }
             .addOnCompleteListener {
                 bmpActual = null
@@ -279,8 +316,54 @@ class CapturaService : Service() {
             }
         }
         if (oferta == null) return
+        leyoPasada = true
         val servicio = RutaService.instancia ?: return
         if (app != null) servicio.mostrarOferta(oferta, app, zona) else servicio.mostrarOferta(oferta)
+    }
+
+    /** Reduce la imagen para que el OCR sea más rápido y gaste menos batería. */
+    private fun reducir(b: Bitmap): Bitmap {
+        val mayor = maxOf(b.width, b.height)
+        if (mayor <= LADO_MAX) return b
+        val f = LADO_MAX.toFloat() / mayor
+        val r = Bitmap.createScaledBitmap(
+            b, maxOf(1, (b.width * f).toInt()), maxOf(1, (b.height * f).toInt()), true
+        )
+        if (r !== b) b.recycle()
+        return r
+    }
+
+    /** Brillo de una rejilla de puntos de la imagen (barato: no crea bitmaps). null si falla. */
+    private fun huella(img: Image): IntArray? {
+        return try {
+            val plano = img.planes[0]
+            val buf = plano.buffer
+            val ps = plano.pixelStride
+            val rs = plano.rowStride
+            val ancho = img.width
+            val alto = img.height
+            val out = IntArray(HU_COLS * HU_FILAS)
+            var i = 0
+            for (fy in 0 until HU_FILAS) {
+                val y = (fy * alto) / HU_FILAS + alto / (2 * HU_FILAS)
+                for (fx in 0 until HU_COLS) {
+                    val x = (fx * ancho) / HU_COLS + ancho / (2 * HU_COLS)
+                    val o = y * rs + x * ps
+                    val r = buf.get(o).toInt() and 0xFF
+                    val g = buf.get(o + 1).toInt() and 0xFF
+                    val b = buf.get(o + 2).toInt() and 0xFF
+                    out[i++] = (r * 30 + g * 59 + b * 11) / 100
+                }
+            }
+            out
+        } catch (e: Exception) { null }
+    }
+
+    /** true si casi ningún punto cambió de brillo (menos de GATE_PORC %). */
+    private fun parecidas(a: IntArray, b: IntArray): Boolean {
+        var dif = 0
+        for (k in a.indices) if (Math.abs(a[k] - b[k]) > GATE_DIF) dif++
+        return dif * 100 < a.size * GATE_PORC
     }
 
     private fun iniciarPrimerPlano() {
@@ -370,7 +453,20 @@ class CapturaService : Service() {
         private const val CANAL_AVISO = "avisos"
         private const val ID_AVISO = 2
         private const val INTERVALO_MS = 1000L
-        private const val SALTAR_MAX = 4
+        /** Cadencia cuando hay una oferta a la vista que no se pudo leer. */
+        private const val REINTENTO_MS = 500L
+        private const val FALLOS_MAX = 6
+        // Antes 4: hasta 4 s sin mirar. El filtro de cambios ya cuida la batería.
+        private const val SALTAR_MAX = 1
+        /** Lado mayor máximo (px) de la imagen que va al OCR. */
+        private const val LADO_MAX = 1600
+        private const val HU_COLS = 64
+        private const val HU_FILAS = 112
+        /** Un punto cuenta como «cambió» si su brillo (0–255) varía más de esto… */
+        private const val GATE_DIF = 24
+        /** …y la pantalla es «casi igual» si cambió menos de este % de puntos. */
+        private const val GATE_PORC = 2
+        private const val GATE_MAX = 3
         private val tramoTexto = Regex("""\d\s?min\s*\(""", RegexOption.IGNORE_CASE)
         @Volatile var corriendo = false
         /** Android cortó la lectura sin que el conductor la detuviera (Inicio lo avisa en amarillo). */
