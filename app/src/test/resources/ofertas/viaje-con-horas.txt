@@ -1,0 +1,6 @@
+# Viaje largo con horas: «1 h 5 min (40 km)».
+$520.00
+6min (2.0km)
+1 h 5 min (40 km)
+---
+tarifa=520 km=42 min=71 recKm=2 recMin=6

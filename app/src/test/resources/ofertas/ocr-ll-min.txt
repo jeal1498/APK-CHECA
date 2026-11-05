@@ -1,0 +1,6 @@
+# El OCR lee «11 min» como «ll min» o «1l min».
+$60.00
+A ll min (3.0 km)
+Viaje: 1l min (5.0 km)
+---
+tarifa=60 km=8 min=22 recKm=3 recMin=11

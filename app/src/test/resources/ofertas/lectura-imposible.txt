@@ -1,0 +1,6 @@
+# $/km imposible (más de 80): se descarta.
+$500.00
+1 min (0.2 km)
+2 min (0.4 km)
+---
+nada

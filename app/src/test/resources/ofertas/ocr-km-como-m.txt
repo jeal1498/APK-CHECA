@@ -1,0 +1,6 @@
+# «2.4m» con decimales es un km mal leído, no metros.
+$55.00
+3min (2.4m)
+14min (5.6km)
+---
+tarifa=55 km=8 min=17 recKm=2.4 recMin=3

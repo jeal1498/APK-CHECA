@@ -1,0 +1,8 @@
+# Uber: $/km estimado y bono «por inicio» no cuentan como tarifa.
+$48.73
+$10.15/km est.
+A 5 min (1.6 km)
+Viaje: 8 min (3.2 km)
++$9.75 por inicio de viaje prioritario
+---
+tarifa=48.73 km=4.8 min=13 recKm=1.6 recMin=5

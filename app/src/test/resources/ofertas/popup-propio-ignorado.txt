@@ -1,0 +1,7 @@
+# El texto de un pop-up con «total» no se suma como tramo.
+$80.00
+5min (1.5km)
+18min (7.0km)
+42 min (14.9 km) total
+---
+tarifa=80 km=8.5 min=23 recKm=1.5 recMin=5

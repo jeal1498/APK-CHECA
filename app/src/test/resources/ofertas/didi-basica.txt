@@ -1,0 +1,9 @@
+# DiDi: tarifa grande, recogida y viaje, botones de contraoferta después de la tarifa.
+$151.34
+5min (1.7km)
+37min (13.2km)
+$163.34
+$175.34
+Aceptar $151.34
+---
+tarifa=151.34 km=14.9 min=42 recKm=1.7 recMin=5

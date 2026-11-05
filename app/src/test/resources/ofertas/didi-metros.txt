@@ -1,0 +1,6 @@
+# DiDi: recogida en metros («720m» = 0.72 km).
+$45.20
+2min (720m)
+12min (4.1km)
+---
+tarifa=45.2 km=4.82 min=14 recKm=0.72 recMin=2

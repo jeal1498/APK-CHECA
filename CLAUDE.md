@@ -67,6 +67,7 @@ Pantallas, instalación en teléfonos (Play Protect, ajustes restringidos, Samsu
 - km y min = suma de los tramos `N min (X km|m)`. El primer tramo es la recogida. Se ignoran textos con "total" (el pop-up propio o el de otra app).
 - Protección contra el OCR: "m" con decimales o < 30 se trata como **km**. Se descarta la oferta si $/km > 80, $/h > 3000 o km < 0.3.
 - **No** se suman bonos ("adicionales", "+$… por inicio").
+- **Pruebas del lector:** `app/src/test/resources/ofertas/*.txt` (líneas del OCR, `---` y lo esperado) y `ParserTest.kt`; corren en `play-compilar.yml`. Cada falla de lectura que mande Eduardo se agrega como caso nuevo. Antes de subir, simula con `python3 -I` si hace falta.
 - Pop-up: ningún texto puede ser *solo un monto* (el OCR lo tomaría como tarifa); por eso "Te quedan $x", "$x/h", "$x/km" y "… km total".
 
 ### Semáforo y filtros (solo 4)

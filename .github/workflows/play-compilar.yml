@@ -32,6 +32,8 @@ jobs:
           gradle-version: "8.11.1"
       - name: Compilar play
         run: gradle assemblePlayRelease --no-daemon
+      - name: Probar el lector con ofertas de ejemplo
+        run: gradle testPlayReleaseUnitTest --no-daemon
       - name: Verificar divulgación y consentimiento de Accesibilidad para Play
         run: |
           set -euo pipefail

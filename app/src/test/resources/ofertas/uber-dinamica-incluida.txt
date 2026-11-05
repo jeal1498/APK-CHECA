@@ -1,0 +1,7 @@
+# Uber: «+$62.00 incluido» es dinámica ya sumada en la tarifa.
+$120.00
++$62.00 incluido
+A 4 min (1.2 km)
+Viaje: 25 min (11.0 km)
+---
+tarifa=120 km=12.2 min=29 recKm=1.2 recMin=4 dinamica=62
