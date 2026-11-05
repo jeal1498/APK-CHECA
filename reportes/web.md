@@ -1,11 +1,11 @@
 # Reporte de Checa (web + app) · últimos 30 días
 
-Generado: 2026-11-04 20:06 UTC. Cuenta visitas únicas (una por pestaña).
+Generado: 2026-11-05 20:20 UTC. Cuenta visitas únicas (una por pestaña).
 
 ## Resumen
 | visitas | descargas | cuentas_nuevas | pagos | ingresos | licencias_activas |
 | --- | --- | --- | --- | --- | --- |
-| 624 | 262 | 44 | 0 | 0 | 3 |
+| 629 | 264 | 44 | 0 | 0 | 3 |
 
 # App
 
@@ -39,7 +39,7 @@ Generado: 2026-11-04 20:06 UTC. Cuenta visitas únicas (una por pestaña).
 | glozano30506@gmail.com | 10-24 00:12 | 10-24 00:12 | 1 | sin licencia |
 | nikte06bacabespinoza@gmail.com | 10-23 18:23 | 10-23 18:23 | 1 | sin licencia |
 | wilmafields.72871@gmail.com | 10-23 12:15 | 10-23 12:15 | 1 | sin licencia |
-| jeal1498@gmail.com | 10-22 17:15 | 10-22 17:15 | 1 | sin licencia |
+| jeal1498@gmail.com | 10-22 17:15 | 11-04 21:31 | 2 | sin licencia |
 | ciberbumker@gmail.com | 10-22 16:24 | 10-22 16:40 | 2 | sin licencia |
 | diberdiub@gmail.com | 10-21 18:24 | 10-21 18:24 | 1 | sin licencia |
 | ceverthbernabe@gmail.com | 10-21 14:00 | 10-21 14:00 | 1 | sin licencia |
@@ -104,8 +104,8 @@ Sin datos todavía.
 ## Embudo
 | evento | visitas | veces |
 | --- | --- | --- |
-| visita | 624 | 883 |
-| descarga | 262 | 295 |
+| visita | 629 | 888 |
+| descarga | 264 | 297 |
 | clic_descargar | 122 | 134 |
 | descarga_instalar | 69 | 147 |
 | video_play | 68 | 72 |
@@ -116,8 +116,8 @@ Sin datos todavía.
 ## Por fuente (visitas → descargas)
 | fuente | campana | visitas | descargas |
 | --- | --- | --- | --- |
-| directo |  | 473 | 197 |
-| tiktok |  | 97 | 54 |
+| directo |  | 477 | 198 |
+| tiktok |  | 98 | 55 |
 | tiktok | prueba-en-google-play | 22 | 0 |
 | app | compartir | 17 | 9 |
 | facebook | beta | 6 | 2 |
@@ -132,8 +132,8 @@ Sin datos todavía.
 ## Por dispositivo
 | dispositivo | visitas | descargas |
 | --- | --- | --- |
-| android | 507 | 262 |
-| pc | 61 | 0 |
+| android | 509 | 264 |
+| pc | 64 | 0 |
 | iphone | 57 | 0 |
 
 ## Qué botón lleva a descargar
@@ -141,9 +141,9 @@ Sin datos todavía.
 | --- | --- |
 | fijo | 84 |
 | hero | 80 |
-| tiktok | 52 |
+| tiktok | 53 |
 | app | 33 |
-| nav | 19 |
+| nav | 20 |
 | cierre | 12 |
 | registro | 8 |
 | Rhc | 2 |
@@ -155,7 +155,8 @@ Sin datos todavía.
 ## Por día
 | dia | visitas | descargas |
 | --- | --- | --- |
-| 2026-11-04 | 11 | 0 |
+| 2026-11-05 | 3 | 1 |
+| 2026-11-04 | 13 | 1 |
 | 2026-11-03 | 3 | 0 |
 | 2026-11-02 | 11 | 0 |
 | 2026-11-01 | 5 | 0 |
