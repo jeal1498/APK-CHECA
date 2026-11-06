@@ -3089,9 +3089,10 @@ class MainActivity : Activity() {
         if (guia == null) return
         guiaPaso = paso
         guiaProgreso.removeAllViews()
-        // Avance del arranque de 3 pasos: 1 permisos (ya hecho), 2 tus números, 3 así se verá.
-        for (i in 0..2) {
-            val lleno = i == 0 || (i == 1 && paso >= 2) || (i == 2 && paso >= 4)
+        // Arranque de 4 pasos: 1 permisos, 2 país, 3 tus números, 4 así se verá.
+        val numPaso = when (paso) { 1 -> 1; 3 -> 2; 2 -> 3; else -> 4 }
+        for (i in 0..3) {
+            val lleno = i < numPaso
             guiaProgreso.addView(View(this).apply { background = redondo(if (lleno) Tema.HUESO else cTarjeta2, 2) },
                 LinearLayout.LayoutParams(0, -1, 1f).apply { if (i > 0) leftMargin = dp(6) })
         }
@@ -3109,7 +3110,7 @@ class MainActivity : Activity() {
         }
         fun titulo(s: String) = texto(s, 28f, cTexto, true).apply { setLineSpacing(0f, 1.1f) }
         fun parrafo(s: String) = texto(s, Tema.T_SUB, cTexto2, false).apply { setLineSpacing(0f, 1.3f) }
-        fun pasoDe(n: Int) = etiqueta("PASO $n DE 3").apply { setPadding(0, 0, 0, dp(4)) }
+        fun pasoDe(n: Int) = etiqueta("PASO $n DE 4").apply { setPadding(0, 0, 0, dp(4)) }
         fun principal(s: String, accion: () -> Unit) = guiaPie.addView(boton(s, cVerde, Color.BLACK, accion).apply {
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
         }, LinearLayout.LayoutParams(-1, dp(52)))
@@ -3157,7 +3158,7 @@ class MainActivity : Activity() {
                 c.addView(parrafo(if (BuildConfig.ES_PLAY) "Checa necesita permiso para ver la oferta en tu pantalla. Lee en tu teléfono lo que aparece para encontrar las ofertas de Uber y DiDi; no toca nada ni acepta viajes por ti." else "Checa necesita permiso para ver la oferta en tu pantalla. Solo lee Uber y DiDi; no toca nada ni acepta viajes por ti."),
                     margenArriba(Tema.S2))
                 // Android 13+: los ajustes restringidos se permiten ANTES de activar la Accesibilidad.
-                if (Build.VERSION.SDK_INT >= 33 && !listo && ajustesRestringidosPermitidos() != true) {
+                if (!BuildConfig.ES_PLAY && Build.VERSION.SDK_INT >= 33 && !listo && ajustesRestringidosPermitidos() != true) {
                     val r = tarjeta()
                     r.addView(texto("Antes: permite los ajustes restringidos", Tema.T_TEXTO, cTexto, false).apply { typeface = fuenteMedia })
                     r.addView(texto(
@@ -3217,7 +3218,7 @@ class MainActivity : Activity() {
                 guiaPie.addView(atras, margenArriba(Tema.S1))
             }
             2 -> {
-                c.addView(pasoDe(2))
+                c.addView(pasoDe(3))
                 c.addView(titulo("Tus números"), margenArriba(Tema.S1))
                 c.addView(parrafo("Con esto Checa pinta cada oferta de verde, amarillo o rojo. Lo cambias cuando quieras en Mis metas."),
                     margenArriba(Tema.S2))
@@ -3260,7 +3261,7 @@ class MainActivity : Activity() {
                     Oferta.AMARILLO -> "Considerar"
                     else -> "Rechazar"
                 }
-                c.addView(pasoDe(3))
+                c.addView(pasoDe(4))
                 c.addView(titulo("Así se verá"), margenArriba(Tema.S1))
                 c.addView(parrafo("Cuando llegue una oferta, este aviso sale encima de Uber o DiDi y te dice «$accion» en voz alta."),
                     margenArriba(Tema.S2))
@@ -3439,10 +3440,10 @@ class MainActivity : Activity() {
         val arranque = !prefs.guiaVista
         if (arranque) {
             val avance = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
-            for (i in 0..2) avance.addView(View(this).apply { background = redondo(if (i == 0) Tema.HUESO else cTarjeta2, 2) },
+            for (i in 0..3) avance.addView(View(this).apply { background = redondo(if (i == 0) Tema.HUESO else cTarjeta2, 2) },
                 LinearLayout.LayoutParams(0, dp(4), 1f).apply { if (i > 0) leftMargin = dp(6) })
             c.addView(avance, LinearLayout.LayoutParams(-1, dp(4)).apply { bottomMargin = dp(Tema.S2) })
-            c.addView(etiqueta("PASO 1 DE 3").apply { setPadding(0, 0, 0, dp(4)) })
+            c.addView(etiqueta("PASO 1 DE 4").apply { setPadding(0, 0, 0, dp(4)) })
         }
         // El aviso de «Guardar pantallas» va aquí como una casilla más (no sale aparte).
         prefs.diagAvisoVisto = true
@@ -3462,19 +3463,21 @@ class MainActivity : Activity() {
         }
 
         // Android 13+: primero se quita el bloqueo de ajustes restringidos; después se activa el lector.
-        if (Build.VERSION.SDK_INT >= 33 && !acc) {
+        if (!BuildConfig.ES_PLAY && Build.VERSION.SDK_INT >= 33 && !acc) {
             val permitido = ajustesRestringidosPermitidos() == true
             val r = tarjeta(if (permitido) Tema.VERDE_SUAVE else cTarjeta)
             r.addView(texto(if (permitido) "✓ Ajustes restringidos permitidos" else "Primero: quita el bloqueo de Android",
                 Tema.T_TEXTO, if (permitido) cVerde else cTexto, true))
-            r.addView(texto(
-                if (permitido) "Android ya no bloquea al lector. Sigue con «Leer Uber y DiDi»."
-                else "Android bloquea la Accesibilidad en las apps instaladas fuera de Play Store " +
-                    "(te sale «A la app se le negó el acceso»). Toca el botón, en «Información de la app» abre ⋮ " +
-                    "(arriba a la derecha) y elige «Permitir configuración restringida». Después activa «Leer Uber y DiDi». " +
-                    "Si no ves esa opción, intenta activar el lector una vez y vuelve.",
-                Tema.T_NOTA, cTexto2, false
-            ).apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S1))
+            if (permitido) {
+                r.addView(texto("Android ya no bloquea al lector. Sigue con «Leer Uber y DiDi».",
+                    Tema.T_NOTA, cTexto2, false).apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S1))
+            } else {
+                r.addView(filaPaso(1, "Toca «Abrir Información de la app»."), margenArriba(Tema.S2))
+                r.addView(filaPaso(2, "Arriba a la derecha toca ⋮ y elige «Permitir configuración restringida»."), margenArriba(10))
+                r.addView(filaPaso(3, "Regresa y activa «Leer Uber y DiDi»."), margenArriba(10))
+                r.addView(texto("¿No ves la opción? Intenta activar el lector una vez y vuelve.",
+                    Tema.T_NOTA, cTenue, false).apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S1))
+            }
             if (!permitido) r.addView(boton("Abrir Información de la app", cTarjeta2, cTexto) { abrirInfoApp() }, margenArriba(Tema.S2))
             c.addView(r, margenArriba(Tema.S2))
         }
@@ -3502,7 +3505,7 @@ class MainActivity : Activity() {
                 } catch (_: Exception) { abrirInfoApp() }
             }
         }
-        filaCasilla(g, "Guardar pantallas de ofertas", "Para revisar las que se lean mal · 7 días", prefs.diagnostico, true) {
+        filaInterruptor(g, "Guardar pantallas de ofertas", "Opcional · para revisar las que se lean mal · 7 días", prefs.diagnostico) {
             prefs.diagnostico = !prefs.diagnostico
             pintarPermisos()
         }
@@ -3512,7 +3515,7 @@ class MainActivity : Activity() {
             c.addView(texto(
                 "Busca «Checa – lector de ofertas» y actívalo. En Samsung está dentro de «Aplicaciones instaladas»; " +
                     "en OPPO suele estar en «Aplicaciones descargadas».",
-                Tema.T_NOTA, cTenue, false
+                Tema.T_TEXTO, cTexto2, false
             ).apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S2))
         }
         c.addView(texto(
@@ -3541,8 +3544,15 @@ class MainActivity : Activity() {
                 setOnClickListener { dialogoPermisos?.dismiss() }
             }, margenArriba(Tema.S1))
         } else {
-            permisosPie.addView(boton("Completa los permisos para seguir", Tema.CAMPO, cTenue) { }
-                .apply { setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f) }, LinearLayout.LayoutParams(-1, dp(52)))
+            // El botón dice lo que sigue y lleva al primer permiso que falta (los tres siguen siendo obligatorios).
+            val notifOk = permisoNotificaciones()
+            val sigue = when { !acc -> "Activar el lector"; !notifOk -> "Permitir notificaciones"; else -> "Permitir batería" }
+            val faltan = listOf(acc, notifOk, permisoBateria()).count { !it }
+            permisosPie.addView(boton(sigue, cVerde, Color.BLACK) {
+                when { !acc -> abrirAccesibilidad(); !notifOk -> pedirNotificaciones(); else -> pedirBateria() }
+            }.apply { setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f) }, LinearLayout.LayoutParams(-1, dp(52)))
+            permisosPie.addView(texto("Faltan $faltan de 3 permisos", Tema.T_NOTA, cTenue, false)
+                .apply { gravity = Gravity.CENTER }, margenArriba(Tema.S1))
             if (BuildConfig.ES_PLAY) {
                 permisosPie.addView(texto("Continuar sin iniciar la lectura", Tema.T_TEXTO, cTenue, false).apply {
                     typeface = fuenteMedia
@@ -3587,6 +3597,41 @@ class MainActivity : Activity() {
         textos.addView(texto(titulo, Tema.T_TEXTO, cTexto, true))
         textos.addView(texto(sub, Tema.T_NOTA, if (falta) cAmarillo else cTenue, false), margenArriba(2))
         f.addView(textos, LinearLayout.LayoutParams(0, -2, 1f))
+        grupo.addView(f)
+    }
+
+    /** Paso numerado de una instrucción (círculo con el número y el texto al lado). */
+    private fun filaPaso(n: Int, s: String): View {
+        val f = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
+        f.addView(texto("$n", Tema.T_NOTA, cTexto, true).apply {
+            gravity = Gravity.CENTER
+            background = punto(cTarjeta2)
+        }, LinearLayout.LayoutParams(dp(28), dp(28)).apply { rightMargin = dp(12) })
+        f.addView(texto(s, Tema.T_TEXTO, cTexto2, false).apply { setLineSpacing(0f, 1.2f) }, LinearLayout.LayoutParams(0, -2, 1f))
+        return f
+    }
+
+    /** Fila con interruptor (para opciones tuyas); las casillas de [filaCasilla] quedan para los permisos. */
+    private fun filaInterruptor(grupo: LinearLayout, titulo: String, sub: String, activo: Boolean, accion: () -> Unit) {
+        if (grupo.childCount > 0) grupo.addView(View(this).apply { setBackgroundColor(Tema.BORDE) },
+            LinearLayout.LayoutParams(-1, dp(1)))
+        val f = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            minimumHeight = dp(60)
+            setPadding(dp(14), dp(10), dp(14), dp(10))
+            background = ripple(Color.TRANSPARENT, Tema.R_TARJETA)
+            isClickable = true
+            setOnClickListener { accion() }
+        }
+        val textos = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        textos.addView(texto(titulo, Tema.T_TEXTO, cTexto, true))
+        textos.addView(texto(sub, Tema.T_NOTA, cTenue, false), margenArriba(2))
+        f.addView(textos, LinearLayout.LayoutParams(0, -2, 1f))
+        val pista = FrameLayout(this).apply { background = redondo(if (activo) cVerde else Tema.HUMO, 50) }
+        pista.addView(View(this).apply { background = punto(if (activo) Tema.SOBRE_VERDE else cTenue) },
+            FrameLayout.LayoutParams(dp(16), dp(16)).apply { topMargin = dp(3); leftMargin = if (activo) dp(21) else dp(3) })
+        f.addView(pista, LinearLayout.LayoutParams(dp(40), dp(22)).apply { leftMargin = dp(12) })
         grupo.addView(f)
     }
 
