@@ -4,7 +4,8 @@
 
 ## Paquetes (v34, 5.3)
 - Estrategia de señuelo (la armó con Gemini): **1 mes $119** (Plan Básico, «el feo») · **6 meses $589** (Plan Estratega, estrella, borde verde «Más popular») · **1 año $1,059** (Plan Pro, señuelo). (Subieron desde $99/$499/$899 en la v47+; ver «Precios y Plan Fundador».) Tarjetas en la pestaña Cuenta; desde v36 se pagan con Mercado Pago (ver abajo); ocultas durante la beta.
-- Básico = licencia de cuenta con `max_equipos = 1`, firmada como `LV|correo|fecha[|F]|B`. Limita: 1 equipo (trigger de Supabase), un pop-up a la vez sin ⭐ comparador, y en Mejores horas sin «lo mejor que viene» ni semana. Todo lo demás (neta, filtros, pop-up ajustable) va en los 3. La prueba de 7 días, los códigos de equipo y las licencias ya existentes traen todo.
+- **Equipos sin límite desde la 10.16 (6 nov 2026):** se quitó el trigger `limite_equipos` de Supabase y los textos «1 equipo» / «2 equipos». `max_equipos` solo marca el plan Básico.
+- Básico = licencia de cuenta con `max_equipos = 1`, firmada como `LV|correo|fecha[|F]|B`. Limita: un pop-up a la vez sin ⭐ comparador, y en Mejores horas sin «lo mejor que viene» ni semana. Todo lo demás (neta, filtros, pop-up ajustable) va en los 3. La prueba de 7 días, los códigos de equipo y las licencias ya existentes traen todo.
 - Pedido: agregar `plan=1 mes|6 meses|1 año` en `pedidos/pedido.txt` (pone los días solo: 30/180/365; `dias=` lo sobreescribe). El plan de 1 mes solo aplica con `correo=`.
 
 ## Cobros con Mercado Pago (v36, 5.5)

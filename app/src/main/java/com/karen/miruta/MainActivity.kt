@@ -1561,7 +1561,7 @@ class MainActivity : Activity() {
                 "Pop-up con semáforo, ganancia neta, $/\u2060hora, $/\u2060km y dinámica ⚡",
                 "Filtros inteligentes y aviso por voz o vibración",
                 "Mejores horas de hoy",
-                "1 equipo",
+                "Equipos ilimitados",
                 "Soporte por WhatsApp"
             ), false
         ), margenTarjeta())
@@ -1571,7 +1571,7 @@ class MainActivity : Activity() {
                 "Todo lo del Plan Básico, más:",
                 "Uber y DiDi al mismo tiempo: Checa marca cuál conviene más",
                 "Mejores horas completo: «lo mejor que viene» y vista de la semana",
-                "2 equipos (teléfono + tablet)",
+                "Equipos ilimitados (teléfono, tablet…)",
                 "Soporte prioritario por WhatsApp"
             ), true
         ), margenTarjeta())
@@ -1579,7 +1579,7 @@ class MainActivity : Activity() {
             "12m", "1 AÑO", "Plan Pro", "$1,059", "$635", "Equivale a $88.25 al mes",
             listOf(
                 "Todo lo del Plan Estratega",
-                "2 equipos (teléfono + tablet)",
+                "Equipos ilimitados (teléfono, tablet…)",
                 "Soporte VIP por WhatsApp"
             ), false
         ), margenTarjeta())
@@ -1983,7 +1983,7 @@ class MainActivity : Activity() {
         val g = grupoFilas()
         val equipos = Cuenta.equipos(this)
         filaMenu(g, Icono.CUENTA, "Equipos",
-            "${equipos.size} de ${Cuenta.maxEquipos(this)}" +
+            "${equipos.size} ${if (equipos.size == 1) "equipo" else "equipos"}" +
                 if (equipos.isEmpty()) "" else " · " + equipos.joinToString(", ") { it.visible() }) { mostrarEquipos() }
         filaMenu(g, Icono.ALERTA, "Ayuda y soporte", "Preguntas frecuentes y WhatsApp") { mostrarAyuda() }
         filaMenu(g, Icono.PLAY, "Guía de inicio", "Cómo usar Checa paso a paso") { mostrarGuia() }
@@ -2152,7 +2152,7 @@ class MainActivity : Activity() {
     private fun confirmarCerrarSesion() {
         val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         listOf(
-            "Este teléfono deja de mostrar pop-ups y se libera un lugar de tus equipos.",
+            "Este teléfono deja de mostrar pop-ups y sale de la lista de tus equipos.",
             "Se borran de aquí las ofertas guardadas y las estadísticas.",
             "Tu licencia y tus ajustes siguen en tu cuenta: al volver a entrar, regresan."
         ).forEachIndexed { i, s ->
@@ -2182,9 +2182,8 @@ class MainActivity : Activity() {
         cuerpo.addView(ScrollView(this).apply { isVerticalScrollBarEnabled = false; addView(col) }, LinearLayout.LayoutParams(-1, -1))
         fun pintar() {
             col.removeAllViews()
-            val max = Cuenta.maxEquipos(this)
             col.addView(texto(
-                "Tu plan permite $max ${if (max == 1) "equipo" else "equipos"}. Si quitas uno, deja de mostrar pop-ups " +
+                "Puedes usar Checa en todos los equipos que quieras. Si quitas uno, deja de mostrar pop-ups " +
                     "hasta que vuelvas a entrar con tu cuenta en él.",
                 Tema.T_TEXTO, cTexto2, false
             ).apply { setLineSpacing(0f, 1.2f) })
@@ -3023,7 +3022,7 @@ class MainActivity : Activity() {
     }
 
     // =====================================================================
-    // Cuenta Google (licencia ligada a la cuenta, hasta 2 equipos)
+    // Cuenta Google (licencia ligada a la cuenta, equipos sin límite)
     // =====================================================================
 
     // =====================================================================
@@ -3948,7 +3947,7 @@ class MainActivity : Activity() {
     private fun listaEquipos(conQuitar: Boolean): View {
         val caja = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         val lista = Cuenta.equipos(this)
-        caja.addView(etiqueta("EQUIPOS · ${lista.size} DE ${Cuenta.maxEquipos(this)}"))
+        caja.addView(etiqueta("EQUIPOS · ${lista.size}"))
         lista.forEach { eq -> caja.addView(filaEquipo(eq, conQuitar), margenArriba(4)) }
         return caja
     }
