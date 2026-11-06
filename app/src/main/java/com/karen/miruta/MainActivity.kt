@@ -2244,9 +2244,6 @@ class MainActivity : Activity() {
                 t.addView(botones, margenArriba(Tema.S1))
                 col.addView(t, margenArriba(Tema.ENTRE_TARJETAS))
             }
-            repeat(maxOf(0, max - lista.size)) {
-                col.addView(lugarLibre(), margenArriba(Tema.ENTRE_TARJETAS))
-            }
         }
         pintar()
         d.setOnDismissListener { pintarCuenta() }
