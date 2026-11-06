@@ -507,20 +507,39 @@ class MainActivity : Activity() {
     // =====================================================================
 
     private fun pantallaFiltros(): View {
-        val col = columna()
-        col.addView(texto("Mis metas", 26f, cTexto, true), LinearLayout.LayoutParams(-1, -2).apply {
+        // Arriba, fija: el título y una oferta de ejemplo que cambia de color al mover cualquier meta.
+        val raiz = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setBackgroundColor(cFondo)
+        }
+        val cab = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(Tema.S2), dp(Tema.S1), dp(Tema.S2), dp(Tema.S1))
+        }
+        cab.addView(texto("Mis metas", 26f, cTexto, true), LinearLayout.LayoutParams(-1, -2).apply {
             bottomMargin = dp(Tema.S1)
         })
-        col.addView(texto(
-            "Lo que decide si una oferta es verde, amarilla o roja. Verde si cumple todas tus metas activas, " +
-                "amarilla si cumple alguna y roja si no cumple ninguna o falla la recogida o la duración.",
-            Tema.T_NOTA, cTenue, false
-        ).apply { setLineSpacing(0f, 1.2f) }, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(Tema.S2) })
+        val previaMetas = FrameLayout(this)
+        vistaPreviaMetas = previaMetas
+        cab.addView(previaMetas, LinearLayout.LayoutParams(-1, -2))
+        cab.addView(texto("Oferta de ejemplo con tus metas", Tema.T_NOTA, cTenue, false).apply { gravity = Gravity.CENTER },
+            margenArriba(4))
+        raiz.addView(cab, LinearLayout.LayoutParams(-1, -2))
+        val col = columna()
         tarjetaFiltros(col)
 
         // --- Tu auto ---
         val gas = tarjeta()
         gas.addView(etiquetaTarjeta("TU AUTO"))
+        val costoFila = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.BOTTOM }
+        costoAutoValor = numero("", 28f, cTexto)
+        costoAutoDetalle = texto("", Tema.T_NOTA, cTenue, false)
+        costoFila.addView(costoAutoValor)
+        costoFila.addView(costoAutoDetalle, LinearLayout.LayoutParams(0, -2, 1f).apply {
+            leftMargin = dp(Tema.S1); bottomMargin = dp(4)
+        })
+        gas.addView(costoFila, margenArriba(Tema.S1))
+        pintarCostoAuto()
         gas.addView(campoDato("Rendimiento", prefs.kmPorLitro, "", " km/l") {
             prefs.kmPorLitro = it
             refrescarVistaPrevia()
@@ -556,7 +575,9 @@ class MainActivity : Activity() {
         }, margenArriba(12))
         col.addView(cmp, margenTarjeta())
 
-        return scroll(col)
+        raiz.addView(scroll(col), LinearLayout.LayoutParams(-1, 0, 1f))
+        refrescarPreviaMetas()
+        return raiz
     }
 
     // =====================================================================
@@ -564,6 +585,9 @@ class MainActivity : Activity() {
     // =====================================================================
 
     private var valorDesgaste: TextView? = null
+    private var vistaPreviaMetas: FrameLayout? = null
+    private var costoAutoValor: TextView? = null
+    private var costoAutoDetalle: TextView? = null
     private var valorTarMin: TextView? = null
 
     /** Fila de «Tu auto» que abre una ventana: nombre a la izquierda, valor y › a la derecha. */
@@ -584,6 +608,7 @@ class MainActivity : Activity() {
     }
 
     private fun pintarValoresAuto() {
+        pintarCostoAuto()
         valorDesgaste?.text = dinero(prefs.desgastePorKm.toDouble(), 2) + "/km"
         valorTarMin?.text = if (prefs.filtroTarMin) dinero(prefs.tarifaMinima.toDouble(), 0) + "/viaje" else "Apagada"
     }
@@ -990,22 +1015,26 @@ class MainActivity : Activity() {
     private fun tarjetaFiltros(col: LinearLayout) {
         val t = tarjeta()
         t.addView(etiquetaTarjeta("QUÉ TE CONVIENE"))
+        // Sin interruptores: la meta por km y la de por hora siempre cuentan (antes se podían apagar).
+        prefs.filtroKm = true
+        prefs.filtroHora = true
         // La meta por hora se calcula sola: $/km × 20 (sigue siendo editable).
         var pintarHora: () -> Unit = {}
         t.addView(campoMeta(
             "Por km", simAntes(), simDespues("/km"), 0.5f,
-            { prefs.filtroKm }, { prefs.filtroKm = it },
+            null, null,
             { prefs.minPorKm }, { v ->
                 prefs.minPorKm = v
                 prefs.minPorHora = v * 20f
                 pintarHora()
                 pintarMejoresHoras(false)
+                refrescarVistaPrevia()
             }
         ), margenArriba(Tema.S1))
         t.addView(campoMeta(
             "Por hora", simAntes(), simDespues("/h"), 10f,
-            { prefs.filtroHora }, { prefs.filtroHora = it },
-            { prefs.minPorHora }, { prefs.minPorHora = it }
+            null, null,
+            { prefs.minPorHora }, { prefs.minPorHora = it; refrescarVistaPrevia() }
         ) { pintarHora = it }, margenArriba(Tema.S1))
 
         // Tocar la opción elegida otra vez apaga el filtro.
@@ -1018,6 +1047,7 @@ class MainActivity : Activity() {
                 prefs.recogidaMaxKm = rec[i]
                 prefs.filtroRecMax = true
             }
+            refrescarVistaPrevia()
         }, margenArriba(Tema.S1))
         t.addView(texto("Duración máxima", Tema.T_TEXTO, cTexto2, false), margenArriba(Tema.S2))
         val dur = listOf(15, 20, 30)
@@ -1028,6 +1058,7 @@ class MainActivity : Activity() {
                 prefs.duracionMax = dur[i]
                 prefs.filtroDurMax = true
             }
+            refrescarVistaPrevia()
         }, margenArriba(Tema.S1))
         t.addView(texto("Toca otra vez la opción elegida para apagarla.", Tema.T_NOTA, cTenue, false), margenArriba(Tema.S1))
         col.addView(t, margenTarjeta())
@@ -4273,7 +4304,29 @@ class MainActivity : Activity() {
 
     private fun ofertaEjemplo() = Oferta(85.0, 7.2, 24.0, 1.5, 5.0, 1.2)
 
+    /** Oferta de ejemplo de Mis metas: se vuelve a pintar con los números y el color de tus metas. */
+    private fun refrescarPreviaMetas() {
+        val caja = vistaPreviaMetas ?: return
+        caja.removeAllViews()
+        val v = Popup(this, prefs, WindowManager.LayoutParams.TYPE_APPLICATION).construir(ofertaEjemplo(), false)
+        val real = DisplayMetrics()
+        @Suppress("DEPRECATION")
+        windowManager.defaultDisplay.getRealMetrics(real)
+        val ancho = minOf((real.widthPixels * 0.94f).toInt(), Popup.anchoPx(this, prefs))
+        caja.addView(v, FrameLayout.LayoutParams(ancho, -2, Gravity.CENTER_HORIZONTAL))
+    }
+
+    /** Tu auto: lo que te cuesta cada km (gasolina + desgaste). */
+    private fun pintarCostoAuto() {
+        val gas = if (prefs.kmPorLitro > 0) (prefs.precioLitro / prefs.kmPorLitro).toDouble() else 0.0
+        val desg = prefs.desgastePorKm.toDouble()
+        costoAutoValor?.text = dinero(gas + desg, 2)
+        costoAutoDetalle?.text = "por km · gasolina ${dinero(gas, 2)} + desgaste ${dinero(desg, 2)}"
+    }
+
     private fun refrescarVistaPrevia() {
+        refrescarPreviaMetas()
+        pintarCostoAuto()
         if (!::vistaPrevia.isInitialized) return
         vistaPrevia.removeAllViews()
         val v = Popup(this, prefs, WindowManager.LayoutParams.TYPE_APPLICATION).construir(ofertaEjemplo(), false)
