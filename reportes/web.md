@@ -1,17 +1,18 @@
 # Reporte de Checa (web + app) · últimos 30 días
 
-Generado: 2026-11-05 20:20 UTC. Cuenta visitas únicas (una por pestaña).
+Generado: 2026-11-06 19:44 UTC. Cuenta visitas únicas (una por pestaña).
 
 ## Resumen
 | visitas | descargas | cuentas_nuevas | pagos | ingresos | licencias_activas |
 | --- | --- | --- | --- | --- | --- |
-| 629 | 264 | 44 | 0 | 0 | 3 |
+| 630 | 264 | 45 | 0 | 0 | 3 |
 
 # App
 
 ## Cuentas nuevas por día (inicio con Google)
 | dia | cuentas |
 | --- | --- |
+| 2026-11-05 | 1 |
 | 2026-11-02 | 1 |
 | 2026-10-27 | 1 |
 | 2026-10-24 | 6 |
@@ -29,6 +30,7 @@ Generado: 2026-11-05 20:20 UTC. Cuenta visitas únicas (una por pestaña).
 ## Quiénes son (cuentas con Google)
 | correo | registro | ultimo_acceso | equipos | licencia_vence |
 | --- | --- | --- | --- | --- |
+| jesusmaciasjesus777@gmail.com | 11-05 21:39 | 11-05 21:39 | 1 | sin licencia |
 | jonhy.zuka@gmail.com | 11-02 15:04 | 11-02 15:04 | 1 | sin licencia |
 | hugo942001@gmail.com | 10-27 11:12 | 10-27 11:12 | 1 | sin licencia |
 | jaimeortizventas@gmail.com | 10-24 16:54 | 10-24 16:54 | 1 | sin licencia |
@@ -72,7 +74,7 @@ Generado: 2026-11-05 20:20 UTC. Cuenta visitas únicas (una por pestaña).
 | edent402@gmail.com | 10-16 07:42 | 11-04 12:54 | 2 | sin licencia |
 | lufercab@gmail.com | 10-15 18:21 | 10-15 18:21 | 1 | 20270113 |
 | landingbot01@gmail.com | 10-11 15:23 | 10-21 19:26 | 1 | sin licencia |
-| lalolopezxd@gmail.com | 10-11 15:08 | 11-04 05:02 | 2 | 99991231 |
+| lalolopezxd@gmail.com | 10-11 15:08 | 11-05 22:18 | 2 | 99991231 |
 
 ## Pagos por plan
 Sin datos todavía.
@@ -104,7 +106,7 @@ Sin datos todavía.
 ## Embudo
 | evento | visitas | veces |
 | --- | --- | --- |
-| visita | 629 | 888 |
+| visita | 630 | 889 |
 | descarga | 264 | 297 |
 | clic_descargar | 122 | 134 |
 | descarga_instalar | 69 | 147 |
@@ -116,7 +118,7 @@ Sin datos todavía.
 ## Por fuente (visitas → descargas)
 | fuente | campana | visitas | descargas |
 | --- | --- | --- | --- |
-| directo |  | 477 | 198 |
+| directo |  | 478 | 198 |
 | tiktok |  | 98 | 55 |
 | tiktok | prueba-en-google-play | 22 | 0 |
 | app | compartir | 17 | 9 |
@@ -133,7 +135,7 @@ Sin datos todavía.
 | dispositivo | visitas | descargas |
 | --- | --- | --- |
 | android | 509 | 264 |
-| pc | 64 | 0 |
+| pc | 65 | 0 |
 | iphone | 57 | 0 |
 
 ## Qué botón lleva a descargar
@@ -155,7 +157,7 @@ Sin datos todavía.
 ## Por día
 | dia | visitas | descargas |
 | --- | --- | --- |
-| 2026-11-05 | 3 | 1 |
+| 2026-11-05 | 4 | 1 |
 | 2026-11-04 | 13 | 1 |
 | 2026-11-03 | 3 | 0 |
 | 2026-11-02 | 11 | 0 |
