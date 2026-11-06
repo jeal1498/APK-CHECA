@@ -2760,7 +2760,7 @@ class MainActivity : Activity() {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(16), 0, dp(16), dp(Tema.S2))
         }
-        val caja = tarjeta()
+        val caja = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         col.addView(caja)
         cuerpo.addView(ScrollView(this).apply { isVerticalScrollBarEnabled = false; addView(col) }, LinearLayout.LayoutParams(-1, -1))
         cajaDiag = caja
@@ -4849,53 +4849,64 @@ class MainActivity : Activity() {
     private fun pintarDiag() {
         val c = cajaDiag ?: return
         c.removeAllViews()
+        // Franja de estado: lo primero que se lee. Verde si lee, neutra si no.
+        val leyendo = Lectura.corriendo
         val estado = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
-            background = redondo(cTarjeta2, 12)
-            setPadding(dp(12), dp(10), dp(12), dp(10))
+            background = redondo(if (leyendo) Tema.VERDE_SUAVE else cTarjeta, Tema.R_TARJETA)
+            setPadding(dp(Tema.S2), dp(Tema.S2), dp(Tema.S2), dp(Tema.S2))
         }
         val p = View(this)
-        estado.addView(p, LinearLayout.LayoutParams(dp(8), dp(8)).apply { rightMargin = dp(10) })
+        estado.addView(p, LinearLayout.LayoutParams(dp(10), dp(10)).apply { rightMargin = dp(12) })
+        val col = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        col.addView(texto(if (leyendo) "Leyendo" else "Lectura apagada", Tema.T_SUB, cTexto, true))
         val t = texto("", Tema.T_NOTA, cTexto2, false)
-        estado.addView(t, LinearLayout.LayoutParams(0, -2, 1f))
+        col.addView(t, margenArriba(2))
+        estado.addView(col, LinearLayout.LayoutParams(0, -2, 1f))
         estadoLecturaTxt = t
         estadoLecturaPunto = p
         pintarEstadoLectura()
         c.addView(estado)
 
-        c.addView(interruptor(
+        val tSw = tarjeta()
+        tSw.addView(interruptor(
             "Guardar pantallas de ofertas",
-            "Para revisar las que se lean mal. Solo en tu teléfono y se borran solas a los 7 días.",
+            "Solo en tu teléfono. Se borran solas a los 7 días.",
             prefs.diagnostico
         ) { on ->
             prefs.diagnostico = on
             if (on && !prefs.diagAvisoVisto) avisoDiagnostico()
             handler.post { pintarDiag() }
-        }, margenArriba(Tema.S1))
+        })
+        c.addView(tSw, margenArriba(Tema.ENTRE_TARJETAS))
 
         val items = Guardado.lista(this)
-        if (items.isEmpty()) {
-            c.addView(texto(
-                if (prefs.diagnostico) "Aún no hay ofertas guardadas. Se guardan solas mientras Checa lee."
-                else "Está apagado: no se guarda nada.",
-                Tema.T_NOTA, cTenue, false
-            ).apply { setLineSpacing(0f, 1.2f) }, margenArriba(4))
+        if (!prefs.diagnostico) {
+            c.addView(texto("Está apagado: no se guarda nada.", Tema.T_NOTA, cTenue, false), margenArriba(Tema.S1))
         } else {
-            val noLeidas = items.count { !it.leida }
-            val chips = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
-            chips.addView(chipDiag("${items.size} ${if (items.size == 1) "oferta" else "ofertas"}", cTarjeta2, cTexto2))
-            if (noLeidas > 0) chips.addView(chipDiag("$noLeidas no ${if (noLeidas == 1) "leída" else "leídas"}", Tema.AMARILLO_SUAVE, cAmarillo),
-                LinearLayout.LayoutParams(-2, -2).apply { leftMargin = dp(6) })
-            chips.addView(chipDiag(String.format(Locale.US, "%.1f MB", Guardado.bytes(this) / 1_048_576.0), cTarjeta2, cTexto2),
-                LinearLayout.LayoutParams(-2, -2).apply { leftMargin = dp(6) })
-            c.addView(chips, margenArriba(4))
+            val tg = tarjeta()
+            tg.addView(texto("GUARDADO", Tema.T_NOTA, cTenue, true).apply { letterSpacing = 0.08f })
+            if (items.isEmpty()) {
+                tg.addView(texto("Aún no hay ofertas guardadas. Se guardan solas mientras Checa lee.", Tema.T_NOTA, cTexto2, false)
+                    .apply { setLineSpacing(0f, 1.2f) }, margenArriba(6))
+            } else {
+                val noLeidas = items.count { !it.leida }
+                val chips = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+                chips.addView(chipDiag("${items.size} ${if (items.size == 1) "oferta" else "ofertas"}", cTarjeta2, cTexto2))
+                if (noLeidas > 0) chips.addView(chipDiag("$noLeidas no ${if (noLeidas == 1) "leída" else "leídas"}", Tema.AMARILLO_SUAVE, cAmarillo),
+                    LinearLayout.LayoutParams(-2, -2).apply { leftMargin = dp(6) })
+                chips.addView(chipDiag(String.format(Locale.US, "%.1f MB", Guardado.bytes(this) / 1_048_576.0), cTarjeta2, cTexto2),
+                    LinearLayout.LayoutParams(-2, -2).apply { leftMargin = dp(6) })
+                tg.addView(chips, margenArriba(8))
+            }
+            c.addView(tg, margenArriba(Tema.ENTRE_TARJETAS))
         }
         c.addView(boton("Enviar reporte a soporte", cVerde, Color.BLACK) {
             // Por defecto van las de hoy que no se pudieron leer; el conductor puede cambiarlas.
             val hoy = items.filter { !it.leida && System.currentTimeMillis() - it.hora < 86_400_000L }.take(5)
             mostrarReporte(hoy)
-        }, margenArriba(Tema.S2))
+        }, margenArriba(Tema.ENTRE_TARJETAS))
         c.addView(boton("Ver lo guardado", cTarjeta2, cTexto) { mostrarGuardado() }, margenArriba(Tema.S1))
         if (items.isNotEmpty()) {
             c.addView(texto("Borrar todo lo guardado", Tema.T_NOTA, cTenue, false).apply {
@@ -5163,17 +5174,32 @@ class MainActivity : Activity() {
                 img.post { if (d.isShowing) img.setImageBitmap(bm) }
             }.start()
         }
+        // Lo que leyó Checa: plegado si hay foto (un toque lo abre); abierto si no hay.
         val tarjetaTexto = tarjeta()
-        val cab = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
+        val cab = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            minimumHeight = dp(Tema.ALTO_TOQUE)
+            isClickable = true
+        }
         cab.addView(texto("Lo que leyó Checa", Tema.T_TEXTO, cTexto, true), LinearLayout.LayoutParams(0, -2, 1f))
         cab.addView(chipLectura(it))
+        val flecha = texto(if (it.foto != null) "▾" else "▴", Tema.T_TEXTO, cTenue, false).apply { setPadding(dp(10), 0, 0, 0) }
+        cab.addView(flecha)
         tarjetaTexto.addView(cab)
-        tarjetaTexto.addView(texto(it.lineas(), Tema.T_NOTA, cTexto2, false).apply {
+        val txt = texto(it.lineas(), Tema.T_NOTA, cTexto2, false).apply {
             typeface = Typeface.MONOSPACE
             setTextIsSelectable(true)
-        }, margenArriba(Tema.S1))
+            visibility = if (it.foto != null) View.GONE else View.VISIBLE
+        }
+        tarjetaTexto.addView(txt, margenArriba(Tema.S1))
+        cab.setOnClickListener {
+            val abrir = txt.visibility != View.VISIBLE
+            txt.visibility = if (abrir) View.VISIBLE else View.GONE
+            flecha.text = if (abrir) "▴" else "▾"
+        }
         cuerpo.addView(ScrollView(this).apply { isVerticalScrollBarEnabled = false; addView(tarjetaTexto) },
-            LinearLayout.LayoutParams(-1, if (it.foto != null) dp(170) else 0, if (it.foto != null) 0f else 1f).apply {
+            LinearLayout.LayoutParams(-1, if (it.foto != null) -2 else 0, if (it.foto != null) 0f else 1f).apply {
                 setMargins(dp(16), dp(Tema.S1), dp(16), 0)
             })
 
