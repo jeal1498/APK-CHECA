@@ -119,7 +119,7 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
             for ((z, ls) in grupos) procesarGrupo(ls, z.app, z.rect)
         }
         // ¿Hay una oferta a la vista (tramo «N min (»)? Si sí pero no se entendió, se reintenta rápido.
-        val hayTramo = todas.any { tramoTexto.containsMatchIn(it.text) }
+        val hayTramo = todas.any { esTramo(it.text) }
         ofertaEnPantalla = hayTramo
         fallos = if (hayTramo && !leyoPasada) minOf(fallos + 1, 99) else 0
     }
@@ -135,8 +135,8 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
         val mitad = capAncho / 2
         val (izq, der) = todas.filter { it.boundingBox != null }
             .partition { (it.boundingBox!!.exactCenterX() * escalaX) < mitad }
-        val hayIzq = izq.any { tramoTexto.containsMatchIn(it.text) }
-        val hayDer = der.any { tramoTexto.containsMatchIn(it.text) }
+        val hayIzq = izq.any { esTramo(it.text) }
+        val hayDer = der.any { esTramo(it.text) }
         val ahora = System.currentTimeMillis()
         if (hayIzq && hayDer) divididaHasta = ahora + 10 * 60_000L
         if (ahora > divididaHasta) return false
@@ -235,6 +235,9 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
         private const val GATE_PORC = 2
         private const val GATE_MAX = 3
         val tramoTexto = Regex("""\d\s?min\s*\(""", RegexOption.IGNORE_CASE)
+
+        /** Un tramo «N min (» de una oferta; el resumen «… total» (pop-up propio o de otra app) no cuenta. */
+        fun esTramo(t: String) = tramoTexto.containsMatchIn(t) && !t.contains("total", ignoreCase = true)
 
         /** Factor para que el lado mayor quede en [LADO_MAX] o menos (1 si ya cabe). */
         fun factor(ancho: Int, alto: Int): Float {

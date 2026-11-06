@@ -160,6 +160,8 @@ class MainActivity : Activity() {
             orientation = LinearLayout.VERTICAL
             setBackgroundColor(cFondo)
             clipChildren = false
+            // Encabezado fijo (marca + SOS): se ve igual en Inicio, Mis metas, Ajustes y Cuenta.
+            addView(encabezadoFijo(), LinearLayout.LayoutParams(-1, -2))
             addView(contenido, LinearLayout.LayoutParams(-1, 0, 1f))
             // Barra de 56 dp + 32 dp arriba para la mitad del botón que sale de ella.
             addView(barraNavegacion(), LinearLayout.LayoutParams(-1, dp(88)))
@@ -389,12 +391,7 @@ class MainActivity : Activity() {
     private fun pantallaInicio(): View {
         val col = columna()
 
-        // --- Marca y estado de la lectura ---
-        val marca = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
-        marca.addView(ImageView(this).apply { setImageResource(R.drawable.semaforo) },
-            LinearLayout.LayoutParams(dp(15), dp(25)).apply { rightMargin = dp(10) })
-        marca.addView(texto("Checa", 24f, cTexto, true))
-        col.addView(marca, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(12); topMargin = dp(4) })
+        // --- Estado de la lectura (la marca y el SOS van en el encabezado fijo) ---
         val estado = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
@@ -492,7 +489,6 @@ class MainActivity : Activity() {
         mh.addView(mejoresHorasLista, margenArriba(10))
         col.addView(mh, margenTarjeta())
 
-        col.addView(tarjetaSos(), margenTarjeta())
         col.addView(tarjetaCompartir(), margenTarjeta())
         if (Jornada.CLIENTELA_ACTIVA) col.addView(tarjetaClientela(), margenTarjeta())
 
@@ -2263,14 +2259,54 @@ class MainActivity : Activity() {
     // SOS: contactos de confianza, ubicación (solo al tocar), WhatsApp y llamada
     // =====================================================================
 
-    private fun tarjetaSos(): View {
-        val t = tarjeta()
-        t.addView(cabeceraTarjeta(Icono.ALERTA, "SOS",
-            "Manda tu ubicación por WhatsApp a tus contactos o llama", false).first)
-        t.addView(boton("Pedir ayuda", cRojo, Color.WHITE) { pedirSos() }, LinearLayout.LayoutParams(-1, dp(52)).apply {
-            topMargin = dp(Tema.S1)
-        })
-        return t
+    /**
+     * Encabezado fijo de toda la app: la marca a la izquierda y el botón SOS a la derecha
+     * (escudo + «SOS» en rojo sobre un fondo rojo tenue). Un toque pide ayuda.
+     */
+    private fun encabezadoFijo(): View {
+        val cab = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(dp(16), dp(10), dp(16), dp(10))
+            setBackgroundColor(cFondo)
+        }
+        val logo = FrameLayout(this).apply {
+            background = GradientDrawable().apply {
+                setColor(cTarjeta)
+                cornerRadius = dp(12).toFloat()
+                setStroke(dp(1), Tema.BORDE)
+            }
+        }
+        logo.addView(ImageView(this).apply { setImageResource(R.drawable.semaforo) },
+            FrameLayout.LayoutParams(dp(16), dp(27), Gravity.CENTER))
+        cab.addView(logo, LinearLayout.LayoutParams(dp(46), dp(46)).apply { rightMargin = dp(12) })
+        val tx = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        tx.addView(texto("Checa", 22f, cTexto, true))
+        tx.addView(texto("Lector de ofertas", Tema.T_NOTA, cTenue, false),
+            LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(1) })
+        cab.addView(tx, LinearLayout.LayoutParams(0, -2, 1f))
+        val sos = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(dp(14), dp(10), dp(16), dp(10))
+            background = RippleDrawable(
+                ColorStateList.valueOf(Color.argb(60, 239, 68, 68)),
+                GradientDrawable().apply {
+                    setColor(Color.argb(46, 239, 68, 68))
+                    cornerRadius = dp(30).toFloat()
+                }, null
+            )
+            isClickable = true
+            contentDescription = "SOS: pedir ayuda"
+            setOnClickListener { pedirSos() }
+        }
+        sos.addView(icono(Icono.ESCUDO, cRojo, 22), LinearLayout.LayoutParams(dp(22), dp(22)).apply { rightMargin = dp(8) })
+        sos.addView(texto("SOS", Tema.T_SUB, cRojo, true))
+        cab.addView(sos, LinearLayout.LayoutParams(-2, -2))
+        val caja = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        caja.addView(cab, LinearLayout.LayoutParams(-1, -2))
+        caja.addView(View(this).apply { setBackgroundColor(Tema.BORDE) }, LinearLayout.LayoutParams(-1, dp(1)))
+        return caja
     }
 
     private fun pedirSos() {

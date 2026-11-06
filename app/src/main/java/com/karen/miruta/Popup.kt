@@ -228,10 +228,11 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
 
     /**
      * También se usa para la vista previa en Ajustes (sin acción en la ✕).
-     * Pop-up D (10.10): tarjeta oscura con borde del color del semáforo. Arriba, en una sola línea
-     * centrada, «ACEPTAR: $71 ⚡1.2x» (★/2ª delante) y la ✕ en la esquina; abajo cuatro métricas
-     * iguales: $/h, $/km, minutos y km totales del viaje (verde si cumple la meta, rojo si no,
-     * hueso si el filtro está apagado). Si falla recogida o duración, una línea roja lo dice.
+     * Pop-up E (10.11), pensado para leerlo de un vistazo manejando: tarjeta oscura con borde del
+     * semáforo; arriba la acción (★/2ª delante) con el ⚡, en medio el monto MUY grande, luego
+     * `$/h | $/km` (verde si cumple la meta, rojo si no, hueso si el filtro está apagado) y abajo,
+     * chico, «24 min (6.0 km) total». La palabra «total» es obligatoria: el lector ignora los
+     * textos con «total», así no toma esta línea por un tramo de la oferta.
      * Todo se escala con prefs.escalaPopup (70–160 %).
      */
     fun construir(o: Oferta, interactivo: Boolean, app: String? = null, marca: Int = SIN_MARCA): View {
@@ -268,104 +269,118 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         val col = LinearLayout(ctx).apply { orientation = LinearLayout.VERTICAL }
         marco.addView(col, FrameLayout.LayoutParams(-1, -2))
 
-        // Arriba: «ACEPTAR: $71 ⚡1.2x» en un solo texto (el lector no ve el monto suelto).
-        val conNeta = prefs.mostrarNeta && (prefs.kmPorLitro > 0 || prefs.desgastePorKm > 0)
-        val montoTxt = mon.monto(if (conNeta) o.neta(prefs) else o.tarifa, 0)
+        // Arriba: la acción y el ⚡ (un solo texto; los lados iguales dejan lugar a la ✕).
         val rayo = when {
             o.multiplicador > 1.0 -> "⚡" + fmtX(o.multiplicador) + "x"
             o.dinamica > 0 -> "⚡+" + mon.monto(o.dinamica, 0)
             else -> null
         }
         val cab = SpannableStringBuilder()
-        cab.append(pre + accion + ":")
+        cab.append(pre + accion)
         cab.setSpan(ForegroundColorSpan(color), 0, cab.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        val ini = cab.length + 1
-        cab.append(" ").append(montoTxt)
-        cab.setSpan(ForegroundColorSpan(Tema.HUESO), ini, cab.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        cab.setSpan(RelativeSizeSpan(1.4f), ini, cab.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        cab.setSpan(FuenteSpan(Fuentes.titulo), ini, cab.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         if (rayo != null) {
-            cab.append(" ")
+            cab.append("  ")
             val r0 = cab.length
             cab.append(rayo)
             cab.setSpan(ForegroundColorSpan(Tema.AMARILLO), r0, cab.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            cab.setSpan(RelativeSizeSpan(0.72f), r0, cab.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            cab.setSpan(RelativeSizeSpan(0.8f), r0, cab.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             cab.setSpan(FuenteSpan(Fuentes.numero), r0, cab.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
         val cabeza = TextView(ctx).apply {
             text = cab
             setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(14f))
             typeface = Fuentes.negrita
+            letterSpacing = 0.1f
             gravity = Gravity.CENTER
             includeFontPadding = false
             maxLines = 1
             setHorizontallyScrolling(true)
-            // Mismo margen a los dos lados: el texto queda centrado y la ✕ no lo tapa.
-            setPadding(e(28f), e(9f), e(28f), e(5f))
+            setPadding(e(26f), e(8f), e(26f), 0)
         }
         encogerFila(cabeza, 9f)
         col.addView(cabeza, LinearLayout.LayoutParams(-1, -2))
 
-        // Abajo: cuatro métricas iguales separadas por barras finas.
+        // En medio: el monto (neto si así está en Ajustes), lo más grande de la tarjeta.
+        val conNeta = prefs.mostrarNeta && (prefs.kmPorLitro > 0 || prefs.desgastePorKm > 0)
+        val montoTxt = TextView(ctx).apply {
+            text = mon.monto(if (conNeta) o.neta(prefs) else o.tarifa, 0)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(46f))
+            setTextColor(Tema.HUESO)
+            typeface = Fuentes.titulo
+            gravity = Gravity.CENTER
+            includeFontPadding = false
+            maxLines = 1
+            setPadding(e(8f), e(2f), e(8f), e(2f))
+        }
+        encoger(montoTxt, 24f)
+        col.addView(montoTxt, LinearLayout.LayoutParams(-1, -2))
+
+        // $/h | $/km, grandes.
         fun tono(cumple: Boolean?) = when (cumple) { true -> Tema.VERDE; false -> Tema.ROJO; null -> Tema.HUESO }
-        val celdas = listOf(
-            mon.monto(o.porHora, 0) + "/h" to tono(if (prefs.filtroHora) o.porHora >= prefs.minPorHora else null),
-            mon.monto(o.porKm, 1) + "/km" to tono(if (prefs.filtroKm) o.porKm >= prefs.minPorKm else null),
-            fmt(o.min, 0) + " min" to Tema.HUESO,
-            fmt(o.km, 1) + " km" to Tema.HUESO
-        )
-        val pie = LinearLayout(ctx).apply {
+        fun metrica(txt: String, c: Int) = TextView(ctx).apply {
+            text = txt
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(16.5f))
+            setTextColor(c)
+            typeface = Fuentes.numero
+            gravity = Gravity.CENTER
+            includeFontPadding = false
+            maxLines = 1
+            setPadding(e(2f), 0, e(2f), 0)
+        }.also { encoger(it, 9f) }
+        val fila = LinearLayout(ctx).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
-            setPadding(e(6f), e(2f), e(6f), e(9f))
+            setPadding(e(6f), e(5f), e(6f), 0)
         }
-        celdas.forEachIndexed { k, (n, c) ->
-            if (k > 0) pie.addView(View(ctx).apply { setBackgroundColor(linea) },
-                LinearLayout.LayoutParams(maxOf(1, dp(1)), e(14f)))
-            pie.addView(TextView(ctx).apply {
-                text = n
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(11.5f))
-                setTextColor(c)
-                typeface = Fuentes.numero
-                gravity = Gravity.CENTER
-                includeFontPadding = false
-                maxLines = 1
-                setPadding(e(1f), 0, e(1f), 0)
-            }.also { encoger(it, 7f) }, LinearLayout.LayoutParams(0, -2, 1f))
-        }
-        col.addView(pie, LinearLayout.LayoutParams(-1, -2))
+        fila.addView(metrica(mon.monto(o.porHora, 0) + "/h",
+            tono(if (prefs.filtroHora) o.porHora >= prefs.minPorHora else null)), LinearLayout.LayoutParams(0, -2, 1f))
+        fila.addView(View(ctx).apply { setBackgroundColor(linea) },
+            LinearLayout.LayoutParams(maxOf(1, dp(1)), e(16f)).apply { leftMargin = e(4f); rightMargin = e(4f) })
+        fila.addView(metrica(mon.monto(o.porKm, 1) + "/km",
+            tono(if (prefs.filtroKm) o.porKm >= prefs.minPorKm else null)), LinearLayout.LayoutParams(0, -2, 1f))
+        col.addView(fila, LinearLayout.LayoutParams(-1, -2))
 
-        // Si la oferta falla recogida o duración, una línea roja lo dice (sin «min (» ni «km)»
-        // para que el lector no lo tome como un tramo de la oferta).
+        // Abajo, chico: tiempo y distancia totales. «total» evita que el lector lo tome por un tramo.
         val recFalla = prefs.filtroRecMax && o.recogidaKm > 0 && o.recogidaKm > prefs.recogidaMaxKm
         val durFalla = prefs.filtroDurMax && o.viajeMin > prefs.duracionMax
+        col.addView(TextView(ctx).apply {
+            text = fmt(o.min, 0) + " min (" + fmt(o.km, 1) + " km) total"
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(11f))
+            setTextColor(if (recFalla || durFalla) Tema.ROJO else Tema.TENUE)
+            typeface = Fuentes.numero
+            gravity = Gravity.CENTER
+            includeFontPadding = false
+            maxLines = 1
+            setPadding(e(6f), e(6f), e(6f), if (recFalla || durFalla) 0 else e(9f))
+        }.also { encoger(it, 7f) }, LinearLayout.LayoutParams(-1, -2))
+
+        // Si falla recogida o duración, una línea roja dice cuál (también con «total»).
         val aviso = when {
-            recFalla -> "Recogida lejana · " + fmt(o.recogidaKm, 1) + " km"
-            durFalla -> "Viaje largo · " + fmt(o.viajeMin, 0) + " min"
+            recFalla -> "Recogida lejana · " + fmt(o.recogidaKm, 1) + " km total"
+            durFalla -> "Viaje largo · " + fmt(o.viajeMin, 0) + " min total"
             else -> null
         }
         if (aviso != null) {
-            pie.setPadding(e(6f), e(2f), e(6f), e(3f))
             col.addView(TextView(ctx).apply {
                 text = aviso
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(9f))
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(10f))
                 setTextColor(Tema.ROJO)
                 typeface = Fuentes.texto
                 gravity = Gravity.CENTER
                 includeFontPadding = false
                 maxLines = 1
-                setPadding(e(6f), 0, e(6f), e(8f))
+                setPadding(e(6f), e(3f), e(6f), e(9f))
             }, LinearLayout.LayoutParams(-1, -2))
         }
 
-        // ✕ en la esquina, a la altura del título (zona de toque de 24 dp escalada).
+        // ✕ en la esquina, a la altura de la acción (zona de toque de 24 dp escalada).
         val cerrarBtn = ImageView(ctx).apply {
-            setImageDrawable(Icono(Icono.CERRAR, Tema.HUESO))
+            setImageDrawable(Icono(Icono.CERRAR, Tema.TENUE))
             setPadding(e(6f), e(6f), e(6f), e(6f))
             if (interactivo) setOnClickListener { ocultar() }
         }
         marco.addView(cerrarBtn, FrameLayout.LayoutParams(e(24f), e(24f), Gravity.TOP or Gravity.END).apply {
-            topMargin = e(4f); rightMargin = e(4f)
+            topMargin = e(3f); rightMargin = e(4f)
         })
 
         return marco
@@ -431,7 +446,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         )
 
         /** Ancho del pop-up al 100 %, en dp; se multiplica por el tamaño elegido en Ajustes. */
-        const val ANCHO_BASE = 280
+        const val ANCHO_BASE = 218
 
         /** Ancho del pop-up en píxeles según el tamaño elegido (sin el tope de la pantalla). */
         fun anchoPx(c: Context, p: Prefs): Int =
