@@ -226,25 +226,31 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
 
     /**
      * También se usa para la vista previa en Ajustes (sin acción en la ✕).
-     * Pop-up V2 (10.3): tarjeta con borde y tinte del semáforo; a la izquierda el monto neto con la acción
-     * debajo (centrados), una línea fina y a la derecha $/h, $/km y minutos (verde si cumple, rojo si no).
+     * Pop-up C (10.8): arriba la acción con su punto de color (★/2ª delante) y el ⚡ a la derecha;
+     * en medio el monto neto grande y centrado; abajo tres columnas iguales: $/h, $/km y minutos
+     * (verde si cumple la meta, rojo si no, hueso si el filtro está apagado).
      * Todo se escala con prefs.escalaPopup (70–160 %).
      */
     fun construir(o: Oferta, interactivo: Boolean, app: String? = null, marca: Int = SIN_MARCA): View {
         val esc = prefs.escalaPopup / 100f
         fun e(v: Float): Int = (v * esc * ctx.resources.displayMetrics.density).toInt()
         fun sp(v: Float) = v * esc
-        fun spPx(v: Float): Int = (v * esc * ctx.resources.displayMetrics.scaledDensity).toInt()
         val nivel = o.nivel(prefs)
         val segunda = marca == SEGUNDA
         val acento = Tema.colorNivel(nivel)
         // 2ª opción (dos ofertas a la vez): el color apagado para que la mejor resalte.
         val color = if (segunda) mezclar(acento, Tema.TABLERO, 0.45f) else acento
         val fondo = mezclar(Tema.ASFALTO, color, 0.14f)
+        val linea = Color.argb(77, Color.red(color), Color.green(color), Color.blue(color))
         val accion = when (nivel) {
             Oferta.VERDE -> "ACEPTAR"
             Oferta.AMARILLO -> "CONSIDERAR"
             else -> "RECHAZAR"
+        }
+        val pre = when {
+            marca == MEJOR -> "★ "
+            segunda -> "2ª "
+            else -> ""
         }
         val mon = prefs.moneda
 
@@ -257,102 +263,103 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
             }
             elevation = dp(8).toFloat()
         }
-        val fila = LinearLayout(ctx).apply {
+        val col = LinearLayout(ctx).apply { orientation = LinearLayout.VERTICAL }
+        marco.addView(col, FrameLayout.LayoutParams(-1, -2))
+
+        // Arriba: punto de color + acción, y el ⚡ a la derecha (deja lugar a la ✕).
+        val cabeza = LinearLayout(ctx).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
-            minimumHeight = e(72f)
+            setPadding(e(10f), e(7f), e(28f), 0)
         }
-        marco.addView(fila, FrameLayout.LayoutParams(-1, -2))
-
-        // Izquierda: monto neto y la acción debajo, centrados. Un solo texto de dos líneas:
-        // así ningún texto del pop-up es «solo un monto» (el lector lo tomaría como tarifa).
-        val conNeta = prefs.mostrarNeta && (prefs.kmPorLitro > 0 || prefs.desgastePorKm > 0)
-        val valor = mon.monto(if (conNeta) o.neta(prefs) else o.tarifa, 0)
-        val pre = when {
-            marca == MEJOR -> "★ "
-            segunda -> "2ª "
-            else -> ""
-        }
-        val sbIzq = SpannableStringBuilder(valor)
-        sbIzq.setSpan(AbsoluteSizeSpan(spPx(28f), false), 0, valor.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        sbIzq.setSpan(ForegroundColorSpan(Tema.HUESO), 0, valor.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        val ini = sbIzq.length
-        sbIzq.append("\n").append(pre).append(accion)
-        sbIzq.setSpan(AbsoluteSizeSpan(spPx(9.5f), false), ini, sbIzq.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        sbIzq.setSpan(ForegroundColorSpan(color), ini, sbIzq.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        sbIzq.setSpan(StyleSpan(Typeface.BOLD), ini, sbIzq.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        val izq = TextView(ctx).apply {
-            text = sbIzq
-            typeface = Fuentes.titulo
-            gravity = Gravity.CENTER
+        cabeza.addView(View(ctx).apply {
+            background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(color) }
+        }, LinearLayout.LayoutParams(e(7f), e(7f)).apply { rightMargin = e(6f) })
+        cabeza.addView(TextView(ctx).apply {
+            text = pre + accion
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(9.5f))
+            setTextColor(color)
+            typeface = Fuentes.negrita
+            letterSpacing = 0.08f
             includeFontPadding = false
-            maxLines = 2
-            setLineSpacing(e(4f).toFloat(), 1f)
-            letterSpacing = 0.02f
-            setPadding(e(4f), 0, e(4f), 0)
-        }
-        fila.addView(izq, LinearLayout.LayoutParams(e(84f), -2))
-
-        // Línea fina del color del semáforo.
-        fila.addView(View(ctx).apply { setBackgroundColor(Color.argb(90, Color.red(color), Color.green(color), Color.blue(color))) },
-            LinearLayout.LayoutParams(maxOf(1, dp(1)), e(46f)))
-
-        // Derecha: $/h, $/km y minutos. Verde si cumple la meta, rojo si no, hueso si el filtro está apagado.
-        fun tono(cumple: Boolean?) = when (cumple) { true -> Tema.VERDE; false -> Tema.ROJO; null -> Tema.HUESO }
-        val recFalla = prefs.filtroRecMax && o.recogidaKm > 0 && o.recogidaKm > prefs.recogidaMaxKm
-        val durFalla = prefs.filtroDurMax && o.viajeMin > prefs.duracionMax
-        val filas = listOf(
-            Triple(fmt(o.porHora, 0), "/h", tono(if (prefs.filtroHora) o.porHora >= prefs.minPorHora else null)),
-            Triple(fmt(o.porKm, 1), "/km", tono(if (prefs.filtroKm) o.porKm >= prefs.minPorKm else null)),
-            when {
-                // «rec.» y «total» evitan que el lector tome estos datos como un tramo de la oferta.
-                recFalla -> Triple(fmt(o.recogidaKm, 1), "km rec.", Tema.ROJO)
-                durFalla -> Triple(fmt(o.viajeMin, 0), "min", Tema.ROJO)
-                else -> Triple(fmt(o.min, 0), "min", Tema.HUESO)
-            }
-        )
-        val sbDer = SpannableStringBuilder()
-        filas.forEachIndexed { k, (n, u, c) ->
-            if (k > 0) sbDer.append("\n")
-            val a0 = sbDer.length
-            sbDer.append(n)
-            sbDer.setSpan(ForegroundColorSpan(c), a0, sbDer.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            val a1 = sbDer.length
-            sbDer.append(" ").append(u)
-            sbDer.setSpan(AbsoluteSizeSpan(spPx(9f), false), a1, sbDer.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            sbDer.setSpan(ForegroundColorSpan(Tema.TENUE), a1, sbDer.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        }
-        val der = TextView(ctx).apply {
-            text = sbDer
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(12f))
-            setTextColor(Tema.HUESO)
-            typeface = Fuentes.numero
-            includeFontPadding = false
-            maxLines = 3
-            setLineSpacing(e(2f).toFloat(), 1f)
-            setPadding(e(10f), e(6f), e(14f), 0)
-        }
-        fila.addView(der, LinearLayout.LayoutParams(0, -2, 1f))
-
-        // ⚡ chiquito arriba a la izquierda (solo si la oferta trae dinámica).
+            maxLines = 1
+        }, LinearLayout.LayoutParams(0, -2, 1f))
         val rayo = when {
             o.multiplicador > 1.0 -> "⚡" + fmtX(o.multiplicador) + "x"
             o.dinamica > 0 -> "⚡+" + mon.monto(o.dinamica, 0)
             else -> null
         }
         if (rayo != null) {
-            // Baja la fila para que el ⚡ quede arriba del monto y no encima.
-            fila.setPadding(0, e(12f), 0, 0)
-            marco.addView(TextView(ctx).apply {
+            cabeza.addView(TextView(ctx).apply {
                 text = rayo
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(9f))
                 setTextColor(Tema.AMARILLO)
                 typeface = Fuentes.numero
                 includeFontPadding = false
-            }, FrameLayout.LayoutParams(-2, -2, Gravity.TOP or Gravity.START).apply {
-                leftMargin = e(8f); topMargin = e(5f)
+                maxLines = 1
             })
         }
+        col.addView(cabeza, LinearLayout.LayoutParams(-1, -2))
+
+        // En medio: el monto (neto si así está en Ajustes), grande y centrado.
+        val conNeta = prefs.mostrarNeta && (prefs.kmPorLitro > 0 || prefs.desgastePorKm > 0)
+        val montoTxt = TextView(ctx).apply {
+            text = mon.monto(if (conNeta) o.neta(prefs) else o.tarifa, 0)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(34f))
+            setTextColor(Tema.HUESO)
+            typeface = Fuentes.titulo
+            gravity = Gravity.CENTER
+            includeFontPadding = false
+            maxLines = 1
+            setPadding(e(8f), e(4f), e(8f), e(7f))
+        }
+        encoger(montoTxt, 18f)
+        col.addView(montoTxt, LinearLayout.LayoutParams(-1, -2))
+
+        // Abajo: tres columnas iguales separadas por líneas finas.
+        col.addView(View(ctx).apply { setBackgroundColor(linea) }, LinearLayout.LayoutParams(-1, maxOf(1, dp(1))))
+        fun tono(cumple: Boolean?) = when (cumple) { true -> Tema.VERDE; false -> Tema.ROJO; null -> Tema.HUESO }
+        val recFalla = prefs.filtroRecMax && o.recogidaKm > 0 && o.recogidaKm > prefs.recogidaMaxKm
+        val durFalla = prefs.filtroDurMax && o.viajeMin > prefs.duracionMax
+        val celdas = listOf(
+            Triple(fmt(o.porHora, 0), "por hora", tono(if (prefs.filtroHora) o.porHora >= prefs.minPorHora else null)),
+            Triple(fmt(o.porKm, 1), "por km", tono(if (prefs.filtroKm) o.porKm >= prefs.minPorKm else null)),
+            when {
+                // «recogida» evita que el lector tome este dato como un tramo de la oferta.
+                recFalla -> Triple(fmt(o.recogidaKm, 1), "km recogida", Tema.ROJO)
+                durFalla -> Triple(fmt(o.viajeMin, 0), "min de viaje", Tema.ROJO)
+                else -> Triple(fmt(o.min, 0), "minutos", Tema.HUESO)
+            }
+        )
+        val pie = LinearLayout(ctx).apply { orientation = LinearLayout.HORIZONTAL }
+        celdas.forEachIndexed { k, (n, etq, c) ->
+            if (k > 0) pie.addView(View(ctx).apply { setBackgroundColor(linea) }, LinearLayout.LayoutParams(maxOf(1, dp(1)), -1))
+            val celda = LinearLayout(ctx).apply {
+                orientation = LinearLayout.VERTICAL
+                gravity = Gravity.CENTER_HORIZONTAL
+                setPadding(e(2f), e(5f), e(2f), e(6f))
+            }
+            celda.addView(TextView(ctx).apply {
+                text = n
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(12.5f))
+                setTextColor(c)
+                typeface = Fuentes.numero
+                gravity = Gravity.CENTER
+                includeFontPadding = false
+                maxLines = 1
+            }.also { encoger(it, 8f) }, LinearLayout.LayoutParams(-1, -2))
+            celda.addView(TextView(ctx).apply {
+                text = etq
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(8.5f))
+                setTextColor(Tema.TENUE)
+                typeface = Fuentes.texto
+                gravity = Gravity.CENTER
+                includeFontPadding = false
+                maxLines = 1
+            }, LinearLayout.LayoutParams(-1, -2).apply { topMargin = e(2f) })
+            pie.addView(celda, LinearLayout.LayoutParams(0, -2, 1f))
+        }
+        col.addView(pie, LinearLayout.LayoutParams(-1, -2))
 
         // ✕ en la esquina (zona de toque de 24 dp escalada).
         val cerrarBtn = ImageView(ctx).apply {
@@ -361,7 +368,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
             if (interactivo) setOnClickListener { ocultar() }
         }
         marco.addView(cerrarBtn, FrameLayout.LayoutParams(e(24f), e(24f), Gravity.TOP or Gravity.END).apply {
-            topMargin = e(2f); rightMargin = e(3f)
+            topMargin = e(1f); rightMargin = e(3f)
         })
 
         return marco

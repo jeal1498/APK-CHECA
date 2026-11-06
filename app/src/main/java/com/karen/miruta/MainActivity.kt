@@ -242,7 +242,7 @@ class MainActivity : Activity() {
         }
         // Volvió de Accesibilidad con el permiso activado: la guía pasa sola al paso de metas.
         if (guia?.isShowing == true && guiaPaso == 1) {
-            if (servicioActivo()) handler.postDelayed({ if (guiaPaso == 1) pintarGuia(2) }, 600) else pintarGuia(1)
+            if (servicioActivo()) handler.postDelayed({ if (guiaPaso == 1) pintarGuia(3) }, 600) else pintarGuia(1)
         }
         actualizarResumen()
         handler.post(refresco)
@@ -1639,24 +1639,52 @@ class MainActivity : Activity() {
         grupo.addView(f)
     }
 
-    /** Moneda de los montos (la misma de Clientela; se guarda en la cuenta). */
-    private fun mostrarMoneda() {
+    /** País: define la moneda (la misma de Clientela; se guarda en la cuenta) y el número del SOS. */
+    private fun mostrarPais(alElegir: (() -> Unit)? = null) {
         val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        cuerpo.addView(texto("Cómo lee Checa los montos de Uber y DiDi y cómo los muestra." +
-            (if (Jornada.CLIENTELA_ACTIVA) " Si usas Clientela con la misma cuenta, se cambia también ahí." else ""), Tema.T_NOTA, cTenue, false))
-        val g = grupoFilas()
-        val actual = prefs.moneda.codigo
-        var d: Dialog? = null
-        for ((m, nombre) in Moneda.LISTA) {
-            filaMenu(g, if (m.codigo == actual) Icono.OK else Icono.FILTROS, nombre,
-                "${m.codigo} · ${m.monto(1234.5, 2)}", if (m.codigo == actual) cVerde else cTenue) {
-                if (m.codigo != actual) Cuenta.cambiarMoneda(this, m)
-                d?.dismiss()
-            }
+        cuerpo.addView(texto("Con esto Checa lee los montos de Uber y DiDi en tu moneda y sabe a qué número de emergencias llamar." +
+            (if (Jornada.CLIENTELA_ACTIVA) " Si usas Clientela con la misma cuenta, la moneda cambia también ahí." else ""),
+            Tema.T_NOTA, cTenue, false).apply { setLineSpacing(0f, 1.2f) })
+        val buscar = EditText(this).apply {
+            hint = "Buscar país…"
+            setHintTextColor(cTenue)
+            setTextColor(cTexto)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, Tema.T_TEXTO)
+            background = redondo(cTarjeta2, 12)
+            setPadding(dp(12), dp(10), dp(12), dp(10))
+            setSingleLine()
         }
-        cuerpo.addView(g, margenArriba(Tema.S2))
-        d = hoja("Moneda", null, cuerpo).apply {
-            setOnDismissListener { if (prefs.moneda.codigo != actual) { refrescarFiltrosYAjustes(); pintarCuenta() } }
+        cuerpo.addView(buscar, margenArriba(Tema.S2))
+        val caja = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        cuerpo.addView(caja, margenArriba(Tema.S1))
+        val actual = Pais.actual(prefs)
+        val monedaAntes = prefs.moneda.codigo
+        var d: Dialog? = null
+        fun pintar(q: String) {
+            caja.removeAllViews()
+            val clave = sinAcentos(q.trim())
+            val g = grupoFilas()
+            for (p in Pais.LISTA.filter { clave.isEmpty() || sinAcentos(it.nombre).contains(clave) }) {
+                val es = p.codigo == actual.codigo
+                filaMenu(g, if (es) Icono.OK else Icono.FILTROS, p.nombre,
+                    "${p.moneda.monto(1234.5, 2)} · SOS ${p.sos}", if (es) cVerde else cTenue) {
+                    prefs.pais = p.codigo
+                    if (p.moneda.codigo != prefs.moneda.codigo) Cuenta.cambiarMoneda(this, p.moneda)
+                    d?.dismiss()
+                    alElegir?.invoke()
+                }
+            }
+            if (g.childCount == 0) caja.addView(texto("No está en la lista. Escríbenos por WhatsApp.", Tema.T_NOTA, cTenue, false))
+            else caja.addView(g)
+        }
+        pintar("")
+        buscar.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
+            override fun onTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
+            override fun afterTextChanged(s: Editable?) { pintar(s?.toString() ?: "") }
+        })
+        d = hoja("País", null, cuerpo).apply {
+            setOnDismissListener { if (prefs.moneda.codigo != monedaAntes) { refrescarFiltrosYAjustes(); pintarCuenta() } }
         }
     }
 
@@ -1686,9 +1714,8 @@ class MainActivity : Activity() {
         filaMenu(g, Icono.CUENTA, "Equipos",
             "${equipos.size} de ${Cuenta.maxEquipos(this)}" +
                 if (equipos.isEmpty()) "" else " · " + equipos.joinToString(", ") { it.visible() }) { mostrarEquipos() }
-        val mon = prefs.moneda
-        val nombreMon = Moneda.LISTA.firstOrNull { it.first.codigo == mon.codigo }?.second ?: mon.codigo
-        filaMenu(g, Icono.FILTROS, "Moneda", "$nombreMon · ${mon.monto(1234.5, 2)}") { mostrarMoneda() }
+        val pais = Pais.actual(prefs)
+        filaMenu(g, Icono.FILTROS, "País", "${pais.nombre} · ${prefs.moneda.monto(1234.5, 2)}") { mostrarPais() }
         val nSos = Sos.contactos(this).size
         filaMenu(g, Icono.ALERTA, "Contactos SOS", if (nSos == 0) "Agrega a quien avisar en una emergencia"
             else "$nSos ${if (nSos == 1) "contacto" else "contactos"}", if (nSos == 0) cAmarillo else cTenue) { gestionarContactosSos() }
@@ -2300,7 +2327,7 @@ class MainActivity : Activity() {
                 botonContorno("Llamar") { Sos.llamar(this, k.telefono) }
             ), margenArriba(Tema.S1))
         }
-        val emerg = Sos.emergencias(prefs.moneda)
+        val emerg = Pais.actual(prefs).sos
         c.addView(boton("Llamar al $emerg", cRojo, Color.WHITE) { Sos.llamar(this, emerg) },
             LinearLayout.LayoutParams(-1, dp(52)).apply { topMargin = dp(Tema.S2) })
         c.addView(botonContorno("Mis contactos SOS") { gestionarContactosSos() },
@@ -2751,7 +2778,7 @@ class MainActivity : Activity() {
             guia = null
         }
         guia = d
-        pintarGuia(2)
+        pintarGuia(3)
         d.show()
     }
 
@@ -2774,7 +2801,8 @@ class MainActivity : Activity() {
             gravity = Gravity.CENTER
             minHeight = dp(Tema.ALTO_TOQUE)
             isClickable = true
-            setOnClickListener { pintarGuia(if (guiaPaso >= 4) 2 else guiaPaso - 1) }
+            // Orden: 1 permisos → 3 país → 2 tus números → 4 así se verá.
+            setOnClickListener { pintarGuia(when (guiaPaso) { 2 -> 3; 3 -> 1; else -> if (guiaPaso >= 4) 2 else guiaPaso - 1 }) }
         }
         fun titulo(s: String) = texto(s, 28f, cTexto, true).apply { setLineSpacing(0f, 1.1f) }
         fun parrafo(s: String) = texto(s, Tema.T_SUB, cTexto2, false).apply { setLineSpacing(0f, 1.3f) }
@@ -2858,7 +2886,31 @@ class MainActivity : Activity() {
                         t.addView(f, margenArriba(12))
                     }
                 c.addView(t, margenArriba(Tema.ENTRE_TARJETAS))
-                if (listo) principal("Siguiente") { pintarGuia(2) } else principal("Abrir Accesibilidad") { abrirAccesibilidad() }
+                if (listo) principal("Siguiente") { pintarGuia(3) } else principal("Abrir Accesibilidad") { abrirAccesibilidad() }
+                guiaPie.addView(atras, margenArriba(Tema.S1))
+            }
+            3 -> {
+                // País: con el del teléfono ya elegido; un toque abre la lista.
+                c.addView(pasoDe(2))
+                c.addView(titulo("¿En qué país manejas?"), margenArriba(Tema.S1))
+                c.addView(parrafo("Con esto Checa lee los montos de Uber y DiDi en tu moneda y sabe a qué número de emergencias llamar."),
+                    margenArriba(Tema.S2))
+                val elegido = prefs.pais.isNotEmpty()
+                val p = if (elegido) Pais.actual(prefs) else Pais.detectado()
+                val g = grupoFilas()
+                filaMenu(g, Icono.OK, p.nombre + if (elegido) "" else " · detectado",
+                    "${p.moneda.monto(1234.5, 2)} · SOS ${p.sos}", cVerde) {
+                    mostrarPais { pintarGuia(3) }
+                }
+                c.addView(g, margenArriba(Tema.S2))
+                c.addView(texto("¿No es tu país? Tócalo para cambiarlo.", Tema.T_NOTA, cTenue, false), margenArriba(Tema.S1))
+                principal("Siguiente") {
+                    if (!elegido) {
+                        prefs.pais = p.codigo
+                        if (p.moneda.codigo != prefs.moneda.codigo) Cuenta.cambiarMoneda(this, p.moneda)
+                    }
+                    pintarGuia(2)
+                }
                 guiaPie.addView(atras, margenArriba(Tema.S1))
             }
             2 -> {

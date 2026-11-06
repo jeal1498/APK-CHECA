@@ -115,6 +115,11 @@ class Prefs(context: Context) {
         }
 
     /** La moneda se cambió en este equipo y falta subirla a la cuenta. */
+    /** País elegido (código ISO, «MX»). Vacío = se deduce de la moneda (ver [Pais.actual]). */
+    var pais: String
+        get() = sp.getString("pais", "") ?: ""
+        set(v) { sp.edit().putString("pais", v).apply() }
+
     var monedaPendiente: Boolean
         get() = sp.getBoolean("monPend", false)
         set(v) { sp.edit().putBoolean("monPend", v).apply() }
