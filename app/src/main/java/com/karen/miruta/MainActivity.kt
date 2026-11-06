@@ -3505,10 +3505,7 @@ class MainActivity : Activity() {
                 } catch (_: Exception) { abrirInfoApp() }
             }
         }
-        filaInterruptor(g, "Guardar pantallas de ofertas", "Opcional · para revisar las que se lean mal · 7 días", prefs.diagnostico) {
-            prefs.diagnostico = !prefs.diagnostico
-            pintarPermisos()
-        }
+        filaInterruptor(g, "Guardar pantallas de ofertas", "Opcional · para revisar las que se lean mal · 7 días", prefs.diagnostico) { prefs.diagnostico = it }
         c.addView(g, margenArriba(Tema.S2))
 
         if (!acc) {
@@ -3609,30 +3606,6 @@ class MainActivity : Activity() {
         }, LinearLayout.LayoutParams(dp(28), dp(28)).apply { rightMargin = dp(12) })
         f.addView(texto(s, Tema.T_TEXTO, cTexto2, false).apply { setLineSpacing(0f, 1.2f) }, LinearLayout.LayoutParams(0, -2, 1f))
         return f
-    }
-
-    /** Fila con interruptor (para opciones tuyas); las casillas de [filaCasilla] quedan para los permisos. */
-    private fun filaInterruptor(grupo: LinearLayout, titulo: String, sub: String, activo: Boolean, accion: () -> Unit) {
-        if (grupo.childCount > 0) grupo.addView(View(this).apply { setBackgroundColor(Tema.BORDE) },
-            LinearLayout.LayoutParams(-1, dp(1)))
-        val f = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-            minimumHeight = dp(60)
-            setPadding(dp(14), dp(10), dp(14), dp(10))
-            background = ripple(Color.TRANSPARENT, Tema.R_TARJETA)
-            isClickable = true
-            setOnClickListener { accion() }
-        }
-        val textos = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        textos.addView(texto(titulo, Tema.T_TEXTO, cTexto, true))
-        textos.addView(texto(sub, Tema.T_NOTA, cTenue, false), margenArriba(2))
-        f.addView(textos, LinearLayout.LayoutParams(0, -2, 1f))
-        val pista = FrameLayout(this).apply { background = redondo(if (activo) cVerde else Tema.HUMO, 50) }
-        pista.addView(View(this).apply { background = punto(if (activo) Tema.SOBRE_VERDE else cTenue) },
-            FrameLayout.LayoutParams(dp(16), dp(16)).apply { topMargin = dp(3); leftMargin = if (activo) dp(21) else dp(3) })
-        f.addView(pista, LinearLayout.LayoutParams(dp(40), dp(22)).apply { leftMargin = dp(12) })
-        grupo.addView(f)
     }
 
     private fun pedirNotificaciones() {
