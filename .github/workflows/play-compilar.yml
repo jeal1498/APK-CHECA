@@ -82,7 +82,6 @@ jobs:
             "authority com.jeal1498.checa.fileprovider":u("com.jeal1498.checa.fileprovider") in man,
             "sin authority antigua":u("com.karen.miruta.fileprovider") not in man,
             "sin REQUEST_INSTALL_PACKAGES":u("REQUEST_INSTALL_PACKAGES") not in man,
-            "sin REQUEST_IGNORE_BATTERY_OPTIMIZATIONS":u("REQUEST_IGNORE_BATTERY_OPTIMIZATIONS") not in man,
           }
           for k,v in checks.items(): print("OK " if v else "FALLA", k)
           if not all(checks.values()): sys.exit(1)

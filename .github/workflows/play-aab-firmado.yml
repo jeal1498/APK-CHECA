@@ -60,12 +60,12 @@ jobs:
           java -jar "$BUNDLETOOL_JAR" dump manifest --bundle="$AAB" > "$RUNNER_TEMP/manifest-play.xml"
           echo "=== Paquete y versión ==="
           grep -oE 'package="[^"]+"|android:versionCode="[^"]+"|android:versionName="[^"]+"' "$RUNNER_TEMP/manifest-play.xml" | head -n 3
-          if grep -Eq 'android.permission.(REQUEST_IGNORE_BATTERY_OPTIMIZATIONS|REQUEST_INSTALL_PACKAGES)' "$RUNNER_TEMP/manifest-play.xml"; then
+          if grep -Eq 'android.permission.REQUEST_INSTALL_PACKAGES' "$RUNNER_TEMP/manifest-play.xml"; then
             echo "::error::El manifiesto incluye un permiso restringido que no debe estar en el AAB."
-            grep -E 'REQUEST_IGNORE_BATTERY_OPTIMIZATIONS|REQUEST_INSTALL_PACKAGES' "$RUNNER_TEMP/manifest-play.xml"
+            grep -E 'REQUEST_INSTALL_PACKAGES' "$RUNNER_TEMP/manifest-play.xml"
             exit 1
           fi
-          echo "OK: no aparecen REQUEST_IGNORE_BATTERY_OPTIMIZATIONS ni REQUEST_INSTALL_PACKAGES."
+          echo "OK: no aparece REQUEST_INSTALL_PACKAGES (REQUEST_IGNORE_BATTERY_OPTIMIZATIONS sí va desde 10.9)."
           EXPECTED="$(keytool -list -v -keystore "$PLAY_UPLOAD_KEYSTORE_PATH" -storetype JKS -storepass "$PLAY_UPLOAD_STORE_PASSWORD" -alias "$PLAY_UPLOAD_KEY_ALIAS" | awk -F': ' '/SHA256:/{gsub(/:/,"",$2); print tolower($2); exit}')"
           ACTUAL="$(keytool -printcert -jarfile "$AAB" | awk -F': ' '/SHA256:/{gsub(/:/,"",$2); print tolower($2); exit}')"
           test -n "$EXPECTED" && test -n "$ACTUAL" || { echo "::error::No se pudo obtener la huella SHA-256"; exit 1; }
