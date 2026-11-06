@@ -374,6 +374,7 @@ class MainActivity : Activity() {
                 v.visibility = View.GONE
             }
         }
+        if (i == 2) pintarPaisSeguridad()
         botonesNav.forEach { (ico, etq, j) ->
             val sel = j == i
             ico.color = if (sel) Tema.HUESO else cTenue
@@ -530,10 +531,6 @@ class MainActivity : Activity() {
         gas.addView(texto("Desgaste: llantas, seguro, licencia y más, repartidos entre tus km. " +
             "Tarifa mínima: lo menos que aceptas por un viaje.",
             Tema.T_NOTA, cTenue, false), margenArriba(4))
-        gas.addView(interruptor("Mostrar lo que te queda", "Descuenta gasolina y desgaste en el pop-up", prefs.mostrarNeta) {
-            prefs.mostrarNeta = it
-            refrescarVistaPrevia()
-        }, margenArriba(4))
         col.addView(gas, margenTarjeta())
 
         // --- Dos ofertas a la vez ---
@@ -1474,6 +1471,10 @@ class MainActivity : Activity() {
             { prefs.duracionSeg.toFloat() }, { prefs.duracionSeg = it.toInt() }, 3f, 60f), margenArriba(Tema.S1))
         pop.addView(campoMeta("Altura en la pantalla", "", " %", 1f, null, null,
             { prefs.posicion.toFloat() }, { prefs.posicion = it.toInt() }, 0f, 80f), margenArriba(Tema.S1))
+        pop.addView(interruptor("Mostrar lo que te queda", "Descuenta gasolina y desgaste en el pop-up", prefs.mostrarNeta) {
+            prefs.mostrarNeta = it
+            refrescarVistaPrevia()
+        }, margenArriba(Tema.S1))
         pop.addView(texto("También lo puedes arrastrar con el dedo cuando sale en Uber o DiDi.", Tema.T_NOTA, cTenue, false)
             .apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
         pop.addView(botonContorno("Probar en pantalla") {
@@ -1524,6 +1525,13 @@ class MainActivity : Activity() {
         cajaLecturaAjustes = lectura
         pintarFilasLectura()
         col.addView(lectura, margenTarjeta())
+
+        // --- País y seguridad: moneda y a quién avisa el SOS ---
+        col.addView(etiqueta("PAÍS Y SEGURIDAD"))
+        val paisSeg = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        cajaPaisSeguridad = paisSeg
+        pintarPaisSeguridad()
+        col.addView(paisSeg, margenTarjeta())
 
         return scroll(col)
     }
@@ -1717,7 +1725,7 @@ class MainActivity : Activity() {
         }
         c.addView(dosBotones(
             boton("Registrar viaje", cVerde, Color.BLACK) { dialogoRegistrarViaje() },
-            botonContorno(if (meta > 0) "Cambiar meta" else "Poner meta") { dialogoMeta() }
+            botonContorno("Meta del día") { dialogoMeta() }
         ), margenArriba(Tema.S2))
         val compartir = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER }
         listOf("Compartir mi día" to false, "Compartir mi semana" to true).forEachIndexed { i, (s, semana) ->
@@ -1947,7 +1955,7 @@ class MainActivity : Activity() {
             override fun afterTextChanged(s: Editable?) { pintar(s?.toString() ?: "") }
         })
         d = hoja("País", null, cuerpo).apply {
-            setOnDismissListener { if (prefs.moneda.codigo != monedaAntes) { refrescarFiltrosYAjustes(); pintarCuenta() } }
+            setOnDismissListener { if (prefs.moneda.codigo != monedaAntes) { refrescarFiltrosYAjustes(); pintarCuenta() }; pintarPaisSeguridad() }
         }
     }
 
@@ -1977,11 +1985,6 @@ class MainActivity : Activity() {
         filaMenu(g, Icono.CUENTA, "Equipos",
             "${equipos.size} de ${Cuenta.maxEquipos(this)}" +
                 if (equipos.isEmpty()) "" else " · " + equipos.joinToString(", ") { it.visible() }) { mostrarEquipos() }
-        val pais = Pais.actual(prefs)
-        filaMenu(g, Icono.FILTROS, "País", "${pais.nombre} · ${prefs.moneda.monto(1234.5, 2)}") { mostrarPais() }
-        val nSos = Sos.contactos(this).size
-        filaMenu(g, Icono.ALERTA, "Contactos SOS", if (nSos == 0) "Agrega a quien avisar en una emergencia"
-            else "$nSos ${if (nSos == 1) "contacto" else "contactos"}", if (nSos == 0) cAmarillo else cTenue) { gestionarContactosSos() }
         filaMenu(g, Icono.ALERTA, "Ayuda y soporte", "Preguntas frecuentes y WhatsApp") { mostrarAyuda() }
         filaMenu(g, Icono.PLAY, "Guía de inicio", "Cómo usar Checa paso a paso") { mostrarGuia() }
         filaMenu(g, Icono.RELOJ, "Tus datos", "Qué guarda Checa y estadísticas") { mostrarTusDatos() }
@@ -1993,6 +1996,20 @@ class MainActivity : Activity() {
     // =====================================================================
 
     private var cajaLecturaAjustes: LinearLayout? = null
+    private var cajaPaisSeguridad: LinearLayout? = null
+
+    /** Ajustes › País y seguridad: país con su moneda y Contactos SOS (antes estaban en Cuenta). */
+    private fun pintarPaisSeguridad() {
+        val caja = cajaPaisSeguridad ?: return
+        caja.removeAllViews()
+        val g = grupoFilas()
+        val pais = Pais.actual(prefs)
+        filaMenu(g, Icono.PIN, "País", "${pais.nombre} · ${prefs.moneda.monto(1234.5, 2)}") { mostrarPais() }
+        val nSos = Sos.contactos(this).size
+        filaMenu(g, Icono.ESCUDO, "Contactos SOS", if (nSos == 0) "Agrega a quien avisar en una emergencia"
+            else "$nSos ${if (nSos == 1) "contacto" else "contactos"}", if (nSos == 0) cAmarillo else cTenue) { gestionarContactosSos() }
+        caja.addView(g)
+    }
 
     private fun pintarFilasLectura() {
         val caja = cajaLecturaAjustes ?: return
@@ -2014,6 +2031,7 @@ class MainActivity : Activity() {
             },
             if (noLeidas > 0) cAmarillo else cTenue) { mostrarAyudaLectura() }
         caja.addView(g)
+        pintarPaisSeguridad()
     }
 
     private class EstadoInicio(val caja: LinearLayout, val punto: View, val titulo: TextView, val sub: TextView, val chip: TextView)
@@ -2029,7 +2047,7 @@ class MainActivity : Activity() {
         val (color, titulo, sub, chip) = when {
             faltan > 0 -> listOf(cAmarillo, "Falta un permiso", "Sin él Checa no puede leer tus ofertas", "Revisar")
             !leyendo && Lectura.cortada -> listOf(cAmarillo, "La lectura se detuvo", "Android la cortó. Toca para revisar", "Revisar")
-            !leyendo -> listOf(cTenue, "Lectura apagada", "Inicia la lectura antes de abrir Uber o DiDi", "Iniciar")
+            !leyendo -> listOf(cTenue, "Lectura apagada", "Toca ▶ para iniciarla antes de abrir Uber o DiDi", "")
             ultima == 0L -> listOf(cVerde, "Leyendo", "Aún sin ofertas · ¿algo falla? Toca aquí", "")
             else -> listOf(cVerde, "Leyendo", "Última oferta ${hace(ultima)}", "")
         }
@@ -2663,7 +2681,7 @@ class MainActivity : Activity() {
             c.addView(boton("Agregar contacto", cVerde, Color.BLACK) { h?.dismiss(); agregarContactoSos() },
                 LinearLayout.LayoutParams(-1, dp(48)).apply { topMargin = dp(Tema.S2) })
         }
-        h = hoja("Contactos SOS", cRojo, c)
+        h = hoja("Contactos SOS", cRojo, c).apply { setOnDismissListener { pintarPaisSeguridad() } }
     }
 
     private fun agregarContactoSos() {
