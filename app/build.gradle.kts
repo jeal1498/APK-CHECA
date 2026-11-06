@@ -10,8 +10,8 @@ android {
     defaultConfig {
         minSdk = 26
         targetSdk = 36
-        versionCode = 103
-        versionName = "10.23"
+        versionCode = 104
+        versionName = "10.24"
     }
 
     buildFeatures { buildConfig = true }
