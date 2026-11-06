@@ -3394,6 +3394,18 @@ class MainActivity : Activity() {
                 c.addView(titulo("Tus números"), margenArriba(Tema.S1))
                 c.addView(parrafo("Con esto Checa pinta cada oferta de verde, amarillo o rojo. Lo cambias cuando quieras en Mis metas."),
                     margenArriba(Tema.S2))
+                // Oferta de ejemplo: cambia de color al mover tus números.
+                val previaNum = FrameLayout(this)
+                val anchoNum = minOf((resources.displayMetrics.widthPixels * 0.94f).toInt(), Popup.anchoPx(this, prefs))
+                fun pintarPreviaNum() {
+                    previaNum.removeAllViews()
+                    previaNum.addView(Popup(this, prefs, WindowManager.LayoutParams.TYPE_APPLICATION).construir(ofertaEjemplo(), false),
+                        FrameLayout.LayoutParams(anchoNum, -2, Gravity.CENTER_HORIZONTAL))
+                }
+                pintarPreviaNum()
+                c.addView(previaNum, margenArriba(Tema.S2))
+                c.addView(texto("Oferta de ejemplo con tus números.", Tema.T_NOTA, cTenue, false).apply { gravity = Gravity.CENTER },
+                    margenArriba(4))
                 c.addView(campoGuia("Por kilómetro", { "\$" + num(prefs.minPorKm) + "/km" }) { signo ->
                     prefs.minPorKm = (prefs.minPorKm + 0.5f * signo).coerceIn(1f, 50f)
                     if (!guiaHoraTocada) prefs.minPorHora = Math.round(prefs.minPorKm * 20).toFloat()
@@ -3402,6 +3414,7 @@ class MainActivity : Activity() {
                 c.addView(campoGuia("Por hora", { "\$" + num(prefs.minPorHora) + "/h" }) { signo ->
                     guiaHoraTocada = true
                     prefs.minPorHora = (prefs.minPorHora + 10f * signo).coerceIn(10f, 1000f)
+                    pintarPreviaNum()
                 }, margenArriba(Tema.ENTRE_TARJETAS))
                 c.addView(texto("Si no sabes, deja \$10/km y ajústalo después de unos días.", Tema.T_NOTA, cTenue, false),
                     margenArriba(Tema.S1))
@@ -3654,21 +3667,24 @@ class MainActivity : Activity() {
             c.addView(r, margenArriba(Tema.S2))
         }
 
-        // Casilla verde = listo; contorno amarillo = falta (se toca la fila para activarlo).
-        val g = grupoFilas()
-        filaCasilla(g, "Leer Uber y DiDi", if (acc) "Permiso de Accesibilidad" else "Falta · toca para activarlo", acc) {
-            abrirAccesibilidad()
-        }
+        // Tres permisos obligatorios como tarjetas: su porqué en una línea y «Falta» o «Listo» (se toca para activarlo).
+        c.addView(tarjetaPermiso(
+            "Leer Uber y DiDi",
+            "Para ver la oferta en tu pantalla. No toca nada ni acepta viajes por ti." +
+                if (acc) "" else " Búscalo en «Aplicaciones instaladas» (Samsung) o «Aplicaciones descargadas» (OPPO).",
+            acc
+        ) { abrirAccesibilidad() }, margenArriba(Tema.S2))
         if (Build.VERSION.SDK_INT >= 33) {
-            val ok = permisoNotificaciones()
-            filaCasilla(g, "Notificaciones", if (ok) "Para avisarte si la lectura se corta" else "Falta · toca para permitirlas", ok) {
+            c.addView(tarjetaPermiso("Notificaciones", "Para avisarte si la lectura se corta.", permisoNotificaciones()) {
                 pedirNotificaciones()
-            }
+            }, margenArriba(Tema.S1))
         }
-        val bat = permisoBateria()
-        filaCasilla(g, "Batería sin restricción", if (bat) "Para que Android no corte la lectura" else "Falta · toca para activarla", bat) {
+        c.addView(tarjetaPermiso("Batería sin restricción", "Para que Android no apague la lectura.", permisoBateria()) {
             pedirBateria()
-        }
+        }, margenArriba(Tema.S1))
+
+        // Opcionales, aparte.
+        val g = grupoFilas()
         if (esXiaomi()) {
             filaCasilla(g, "Inicio automático", "Recomendado en Xiaomi · toca para abrir", null) {
                 try {
@@ -3677,22 +3693,18 @@ class MainActivity : Activity() {
                 } catch (_: Exception) { abrirInfoApp() }
             }
         }
-        filaInterruptor(g, "Guardar pantallas de ofertas", "Opcional · para revisar las que se lean mal · 7 días", prefs.diagnostico) { prefs.diagnostico = it }
+        filaInterruptor(g, "Guardar pantallas de ofertas", "Opcional · para revisar las que se lean mal · 7 días", prefs.diagnostico) {
+            prefs.diagnostico = it
+        }
         c.addView(g, margenArriba(Tema.S2))
-
-        if (!acc) {
+        if (prefs.diagnostico || !arranque) {
             c.addView(texto(
-                "Busca «Checa – lector de ofertas» y actívalo. En Samsung está dentro de «Aplicaciones instaladas»; " +
-                    "en OPPO suele estar en «Aplicaciones descargadas».",
-                Tema.T_TEXTO, cTexto2, false
+                (if (arranque) "" else "Al iniciar la lectura, Android pregunta qué compartir: elige «Pantalla completa» y luego Empezar. ") +
+                    (if (prefs.diagnostico) "Las pantallas guardadas se quedan solo en tu teléfono; pueden salir datos del pasajero, " +
+                        "por eso nada se envía sin que tú lo revises." else ""),
+                Tema.T_NOTA, cTenue, false
             ).apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S2))
         }
-        c.addView(texto(
-            (if (arranque) "" else "Al iniciar la lectura, Android pregunta qué compartir: elige «Pantalla completa» y luego Empezar. ") +
-                "Las pantallas guardadas se quedan solo en tu teléfono; pueden salir datos del pasajero, " +
-                "por eso nada se envía sin que tú lo revises.",
-            Tema.T_NOTA, cTenue, false
-        ).apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S2))
 
         val completo = acc && permisoNotificaciones() && permisoBateria()
         if (completo && arranque) {
@@ -3736,6 +3748,37 @@ class MainActivity : Activity() {
                 }, margenArriba(Tema.S1))
             }
         }
+    }
+
+    /** Permiso obligatorio: título, por qué se pide y el estado («Falta» en amarillo o «✓ Listo» en verde). */
+    private fun tarjetaPermiso(titulo: String, porque: String, listo: Boolean, accion: () -> Unit): View {
+        val f = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            minimumHeight = dp(72)
+            setPadding(dp(14), dp(12), dp(12), dp(12))
+            background = RippleDrawable(
+                ColorStateList.valueOf(Color.argb(40, 255, 255, 255)),
+                GradientDrawable().apply {
+                    setColor(cTarjeta)
+                    cornerRadius = dp(Tema.R_TARJETA).toFloat()
+                    if (!listo) setStroke(dp(2), Color.argb(120, Color.red(cAmarillo), Color.green(cAmarillo), Color.blue(cAmarillo)))
+                },
+                redondo(Color.WHITE, Tema.R_TARJETA)
+            )
+            isClickable = true
+            setOnClickListener { if (!listo) accion() }
+        }
+        val textos = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        textos.addView(texto(titulo, Tema.T_TEXTO, cTexto, true))
+        textos.addView(texto(porque, Tema.T_NOTA, cTenue, false).apply { setLineSpacing(0f, 1.2f) }, margenArriba(2))
+        f.addView(textos, LinearLayout.LayoutParams(0, -2, 1f).apply { rightMargin = dp(Tema.S1) })
+        f.addView(texto(if (listo) "✓ Listo" else "Falta", Tema.T_NOTA, if (listo) cVerde else cAmarillo, true).apply {
+            typeface = Fuentes.numero
+            setPadding(dp(10), dp(6), dp(10), dp(6))
+            background = redondo(if (listo) Tema.VERDE_SUAVE else Tema.AMARILLO_SUAVE, 50)
+        })
+        return f
     }
 
     /** Fila del arranque con casilla: verde con ✓ si está listo, contorno amarillo si falta (humo si es opcional). */
