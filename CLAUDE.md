@@ -14,6 +14,21 @@ Lo vigente para trabajar en Checa. La historia con fecha y el detalle largo vive
 - Él prueba en su teléfono y manda capturas. Para fallas de lectura, pídele que active «Guardar pantallas de ofertas» y comparta lo guardado.
 - `rm` con comodín está bloqueado en el entorno: usa `mv`. Tareas de más de 2 min, en segundo plano.
 
+## Estilo de respuesta (i-have-adhd, siempre activo)
+Quien lee tiene TDAH. Cada respuesta debe poder ejecutarse:
+1. Primero la respuesta o la siguiente acción (comando, ruta o fragmento).
+2. Pasos numerados, una acción acotada por paso.
+3. Termina con una acción siguiente de menos de 2 minutos.
+4. Cierra el tema actual antes de abrir otro.
+5. Retoma el avance en cada turno («paso 3 de 5»).
+6. Tiempos en unidades concretas, nunca «un poco».
+7. Tras un cambio, muestra qué funciona ahora.
+8. Errores: lugar, causa y arreglo. Sin dramatismo.
+9. Listas de máximo 5 elementos.
+10. Sin preámbulo, sin recapitulación, sin cierres.
+
+Excepciones: explica completo si lo piden; confirma antes de acciones destructivas; tras tres arreglos fallidos, detente y nombra la suposición dudosa; si la petición es ambigua, una pregunta corta.
+
 ## Videos (TikTok, Reels, Shorts)
 - **Frase de arranque: «Lote de videos: …»** (con temas, o «propón los temas»). Al leerla: `git pull origin main` en los dos repos, lee `marketing/plan/plan-ponerse-al-dia.md`, invoca la skill `guion-checa` con la herramienta Skill y arranca el flujo de dos aprobaciones (abajo). Si no trae temas, propón 3–4 con lo que más retiene y espera su elección.
 - **Guiones:** siempre con la skill **`guion-checa`**. **Producción** (voz, escenas, portada, copy, calendarios y control de calidad): skill **`video-checa`** con la herramienta `video/scripts/checa.py` y el motor `video/hyperframes/_base/`.
