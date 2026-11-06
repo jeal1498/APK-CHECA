@@ -277,7 +277,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         }
         val cab = SpannableStringBuilder()
         cab.append(pre + accion)
-        cab.setSpan(ForegroundColorSpan(color), 0, cab.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        cab.setSpan(ForegroundColorSpan(acento), 0, cab.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         if (rayo != null) {
             cab.append("  ")
             val r0 = cab.length
@@ -288,7 +288,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         }
         val cabeza = TextView(ctx).apply {
             text = cab
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(14f))
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(17f))
             typeface = Fuentes.negrita
             letterSpacing = 0.1f
             gravity = Gravity.CENTER
@@ -317,8 +317,9 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
 
         // $/h | $/km, grandes.
         fun tono(cumple: Boolean?) = when (cumple) { true -> Tema.VERDE; false -> Tema.ROJO; null -> Tema.HUESO }
-        fun metrica(txt: String, c: Int) = TextView(ctx).apply {
-            text = txt
+        fun metrica(txt: String, c: Int, cumple: Boolean?) = TextView(ctx).apply {
+            // ✓ / ✕ además del color, para quien no distingue rojo de verde.
+            text = (when (cumple) { true -> "✓ "; false -> "✕ "; null -> "" }) + txt
             setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(16.5f))
             setTextColor(c)
             typeface = Fuentes.numero
@@ -332,12 +333,14 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
             gravity = Gravity.CENTER_VERTICAL
             setPadding(e(6f), e(5f), e(6f), 0)
         }
-        fila.addView(metrica(mon.monto(o.porHora, 0) + "/h",
-            tono(if (prefs.filtroHora) o.porHora >= prefs.minPorHora else null)), LinearLayout.LayoutParams(0, -2, 1f))
+        val cumpleHora = if (prefs.filtroHora) o.porHora >= prefs.minPorHora else null
+        val cumpleKm = if (prefs.filtroKm) o.porKm >= prefs.minPorKm else null
+        fila.addView(metrica(mon.monto(o.porHora, 0) + "/h", tono(cumpleHora), cumpleHora),
+            LinearLayout.LayoutParams(0, -2, 1f))
         fila.addView(View(ctx).apply { setBackgroundColor(linea) },
             LinearLayout.LayoutParams(maxOf(1, dp(1)), e(16f)).apply { leftMargin = e(4f); rightMargin = e(4f) })
-        fila.addView(metrica(mon.monto(o.porKm, 1) + "/km",
-            tono(if (prefs.filtroKm) o.porKm >= prefs.minPorKm else null)), LinearLayout.LayoutParams(0, -2, 1f))
+        fila.addView(metrica(mon.monto(o.porKm, 1) + "/km", tono(cumpleKm), cumpleKm),
+            LinearLayout.LayoutParams(0, -2, 1f))
         col.addView(fila, LinearLayout.LayoutParams(-1, -2))
 
         // Si falla recogida, duración o tarifa mínima, una línea roja dice cuál.
@@ -354,7 +357,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         }
         col.addView(TextView(ctx).apply {
             text = fmt(o.min, 0) + " min (" + fmt(o.km, 1) + " km) total"
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(11f))
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, maxOf(sp(12f), 9f))
             setTextColor(if (recFalla || durFalla) Tema.ROJO else Tema.TENUE)
             typeface = Fuentes.numero
             gravity = Gravity.CENTER
@@ -365,24 +368,29 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         if (aviso != null) {
             col.addView(TextView(ctx).apply {
                 text = aviso
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(10f))
+                // El motivo del rojo no baja de 11 sp aunque el pop-up esté al 70 %.
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, maxOf(sp(13f), 11f))
                 setTextColor(Tema.ROJO)
                 typeface = Fuentes.texto
                 gravity = Gravity.CENTER
                 includeFontPadding = false
                 maxLines = 1
                 setPadding(e(6f), e(3f), e(6f), e(9f))
-            }, LinearLayout.LayoutParams(-1, -2))
+            }.also { encoger(it, 10f) }, LinearLayout.LayoutParams(-1, -2))
         }
 
         // ✕ en la esquina, a la altura de la acción (zona de toque de 24 dp escalada).
         val cerrarBtn = ImageView(ctx).apply {
             setImageDrawable(Icono(Icono.CERRAR, Tema.TENUE))
-            setPadding(e(6f), e(6f), e(6f), e(6f))
+            // Dibujo chico, área de toque de 48 dp fija (no se encoge con el tamaño del pop-up).
+            val lado = dp(48)
+            val chico = dp(6)
+            val resto = maxOf(0, lado - e(12f) - chico)
+            setPadding(resto, chico, chico, resto) // el dibujo queda en la esquina
             if (interactivo) setOnClickListener { ocultar() }
         }
-        marco.addView(cerrarBtn, FrameLayout.LayoutParams(e(24f), e(24f), Gravity.TOP or Gravity.END).apply {
-            topMargin = e(3f); rightMargin = e(4f)
+        marco.addView(cerrarBtn, FrameLayout.LayoutParams(dp(48), dp(48), Gravity.TOP or Gravity.END).apply {
+            topMargin = dp(2); rightMargin = dp(2)
         })
 
         return marco
@@ -402,7 +410,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
             if (disp <= 0 || l == null || l.lineCount == 0) return@addOnLayoutChangeListener
             val ancho = l.getLineWidth(0)
             if (ancho <= disp) return@addOnLayoutChangeListener
-            val minimo = minimoSp * ctx.resources.displayMetrics.scaledDensity
+            val minimo = minimoSp * escalaFuente()
             val nuevo = maxOf(minimo, t.textSize * disp / ancho)
             if (nuevo < t.textSize - 0.5f) t.post { t.setTextSize(TypedValue.COMPLEX_UNIT_PX, nuevo) }
         }
@@ -415,7 +423,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
             if (disp <= 0) return@addOnLayoutChangeListener
             val p = Paint(t.paint)
             val texto = t.text.toString()
-            val minimo = minimoSp * ctx.resources.displayMetrics.scaledDensity
+            val minimo = minimoSp * escalaFuente()
             var tam = p.textSize
             while (tam > minimo && p.measureText(texto) > disp) {
                 tam -= 1f
@@ -432,6 +440,9 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         if (v * 10 % 1.0 == 0.0) String.format(Locale.US, "%.1f", v) else String.format(Locale.US, "%.2f", v)
 
     private fun fmt(v: Double, dec: Int): String = String.format(Locale.US, "%,.${dec}f", v)
+
+    private fun escalaFuente(): Float =
+        ctx.resources.displayMetrics.density * ctx.resources.configuration.fontScale
 
     private fun dp(v: Int): Int = (v * ctx.resources.displayMetrics.density).toInt()
 
