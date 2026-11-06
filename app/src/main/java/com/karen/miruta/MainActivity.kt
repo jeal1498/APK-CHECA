@@ -1529,14 +1529,58 @@ class MainActivity : Activity() {
     // Pestaña Ajustes (incluye la ayuda)
     // =====================================================================
 
+    /** Sección de Ajustes que estaba abierta (0 Pop-up, 1 Avisos, 2 Lectura, 3 País); sobrevive a rehacer la pantalla. */
+    private var ajustesSeccion = 0
+
     private fun pantallaAjustes(): View {
-        val col = columna()
-        col.addView(texto("Ajustes", 26f, cTexto, true), LinearLayout.LayoutParams(-1, -2).apply {
+        // Cuatro secciones, una a la vez: Pop-up, Avisos, Lectura y País.
+        val raiz = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setBackgroundColor(cFondo)
+        }
+        val cab = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(Tema.S2), dp(Tema.S1), dp(Tema.S2), dp(Tema.S1))
+        }
+        cab.addView(texto("Ajustes", 26f, cTexto, true), LinearLayout.LayoutParams(-1, -2).apply {
             bottomMargin = dp(Tema.S1)
         })
+        val secciones = ArrayList<View>()
+        val etiquetasSec = ArrayList<TextView>()
+        val selector = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            background = redondo(cTarjeta, 18)
+            setPadding(dp(3), dp(3), dp(3), dp(3))
+        }
+        fun mostrarSeccion(i: Int) {
+            ajustesSeccion = i
+            secciones.forEachIndexed { j, v -> v.visibility = if (j == i) View.VISIBLE else View.GONE }
+            etiquetasSec.forEachIndexed { j, t ->
+                t.background = if (j == i) redondo(Tema.HUESO, 15) else null
+                t.setTextColor(if (j == i) Tema.ASFALTO else cTenue)
+            }
+        }
+        listOf("Pop-up", "Avisos", "Lectura", "País").forEachIndexed { i, nombre ->
+            val t = texto(nombre, Tema.T_NOTA, cTenue, true).apply {
+                gravity = Gravity.CENTER
+                minHeight = dp(44)
+                isClickable = true
+                setOnClickListener { mostrarSeccion(i) }
+            }
+            etiquetasSec.add(t)
+            selector.addView(t, LinearLayout.LayoutParams(0, -2, 1f))
+        }
+        cab.addView(selector, LinearLayout.LayoutParams(-1, -2))
+        raiz.addView(cab, LinearLayout.LayoutParams(-1, -2))
+
+        val col = columna()
+        fun seccion() = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            clipChildren = false
+        }.also { secciones.add(it); col.addView(it, LinearLayout.LayoutParams(-1, -2)) }
 
         // --- Pop-up ---
-        col.addView(etiqueta("POP-UP"))
+        val sPop = seccion()
         // Vista previa a lo ancho de la pantalla (fuera de la tarjeta) para que mida igual que en «Probar en pantalla».
         val previa = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
@@ -1550,7 +1594,7 @@ class MainActivity : Activity() {
             letterSpacing = 0.08f
             gravity = Gravity.CENTER
         }, margenArriba(10))
-        col.addView(previa, LinearLayout.LayoutParams(-1, -2).apply {
+        sPop.addView(previa, LinearLayout.LayoutParams(-1, -2).apply {
             leftMargin = -dp(Tema.S2)
             rightMargin = -dp(Tema.S2)
             bottomMargin = dp(Tema.S1)
@@ -1574,29 +1618,45 @@ class MainActivity : Activity() {
             popupPrueba?.mostrar(o)
             Alertas(this, prefs).avisar(o.nivel(prefs))
         }, margenArriba(Tema.S2))
-        col.addView(pop, margenTarjeta())
+        sPop.addView(pop, margenTarjeta())
 
-        // --- Avisos: filas agrupadas ---
-        col.addView(etiqueta("AVISOS"))
-        val av = grupoFilas()
-        filaInterruptor(av, "Voz", "«Aceptar», «Considerar», «Rechazar» · apagada: tonos", prefs.voz) { prefs.voz = it }
-        filaInterruptor(av, "Sonido", "Avisa con sonido cada oferta", prefs.sonido) { prefs.sonido = it }
-        filaInterruptor(av, "Vibrar", "1 corta: conviene · 2 cortas: regular · 1 larga: no", prefs.vibrar) { prefs.vibrar = it }
-        filaInterruptor(av, "Avisarme al abrir Uber o DiDi", "Si la lectura está apagada, te ofrece iniciarla", prefs.avisarApertura) {
-            prefs.avisarApertura = it
+        // --- Avisos: voz, sonido y vibración en una sola fila de opciones ---
+        val sAv = seccion()
+        val av = tarjeta()
+        av.addView(etiquetaTarjeta("CÓMO TE AVISO"))
+        val opciones = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+        class OpcionAviso(val nombre: String, val leer: () -> Boolean, val poner: (Boolean) -> Unit)
+        listOf(
+            OpcionAviso("Voz", { prefs.voz }, { prefs.voz = it }),
+            OpcionAviso("Sonido", { prefs.sonido }, { prefs.sonido = it }),
+            OpcionAviso("Vibrar", { prefs.vibrar }, { prefs.vibrar = it })
+        ).forEachIndexed { i, o ->
+            val chip = texto(o.nombre, Tema.T_TEXTO, cTexto, true).apply {
+                gravity = Gravity.CENTER
+                minHeight = dp(44)
+                isClickable = true
+            }
+            fun pintarChip() {
+                chip.background = redondo(if (o.leer()) Tema.HUESO else cTarjeta2, 50)
+                chip.setTextColor(if (o.leer()) Tema.ASFALTO else cTexto)
+            }
+            chip.setOnClickListener { o.poner(!o.leer()); pintarChip() }
+            pintarChip()
+            opciones.addView(chip, LinearLayout.LayoutParams(0, -2, 1f).apply { if (i > 0) leftMargin = dp(Tema.S1) })
         }
-        val vol = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(dp(14), 0, dp(14), dp(12))
-        }
-        vol.addView(deslizador("Volumen", 10, 100, prefs.volumen, " %") { prefs.volumen = it })
+        av.addView(opciones, margenArriba(Tema.S1))
+        av.addView(texto("Voz: «Aceptar», «Considerar», «Rechazar»; sin voz suenan tonos. " +
+            "Vibrar: 1 corta conviene, 2 cortas regular, 1 larga no.", Tema.T_NOTA, cTenue, false)
+            .apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
+        av.addView(deslizador("Volumen", 10, 100, prefs.volumen, " %") { prefs.volumen = it }, margenArriba(Tema.S1))
+        av.addView(etiquetaTarjeta("PROBAR CADA AVISO"), margenArriba(Tema.S2))
         val pruebas = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
         val alertas = Alertas(this, prefs)
         listOf(Oferta.VERDE, Oferta.AMARILLO, Oferta.ROJO).forEachIndexed { i, n ->
             val b = LinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER
-                minimumHeight = dp(40)
+                minimumHeight = dp(44)
                 background = ripple(cTarjeta2, 50)
                 isClickable = true
                 setOnClickListener { alertas.avisar(n) }
@@ -1606,26 +1666,26 @@ class MainActivity : Activity() {
             }
             pruebas.addView(b, LinearLayout.LayoutParams(0, -2, 1f).apply { if (i > 0) leftMargin = dp(Tema.S1) })
         }
-        vol.addView(pruebas, margenArriba(Tema.S1))
-        av.addView(View(this).apply { setBackgroundColor(Tema.BORDE) }, LinearLayout.LayoutParams(-1, dp(1)))
-        av.addView(vol)
-        col.addView(av, margenTarjeta())
+        av.addView(pruebas, margenArriba(Tema.S1))
+        sAv.addView(av, margenTarjeta())
 
         // --- Lectura: qué lee Checa y lo que necesita para leer ---
-        col.addView(etiqueta("LECTURA"))
+        val sLec = seccion()
         val lectura = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         cajaLecturaAjustes = lectura
         pintarFilasLectura()
-        col.addView(lectura, margenTarjeta())
+        sLec.addView(lectura, margenTarjeta())
 
         // --- País y seguridad: moneda y a quién avisa el SOS ---
-        col.addView(etiqueta("PAÍS Y SEGURIDAD"))
+        val sPais = seccion()
         val paisSeg = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         cajaPaisSeguridad = paisSeg
         pintarPaisSeguridad()
-        col.addView(paisSeg, margenTarjeta())
+        sPais.addView(paisSeg, margenTarjeta())
 
-        return scroll(col)
+        raiz.addView(scroll(col), LinearLayout.LayoutParams(-1, 0, 1f))
+        mostrarSeccion(ajustesSeccion.coerceIn(0, 3))
+        return raiz
     }
 
     // =====================================================================
@@ -2122,6 +2182,9 @@ class MainActivity : Activity() {
                 else -> "${guardadas.size} ofertas guardadas"
             },
             if (noLeidas > 0) cAmarillo else cTenue) { mostrarAyudaLectura() }
+        filaInterruptor(g, "Avisarme al abrir Uber o DiDi", "Si la lectura está apagada, te ofrece iniciarla", prefs.avisarApertura) {
+            prefs.avisarApertura = it
+        }
         caja.addView(g)
         pintarPaisSeguridad()
     }
