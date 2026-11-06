@@ -89,6 +89,7 @@ class MainActivity : Activity() {
     private lateinit var botonPaquetesInicio: TextView
     private lateinit var tarjetaActualizacion: View
     private lateinit var actTexto: TextView
+    private lateinit var actVersion: TextView
     private lateinit var licTitulo: TextView
     private lateinit var licTexto: TextView
     private lateinit var mejoresHorasLista: LinearLayout
@@ -421,9 +422,13 @@ class MainActivity : Activity() {
         tarjetaPermiso = View(this)
 
         // --- Versión nueva (solo si hay) ---
-        val act = tarjeta()
-        act.addView(cabeceraTarjeta(Icono.DESCARGA, "Hay una versión nueva", null, false).first)
-        actTexto = texto("", Tema.T_TEXTO, cTexto, false).apply { setLineSpacing(0f, 1.2f) }
+        val act = tarjeta(Tema.VERDE_SUAVE)
+        val actCab = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
+        actCab.addView(texto("Hay una versión nueva", Tema.T_SUB, cTexto, true), LinearLayout.LayoutParams(0, -2, 1f))
+        actVersion = chipDiag("", Tema.VERDE_SUAVE, cVerde).apply { background = redondo(Tema.ASFALTO, 50) }
+        actCab.addView(actVersion)
+        act.addView(actCab)
+        actTexto = texto("", Tema.T_TEXTO, cTexto2, false).apply { setLineSpacing(0f, 1.2f) }
         act.addView(actTexto, margenArriba(Tema.S1))
         act.addView(boton("Actualizar ahora", cVerde, Color.BLACK) { actualizarApp() }, margenArriba(Tema.S2))
         act.visibility = View.GONE
@@ -2874,8 +2879,8 @@ class MainActivity : Activity() {
         tarjetaActualizacion.visibility = if (v == null) View.GONE else View.VISIBLE
         botonBuscarAct?.text = if (v == null) "Buscar actualización" else "Actualizar a la $v"
         if (v == null) { Actualizacion.quitarNotificacion(this); return }
-        actTexto.text = "Checa $v ya está lista (tienes la ${Actualizacion.instalada(this)}). " +
-            "Se instala encima: no pierdes tu cuenta, ajustes ni historial."
+        actVersion.text = v
+        actTexto.text = "Se instala encima: no pierdes tu cuenta, ajustes ni historial."
         if (avisar && !hayVentana() && Actualizacion.avisoToca(this, v)) {
             Actualizacion.marcarAviso(this, v)
             dialogoActualizacion(v)
@@ -2884,11 +2889,15 @@ class MainActivity : Activity() {
 
     private fun dialogoActualizacion(v: String) {
         val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        val versiones = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
+        versiones.addView(numero(Actualizacion.instalada(this), Tema.T_SUB, cTenue))
+        versiones.addView(texto("  →  ", Tema.T_SUB, cTenue, false))
+        versiones.addView(numero(v, Tema.T_SUB, cVerde))
+        cuerpo.addView(versiones)
         cuerpo.addView(texto(
-            "Ya está lista la versión $v de Checa. Toca «Actualizar»: se descarga aquí mismo y Android te pide confirmar la instalación.",
+            "Se descarga aquí mismo y Android te pide confirmar la instalación. No pierdes tu cuenta, ajustes ni historial.",
             Tema.T_TEXTO, cTexto2, false
-        ).apply { setLineSpacing(0f, 1.2f) })
-        cuerpo.addView(texto("No pierdes tu cuenta, ajustes ni historial.", Tema.T_NOTA, cTenue, false), margenArriba(Tema.S1))
+        ).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
         cuerpo.addView(boton("Actualizar", cVerde, Color.BLACK) {
             dialogoAct?.dismiss()
             actualizarApp()
@@ -2911,14 +2920,21 @@ class MainActivity : Activity() {
         }
         descargandoApp = true
         val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        val avance = texto("Descargando… 0 %", Tema.T_TEXTO, cTexto2, false)
+        val avance = texto("0 %", 48f, cTexto, true)
         cuerpo.addView(avance)
+        val barra = android.widget.ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal).apply {
+            max = 100
+            progressTintList = ColorStateList.valueOf(cVerde)
+            progressBackgroundTintList = ColorStateList.valueOf(cTarjeta2)
+        }
+        cuerpo.addView(barra, LinearLayout.LayoutParams(-1, dp(10)).apply { topMargin = dp(Tema.S1) })
         cuerpo.addView(texto("No cierres la app. Al terminar, Android te pedirá tocar «Instalar».", Tema.T_NOTA, cTenue, false)
             .apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
         val d = hoja("Actualizando Checa", null, cuerpo)
         d.setCancelable(false)
         Actualizacion.descargar(this, { pct ->
-            avance.text = if (pct >= 0) "Descargando… $pct %" else "Descargando…"
+            avance.text = if (pct >= 0) "$pct %" else "…"
+            if (pct >= 0) barra.progress = pct
         }) { apk ->
             descargandoApp = false
             d.dismiss()
@@ -4388,17 +4404,23 @@ class MainActivity : Activity() {
         if (dialogoMigra?.isShowing == true || !Migracion.avisoToca(this)) return
         Migracion.marcarAviso(this)
         val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        cuerpo.addView(texto(
-            "Esta versión de Checa deja de funcionar el ${Licencia.fechaBonita(20261115)}. " +
-                "Checa ya está en Google Play como app nueva: regístrate para pasarte.",
-            Tema.T_TEXTO, cTexto2, false
-        ).apply { setLineSpacing(0f, 1.2f) })
-        val cuenta = texto("Quedan ${Migracion.restante()}", Tema.T_TITULO, cTexto, true).apply { gravity = Gravity.CENTER }
-        cuerpo.addView(cuenta, margenArriba(Tema.S2))
-        cuerpo.addView(texto(
-            "Si ya usabas tu cuenta de Google, tus ajustes y tu licencia vuelven al entrar con ella en la app nueva.",
-            Tema.T_NOTA, cTenue, false
-        ).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
+        cuerpo.addView(texto("QUEDAN", Tema.T_NOTA, cTenue, true).apply { letterSpacing = 0.08f })
+        val cuenta = texto(Migracion.restante(), 40f, cAmarillo, true)
+        cuerpo.addView(cuenta)
+        cuerpo.addView(texto("hasta el ${Licencia.fechaBonita(20261115)}", Tema.T_NOTA, cTenue, false))
+        listOf(
+            "Regístrate para la nueva Checa",
+            "Descárgala de Google Play",
+            "Entra con tu cuenta de Google: tu licencia y tus ajustes vuelven solos"
+        ).forEachIndexed { i, p ->
+            val f = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+            f.addView(texto("${i + 1}", Tema.T_NOTA, cTexto, true).apply {
+                gravity = Gravity.CENTER
+                background = punto(cTarjeta2)
+            }, LinearLayout.LayoutParams(dp(26), dp(26)).apply { rightMargin = dp(12) })
+            f.addView(texto(p, Tema.T_TEXTO, cTexto2, false).apply { setLineSpacing(0f, 1.2f) }, LinearLayout.LayoutParams(0, -2, 1f))
+            cuerpo.addView(f, margenArriba(Tema.S1))
+        }
         cuerpo.addView(boton("Registrarme para la nueva Checa", cVerde, Color.BLACK) {
             Migracion.abrirRegistro(this, "migracion-aviso")
         }, margenArriba(Tema.S2))
@@ -4409,7 +4431,7 @@ class MainActivity : Activity() {
             override fun run() {
                 if (!dialogo.isShowing) return
                 if (Migracion.vencida()) { dialogo.dismiss(); actualizarAcceso(); return }
-                cuenta.text = "Quedan ${Migracion.restante()}"
+                cuenta.text = Migracion.restante()
                 handler.postDelayed(this, 30_000)
             }
         }
