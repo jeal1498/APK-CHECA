@@ -2260,61 +2260,103 @@ class MainActivity : Activity() {
     /** País: define la moneda (la misma de Clientela; se guarda en la cuenta) y el número del SOS. */
     private fun mostrarPais(alElegir: (() -> Unit)? = null) {
         val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        cuerpo.addView(texto("Con esto Checa lee los montos de Uber y DiDi en tu moneda y sabe a qué número de emergencias llamar." +
-            (if (Jornada.CLIENTELA_ACTIVA) " Si usas Clientela con la misma cuenta, la moneda cambia también ahí." else ""),
-            Tema.T_NOTA, cTenue, false).apply { setLineSpacing(0f, 1.2f) })
-        val buscar = EditText(this).apply {
-            hint = "Buscar país…"
-            setHintTextColor(cTenue)
-            setTextColor(cTexto)
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, Tema.T_TEXTO)
-            background = redondo(cTarjeta2, 12)
-            setPadding(dp(12), dp(10), dp(12), dp(10))
-            setSingleLine()
-        }
-        cuerpo.addView(buscar, margenArriba(Tema.S2))
-        val caja = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        cuerpo.addView(caja, margenArriba(Tema.S1))
         val actual = Pais.actual(prefs)
         val monedaAntes = prefs.moneda.codigo
         var d: Dialog? = null
-        fun pintar(q: String) {
-            caja.removeAllViews()
-            val clave = sinAcentos(q.trim())
-            val g = grupoFilas()
-            for (p in Pais.LISTA.filter { clave.isEmpty() || sinAcentos(it.nombre).contains(clave) }) {
-                val es = p.codigo == actual.codigo
-                filaMenu(g, if (es) Icono.OK else Icono.FILTROS, p.nombre,
-                    "${p.moneda.monto(1234.5, 2)} · SOS ${p.sos}", if (es) cVerde else cTenue) {
-                    prefs.pais = p.codigo
-                    if (p.moneda.codigo != prefs.moneda.codigo) Cuenta.cambiarMoneda(this, p.moneda)
-                    d?.dismiss()
-                    alElegir?.invoke()
-                }
-            }
-            if (g.childCount == 0) caja.addView(texto("No está en la lista. Escríbenos por WhatsApp.", Tema.T_NOTA, cTenue, false))
-            else caja.addView(g)
+        fun elegir(p: Pais) {
+            prefs.pais = p.codigo
+            if (p.moneda.codigo != prefs.moneda.codigo) Cuenta.cambiarMoneda(this, p.moneda)
+            d?.dismiss()
+            alElegir?.invoke()
         }
-        pintar("")
-        buscar.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
-            override fun onTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
-            override fun afterTextChanged(s: Editable?) { pintar(s?.toString() ?: "") }
-        })
+        // Tu país arriba, con cómo se ven los montos y el número del SOS.
+        val tu = tarjeta().apply {
+            background = GradientDrawable().apply {
+                setColor(cTarjeta)
+                cornerRadius = dp(Tema.R_TARJETA).toFloat()
+                setStroke(dp(2), Tema.HUESO)
+            }
+        }
+        tu.addView(etiquetaTarjeta("TU PAÍS"))
+        tu.addView(numero(actual.nombre, 24f, cTexto), margenArriba(4))
+        tu.addView(texto("Así se ven tus montos: ${actual.moneda.monto(1234.5, 2)} · SOS ${actual.sos}", Tema.T_NOTA, cTexto2, false),
+            margenArriba(4))
+        cuerpo.addView(tu)
+        cuerpo.addView(texto("Con esto Checa lee los montos de Uber y DiDi en tu moneda y sabe a qué número de emergencias llamar." +
+            (if (Jornada.CLIENTELA_ACTIVA) " Si usas Clientela con la misma cuenta, la moneda cambia también ahí." else ""),
+            Tema.T_NOTA, cTenue, false).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
+        // El país que detecta el teléfono, a un toque, si no es el elegido.
+        val det = Pais.detectado()
+        if (det.codigo != actual.codigo) {
+            val gDet = grupoFilas()
+            filaMenu(gDet, Icono.PIN, "Detectado en tu teléfono: ${det.nombre}", "Tocar para usarlo", cTenue) { elegir(det) }
+            cuerpo.addView(gDet, margenArriba(Tema.S2))
+        }
+        // Los demás, en una lista corta (son pocos: no hace falta buscar).
+        cuerpo.addView(etiqueta("OTROS PAÍSES"))
+        val g = grupoFilas()
+        for (p in Pais.LISTA.filter { it.codigo != actual.codigo }) {
+            filaMenu(g, Icono.PIN, p.nombre, "${p.moneda.codigo} · SOS ${p.sos}", cTenue) { elegir(p) }
+        }
+        cuerpo.addView(g)
         d = hoja("País", null, cuerpo).apply {
             setOnDismissListener { if (prefs.moneda.codigo != monedaAntes) { refrescarFiltrosYAjustes(); pintarCuenta() }; pintarPaisSeguridad() }
         }
     }
 
-    /** Qué apps lee Checa: Uber, DiDi o las dos. */
+    /** Qué apps lee Checa: una tarjeta por app con su estado y su interruptor. */
     private fun mostrarAppsLee() {
         val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         cuerpo.addView(texto("Apaga la que no uses para que Checa no la revise.", Tema.T_NOTA, cTenue, false)
             .apply { setLineSpacing(0f, 1.2f) })
-        val g = grupoFilas().apply { background = redondo(cTarjeta2, Tema.R_TARJETA) }
-        filaInterruptor(g, "Uber Driver", "Leer sus ofertas", prefs.uber) { prefs.uber = it }
-        filaInterruptor(g, "DiDi Conductor", "Leer sus ofertas", prefs.didi) { prefs.didi = it }
-        cuerpo.addView(g, margenArriba(Tema.S2))
+        val aviso = texto("Con las dos apagadas Checa no lee ninguna oferta. Enciende al menos una.", Tema.T_NOTA, cAmarillo, false).apply {
+            setLineSpacing(0f, 1.2f)
+            setPadding(dp(12), dp(8), dp(12), dp(8))
+            background = redondo(Tema.AMARILLO_SUAVE, 12)
+        }
+        val registros = Historial.ultimosDias(this, 30)
+        val estados = ArrayList<() -> Unit>()
+        fun pintarTodo() {
+            estados.forEach { it() }
+            aviso.visibility = if (!prefs.uber && !prefs.didi) View.VISIBLE else View.GONE
+        }
+        fun tarjetaApp(nombre: String, inicial: String, clave: String, leer: () -> Boolean, poner: (Boolean) -> Unit) {
+            val fila = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                background = redondo(cTarjeta, Tema.R_TARJETA)
+                setPadding(dp(14), dp(14), dp(14), dp(14))
+                minimumHeight = dp(76)
+            }
+            fila.addView(texto(inicial, 16f, cTexto, true).apply {
+                gravity = Gravity.CENTER
+                background = redondo(cTarjeta2, 11)
+            }, LinearLayout.LayoutParams(dp(38), dp(38)).apply { rightMargin = dp(12) })
+            val tx = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+            val estado = texto("", Tema.T_NOTA, cTenue, false)
+            tx.addView(texto(nombre, Tema.T_TEXTO, cTexto, true))
+            tx.addView(estado, margenArriba(2))
+            fila.addView(tx, LinearLayout.LayoutParams(0, -2, 1f))
+            val sw = interruptorSolo(leer())
+            fila.addView(sw)
+            estados.add {
+                val ultima = registros.filter { it.app.contains(clave, ignoreCase = true) }.maxOfOrNull { it.hora }
+                estado.text = when {
+                    !leer() -> "Apagada"
+                    ultima != null -> "Leyendo · última oferta ${hace(ultima)}"
+                    else -> "Leyendo · aún sin ofertas"
+                }
+            }
+            sw.setOnCheckedChangeListener { _, b -> poner(b); pintarTodo() }
+            fila.setOnClickListener { sw.toggle() }
+            cuerpo.addView(fila, margenArriba(Tema.S2))
+        }
+        tarjetaApp("Uber Driver", "U", "uber", { prefs.uber }) { prefs.uber = it }
+        tarjetaApp("DiDi Conductor", "D", "didi", { prefs.didi }) { prefs.didi = it }
+        cuerpo.addView(aviso, margenArriba(Tema.S2))
+        cuerpo.addView(texto("En pantalla dividida, Checa muestra un pop-up sobre cada app.", Tema.T_NOTA, cTenue, false),
+            margenArriba(Tema.S2))
+        pintarTodo()
         hoja("Apps que lee", null, cuerpo).setOnDismissListener { pintarFilasLectura() }
     }
 
