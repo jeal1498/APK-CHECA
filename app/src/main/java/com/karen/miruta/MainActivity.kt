@@ -2847,9 +2847,19 @@ class MainActivity : Activity() {
     private fun mostrarSos() {
         val contactos = Sos.contactos(this)
         val c = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        // Lo urgente primero: llamar al número de emergencias, grande.
+        val emerg = Pais.actual(prefs).sos
+        c.addView(boton("Llamar al $emerg", cRojo, Color.WHITE) { Sos.llamar(this, emerg) }.apply {
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
+            minHeight = dp(64)
+        }, LinearLayout.LayoutParams(-1, dp(64)))
+        // Estado de la ubicación en una etiqueta: verde si está lista, amarillo si falta algo.
         val estado = texto(if (Sos.tienePermiso(this)) "Buscando tu ubicación…" else "Sin ubicación: el mensaje pide que te llamen.",
-            Tema.T_NOTA, cTenue, false)
-        c.addView(estado)
+            Tema.T_NOTA, cAmarillo, false).apply {
+            setPadding(dp(12), dp(6), dp(12), dp(6))
+            background = redondo(cTarjeta, 50)
+        }
+        c.addView(estado, LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(Tema.S1) })
         var ubic: android.location.Location? = null
         var lista = false
         if (Sos.tienePermiso(this)) {
@@ -2858,31 +2868,44 @@ class MainActivity : Activity() {
                 lista = true
                 estado.text = if (l == null) "No se pudo obtener la ubicación: el mensaje pide que te llamen."
                     else "Ubicación lista (±${l.accuracy.toInt()} m)"
+                estado.setTextColor(if (l == null) cAmarillo else cVerde)
             }
         } else lista = true
+        c.addView(texto(
+            if (contactos.isEmpty()) "Agrega a alguien de confianza para avisarle con tu ubicación." else "Avisar a mis contactos",
+            Tema.T_NOTA, cTenue, false
+        ), margenArriba(Tema.S2))
         for (k in contactos) {
-            c.addView(texto(k.nombre + if (k.relacion.isNotEmpty()) " · ${k.relacion}" else "", Tema.T_SUB, cTexto, true),
-                margenArriba(Tema.S2))
-            c.addView(dosBotones(
-                boton("WhatsApp", cVerde, Color.BLACK) {
-                    if (!lista) Toast.makeText(this, "Aún sin ubicación: se manda sin ella", Toast.LENGTH_SHORT).show()
-                    if (!Sos.whatsapp(this, k, Sos.mensaje(ubic)))
-                        Toast.makeText(this, "No se pudo abrir WhatsApp", Toast.LENGTH_LONG).show()
-                },
-                botonContorno("Llamar") { Sos.llamar(this, k.telefono) }
-            ), margenArriba(Tema.S1))
+            val fila = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                background = redondo(cTarjeta, Tema.R_BOTON)
+                setPadding(dp(14), dp(6), dp(8), dp(6))
+                minimumHeight = dp(60)
+            }
+            val tx = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+            tx.addView(texto(k.nombre, Tema.T_TEXTO, cTexto, true).apply { maxLines = 1; ellipsize = TextUtils.TruncateAt.END })
+            if (k.relacion.isNotEmpty()) tx.addView(texto(k.relacion, Tema.T_NOTA, cTenue, false), margenArriba(2))
+            fila.addView(tx, LinearLayout.LayoutParams(0, -2, 1f))
+            fila.addView(boton("WhatsApp", cVerde, Color.BLACK) {
+                if (!lista) Toast.makeText(this, "Aún sin ubicación: se manda sin ella", Toast.LENGTH_SHORT).show()
+                if (!Sos.whatsapp(this, k, Sos.mensaje(ubic)))
+                    Toast.makeText(this, "No se pudo abrir WhatsApp", Toast.LENGTH_LONG).show()
+            }.apply { setPadding(dp(14), dp(10), dp(14), dp(10)) }, LinearLayout.LayoutParams(-2, dp(48)))
+            fila.addView(botonContorno("Llamar") { Sos.llamar(this, k.telefono) }.apply {
+                setPadding(dp(14), dp(10), dp(14), dp(10))
+            }, LinearLayout.LayoutParams(-2, dp(48)).apply { leftMargin = dp(6) })
+            c.addView(fila, margenArriba(Tema.S1))
         }
-        val emerg = Pais.actual(prefs).sos
-        c.addView(boton("Llamar al $emerg", cRojo, Color.WHITE) { Sos.llamar(this, emerg) },
-            LinearLayout.LayoutParams(-1, dp(52)).apply { topMargin = dp(Tema.S2) })
         c.addView(botonContorno("Mis contactos SOS") { gestionarContactosSos() },
-            LinearLayout.LayoutParams(-1, dp(48)).apply { topMargin = dp(Tema.S1) })
+            LinearLayout.LayoutParams(-1, dp(48)).apply { topMargin = dp(Tema.S2) })
         hoja("SOS", cRojo, c)
     }
 
     private fun gestionarContactosSos() {
         val c = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        c.addView(texto("Hasta 5 personas de confianza. Con tu cuenta se guardan en la nube para no perderlas.",
+        c.addView(texto("Hasta 5 personas de confianza. Con tu cuenta se guardan en la nube para no perderlas. " +
+            "Toca un contacto para quitarlo.",
             Tema.T_NOTA, cTenue, false).apply { setLineSpacing(0f, 1.2f) })
         var h: Dialog? = null
         val lista = Sos.contactos(this)
@@ -2902,43 +2925,101 @@ class MainActivity : Activity() {
         }
         if (lista.isNotEmpty()) c.addView(g, margenArriba(Tema.S2))
         if (lista.size < 5) {
-            c.addView(boton("Agregar contacto", cVerde, Color.BLACK) { h?.dismiss(); agregarContactoSos() },
+            c.addView(boton("Agregar contacto (${lista.size} de 5)", cVerde, Color.BLACK) { h?.dismiss(); agregarContactoSos() },
                 LinearLayout.LayoutParams(-1, dp(48)).apply { topMargin = dp(Tema.S2) })
         }
         h = hoja("Contactos SOS", cRojo, c).apply { setOnDismissListener { pintarPaisSeguridad() } }
     }
 
     private fun agregarContactoSos() {
+        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         fun campoSos(pista: String, tipo: Int) = EditText(this).apply {
             hint = pista
+            setHintTextColor(cTenue)
+            setTextColor(cTexto)
             setSingleLine()
             inputType = tipo
+            background = redondo(cTarjeta, 14)
+            setPadding(dp(14), 0, dp(14), 0)
         }
-        val nombre = campoSos("Nombre", InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS)
-        val tel = campoSos(if (prefs.moneda.codigo == "MXN") "WhatsApp (10 dígitos)" else "WhatsApp con lada del país",
-            InputType.TYPE_CLASS_PHONE)
-        val rel = campoSos("Relación (opcional)", InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
-        val caja = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(dp(20), dp(8), dp(20), 0)
-            addView(nombre); addView(tel); addView(rel)
+        val nombre = campoSos("Cómo lo llamas", InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS)
+        val tel = campoSos(if (prefs.moneda.codigo == "MXN") "10 dígitos" else "Con lada del país", InputType.TYPE_CLASS_PHONE)
+        val error = texto("", Tema.T_NOTA, cAmarillo, false)
+        val vista = texto("", Tema.T_NOTA, cTexto2, false).apply {
+            setPadding(dp(12), dp(8), dp(12), dp(8))
+            background = redondo(cTarjeta2, 12)
+            setLineSpacing(0f, 1.2f)
         }
-        AlertDialog.Builder(this)
-            .setTitle("Contacto SOS")
-            .setView(caja)
-            .setPositiveButton("Guardar") { _, _ ->
-                val n = nombre.text.toString().trim().take(80)
-                val t = Sos.normalizarTelefono(tel.text.toString(), prefs.moneda)
-                when {
-                    n.isEmpty() -> Toast.makeText(this, "Falta el nombre", Toast.LENGTH_LONG).show()
-                    t == null -> Toast.makeText(this, "Revisa el número (con lada del país)", Toast.LENGTH_LONG).show()
-                    else -> Sos.guardar(this, Sos.contactos(this) +
-                        ContactoSos(java.util.UUID.randomUUID().toString(), n, t, rel.text.toString().trim().take(40)))
-                }
+        var relacion = ""
+        var dialogo: Dialog? = null
+        val guardar = boton("Guardar contacto", cVerde, Color.BLACK) { }
+        fun valido(): Boolean =
+            nombre.text.toString().trim().isNotEmpty() && Sos.normalizarTelefono(tel.text.toString(), prefs.moneda) != null
+        fun actualizar() {
+            val digitos = tel.text.toString().count { it.isDigit() }
+            error.text = when {
+                digitos == 0 || Sos.normalizarTelefono(tel.text.toString(), prefs.moneda) != null -> ""
+                prefs.moneda.codigo == "MXN" && digitos < 10 -> "Faltan ${10 - digitos} dígitos"
+                prefs.moneda.codigo == "MXN" && digitos > 10 -> "Sobran dígitos"
+                else -> "Revisa el número (con lada del país)"
+            }
+            val n = nombre.text.toString().trim()
+            vista.text = if (n.isEmpty()) "Aquí verás a quién se avisará."
+                else "Se avisará a $n" + (if (relacion.isNotEmpty()) " (${relacion.lowercase()})" else "") +
+                    " por WhatsApp con tu ubicación."
+            guardar.alpha = if (valido()) 1f else 0.45f
+            guardar.text = if (valido()) "Guardar contacto" else "Completa nombre y número"
+        }
+        val vigilante = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
+            override fun onTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
+            override fun afterTextChanged(s: Editable?) { actualizar() }
+        }
+        nombre.addTextChangedListener(vigilante)
+        tel.addTextChangedListener(vigilante)
+        cuerpo.addView(texto("Nombre", Tema.T_NOTA, cTenue, false))
+        cuerpo.addView(nombre, LinearLayout.LayoutParams(-1, dp(50)).apply { topMargin = dp(4) })
+        cuerpo.addView(texto("WhatsApp", Tema.T_NOTA, cTenue, false), margenArriba(Tema.S2))
+        cuerpo.addView(tel, LinearLayout.LayoutParams(-1, dp(50)).apply { topMargin = dp(4) })
+        cuerpo.addView(error, margenArriba(4))
+        cuerpo.addView(texto("Relación (opcional)", Tema.T_NOTA, cTenue, false), margenArriba(Tema.S2))
+        val chips = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+        val opciones = listOf("Pareja", "Familiar", "Amigo", "Otro")
+        val etiquetas = ArrayList<TextView>()
+        fun pintarChips() {
+            etiquetas.forEachIndexed { i, t ->
+                val on = relacion == opciones[i]
+                t.background = redondo(if (on) Tema.HUESO else cTarjeta2, 50)
+                t.setTextColor(if (on) Tema.ASFALTO else cTexto)
+            }
+        }
+        opciones.forEachIndexed { i, o ->
+            val t = texto(o, Tema.T_NOTA, cTexto, true).apply {
+                gravity = Gravity.CENTER
+                minHeight = dp(40)
+                isClickable = true
+                setOnClickListener { relacion = if (relacion == o) "" else o; pintarChips(); actualizar() }
+            }
+            etiquetas.add(t)
+            chips.addView(t, LinearLayout.LayoutParams(0, -2, 1f).apply { if (i > 0) leftMargin = dp(6) })
+        }
+        pintarChips()
+        cuerpo.addView(chips, margenArriba(4))
+        cuerpo.addView(vista, margenArriba(Tema.S2))
+        guardar.setOnClickListener {
+            val n = nombre.text.toString().trim().take(80)
+            val t = Sos.normalizarTelefono(tel.text.toString(), prefs.moneda)
+            if (n.isNotEmpty() && t != null) {
+                Sos.guardar(this, Sos.contactos(this) + ContactoSos(java.util.UUID.randomUUID().toString(), n, t, relacion.take(40)))
+                dialogo?.dismiss()
                 gestionarContactosSos()
             }
-            .setNegativeButton("Cancelar", null)
-            .show()
+        }
+        cuerpo.addView(guardar, margenArriba(Tema.S2))
+        actualizar()
+        val ventana = hoja("Agregar contacto", cRojo, cuerpo)
+        dialogo = ventana
+        ventana.setOnDismissListener { pintarPaisSeguridad() }
     }
 
     /** Puente con Clientela (otra app, misma cuenta): abre la app si está instalada; si no, la web. */
