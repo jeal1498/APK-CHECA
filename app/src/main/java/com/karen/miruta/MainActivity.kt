@@ -1902,21 +1902,52 @@ class MainActivity : Activity() {
             hoja("¿Cuáles aceptaste?", null, cuerpo)
             return
         }
+        // Total del día a la vista: se actualiza al marcar o desmarcar.
+        val totalValor = numero("", 26f, cTexto)
+        val totalSub = texto("", Tema.T_NOTA, cTenue, false)
+        fun pintarTotal() {
+            val t = Jornada.totales(Jornada.deHoy(this))
+            totalValor.text = dinero(t.neta, 0)
+            totalSub.text = "netos · ${t.viajes} ${if (t.viajes == 1) "viaje" else "viajes"}"
+        }
+        val total = tarjeta().apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.BOTTOM }
+        total.addView(totalValor)
+        total.addView(totalSub, LinearLayout.LayoutParams(0, -2, 1f).apply { leftMargin = dp(Tema.S1); bottomMargin = dp(4) })
+        pintarTotal()
+        cuerpo.addView(total)
         cuerpo.addView(texto("Toca las ofertas que aceptaste. Sirven para tu meta, tu gasolina y tu resumen.",
-            Tema.T_NOTA, cTenue, false).apply { setLineSpacing(0f, 1.2f) })
+            Tema.T_NOTA, cTenue, false).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
         val horaFmt = SimpleDateFormat("HH:mm", Locale.US)
         regs.forEach { r ->
-            val marca = icono(Icono.OK, Tema.HUESO, 20).apply {
-                visibility = if (Jornada.registrado(this@MainActivity, r.hora)) View.VISIBLE else View.INVISIBLE
-            }
+            val casilla = texto("", 13f, Tema.ASFALTO, true).apply { gravity = Gravity.CENTER }
             val fila = LinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER_VERTICAL
-                background = ripple(cTarjeta, Tema.R_BOTON)
                 setPadding(dp(Tema.S2), dp(12), dp(Tema.S2), dp(12))
                 isClickable = true
             }
+            // Casilla siempre visible; la fila marcada lleva borde hueso.
+            fun pintarFila(on: Boolean) {
+                casilla.text = if (on) "✓" else ""
+                casilla.background = if (on) redondo(Tema.HUESO, 7) else GradientDrawable().apply {
+                    cornerRadius = dp(7).toFloat()
+                    setColor(Color.TRANSPARENT)
+                    setStroke(dp(2), Tema.HUMO)
+                }
+                fila.background = RippleDrawable(
+                    ColorStateList.valueOf(Color.argb(40, 255, 255, 255)),
+                    GradientDrawable().apply {
+                        setColor(cTarjeta)
+                        cornerRadius = dp(Tema.R_BOTON).toFloat()
+                        if (on) setStroke(dp(2), Tema.HUESO)
+                    },
+                    redondo(Color.WHITE, Tema.R_BOTON)
+                )
+            }
             val neta = r.tarifa - gasolinaDe(r.km)
+            // Punto con el color que tuvo la oferta cuando llegó.
+            fila.addView(View(this).apply { background = punto(Tema.colorNivel(r.nivel)) },
+                LinearLayout.LayoutParams(dp(10), dp(10)).apply { rightMargin = dp(12) })
             val textos = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
             textos.addView(texto("${horaFmt.format(Date(r.hora))} · ${r.app}", Tema.T_TEXTO, cTexto, true))
             textos.addView(
@@ -1924,34 +1955,82 @@ class MainActivity : Activity() {
                 LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(2) }
             )
             fila.addView(textos, LinearLayout.LayoutParams(0, -2, 1f))
-            fila.addView(marca, LinearLayout.LayoutParams(dp(20), dp(20)))
+            fila.addView(casilla, LinearLayout.LayoutParams(dp(24), dp(24)))
+            pintarFila(Jornada.registrado(this, r.hora))
             fila.setOnClickListener {
                 if (Jornada.registrado(this, r.hora)) {
                     Jornada.quitar(this, r.hora)
-                    marca.visibility = View.INVISIBLE
+                    pintarFila(false)
                 } else {
                     Jornada.registrar(this, r, prefs)
-                    marca.visibility = View.VISIBLE
+                    pintarFila(true)
                 }
                 pintarJornada()
+                pintarTotal()
             }
             cuerpo.addView(fila, margenArriba(Tema.S1))
         }
-        hoja("¿Cuáles aceptaste?", null, cuerpo)
+        var dialogo: Dialog? = null
+        cuerpo.addView(boton("Listo", cVerde, Color.BLACK) { dialogo?.dismiss() }, margenArriba(Tema.S2))
+        dialogo = hoja("¿Cuáles aceptaste?", null, cuerpo)
     }
 
     private fun dialogoMeta() {
         val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         cuerpo.addView(texto("¿Cuánto quieres ganar neto hoy, después de gasolina?", Tema.T_TEXTO, cTexto2, false)
             .apply { setLineSpacing(0f, 1.2f) })
-        var nueva = prefs.metaDia
-        cuerpo.addView(
-            campo(if (prefs.metaDia > 0) num(prefs.metaDia) else "") { v -> nueva = v },
-            LinearLayout.LayoutParams(-1, dp(Tema.ALTO_TOQUE)).apply { topMargin = dp(Tema.S2) }
-        )
+        var meta = if (prefs.metaDia > 0) prefs.metaDia else 800f
+        val valor = numero("", 38f, cTexto).apply { gravity = Gravity.CENTER }
+        val horas = texto("", Tema.T_NOTA, cTexto2, false).apply { setLineSpacing(0f, 1.2f) }
+        val chips = ArrayList<Pair<TextView, Float>>()
+        fun pintar() {
+            valor.text = dinero(meta.toDouble(), 0)
+            val h = if (prefs.minPorHora > 0) Math.round(meta / prefs.minPorHora * 10f) / 10f else 0f
+            horas.text = "A tu meta de ${dinero(prefs.minPorHora.toDouble(), 0)}/h son unas ${num(h)} h de trabajo."
+            chips.forEach { (t, v) ->
+                val on = v == meta
+                t.background = redondo(if (on) Tema.HUESO else cTarjeta2, 50)
+                t.setTextColor(if (on) Tema.ASFALTO else cTexto)
+            }
+        }
+        fun tecla(sim: String, paso: Float) = texto(sim, 22f, cTexto, false).apply {
+            typeface = Fuentes.numero
+            gravity = Gravity.CENTER
+            background = ripple(cTarjeta2, 14)
+            isClickable = true
+            setOnClickListener { meta = (meta + paso).coerceIn(50f, 5000f); pintar() }
+        }
+        val fila = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
+        fila.addView(tecla("−", -50f), LinearLayout.LayoutParams(dp(48), dp(48)))
+        fila.addView(valor, LinearLayout.LayoutParams(0, -2, 1f))
+        fila.addView(tecla("+", 50f), LinearLayout.LayoutParams(dp(48), dp(48)))
+        cuerpo.addView(fila, margenArriba(Tema.S2))
+        // Atajos: casi nunca hace falta el teclado.
+        val atajos = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+        listOf(500f, 800f, 1000f, 1500f).forEachIndexed { i, v ->
+            val t = texto(dinero(v.toDouble(), 0), Tema.T_NOTA, cTexto, true).apply {
+                typeface = Fuentes.numero
+                gravity = Gravity.CENTER
+                minHeight = dp(44)
+                isClickable = true
+                setOnClickListener { meta = v; pintar() }
+            }
+            chips.add(t to v)
+            atajos.addView(t, LinearLayout.LayoutParams(0, -2, 1f).apply { if (i > 0) leftMargin = dp(Tema.S1) })
+        }
+        cuerpo.addView(atajos, margenArriba(Tema.S2))
+        // Referencia: lo que llevas esta semana y cuántas horas son a tu meta por hora.
+        val ref = tarjeta()
+        val sem = Jornada.totales(Jornada.deSemana(this))
+        if (sem.viajes > 0) {
+            ref.addView(texto("En la semana llevas ${dinero(sem.neta, 0)} netos.", Tema.T_NOTA, cTenue, false))
+        }
+        ref.addView(horas, margenArriba(if (sem.viajes > 0) 4 else 0))
+        cuerpo.addView(ref, margenArriba(Tema.S2))
+        pintar()
         var dialogo: Dialog? = null
         cuerpo.addView(boton("Guardar meta", cVerde, Color.BLACK) {
-            prefs.metaDia = nueva
+            prefs.metaDia = meta
             pintarJornada()
             dialogo?.dismiss()
         }, margenArriba(Tema.S2))
