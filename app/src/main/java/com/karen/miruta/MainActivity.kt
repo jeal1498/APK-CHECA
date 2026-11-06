@@ -3896,58 +3896,78 @@ class MainActivity : Activity() {
         val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         val d = hojaAbajo("¿Algo falla?", cuerpo)
         dialogoFalla = d
+        var enOrdenAbierto = false
         fun pintar() {
             cuerpo.removeAllViews()
             val acc = servicioActivo()
             val leyendo = Lectura.corriendo
-            val revisiones = ArrayList<Pair<Boolean, String>>()
+            val problemas = ArrayList<String>()
+            val enOrden = ArrayList<String>()
             val acciones = ArrayList<Pair<String, () -> Unit>>()
+            fun revisar(ok: Boolean, bien: String, mal: String) { if (ok) enOrden.add(bien) else problemas.add(mal) }
             fun accion(s: String, a: () -> Unit) { acciones.add(s to a) }
-            revisiones.add(acc to if (acc) "Permiso para leer Uber y DiDi" else "Falta el permiso para leer Uber y DiDi")
+            revisar(acc, "Permiso para leer Uber y DiDi", "Falta el permiso para leer Uber y DiDi")
             if (!acc) accion("Dar el permiso") { d.dismiss(); mostrarPermisos() }
-            revisiones.add(leyendo to when {
-                leyendo && prefs.ultimaOferta > 0 -> "Leyendo · última oferta ${hace(prefs.ultimaOferta)}"
-                leyendo -> "Leyendo · aún sin ofertas"
-                Lectura.cortada -> "Lectura detenida: Android la cortó"
-                else -> "La lectura está apagada"
-            })
+            revisar(leyendo,
+                if (prefs.ultimaOferta > 0) "Leyendo · última oferta ${hace(prefs.ultimaOferta)}" else "Leyendo · aún sin ofertas",
+                if (Lectura.cortada) "Lectura detenida: Android la cortó" else "La lectura está apagada")
+            if (acc && !leyendo) accion("▶  Iniciar lectura") { d.dismiss(); iniciarCaptura() }
             if (Build.VERSION.SDK_INT >= 33) {
                 val ok = permisoNotificaciones()
-                revisiones.add(ok to if (ok) "Notificaciones permitidas" else "Notificaciones apagadas")
+                revisar(ok, "Notificaciones permitidas", "Notificaciones apagadas")
                 if (!ok) accion("Permitir notificaciones") { pedirNotificaciones() }
             }
             // También en Play: solo se revisa y se abren los ajustes (no se pide la excepción restringida).
             val bat = bateriaLibre()
-            revisiones.add(bat to if (bat) "Batería sin restricción" else "Batería con restricción: Android puede apagar Checa")
+            revisar(bat, "Batería sin restricción", "Batería con restricción: Android puede apagar Checa")
             if (!bat) accion("Quitar restricción de batería") { pedirBateria() }
-            if (!prefs.uber && !prefs.didi) {
-                revisiones.add(false to "Uber y DiDi están apagadas")
-                accion("Elegir apps que lee") { mostrarAppsLee() }
+            val apps = prefs.uber || prefs.didi
+            revisar(apps, "Uber y DiDi activadas", "Uber y DiDi están apagadas")
+            if (!apps) accion("Elegir apps que lee") { mostrarAppsLee() }
+            val lic = Licencia.estado(this).activa
+            revisar(lic, "Licencia activa", if (BuildConfig.ES_PLAY)
+                "Tu licencia terminó; las compras de Google Play aún no están disponibles"
+            else "Tu plan terminó: no salen pop-ups")
+            if (!lic && !BuildConfig.ES_PLAY) accion("Ver paquetes") { d.dismiss(); irAPaquetes() }
+
+            // Titular: cuántas cosas fallan (o que todo está bien).
+            val bien = problemas.isEmpty()
+            val color = if (bien) cVerde else cAmarillo
+            val cab = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
+            cab.addView(texto(if (bien) "✓" else "!", 16f, color, true).apply {
+                gravity = Gravity.CENTER
+                background = punto(Color.argb(46, Color.red(color), Color.green(color), Color.blue(color)))
+            }, LinearLayout.LayoutParams(dp(36), dp(36)).apply { rightMargin = dp(12) })
+            val tx = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+            tx.addView(texto(
+                when (problemas.size) { 0 -> "Todo se ve bien"; 1 -> "Falta 1 cosa"; else -> "Faltan ${problemas.size} cosas" },
+                Tema.T_SUB, cTexto, true
+            ))
+            tx.addView(texto(
+                if (bien) "Si no sale el pop-up, abre Uber o DiDi con una oferta en pantalla." else "Arréglala y Checa vuelve a leer.",
+                Tema.T_NOTA, cTenue, false
+            ).apply { setLineSpacing(0f, 1.2f) }, margenArriba(2))
+            cab.addView(tx, LinearLayout.LayoutParams(0, -2, 1f))
+            cuerpo.addView(cab)
+
+            // Primero lo que falla; solo el botón de lo que toca ahora (al arreglarlo, pasa al siguiente).
+            problemas.forEach { cuerpo.addView(filaRevision(false, it), margenArriba(Tema.S1)) }
+            acciones.firstOrNull()?.let { (s, a) -> cuerpo.addView(boton(s, cVerde, Color.BLACK, a), margenArriba(Tema.S2)) }
+
+            // Lo que está bien se pliega en una línea.
+            val plegar = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                minimumHeight = dp(Tema.ALTO_TOQUE)
+                isClickable = true
+                setOnClickListener { enOrdenAbierto = !enOrdenAbierto; pintar() }
             }
-            if (!Licencia.estado(this).activa) {
-                revisiones.add(false to if (BuildConfig.ES_PLAY)
-                    "Tu licencia terminó; las compras de Google Play aún no están disponibles"
-                else "Tu plan terminó: no salen pop-ups")
-                if (!BuildConfig.ES_PLAY) accion("Ver paquetes") { d.dismiss(); irAPaquetes() }
-            }
-            revisiones.forEach { (ok, s) -> cuerpo.addView(filaRevision(ok, s), margenArriba(Tema.S1)) }
-            if (revisiones.all { it.first }) {
-                cuerpo.addView(texto(
-                    "Todo se ve bien. Si no sale el pop-up, abre Uber o DiDi con una oferta en pantalla.",
-                    Tema.T_NOTA, cTenue, false
-                ).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S2))
-            }
-            // El primer arreglo va como botón principal; los demás, con contorno.
-            var primero = true
-            if (acc && !leyendo) {
-                cuerpo.addView(boton("▶  Iniciar lectura", cVerde, Color.BLACK) { d.dismiss(); iniciarCaptura() }, margenArriba(Tema.S2))
-                primero = false
-            }
-            acciones.forEach { (s, a) ->
-                cuerpo.addView(if (primero) boton(s, cVerde, Color.BLACK, a) else botonContorno(s, a),
-                    margenArriba(if (primero) Tema.S2 else Tema.S1))
-                primero = false
-            }
+            plegar.addView(texto("${enOrden.size} ${if (enOrden.size == 1) "cosa" else "cosas"} en orden", Tema.T_NOTA, cTenue, false),
+                LinearLayout.LayoutParams(0, -2, 1f))
+            plegar.addView(texto(if (enOrdenAbierto) "⌃" else "⌄", 16f, cTenue, false))
+            cuerpo.addView(plegar, margenArriba(Tema.S1))
+            if (enOrdenAbierto) enOrden.forEach { cuerpo.addView(filaRevision(true, it), margenArriba(Tema.S1)) }
+
             cuerpo.addView(texto("Más ayuda y preguntas frecuentes", Tema.T_NOTA, cTenue, false).apply {
                 gravity = Gravity.CENTER
                 minHeight = dp(Tema.ALTO_TOQUE)
