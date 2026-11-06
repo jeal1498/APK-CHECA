@@ -2223,15 +2223,15 @@ class MainActivity : Activity() {
         val f = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
-            minimumHeight = dp(60)
-            setPadding(dp(12), dp(10), dp(12), dp(10))
+            minimumHeight = dp(48)
+            setPadding(dp(12), dp(6), dp(12), dp(6))
             background = ripple(Color.TRANSPARENT, Tema.R_TARJETA)
             isClickable = true
             setOnClickListener { accion() }
         }
         val caja = FrameLayout(this).apply { background = redondo(cTarjeta2, 10) }
         caja.addView(icono(tipoIcono, Tema.HUESO, 18), FrameLayout.LayoutParams(dp(18), dp(18), Gravity.CENTER))
-        f.addView(caja, LinearLayout.LayoutParams(dp(32), dp(32)).apply { rightMargin = dp(12) })
+        f.addView(caja, LinearLayout.LayoutParams(dp(28), dp(28)).apply { rightMargin = dp(12) })
         val textos = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         textos.addView(texto(titulo, Tema.T_TEXTO, cTexto, true))
         textos.addView(texto(sub, Tema.T_NOTA, colorSub, false).apply { maxLines = 1; ellipsize = TextUtils.TruncateAt.END })
@@ -2247,8 +2247,8 @@ class MainActivity : Activity() {
         val f = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
-            minimumHeight = dp(56)
-            setPadding(dp(14), dp(8), dp(10), dp(8))
+            minimumHeight = dp(48)
+            setPadding(dp(14), dp(6), dp(10), dp(6))
             background = ripple(Color.TRANSPARENT, Tema.R_TARJETA)
             isClickable = true
         }
@@ -5692,7 +5692,7 @@ class MainActivity : Activity() {
     private fun tarjeta(color: Int = cTarjeta) = LinearLayout(this).apply {
         orientation = LinearLayout.VERTICAL
         background = redondo(color, Tema.R_TARJETA)
-        setPadding(dp(Tema.S2), dp(Tema.S2), dp(Tema.S2), dp(Tema.S2))
+        setPadding(dp(12), dp(12), dp(12), dp(12))
     }
 
     private fun margenTarjeta() = LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(Tema.ENTRE_TARJETAS) }
@@ -5726,7 +5726,7 @@ class MainActivity : Activity() {
     private fun etiqueta(s: String) = texto(s, 11f, cTenue, true).apply {
         typeface = Fuentes.numero
         letterSpacing = 0.12f
-        setPadding(dp(4), dp(Tema.S2), 0, dp(Tema.S1))
+        setPadding(dp(4), dp(12), 0, dp(Tema.S1))
     }
 
     /** Etiqueta dentro de una tarjeta (sin el margen de las de afuera). */
@@ -5741,7 +5741,7 @@ class MainActivity : Activity() {
         setTextSize(TypedValue.COMPLEX_UNIT_SP, Tema.T_TEXTO)
         typeface = fuenteMedia
         minHeight = dp(Tema.ALTO_TOQUE)
-        setPadding(dp(Tema.S2), dp(12), dp(Tema.S2), dp(12))
+        setPadding(dp(Tema.S2), dp(10), dp(Tema.S2), dp(10))
         background = ripple(if (principal) Tema.HUESO else fondo, 28)
         isClickable = true
         setOnClickListener { accion() }

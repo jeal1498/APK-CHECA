@@ -54,10 +54,10 @@ object Tema {
     const val S2 = 16
     const val S3 = 24
     const val S4 = 32
-    const val ENTRE_TARJETAS = 12
-    const val R_TARJETA = 24
+    const val ENTRE_TARJETAS = 8
+    const val R_TARJETA = 16
     const val R_BOTON = 16
-    const val ALTO_TOQUE = 48
+    const val ALTO_TOQUE = 44
     const val ICONO = 24
 
     // ---------- letra (sp) ----------
