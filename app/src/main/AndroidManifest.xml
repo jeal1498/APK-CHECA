@@ -62,7 +62,7 @@
 
         <service
             android:name=".RutaService"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/servicio_nombre"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
@@ -76,6 +76,9 @@
             android:name=".ActualizacionJob"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+        <receiver
+            android:name=".DetenerLecturaReceiver"
+            android:exported="false" />
         <service
             android:name=".CapturaService"
             android:exported="false"

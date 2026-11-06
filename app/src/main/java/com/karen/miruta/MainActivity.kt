@@ -235,7 +235,7 @@ class MainActivity : Activity() {
         actualizarEstado()
         if (autoIniciar) {
             autoIniciar = false
-            if (!CapturaService.corriendo) {
+            if (!Lectura.corriendo) {
                 desdeAviso = true
                 iniciarCaptura()
             }
@@ -583,9 +583,7 @@ class MainActivity : Activity() {
             Toast.makeText(this, "El lector ya está apagado.", Toast.LENGTH_SHORT).show()
             return
         }
-        if (CapturaService.corriendo) {
-            startService(Intent(this, CapturaService::class.java).setAction(CapturaService.ACCION_DETENER))
-        }
+        Lectura.detener(this)
         srv.pausar()
         prefs.lectorPausado = true
         Toast.makeText(this, "Lector pausado. Ya puedes abrir tu banco.", Toast.LENGTH_LONG).show()
@@ -593,8 +591,8 @@ class MainActivity : Activity() {
     }
 
     private fun alternarLectura() {
-        if (CapturaService.corriendo) {
-            startService(Intent(this, CapturaService::class.java).setAction(CapturaService.ACCION_DETENER))
+        if (Lectura.corriendo) {
+            Lectura.detener(this)
             handler.postDelayed({ actualizarEstado() }, 500)
         } else {
             iniciarCaptura()
@@ -603,7 +601,7 @@ class MainActivity : Activity() {
 
     private fun actualizarEstado() {
         val acc = servicioActivo()
-        val leyendo = CapturaService.corriendo
+        val leyendo = Lectura.corriendo
         pintarLicencia()
         pintarEstadoInicio()
         if (leyendo) {
@@ -1760,12 +1758,12 @@ class MainActivity : Activity() {
     /** Línea de Inicio: si Checa está leyendo y, si algo falla, a un toque de arreglarlo. */
     private fun pintarEstadoInicio() {
         val e = estadoInicio ?: return
-        val leyendo = CapturaService.corriendo
+        val leyendo = Lectura.corriendo
         val faltan = permisosFaltantes()
         val ultima = prefs.ultimaOferta
         val (color, titulo, sub, chip) = when {
             faltan > 0 -> listOf(cAmarillo, "Falta un permiso", "Sin él Checa no puede leer tus ofertas", "Revisar")
-            !leyendo && CapturaService.cortada -> listOf(cAmarillo, "La lectura se detuvo", "Android la cortó. Toca para revisar", "Revisar")
+            !leyendo && Lectura.cortada -> listOf(cAmarillo, "La lectura se detuvo", "Android la cortó. Toca para revisar", "Revisar")
             !leyendo -> listOf(cTenue, "Lectura apagada", "Inicia la lectura antes de abrir Uber o DiDi", "Iniciar")
             ultima == 0L -> listOf(cVerde, "Leyendo", "Aún sin ofertas · ¿algo falla? Toca aquí", "")
             else -> listOf(cVerde, "Leyendo", "Última oferta ${hace(ultima)}", "")
@@ -1785,7 +1783,7 @@ class MainActivity : Activity() {
             setStroke(dp(1), if (c == cTenue) Tema.HUMO else Color.argb(150, Color.red(c), Color.green(c), Color.blue(c)))
         }
         e.caja.setOnClickListener {
-            if (permisosFaltantes() == 0 && !CapturaService.corriendo && !CapturaService.cortada) iniciarCaptura()
+            if (permisosFaltantes() == 0 && !Lectura.corriendo && !Lectura.cortada) iniciarCaptura()
             else mostrarAlgoFalla()
         }
     }
@@ -2035,7 +2033,7 @@ class MainActivity : Activity() {
                 f.addView(tx, LinearLayout.LayoutParams(0, -2, 1f))
                 revision.addView(f, margenArriba(Tema.S1))
             }
-            if (servicioActivo() && !CapturaService.corriendo) {
+            if (servicioActivo() && !Lectura.corriendo) {
                 revision.addView(boton("▶  Iniciar lectura", cVerde, Color.BLACK) {
                     d.dismiss()
                     iniciarCaptura()
@@ -3079,6 +3077,9 @@ class MainActivity : Activity() {
     private fun permisoBateria() = BuildConfig.ES_PLAY ||
         (getSystemService(Context.POWER_SERVICE) as android.os.PowerManager).isIgnoringBatteryOptimizations(packageName)
 
+    private fun bateriaLibre() =
+        (getSystemService(Context.POWER_SERVICE) as android.os.PowerManager).isIgnoringBatteryOptimizations(packageName)
+
     private fun esXiaomi() = Build.MANUFACTURER.lowercase().let { it.contains("xiaomi") || it.contains("redmi") || it.contains("poco") }
 
     private fun faltanPermisos() = !servicioActivo() || !permisoNotificaciones() || !permisoBateria()
@@ -3372,7 +3373,7 @@ class MainActivity : Activity() {
         fun pintar() {
             cuerpo.removeAllViews()
             val acc = servicioActivo()
-            val leyendo = CapturaService.corriendo
+            val leyendo = Lectura.corriendo
             val revisiones = ArrayList<Pair<Boolean, String>>()
             val acciones = ArrayList<Pair<String, () -> Unit>>()
             fun accion(s: String, a: () -> Unit) { acciones.add(s to a) }
@@ -3381,7 +3382,7 @@ class MainActivity : Activity() {
             revisiones.add(leyendo to when {
                 leyendo && prefs.ultimaOferta > 0 -> "Leyendo · última oferta ${hace(prefs.ultimaOferta)}"
                 leyendo -> "Leyendo · aún sin ofertas"
-                CapturaService.cortada -> "Lectura detenida: Android la cortó"
+                Lectura.cortada -> "Lectura detenida: Android la cortó"
                 else -> "La lectura está apagada"
             })
             if (Build.VERSION.SDK_INT >= 33) {
@@ -3389,11 +3390,10 @@ class MainActivity : Activity() {
                 revisiones.add(ok to if (ok) "Notificaciones permitidas" else "Notificaciones apagadas")
                 if (!ok) accion("Permitir notificaciones") { pedirNotificaciones() }
             }
-            if (!BuildConfig.ES_PLAY) {
-                val bat = permisoBateria()
-                revisiones.add(bat to if (bat) "Batería sin restricción" else "Batería con restricción")
-                if (!bat) accion("Quitar restricción de batería") { pedirBateria() }
-            }
+            // También en Play: solo se revisa y se abren los ajustes (no se pide la excepción restringida).
+            val bat = bateriaLibre()
+            revisiones.add(bat to if (bat) "Batería sin restricción" else "Batería con restricción: Android puede apagar Checa")
+            if (!bat) accion("Quitar restricción de batería") { pedirBateria() }
             if (!prefs.uber && !prefs.didi) {
                 revisiones.add(false to "Uber y DiDi están apagadas")
                 accion("Elegir apps que lee") { mostrarAppsLee() }
@@ -3447,9 +3447,7 @@ class MainActivity : Activity() {
         val cerrada = Migracion.vencida()
         acceso?.visibility = if (cerrada || Cuenta.puedeUsar(this)) View.GONE else View.VISIBLE
         bloqueo?.visibility = if (cerrada) View.VISIBLE else View.GONE
-        if (cerrada && CapturaService.corriendo) {
-            startService(Intent(this, CapturaService::class.java).setAction(CapturaService.ACCION_DETENER))
-        }
+        if (cerrada && Lectura.corriendo) Lectura.detener(this)
     }
 
     /** Cierre del canal directo: sin salida, solo el paso a la Checa de Google Play. */
@@ -3938,7 +3936,7 @@ class MainActivity : Activity() {
     /** «Leyendo · última oferta hace 2 min» (se repinta con [actualizarEstado]). */
     private fun pintarEstadoLectura() {
         val t = estadoLecturaTxt ?: return
-        val leyendo = CapturaService.corriendo
+        val leyendo = Lectura.corriendo
         val ultima = prefs.ultimaOferta
         t.text = when {
             !leyendo -> "Lectura apagada · toca ▶ para iniciar"
@@ -4541,11 +4539,25 @@ class MainActivity : Activity() {
         // afirmativo, antes de pedir la captura de pantalla. Solo en el flavor play.
         if (BuildConfig.ES_PLAY) {
             val politica = getSharedPreferences("play_policy", Context.MODE_PRIVATE)
-            if (!politica.getBoolean("captura_divulgacion_aceptada", false)) {
+            val porAcc = Lectura.porAccesibilidad(this)
+            // La forma de capturar cambió en 10.9: quien aceptó el aviso viejo ve el nuevo una vez.
+            val clave = if (porAcc) "captura_acc_divulgacion_aceptada" else "captura_divulgacion_aceptada"
+            if (!politica.getBoolean(clave, false)) {
                 if (dialogoCaptura?.isShowing == true) return
                 dialogoCaptura = AlertDialog.Builder(this)
                     .setTitle("Permiso para leer la pantalla")
-                    .setMessage(
+                    .setMessage(if (porAcc)
+                        "Para calcular tus ofertas, Checa toma imágenes de la pantalla con su servicio de accesibilidad. " +
+                            "Mientras la lectura está activa, Checa analiza en este teléfono lo que se muestra " +
+                            "en la pantalla, no solo Uber o DiDi, para encontrar ofertas de viaje (tarifa, distancia y tiempo). " +
+                            "Lo que no es una oferta se descarta. Nada de esto se envía a los servidores de Checa " +
+                            "ni se comparte con terceros.\n\n" +
+                            "Si activas «Guardar pantallas de ofertas», los datos se guardan solo en este teléfono " +
+                            "hasta 7 días y pueden incluir información personal visible.\n\n" +
+                            "Verás una notificación mientras la lectura esté activa; puedes detenerla cuando quieras " +
+                            "desde esa notificación. La lectura sigue encendida hasta que la detengas. Evita mostrar " +
+                            "información sensible, como apps de banco, mientras la lectura esté activa."
+                    else
                         "Para calcular tus ofertas, Checa usa la captura de pantalla de Android. " +
                             "Mientras la lectura está activa, Checa analiza en este teléfono todo lo que se muestra " +
                             "en la pantalla, no solo Uber o DiDi, para encontrar ofertas de viaje (tarifa, distancia y tiempo). " +
@@ -4561,7 +4573,7 @@ class MainActivity : Activity() {
                         Toast.makeText(this, "Sin este permiso Checa no puede leer ofertas.", Toast.LENGTH_LONG).show()
                     }
                     .setPositiveButton("Acepto y continuar") { _, _ ->
-                        politica.edit().putBoolean("captura_divulgacion_aceptada", true).apply()
+                        politica.edit().putBoolean(clave, true).apply()
                         pedirCaptura(volver)
                     }
                     .show()
@@ -4577,6 +4589,13 @@ class MainActivity : Activity() {
             checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
         ) {
             requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 7)
+        }
+        // Android 11+: lee el servicio de accesibilidad, sin el aviso de captura del sistema.
+        if (Lectura.porAccesibilidad(this) && RutaService.instancia?.iniciarLectura() == true) {
+            getSystemService(android.app.NotificationManager::class.java)?.cancel(2) // «Checa dejó de leer»
+            handler.postDelayed({ actualizarEstado() }, 300)
+            if (volver) moveTaskToBack(true)
+            return
         }
         volverAtras = volver
         val mpm = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager

@@ -1,9 +1,22 @@
 package com.karen.miruta
 
 import android.accessibilityservice.AccessibilityService
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Rect
+import android.os.Build
 import android.os.Handler
+import android.os.HandlerThread
 import android.os.Looper
+import android.os.PowerManager
+import android.os.SystemClock
+import android.view.Display
+import java.util.concurrent.Executor
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
@@ -32,6 +45,11 @@ class RutaService : AccessibilityService() {
         alertas = Alertas(this, prefs)
         instancia = this
         soloUberYDidi()
+        // La lectura quedó encendida: se reanuda sola (tras reiniciar el teléfono o si Android
+        // reconectó el servicio), sin volver a pedir nada.
+        if (prefs.lecturaActiva && Lectura.porAccesibilidad(this) && Licencia.activa(this) && !Migracion.vencida()) {
+            iniciarLectura()
+        }
     }
 
     /**
@@ -55,13 +73,203 @@ class RutaService : AccessibilityService() {
 
     /** Apaga el lector (para abrir apps de banco). Se vuelve a encender en Accesibilidad. */
     fun pausar() {
+        prefs.lecturaActiva = false
+        detenerLectura()
         popups.values.forEach { it.ocultar() }
         disableSelf()
     }
 
     override fun onUnbind(intent: android.content.Intent?): Boolean {
+        pararPorSistema()
         instancia = null
         return super.onUnbind(intent)
+    }
+
+    /** Android apagó el servicio con la lectura encendida: Inicio lo avisa en amarillo. */
+    private fun pararPorSistema() {
+        if (!leyendo) return
+        detenerLectura()
+        if (::prefs.isInitialized && prefs.lecturaActiva) cortada = true
+    }
+
+    // ------------------------------------------------------------------
+    // Lectura por captura de accesibilidad (Android 11+)
+    // Solo se toma la imagen cuando hace falta: al llegar un evento de Uber o DiDi y,
+    // mientras están en pantalla, cada ~1.5 s (0.5 s si hay una oferta a la vista).
+    // No hay pantalla virtual copiando la pantalla todo el tiempo ni permiso que caduque.
+    // ------------------------------------------------------------------
+
+    @Volatile var leyendo = false
+        private set
+    private var ocr: LectorOcr? = null
+    private var hiloOcr: HandlerThread? = null
+    private var handlerOcr: Handler? = null
+    private var capturando = false
+    private var programada = false
+    private var proxima = 0L
+    private var ultimaCaptura = 0L
+    private var fallosCaptura = 0
+    /** Capturas buenas desde que se encendió: si hubo alguna, el teléfono sí deja capturar. */
+    private var exitos = 0
+    private val capturar = Runnable {
+        programada = false
+        if (Build.VERSION.SDK_INT >= 30) tomarCaptura()
+    }
+
+    /** Enciende la lectura. false si este Android no puede capturar desde accesibilidad. */
+    fun iniciarLectura(): Boolean {
+        if (Build.VERSION.SDK_INT < 30 || !::prefs.isInitialized) return false
+        prefs.lecturaActiva = true
+        if (leyendo) return true
+        val h = HandlerThread("checa-ocr").also { it.start() }
+        hiloOcr = h
+        handlerOcr = Handler(h.looper)
+        ocr = LectorOcr(this, prefs)
+        leyendo = true
+        cortada = false
+        fallosCaptura = 0
+        exitos = 0
+        notificarLectura()
+        WidgetCheca.actualizar(this)
+        programar(0)
+        return true
+    }
+
+    /** Apaga la lectura por accesibilidad (el servicio sigue para los pop-ups). */
+    fun detenerLectura() {
+        if (!leyendo) return
+        leyendo = false
+        handler.removeCallbacks(capturar)
+        programada = false
+        capturando = false
+        try { ocr?.cerrar() } catch (_: Exception) { }
+        ocr = null
+        hiloOcr?.quitSafely()
+        hiloOcr = null
+        handlerOcr = null
+        try { (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(ID_LECTURA) } catch (_: Exception) { }
+        WidgetCheca.actualizar(this)
+    }
+
+    /** Programa la próxima captura en [retraso] ms, sin bajar del intervalo mínimo. */
+    private fun programar(retraso: Long) {
+        if (!leyendo) return
+        val o = ocr
+        val minimo = if (o != null && (o.ofertaEnPantalla || o.reintentoRapido)) INTERVALO_RAPIDO else INTERVALO_MIN
+        val ahora = SystemClock.uptimeMillis()
+        val t = maxOf(ahora + retraso, ultimaCaptura + minimo)
+        if (programada && proxima <= t) return
+        handler.removeCallbacks(capturar)
+        programada = true
+        proxima = t
+        handler.postAtTime(capturar, t)
+    }
+
+    /** Después de cada captura: rápido con una oferta a la vista, normal con Uber/DiDi, lento sin ellas. */
+    private fun siguiente() {
+        if (!leyendo) return
+        val o = ocr
+        programar(when {
+            o != null && (o.ofertaEnPantalla || o.reintentoRapido) -> INTERVALO_RAPIDO
+            hayQueLeer() -> LATIDO_APP
+            else -> LATIDO_SIN_APP
+        })
+    }
+
+    @android.annotation.TargetApi(30)
+    private fun tomarCaptura() {
+        if (!leyendo) return
+        val lector = ocr ?: return
+        // Con la pantalla apagada no hay ofertas que ver (y la captura fallaría).
+        val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
+        if (!pm.isInteractive) { programar(LATIDO_SIN_APP); return }
+        if (capturando || lector.ocupado) { programar(ESPERA_OCUPADO); return }
+        val h = handlerOcr ?: return
+        val ejecutor = Executor { r -> h.post(r) }
+        capturando = true
+        ultimaCaptura = SystemClock.uptimeMillis()
+        try {
+            takeScreenshot(Display.DEFAULT_DISPLAY, ejecutor, object : AccessibilityService.TakeScreenshotCallback {
+                override fun onSuccess(resultado: AccessibilityService.ScreenshotResult) {
+                    val buffer = resultado.hardwareBuffer
+                    val bmp: Bitmap? = try {
+                        Bitmap.wrapHardwareBuffer(buffer, resultado.colorSpace)?.let { hw ->
+                            val sw = hw.copy(Bitmap.Config.ARGB_8888, false)
+                            hw.recycle()
+                            sw
+                        }
+                    } catch (e: Exception) { null } finally {
+                        try { buffer.close() } catch (_: Exception) { }
+                    }
+                    if (bmp != null) {
+                        val ancho = bmp.width
+                        val alto = bmp.height
+                        lector.procesar(LectorOcr.reducir(bmp), ancho, alto)
+                    }
+                    handler.post {
+                        capturando = false
+                        if (bmp != null) { exitos++; fallosCaptura = 0; siguiente() } else falloCaptura(-1)
+                    }
+                }
+
+                override fun onFailure(codigo: Int) {
+                    handler.post { capturando = false; falloCaptura(codigo) }
+                }
+            })
+        } catch (e: Exception) {
+            capturando = false
+            falloCaptura(-1)
+        }
+    }
+
+    private fun falloCaptura(codigo: Int) {
+        if (!leyendo) return
+        if (codigo == AccessibilityService.ERROR_TAKE_SCREENSHOT_INTERVAL_TIME_SHORT) { programar(INTERVALO_RAPIDO); return }
+        fallosCaptura++
+        // Si alguna vez funcionó, es un fallo pasajero: se reintenta con calma.
+        if (exitos > 0 || fallosCaptura < FALLOS_CAPTURA_MAX) {
+            programar(if (fallosCaptura < FALLOS_CAPTURA_MAX) INTERVALO_MIN else LATIDO_SIN_APP)
+            return
+        }
+        // Este teléfono no deja capturar desde accesibilidad: se pasa a la captura de Android.
+        prefs.capturaProyeccion = true
+        prefs.lecturaActiva = false
+        detenerLectura()
+        cortada = true
+        avisar(
+            "Checa dejó de leer",
+            "Tu teléfono pide otro permiso para leer la pantalla. Toca para volver a iniciar la lectura.",
+            true
+        )
+    }
+
+    /** Notificación fija mientras se lee, con «Detener». */
+    private fun notificarLectura() {
+        try {
+            val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            nm.createNotificationChannel(
+                NotificationChannel("lectura", "Lectura de pantalla", NotificationManager.IMPORTANCE_LOW)
+            )
+            nm.cancel(3) // aviso «Checa no está leyendo»
+            val detenerPi = PendingIntent.getBroadcast(
+                this, 6, Intent(this, DetenerLecturaReceiver::class.java).setAction(DetenerLecturaReceiver.ACCION),
+                PendingIntent.FLAG_IMMUTABLE
+            )
+            val abrirPi = PendingIntent.getActivity(
+                this, 7, Intent(this, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE
+            )
+            nm.notify(
+                ID_LECTURA,
+                Notification.Builder(this, "lectura")
+                    .setContentTitle("Checa está leyendo la pantalla")
+                    .setContentText("Toca \"Detener\" para apagarlo")
+                    .setSmallIcon(R.drawable.ic_notif)
+                    .setContentIntent(abrirPi)
+                    .addAction(Notification.Action.Builder(null, "Detener", detenerPi).build())
+                    .setOngoing(true)
+                    .build()
+            )
+        } catch (_: Exception) { }
     }
 
     // ------------------------------------------------------------------
@@ -80,7 +288,12 @@ class RutaService : AccessibilityService() {
         // Si los tramos son los mismos (o se perdió uno), es la misma oferta: no se toca.
         activas[clave]?.first?.let { a ->
             val mismosTramos = Math.abs(a.km - oferta.km) < 0.05 && Math.abs(a.min - oferta.min) < 0.5
-            val tramoTapado = a.recogidaMin > 0 && oferta.recogidaMin == 0.0
+            // Un solo tramo visible (el otro quedó bajo el pop-up): es la misma oferta solo si ese
+            // tramo coincide con la recogida o con el viaje de la activa. Si no, es una oferta NUEVA
+            // que llegó con el pop-up anterior encima (antes se descartaba).
+            fun cerca(km: Double, min: Double) = Math.abs(km - oferta.km) < 0.15 && Math.abs(min - oferta.min) < 1.1
+            val tramoTapado = a.recogidaMin > 0 && oferta.recogidaMin == 0.0 &&
+                (cerca(a.viajeKm, a.viajeMin) || cerca(a.recogidaKm, a.recogidaMin))
             if (mismosTramos || tramoTapado) return
         }
         // La misma oferta (con pequeñas variaciones del OCR) no vuelve a salir mientras siga en
@@ -203,6 +416,8 @@ class RutaService : AccessibilityService() {
         }
         if (nombreApp(pkg) == null) return
         ultimoEventoApp = System.currentTimeMillis()
+        // Algo cambió en Uber o DiDi: se mira la pantalla ya (respetando el intervalo mínimo).
+        if (leyendo) programar(0)
         if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) avisarApertura(nombreApp(pkg) ?: "?")
         if (pendiente) return
         pendiente = true
@@ -218,11 +433,18 @@ class RutaService : AccessibilityService() {
      */
     private fun avisarApertura(app: String) {
         try {
-            if (!prefs.avisarApertura || CapturaService.corriendo || !Licencia.activa(this) || Migracion.vencida()) return
+            if (!prefs.avisarApertura || Lectura.corriendo || !Licencia.activa(this) || Migracion.vencida()) return
             // El límite es por app: abrir DiDi no debe callar el aviso de Uber.
             val ahora = System.currentTimeMillis()
             if (ahora - (ultimoAviso[app] ?: 0L) < 3 * 60_000L) return
             ultimoAviso[app] = ahora
+            avisar("Checa no está leyendo", "Toca para iniciar la lectura y ver el pop-up de cada oferta.", false)
+        } catch (_: Exception) { }
+    }
+
+    /** Aviso que abre Checa e inicia la lectura con un toque. */
+    private fun avisar(titulo: String, texto: String, fijo: Boolean) {
+        try {
             val nm = getSystemService(android.content.Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
             nm.createNotificationChannel(
                 android.app.NotificationChannel("avisos", "Avisos de Checa", android.app.NotificationManager.IMPORTANCE_HIGH)
@@ -236,12 +458,12 @@ class RutaService : AccessibilityService() {
             nm.notify(
                 3,
                 android.app.Notification.Builder(this, "avisos")
-                    .setContentTitle("Checa no está leyendo")
-                    .setContentText("Toca para iniciar la lectura y ver el pop-up de cada oferta.")
+                    .setContentTitle(titulo)
+                    .setContentText(texto)
                     .setSmallIcon(R.drawable.ic_notif)
                     .setContentIntent(pi)
                     .setAutoCancel(true)
-                    .setTimeoutAfter(2 * 60_000L)
+                    .apply { if (!fijo) setTimeoutAfter(2 * 60_000L) }
                     .build()
             )
         } catch (_: Exception) { }
@@ -250,6 +472,7 @@ class RutaService : AccessibilityService() {
     override fun onInterrupt() {}
 
     override fun onDestroy() {
+        pararPorSistema()
         instancia = null
         popups.values.forEach { it.ocultar() }
         super.onDestroy()
@@ -264,6 +487,10 @@ class RutaService : AccessibilityService() {
                 val pkg = raiz.packageName?.toString() ?: continue
                 if (pkg == packageName) continue
                 val app = nombreApp(pkg) ?: continue
+                // Antes de recorrer todo el árbol (caro: Uber cambia el mapa sin parar), una
+                // búsqueda del sistema dice si hay algún «min» a la vista. Sin él no hay oferta.
+                val conMin = try { raiz.findAccessibilityNodeInfosByText("min") } catch (e: Exception) { null }
+                if (conMin != null && conMin.isEmpty() && !prefs.diagnostico) continue
                 val textos = LinkedHashSet<String>()
                 recolectar(raiz, textos, 0)
                 if (textos.isEmpty()) continue
@@ -298,5 +525,16 @@ class RutaService : AccessibilityService() {
         private val TRAMO = Regex("""\d\s?min\s*\(""", RegexOption.IGNORE_CASE)
         @Volatile
         var instancia: RutaService? = null
+        /** Android apagó el servicio (o la captura falló) con la lectura encendida. */
+        @Volatile
+        var cortada = false
+        private const val ID_LECTURA = 5
+        /** Mínimo entre capturas (Android permite una cada 333 ms). */
+        private const val INTERVALO_MIN = 1000L
+        private const val INTERVALO_RAPIDO = 500L
+        private const val LATIDO_APP = 1500L
+        private const val LATIDO_SIN_APP = 5000L
+        private const val ESPERA_OCUPADO = 150L
+        private const val FALLOS_CAPTURA_MAX = 5
     }
 }

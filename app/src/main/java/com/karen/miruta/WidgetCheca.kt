@@ -34,14 +34,14 @@ class WidgetCheca : AppWidgetProvider() {
         private fun vista(ctx: Context): RemoteViews {
             val v = RemoteViews(ctx.packageName, R.layout.widget_checa)
             val flags = PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-            if (CapturaService.corriendo) {
+            if (Lectura.corriendo) {
                 v.setImageViewResource(R.id.icono, R.drawable.widget_foco_on)
                 v.setTextColor(R.id.estado, Color.WHITE)
                 v.setTextViewText(R.id.estado, "Leyendo")
                 v.setOnClickPendingIntent(
                     R.id.raiz,
-                    PendingIntent.getService(
-                        ctx, 5, Intent(ctx, CapturaService::class.java).setAction(CapturaService.ACCION_DETENER), flags
+                    PendingIntent.getBroadcast(
+                        ctx, 5, Intent(ctx, DetenerLecturaReceiver::class.java).setAction(DetenerLecturaReceiver.ACCION), flags
                     )
                 )
             } else {

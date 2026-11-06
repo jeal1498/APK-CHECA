@@ -191,6 +191,16 @@ class Prefs(context: Context) {
         set(v) { sp.edit().putFloat("metaDia", v).apply() }
 
     /** Avisar con una notificación al abrir Uber o DiDi si la lectura está apagada. */
+    /** El conductor dejó la lectura encendida (por accesibilidad se reanuda sola al reconectar el servicio). */
+    var lecturaActiva: Boolean
+        get() = sp.getBoolean("lecturaActiva", false)
+        set(v) { sp.edit().putBoolean("lecturaActiva", v).apply() }
+
+    /** La captura por accesibilidad falló en este teléfono: se usa la captura de pantalla de Android. */
+    var capturaProyeccion: Boolean
+        get() = sp.getBoolean("capturaProyeccion", false)
+        set(v) { sp.edit().putBoolean("capturaProyeccion", v).apply() }
+
     var avisarApertura: Boolean
         get() = sp.getBoolean("avisoApertura", true)
         set(v) { sp.edit().putBoolean("avisoApertura", v).apply() }

@@ -129,10 +129,11 @@ object Soporte {
             else "Está apagado. Actívalo para que Checa pueda ver Uber y DiDi.",
             if (acc) Accion.NINGUNA else Accion.ACCESIBILIDAD
         )
-        val leyendo = CapturaService.corriendo
+        val leyendo = Lectura.corriendo
         r += Revision(
             leyendo, "Lectura de pantalla",
             if (leyendo) "La lectura está encendida."
+            else if (Lectura.porAccesibilidad(ctx)) "No está leyendo. Toca el botón verde ▶ de abajo."
             else "No está leyendo. Toca el botón verde ▶ de abajo y elige «Pantalla completa»."
         )
         val est = Licencia.estado(ctx)
@@ -198,7 +199,7 @@ object Soporte {
         val ultima = Prefs(ctx).ultimaOferta
         return "Checa ${Actualizacion.instalada(ctx)} · Android ${Build.VERSION.RELEASE} · ${Build.MANUFACTURER} ${Build.MODEL} · RAM $ram\n" +
             "Cuenta: ${Cuenta.correo(ctx).ifEmpty { "sin sesión" }} · Plan: $plan\n" +
-            "Accesibilidad: ${if (servicioActivo(ctx)) "sí" else "no"} · Lectura: ${if (CapturaService.corriendo) "sí" else "no"} · " +
+            "Accesibilidad: ${if (servicioActivo(ctx)) "sí" else "no"} · Lectura: ${if (Lectura.corriendo) "sí" else "no"} · " +
             "Notificaciones: ${if (notif) "sí" else "no"} · Batería sin restricción: ${if (bateria) "sí" else "no"}\n" +
             "Última oferta: ${if (ultima == 0L) "ninguna" else Guardado.cuando(ultima)}"
     }
