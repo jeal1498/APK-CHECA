@@ -2578,11 +2578,11 @@ class MainActivity : Activity() {
         fun pintar() {
             col.removeAllViews()
             col.addView(texto(
-                "Puedes usar Checa en todos los equipos que quieras. Si quitas uno, deja de mostrar pop-ups " +
-                    "hasta que vuelvas a entrar con tu cuenta en él.",
+                "Usa Checa en todos los equipos que quieras. Si quitas uno, deja de mostrar pop-ups " +
+                    "hasta que entres con tu cuenta en él.",
                 Tema.T_TEXTO, cTexto2, false
             ).apply { setLineSpacing(0f, 1.2f) })
-            val lista = Cuenta.equipos(this)
+            val lista = Cuenta.equipos(this).sortedByDescending { it.id == Licencia.codigoEquipo(this) }
             lista.forEach { eq ->
                 val esEste = eq.id == Licencia.codigoEquipo(this)
                 val t = tarjeta()
@@ -2673,7 +2673,7 @@ class MainActivity : Activity() {
 
     /** Ayuda y soporte: revisión automática, preguntas con buscador y WhatsApp. */
     private fun mostrarAyuda() {
-        val (d, cuerpo, _) = ventanaCompleta("Ayuda y soporte")
+        val (d, cuerpo, pie) = ventanaCompleta("Ayuda y soporte")
         val col = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(16), 0, dp(16), dp(Tema.S2))
@@ -2686,7 +2686,12 @@ class MainActivity : Activity() {
             revision.removeAllViews()
             val revisiones = Soporte.diagnosticar(this)
             val fallas = revisiones.count { !it.ok }
-            revision.addView(texto("¿Algo falla?", Tema.T_SUB, cTexto, true))
+            revision.background = redondo(if (fallas == 0) Tema.VERDE_SUAVE else cTarjeta, Tema.R_TARJETA)
+            val titulo = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
+            titulo.addView(View(this).apply { background = punto(if (fallas == 0) cVerde else cAmarillo) },
+                LinearLayout.LayoutParams(dp(10), dp(10)).apply { rightMargin = dp(10) })
+            titulo.addView(texto("¿Algo falla?", Tema.T_SUB, cTexto, true))
+            revision.addView(titulo)
             revision.addView(texto(
                 if (fallas == 0) "Todo se ve bien. Si aun así no sale el pop-up, abre Uber o DiDi con una oferta en pantalla."
                 else if (fallas == 1) "Hay 1 cosa por arreglar:" else "Hay $fallas cosas por arreglar:",
@@ -2745,8 +2750,9 @@ class MainActivity : Activity() {
             override fun afterTextChanged(s: Editable?) { pintarFaq(s?.toString() ?: "") }
         })
 
-        col.addView(boton("Reportar una oferta mal leída", cTarjeta2, cTexto) { reportarLecturaMala() }, margenArriba(Tema.S2))
-        col.addView(boton("Escribir a soporte por WhatsApp", cTarjeta2, cTexto) {
+        // Contacto siempre a la vista, fuera del scroll.
+        pie.addView(boton("Reportar una oferta mal leída", cTarjeta2, cTexto) { reportarLecturaMala() })
+        pie.addView(boton("Escribir a soporte por WhatsApp", cVerde, Color.BLACK) {
             Soporte.escribir(this, "tengo una duda")
         }, margenArriba(Tema.S1))
         d.setOnDismissListener { pintarAyudaAbierta = null }
@@ -2799,28 +2805,33 @@ class MainActivity : Activity() {
             setPadding(dp(16), 0, dp(16), dp(Tema.S2))
         }
         cuerpo.addView(ScrollView(this).apply { isVerticalScrollBarEnabled = false; addView(col) }, LinearLayout.LayoutParams(-1, -1))
-        fun bloque(titulo: String, puntos: List<String>) {
+        fun bloque(titulo: String, lugar: String, puntos: List<Pair<String, String>>) {
             val t = tarjeta()
-            t.addView(texto(titulo, Tema.T_SUB, cTexto, true))
-            puntos.forEach { s ->
+            val cab = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
+            cab.addView(texto(titulo, Tema.T_SUB, cTexto, true), LinearLayout.LayoutParams(0, -2, 1f))
+            cab.addView(chipDiag(lugar, cTarjeta2, cTexto2))
+            t.addView(cab)
+            puntos.forEach { (s, plazo) ->
                 val f = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
                 f.addView(View(this).apply { background = punto(Tema.HUESO) },
                     LinearLayout.LayoutParams(dp(6), dp(6)).apply { topMargin = dp(8); rightMargin = dp(10) })
                 f.addView(texto(s, Tema.T_TEXTO, cTexto2, false).apply { setLineSpacing(0f, 1.2f) }, LinearLayout.LayoutParams(0, -2, 1f))
+                f.addView(texto(plazo, Tema.T_NOTA, cTenue, true).apply { gravity = Gravity.END },
+                    LinearLayout.LayoutParams(dp(84), -2).apply { leftMargin = dp(8); topMargin = dp(2) })
                 t.addView(f, margenArriba(Tema.S1))
             }
             col.addView(t, margenArriba(Tema.ENTRE_TARJETAS))
         }
-        bloque("En este teléfono", listOf(
-            "Estadísticas de ofertas (Mejores horas y semana): los últimos 30 días.",
-            "Ofertas guardadas para «Ayuda con la lectura»: 7 días, solo si está encendido.",
-            "Mi día: los viajes que marcas."
+        bloque("En este teléfono", "Solo aquí", listOf(
+            "Estadísticas de ofertas (Mejores horas y semana)" to "30 días",
+            "Ofertas guardadas para «Ayuda con la lectura», si está encendido" to "7 días",
+            "Mi día: los viajes que marcas" to "Hasta que borres"
         ))
-        bloque("En tu cuenta de Google", listOf(
-            "Tu licencia y tus equipos.",
-            "Tus ajustes (filtros, gasolina, pop-up), para que regresen si cambias de teléfono."
+        bloque("En tu cuenta de Google", "En la nube", listOf(
+            "Tu licencia y tus equipos" to "Con tu cuenta",
+            "Tus ajustes (filtros, gasolina, pop-up), para que regresen si cambias de teléfono" to "Con tu cuenta"
         ))
-        bloque("A soporte", listOf("Nada se envía solo. Solo lo que tú revisas y mandas por WhatsApp."))
+        bloque("A soporte", "Nada", listOf("Nada se envía solo. Solo lo que tú revisas y mandas por WhatsApp" to "Tú decides"))
         col.addView(boton("Borrar estadísticas", Tema.ROJO_SUAVE, cRojo) {
             AlertDialog.Builder(this)
                 .setMessage("Se borran Mejores horas, la semana y las ofertas del día. Tus ajustes, tu cuenta y Mi día no cambian. ¿Borrar?")
