@@ -241,7 +241,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         fun sp(v: Float) = v * esc
         val nivel = o.nivel(prefs)
         val segunda = marca == SEGUNDA
-        val acento = Tema.colorNivel(nivel)
+        val acento = Oscuro.colorNivel(nivel)
         // 2ª opción (dos ofertas a la vez): el color apagado para que la mejor resalte.
         val color = if (segunda) mezclar(acento, Oscuro.TABLERO, 0.45f) else acento
         val linea = Color.argb(110, Color.red(Oscuro.TENUE), Color.green(Oscuro.TENUE), Color.blue(Oscuro.TENUE))
@@ -282,7 +282,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
             cab.append("  ")
             val r0 = cab.length
             cab.append(rayo)
-            cab.setSpan(ForegroundColorSpan(Tema.AMARILLO), r0, cab.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            cab.setSpan(ForegroundColorSpan(Oscuro.AMARILLO), r0, cab.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             cab.setSpan(RelativeSizeSpan(0.8f), r0, cab.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             cab.setSpan(FuenteSpan(Fuentes.numero), r0, cab.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }

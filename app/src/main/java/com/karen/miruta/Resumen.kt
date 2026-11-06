@@ -107,7 +107,7 @@ object Resumen {
         val colBorde = when {
             avance < 0 -> Oscuro.HUESO
             avance >= 1.0 -> Tema.VERDE
-            avance >= 0.5 -> Tema.AMARILLO
+            avance >= 0.5 -> Oscuro.AMARILLO
             else -> Tema.ROJO
         }
         val etq = when {
@@ -154,7 +154,7 @@ object Resumen {
         val ofertas = Historial.ultimosDias(ctx, 8).filter { it.hora >= inicio }
         val filas = listOf(
             Triple(Tema.VERDE, ofertas.count { it.nivel == Oferta.VERDE }, "convenían"),
-            Triple(Tema.AMARILLO, ofertas.count { it.nivel == Oferta.AMARILLO }, "regulares"),
+            Triple(Oscuro.AMARILLO, ofertas.count { it.nivel == Oferta.AMARILLO }, "regulares"),
             Triple(Tema.ROJO, ofertas.count { it.nivel == Oferta.ROJO }, "no")
         )
         val anchoFilas = filas.sumOf { (_, n, e) ->

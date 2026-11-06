@@ -33,7 +33,7 @@ object Tema {
     private fun m(oscuro: Int, claroC: Int) = if (claro) claroC else oscuro
     val ASFALTO: Int get() = m(Oscuro.ASFALTO, Oscuro.HUESO)
     val TABLERO: Int get() = m(Oscuro.TABLERO, Color.WHITE)
-    val HUMO: Int get() = m(Oscuro.HUMO, Color.rgb(201, 201, 192))
+    val HUMO: Int get() = m(Oscuro.HUMO, Color.rgb(150, 150, 142))
     val HUESO: Int get() = m(Oscuro.HUESO, Oscuro.ASFALTO)
     val FONDO: Int get() = ASFALTO
     val TARJETA: Int get() = TABLERO
@@ -46,7 +46,8 @@ object Tema {
     val VERDE = Color.rgb(34, 197, 94)       // #22C55E aceptar
     val VERDE_SUAVE: Int get() = m(Oscuro.VERDE_SUAVE, Color.rgb(220, 252, 231))
     val SOBRE_VERDE = Color.rgb(4, 33, 15)   // #04210F texto o ✓ sobre verde
-    val AMARILLO = Color.rgb(250, 204, 21)   // #FACC15 considerar
+    /** Amarillo de la marca; en modo claro es ámbar oscuro (#B45309) para que se lea sobre blanco. */
+    val AMARILLO: Int get() = m(Oscuro.AMARILLO, Color.rgb(180, 83, 9))
     val AMARILLO_SUAVE: Int get() = m(Oscuro.AMARILLO_SUAVE, Color.rgb(254, 249, 195))
     val ROJO = Color.rgb(239, 68, 68)        // #EF4444 rechazar
     val ROJO_SUAVE: Int get() = m(Oscuro.ROJO_SUAVE, Color.rgb(254, 226, 226))
@@ -59,6 +60,7 @@ object Tema {
         Oferta.AMARILLO -> AMARILLO
         else -> ROJO
     }
+
 
     fun suaveNivel(n: Int) = when (n) {
         Oferta.VERDE -> VERDE_SUAVE
@@ -108,6 +110,12 @@ object Oscuro {
     val ROJO_SUAVE = Color.rgb(46, 18, 20)
     /** El fundador ya no usa dorado (la marca v2 solo colorea lo que decide): va en hueso. */
     val DORADO = HUESO
+
+    fun colorNivel(n: Int) = when (n) {
+        Oferta.VERDE -> VERDE
+        Oferta.AMARILLO -> AMARILLO
+        else -> ROJO
+    }
 }
 
 /**
