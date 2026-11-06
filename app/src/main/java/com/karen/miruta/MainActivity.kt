@@ -1402,61 +1402,52 @@ class MainActivity : Activity() {
             }
         }
 
-        // Tabla día × hora (los días quedan fijos a la izquierda)
+        // Siete tiras de 24 horas, sin deslizar de lado: toca una tira para ver el detalle de esa hora.
         cuerpo.addView(etiqueta("$/KM POR HORA · ÚLTIMOS 30 DÍAS"))
         val ficha = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             background = redondo(cTarjeta2, Tema.R_BOTON)
             setPadding(dp(12), dp(10), dp(12), dp(10))
         }
-        ficha.addView(texto("Toca un cuadro para ver el detalle de esa hora.", Tema.T_NOTA, cTexto2, false))
+        ficha.addView(texto("Toca una tira para ver el detalle de esa hora.", Tema.T_NOTA, cTexto2, false))
 
-        val lado = 24; val hueco = 3
-        val tabla = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
-        val nombres = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        nombres.addView(View(this), LinearLayout.LayoutParams(dp(36), dp(16)))
-        val rejilla = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        val horas = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
-        for (h in 0 until 24) horas.addView(texto("$h", 10f, if (h == ahora) cTexto else cTenue, h == ahora).apply {
-            gravity = Gravity.CENTER
-        }, LinearLayout.LayoutParams(dp(lado), dp(16)).apply { if (h > 0) leftMargin = dp(hueco) })
-        rejilla.addView(horas)
         var seleccion: Pair<View, Int>? = null
+        val tablero = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         for (d in 0 until 7) {
-            nombres.addView(texto(nombresDia[d].take(3), Tema.T_NOTA, if (d == hoy) Tema.HUESO else cTexto2, d == hoy).apply {
+            val fila = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
+            fila.addView(texto(nombresDia[d].take(3), Tema.T_NOTA, if (d == hoy) Tema.HUESO else cTexto2, d == hoy).apply {
                 gravity = Gravity.CENTER_VERTICAL
-            }, LinearLayout.LayoutParams(dp(36), dp(lado)).apply { topMargin = dp(hueco) })
-            val fila = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+            }, LinearLayout.LayoutParams(dp(36), dp(26)))
+            val tira = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
             for (h in 0 until 24) {
-                val valor = v[d][h]
-                val col = colorKm(valor)
-                fila.addView(View(this).apply {
-                    background = cuadro(col, false, 5)
-                    isClickable = true
-                    setOnClickListener { vista ->
-                        seleccion?.let { (vv, c) -> vv.background = cuadro(c, false, 5) }
-                        vista.background = cuadro(col, true, 5)
-                        seleccion = vista to col
-                        llenarFicha(ficha, d, h, m[d][h], valor)
-                    }
-                }, LinearLayout.LayoutParams(dp(lado), dp(lado)).apply { if (h > 0) leftMargin = dp(hueco) })
+                tira.addView(View(this).apply { background = cuadro(colorKm(v[d][h]), d == hoy && h == ahora, 2) },
+                    LinearLayout.LayoutParams(0, dp(22), 1f).apply { if (h > 0) leftMargin = dp(1) })
             }
-            rejilla.addView(fila, LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(hueco) })
+            tira.setOnTouchListener { vista, ev ->
+                if (ev.action == android.view.MotionEvent.ACTION_UP && vista.width > 0) {
+                    val h = (ev.x / vista.width * 24).toInt().coerceIn(0, 23)
+                    val celda = tira.getChildAt(h)
+                    val col = colorKm(v[d][h])
+                    seleccion?.let { (vv, c) -> vv.background = cuadro(c, false, 2) }
+                    celda.background = cuadro(col, true, 2)
+                    seleccion = celda to col
+                    llenarFicha(ficha, d, h, m[d][h], v[d][h])
+                }
+                true
+            }
+            fila.addView(tira, LinearLayout.LayoutParams(0, -2, 1f))
+            tablero.addView(fila, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(4) })
         }
-        val hsv = HorizontalScrollView(this).apply {
-            isHorizontalScrollBarEnabled = false
-            isHorizontalFadingEdgeEnabled = true
-            setFadingEdgeLength(dp(24))
-            addView(rejilla)
+        cuerpo.addView(tablero)
+        val horasEt = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+        listOf("12 am", "6 am", "12 pm", "6 pm").forEach {
+            horasEt.addView(texto(it, 9f, cTenue, false), LinearLayout.LayoutParams(0, -2, 6f))
         }
-        tabla.addView(nombres)
-        tabla.addView(hsv, LinearLayout.LayoutParams(0, -2, 1f))
-        cuerpo.addView(tabla)
+        cuerpo.addView(horasEt, LinearLayout.LayoutParams(-1, -2).apply { leftMargin = dp(36); topMargin = dp(4) })
         cuerpo.addView(leyenda(), margenArriba(12))
         cuerpo.addView(ficha, margenArriba(12))
 
         hoja("Toda la semana", null, cuerpo)
-        hsv.post { hsv.scrollTo(maxOf(0, (ahora - 2) * dp(lado + hueco)), 0) }
     }
 
     private fun llenarFicha(ficha: LinearLayout, d: Int, h: Int, regs: List<Registro>, valor: Double?) {
