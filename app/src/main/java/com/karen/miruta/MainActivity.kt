@@ -2132,15 +2132,25 @@ class MainActivity : Activity() {
 
     /** Filas de la pestaña Cuenta, con el estado de cada cosa a la vista. */
     private fun filasCuenta(): View {
-        val g = grupoFilas()
+        // Tres grupos con nombre: Tus equipos, Ayuda y Privacidad.
+        val col = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         val equipos = Cuenta.equipos(this)
-        filaMenu(g, Icono.CUENTA, "Equipos",
+        val gEquipos = grupoFilas()
+        filaMenu(gEquipos, Icono.CUENTA, "Equipos",
             "${equipos.size} ${if (equipos.size == 1) "equipo" else "equipos"}" +
                 if (equipos.isEmpty()) "" else " · " + equipos.joinToString(", ") { it.visible() }) { mostrarEquipos() }
-        filaMenu(g, Icono.ALERTA, "Ayuda y soporte", "Preguntas frecuentes y WhatsApp") { mostrarAyuda() }
-        filaMenu(g, Icono.PLAY, "Guía de inicio", "Cómo usar Checa paso a paso") { mostrarGuia() }
-        filaMenu(g, Icono.RELOJ, "Tus datos", "Qué guarda Checa y estadísticas") { mostrarTusDatos() }
-        return g
+        col.addView(etiqueta("TUS EQUIPOS"))
+        col.addView(gEquipos, margenTarjeta())
+        val gAyuda = grupoFilas()
+        filaMenu(gAyuda, Icono.AYUDA, "Ayuda y soporte", "Preguntas frecuentes y WhatsApp") { mostrarAyuda() }
+        filaMenu(gAyuda, Icono.PLAY, "Guía de inicio", "Cómo usar Checa paso a paso") { mostrarGuia() }
+        col.addView(etiqueta("AYUDA"))
+        col.addView(gAyuda, margenTarjeta())
+        val gDatos = grupoFilas()
+        filaMenu(gDatos, Icono.RELOJ, "Tus datos", "Qué guarda Checa y estadísticas") { mostrarTusDatos() }
+        col.addView(etiqueta("PRIVACIDAD"))
+        col.addView(gDatos, margenTarjeta())
+        return col
     }
 
     // =====================================================================
@@ -2248,14 +2258,7 @@ class MainActivity : Activity() {
             botonBuscarAct = null
         }
         if (Cuenta.conectada(this)) {
-            pie.addView(texto("Cerrar sesión", Tema.T_TEXTO, cTenue, false).apply {
-                gravity = Gravity.CENTER
-                minHeight = dp(Tema.ALTO_TOQUE)
-                typeface = fuenteMedia
-                paintFlags = paintFlags or android.graphics.Paint.UNDERLINE_TEXT_FLAG
-                isClickable = true
-                setOnClickListener { confirmarCerrarSesion() }
-            })
+            pie.addView(botonContorno("Cerrar sesión") { confirmarCerrarSesion() }, margenArriba(Tema.S1))
             if (BuildConfig.ES_PLAY) {
                 pie.addView(texto("Eliminar cuenta", Tema.T_TEXTO, cRojo, false).apply {
                     gravity = Gravity.CENTER
@@ -2264,7 +2267,7 @@ class MainActivity : Activity() {
                     paintFlags = paintFlags or android.graphics.Paint.UNDERLINE_TEXT_FLAG
                     isClickable = true
                     setOnClickListener { confirmarEliminarCuenta() }
-                }, margenArriba(Tema.S1))
+                }, margenArriba(Tema.S3))
             }
         }
     }
@@ -4169,7 +4172,7 @@ class MainActivity : Activity() {
             return
         }
         val nombre = Cuenta.nombre(this)
-        cuentaCaja.addView(perfil(nombre, Cuenta.correo(this)))
+        cuentaCaja.addView(perfil(nombre, Cuenta.correo(this), e))
         cuentaCaja.addView(credencial(e), margenArriba(Tema.S1))
         when {
             Cuenta.equipoQuitado(this) -> {
@@ -4209,7 +4212,7 @@ class MainActivity : Activity() {
     }
 
     /** Foto con la inicial, nombre y correo en una fila. */
-    private fun perfil(nombre: String, correo: String): View {
+    private fun perfil(nombre: String, correo: String, e: Licencia.Estado): View {
         val fila = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
@@ -4226,6 +4229,21 @@ class MainActivity : Activity() {
         tx.addView(texto(correo, Tema.T_NOTA, cTenue, false).apply { maxLines = 1; ellipsize = TextUtils.TruncateAt.END },
             margenArriba(2))
         fila.addView(tx, LinearLayout.LayoutParams(0, -2, 1f))
+        // Etiqueta del plan junto al nombre (el detalle está en la tarjeta de abajo).
+        val plan = when {
+            e.fundador -> "★ Fundador"
+            e.pagada && e.basico -> "Básico"
+            e.pagada -> "Activa"
+            e.beta -> "Beta"
+            e.activa -> "Prueba"
+            else -> "Sin licencia"
+        }
+        fila.addView(texto(plan, Tema.T_NOTA, if (e.fundador) DORADO else if (e.activa) cTexto else cAmarillo, true).apply {
+            typeface = Fuentes.numero
+            setPadding(dp(10), dp(6), dp(10), dp(6))
+            background = redondo(cTarjeta2, 50)
+            maxLines = 1
+        }, LinearLayout.LayoutParams(-2, -2).apply { leftMargin = dp(Tema.S1) })
         return fila
     }
 
@@ -4234,7 +4252,7 @@ class MainActivity : Activity() {
         val sinFin = e.pagada && e.vence >= Licencia.PERMANENTE
         val c = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            setPadding(dp(20), dp(20), dp(20), dp(20))
+            setPadding(dp(18), dp(16), dp(18), dp(16))
             background = GradientDrawable(
                 GradientDrawable.Orientation.TL_BR,
                 intArrayOf(Tema.TARJETA, Tema.TARJETA)
@@ -4248,7 +4266,6 @@ class MainActivity : Activity() {
             typeface = Fuentes.numero
             letterSpacing = 0.14f
         }, LinearLayout.LayoutParams(0, -2, 1f))
-        marca.addView(ImageView(this).apply { setImageResource(R.drawable.semaforo) }, LinearLayout.LayoutParams(dp(12), dp(20)))
         c.addView(marca)
         val titulo = when {
             e.fundador -> "★ Miembro fundador"
@@ -4263,7 +4280,7 @@ class MainActivity : Activity() {
             e.activa -> cTexto
             else -> cAmarillo
         }
-        c.addView(texto(titulo, 26f, colorTitulo, true), margenArriba(Tema.S2))
+        c.addView(texto(titulo, 24f, colorTitulo, true), margenArriba(Tema.S1))
         val quedan = if (e.pagada && !sinFin) diasHasta(e.vence) else e.diasRestantes
         val sub = when {
             sinFin -> "Activa · sin vencimiento"

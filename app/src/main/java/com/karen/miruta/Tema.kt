@@ -229,6 +229,14 @@ class Icono(private val tipo: Int, color: Int) : Drawable() {
                 p.moveTo(4f, 20f); p.lineTo(20f, 20f)
                 c.drawPath(p, trazo)
             }
+            AYUDA -> {
+                c.drawCircle(12f, 12f, 9f, trazo)
+                p.moveTo(9.3f, 9.6f)
+                p.cubicTo(9.5f, 7.2f, 14.5f, 7.2f, 14.7f, 9.6f)
+                p.cubicTo(14.8f, 11.4f, 12f, 11.6f, 12f, 13.8f)
+                c.drawPath(p, trazo)
+                c.drawCircle(12f, 16.9f, 1.1f, relleno)
+            }
             CELULAR -> {
                 c.drawRoundRect(android.graphics.RectF(6.5f, 2.5f, 17.5f, 21.5f), 2.5f, 2.5f, trazo)
                 c.drawLine(10.5f, 18f, 13.5f, 18f, trazo)
@@ -263,5 +271,6 @@ class Icono(private val tipo: Int, color: Int) : Drawable() {
         const val DESCARGA = 16
         const val CELULAR = 17
         const val ESCUDO = 18
+        const val AYUDA = 19
     }
 }
