@@ -340,9 +340,18 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
             tono(if (prefs.filtroKm) o.porKm >= prefs.minPorKm else null)), LinearLayout.LayoutParams(0, -2, 1f))
         col.addView(fila, LinearLayout.LayoutParams(-1, -2))
 
+        // Si falla recogida, duración o tarifa mínima, una línea roja dice cuál.
         // Abajo, chico: tiempo y distancia totales. «total» evita que el lector lo tome por un tramo.
         val recFalla = prefs.filtroRecMax && o.recogidaKm > 0 && o.recogidaKm > prefs.recogidaMaxKm
         val durFalla = prefs.filtroDurMax && o.viajeMin > prefs.duracionMax
+        val baseMin = o.baseTarifaMinima(prefs)
+        val tarFalla = prefs.filtroTarMin && prefs.tarifaMinima > 0 && baseMin < prefs.tarifaMinima
+        val aviso = when {
+            recFalla -> "Recogida lejana · " + fmt(o.recogidaKm, 1) + " km total"
+            durFalla -> "Viaje largo · " + fmt(o.viajeMin, 0) + " min total"
+            tarFalla -> "Menos de tu mínimo · " + mon.monto(baseMin, 0)
+            else -> null
+        }
         col.addView(TextView(ctx).apply {
             text = fmt(o.min, 0) + " min (" + fmt(o.km, 1) + " km) total"
             setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(11f))
@@ -351,15 +360,8 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
             gravity = Gravity.CENTER
             includeFontPadding = false
             maxLines = 1
-            setPadding(e(6f), e(6f), e(6f), if (recFalla || durFalla) 0 else e(9f))
+            setPadding(e(6f), e(6f), e(6f), if (aviso != null) 0 else e(9f))
         }.also { encoger(it, 7f) }, LinearLayout.LayoutParams(-1, -2))
-
-        // Si falla recogida o duración, una línea roja dice cuál (también con «total»).
-        val aviso = when {
-            recFalla -> "Recogida lejana · " + fmt(o.recogidaKm, 1) + " km total"
-            durFalla -> "Viaje largo · " + fmt(o.viajeMin, 0) + " min total"
-            else -> null
-        }
         if (aviso != null) {
             col.addView(TextView(ctx).apply {
                 text = aviso

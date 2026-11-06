@@ -522,11 +522,13 @@ class MainActivity : Activity() {
             prefs.precioLitro = it
             refrescarVistaPrevia()
         }, margenArriba(Tema.S1))
-        gas.addView(campoDato("Desgaste", prefs.desgastePorKm, simAntes(), simDespues("/km"), cero = true) {
-            prefs.desgastePorKm = it
-            refrescarVistaPrevia()
-        }, margenArriba(Tema.S1))
-        gas.addView(texto("Llantas, aceite y mantenimiento por cada km. Pon 0 para no descontarlo.",
+        valorDesgaste = texto("", Tema.T_TEXTO, cTexto, true).apply { typeface = Fuentes.numero }
+        gas.addView(filaAbrir("Desgaste", valorDesgaste!!) { mostrarDesgaste() }, margenArriba(Tema.S1))
+        valorTarMin = texto("", Tema.T_TEXTO, cTexto, true).apply { typeface = Fuentes.numero }
+        gas.addView(filaAbrir("Tarifa mínima", valorTarMin!!) { mostrarTarifaMinima() }, margenArriba(Tema.S1))
+        pintarValoresAuto()
+        gas.addView(texto("Desgaste: llantas, seguro, licencia y más, repartidos entre tus km. " +
+            "Tarifa mínima: lo menos que aceptas por un viaje.",
             Tema.T_NOTA, cTenue, false), margenArriba(4))
         gas.addView(interruptor("Mostrar lo que te queda", "Descuenta gasolina y desgaste en el pop-up", prefs.mostrarNeta) {
             prefs.mostrarNeta = it
@@ -552,6 +554,273 @@ class MainActivity : Activity() {
         col.addView(cmp, margenTarjeta())
 
         return scroll(col)
+    }
+
+    // =====================================================================
+    // Tu auto (10.12): desgaste por conceptos y tarifa mínima
+    // =====================================================================
+
+    private var valorDesgaste: TextView? = null
+    private var valorTarMin: TextView? = null
+
+    /** Fila de «Tu auto» que abre una ventana: nombre a la izquierda, valor y › a la derecha. */
+    private fun filaAbrir(titulo: String, valor: TextView, abrir: () -> Unit): View {
+        val fila = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(dp(12), 0, dp(12), 0)
+            minimumHeight = dp(Tema.ALTO_TOQUE)
+            background = redondo(Tema.CAMPO, 14)
+            isClickable = true
+            setOnClickListener { abrir() }
+        }
+        fila.addView(texto(titulo, Tema.T_TEXTO, cTexto2, false), LinearLayout.LayoutParams(0, -2, 1f))
+        fila.addView(valor)
+        fila.addView(texto("›", 20f, cTenue, false), LinearLayout.LayoutParams(-2, -2).apply { leftMargin = dp(8) })
+        return fila
+    }
+
+    private fun pintarValoresAuto() {
+        valorDesgaste?.text = dinero(prefs.desgastePorKm.toDouble(), 2) + "/km"
+        valorTarMin?.text = if (prefs.filtroTarMin) dinero(prefs.tarifaMinima.toDouble(), 0) + "/viaje" else "Apagada"
+    }
+
+    private fun alCambiarAuto() {
+        pintarValoresAuto()
+        refrescarVistaPrevia()
+        pintarMejoresHoras(false)
+    }
+
+    private fun miles(v: Float): String = String.format(Locale.US, "%,.0f", v)
+
+    /** «6,400», «6400», «12,5» o «12.5» → número (la coma sola con 3 dígitos detrás es de miles). */
+    private fun leerNumero(t: String): Float {
+        var x = t.trim().replace(" ", "")
+        x = when {
+            x.contains(",") && x.contains(".") -> x.replace(",", "")
+            Regex(",\\d{3}$").containsMatchIn(x) -> x.replace(",", "")
+            else -> x.replace(",", ".")
+        }
+        return x.toFloatOrNull()?.coerceAtLeast(0f) ?: 0f
+    }
+
+    /** Línea de una ventana: título de grupo a la izquierda y su subtotal en amarillo. */
+    private fun encabezadoGrupo(titulo: String, subtotal: Double): View {
+        val f = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
+        f.addView(etiqueta(titulo), LinearLayout.LayoutParams(0, -2, 1f))
+        f.addView(texto(dinero(subtotal, 2) + " /km", Tema.T_NOTA, cAmarillo, true).apply { typeface = Fuentes.numero })
+        return f
+    }
+
+    /** Fila de dos renglones: nombre y valor a la derecha, y debajo el detalle en gris. */
+    private fun filaDetalle(titulo: String, detalle: String, valor: String, colorDetalle: Int = cTenue, abrir: () -> Unit): View {
+        val f = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(12), dp(10), dp(12), dp(10))
+            background = redondo(Tema.CAMPO, 14)
+            isClickable = true
+            setOnClickListener { abrir() }
+        }
+        val arriba = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
+        arriba.addView(texto(titulo, Tema.T_TEXTO, cTexto2, false), LinearLayout.LayoutParams(0, -2, 1f))
+        arriba.addView(texto(valor, Tema.T_TEXTO, cTexto, true).apply { typeface = Fuentes.numero })
+        f.addView(arriba)
+        f.addView(texto(detalle, Tema.T_NOTA, colorDetalle, false).apply { typeface = Fuentes.numero }, margenArriba(2))
+        return f
+    }
+
+    /** Ventana con campos numéricos (uno por etiqueta) y «Guardar». [extra] recibe el cuerpo y los campos. */
+    private fun editarCampos(
+        titulo: String, nota: String?, etiquetas: List<String>, iniciales: List<Float>, sufijos: List<String>,
+        extra: ((LinearLayout, List<EditText>) -> Unit)? = null, guardar: (List<Float>) -> Unit
+    ) {
+        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        val d = hojaAbajo(titulo, cuerpo)
+        if (nota != null) cuerpo.addView(texto(nota, Tema.T_NOTA, cTenue, false).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
+        val campos = ArrayList<EditText>()
+        etiquetas.forEachIndexed { i, etq ->
+            cuerpo.addView(texto(etq, Tema.T_TEXTO, cTexto2, false), margenArriba(Tema.S2))
+            val fila = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                setPadding(dp(14), 0, dp(14), 0)
+                minimumHeight = dp(Tema.ALTO_TOQUE)
+                background = redondo(Tema.CAMPO, 14)
+            }
+            val et = EditText(this).apply {
+                setText(if (iniciales[i] > 0) num(iniciales[i]) else "")
+                hint = "0"
+                setHintTextColor(cTenue)
+                setTextColor(cTexto)
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, Tema.T_TEXTO)
+                typeface = Fuentes.numero
+                background = null
+                setSingleLine()
+                inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+                setPadding(0, dp(10), 0, dp(10))
+            }
+            fila.addView(et, LinearLayout.LayoutParams(0, -2, 1f))
+            if (sufijos[i].isNotEmpty()) fila.addView(texto(sufijos[i], Tema.T_TEXTO, cTenue, false))
+            cuerpo.addView(fila, margenArriba(Tema.S1))
+            campos.add(et)
+        }
+        extra?.invoke(cuerpo, campos)
+        cuerpo.addView(boton("Guardar", Tema.HUESO, Tema.ASFALTO) {
+            guardar(campos.map { leerNumero(it.text.toString()) })
+            d.dismiss()
+        }, LinearLayout.LayoutParams(-1, dp(52)).apply { topMargin = dp(Tema.S2) })
+        campos.firstOrNull()?.let { it.requestFocus(); it.setSelection(it.text.length) }
+        d.window?.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE or
+            android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+    }
+
+    /** Km al año que sugieren los viajes aceptados de los últimos 28 días (null si hay pocos datos). */
+    private fun kmAnioSugerido(): Float? {
+        val ahora = System.currentTimeMillis()
+        val viajes = Jornada.todos(this).filter { it.hora >= ahora - 28 * 86_400_000L }
+        if (viajes.isEmpty()) return null
+        val dias = ((ahora - viajes.minOf { it.hora }) / 86_400_000.0).coerceAtLeast(1.0)
+        if (dias < 7) return null
+        return (Math.round(viajes.sumOf { it.km } / dias * 365 / 1000.0) * 1000).toFloat().takeIf { it > 0 }
+    }
+
+    private fun mostrarDesgaste() {
+        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        val d = hojaAbajo("Desgaste", cuerpo)
+        fun pintar() {
+            cuerpo.removeAllViews()
+            val cambio = { pintar(); alCambiarAuto() }
+            cuerpo.addView(texto("Todo es opcional: lo que dejes vacío vale 0. Toca un concepto para llenarlo.",
+                Tema.T_NOTA, cTenue, false).apply { setLineSpacing(0f, 1.2f) })
+
+            cuerpo.addView(encabezadoGrupo("POR KILÓMETRO", Desgaste.subtotalKm(prefs)), margenArriba(Tema.S2))
+            for (c in Desgaste.POR_KM) {
+                val costo = prefs.flotante(Desgaste.claveCosto(c))
+                val cada = prefs.flotante(Desgaste.claveCada(c))
+                val lleno = costo > 0 && cada > 0
+                cuerpo.addView(filaDetalle(c.nombre,
+                    if (lleno) "${dinero(costo.toDouble(), 0)} cada ${miles(cada)} km" else "Sin llenar",
+                    dinero(Desgaste.costoKm(prefs, c), 2) + "/km") {
+                    editarCampos(c.nombre, "Cuánto cuesta y cada cuántos km lo haces. Vacío = no se cuenta.",
+                        listOf("Cuánto cuesta", "Cada cuántos km"), listOf(costo, cada),
+                        listOf("", "km")) { v ->
+                        prefs.ponerFlotante(Desgaste.claveCosto(c), v[0])
+                        prefs.ponerFlotante(Desgaste.claveCada(c), v[1])
+                        cambio()
+                    }
+                }, margenArriba(Tema.S1))
+            }
+
+            cuerpo.addView(encabezadoGrupo("AL AÑO", Desgaste.subtotalAnio(prefs)), margenArriba(Tema.S3))
+            val kmAnio = Desgaste.kmAnio(prefs)
+            val sug = kmAnioSugerido()
+            cuerpo.addView(filaDetalle("¿Cuántos km haces al año?",
+                if (sug != null) "Sugerido por tus viajes: ${miles(sug)} km" else "Se usa para repartir lo de abajo",
+                miles(kmAnio)) {
+                editarCampos("Km al año", "Con esto, lo que pagas al año se convierte en $/km.",
+                    listOf("Km que haces al año"), listOf(kmAnio), listOf("km"),
+                    extra = { cu, campos ->
+                        if (sug != null) cu.addView(botonContorno("Usar el sugerido: ${miles(sug)} km") {
+                            campos[0].setText(num(sug)); campos[0].setSelection(campos[0].text.length)
+                        }, margenArriba(Tema.S1))
+                    }) { v ->
+                    prefs.ponerFlotante(Desgaste.CLAVE_KM_ANIO, v[0])
+                    cambio()
+                }
+            }, margenArriba(Tema.S1))
+            for (c in Desgaste.AL_ANIO) {
+                val anual = prefs.flotante(Desgaste.claveAnual(c))
+                val detalle = when {
+                    anual <= 0 && c.id == "men" -> "Sin llenar · solo si lo pagas a plazos"
+                    anual <= 0 -> "Sin llenar"
+                    c.enMes -> "${dinero(anual.toDouble(), 0)} al año (${dinero(anual / 12.0, 0)} al mes)"
+                    else -> "${dinero(anual.toDouble(), 0)} al año"
+                }
+                cuerpo.addView(filaDetalle(c.nombre, detalle, dinero(Desgaste.costoKm(prefs, c), 2) + "/km") {
+                    var alMes = c.enMes
+                    editarCampos(c.nombre, "Vacío = no se cuenta.",
+                        listOf("Cuánto pagas"), listOf(if (c.enMes) Math.round(anual / 12.0 * 100) / 100f else anual),
+                        listOf(""),
+                        extra = { cu, _ ->
+                            cu.addView(pildoras(listOf("al mes", "al año"), { if (alMes) 0 else 1 }) { alMes = it == 0 },
+                                margenArriba(Tema.S1))
+                        }) { v ->
+                        prefs.ponerFlotante(Desgaste.claveAnual(c), v[0] * (if (alMes) 12f else 1f))
+                        cambio()
+                    }
+                }, margenArriba(Tema.S1))
+            }
+            if (prefs.flotante(Desgaste.claveAnual(Desgaste.AL_ANIO.first { it.id == "dep" })) > 0 &&
+                prefs.flotante(Desgaste.claveAnual(Desgaste.AL_ANIO.first { it.id == "men" })) > 0
+            ) {
+                cuerpo.addView(texto("⚠ Si llenas la mensualidad, deja la depreciación en 0: son casi lo mismo.",
+                    Tema.T_NOTA, cAmarillo, false).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
+            }
+
+            // Totales
+            val gasKm = if (prefs.kmPorLitro > 0) prefs.precioLitro.toDouble() / prefs.kmPorLitro else 0.0
+            val desg = prefs.desgastePorKm.toDouble()
+            val total = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                setPadding(dp(14), dp(12), dp(14), dp(12))
+                background = redondo(Tema.CAMPO, 16)
+            }
+            total.addView(texto("Desgaste total", Tema.T_TEXTO, cTexto, true), LinearLayout.LayoutParams(0, -2, 1f))
+            total.addView(texto(dinero(desg, 2) + " /km", 20f, cAmarillo, true).apply { typeface = Fuentes.numero })
+            cuerpo.addView(total, margenArriba(Tema.S3))
+            val dos = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+            fun tarjetita(t: String, v: String, c: Int) = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                setPadding(dp(14), dp(12), dp(14), dp(12))
+                background = redondo(Tema.CAMPO, 16)
+                addView(texto(t, Tema.T_NOTA, cTenue, false))
+                addView(texto(v, 20f, c, true).apply { typeface = Fuentes.numero }, margenArriba(2))
+            }
+            dos.addView(tarjetita("Combustible por km", dinero(gasKm, 2), cTexto), LinearLayout.LayoutParams(0, -2, 1f))
+            dos.addView(tarjetita("Costo total por km", dinero(gasKm + desg, 2), cAmarillo),
+                LinearLayout.LayoutParams(0, -2, 1f).apply { leftMargin = dp(Tema.S1) })
+            cuerpo.addView(dos, margenArriba(Tema.S1))
+
+            // Monto directo
+            cuerpo.addView(filaDetalle("Monto directo por km", "Se usa solo si no llenas ningún concepto",
+                dinero(prefs.desgasteDirecto.toDouble(), 2)) {
+                editarCampos("Monto directo", "Lo que descuentas por cada km, sin detallar. " +
+                    "Solo cuenta si no llenaste ningún concepto de arriba.",
+                    listOf("Desgaste por km"), listOf(prefs.desgasteDirecto), listOf("/km")) { v ->
+                    prefs.desgasteDirecto = v[0]
+                    cambio()
+                }
+            }, margenArriba(Tema.S2))
+            cuerpo.addView(boton("Listo", Tema.HUESO, Tema.ASFALTO) { d.dismiss() },
+                LinearLayout.LayoutParams(-1, dp(52)).apply { topMargin = dp(Tema.S2) })
+        }
+        pintar()
+        d.setOnDismissListener { alCambiarAuto() }
+    }
+
+    private fun mostrarTarifaMinima() {
+        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        val d = hojaAbajo("Tarifa mínima", cuerpo)
+        cuerpo.addView(interruptor("Usar tarifa mínima", "Si la oferta deja menos, sale en rojo", prefs.filtroTarMin) {
+            prefs.filtroTarMin = it
+            alCambiarAuto()
+        }, margenArriba(Tema.S1))
+        cuerpo.addView(campoDato("Lo menos que aceptas", prefs.tarifaMinima, simAntes(), simDespues("/viaje")) {
+            prefs.tarifaMinima = it
+            alCambiarAuto()
+        }, margenArriba(Tema.S1))
+        cuerpo.addView(texto("Cuenta sobre", Tema.T_TEXTO, cTexto2, false), margenArriba(Tema.S2))
+        cuerpo.addView(pildoras(listOf("Ganancia neta", "Tarifa de la app"), { if (prefs.tarMinNeta) 0 else 1 }) { i ->
+            prefs.tarMinNeta = i == 0
+            alCambiarAuto()
+        }, margenArriba(Tema.S1))
+        cuerpo.addView(texto("Ganancia neta es lo que te queda después de gasolina y desgaste. " +
+            "Si la oferta deja menos que tu mínimo, sale en rojo aunque el $/h y el $/km cumplan.",
+            Tema.T_NOTA, cTenue, false).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
+        cuerpo.addView(boton("Listo", Tema.HUESO, Tema.ASFALTO) { d.dismiss() },
+            LinearLayout.LayoutParams(-1, dp(52)).apply { topMargin = dp(Tema.S2) })
+        d.setOnDismissListener { alCambiarAuto() }
     }
 
     /** Ícono en círculo + título + subtítulo (+ flecha). Devuelve la fila y la flecha. */

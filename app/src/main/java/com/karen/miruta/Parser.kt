@@ -25,14 +25,20 @@ data class Oferta(
     /** Lo que te queda: tarifa menos gasolina y desgaste. */
     fun neta(p: Prefs): Double = tarifa - gasolina(p) - desgaste(p)
 
-    /** Si la oferta no pasa los filtros de recogida o duración, dice por qué. */
+    /** Lo que se compara con la tarifa mínima: la neta (después de gasolina y desgaste) o la tarifa de la app. */
+    fun baseTarifaMinima(p: Prefs): Double = if (p.tarMinNeta) neta(p) else tarifa
+
+    /** Si la oferta no pasa los filtros de recogida, duración o tarifa mínima, dice por qué. */
     fun motivoFiltro(p: Prefs): String? {
         val f1 = { v: Double -> String.format(java.util.Locale.US, "%.1f", v) }
+        val f0 = { v: Double -> String.format(java.util.Locale.US, "%.0f", v) }
         return when {
             p.filtroRecMax && recogidaKm > 0 && recogidaKm > p.recogidaMaxKm ->
                 "Recogida lejana: ${f1(recogidaKm)} km (máx ${f1(p.recogidaMaxKm.toDouble())})"
             p.filtroDurMax && viajeMin > p.duracionMax ->
                 "Viaje largo: ${viajeMin.toInt()} min (máx ${p.duracionMax})"
+            p.filtroTarMin && p.tarifaMinima > 0 && baseTarifaMinima(p) < p.tarifaMinima ->
+                "Paga poco: ${f0(baseTarifaMinima(p))} (mín ${f0(p.tarifaMinima.toDouble())})"
             else -> null
         }
     }

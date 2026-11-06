@@ -73,7 +73,7 @@ class Prefs(context: Context) {
         set(v) { sp.edit().putInt("durMinV", v).apply() }
 
     fun filtrosActivos(): Int =
-        listOf(filtroKm, filtroHora, filtroRecMax, filtroDurMax).count { it }
+        listOf(filtroKm, filtroHora, filtroRecMax, filtroDurMax, filtroTarMin).count { it }
 
     /** Cómo elegir la mejor cuando hay dos ofertas: 0 neta/hora, 1 neta/km, 2 neta total. */
     var criterio: Int
@@ -93,10 +93,36 @@ class Prefs(context: Context) {
         get() = sp.getFloat("precioL", 24f)
         set(v) { sp.edit().putFloat("precioL", v).apply() }
 
-    /** Desgaste del auto por km (llantas, aceite, mantenimiento). 0 = no se descuenta. */
-    var desgastePorKm: Float
+    /** Monto directo de desgaste por km (el de siempre). Solo cuenta si no se llena ningún concepto. */
+    var desgasteDirecto: Float
         get() = sp.getFloat("desgKm", 0f)
         set(v) { sp.edit().putFloat("desgKm", v).apply() }
+
+    /**
+     * Desgaste del auto por km (llantas, seguro, licencia…). Es la suma de los conceptos de
+     * [Desgaste]; si no hay ninguno, el monto directo. 0 = no se descuenta.
+     */
+    var desgastePorKm: Float
+        get() = Desgaste.total(this).let { if (it > 0) it.toFloat() else desgasteDirecto }
+        set(v) { desgasteDirecto = v }
+
+    /** Dato numérico suelto (conceptos de desgaste y sus km). */
+    fun flotante(clave: String, defecto: Float = 0f): Float = sp.getFloat(clave, defecto)
+    fun ponerFlotante(clave: String, v: Float) { sp.edit().putFloat(clave, v).apply() }
+
+    // ---------- Tarifa mínima (10.12): lo menos que se acepta por un viaje ----------
+    var filtroTarMin: Boolean
+        get() = sp.getBoolean("fTarMin", false)
+        set(v) { sp.edit().putBoolean("fTarMin", v).apply() }
+
+    var tarifaMinima: Float
+        get() = sp.getFloat("tarMin", 50f)
+        set(v) { sp.edit().putFloat("tarMin", v).apply() }
+
+    /** true: cuenta la ganancia neta (después de gasolina y desgaste); false: la tarifa que muestra la app. */
+    var tarMinNeta: Boolean
+        get() = sp.getBoolean("tarMinNeta", true)
+        set(v) { sp.edit().putBoolean("tarMinNeta", v).apply() }
 
     // ---------- Moneda (la de la cuenta vive en perfil_conductor, compartida con Clientela) ----------
     var moneda: Moneda
@@ -255,10 +281,11 @@ class Prefs(context: Context) {
     }
 
     companion object {
-        private val AJUSTES_FLOAT = listOf("minKm", "minHora", "recMaxV", "recMinV", "kml", "precioL", "metaDia", "desgKm")
+        private val AJUSTES_FLOAT = listOf("minKm", "minHora", "recMaxV", "recMinV", "kml", "precioL", "metaDia", "desgKm", "tarMin") +
+            Desgaste.CLAVES
         private val AJUSTES_INT = listOf("durMaxV", "durMinV", "criterio", "tam", "dur", "pos", "vol", "escPop")
         private val AJUSTES_BOOL = listOf(
-            "fKm", "fHora", "fRecMax", "fRecMin", "fDurMax", "fDurMin", "neta", "uber", "didi",
+            "fKm", "fHora", "fRecMax", "fRecMin", "fDurMax", "fDurMin", "fTarMin", "tarMinNeta", "neta", "uber", "didi",
             "vib", "son", "voz", "avisoApertura"
         )
         const val SEP = "\n\n==========\n\n"
