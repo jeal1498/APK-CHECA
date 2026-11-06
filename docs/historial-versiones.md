@@ -1,2 +1,2 @@
 
-v113 (10.33): **Modo claro pulido.** Amarillo ámbar oscuro (#B45309) y bordes/riel de interruptor más marcados solo en claro; el pop-up y la imagen del día usan `Oscuro.AMARILLO` y `Oscuro.colorNivel`.
+v114 (10.34): **Novedades.** Aviso una sola vez por versión al abrir tras actualizar (no sale en instalación nueva ni mientras falten permisos) y botón Cuenta › Novedades con las últimas 3. Los textos viven en `Novedades.kt`: agrega un bloque arriba en cada versión nueva.

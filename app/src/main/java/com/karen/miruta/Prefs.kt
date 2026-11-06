@@ -80,6 +80,11 @@ class Prefs(context: Context) {
         get() = sp.getInt("criterio", 0)
         set(v) { sp.edit().putInt("criterio", v).apply() }
 
+    /** Código de la última versión cuyas novedades ya se mostraron (10.34). */
+    var novedadesVista: Int
+        get() = sp.getInt("novedadesVista", 0)
+        set(v) { sp.edit().putInt("novedadesVista", v).apply() }
+
     /** Apariencia de la app (10.32): «oscuro» (por defecto), «claro» o «auto» (sigue al teléfono). */
     var tema: String
         get() = sp.getString("tema", Tema.MODO_OSCURO) ?: Tema.MODO_OSCURO

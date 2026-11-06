@@ -198,6 +198,33 @@ class MainActivity : Activity() {
                 guiaSiHaceFalta()
             }
         }
+        if (savedInstanceState == null && !autoIniciar) novedadesSiHaceFalta()
+    }
+
+    /** Aviso de novedades: una vez por versión, sin cortar la guía ni los permisos; en instalación nueva no sale. */
+    private fun novedadesSiHaceFalta() {
+        val ultima = Novedades.ultima.codigo
+        if (prefs.novedadesVista >= ultima) return
+        if (!prefs.guiaVista) { prefs.novedadesVista = ultima; return }
+        if (!Cuenta.puedeUsar(this) || faltanPermisos()) return
+        prefs.novedadesVista = ultima
+        handler.post { if (!isFinishing) mostrarNovedades(false) }
+    }
+
+    /** [todas] = false: solo la última versión (aviso); true: las últimas tres (Cuenta › Novedades). */
+    private fun mostrarNovedades(todas: Boolean) {
+        val lista = if (todas) Novedades.LISTA.take(3) else Novedades.LISTA.take(1)
+        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        lista.forEachIndexed { i, v ->
+            if (todas) cuerpo.addView(etiquetaTarjeta("VERSIÓN ${v.nombre}"), margenArriba(if (i == 0) Tema.S1 else Tema.S2))
+            v.puntos.forEach { p ->
+                cuerpo.addView(texto("•  $p", Tema.T_TEXTO, cTexto2, false).apply { setLineSpacing(0f, 1.2f) },
+                    margenArriba(Tema.S1))
+            }
+        }
+        var d: Dialog? = null
+        cuerpo.addView(boton("Entendido", cVerde, Color.BLACK) { d?.dismiss() }, margenArriba(Tema.S2))
+        d = hojaAbajo(if (todas) "Novedades" else "Novedades · ${lista[0].nombre}", cuerpo)
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -2404,6 +2431,7 @@ class MainActivity : Activity() {
         val gAyuda = grupoFilas()
         filaMenu(gAyuda, Icono.AYUDA, "Ayuda y soporte", "Preguntas frecuentes y WhatsApp") { mostrarAyuda() }
         filaMenu(gAyuda, Icono.PLAY, "Guía de inicio", "Cómo usar Checa paso a paso") { mostrarGuia() }
+        filaMenu(gAyuda, Icono.TENDENCIA, "Novedades", "Lo nuevo de las últimas versiones") { mostrarNovedades(true) }
         col.addView(etiqueta("AYUDA"))
         col.addView(gAyuda, margenTarjeta())
         val gDatos = grupoFilas()
