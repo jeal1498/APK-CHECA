@@ -14,27 +14,44 @@ import android.graphics.drawable.Drawable
 /** Paleta, medidas y tamaños de letra de toda la app (múltiplos de 8 dp). */
 object Tema {
     // ---------- colores: marca v2 (PWA-Checa-Multimedia/marca/tokens.json). El color solo decide. ----------
-    val ASFALTO = Color.rgb(12, 12, 16)      // #0C0C10 fondo
-    val TABLERO = Color.rgb(22, 22, 28)      // #16161C tarjetas
-    val HUMO = Color.rgb(58, 58, 69)         // #3A3A45 bordes
-    val HUESO = Color.rgb(244, 244, 239)     // #F4F4EF marca, texto y botones
-    val FONDO = ASFALTO
-    val TARJETA = TABLERO
-    val TARJETA2 = Color.rgb(34, 34, 42)     // #22222A controles dentro de tarjetas
-    val CAMPO = Color.rgb(30, 30, 37)        // #1E1E25 campos (nombre + dato) dentro de tarjetas
-    val BORDE = Color.rgb(42, 42, 51)        // #2A2A33
-    val TEXTO = HUESO
-    val TEXTO2 = Color.rgb(207, 207, 212)    // #CFCFD4
-    val TENUE = Color.rgb(163, 163, 173)     // #A3A3AD gris del texto
+    /** Modo claro (10.32): la app usa estos colores; el pop-up y la imagen del día usan [Oscuro]. */
+    var claro = false; private set
+    const val MODO_OSCURO = "oscuro"
+    const val MODO_CLARO = "claro"
+    const val MODO_AUTO = "auto"
+
+    /** Decide el modo según la preferencia («auto» sigue al teléfono). */
+    fun aplicar(c: Context, modo: String) { claro = esClaro(c, modo) }
+
+    fun esClaro(c: Context, modo: String): Boolean = when (modo) {
+        MODO_CLARO -> true
+        MODO_AUTO -> (c.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) !=
+            android.content.res.Configuration.UI_MODE_NIGHT_YES
+        else -> false
+    }
+
+    private fun m(oscuro: Int, claroC: Int) = if (claro) claroC else oscuro
+    val ASFALTO: Int get() = m(Oscuro.ASFALTO, Oscuro.HUESO)
+    val TABLERO: Int get() = m(Oscuro.TABLERO, Color.WHITE)
+    val HUMO: Int get() = m(Oscuro.HUMO, Color.rgb(201, 201, 192))
+    val HUESO: Int get() = m(Oscuro.HUESO, Oscuro.ASFALTO)
+    val FONDO: Int get() = ASFALTO
+    val TARJETA: Int get() = TABLERO
+    val TARJETA2: Int get() = m(Oscuro.TARJETA2, Color.rgb(236, 236, 230))
+    val CAMPO: Int get() = m(Oscuro.CAMPO, Color.rgb(240, 240, 234))
+    val BORDE: Int get() = m(Oscuro.BORDE, Color.rgb(221, 221, 213))
+    val TEXTO: Int get() = HUESO
+    val TEXTO2: Int get() = m(Oscuro.TEXTO2, Color.rgb(58, 58, 69))
+    val TENUE: Int get() = m(Oscuro.TENUE, Color.rgb(107, 107, 117))
     val VERDE = Color.rgb(34, 197, 94)       // #22C55E aceptar
-    val VERDE_SUAVE = Color.rgb(14, 42, 26)
+    val VERDE_SUAVE: Int get() = m(Oscuro.VERDE_SUAVE, Color.rgb(220, 252, 231))
     val SOBRE_VERDE = Color.rgb(4, 33, 15)   // #04210F texto o ✓ sobre verde
     val AMARILLO = Color.rgb(250, 204, 21)   // #FACC15 considerar
-    val AMARILLO_SUAVE = Color.rgb(46, 39, 8)
+    val AMARILLO_SUAVE: Int get() = m(Oscuro.AMARILLO_SUAVE, Color.rgb(254, 249, 195))
     val ROJO = Color.rgb(239, 68, 68)        // #EF4444 rechazar
-    val ROJO_SUAVE = Color.rgb(46, 18, 20)
+    val ROJO_SUAVE: Int get() = m(Oscuro.ROJO_SUAVE, Color.rgb(254, 226, 226))
     /** El fundador ya no usa dorado (la marca v2 solo colorea lo que decide): va en hueso. */
-    val DORADO = HUESO
+    val DORADO: Int get() = HUESO
     val DIDI = Color.rgb(255, 112, 40)
 
     fun colorNivel(n: Int) = when (n) {
@@ -66,6 +83,31 @@ object Tema {
     const val T_TEXTO = 14f
     const val T_NOTA = 12f
     const val T_NUMERO = 28f
+}
+
+/** Paleta oscura fija: pop-up e imagen de «Compartir mi día» no cambian con el modo claro. */
+object Oscuro {
+    val ASFALTO = Color.rgb(12, 12, 16)      // #0C0C10 fondo
+    val TABLERO = Color.rgb(22, 22, 28)      // #16161C tarjetas
+    val HUMO = Color.rgb(58, 58, 69)         // #3A3A45 bordes
+    val HUESO = Color.rgb(244, 244, 239)     // #F4F4EF marca, texto y botones
+    val FONDO = ASFALTO
+    val TARJETA = TABLERO
+    val TARJETA2 = Color.rgb(34, 34, 42)     // #22222A controles dentro de tarjetas
+    val CAMPO = Color.rgb(30, 30, 37)        // #1E1E25 campos (nombre + dato) dentro de tarjetas
+    val BORDE = Color.rgb(42, 42, 51)        // #2A2A33
+    val TEXTO = HUESO
+    val TEXTO2 = Color.rgb(207, 207, 212)    // #CFCFD4
+    val TENUE = Color.rgb(163, 163, 173)     // #A3A3AD gris del texto
+    val VERDE = Color.rgb(34, 197, 94)       // #22C55E aceptar
+    val VERDE_SUAVE = Color.rgb(14, 42, 26)
+    val SOBRE_VERDE = Color.rgb(4, 33, 15)   // #04210F texto o ✓ sobre verde
+    val AMARILLO = Color.rgb(250, 204, 21)   // #FACC15 considerar
+    val AMARILLO_SUAVE = Color.rgb(46, 39, 8)
+    val ROJO = Color.rgb(239, 68, 68)        // #EF4444 rechazar
+    val ROJO_SUAVE = Color.rgb(46, 18, 20)
+    /** El fundador ya no usa dorado (la marca v2 solo colorea lo que decide): va en hueso. */
+    val DORADO = HUESO
 }
 
 /**

@@ -243,8 +243,8 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         val segunda = marca == SEGUNDA
         val acento = Tema.colorNivel(nivel)
         // 2ª opción (dos ofertas a la vez): el color apagado para que la mejor resalte.
-        val color = if (segunda) mezclar(acento, Tema.TABLERO, 0.45f) else acento
-        val linea = Color.argb(110, Color.red(Tema.TENUE), Color.green(Tema.TENUE), Color.blue(Tema.TENUE))
+        val color = if (segunda) mezclar(acento, Oscuro.TABLERO, 0.45f) else acento
+        val linea = Color.argb(110, Color.red(Oscuro.TENUE), Color.green(Oscuro.TENUE), Color.blue(Oscuro.TENUE))
         val accion = when (nivel) {
             Oferta.VERDE -> "ACEPTAR"
             Oferta.AMARILLO -> "CONSIDERAR"
@@ -259,7 +259,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
 
         val marco = FrameLayout(ctx).apply {
             background = GradientDrawable().apply {
-                setColor(Tema.TABLERO)
+                setColor(Oscuro.TABLERO)
                 cornerRadius = e(16f).toFloat()
                 // La mejor de dos lleva el borde más grueso.
                 setStroke(e(if (marca == MEJOR) 4f else 2.5f).coerceAtLeast(2), color)
@@ -305,7 +305,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         val montoTxt = TextView(ctx).apply {
             text = mon.monto(if (conNeta) o.neta(prefs) else o.tarifa, 0)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(46f))
-            setTextColor(Tema.HUESO)
+            setTextColor(Oscuro.HUESO)
             typeface = Fuentes.titulo
             gravity = Gravity.CENTER
             includeFontPadding = false
@@ -316,7 +316,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         col.addView(montoTxt, LinearLayout.LayoutParams(-1, -2))
 
         // $/h | $/km, grandes.
-        fun tono(cumple: Boolean?) = when (cumple) { true -> Tema.VERDE; false -> Tema.ROJO; null -> Tema.HUESO }
+        fun tono(cumple: Boolean?) = when (cumple) { true -> Tema.VERDE; false -> Tema.ROJO; null -> Oscuro.HUESO }
         fun metrica(txt: String, c: Int, cumple: Boolean?) = TextView(ctx).apply {
             // ✓ / ✕ además del color, para quien no distingue rojo de verde.
             text = (when (cumple) { true -> "✓ "; false -> "✕ "; null -> "" }) + txt
@@ -358,7 +358,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         col.addView(TextView(ctx).apply {
             text = fmt(o.min, 0) + " min (" + fmt(o.km, 1) + " km) total"
             setTextSize(TypedValue.COMPLEX_UNIT_SP, maxOf(sp(12f), 9f))
-            setTextColor(if (recFalla || durFalla) Tema.ROJO else Tema.TENUE)
+            setTextColor(if (recFalla || durFalla) Tema.ROJO else Oscuro.TENUE)
             typeface = Fuentes.numero
             gravity = Gravity.CENTER
             includeFontPadding = false
@@ -381,7 +381,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
 
         // ✕ en la esquina, a la altura de la acción (zona de toque de 24 dp escalada).
         val cerrarBtn = ImageView(ctx).apply {
-            setImageDrawable(Icono(Icono.CERRAR, Tema.TENUE))
+            setImageDrawable(Icono(Icono.CERRAR, Oscuro.TENUE))
             // Dibujo chico, área de toque de 48 dp fija (no se encoge con el tamaño del pop-up).
             val lado = dp(48)
             val chico = dp(6)

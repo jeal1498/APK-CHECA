@@ -72,7 +72,7 @@ object Resumen {
     private fun dibujar(ctx: Context, t: Totales, viajes: List<Viaje>, semana: Boolean): Bitmap {
         val bmp = Bitmap.createBitmap(ANCHO, ALTO, Bitmap.Config.ARGB_8888)
         val c = Canvas(bmp)
-        c.drawColor(Tema.ASFALTO)
+        c.drawColor(Oscuro.ASFALTO)
         val p = Paint(Paint.ANTI_ALIAS_FLAG)
         val x0 = 70f
         val x1 = ANCHO - 70f
@@ -105,7 +105,7 @@ object Resumen {
         val meta = if (semana) 0.0 else Prefs(ctx).metaDia.toDouble()
         val avance = if (meta > 0) t.neta / meta else -1.0
         val colBorde = when {
-            avance < 0 -> Tema.HUESO
+            avance < 0 -> Oscuro.HUESO
             avance >= 1.0 -> Tema.VERDE
             avance >= 0.5 -> Tema.AMARILLO
             else -> Tema.ROJO
@@ -121,7 +121,7 @@ object Resumen {
         val cx = ANCHO / 2f
         val arriba = if (meta > 0) 190f else 250f
         val abajo = arriba + if (meta > 0) 700f else 560f
-        caja(x0, arriba, x1, abajo, 60f, Tema.TARJETA)
+        caja(x0, arriba, x1, abajo, 60f, Oscuro.TARJETA)
         p.style = Paint.Style.STROKE
         p.strokeWidth = 8f
         p.color = colBorde
@@ -132,19 +132,19 @@ object Resumen {
         val neto = dinero(t.neta)
         var tam = 190f
         while (medir(neto, Fuentes.titulo, tam) > x1 - x0 - 80f && tam > 80f) tam -= 10f
-        texto(neto, cx, arriba + 320f, Fuentes.titulo, tam, Tema.HUESO, -0.03f, Paint.Align.CENTER)
+        texto(neto, cx, arriba + 320f, Fuentes.titulo, tam, Oscuro.HUESO, -0.03f, Paint.Align.CENTER)
         texto("neto ${if (semana) "de la semana" else "del día"}, después de gasolina", cx, arriba + 390f, Fuentes.texto, 38f,
-            Tema.TEXTO2, 0f, Paint.Align.CENTER)
+            Oscuro.TEXTO2, 0f, Paint.Align.CENTER)
         texto("${t.viajes} ${if (t.viajes == 1) "viaje" else "viajes"}  |  ${mon.monto(t.netaPorKm, 2)}/km", cx, arriba + 480f,
-            Fuentes.numero, 46f, Tema.HUESO, 0f, Paint.Align.CENTER)
+            Fuentes.numero, 46f, Oscuro.HUESO, 0f, Paint.Align.CENTER)
         if (meta > 0) {
             val m = x0 + 60f
             val n = x1 - 60f
-            caja(m, arriba + 555f, n, arriba + 581f, 13f, Tema.TARJETA2)
+            caja(m, arriba + 555f, n, arriba + 581f, 13f, Oscuro.TARJETA2)
             val llena = (avance.coerceIn(0.0, 1.0) * (n - m)).toFloat()
             if (llena > 0) caja(m, arriba + 555f, m + maxOf(26f, llena), arriba + 581f, 13f, colBorde)
             texto("${(avance * 100).toInt().coerceIn(0, 999)} % de ${dinero(meta)}", cx, arriba + 640f, Fuentes.numero, 33f,
-                Tema.TENUE, 0.06f, Paint.Align.CENTER)
+                Oscuro.TENUE, 0.06f, Paint.Align.CENTER)
         }
 
         // Ofertas que viste, en sus colores, centradas.
@@ -167,9 +167,9 @@ object Resumen {
             p.color = col
             c.drawCircle(x + 13f, yf - 12f, 13f, p)
             x += 41f
-            texto(n.toString(), x, yf, Fuentes.numero, 36f, Tema.HUESO)
+            texto(n.toString(), x, yf, Fuentes.numero, 36f, Oscuro.HUESO)
             x += medir(n.toString(), Fuentes.numero, 36f) + 12f
-            texto(e, x, yf, Fuentes.texto, 36f, Tema.TEXTO2)
+            texto(e, x, yf, Fuentes.texto, 36f, Oscuro.TEXTO2)
             x += medir(e, Fuentes.texto, 36f) + 43f
         }
 
@@ -177,9 +177,9 @@ object Resumen {
         val wMarca = medir("Checa", Fuentes.titulo, 65f)
         val xm = cx - (50f + 22f + wMarca) / 2f
         ctx.getDrawable(R.drawable.semaforo)?.apply { setBounds(xm.toInt(), 1090, xm.toInt() + 50, 1173); draw(c) }
-        texto("Checa", xm + 72f, 1153f, Fuentes.titulo, 65f, Tema.HUESO, -0.02f)
-        texto("Mira cuánto te queda de cada viaje.", cx, 1236f, Fuentes.texto, 36f, Tema.TEXTO2, 0f, Paint.Align.CENTER)
-        texto("jeal1498.github.io/PWA-Checa-Multimedia", cx, 1283f, Fuentes.numero, 30f, Tema.TENUE, 0f, Paint.Align.CENTER)
+        texto("Checa", xm + 72f, 1153f, Fuentes.titulo, 65f, Oscuro.HUESO, -0.02f)
+        texto("Mira cuánto te queda de cada viaje.", cx, 1236f, Fuentes.texto, 36f, Oscuro.TEXTO2, 0f, Paint.Align.CENTER)
+        texto("jeal1498.github.io/PWA-Checa-Multimedia", cx, 1283f, Fuentes.numero, 30f, Oscuro.TENUE, 0f, Paint.Align.CENTER)
         return bmp
     }
 }

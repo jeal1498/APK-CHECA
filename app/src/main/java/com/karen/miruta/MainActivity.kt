@@ -56,17 +56,17 @@ import java.util.Locale
 class MainActivity : Activity() {
 
     // ---------- colores (ver Tema) ----------
-    private val cFondo = Tema.FONDO
-    private val cTarjeta = Tema.TARJETA
-    private val cTarjeta2 = Tema.TARJETA2
-    private val cTexto = Tema.TEXTO
-    private val cTexto2 = Tema.TEXTO2
-    private val cTenue = Tema.TENUE
+    private val cFondo get() = Tema.FONDO
+    private val cTarjeta get() = Tema.TARJETA
+    private val cTarjeta2 get() = Tema.TARJETA2
+    private val cTexto get() = Tema.TEXTO
+    private val cTexto2 get() = Tema.TEXTO2
+    private val cTenue get() = Tema.TENUE
     private val cVerde = Tema.VERDE
     private val cAmarillo = Tema.AMARILLO
     private val cRojo = Tema.ROJO
-    private val DORADO = Tema.DORADO
-    private val cSinDatos = Color.rgb(42, 42, 51)
+    private val DORADO get() = Tema.DORADO
+    private val cSinDatos get() = Tema.BORDE
 
     private val fuenteMedia: Typeface get() = Fuentes.media
 
@@ -139,8 +139,10 @@ class MainActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ajustesSeccion = savedInstanceState?.getInt("ajSec") ?: 0
         Fuentes.iniciar(this)
         prefs = Prefs(this)
+        Tema.aplicar(this, prefs.tema)
         popupPrueba = Popup(this, prefs, WindowManager.LayoutParams.TYPE_APPLICATION)
         // API 36 impone edge-to-edge. Dibujamos el fondo bajo las barras, pero
         // mantenemos los controles dentro de los insets para no taparlos.
@@ -148,8 +150,8 @@ class MainActivity : Activity() {
         window.statusBarColor = Color.TRANSPARENT
         window.navigationBarColor = Color.TRANSPARENT
         WindowCompat.getInsetsController(window, window.decorView).apply {
-            isAppearanceLightStatusBars = false
-            isAppearanceLightNavigationBars = false
+            isAppearanceLightStatusBars = Tema.claro
+            isAppearanceLightNavigationBars = Tema.claro
         }
 
         contenido = FrameLayout(this)
@@ -208,10 +210,13 @@ class MainActivity : Activity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putInt("tab", pestanas.indexOfFirst { it.visibility == View.VISIBLE }.coerceAtLeast(0))
+        outState.putInt("ajSec", ajustesSeccion)
     }
 
     override fun onResume() {
         super.onResume()
+        // «Automático» sigue al teléfono: si cambió de oscuro a claro mientras estaba en segundo plano, se redibuja.
+        if (Tema.esClaro(this, prefs.tema) != Tema.claro) { recreate(); return }
         actualizarAcceso()
         Cuenta.actualizarPrivados(this) { pintarJornada() }
         // Ajustes cerró al instante la página del lector (ese teléfono no la soporta): se abre la lista.
@@ -1420,7 +1425,7 @@ class MainActivity : Activity() {
         val colorAhora = if (hayDatos) colorKm(v0) else cSinDatos
         // Borde de la tarjeta: el color de la hora actual (solo decide si hay datos).
         mejoresHorasCard.background = RippleDrawable(
-            ColorStateList.valueOf(Color.argb(40, 255, 255, 255)),
+            ColorStateList.valueOf(brillo()),
             GradientDrawable().apply {
                 setColor(cTarjeta)
                 cornerRadius = dp(Tema.R_TARJETA).toFloat()
@@ -1803,6 +1808,19 @@ class MainActivity : Activity() {
         cajaPaisSeguridad = paisSeg
         pintarPaisSeguridad()
         sPais.addView(paisSeg, margenTarjeta())
+        val apar = tarjeta()
+        apar.addView(etiquetaTarjeta("APARIENCIA"))
+        val modos = listOf(Tema.MODO_OSCURO, Tema.MODO_CLARO, Tema.MODO_AUTO)
+        apar.addView(pildoras(listOf("Oscuro", "Claro", "Automático"), { modos.indexOf(prefs.tema).coerceAtLeast(0) }) { i ->
+            if (prefs.tema != modos[i]) {
+                prefs.tema = modos[i]
+                ajustesSeccion = 3
+                recreate()
+            }
+        }, margenArriba(Tema.S1))
+        apar.addView(texto("Automático sigue al teléfono. El pop-up de ofertas siempre es oscuro.", Tema.T_NOTA, cTenue, false)
+            .apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
+        sPais.addView(apar, margenTarjeta())
 
         raiz.addView(scroll(col), LinearLayout.LayoutParams(-1, 0, 1f))
         mostrarSeccion(ajustesSeccion.coerceIn(0, 3))
@@ -2065,7 +2083,7 @@ class MainActivity : Activity() {
                     setStroke(dp(2), Tema.HUMO)
                 }
                 fila.background = RippleDrawable(
-                    ColorStateList.valueOf(Color.argb(40, 255, 255, 255)),
+                    ColorStateList.valueOf(brillo()),
                     GradientDrawable().apply {
                         setColor(cTarjeta)
                         cornerRadius = dp(Tema.R_BOTON).toFloat()
@@ -4128,7 +4146,7 @@ class MainActivity : Activity() {
             minimumHeight = dp(72)
             setPadding(dp(14), dp(12), dp(12), dp(12))
             background = RippleDrawable(
-                ColorStateList.valueOf(Color.argb(40, 255, 255, 255)),
+                ColorStateList.valueOf(brillo()),
                 GradientDrawable().apply {
                     setColor(cTarjeta)
                     cornerRadius = dp(Tema.R_TARJETA).toFloat()
@@ -5666,8 +5684,11 @@ class MainActivity : Activity() {
         setColor(color)
     }
 
+    /** Color de la onda al tocar: blanca sobre oscuro, negra sobre claro. */
+    private fun brillo() = if (Tema.claro) Color.argb(30, 0, 0, 0) else Color.argb(40, 255, 255, 255)
+
     private fun ripple(color: Int, radio: Int) =
-        RippleDrawable(ColorStateList.valueOf(Color.argb(40, 255, 255, 255)), redondo(color, radio), redondo(Color.WHITE, radio))
+        RippleDrawable(ColorStateList.valueOf(brillo()), redondo(color, radio), redondo(Color.WHITE, radio))
 
     private fun animarCambios(v: ViewGroup) {
         v.layoutTransition = LayoutTransition().apply {
@@ -5750,7 +5771,7 @@ class MainActivity : Activity() {
     /** Botón secundario de la marca v2: transparente con contorno humo y texto hueso. */
     private fun botonContorno(s: String, accion: () -> Unit) = boton(s, Color.TRANSPARENT, cTexto, accion).apply {
         background = RippleDrawable(
-            ColorStateList.valueOf(Color.argb(40, 255, 255, 255)),
+            ColorStateList.valueOf(brillo()),
             GradientDrawable().apply {
                 cornerRadius = dp(28).toFloat()
                 setColor(Color.TRANSPARENT)
@@ -5776,7 +5797,7 @@ class MainActivity : Activity() {
         isChecked = valor
         val estados = arrayOf(intArrayOf(android.R.attr.state_checked), intArrayOf())
         thumbTintList = ColorStateList(estados, intArrayOf(Tema.HUESO, Tema.TENUE))
-        trackTintList = ColorStateList(estados, intArrayOf(Color.argb(150, 244, 244, 239), Tema.HUMO))
+        trackTintList = ColorStateList(estados, intArrayOf(if (Tema.claro) Color.argb(150, 12, 12, 16) else Color.argb(150, 244, 244, 239), Tema.HUMO))
     }
 
     private fun interruptor(titulo: String, sub: String?, valor: Boolean, cambio: (Boolean) -> Unit): View {
