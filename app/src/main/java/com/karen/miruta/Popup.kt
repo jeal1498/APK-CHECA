@@ -21,6 +21,8 @@ import android.text.style.StyleSpan
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
+import android.text.style.MetricAffectingSpan
+import android.text.TextPaint
 import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -226,9 +228,10 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
 
     /**
      * También se usa para la vista previa en Ajustes (sin acción en la ✕).
-     * Pop-up C (10.8): arriba la acción con su punto de color (★/2ª delante) y el ⚡ a la derecha;
-     * en medio el monto neto grande y centrado; abajo tres columnas iguales: $/h, $/km y minutos
-     * (verde si cumple la meta, rojo si no, hueso si el filtro está apagado).
+     * Pop-up D (10.10): tarjeta oscura con borde del color del semáforo. Arriba, en una sola línea
+     * centrada, «ACEPTAR: $71 ⚡1.2x» (★/2ª delante) y la ✕ en la esquina; abajo cuatro métricas
+     * iguales: $/h, $/km, minutos y km totales del viaje (verde si cumple la meta, rojo si no,
+     * hueso si el filtro está apagado). Si falla recogida o duración, una línea roja lo dice.
      * Todo se escala con prefs.escalaPopup (70–160 %).
      */
     fun construir(o: Oferta, interactivo: Boolean, app: String? = null, marca: Int = SIN_MARCA): View {
@@ -240,8 +243,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         val acento = Tema.colorNivel(nivel)
         // 2ª opción (dos ofertas a la vez): el color apagado para que la mejor resalte.
         val color = if (segunda) mezclar(acento, Tema.TABLERO, 0.45f) else acento
-        val fondo = mezclar(Tema.ASFALTO, color, 0.14f)
-        val linea = Color.argb(77, Color.red(color), Color.green(color), Color.blue(color))
+        val linea = Color.argb(110, Color.red(Tema.TENUE), Color.green(Tema.TENUE), Color.blue(Tema.TENUE))
         val accion = when (nivel) {
             Oferta.VERDE -> "ACEPTAR"
             Oferta.AMARILLO -> "CONSIDERAR"
@@ -256,122 +258,137 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
 
         val marco = FrameLayout(ctx).apply {
             background = GradientDrawable().apply {
-                setColor(fondo)
-                cornerRadius = e(14f).toFloat()
+                setColor(Tema.TABLERO)
+                cornerRadius = e(16f).toFloat()
                 // La mejor de dos lleva el borde más grueso.
-                setStroke(e(if (marca == MEJOR) 3.5f else 2f).coerceAtLeast(2), color)
+                setStroke(e(if (marca == MEJOR) 4f else 2.5f).coerceAtLeast(2), color)
             }
             elevation = dp(8).toFloat()
         }
         val col = LinearLayout(ctx).apply { orientation = LinearLayout.VERTICAL }
         marco.addView(col, FrameLayout.LayoutParams(-1, -2))
 
-        // Arriba: punto de color + acción, y el ⚡ a la derecha (deja lugar a la ✕).
-        val cabeza = LinearLayout(ctx).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-            setPadding(e(10f), e(7f), e(28f), 0)
-        }
-        cabeza.addView(View(ctx).apply {
-            background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(color) }
-        }, LinearLayout.LayoutParams(e(7f), e(7f)).apply { rightMargin = e(6f) })
-        cabeza.addView(TextView(ctx).apply {
-            text = pre + accion
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(9.5f))
-            setTextColor(color)
-            typeface = Fuentes.negrita
-            letterSpacing = 0.08f
-            includeFontPadding = false
-            maxLines = 1
-        }, LinearLayout.LayoutParams(0, -2, 1f))
+        // Arriba: «ACEPTAR: $71 ⚡1.2x» en un solo texto (el lector no ve el monto suelto).
+        val conNeta = prefs.mostrarNeta && (prefs.kmPorLitro > 0 || prefs.desgastePorKm > 0)
+        val montoTxt = mon.monto(if (conNeta) o.neta(prefs) else o.tarifa, 0)
         val rayo = when {
             o.multiplicador > 1.0 -> "⚡" + fmtX(o.multiplicador) + "x"
             o.dinamica > 0 -> "⚡+" + mon.monto(o.dinamica, 0)
             else -> null
         }
+        val cab = SpannableStringBuilder()
+        cab.append(pre + accion + ":")
+        cab.setSpan(ForegroundColorSpan(color), 0, cab.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        val ini = cab.length + 1
+        cab.append(" ").append(montoTxt)
+        cab.setSpan(ForegroundColorSpan(Tema.HUESO), ini, cab.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        cab.setSpan(RelativeSizeSpan(1.4f), ini, cab.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        cab.setSpan(FuenteSpan(Fuentes.titulo), ini, cab.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         if (rayo != null) {
-            cabeza.addView(TextView(ctx).apply {
-                text = rayo
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(9f))
-                setTextColor(Tema.AMARILLO)
-                typeface = Fuentes.numero
-                includeFontPadding = false
-                maxLines = 1
-            })
+            cab.append(" ")
+            val r0 = cab.length
+            cab.append(rayo)
+            cab.setSpan(ForegroundColorSpan(Tema.AMARILLO), r0, cab.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            cab.setSpan(RelativeSizeSpan(0.72f), r0, cab.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            cab.setSpan(FuenteSpan(Fuentes.numero), r0, cab.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
-        col.addView(cabeza, LinearLayout.LayoutParams(-1, -2))
-
-        // En medio: el monto (neto si así está en Ajustes), grande y centrado.
-        val conNeta = prefs.mostrarNeta && (prefs.kmPorLitro > 0 || prefs.desgastePorKm > 0)
-        val montoTxt = TextView(ctx).apply {
-            text = mon.monto(if (conNeta) o.neta(prefs) else o.tarifa, 0)
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(34f))
-            setTextColor(Tema.HUESO)
-            typeface = Fuentes.titulo
+        val cabeza = TextView(ctx).apply {
+            text = cab
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(14f))
+            typeface = Fuentes.negrita
             gravity = Gravity.CENTER
             includeFontPadding = false
             maxLines = 1
-            setPadding(e(8f), e(4f), e(8f), e(7f))
+            setHorizontallyScrolling(true)
+            // Mismo margen a los dos lados: el texto queda centrado y la ✕ no lo tapa.
+            setPadding(e(28f), e(9f), e(28f), e(5f))
         }
-        encoger(montoTxt, 18f)
-        col.addView(montoTxt, LinearLayout.LayoutParams(-1, -2))
+        encogerFila(cabeza, 9f)
+        col.addView(cabeza, LinearLayout.LayoutParams(-1, -2))
 
-        // Abajo: tres columnas iguales separadas por líneas finas.
-        col.addView(View(ctx).apply { setBackgroundColor(linea) }, LinearLayout.LayoutParams(-1, maxOf(1, dp(1))))
+        // Abajo: cuatro métricas iguales separadas por barras finas.
         fun tono(cumple: Boolean?) = when (cumple) { true -> Tema.VERDE; false -> Tema.ROJO; null -> Tema.HUESO }
-        val recFalla = prefs.filtroRecMax && o.recogidaKm > 0 && o.recogidaKm > prefs.recogidaMaxKm
-        val durFalla = prefs.filtroDurMax && o.viajeMin > prefs.duracionMax
         val celdas = listOf(
-            Triple(fmt(o.porHora, 0), "por hora", tono(if (prefs.filtroHora) o.porHora >= prefs.minPorHora else null)),
-            Triple(fmt(o.porKm, 1), "por km", tono(if (prefs.filtroKm) o.porKm >= prefs.minPorKm else null)),
-            when {
-                // «recogida» evita que el lector tome este dato como un tramo de la oferta.
-                recFalla -> Triple(fmt(o.recogidaKm, 1), "km recogida", Tema.ROJO)
-                durFalla -> Triple(fmt(o.viajeMin, 0), "min de viaje", Tema.ROJO)
-                else -> Triple(fmt(o.min, 0), "minutos", Tema.HUESO)
-            }
+            mon.monto(o.porHora, 0) + "/h" to tono(if (prefs.filtroHora) o.porHora >= prefs.minPorHora else null),
+            mon.monto(o.porKm, 1) + "/km" to tono(if (prefs.filtroKm) o.porKm >= prefs.minPorKm else null),
+            fmt(o.min, 0) + " min" to Tema.HUESO,
+            fmt(o.km, 1) + " km" to Tema.HUESO
         )
-        val pie = LinearLayout(ctx).apply { orientation = LinearLayout.HORIZONTAL }
-        celdas.forEachIndexed { k, (n, etq, c) ->
-            if (k > 0) pie.addView(View(ctx).apply { setBackgroundColor(linea) }, LinearLayout.LayoutParams(maxOf(1, dp(1)), -1))
-            val celda = LinearLayout(ctx).apply {
-                orientation = LinearLayout.VERTICAL
-                gravity = Gravity.CENTER_HORIZONTAL
-                setPadding(e(2f), e(5f), e(2f), e(6f))
-            }
-            celda.addView(TextView(ctx).apply {
+        val pie = LinearLayout(ctx).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(e(6f), e(2f), e(6f), e(9f))
+        }
+        celdas.forEachIndexed { k, (n, c) ->
+            if (k > 0) pie.addView(View(ctx).apply { setBackgroundColor(linea) },
+                LinearLayout.LayoutParams(maxOf(1, dp(1)), e(14f)))
+            pie.addView(TextView(ctx).apply {
                 text = n
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(12.5f))
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(11.5f))
                 setTextColor(c)
                 typeface = Fuentes.numero
                 gravity = Gravity.CENTER
                 includeFontPadding = false
                 maxLines = 1
-            }.also { encoger(it, 8f) }, LinearLayout.LayoutParams(-1, -2))
-            celda.addView(TextView(ctx).apply {
-                text = etq
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(8.5f))
-                setTextColor(Tema.TENUE)
+                setPadding(e(1f), 0, e(1f), 0)
+            }.also { encoger(it, 7f) }, LinearLayout.LayoutParams(0, -2, 1f))
+        }
+        col.addView(pie, LinearLayout.LayoutParams(-1, -2))
+
+        // Si la oferta falla recogida o duración, una línea roja lo dice (sin «min (» ni «km)»
+        // para que el lector no lo tome como un tramo de la oferta).
+        val recFalla = prefs.filtroRecMax && o.recogidaKm > 0 && o.recogidaKm > prefs.recogidaMaxKm
+        val durFalla = prefs.filtroDurMax && o.viajeMin > prefs.duracionMax
+        val aviso = when {
+            recFalla -> "Recogida lejana · " + fmt(o.recogidaKm, 1) + " km"
+            durFalla -> "Viaje largo · " + fmt(o.viajeMin, 0) + " min"
+            else -> null
+        }
+        if (aviso != null) {
+            pie.setPadding(e(6f), e(2f), e(6f), e(3f))
+            col.addView(TextView(ctx).apply {
+                text = aviso
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(9f))
+                setTextColor(Tema.ROJO)
                 typeface = Fuentes.texto
                 gravity = Gravity.CENTER
                 includeFontPadding = false
                 maxLines = 1
-            }, LinearLayout.LayoutParams(-1, -2).apply { topMargin = e(2f) })
-            pie.addView(celda, LinearLayout.LayoutParams(0, -2, 1f))
+                setPadding(e(6f), 0, e(6f), e(8f))
+            }, LinearLayout.LayoutParams(-1, -2))
         }
-        col.addView(pie, LinearLayout.LayoutParams(-1, -2))
 
-        // ✕ en la esquina (zona de toque de 24 dp escalada).
+        // ✕ en la esquina, a la altura del título (zona de toque de 24 dp escalada).
         val cerrarBtn = ImageView(ctx).apply {
-            setImageDrawable(Icono(Icono.CERRAR, Tema.TENUE))
+            setImageDrawable(Icono(Icono.CERRAR, Tema.HUESO))
             setPadding(e(6f), e(6f), e(6f), e(6f))
             if (interactivo) setOnClickListener { ocultar() }
         }
         marco.addView(cerrarBtn, FrameLayout.LayoutParams(e(24f), e(24f), Gravity.TOP or Gravity.END).apply {
-            topMargin = e(1f); rightMargin = e(3f)
+            topMargin = e(4f); rightMargin = e(4f)
         })
 
         return marco
+    }
+
+    /** Fuente propia para un tramo del texto (TypefaceSpan pide Android 9; la app llega a 8). */
+    private class FuenteSpan(private val tf: Typeface) : MetricAffectingSpan() {
+        override fun updateDrawState(p: TextPaint) { p.typeface = tf }
+        override fun updateMeasureState(p: TextPaint) { p.typeface = tf }
+    }
+
+    /** Como [encoger] pero para un texto con tramos de distinto tamaño (mide el renglón ya armado). */
+    private fun encogerFila(t: TextView, minimoSp: Float) {
+        t.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            val disp = t.width - t.paddingLeft - t.paddingRight
+            val l = t.layout
+            if (disp <= 0 || l == null || l.lineCount == 0) return@addOnLayoutChangeListener
+            val ancho = l.getLineWidth(0)
+            if (ancho <= disp) return@addOnLayoutChangeListener
+            val minimo = minimoSp * ctx.resources.displayMetrics.scaledDensity
+            val nuevo = maxOf(minimo, t.textSize * disp / ancho)
+            if (nuevo < t.textSize - 0.5f) t.post { t.setTextSize(TypedValue.COMPLEX_UNIT_PX, nuevo) }
+        }
     }
 
     /** Achica el texto (sin bajar de [minimoSp]) si no cabe en una línea dentro de su espacio. */
@@ -414,7 +431,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         )
 
         /** Ancho del pop-up al 100 %, en dp; se multiplica por el tamaño elegido en Ajustes. */
-        const val ANCHO_BASE = 175
+        const val ANCHO_BASE = 280
 
         /** Ancho del pop-up en píxeles según el tamaño elegido (sin el tope de la pantalla). */
         fun anchoPx(c: Context, p: Prefs): Int =
