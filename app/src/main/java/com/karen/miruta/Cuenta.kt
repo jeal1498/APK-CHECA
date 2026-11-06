@@ -626,6 +626,8 @@ object Cuenta {
     fun invitacionPendiente(ctx: Context): String? = sp(ctx).getString("inv_pendiente", null)
 
     /** Meses ganados por invitaciones que la app todavía no ha avisado. */
+    fun premios(ctx: Context): Int = sp(ctx).getInt("premios", 0)
+
     fun premiosNuevos(ctx: Context): Int = sp(ctx).getInt("premios", 0) - sp(ctx).getInt("premios_vistos", 0)
 
     fun marcarPremiosVistos(ctx: Context) =

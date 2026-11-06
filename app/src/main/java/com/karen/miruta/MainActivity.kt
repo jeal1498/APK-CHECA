@@ -3244,11 +3244,21 @@ class MainActivity : Activity() {
                     orientation = LinearLayout.HORIZONTAL
                     gravity = Gravity.CENTER_VERTICAL
                     background = redondo(cTarjeta2, Tema.R_BOTON)
-                    setPadding(dp(Tema.S2), dp(12), dp(Tema.S2), dp(12))
+                    setPadding(dp(Tema.S2), dp(12), dp(8), dp(12))
                 }
-                fila.addView(texto("Tu código", Tema.T_NOTA, cTenue, false), LinearLayout.LayoutParams(0, -2, 1f))
-                fila.addView(numero(codigo, Tema.T_SUB, cTexto))
+                val colCodigo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+                colCodigo.addView(texto("TU CÓDIGO", Tema.T_NOTA, cTenue, true).apply { letterSpacing = 0.08f })
+                colCodigo.addView(numero(codigo, Tema.T_TITULO, cTexto), margenArriba(2))
+                fila.addView(colCodigo, LinearLayout.LayoutParams(0, -2, 1f))
+                fila.addView(boton("Copiar", cTarjeta, cTexto) {
+                    val cm = getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                    cm.setPrimaryClip(android.content.ClipData.newPlainText("Código de Checa", codigo))
+                    Toast.makeText(this, "Código copiado", Toast.LENGTH_SHORT).show()
+                }.apply { setPadding(dp(18), 0, dp(18), 0) }, LinearLayout.LayoutParams(-2, dp(44)))
                 t.addView(fila, margenArriba(Tema.S2))
+                val ganados = Cuenta.premios(this)
+                if (ganados > 0) t.addView(chipDiag("$ganados ${if (ganados == 1) "mes ganado" else "meses ganados"}", Tema.VERDE_SUAVE, cVerde),
+                    LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(Tema.S1) })
             } else if (!Cuenta.conectada(this)) {
                 t.addView(texto("Entra con Google para tener tu código y ganar meses gratis.", Tema.T_NOTA, cTenue, false)
                     .apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
@@ -3386,7 +3396,8 @@ class MainActivity : Activity() {
         }
         pintarPrecios.add(pintar)
         pintar()
-        beneficios.forEach { b ->
+        val resto = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; visibility = View.GONE }
+        beneficios.forEachIndexed { i, b ->
             val fila = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
             fila.addView(icono(Icono.OK, if (destacado) Tema.HUESO else cTexto2, 16), LinearLayout.LayoutParams(dp(16), dp(16)).apply {
                 rightMargin = dp(Tema.S1)
@@ -3394,11 +3405,25 @@ class MainActivity : Activity() {
             })
             fila.addView(texto(b, Tema.T_TEXTO, cTexto, false).apply { setLineSpacing(0f, 1.15f) },
                 LinearLayout.LayoutParams(0, -2, 1f))
-            t.addView(fila, margenArriba(Tema.S1))
+            (if (i < 2) t else resto).addView(fila, margenArriba(Tema.S1))
+        }
+        if (beneficios.size > 2) {
+            t.addView(resto)
+            val ver = texto("Ver todo ▾", Tema.T_NOTA, cTexto2, true).apply {
+                minHeight = dp(Tema.ALTO_TOQUE)
+                gravity = Gravity.CENTER_VERTICAL
+                isClickable = true
+            }
+            ver.setOnClickListener {
+                val abrir = resto.visibility != View.VISIBLE
+                resto.visibility = if (abrir) View.VISIBLE else View.GONE
+                ver.text = if (abrir) "Ver menos ▴" else "Ver todo ▾"
+            }
+            t.addView(ver)
         }
         t.addView(boton("Pagar con Mercado Pago", if (destacado) cVerde else cTarjeta2, if (destacado) Color.BLACK else cTexto) {
             pagarPaquete(plan)
-        }, margenArriba(Tema.S2))
+        }, margenArriba(Tema.S1))
         return t
     }
 
