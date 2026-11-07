@@ -29,6 +29,8 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
     val reintentoRapido: Boolean get() = fallos in 1..FALLOS_MAX
 
     @Volatile private var cerrado = false
+    /** Número de la lectura en curso. */
+    @Volatile private var turnoOcr = 0
     private var leyoPasada = false
     private var ultimaGuardada = 0
     private var capAncho = 0
@@ -66,15 +68,20 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
         saltosGate = 0
         huellaOcr = hu
         ocupado = true
+        val turno = ++turnoOcr
         try {
             ocr.process(InputImage.fromBitmap(bmp, 0))
-                .addOnSuccessListener { resultado -> if (!cerrado) analizar(resultado, bmp) }
+                .addOnSuccessListener { resultado ->
+                    // Un error al analizar no debe dejar el lector trabado.
+                    try { if (!cerrado) analizar(resultado, bmp) } catch (_: Throwable) { }
+                }
                 .addOnCompleteListener {
                     bmpActual = null
-                    bmp.recycle()
-                    ocupado = false
+                    try { bmp.recycle() } catch (_: Throwable) { }
+                    // Una lectura vieja (ya dada por perdida) no libera a la que está en curso.
+                    if (turno == turnoOcr) ocupado = false
                 }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             bmp.recycle()
             ocupado = false
         }
@@ -82,7 +89,7 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
     }
 
     /** Da por perdida una lectura colgada (ML Kit no respondió) para poder seguir. */
-    fun liberar() { ocupado = false }
+    fun liberar() { turnoOcr++; ocupado = false }
 
     fun cerrar() {
         cerrado = true

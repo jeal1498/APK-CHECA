@@ -120,8 +120,30 @@ class RutaService : AccessibilityService() {
             programar(0)
         }
     }
+    /** Última vez que corrió el ciclo de captura (aunque no capturara). */
+    private var ultimoCiclo = 0L
+    /**
+     * Vigilante: la lectura solo avanza cuando la captura y el OCR responden. Si Android pierde
+     * una respuesta (sin éxito ni error), nada volvía a programar la captura y la lectura se
+     * quedaba parada con la notificación activa. Cada 5 s revisa y, si el ciclo lleva 10 s
+     * quieto, limpia lo colgado y vuelve a leer.
+     */
+    private val vigilante = object : Runnable {
+        override fun run() {
+            if (!leyendo) return
+            if (SystemClock.uptimeMillis() - ultimoCiclo > VIGILANTE_QUIETO) {
+                capturando = false
+                ocr?.liberar()
+                programada = false
+                handler.removeCallbacks(capturar)
+                programar(0)
+            }
+            handler.postDelayed(this, VIGILANTE_CADA)
+        }
+    }
     private val capturar = Runnable {
         programada = false
+        ultimoCiclo = SystemClock.uptimeMillis()
         if (Build.VERSION.SDK_INT >= 30) tomarCaptura()
     }
 
@@ -145,6 +167,9 @@ class RutaService : AccessibilityService() {
         exitos = 0
         notificarLectura()
         WidgetCheca.actualizar(this)
+        ultimoCiclo = SystemClock.uptimeMillis()
+        handler.removeCallbacks(vigilante)
+        handler.postDelayed(vigilante, VIGILANTE_CADA)
         programar(0)
         return true
     }
@@ -154,6 +179,7 @@ class RutaService : AccessibilityService() {
         if (!leyendo) return
         leyendo = false
         handler.removeCallbacks(capturar)
+        handler.removeCallbacks(vigilante)
         programada = false
         capturando = false
         try { unregisterReceiver(pantallaRx) } catch (_: Exception) { }
@@ -212,24 +238,30 @@ class RutaService : AccessibilityService() {
         try {
             takeScreenshot(Display.DEFAULT_DISPLAY, ejecutor, object : AccessibilityService.TakeScreenshotCallback {
                 override fun onSuccess(resultado: AccessibilityService.ScreenshotResult) {
-                    val buffer = resultado.hardwareBuffer
-                    val bmp: Bitmap? = try {
-                        Bitmap.wrapHardwareBuffer(buffer, resultado.colorSpace)?.let { hw ->
-                            val sw = hw.copy(Bitmap.Config.ARGB_8888, false)
-                            hw.recycle()
-                            sw
+                    // Pase lo que pase (memoria llena, imagen rara), siempre se agenda la siguiente:
+                    // antes un error aquí cortaba la cadena y la lectura se quedaba parada.
+                    var ok = false
+                    try {
+                        val buffer = resultado.hardwareBuffer
+                        val bmp: Bitmap? = try {
+                            Bitmap.wrapHardwareBuffer(buffer, resultado.colorSpace)?.let { hw ->
+                                val sw = hw.copy(Bitmap.Config.ARGB_8888, false)
+                                hw.recycle()
+                                sw
+                            }
+                        } catch (e: Throwable) { null } finally {
+                            try { buffer.close() } catch (_: Throwable) { }
                         }
-                    } catch (e: Exception) { null } finally {
-                        try { buffer.close() } catch (_: Exception) { }
-                    }
-                    if (bmp != null) {
-                        val ancho = bmp.width
-                        val alto = bmp.height
-                        lector.procesar(LectorOcr.reducir(bmp), ancho, alto)
-                    }
+                        if (bmp != null) {
+                            val ancho = bmp.width
+                            val alto = bmp.height
+                            lector.procesar(LectorOcr.reducir(bmp), ancho, alto)
+                            ok = true
+                        }
+                    } catch (_: Throwable) { }
                     handler.post {
                         capturando = false
-                        if (bmp != null) { exitos++; fallosCaptura = 0; siguiente() } else falloCaptura(-1)
+                        if (ok) { exitos++; fallosCaptura = 0; siguiente() } else falloCaptura(-1)
                     }
                 }
 
@@ -557,5 +589,7 @@ class RutaService : AccessibilityService() {
         private const val LATIDO_SIN_APP = 5000L
         private const val ESPERA_OCUPADO = 150L
         private const val FALLOS_CAPTURA_MAX = 5
+        private const val VIGILANTE_CADA = 5000L
+        private const val VIGILANTE_QUIETO = 10_000L
     }
 }

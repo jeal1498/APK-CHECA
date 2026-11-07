@@ -9,6 +9,9 @@ object Novedades {
     class Version(val codigo: Int, val nombre: String, val puntos: List<String>)
 
     val LISTA = listOf(
+        Version(118, "10.38", listOf(
+            "Arreglo: Checa ya no deja de leer después de un rato; si la lectura se traba, se reanuda sola en 10 segundos."
+        )),
         Version(117, "10.37", listOf(
             "Arreglo: tras bloquear y desbloquear el teléfono, Checa vuelve a leer las ofertas sola."
         )),
