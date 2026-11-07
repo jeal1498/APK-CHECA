@@ -1,11 +1,11 @@
 # Reporte de Checa (web + app) · últimos 30 días
 
-Generado: 2026-11-06 19:44 UTC. Cuenta visitas únicas (una por pestaña).
+Generado: 2026-11-07 17:53 UTC. Cuenta visitas únicas (una por pestaña).
 
 ## Resumen
 | visitas | descargas | cuentas_nuevas | pagos | ingresos | licencias_activas |
 | --- | --- | --- | --- | --- | --- |
-| 630 | 264 | 45 | 0 | 0 | 3 |
+| 633 | 264 | 45 | 0 | 0 | 3 |
 
 # App
 
@@ -31,7 +31,7 @@ Generado: 2026-11-06 19:44 UTC. Cuenta visitas únicas (una por pestaña).
 | correo | registro | ultimo_acceso | equipos | licencia_vence |
 | --- | --- | --- | --- | --- |
 | jesusmaciasjesus777@gmail.com | 11-05 21:39 | 11-05 21:39 | 1 | sin licencia |
-| jonhy.zuka@gmail.com | 11-02 15:04 | 11-02 15:04 | 1 | sin licencia |
+| jonhy.zuka@gmail.com | 11-02 15:04 | 11-07 08:07 | 1 | sin licencia |
 | hugo942001@gmail.com | 10-27 11:12 | 10-27 11:12 | 1 | sin licencia |
 | jaimeortizventas@gmail.com | 10-24 16:54 | 10-24 16:54 | 1 | sin licencia |
 | gomeztrujillokarenamayrani@gmail.com | 10-24 14:10 | 10-24 14:10 | 1 | sin licencia |
@@ -61,7 +61,7 @@ Generado: 2026-11-06 19:44 UTC. Cuenta visitas únicas (una por pestaña).
 | patpechluisfernando89@gmail.com | 10-18 21:35 | 10-18 21:35 | 1 | sin licencia |
 | carrasquedomiguel36@gmail.com | 10-18 21:24 | 10-18 21:24 | 1 | sin licencia |
 | carloshernandez.soles@gmail.com | 10-18 21:09 | 10-18 21:09 | 1 | sin licencia |
-| mcamposl0088@gmail.com | 10-18 19:57 | 11-02 16:40 | 2 | sin licencia |
+| mcamposl0088@gmail.com | 10-18 19:57 | 11-06 16:40 | 2 | sin licencia |
 | migajas.tlx@gmail.com | 10-18 13:24 | 10-18 13:24 | 1 | sin licencia |
 | dcisnerosdanys@gmail.com | 10-18 13:11 | 11-04 12:28 | 2 | sin licencia |
 | fercho75.1he@gmail.com | 10-17 21:02 | 10-17 21:02 | 1 | sin licencia |
@@ -71,10 +71,10 @@ Generado: 2026-11-06 19:44 UTC. Cuenta visitas únicas (una por pestaña).
 | manuelneoss@gmail.com | 10-16 15:02 | 10-16 15:02 | 1 | sin licencia |
 | 2228265104z@gmail.com | 10-16 13:08 | 10-16 13:08 | 1 | sin licencia |
 | ivanmanuelzamoracortes240498@gmail.com | 10-16 09:33 | 10-16 09:33 | 1 | sin licencia |
-| edent402@gmail.com | 10-16 07:42 | 11-04 12:54 | 2 | sin licencia |
+| edent402@gmail.com | 10-16 07:42 | 11-04 12:54 | 1 | sin licencia |
 | lufercab@gmail.com | 10-15 18:21 | 10-15 18:21 | 1 | 20270113 |
 | landingbot01@gmail.com | 10-11 15:23 | 10-21 19:26 | 1 | sin licencia |
-| lalolopezxd@gmail.com | 10-11 15:08 | 11-05 22:18 | 2 | 99991231 |
+| lalolopezxd@gmail.com | 10-11 15:08 | 11-07 11:22 | 2 | 99991231 |
 
 ## Pagos por plan
 Sin datos todavía.
@@ -106,7 +106,7 @@ Sin datos todavía.
 ## Embudo
 | evento | visitas | veces |
 | --- | --- | --- |
-| visita | 630 | 889 |
+| visita | 633 | 892 |
 | descarga | 264 | 297 |
 | clic_descargar | 122 | 134 |
 | descarga_instalar | 69 | 147 |
@@ -118,7 +118,7 @@ Sin datos todavía.
 ## Por fuente (visitas → descargas)
 | fuente | campana | visitas | descargas |
 | --- | --- | --- | --- |
-| directo |  | 478 | 198 |
+| directo |  | 481 | 198 |
 | tiktok |  | 98 | 55 |
 | tiktok | prueba-en-google-play | 22 | 0 |
 | app | compartir | 17 | 9 |
@@ -135,7 +135,7 @@ Sin datos todavía.
 | dispositivo | visitas | descargas |
 | --- | --- | --- |
 | android | 509 | 264 |
-| pc | 65 | 0 |
+| pc | 68 | 0 |
 | iphone | 57 | 0 |
 
 ## Qué botón lleva a descargar
@@ -157,6 +157,7 @@ Sin datos todavía.
 ## Por día
 | dia | visitas | descargas |
 | --- | --- | --- |
+| 2026-11-07 | 3 | 0 |
 | 2026-11-05 | 4 | 1 |
 | 2026-11-04 | 13 | 1 |
 | 2026-11-03 | 3 | 0 |
