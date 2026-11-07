@@ -81,6 +81,9 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
         return true
     }
 
+    /** Da por perdida una lectura colgada (ML Kit no respondió) para poder seguir. */
+    fun liberar() { ocupado = false }
+
     fun cerrar() {
         cerrado = true
         try { ocr.close() } catch (_: Exception) { }

@@ -111,6 +111,15 @@ class RutaService : AccessibilityService() {
     private var fallosCaptura = 0
     /** Capturas buenas desde que se encendió: si hubo alguna, el teléfono sí deja capturar. */
     private var exitos = 0
+    /** Al encender la pantalla o desbloquear: se limpia lo colgado y se lee ya. */
+    private val pantallaRx = object : android.content.BroadcastReceiver() {
+        override fun onReceive(c: Context?, i: Intent?) {
+            if (!leyendo) return
+            capturando = false
+            ocr?.liberar()
+            programar(0)
+        }
+    }
     private val capturar = Runnable {
         programada = false
         if (Build.VERSION.SDK_INT >= 30) tomarCaptura()
@@ -123,6 +132,11 @@ class RutaService : AccessibilityService() {
         if (leyendo) return true
         val h = HandlerThread("checa-ocr").also { it.start() }
         hiloOcr = h
+        try {
+            registerReceiver(pantallaRx, android.content.IntentFilter().apply {
+                addAction(Intent.ACTION_SCREEN_ON); addAction(Intent.ACTION_USER_PRESENT)
+            })
+        } catch (_: Exception) { }
         handlerOcr = Handler(h.looper)
         ocr = LectorOcr(this, prefs)
         leyendo = true
@@ -142,6 +156,7 @@ class RutaService : AccessibilityService() {
         handler.removeCallbacks(capturar)
         programada = false
         capturando = false
+        try { unregisterReceiver(pantallaRx) } catch (_: Exception) { }
         try { ocr?.cerrar() } catch (_: Exception) { }
         ocr = null
         hiloOcr?.quitSafely()
@@ -183,6 +198,12 @@ class RutaService : AccessibilityService() {
         // Con la pantalla apagada no hay ofertas que ver (y la captura fallaría).
         val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
         if (!pm.isInteractive) { programar(LATIDO_SIN_APP); return }
+        // Al apagar o bloquear la pantalla, una captura u OCR puede quedar colgado sin avisar:
+        // pasados 6 s se da por perdido y se sigue leyendo (si no, tras desbloquear no leía nada).
+        if ((capturando || lector.ocupado) && SystemClock.uptimeMillis() - ultimaCaptura > 6000L) {
+            capturando = false
+            lector.liberar()
+        }
         if (capturando || lector.ocupado) { programar(ESPERA_OCUPADO); return }
         val h = handlerOcr ?: return
         val ejecutor = Executor { r -> h.post(r) }
