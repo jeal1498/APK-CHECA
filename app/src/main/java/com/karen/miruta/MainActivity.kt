@@ -2311,6 +2311,8 @@ class MainActivity : Activity() {
     private fun mostrarPais(alElegir: (() -> Unit)? = null) {
         val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         val actual = Pais.actual(prefs)
+        // Si el país elegido y la moneda no coinciden (la cuenta la cambió), se corrige al abrir.
+        if (prefs.pais.isNotEmpty() && actual.moneda.codigo != prefs.moneda.codigo) Cuenta.cambiarMoneda(this, actual.moneda)
         val monedaAntes = prefs.moneda.codigo
         var d: Dialog? = null
         fun elegir(p: Pais) {

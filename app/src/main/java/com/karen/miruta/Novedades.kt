@@ -9,6 +9,9 @@ object Novedades {
     class Version(val codigo: Int, val nombre: String, val puntos: List<String>)
 
     val LISTA = listOf(
+        Version(116, "10.36", listOf(
+            "Arreglo: si tu país es México, la moneda ya no se queda en dólares y Checa vuelve a mostrar el pop-up."
+        )),
         Version(115, "10.35", listOf(
             "La apariencia ahora viene en Automático: sigue el modo claro u oscuro de tu teléfono."
         )),

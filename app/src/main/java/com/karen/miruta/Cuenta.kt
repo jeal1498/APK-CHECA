@@ -448,6 +448,15 @@ object Cuenta {
             t, null))
         val remoto = if (filas.length() > 0) filas.getJSONObject(0) else null
         val sube = JSONObject()
+        // El país elegido manda: si su moneda no es la guardada (la cuenta la había dejado en otra), se corrige y se sube.
+        if (!p.monedaPendiente) {
+            Pais.de(p.pais)?.let { pa ->
+                if (pa.moneda.codigo != p.moneda.codigo || (remoto != null && pa.moneda.codigo != remoto.optString("moneda", "MXN"))) {
+                    p.moneda = pa.moneda
+                    p.monedaPendiente = true
+                }
+            }
+        }
         val pendiente = p.monedaPendiente
         if (pendiente) {
             val m = p.moneda
