@@ -85,9 +85,9 @@ class Prefs(context: Context) {
         get() = sp.getInt("novedadesVista", 0)
         set(v) { sp.edit().putInt("novedadesVista", v).apply() }
 
-    /** Apariencia de la app (10.32): «oscuro» (por defecto), «claro» o «auto» (sigue al teléfono). */
+    /** Apariencia de la app (10.32): «auto» (por defecto, sigue al teléfono), «oscuro» o «claro». */
     var tema: String
-        get() = sp.getString("tema", Tema.MODO_OSCURO) ?: Tema.MODO_OSCURO
+        get() = sp.getString("tema", Tema.MODO_AUTO) ?: Tema.MODO_AUTO
         set(v) { sp.edit().putString("tema", v).apply() }
 
     // ---------- Gasolina ----------

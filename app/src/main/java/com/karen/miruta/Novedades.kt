@@ -9,6 +9,9 @@ object Novedades {
     class Version(val codigo: Int, val nombre: String, val puntos: List<String>)
 
     val LISTA = listOf(
+        Version(115, "10.35", listOf(
+            "La apariencia ahora viene en Automático: sigue el modo claro u oscuro de tu teléfono."
+        )),
         Version(114, "10.34", listOf(
             "Modo claro: en Ajustes › País › Apariencia elige Oscuro, Claro o Automático (sigue a tu teléfono).",
             "Pantallas más compactas: caben más cosas sin bajar tanto.",
