@@ -209,6 +209,7 @@ object Cuenta {
             // Otra persona puede entrar después en este equipo: se borra lo guardado de esta cuenta.
             Guardado.borrarTodo(app)
             Historial.borrar(app)
+            Horas.borrar(app)
             Jornada.borrarPrivados(app)
             Sos.borrarTodo(app)
             Prefs(app).borrarDiagnostico()
@@ -231,6 +232,7 @@ object Cuenta {
                 sp(app).edit().clear().putBoolean("bienvenida", bienvenida).commit()
                 Guardado.borrarTodo(app)
                 Historial.borrar(app)
+                Horas.borrar(app)
                 Prefs(app).borrarDiagnostico()
                 Licencia.limpiarCache()
                 Resultado.Ok
@@ -366,6 +368,8 @@ object Cuenta {
         try { sincronizarAjustes(ctx, t) } catch (_: Exception) { }
         try { sincronizarPerfil(ctx, t) } catch (_: Exception) { }
         try { sincronizarViajes(ctx, t) } catch (_: Exception) { }
+        try { bajarViajes(ctx, t) } catch (_: Exception) { }
+        try { sincronizarHoras(ctx, t) } catch (_: Exception) { }
         if (Jornada.CLIENTELA_ACTIVA) try { bajarPrivados(ctx, t) } catch (_: Exception) { }
         try { sincronizarSos(ctx, t) } catch (_: Exception) { }
         return Resultado.Ok
@@ -422,6 +426,7 @@ object Cuenta {
             try {
                 if (canonPerfil(Prefs(app)) != sp(app).getString("perfil_hash", null)) sincronizarPerfil(app, token(app))
             } catch (_: Exception) { }
+            try { sincronizarHoras(app, token(app)) } catch (_: Exception) { }
         }.start()
     }
 
@@ -534,6 +539,86 @@ object Cuenta {
         }
         subidos.retainAll(locales.map { it.hora.toString() }.toSet())
         sp(ctx).edit().putStringSet("vc_subidos", subidos).putStringSet("vc_borrar", borrar).commit()
+    }
+
+    /**
+     * Viajes aceptados de otros equipos (o de antes de cambiar de teléfono): baja los de la última semana
+     * que no estén aquí, para reconstruir «Mi día» y la meta. Se marcan como subidos para no repetirlos.
+     */
+    @Synchronized
+    private fun bajarViajes(ctx: Context, t: String) {
+        val desde = isoDe(Jornada.inicioDeSemana())
+        val r = JSONArray(pedir("GET",
+            "/rest/v1/viajes_checa?select=id,app,cuando,tarifa,km,gasolina&cuando=gte.$desde&order=cuando.desc&limit=500", t, null))
+        if (r.length() == 0) return
+        val locales = Jornada.todos(ctx)
+        val ids = locales.map { idViaje(it.hora) }.toSet()
+        val borrar = conjunto(ctx, "vc_borrar")
+        val subidos = conjunto(ctx, "vc_subidos")
+        val fmt = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US).apply { timeZone = TimeZone.getTimeZone("UTC") }
+        val nuevos = ArrayList<Viaje>()
+        for (i in 0 until r.length()) {
+            val o = r.getJSONObject(i)
+            val id = o.optString("id")
+            if (id in ids || id.isEmpty()) continue
+            val base = try { fmt.parse(o.optString("cuando").take(19))?.time } catch (_: Exception) { null } ?: continue
+            // La hora original tiene milisegundos y el id sale de ella: se recupera para que borrar siga funcionando.
+            val hora = (base until base + 1000).firstOrNull { idViaje(it) == id } ?: base
+            if (hora.toString() in borrar) continue
+            val app = when (o.optString("app")) { "uber" -> "Uber"; "didi" -> "DiDi"; else -> "Otra" }
+            val tarifa = o.optDouble("tarifa", 0.0)
+            if (tarifa <= 0) continue
+            nuevos.add(Viaje(hora, app, tarifa, o.optDouble("km", 0.0), o.optDouble("gasolina", 0.0)))
+        }
+        if (nuevos.isEmpty()) return
+        Jornada.agregar(ctx, nuevos)
+        nuevos.forEach { subidos.add(it.hora.toString()) }
+        sp(ctx).edit().putStringSet("vc_subidos", subidos).putBoolean("ajustes_nuevos", true).commit()
+    }
+
+    // ------------------------------------------------------------------
+    // «Mejores horas» en la cuenta: solo el resumen por día y hora (horas_checa)
+    // ------------------------------------------------------------------
+
+    /**
+     * Baja el resumen de la cuenta (para equipos nuevos) y sube las celdas donde este equipo
+     * sabe más (más ofertas) que la cuenta. Solo conteo, tarifa y km por día y hora.
+     */
+    @Synchronized
+    private fun sincronizarHoras(ctx: Context, t: String) {
+        val desde = isoDe(System.currentTimeMillis() - 30 * 86_400_000L)
+        val r = JSONArray(pedir("GET",
+            "/rest/v1/horas_checa?select=dia,hora,n,tarifa,km&actualizado=gte.$desde", t, null))
+        var nube = (0 until r.length()).map {
+            val o = r.getJSONObject(it)
+            CeldaHora(o.getInt("dia"), o.getInt("hora"), o.getInt("n"), o.getDouble("tarifa"), o.getDouble("km"))
+        }
+        val locales = Horas.locales(ctx)
+        val canonLocal = Horas.canon(locales)
+        if (canonLocal != sp(ctx).getString("horas_hash", null)) {
+            val enNube = nube.associateBy { it.dia * 24 + it.hora }
+            val suben = locales.filter { it.n > (enNube[it.dia * 24 + it.hora]?.n ?: 0) && it.n >= 3 }
+            if (suben.isNotEmpty()) {
+                val filas = JSONArray()
+                for (c in suben) filas.put(JSONObject().put("dia", c.dia).put("hora", c.hora).put("n", c.n)
+                    .put("tarifa", Math.round(c.tarifa * 100) / 100.0).put("km", Math.round(c.km * 100) / 100.0))
+                pedir("POST", "/rest/v1/horas_checa?on_conflict=user_id,dia,hora", t, filas.toString(),
+                    "resolution=merge-duplicates,return=minimal")
+                val subidas = suben.associateBy { it.dia * 24 + it.hora }
+                nube = nube.filter { (it.dia * 24 + it.hora) !in subidas } + suben
+            }
+            sp(ctx).edit().putString("horas_hash", canonLocal).commit()
+        }
+        Horas.guardarNube(ctx, nube)
+    }
+
+    /** «Borrar estadísticas»: también se borra el resumen de la cuenta, o regresaría solo. */
+    fun borrarHoras(ctx: Context) {
+        Horas.borrar(ctx)
+        sp(ctx).edit().remove("horas_hash").commit()
+        if (!conectada(ctx)) return
+        val app = ctx.applicationContext
+        Thread { try { pedir("DELETE", "/rest/v1/horas_checa?dia=gte.0", token(app), null) } catch (_: Exception) { } }.start()
     }
 
     /** Baja los viajes privados hechos de esta semana (Clientela) para sumarlos a «Mi día». */

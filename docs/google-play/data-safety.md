@@ -55,6 +55,15 @@ Agregar en Play Console → Contenido de la app → Seguridad de los datos (todo
 
 Antes de subir el AAB con la 10.0 (Eduardo, sin publicar sin su OK): actualizar este formulario.
 
+## Cambios de la 10.39 (8 nov 2026)
+Agregar en Play Console → Seguridad de los datos (todo «Recopilado», «Compartido: No», opcional, cifrado en tránsito, se puede borrar):
+| Categoría → tipo | Qué es | Propósitos |
+|---|---|---|
+| Actividad en la app → Otras acciones | `horas_checa`: ofertas, tarifa total y km por día de la semana y hora (30 días), sin cada oferta; país y apariencia dentro de `ajustes` | Funcionalidad; Personalización |
+| Info financiera → Otra información financiera | Ya declarada por los viajes aceptados; ahora también se bajan a otro equipo | Funcionalidad |
+
+**Eliminación:** `horas_checa` se borra en cascada con el usuario de Auth (agregarla en `eliminar-cuenta.html` y Privacidad).
+
 ## Qué NO se declara y por qué
 - **Texto, OCR y capturas de las ofertas:** se procesan solo en el teléfono. Con «Guardar pantallas de ofertas» se guardan localmente, máximo 7 días.
 - **Apps instaladas:** la app consulta las apps con lanzador solo para ubicar Uber y DiDi, sin enviarlas.

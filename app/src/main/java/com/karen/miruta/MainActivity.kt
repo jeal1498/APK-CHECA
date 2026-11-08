@@ -1439,7 +1439,7 @@ class MainActivity : Activity() {
     private fun pintarMejoresHoras(recargar: Boolean = true) {
         if (!::mejoresHorasLista.isInitialized) return
         mejoresHorasLista.removeAllViews()
-        if (recargar) mhRegs = Historial.ultimosDias(this, 30)
+        if (recargar) mhRegs = Horas.mezclar(this)
         val m = celdas(mhRegs)
         val cal = Calendar.getInstance()
         val hoy = diaLunes(cal)
@@ -2876,19 +2876,20 @@ class MainActivity : Activity() {
             col.addView(t, margenArriba(Tema.ENTRE_TARJETAS))
         }
         bloque("En este teléfono", "Solo aquí", listOf(
-            "Estadísticas de ofertas (Mejores horas y semana)" to "30 días",
-            "Ofertas guardadas para «Ayuda con la lectura», si está encendido" to "7 días",
-            "Mi día: los viajes que marcas" to "Hasta que borres"
+            "Detalle de cada oferta leída (Mejores horas y semana)" to "30 días",
+            "Ofertas guardadas para «Ayuda con la lectura», si está encendido" to "7 días"
         ))
         bloque("En tu cuenta de Google", "En la nube", listOf(
             "Tu licencia y tus equipos" to "Con tu cuenta",
-            "Tus ajustes (filtros, gasolina, pop-up), para que regresen si cambias de teléfono" to "Con tu cuenta"
+            "Tus ajustes (filtros, gasolina, pop-up, país y apariencia), para que regresen si cambias de teléfono" to "Con tu cuenta",
+            "Resumen de Mejores horas (ofertas, total y km por día y hora, sin el detalle de cada oferta)" to "Con tu cuenta",
+            "Mi día: los viajes que marcas (tarifa, km y gasolina)" to "Hasta que borres"
         ))
         bloque("A soporte", "Nada", listOf("Nada se envía solo. Solo lo que tú revisas y mandas por WhatsApp" to "Tú decides"))
         col.addView(boton("Borrar estadísticas", Tema.ROJO_SUAVE, cRojo) {
             AlertDialog.Builder(this)
-                .setMessage("Se borran Mejores horas, la semana y las ofertas del día. Tus ajustes, tu cuenta y Mi día no cambian. ¿Borrar?")
-                .setPositiveButton("Borrar") { _, _ -> Historial.borrar(this); actualizarResumen() }
+                .setMessage("Se borran Mejores horas (también el resumen de tu cuenta), la semana y las ofertas del día. Tus ajustes, tu cuenta y Mi día no cambian. ¿Borrar?")
+                .setPositiveButton("Borrar") { _, _ -> Historial.borrar(this); Cuenta.borrarHoras(this); actualizarResumen() }
                 .setNegativeButton("Cancelar", null)
                 .show()
         }, margenArriba(Tema.S2))
@@ -3924,6 +3925,8 @@ class MainActivity : Activity() {
 
     /** Vuelve a armar Filtros y Ajustes para que muestren lo que se eligió en la guía. */
     private fun refrescarFiltrosYAjustes() {
+        // La cuenta pudo traer otra apariencia (claro/oscuro): se vuelve a pintar toda la app.
+        if (Tema.esClaro(this, prefs.tema) != Tema.claro) { recreate(); return }
         val actual = pestanas.indexOfFirst { it.visibility == View.VISIBLE }.coerceAtLeast(0)
         listOf(1 to { pantallaFiltros() }, 2 to { pantallaAjustes() }).forEach { (i, crear) ->
             contenido.removeView(pestanas[i])

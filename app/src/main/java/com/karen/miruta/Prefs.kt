@@ -278,6 +278,8 @@ class Prefs(context: Context) {
         for (k in AJUSTES_FLOAT) if (sp.contains(k)) o.put(k, sp.getFloat(k, 0f).toDouble())
         for (k in AJUSTES_INT) if (sp.contains(k)) o.put(k, sp.getInt(k, 0))
         for (k in AJUSTES_BOOL) if (sp.contains(k)) o.put(k, sp.getBoolean(k, false))
+        // Textos (10.39): apariencia y país. Vacío = sin elegir, no se sube.
+        for (k in AJUSTES_TEXTO) sp.getString(k, "")?.takeIf { it.isNotEmpty() }?.let { o.put(k, it) }
         return o
     }
 
@@ -287,12 +289,16 @@ class Prefs(context: Context) {
         for (k in AJUSTES_FLOAT) if (o.has(k)) e.putFloat(k, o.getDouble(k).toFloat())
         for (k in AJUSTES_INT) if (o.has(k)) e.putInt(k, o.getInt(k))
         for (k in AJUSTES_BOOL) if (o.has(k)) e.putBoolean(k, o.getBoolean(k))
+        // Solo valores conocidos: una cuenta con datos raros no debe romper la apariencia ni el país.
+        o.optString("tema").takeIf { it in listOf(Tema.MODO_AUTO, Tema.MODO_CLARO, Tema.MODO_OSCURO) }?.let { e.putString("tema", it) }
+        o.optString("pais").takeIf { Pais.de(it) != null }?.let { e.putString("pais", it) }
         e.commit()
     }
 
     companion object {
         private val AJUSTES_FLOAT = listOf("minKm", "minHora", "recMaxV", "recMinV", "kml", "precioL", "metaDia", "desgKm", "tarMin") +
             Desgaste.CLAVES
+        private val AJUSTES_TEXTO = listOf("tema", "pais")
         private val AJUSTES_INT = listOf("durMaxV", "durMinV", "criterio", "tam", "dur", "pos", "vol", "escPop")
         private val AJUSTES_BOOL = listOf(
             "fKm", "fHora", "fRecMax", "fRecMin", "fDurMax", "fDurMin", "fTarMin", "tarMinNeta", "neta", "uber", "didi",

@@ -88,6 +88,18 @@ object Jornada {
         Cuenta.subirViajesLuego(ctx)
     }
 
+    /** Agrega viajes bajados de la cuenta (otro equipo), sin repetir los que ya están aquí. */
+    fun agregar(ctx: Context, nuevos: List<Viaje>) {
+        val ya = todos(ctx).map { it.hora }.toSet()
+        val faltan = nuevos.filter { it.hora !in ya }
+        if (faltan.isEmpty()) return
+        try {
+            archivo(ctx).appendText(faltan.joinToString("") {
+                "${it.hora}|${it.app.replace("|", "")}|${it.tarifa}|${it.km}|${it.gasolina}\n"
+            })
+        } catch (_: Exception) { }
+    }
+
     fun quitar(ctx: Context, hora: Long) {
         val quedan = todos(ctx).filter { it.hora != hora }
         try { escribir(ctx, quedan) } catch (_: Exception) { }

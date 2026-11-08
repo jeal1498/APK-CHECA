@@ -9,6 +9,11 @@ object Novedades {
     class Version(val codigo: Int, val nombre: String, val puntos: List<String>)
 
     val LISTA = listOf(
+        Version(119, "10.39", listOf(
+            "Si cambias de teléfono, tu país y tu apariencia (claro u oscuro) regresan con tu cuenta.",
+            "Mejores horas también regresa: guardamos solo el resumen por hora, no cada oferta.",
+            "Mi día recupera los viajes de esta semana y tu avance de la meta."
+        )),
         Version(118, "10.38", listOf(
             "Arreglo: Checa ya no deja de leer después de un rato; si la lectura se traba, se reanuda sola en 10 segundos."
         )),

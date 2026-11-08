@@ -419,3 +419,25 @@ create index if not exists viajes_checa_cuando on public.viajes_checa (user_id, 
 -- Nadie anónimo toca las tablas directo (la tarjeta va por la función).
 revoke all on public.perfil_conductor, public.clientes, public.viajes_privados, public.contactos_sos, public.viajes_checa from anon;
 grant select, insert, update, delete on public.perfil_conductor, public.clientes, public.viajes_privados, public.contactos_sos, public.viajes_checa to authenticated;
+
+-- ---------- «Mejores horas» en la cuenta (10.39): resumen por día y hora, no cada oferta ----------
+-- dia 0 = lunes. n = ofertas de los últimos 30 días; tarifa y km son totales de esas ofertas.
+create table if not exists public.horas_checa (
+  user_id     uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  dia         smallint not null check (dia between 0 and 6),
+  hora        smallint not null check (hora between 0 and 23),
+  n           integer not null check (n >= 0),
+  tarifa      numeric not null default 0,
+  km          numeric not null default 0,
+  actualizado timestamptz not null default now(),
+  primary key (user_id, dia, hora)
+);
+alter table public.horas_checa enable row level security;
+drop policy if exists "mis horas checa" on public.horas_checa;
+create policy "mis horas checa" on public.horas_checa
+  for all to authenticated using (user_id = auth.uid()) with check (user_id = auth.uid());
+drop trigger if exists dueno_y_hora on public.horas_checa;
+create trigger dueno_y_hora before insert or update on public.horas_checa
+  for each row execute function public.dueno_y_hora();
+revoke all on public.horas_checa from anon;
+grant select, insert, update, delete on public.horas_checa to authenticated;
