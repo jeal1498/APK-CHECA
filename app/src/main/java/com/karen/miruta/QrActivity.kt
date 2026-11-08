@@ -131,7 +131,7 @@ class QrActivity : Activity() {
             background = GradientDrawable().apply { setColor(Oscuro.CAMPO); cornerRadius = dp(14).toFloat() }
             setPadding(dp(14), 0, dp(14), 0)
         }
-        val nombre = campo("Cómo te guardarán (ej. Eduardo chofer)",
+        val nombre = campo("Nombre (ej. Eduardo chofer)",
             InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS, prefs.contactoNombre)
         val tel = campo(if (prefs.moneda.codigo == "MXN") "Tu número, 10 dígitos" else "Tu número con lada del país",
             InputType.TYPE_CLASS_PHONE, prefs.contactoTel.let { if (prefs.moneda.codigo == "MXN" && it.startsWith("52") && it.length == 12) it.substring(2) else it })
