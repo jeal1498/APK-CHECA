@@ -1,17 +1,18 @@
 # Reporte de Checa (web + app) · últimos 30 días
 
-Generado: 2026-11-07 17:53 UTC. Cuenta visitas únicas (una por pestaña).
+Generado: 2026-11-08 18:07 UTC. Cuenta visitas únicas (una por pestaña).
 
 ## Resumen
 | visitas | descargas | cuentas_nuevas | pagos | ingresos | licencias_activas |
 | --- | --- | --- | --- | --- | --- |
-| 633 | 264 | 45 | 0 | 0 | 3 |
+| 646 | 264 | 49 | 0 | 0 | 3 |
 
 # App
 
 ## Cuentas nuevas por día (inicio con Google)
 | dia | cuentas |
 | --- | --- |
+| 2026-11-07 | 4 |
 | 2026-11-05 | 1 |
 | 2026-11-02 | 1 |
 | 2026-10-27 | 1 |
@@ -30,6 +31,10 @@ Generado: 2026-11-07 17:53 UTC. Cuenta visitas únicas (una por pestaña).
 ## Quiénes son (cuentas con Google)
 | correo | registro | ultimo_acceso | equipos | licencia_vence |
 | --- | --- | --- | --- | --- |
+| mandyfrench.08210@gmail.com | 11-07 21:09 | 11-07 21:09 | 1 | sin licencia |
+| sandrawong.28374@gmail.com | 11-07 21:09 | 11-07 21:09 | 1 | sin licencia |
+| rubyflowers.77582@gmail.com | 11-07 18:37 | 11-07 18:37 | 1 | sin licencia |
+| arnoldharmon.05712@gmail.com | 11-07 18:35 | 11-07 18:35 | 1 | sin licencia |
 | jesusmaciasjesus777@gmail.com | 11-05 21:39 | 11-05 21:39 | 1 | sin licencia |
 | jonhy.zuka@gmail.com | 11-02 15:04 | 11-07 08:07 | 1 | sin licencia |
 | hugo942001@gmail.com | 10-27 11:12 | 10-27 11:12 | 1 | sin licencia |
@@ -41,7 +46,7 @@ Generado: 2026-11-07 17:53 UTC. Cuenta visitas únicas (una por pestaña).
 | glozano30506@gmail.com | 10-24 00:12 | 10-24 00:12 | 1 | sin licencia |
 | nikte06bacabespinoza@gmail.com | 10-23 18:23 | 10-23 18:23 | 1 | sin licencia |
 | wilmafields.72871@gmail.com | 10-23 12:15 | 10-23 12:15 | 1 | sin licencia |
-| jeal1498@gmail.com | 10-22 17:15 | 11-04 21:31 | 2 | sin licencia |
+| jeal1498@gmail.com | 10-22 17:15 | 11-07 19:20 | 2 | sin licencia |
 | ciberbumker@gmail.com | 10-22 16:24 | 10-22 16:40 | 2 | sin licencia |
 | diberdiub@gmail.com | 10-21 18:24 | 10-21 18:24 | 1 | sin licencia |
 | ceverthbernabe@gmail.com | 10-21 14:00 | 10-21 14:00 | 1 | sin licencia |
@@ -74,7 +79,7 @@ Generado: 2026-11-07 17:53 UTC. Cuenta visitas únicas (una por pestaña).
 | edent402@gmail.com | 10-16 07:42 | 11-04 12:54 | 1 | sin licencia |
 | lufercab@gmail.com | 10-15 18:21 | 10-15 18:21 | 1 | 20270113 |
 | landingbot01@gmail.com | 10-11 15:23 | 10-21 19:26 | 1 | sin licencia |
-| lalolopezxd@gmail.com | 10-11 15:08 | 11-07 11:22 | 2 | 99991231 |
+| lalolopezxd@gmail.com | 10-11 15:08 | 11-07 14:34 | 2 | 99991231 |
 
 ## Pagos por plan
 Sin datos todavía.
@@ -106,9 +111,9 @@ Sin datos todavía.
 ## Embudo
 | evento | visitas | veces |
 | --- | --- | --- |
-| visita | 633 | 892 |
+| visita | 646 | 906 |
 | descarga | 264 | 297 |
-| clic_descargar | 122 | 134 |
+| clic_descargar | 124 | 136 |
 | descarga_instalar | 69 | 147 |
 | video_play | 68 | 72 |
 | beta_whatsapp | 23 | 27 |
@@ -118,7 +123,7 @@ Sin datos todavía.
 ## Por fuente (visitas → descargas)
 | fuente | campana | visitas | descargas |
 | --- | --- | --- | --- |
-| directo |  | 481 | 198 |
+| directo |  | 494 | 198 |
 | tiktok |  | 98 | 55 |
 | tiktok | prueba-en-google-play | 22 | 0 |
 | app | compartir | 17 | 9 |
@@ -134,8 +139,8 @@ Sin datos todavía.
 ## Por dispositivo
 | dispositivo | visitas | descargas |
 | --- | --- | --- |
-| android | 509 | 264 |
-| pc | 68 | 0 |
+| android | 512 | 264 |
+| pc | 78 | 0 |
 | iphone | 57 | 0 |
 
 ## Qué botón lleva a descargar
@@ -157,7 +162,8 @@ Sin datos todavía.
 ## Por día
 | dia | visitas | descargas |
 | --- | --- | --- |
-| 2026-11-07 | 3 | 0 |
+| 2026-11-08 | 2 | 0 |
+| 2026-11-07 | 14 | 0 |
 | 2026-11-05 | 4 | 1 |
 | 2026-11-04 | 13 | 1 |
 | 2026-11-03 | 3 | 0 |
