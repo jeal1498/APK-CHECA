@@ -9,6 +9,12 @@ object Novedades {
     class Version(val codigo: Int, val nombre: String, val puntos: List<String>)
 
     val LISTA = listOf(
+        Version(120, "10.40", listOf(
+            "Al abrir Uber o DiDi, Checa enciende sola la lectura y avisa «Lista para trabajar».",
+            "Al terminar tu jornada, apágala tú: toca «Apagar ahora» o «Detener» en la notificación.",
+            "Si pasan 30 minutos sin Uber ni DiDi con la lectura encendida, te sugiere apagarla.",
+            "Puedes desactivarlo en Ajustes › «Iniciar sola al abrir Uber o DiDi»."
+        )),
         Version(119, "10.39", listOf(
             "Si cambias de teléfono, tu país y tu apariencia (claro u oscuro) regresan con tu cuenta.",
             "Mejores horas también regresa: guardamos solo el resumen por hora, no cada oferta.",

@@ -241,6 +241,11 @@ class Prefs(context: Context) {
         get() = sp.getBoolean("avisoApertura", true)
         set(v) { sp.edit().putBoolean("avisoApertura", v).apply() }
 
+    /** 10.40: al abrir Uber o DiDi, Checa enciende sola la lectura y avisa «Lista para trabajar». */
+    var inicioAutomatico: Boolean
+        get() = sp.getBoolean("inicioAuto", true)
+        set(v) { sp.edit().putBoolean("inicioAuto", v).apply() }
+
     /** Cuándo se avisó por última vez al abrir Uber/DiDi (para no repetirlo cada rato). */
     var ultimoAvisoApertura: Long
         get() = sp.getLong("ultAvisoApertura", 0L)

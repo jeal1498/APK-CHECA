@@ -2482,6 +2482,9 @@ class MainActivity : Activity() {
                 else -> "${guardadas.size} ofertas guardadas"
             },
             if (noLeidas > 0) cAmarillo else cTenue) { mostrarAyudaLectura() }
+        filaInterruptor(g, "Iniciar sola al abrir Uber o DiDi", "Enciende la lectura y avisa «Lista para trabajar». Tú la apagas al terminar", prefs.inicioAutomatico) {
+            prefs.inicioAutomatico = it
+        }
         filaInterruptor(g, "Avisarme al abrir Uber o DiDi", "Si la lectura está apagada, te ofrece iniciarla", prefs.avisarApertura) {
             prefs.avisarApertura = it
         }

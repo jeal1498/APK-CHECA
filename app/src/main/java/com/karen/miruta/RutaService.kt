@@ -36,6 +36,13 @@ class RutaService : AccessibilityService() {
     private val activas = LinkedHashMap<String, Pair<Oferta, Rect?>>()
     private val ultimaFirma = HashMap<String, Pair<Oferta, Long>>()
     private val ultimoAviso = HashMap<String, Long>()
+    /** Último evento de cada app (para saber cuándo se abrió de nuevo) y último «Lista para trabajar». */
+    private val ultimoEventoPorApp = HashMap<String, Long>()
+    private val ultimoListo = HashMap<String, Long>()
+    private var avisoListo: AvisoListo? = null
+    /** Ya se sugirió apagar la lectura en esta tanda sin Uber/DiDi. */
+    private var terminasteAvisado = false
+    private var inicioLectura = 0L
     /** Última vez que Uber o DiDi mandó un evento (también al salir su oferta encima de otra app). */
     @Volatile private var ultimoEventoApp = 0L
 
@@ -138,6 +145,7 @@ class RutaService : AccessibilityService() {
                 handler.removeCallbacks(capturar)
                 programar(0)
             }
+            revisarTerminaste()
             handler.postDelayed(this, VIGILANTE_CADA)
         }
     }
@@ -165,6 +173,8 @@ class RutaService : AccessibilityService() {
         cortada = false
         fallosCaptura = 0
         exitos = 0
+        inicioLectura = System.currentTimeMillis()
+        terminasteAvisado = false
         notificarLectura()
         WidgetCheca.actualizar(this)
         ultimoCiclo = SystemClock.uptimeMillis()
@@ -189,6 +199,8 @@ class RutaService : AccessibilityService() {
         hiloOcr = null
         handlerOcr = null
         try { (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(ID_LECTURA) } catch (_: Exception) { }
+        cancelarTerminaste()
+        avisoListo?.ocultar()
         WidgetCheca.actualizar(this)
     }
 
@@ -467,11 +479,20 @@ class RutaService : AccessibilityService() {
                 p != packageName && !p.contains("systemui") -> appActual = "Otra"
             }
         }
-        if (nombreApp(pkg) == null) return
-        ultimoEventoApp = System.currentTimeMillis()
+        val nombre = nombreApp(pkg) ?: return
+        val ahora = System.currentTimeMillis()
+        ultimoEventoApp = ahora
+        // Volvió Uber/DiDi tras un rato fuera: Checa se enciende sola y avisa (10.40).
+        val previo = ultimoEventoPorApp[nombre] ?: 0L
+        val hueco = ahora - previo > REABRIO_MS
+        val abierta = !hueco || event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED || esVentanaActiva(nombre)
+        // Sin pruebas de que la app está al frente se deja el reloj quieto: el próximo evento reintenta.
+        if (abierta) ultimoEventoPorApp[nombre] = ahora
+        if (hueco && abierta) abrirApp(nombre)
+        // Hay actividad de Uber/DiDi: el aviso «¿Terminaste?» vuelve a empezar.
+        if (terminasteAvisado) { terminasteAvisado = false; cancelarTerminaste() }
         // Algo cambió en Uber o DiDi: se mira la pantalla ya (respetando el intervalo mínimo).
         if (leyendo) programar(0)
-        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) avisarApertura(nombreApp(pkg) ?: "?")
         if (pendiente) return
         pendiente = true
         handler.postDelayed({
@@ -480,9 +501,64 @@ class RutaService : AccessibilityService() {
         }, 300)
     }
 
+    /** true si la ventana activa es de [app] (para distinguir «se abrió» de «actualizó en segundo plano»). */
+    private fun esVentanaActiva(app: String): Boolean = try {
+        rootInActiveWindow?.packageName?.toString()?.let { nombreApp(it) } == app
+    } catch (_: Exception) { false }
+
     /**
-     * Al abrir Uber o DiDi con la lectura apagada, avisa con una notificación. Android pide
-     * permiso de captura cada vez, así que no se puede iniciar sola: un toque en el aviso lo hace.
+     * Se abrió [app] (10.40). En Android 11+ enciende la lectura sola, sin permiso de captura, y
+     * muestra «Lista para trabajar» una vez por app cada 4 h. Si el conductor la apagó a mano
+     * no se reenciende hasta que vuelva a abrir Uber o DiDi. En Android ≤ 10 la captura pide
+     * permiso cada vez: queda el aviso con notificación.
+     */
+    private fun abrirApp(app: String) {
+        try {
+            if (!Licencia.activa(this) || !Cuenta.puedeUsar(this) || Migracion.vencida()) return
+            if (!prefs.inicioAutomatico || !Lectura.porAccesibilidad(this)) { avisarApertura(app); return }
+            if (!leyendo && !iniciarLectura()) { avisarApertura(app); return }
+            val ahora = System.currentTimeMillis()
+            if (ahora - (ultimoListo[app] ?: 0L) < LISTO_CADA_MS) return
+            ultimoListo[app] = ahora
+            val zona = zonasApps().firstOrNull { it.app == app }?.rect
+            val a = avisoListo ?: AvisoListo(this, WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY).also { avisoListo = it }
+            a.mostrar(app, zona) { Lectura.detener(this) }
+        } catch (_: Exception) { }
+    }
+
+    /** Con la lectura encendida y 30 min sin Uber/DiDi, sugiere apagarla (una vez por tanda). */
+    private fun revisarTerminaste() {
+        if (terminasteAvisado || !leyendo) return
+        val ref = maxOf(ultimoEventoApp, inicioLectura)
+        if (System.currentTimeMillis() - ref < TERMINASTE_MS) return
+        terminasteAvisado = true
+        try {
+            val nm = getSystemService(NotificationManager::class.java)
+            nm.createNotificationChannel(NotificationChannel("avisos", "Avisos de Checa", NotificationManager.IMPORTANCE_HIGH))
+            val detenerPi = PendingIntent.getBroadcast(
+                this, 6, Intent(this, DetenerLecturaReceiver::class.java).setAction(DetenerLecturaReceiver.ACCION),
+                PendingIntent.FLAG_IMMUTABLE
+            )
+            nm.notify(
+                ID_TERMINASTE,
+                Notification.Builder(this, "avisos")
+                    .setContentTitle("¿Terminaste?")
+                    .setContentText("Apaga Checa para no gastar batería de más.")
+                    .setSmallIcon(R.drawable.ic_notif)
+                    .setAutoCancel(true)
+                    .addAction(Notification.Action.Builder(null, "Apagar", detenerPi).build())
+                    .build()
+            )
+        } catch (_: Exception) { }
+    }
+
+    private fun cancelarTerminaste() {
+        try { getSystemService(NotificationManager::class.java).cancel(ID_TERMINASTE) } catch (_: Exception) { }
+    }
+
+    /**
+     * Al abrir Uber o DiDi con la lectura apagada (Android ≤ 10 o con el inicio automático
+     * apagado), avisa con una notificación: un toque en el aviso inicia la lectura.
      */
     private fun avisarApertura(app: String) {
         try {
@@ -528,6 +604,7 @@ class RutaService : AccessibilityService() {
         pararPorSistema()
         instancia = null
         popups.values.forEach { it.ocultar() }
+        avisoListo?.ocultar()
         super.onDestroy()
     }
 
@@ -582,6 +659,13 @@ class RutaService : AccessibilityService() {
         @Volatile
         var cortada = false
         private const val ID_LECTURA = 5
+        private const val ID_TERMINASTE = 8
+        /** Sin eventos de la app más de 2 min = se cerró y volvió a abrirla. */
+        private const val REABRIO_MS = 2 * 60_000L
+        /** «Lista para trabajar» sale una vez por app cada 4 h. */
+        private const val LISTO_CADA_MS = 4 * 3_600_000L
+        /** Sin Uber/DiDi 30 min con la lectura encendida: «¿Terminaste?». */
+        private const val TERMINASTE_MS = 30 * 60_000L
         /** Mínimo entre capturas (Android permite una cada 333 ms). */
         private const val INTERVALO_MIN = 1000L
         private const val INTERVALO_RAPIDO = 500L

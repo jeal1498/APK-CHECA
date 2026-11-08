@@ -1,3 +1,5 @@
+v120 (10.40): **Inicio automático.** Al abrir Uber o DiDi (Android 11+) `RutaService.abrirApp()` enciende la lectura sola (`iniciarLectura()`, sin permiso de captura) y muestra `AvisoListo` («Lista para trabajar», 8 s, «Apagar ahora» / «Entendido», una vez por app cada 4 h). «Abre» = sin eventos de esa app por más de 2 min. El apagado es siempre manual: no se reenciende hasta una nueva apertura. Con la lectura encendida y 30 min sin Uber/DiDi sale la notificación «¿Terminaste?» con «Apagar». Ajuste `Prefs.inicioAutomatico` (Ajustes › Avisos, encendido por defecto); en Android ≤ 10 o con el ajuste apagado queda la notificación `avisarApertura`.
+
 v119 (10.39): **Más cosas viajan con la cuenta.** `ajustes` suma `tema` y `pais` (textos); «Mejores horas» sube solo un resumen por día y hora a la tabla nueva `horas_checa` (`Horas.kt`; un equipo nuevo se rellena con él mientras su historial local está vacío) y «Mi día» baja de `viajes_checa` los viajes de la semana que falten (`Cuenta.bajarViajes`). «Borrar estadísticas» borra también el resumen de la cuenta.
 
 
