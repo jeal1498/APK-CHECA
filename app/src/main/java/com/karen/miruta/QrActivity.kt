@@ -39,15 +39,18 @@ class QrActivity : Activity() {
             setOnClickListener { finish() }
         }
         setContentView(raiz)
-        if (prefs.contactoTel.isEmpty() || prefs.contactoNombre.isEmpty()) formulario(false) else mostrarQr()
+        if (prefs.contactoTel.isEmpty() || nombreVisible().isEmpty()) formulario(false) else mostrarQr()
     }
 
     // ------------------------------------------------------------------
     // QR
     // ------------------------------------------------------------------
 
+    /** El nombre es el de la cuenta de Google; sin cuenta («Entrar sin cuenta») se usa el que se escribió aquí. */
+    private fun nombreVisible(): String = Cuenta.nombre(this).ifEmpty { prefs.contactoNombre }
+
     private fun mostrarQr() {
-        val nombre = prefs.contactoNombre
+        val nombre = nombreVisible()
         val tel = prefs.contactoTel
         val tarjeta = tarjeta()
         tarjeta.addView(titulo("Escríbeme por WhatsApp"))
@@ -117,8 +120,8 @@ class QrActivity : Activity() {
 
     private fun formulario(editando: Boolean) {
         val tarjeta = tarjeta()
-        tarjeta.addView(titulo(if (editando) "Tu WhatsApp" else "Crea tu QR de WhatsApp"))
-        tarjeta.addView(nota("Tus pasajeros escanean tu QR y te escriben por WhatsApp para pedirte viajes por fuera de las apps. Se guarda en tu cuenta de Checa."), margen(6))
+        tarjeta.addView(titulo(if (editando) "Tu WhatsApp" else "¿Cuál es tu WhatsApp?"))
+        tarjeta.addView(nota("Tus pasajeros escanean tu QR y te escriben por WhatsApp para pedirte viajes por fuera de las apps. Se guarda en tu cuenta de Checa y tu nombre es el de tu cuenta de Google."), margen(6))
 
         fun campo(pista: String, tipo: Int, valor: String) = EditText(this).apply {
             hint = pista
@@ -131,12 +134,13 @@ class QrActivity : Activity() {
             background = GradientDrawable().apply { setColor(Oscuro.CAMPO); cornerRadius = dp(14).toFloat() }
             setPadding(dp(14), 0, dp(14), 0)
         }
-        val nombre = campo("Nombre (ej. Eduardo chofer)",
-            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS, prefs.contactoNombre)
+        // Con cuenta de Google el nombre sale de ahí y solo se pide el número; sin cuenta se pide también el nombre.
+        val pideNombre = Cuenta.nombre(this).isEmpty()
+        val nombre = campo("Tu nombre", InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS, prefs.contactoNombre)
         val tel = campo(if (prefs.moneda.codigo == "MXN") "Tu WhatsApp, 10 dígitos" else "Tu WhatsApp con lada del país",
             InputType.TYPE_CLASS_PHONE, prefs.contactoTel.let { if (prefs.moneda.codigo == "MXN" && it.startsWith("52") && it.length == 12) it.substring(2) else it })
-        tarjeta.addView(nombre, LinearLayout.LayoutParams(-1, dp(48)).apply { topMargin = dp(14) })
-        tarjeta.addView(tel, LinearLayout.LayoutParams(-1, dp(48)).apply { topMargin = dp(8) })
+        if (pideNombre) tarjeta.addView(nombre, LinearLayout.LayoutParams(-1, dp(48)).apply { topMargin = dp(14) })
+        tarjeta.addView(tel, LinearLayout.LayoutParams(-1, dp(48)).apply { topMargin = dp(if (pideNombre) 8 else 14) })
         val error = TextView(this).apply {
             setTextColor(Oscuro.AMARILLO)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
@@ -152,12 +156,12 @@ class QrActivity : Activity() {
             val n = nombre.text.toString().trim()
             val t = Sos.normalizarTelefono(tel.text.toString(), prefs.moneda)
             when {
-                n.isEmpty() -> { error.text = "Escribe tu nombre." }
+                pideNombre && n.isEmpty() -> { error.text = "Escribe tu nombre." }
                 t == null -> {
                     error.text = if (prefs.moneda.codigo == "MXN") "El número lleva 10 dígitos." else "Revisa el número (con lada del país)."
                 }
                 else -> {
-                    prefs.contactoNombre = n
+                    if (pideNombre) prefs.contactoNombre = n
                     prefs.contactoTel = t
                     Cuenta.subirAjustesSiCambio(this) // queda ligado a tu cuenta de Google
                     mostrarQr()
