@@ -489,6 +489,11 @@ class RutaService : AccessibilityService() {
         // Sin pruebas de que la app está al frente se deja el reloj quieto: el próximo evento reintenta.
         if (abierta) ultimoEventoPorApp[nombre] = ahora
         if (hueco && abierta) abrirApp(nombre)
+        // Tiempo manejando seguido (widget Descanso): a las 4 h avisa una vez.
+        if (leyendo) {
+            if (Manejo.latido(this, ahora)) avisarDescanso()
+            Widgets.actualizarSiToca(this, ahora)
+        }
         // Hay actividad de Uber/DiDi: el aviso «¿Terminaste?» vuelve a empezar.
         if (terminasteAvisado) { terminasteAvisado = false; cancelarTerminaste() }
         // Algo cambió en Uber o DiDi: se mira la pantalla ya (respetando el intervalo mínimo).
@@ -547,6 +552,24 @@ class RutaService : AccessibilityService() {
                     .setSmallIcon(R.drawable.ic_notif)
                     .setAutoCancel(true)
                     .addAction(Notification.Action.Builder(null, "Apagar", detenerPi).build())
+                    .build()
+            )
+        } catch (_: Exception) { }
+    }
+
+    /** 4 h seguidas con Uber/DiDi: sugiere descansar 10 min. */
+    private fun avisarDescanso() {
+        try {
+            val nm = getSystemService(NotificationManager::class.java)
+            nm.createNotificationChannel(NotificationChannel("avisos", "Avisos de Checa", NotificationManager.IMPORTANCE_HIGH))
+            nm.notify(
+                ID_DESCANSO,
+                Notification.Builder(this, "avisos")
+                    .setContentTitle("Llevas 4 h manejando")
+                    .setContentText("Descansa 10 min antes de seguir.")
+                    .setSmallIcon(R.drawable.ic_notif)
+                    .setAutoCancel(true)
+                    .setTimeoutAfter(30 * 60_000L)
                     .build()
             )
         } catch (_: Exception) { }
@@ -660,6 +683,7 @@ class RutaService : AccessibilityService() {
         var cortada = false
         private const val ID_LECTURA = 5
         private const val ID_TERMINASTE = 8
+        private const val ID_DESCANSO = 9
         /** Sin eventos de la app más de 2 min = se cerró y volvió a abrirla. */
         private const val REABRIO_MS = 2 * 60_000L
         /** «Lista para trabajar» sale una vez por app cada 4 h. */

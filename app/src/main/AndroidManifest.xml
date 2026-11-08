@@ -60,6 +60,54 @@
                 android:resource="@xml/widget_checa_info" />
         </receiver>
 
+        <receiver
+            android:name=".WidgetMosaico"
+            android:exported="true"
+            android:label="@string/widget_mosaico_nombre">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_mosaico_info" />
+        </receiver>
+
+        <receiver
+            android:name=".WidgetDia"
+            android:exported="true"
+            android:label="@string/widget_dia_nombre">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_dia_info" />
+        </receiver>
+
+        <receiver
+            android:name=".WidgetDescanso"
+            android:exported="true"
+            android:label="@string/widget_descanso_nombre">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_descanso_info" />
+        </receiver>
+
+        <receiver
+            android:name=".WidgetSos"
+            android:exported="true"
+            android:label="@string/widget_sos_nombre">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_sos_info" />
+        </receiver>
+
         <service
             android:name=".RutaService"
             android:exported="false"

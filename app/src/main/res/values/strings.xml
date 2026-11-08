@@ -3,4 +3,12 @@
     <string name="servicio_nombre">Checa – lector de ofertas</string>
     <string name="servicio_desc">Lee la tarifa, los kilómetros y los minutos de las ofertas de Uber y DiDi para mostrarte un pop-up con $/km, $/hora y si conviene. No envía datos a ningún lado.</string>
     <string name="widget_descripcion">Enciende o apaga la lectura de ofertas</string>
+    <string name="widget_dia_nombre">Checa · Mi día</string>
+    <string name="widget_dia_desc">Lo que llevas hoy y el avance de tu meta</string>
+    <string name="widget_descanso_nombre">Checa · Descanso</string>
+    <string name="widget_descanso_desc">Horas manejando seguidas y aviso para descansar</string>
+    <string name="widget_sos_nombre">Checa · SOS</string>
+    <string name="widget_sos_desc">Pide ayuda con un toque</string>
+    <string name="widget_mosaico_nombre">Checa · Mosaico</string>
+    <string name="widget_mosaico_desc">Tu día, descanso, lectura y SOS en uno solo</string>
 </resources>

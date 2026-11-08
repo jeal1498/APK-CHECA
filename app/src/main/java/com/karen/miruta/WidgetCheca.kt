@@ -22,6 +22,7 @@ class WidgetCheca : AppWidgetProvider() {
     companion object {
         /** Repinta todos los widgets (se llama al iniciar o detener la lectura). */
         fun actualizar(ctx: Context) {
+            Widgets.actualizar(ctx) // el encender del mosaico y el resto de widgets nuevos
             try {
                 val m = AppWidgetManager.getInstance(ctx)
                 val ids = m.getAppWidgetIds(ComponentName(ctx, WidgetCheca::class.java))

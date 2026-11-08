@@ -44,6 +44,7 @@ import android.widget.ScrollView
 import android.widget.SeekBar
 import android.widget.Switch
 import android.widget.TextView
+import android.widget.RemoteViews
 import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
@@ -120,6 +121,7 @@ class MainActivity : Activity() {
     /** Se abrió desde el aviso «Checa no está leyendo»: iniciar la lectura y volver a Uber/DiDi. */
     private var autoIniciar = false
     private var abrirActualizacion = false
+    private var abrirSos = false
     private var desdeAviso = false
     private var volverAtras = false
     /** Aviso destacado de captura de pantalla (solo flavor Play); evita apilar varios. */
@@ -190,6 +192,7 @@ class MainActivity : Activity() {
         mostrarPestana(savedInstanceState?.getInt("tab") ?: 0, false)
         autoIniciar = savedInstanceState == null && intent?.getBooleanExtra(EXTRA_AUTO_INICIAR, false) == true
         abrirActualizacion = savedInstanceState == null && intent?.getBooleanExtra(EXTRA_ACTUALIZAR, false) == true
+        abrirSos = savedInstanceState == null && intent?.getBooleanExtra(EXTRA_SOS, false) == true
         if (!BuildConfig.ES_PLAY) Actualizacion.programar(this)
         if (savedInstanceState == null && !autoIniciar && Cuenta.puedeUsar(this)) {
             if (faltanPermisos() && !configuracionPermisosPospuestaPlay()) {
@@ -221,10 +224,43 @@ class MainActivity : Activity() {
                 cuerpo.addView(texto("•  $p", Tema.T_TEXTO, cTexto2, false).apply { setLineSpacing(0f, 1.2f) },
                     margenArriba(Tema.S1))
             }
+            if (v.widgets) vistasWidgets(cuerpo)
         }
         var d: Dialog? = null
         cuerpo.addView(boton("Entendido", cVerde, Color.BLACK) { d?.dismiss() }, margenArriba(Tema.S2))
         d = hojaAbajo(if (todas) "Novedades" else "Novedades · ${lista[0].nombre}", cuerpo)
+    }
+
+    /** Toques que no pasan: la vista previa de un widget solo se mira (sus botones no hacen nada aquí). */
+    private class SoloVista(c: Context) : FrameLayout(c) {
+        override fun onInterceptTouchEvent(ev: android.view.MotionEvent): Boolean = true
+    }
+
+    /** Vista previa real de un widget (la misma vista que verá la pantalla de inicio), de [an]×[al] dp. */
+    private fun previaWidget(rv: RemoteViews, an: Int, al: Int): View? = try {
+        val caja = SoloVista(this)
+        caja.addView(rv.apply(this, caja), FrameLayout.LayoutParams(-1, -1))
+        FrameLayout(this).apply { addView(caja, FrameLayout.LayoutParams(dp(an), dp(al))) }
+    } catch (e: Exception) { null }
+
+    /** Los widgets nuevos, a la vista, con botón para agregar el mosaico (Novedades 10.41). */
+    private fun vistasWidgets(cuerpo: LinearLayout) {
+        cuerpo.addView(etiquetaTarjeta("WIDGETS NUEVOS · MOSAICO 4×2"), margenArriba(Tema.S2))
+        previaWidget(Widgets.mosaico(this), 296, 148)?.let { cuerpo.addView(it, margenArriba(Tema.S1)) }
+        cuerpo.addView(boton("Agregar el mosaico a mi pantalla", cVerde, Color.BLACK) {
+            if (!Widgets.fijar(this, WidgetMosaico::class.java)) {
+                Toast.makeText(this, "Mantén presionada tu pantalla de inicio y elige Widgets › Checa.", Toast.LENGTH_LONG).show()
+            }
+        }, margenArriba(Tema.S2))
+        cuerpo.addView(etiquetaTarjeta("POR SEPARADO"), margenArriba(Tema.S2))
+        previaWidget(Widgets.dia(this), 222, 74)?.let { cuerpo.addView(it, margenArriba(Tema.S1)) }
+        previaWidget(Widgets.descanso(this), 222, 74)?.let { cuerpo.addView(it, margenArriba(Tema.S1)) }
+        previaWidget(Widgets.sos(this), 74, 74)?.let { cuerpo.addView(it, margenArriba(Tema.S1)) }
+        cuerpo.addView(
+            texto("Para agregarlos: mantén presionada tu pantalla de inicio, elige Widgets y busca Checa.",
+                Tema.T_NOTA, cTenue, false).apply { setLineSpacing(0f, 1.2f) },
+            margenArriba(Tema.S1)
+        )
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -232,6 +268,7 @@ class MainActivity : Activity() {
         setIntent(intent)
         if (intent.getBooleanExtra(EXTRA_AUTO_INICIAR, false)) autoIniciar = true
         if (intent.getBooleanExtra(EXTRA_ACTUALIZAR, false)) abrirActualizacion = true
+        if (intent.getBooleanExtra(EXTRA_SOS, false)) abrirSos = true
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -276,6 +313,11 @@ class MainActivity : Activity() {
                 desdeAviso = true
                 iniciarCaptura()
             }
+        }
+        // Vino del widget SOS: se abre la pantalla de SOS (o pide agregar un contacto).
+        if (abrirSos) {
+            abrirSos = false
+            handler.post { if (!isFinishing) pedirSos() }
         }
         // Volvió de Accesibilidad con el permiso activado: la guía pasa sola al paso de metas.
         if (guia?.isShowing == true && guiaPaso == 1) {
@@ -2206,12 +2248,14 @@ class MainActivity : Activity() {
         var dialogo: Dialog? = null
         cuerpo.addView(boton("Guardar meta", cVerde, Color.BLACK) {
             prefs.metaDia = meta
+            Widgets.actualizar(this)
             pintarJornada()
             dialogo?.dismiss()
         }, margenArriba(Tema.S2))
         if (prefs.metaDia > 0) {
             cuerpo.addView(boton("Quitar meta", cTarjeta2, cTexto) {
                 prefs.metaDia = 0f
+                Widgets.actualizar(this)
                 pintarJornada()
                 dialogo?.dismiss()
             }, margenArriba(Tema.S1))
@@ -5956,6 +6000,8 @@ class MainActivity : Activity() {
         const val EXTRA_AUTO_INICIAR = "auto_iniciar"
         /** La notificación «Hay una versión nueva» abre la app con la ventana para actualizar. */
         const val EXTRA_ACTUALIZAR = "actualizar"
+        /** El widget SOS abre la app directo en la pantalla de SOS. */
+        const val EXTRA_SOS = "abrir_sos"
         /** Desde cuántos días antes de que acabe la beta se avisa del cobro. */
         private const val DIAS_AVISO_FIN_BETA = 30
         private const val PAQUETE_CLIENTELA = "com.jeal1498.clientela"

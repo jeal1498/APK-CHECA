@@ -49,6 +49,7 @@ object Jornada {
     /** Guarda lo que bajó la cuenta: [{fecha, hora, precio, km}]. */
     fun guardarPrivados(ctx: Context, json: String) {
         try { File(ctx.filesDir, PRIVADOS).writeText(json) } catch (_: Exception) { }
+        Widgets.actualizar(ctx)
     }
 
     fun borrarPrivados(ctx: Context) { File(ctx.filesDir, PRIVADOS).delete() }
@@ -110,6 +111,7 @@ object Jornada {
         archivo(ctx).writeText(lista.joinToString("") {
             "${it.hora}|${it.app}|${it.tarifa}|${it.km}|${it.gasolina}\n"
         })
+        Widgets.actualizar(ctx)
     }
 
     private fun podar(ctx: Context) {

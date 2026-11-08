@@ -6,9 +6,15 @@ package com.karen.miruta
  * en cada versión nueva se agrega un bloque arriba, en lenguaje de conductor (nada técnico).
  */
 object Novedades {
-    class Version(val codigo: Int, val nombre: String, val puntos: List<String>)
+    class Version(val codigo: Int, val nombre: String, val puntos: List<String>, val widgets: Boolean = false)
 
     val LISTA = listOf(
+        Version(121, "10.41", listOf(
+            "Widgets nuevos para tu pantalla de inicio: un mosaico 4×2 con tu día, descanso, lectura y SOS.",
+            "También por separado: Mi día, Descanso y SOS (el de encender y apagar ya lo tenías).",
+            "Descanso cuenta tus horas manejando seguidas y te avisa a las 4 h. Una pausa de 10 min lo reinicia.",
+            "SOS en un toque desde tu pantalla de inicio."
+        ), widgets = true),
         Version(120, "10.40", listOf(
             "Al abrir Uber o DiDi, Checa enciende sola la lectura y avisa «Lista para trabajar».",
             "Al terminar tu jornada, apágala tú: toca «Apagar ahora» o «Detener» en la notificación.",
