@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/w_qr"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_tarjeta"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="6dp">
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:contentDescription="Mi QR"
+        android:src="@drawable/widget_qr_icono" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:maxLines="1"
+        android:text="Mi QR"
+        android:textColor="#E6E6EC"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+</LinearLayout>

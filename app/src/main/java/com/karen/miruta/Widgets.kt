@@ -43,6 +43,13 @@ class WidgetMosaico : AppWidgetProvider() {
     }
 }
 
+/** Mi QR 1×1: un toque abre el pop-up con el QR de contacto para los pasajeros. */
+class WidgetQr : AppWidgetProvider() {
+    override fun onUpdate(ctx: Context, manager: AppWidgetManager, ids: IntArray) {
+        for (id in ids) manager.updateAppWidget(id, Widgets.qr(ctx))
+    }
+}
+
 /**
  * Widgets de la pantalla de inicio (10.41). Los datos salen de lo que ya existe: «Mi día»
  * (`Jornada` y la meta), `Manejo` (tiempo seguido) y `Lectura` (encendida o apagada).
@@ -111,6 +118,18 @@ object Widgets {
         val v = RemoteViews(ctx.packageName, R.layout.widget_sos)
         pintarSos(ctx, v)
         v.setOnClickPendingIntent(R.id.w_sos, abrirSos(ctx))
+        return v
+    }
+
+    fun qr(ctx: Context): RemoteViews {
+        val v = RemoteViews(ctx.packageName, R.layout.widget_qr)
+        v.setOnClickPendingIntent(
+            R.id.w_qr,
+            PendingIntent.getActivity(
+                ctx, 12, Intent(ctx, QrActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        )
         return v
     }
 

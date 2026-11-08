@@ -246,6 +246,14 @@ class Prefs(context: Context) {
         get() = sp.getBoolean("inicioAuto", true)
         set(v) { sp.edit().putBoolean("inicioAuto", v).apply() }
 
+    /** Contacto del conductor para el QR de pasajeros (10.42): nombre y número (solo dígitos, con lada). */
+    var contactoNombre: String
+        get() = sp.getString("contactoNombre", "") ?: ""
+        set(v) { sp.edit().putString("contactoNombre", v).apply() }
+    var contactoTel: String
+        get() = sp.getString("contactoTel", "") ?: ""
+        set(v) { sp.edit().putString("contactoTel", v).apply() }
+
     /** Cuándo se avisó por última vez al abrir Uber/DiDi (para no repetirlo cada rato). */
     var ultimoAvisoApertura: Long
         get() = sp.getLong("ultAvisoApertura", 0L)

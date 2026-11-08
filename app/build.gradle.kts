@@ -10,8 +10,8 @@ android {
     defaultConfig {
         minSdk = 26
         targetSdk = 36
-        versionCode = 121
-        versionName = "10.41"
+        versionCode = 122
+        versionName = "10.42"
     }
 
     buildFeatures { buildConfig = true }
@@ -95,6 +95,8 @@ android {
 dependencies {
     implementation("androidx.core:core:1.13.1")
     implementation("com.google.mlkit:text-recognition:16.0.1")
+    // QR de contacto para pasajeros (10.42)
+    implementation("com.google.zxing:core:3.5.3")
     // Iniciar sesión con Google (licencia ligada a la cuenta)
     implementation("androidx.credentials:credentials:1.3.0")
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0")

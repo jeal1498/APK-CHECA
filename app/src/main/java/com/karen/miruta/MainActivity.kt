@@ -225,6 +225,7 @@ class MainActivity : Activity() {
                     margenArriba(Tema.S1))
             }
             if (v.widgets) vistasWidgets(cuerpo)
+            if (v.vistaQr) vistaWidgetQr(cuerpo)
         }
         var d: Dialog? = null
         cuerpo.addView(boton("Entendido", cVerde, Color.BLACK) { d?.dismiss() }, margenArriba(Tema.S2))
@@ -261,6 +262,17 @@ class MainActivity : Activity() {
                 Tema.T_NOTA, cTenue, false).apply { setLineSpacing(0f, 1.2f) },
             margenArriba(Tema.S1)
         )
+    }
+
+    /** Vista previa del widget «Mi QR» con botón para agregarlo (Novedades 10.42). */
+    private fun vistaWidgetQr(cuerpo: LinearLayout) {
+        cuerpo.addView(etiquetaTarjeta("WIDGET NUEVO · MI QR 1×1"), margenArriba(Tema.S2))
+        previaWidget(Widgets.qr(this), 74, 74)?.let { cuerpo.addView(it, margenArriba(Tema.S1)) }
+        cuerpo.addView(boton("Agregar «Mi QR» a mi pantalla", cVerde, Color.BLACK) {
+            if (!Widgets.fijar(this, WidgetQr::class.java)) {
+                Toast.makeText(this, "Mantén presionada tu pantalla de inicio y elige Widgets › Checa.", Toast.LENGTH_LONG).show()
+            }
+        }, margenArriba(Tema.S2))
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -306,6 +318,7 @@ class MainActivity : Activity() {
         pintarFallaAbierta?.invoke()
         pintarCuenta()
         pintarFilasLectura()
+        pintarPaisSeguridad() // «Mi contacto para pasajeros» (se edita en otra ventana)
         actualizarEstado()
         if (autoIniciar) {
             autoIniciar = false
@@ -2504,6 +2517,9 @@ class MainActivity : Activity() {
         val nSos = Sos.contactos(this).size
         filaMenu(g, Icono.ESCUDO, "Contactos SOS", if (nSos == 0) "Agrega a quien avisar en una emergencia"
             else "$nSos ${if (nSos == 1) "contacto" else "contactos"}", if (nSos == 0) cAmarillo else cTenue) { gestionarContactosSos() }
+        filaMenu(g, Icono.CELULAR, "Mi contacto para pasajeros",
+            if (prefs.contactoTel.isEmpty()) "Pon tu nombre y número para tu QR" else prefs.contactoNombre,
+            if (prefs.contactoTel.isEmpty()) cAmarillo else cTenue) { startActivity(Intent(this, QrActivity::class.java)) }
         caja.addView(g)
     }
 
