@@ -42,6 +42,7 @@ Agregar en Play Console → Contenido de la app → Seguridad de los datos (todo
 |---|---|---|
 | Info financiera → Otra información financiera | Viajes aceptados en `viajes_checa`: tarifa, gasolina y neto (ganancias del conductor) | Funcionalidad |
 | Actividad en la app → Otras acciones | Fecha, hora, app (Uber/DiDi) y km de cada viaje aceptado; moneda y gasolina por km en `perfil_conductor` | Funcionalidad; Personalización |
+| Info personal → Teléfono y Nombre | WhatsApp del conductor para su QR (10.42): `contactoNombre` y `contactoTel` dentro de `ajustes.datos`, ligados a su cuenta de Google; los usa el widget «Mi QR» | Funcionalidad |
 | Info personal → Teléfono | Contactos SOS (`contactos_sos`): nombre y teléfono de terceros que agrega el conductor | Funcionalidad |
 | Info personal → Nombre | Nombre de los contactos SOS (ya estaba declarado por la cuenta: agregar el propósito si cambia) | Funcionalidad |
 | Info personal → Otra información | Relación del contacto SOS («mamá», etc.) | Funcionalidad |

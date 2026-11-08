@@ -118,7 +118,7 @@ class QrActivity : Activity() {
     private fun formulario(editando: Boolean) {
         val tarjeta = tarjeta()
         tarjeta.addView(titulo(if (editando) "Tu WhatsApp" else "Crea tu QR de WhatsApp"))
-        tarjeta.addView(nota("Tus pasajeros escanean tu QR y te escriben por WhatsApp para pedirte viajes por fuera de las apps."), margen(6))
+        tarjeta.addView(nota("Tus pasajeros escanean tu QR y te escriben por WhatsApp para pedirte viajes por fuera de las apps. Se guarda en tu cuenta de Checa."), margen(6))
 
         fun campo(pista: String, tipo: Int, valor: String) = EditText(this).apply {
             hint = pista
@@ -159,6 +159,7 @@ class QrActivity : Activity() {
                 else -> {
                     prefs.contactoNombre = n
                     prefs.contactoTel = t
+                    Cuenta.subirAjustesSiCambio(this) // queda ligado a tu cuenta de Google
                     mostrarQr()
                 }
             }

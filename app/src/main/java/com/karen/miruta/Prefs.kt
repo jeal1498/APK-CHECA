@@ -305,13 +305,16 @@ class Prefs(context: Context) {
         // Solo valores conocidos: una cuenta con datos raros no debe romper la apariencia ni el país.
         o.optString("tema").takeIf { it in listOf(Tema.MODO_AUTO, Tema.MODO_CLARO, Tema.MODO_OSCURO) }?.let { e.putString("tema", it) }
         o.optString("pais").takeIf { Pais.de(it) != null }?.let { e.putString("pais", it) }
+        // WhatsApp del conductor para el QR (10.42): viaja con la cuenta de Google.
+        o.optString("contactoNombre").trim().takeIf { it.isNotEmpty() && it.length <= 60 }?.let { e.putString("contactoNombre", it) }
+        o.optString("contactoTel").takeIf { it.length in 11..15 && it.all { c -> c.isDigit() } }?.let { e.putString("contactoTel", it) }
         e.commit()
     }
 
     companion object {
         private val AJUSTES_FLOAT = listOf("minKm", "minHora", "recMaxV", "recMinV", "kml", "precioL", "metaDia", "desgKm", "tarMin") +
             Desgaste.CLAVES
-        private val AJUSTES_TEXTO = listOf("tema", "pais")
+        private val AJUSTES_TEXTO = listOf("tema", "pais", "contactoNombre", "contactoTel")
         private val AJUSTES_INT = listOf("durMaxV", "durMinV", "criterio", "tam", "dur", "pos", "vol", "escPop")
         private val AJUSTES_BOOL = listOf(
             "fKm", "fHora", "fRecMax", "fRecMin", "fDurMax", "fDurMin", "fTarMin", "tarMinNeta", "neta", "uber", "didi",
