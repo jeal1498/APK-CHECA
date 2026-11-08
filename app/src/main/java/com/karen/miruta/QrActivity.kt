@@ -95,7 +95,7 @@ class QrActivity : Activity() {
         val hints = mapOf(
             EncodeHintType.CHARACTER_SET to "UTF-8",
             EncodeHintType.MARGIN to 0,
-            EncodeHintType.ERROR_CORRECTION_LEVEL to ErrorCorrectionLevel.M
+            EncodeHintType.ERROR_CORRECTION to ErrorCorrectionLevel.M
         )
         val m = QRCodeWriter().encode(texto, BarcodeFormat.QR_CODE, 0, 0, hints)
         val n = m.width
