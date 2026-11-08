@@ -12,5 +12,5 @@
     <string name="widget_mosaico_nombre">Checa · Mosaico</string>
     <string name="widget_mosaico_desc">Tu día, descanso, lectura y SOS en uno solo</string>
     <string name="widget_qr_nombre">Checa · Mi QR</string>
-    <string name="widget_qr_desc">Muestra tu QR para que tus pasajeros te guarden como contacto</string>
+    <string name="widget_qr_desc">Muestra tu QR para que tus pasajeros te escriban por WhatsApp</string>
 </resources>

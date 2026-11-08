@@ -10,9 +10,9 @@ object Novedades {
 
     val LISTA = listOf(
         Version(122, "10.42", listOf(
-            "Widget nuevo «Mi QR»: un toque muestra un código para que tus pasajeros te guarden como contacto.",
-            "Así te piden viajes por fuera de las apps. La primera vez pones tu nombre y número.",
-            "También lo abres en Ajustes › País y seguridad › Mi contacto para pasajeros."
+            "Widget nuevo «Mi QR»: un toque muestra un código para que tus pasajeros te escriban por WhatsApp.",
+            "Así te piden viajes por fuera de las apps. La primera vez pones tu nombre y tu WhatsApp.",
+            "También lo abres en Ajustes › País y seguridad › Mi WhatsApp para pasajeros."
         ), vistaQr = true),
         Version(121, "10.41", listOf(
             "Widgets nuevos para tu pantalla de inicio: un mosaico 4×2 con tu día, descanso, lectura y SOS.",

@@ -20,9 +20,9 @@ import com.google.zxing.qrcode.QRCodeWriter
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 
 /**
- * Pop-up con el QR de contacto (10.42): el pasajero lo escanea con la cámara de su teléfono y
- * «Agregar contacto» le guarda el nombre y el número del conductor, para pedirle viajes por fuera
- * de las apps. Se abre desde el widget «Mi QR» (ventana translúcida sobre la pantalla de inicio)
+ * Pop-up con el QR de WhatsApp (10.42): el pasajero lo escanea con la cámara de su teléfono y se
+ * abre el chat de WhatsApp con el conductor (con un saludo ya escrito), para pedirle viajes por
+ * fuera de las apps. Se abre desde el widget «Mi QR» (ventana translúcida sobre la pantalla de inicio)
  * y desde Ajustes. La primera vez pide nombre y número. Pantalla al máximo brillo para escanear.
  */
 class QrActivity : Activity() {
@@ -50,16 +50,16 @@ class QrActivity : Activity() {
         val nombre = prefs.contactoNombre
         val tel = prefs.contactoTel
         val tarjeta = tarjeta()
-        tarjeta.addView(titulo("Guárdame como contacto"))
-        tarjeta.addView(nota("Escanea con la cámara de tu celular y toca «Agregar contacto»."), margen(6))
+        tarjeta.addView(titulo("Escríbeme por WhatsApp"))
+        tarjeta.addView(nota("Escanea con la cámara de tu celular y se abre mi chat."), margen(6))
 
         val img = ImageView(this).apply {
             scaleType = ImageView.ScaleType.FIT_CENTER
             setPadding(dp(12), dp(12), dp(12), dp(12))
             background = GradientDrawable().apply { setColor(Color.WHITE); cornerRadius = dp(16).toFloat() }
-            contentDescription = "Código QR de contacto de $nombre"
+            contentDescription = "Código QR para escribir por WhatsApp a $nombre"
         }
-        val bmp = crearQr(vcard(nombre, tel))
+        val bmp = crearQr(enlace(tel))
         if (bmp != null) img.setImageBitmap(bmp)
         tarjeta.addView(img, LinearLayout.LayoutParams(dp(248), dp(248)).apply { topMargin = dp(14); gravity = Gravity.CENTER_HORIZONTAL })
 
@@ -85,10 +85,10 @@ class QrActivity : Activity() {
         poner(tarjeta)
     }
 
-    /** Tarjeta de contacto vCard 3.0: la cámara del pasajero ofrece guardarla tal cual. */
-    private fun vcard(nombre: String, tel: String): String {
-        fun esc(s: String) = s.replace("\\", "\\\\").replace(";", "\\;").replace(",", "\\,").replace("\n", " ")
-        return "BEGIN:VCARD\r\nVERSION:3.0\r\nN:;${esc(nombre)};;;\r\nFN:${esc(nombre)}\r\nTEL;TYPE=CELL:+$tel\r\nEND:VCARD\r\n"
+    /** Enlace de WhatsApp al número del conductor (solo dígitos, con lada) y un saludo ya escrito. */
+    private fun enlace(tel: String): String {
+        val saludo = java.net.URLEncoder.encode("Hola, quiero pedir un viaje.", "UTF-8").replace("+", "%20")
+        return "https://wa.me/$tel?text=$saludo"
     }
 
     private fun crearQr(texto: String): Bitmap? = try {
@@ -117,8 +117,8 @@ class QrActivity : Activity() {
 
     private fun formulario(editando: Boolean) {
         val tarjeta = tarjeta()
-        tarjeta.addView(titulo(if (editando) "Tu contacto" else "Crea tu QR de contacto"))
-        tarjeta.addView(nota("Tus pasajeros te guardan con este nombre y número para pedirte viajes por fuera de las apps."), margen(6))
+        tarjeta.addView(titulo(if (editando) "Tu WhatsApp" else "Crea tu QR de WhatsApp"))
+        tarjeta.addView(nota("Tus pasajeros escanean tu QR y te escriben por WhatsApp para pedirte viajes por fuera de las apps."), margen(6))
 
         fun campo(pista: String, tipo: Int, valor: String) = EditText(this).apply {
             hint = pista
@@ -133,7 +133,7 @@ class QrActivity : Activity() {
         }
         val nombre = campo("Nombre (ej. Eduardo chofer)",
             InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS, prefs.contactoNombre)
-        val tel = campo(if (prefs.moneda.codigo == "MXN") "Tu número, 10 dígitos" else "Tu número con lada del país",
+        val tel = campo(if (prefs.moneda.codigo == "MXN") "Tu WhatsApp, 10 dígitos" else "Tu WhatsApp con lada del país",
             InputType.TYPE_CLASS_PHONE, prefs.contactoTel.let { if (prefs.moneda.codigo == "MXN" && it.startsWith("52") && it.length == 12) it.substring(2) else it })
         tarjeta.addView(nombre, LinearLayout.LayoutParams(-1, dp(48)).apply { topMargin = dp(14) })
         tarjeta.addView(tel, LinearLayout.LayoutParams(-1, dp(48)).apply { topMargin = dp(8) })

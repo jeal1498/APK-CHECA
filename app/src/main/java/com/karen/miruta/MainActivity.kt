@@ -2517,8 +2517,8 @@ class MainActivity : Activity() {
         val nSos = Sos.contactos(this).size
         filaMenu(g, Icono.ESCUDO, "Contactos SOS", if (nSos == 0) "Agrega a quien avisar en una emergencia"
             else "$nSos ${if (nSos == 1) "contacto" else "contactos"}", if (nSos == 0) cAmarillo else cTenue) { gestionarContactosSos() }
-        filaMenu(g, Icono.CELULAR, "Mi contacto para pasajeros",
-            if (prefs.contactoTel.isEmpty()) "Pon tu nombre y número para tu QR" else prefs.contactoNombre,
+        filaMenu(g, Icono.CELULAR, "Mi WhatsApp para pasajeros",
+            if (prefs.contactoTel.isEmpty()) "Pon tu nombre y WhatsApp para tu QR" else prefs.contactoNombre,
             if (prefs.contactoTel.isEmpty()) cAmarillo else cTenue) { startActivity(Intent(this, QrActivity::class.java)) }
         caja.addView(g)
     }
