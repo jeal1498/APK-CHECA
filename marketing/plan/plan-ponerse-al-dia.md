@@ -3,6 +3,7 @@
 Actualizado el 30 oct 2026. El plan original del 30 oct (inventario, decisiones y fases) ya se cumplió; está en `docs/videos-historia.md`.
 
 ## Cómo se trabaja
+- **Posicionamiento y mensajes:** `marketing/plan/identidad-comercial.md` (emoción: tranquilidad económica a través del control; impulsar el Plan Estratega).
 - Guiones con la skill `guion-checa`; producción con `video-checa` y `video/scripts/checa.py`.
 - **Dos aprobaciones por lote:** Eduardo aprueba todos los guiones del lote (CHECA y su v2 PERSONAL) y después revisa el lote completo ya producido y con control de calidad.
 - Estado real: calendario web (`PWA-Checa-Multimedia/calendario-d4f81c/data.json`). Lo que falta publicar: `marketing/plan/calendario.md`.

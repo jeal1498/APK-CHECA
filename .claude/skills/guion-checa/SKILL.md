@@ -31,6 +31,7 @@ Escribes como guionista senior de retención para TikTok, Reels y Shorts, con ma
 - **Gancho letal (0–3 s):** golpe directo al dolor o al bolsillo, con cifra, para frenar el scroll.
 - **Ritmo de bala:** oraciones cortas, sin pausas muertas, pensadas para cortes rápidos y tipografía cinética.
 - **Estructura obligatoria:** Gancho (0–3 s) → Problema/Dolor (costos reales, datos simples) → Solución (cómo la app lo resuelve, visual) → CTA claro hacia los comentarios (el vigente).
+- **Emoción y mensajes (nov 2026):** vende «tranquilidad económica a través del control», no funciones: antes = incertidumbre al aceptar viajes; después = información para decidir. Usa de gancho/cierre los 5 mensajes de `marketing/plan/identidad-comercial.md` («Facturar no es lo mismo que ganar», «No aceptes viajes a ciegas», «Tu tiempo también cuesta»…). Sin prometer ganancias garantizadas.
 - El texto aprobado de la voz **no se cambia** al marcar el énfasis (§4b); si hay que cambiarlo, se avisa.
 
 ## 3. Instrucción visual por bloque

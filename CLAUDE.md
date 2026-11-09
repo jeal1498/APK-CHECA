@@ -103,6 +103,7 @@ Pantallas, instalación en teléfonos (Play Protect, ajustes restringidos, Samsu
 - Detalle (paquetes, Mercado Pago, invitaciones, historia de precios): `docs/web-y-ventas.md`.
 
 ## Marca
+- **Posicionamiento (nov 2026):** vendemos «tranquilidad económica a través del control», no funciones. Eslogan: «Tu trabajo vale. Asegúrate de que cada viaje también.» Planes: Básico $119 · **Estratega $589 (el que se impulsa)** · Pro $1,059. Mensajes, tono y regla «transformación, no funciones»: `marketing/plan/identidad-comercial.md`.
 - Vive en el repo **`jeal1498/PWA-Checa-Multimedia`**, carpeta `marca/` (skill `marca-checa`); no guardar copias aquí. Asfalto `#0C0C10`, hueso `#F4F4EF`; el color solo decide (aceptar `#22C55E`, considerar `#FACC15`, rechazar `#EF4444`); Bricolage Grotesque 800, DM Sans, JetBrains Mono.
 - La web es `https://jeal1498.github.io/PWA-Checa-Multimedia/` (repo `PWA-Checa-Multimedia`; cambios directo a `main`). Los legales los debe revisar un abogado.
 
@@ -113,6 +114,7 @@ Pantallas, instalación en teléfonos (Play Protect, ajustes restringidos, Samsu
 | Tocar pantallas de la app, instalación o licencias | `docs/app-pantallas.md` |
 | Tocar precios, Mercado Pago, invitaciones, la web o el marketing | `docs/web-y-ventas.md` |
 | Saber qué cambió en cada versión | `docs/historial-versiones.md` |
+| Mensajes, tono y posicionamiento | `marketing/plan/identidad-comercial.md` |
 | Ver la historia de los videos | `docs/videos-historia.md` y `marketing/plan/` |
 | Atención en TikTok y WhatsApp | `marketing/atencion/asistente.md` y `prompt.md` |
 | Videos: proyectos viejos, calendario publicado y skills quitadas | `docs/videos-calendario-historia.md`, `docs/skills-borradas.md` |
