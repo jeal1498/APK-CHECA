@@ -28,13 +28,13 @@ function set(t){
   const shk=D.sacude.reduce((m,x)=>Math.max(m,Math.max(0,1-Math.abs(t-x)/.3)*12),0);
   $('world').style.transform=`translate(${(mode==0?sg*340*Math.pow(punch,3):0)+Math.sin(t*95)*shk}px,${Math.cos(t*85)*shk}px) scale(${zs*(1+.03*Math.sin(t*.8)+(mode==1?.38*pk3:.05*eo(punch)))}) rotateZ(${(mode==2?sg*7*pk3:0)+sg*1.6*Math.sin(Math.min(ts,2.5)*1.3)}deg) rotateY(${orb}deg) rotateX(${Math.cos(t*.4)*3}deg)`;
   // ===== teléfono (vistas «telefono» y «metas»)
-  const tin=eo(p(t,0,.25)),verTel=(vt=='telefono'||vt=='metas'),tl=Ls.tel;
+  const tin=eo(p(t,0,.25)),verTel=(vt=='telefono'||vt=='metas'||vt=='telpop'),tl=Ls.tel;
   const cae=tl&&tl.cae!=null?tl.cae:-99;
-  $('tel').style.transform=`translateZ(${lerp(-380,-60,tin)}px) rotateY(${lerp(-32,-10,eio(p(t,0,1.2)))+Math.sin(t*.9)*5}deg) rotateX(${lerp(24,6,eio(p(t,0,1.5)))}deg) translateY(${Math.sin(t*2)*10-(vt=='metas'?40:0)-(vt=='telefono'?165:0)}px) scale(${vt=='metas'?1.12:(vt=='telefono'?.84:1)}) translateX(${Math.sin(t*70)*14*Math.max(0,1-Math.abs(t-cae)/.25)}px)`;
+  $('tel').style.transform=`translateZ(${lerp(-380,-60,tin)}px) rotateY(${lerp(-32,-10,eio(p(t,0,1.2)))+Math.sin(t*.9)*5}deg) rotateX(${lerp(24,6,eio(p(t,0,1.5)))}deg) translateY(${Math.sin(t*2)*10-(vt=='metas'?40:0)-(vt=='telefono'?165:(vt=='telpop'?200:0))}px) scale(${vt=='metas'?1.12:(vt=='telefono'?.84:(vt=='telpop'?.92:1))}) translateX(${Math.sin(t*70)*14*Math.max(0,1-Math.abs(t-cae)/.25)}px)`;
   const dinF=D.din?D.din.fin:-99,tdi=eo(p(t,dinF,dinF+.45));  // el teléfono nace de la columna verde
   $('tel').style.opacity=(.75+.25*tin)*(verTel?1:0)*(D.din&&t<dinF+.45?tdi:1);
   if(D.din&&t<dinF+.45)$('tel').style.transform+=` scale(${lerp(.35,1,tdi)})`;
-  dinero(t,vt);
+  dinero(t,vt);popE(t,s);
   const rt=tl&&tl.ruta;$('rp').style.strokeDashoffset=rt?900*(1-eio(p(t,rt[0],rt[1]))):900;
   if(tl&&tl.oferta){$('om').textContent=tl.oferta.precio;$('o1').textContent=tl.oferta.l1;$('o2').textContent=tl.oferta.l2}
   const zz=tl&&tl.zoom?1+.22*Math.sin(Math.PI*p(t,tl.zoom[0],tl.zoom[1])):1;
@@ -162,6 +162,21 @@ function dinero(t,vt){
   if(co){$('lab1').textContent=co.l1;$('lab2').textContent=co.l2;$('c1m').textContent='$'+z.max.toLocaleString('en-US')}
   const nk=co?back(p(t,co.neq,co.neq+.25)):0;$('neq').style.opacity=cl(nk*2);$('neq').style.transform=`scale(${lerp(2.4,1,nk)}) rotate(-8deg)`;
   $('lab2').style.color=gv>.05||t>(co?co.verde:1e9)?'#22C55E':'#A3A3AD';
+}
+// ===== pop-up E de la APK (Popup.kt 10.11+) dentro del teléfono, arriba de la oferta
+function popE(t,s){
+  const el=$('pe'),E=D.peEntra;if(E==null){el.style.opacity=0;return}
+  let st=null,ln=null;for(let i=s;i>=0&&!st;i--)if(L[i].pe){ln=L[i].pe;for(const e of ln.estados)if(t>=e.t)st=e;if(!st&&i==s)st=ln.estados[0]}
+  if(!st||t<E-.05){el.style.opacity=0;return}
+  const c=COL[st.nivel];el.style.borderColor=c;$('pea').style.color=c;$('pea').textContent=TXT[st.nivel];
+  $('pem').textContent=st.monto;
+  $('peh').innerHTML=(st.okh?'✓ ':'✕ ')+st.h;$('peh').style.color=st.okh?COL.verde:COL.rojo;
+  $('pek').innerHTML=(st.okk?'✓ ':'✕ ')+st.k;$('pek').style.color=st.okk?COL.verde:COL.rojo;$('pet').textContent=st.tot;
+  const k=back(p(t,E,E+.3));el.style.opacity=cl(k*2);
+  const cur=L[s].pe,bm=cur&&cur.bump!=null?Math.max(0,1-Math.abs(t-cur.bump-.08)/.25):0,pu=cur&&cur.pulso!=null?Math.max(0,Math.sin(Math.PI*p(t,cur.pulso-.05,cur.pulso+.8))):0;
+  el.style.transform=`translateY(${lerp(-90,0,k)}px) scale(${lerp(.8,1,k)*(1+.04*pu)})`;
+  el.style.boxShadow=`0 18px 44px rgba(0,0,0,.6),0 0 ${70*pu}px ${14*pu}px ${c}99`;
+  $('pem').style.transform=`scale(${1+.3*bm})`;
 }
 const __base=set;
 function setLoop(t){

@@ -138,6 +138,26 @@ class Compilador:
             # dinero (vista «dinero»): pila de billetes a escala, manguera de gasolina, llanta y dos columnas
             if "dinero" in a:
                 self.dinero(i, a["dinero"], D)
+            # pop-up E de la APK dentro del teléfono (vista «telpop»), arriba de la oferta
+            if "pe" in a:
+                q = a["pe"]
+                ests = []
+                for k in q["estados"]:
+                    if k["nivel"] not in NIVELES[1:]:
+                        raise SystemExit(f"línea {sc['n']}: nivel del pop-up E «{k['nivel']}» (usa verde, amarillo o rojo)")
+                    ests.append({"t": self.t(i, k.get("en")) if k.get("en") is not None else sc["start"] - 1, "nivel": k["nivel"], "monto": k["monto"],
+                                 "h": k["h"], "okh": 1 if k.get("okh") else 0, "k": k["k"], "okk": 1 if k.get("okk") else 0, "tot": k["tot"]})
+                    if k.get("en") is not None:
+                        self.nota(ests[-1]["t"], i, f"el pop-up E pasa a {k['nivel'].upper()} {k['monto']}")
+                ests.sort(key=lambda e: e["t"])
+                ln["pe"] = {"estados": ests, "bump": self.t(i, q.get("bump")), "pulso": self.t(i, q.get("pulso"))}
+                if q.get("entra") is not None:
+                    D["peEntra"] = self.t(i, q["entra"])
+                    self.nota(D["peEntra"], i, f"entra el pop-up E arriba de la oferta, ya con su valor ({ests[0]['nivel'].upper()} {ests[0]['monto']})")
+                if q.get("bump") is not None:
+                    self.nota(ln["pe"]["bump"], i, "el monto del pop-up E late")
+                if q.get("pulso") is not None:
+                    self.nota(ln["pe"]["pulso"], i, "el borde del pop-up E brilla")
             # metas
             if "metas" in a:
                 m = a["metas"]
@@ -206,10 +226,11 @@ class Compilador:
             D["din"]["fin"] = self.sc[ult + 1]["start"] if ult + 1 < n else total
         if cta_i is None:
             raise SystemExit("falta una línea con vista «cta» (la última)")
-        if pop_entra is None:
-            raise SystemExit("ninguna línea trae popup.entra")
+        if pop_entra is None and D.get("peEntra") is None:
+            raise SystemExit("ninguna línea trae popup.entra ni pe.entra")
         D["gasRef"] = next((e["gas"] for l in D["lines"] if l.get("popup") for e in l["popup"]["estados"] if e["gas"]), "Gasolina")
-        D["popEntra"] = pop_entra
+        D["popEntra"] = pop_entra if pop_entra is not None else 1e6  # sin pop-up grande: nunca entra
+        D.setdefault("peEntra", None)
         D["popSale"] = round(self.sc[cta_i]["start"] - 0.15, 3)
         D["cursor"] = [c for c in D["cursor"]]
         D["capFin"] = round(fin_voz + 0.06, 3)
@@ -281,7 +302,15 @@ def sonidos(D, T):
             add("thump", g["a"] + .05, .6)
     for l in D["lavado"]:
         add({"rojo": "rechazar", "verde": "aceptar"}.get(l["color"], "sello"), l["t"], .6)
-    add("popup-entra", D["popEntra"], .7)
+    if D["popEntra"] < D["total"]:
+        add("popup-entra", D["popEntra"], .7)
+    if D.get("peEntra") is not None:
+        add("popup-entra", D["peEntra"], .7)
+        add("considerar", D["peEntra"] + .1, .35)
+    for ln in D["lines"]:
+        if ln.get("pe"):
+            if ln["pe"]["bump"] is not None:
+                add("sello", ln["pe"]["bump"], .4)
     prev = {}
     for ln in D["lines"]:
         pp = ln.get("popup")
