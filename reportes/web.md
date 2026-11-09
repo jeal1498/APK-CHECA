@@ -1,17 +1,19 @@
 # Reporte de Checa (web + app) · últimos 30 días
 
-Generado: 2026-11-08 18:07 UTC. Cuenta visitas únicas (una por pestaña).
+Generado: 2026-11-09 22:44 UTC. Cuenta visitas únicas (una por pestaña).
 
 ## Resumen
 | visitas | descargas | cuentas_nuevas | pagos | ingresos | licencias_activas |
 | --- | --- | --- | --- | --- | --- |
-| 646 | 264 | 49 | 0 | 0 | 3 |
+| 652 | 264 | 54 | 0 | 0 | 3 |
 
 # App
 
 ## Cuentas nuevas por día (inicio con Google)
 | dia | cuentas |
 | --- | --- |
+| 2026-11-09 | 1 |
+| 2026-11-08 | 4 |
 | 2026-11-07 | 4 |
 | 2026-11-05 | 1 |
 | 2026-11-02 | 1 |
@@ -31,6 +33,11 @@ Generado: 2026-11-08 18:07 UTC. Cuenta visitas únicas (una por pestaña).
 ## Quiénes son (cuentas con Google)
 | correo | registro | ultimo_acceso | equipos | licencia_vence |
 | --- | --- | --- | --- | --- |
+| shon.gg26@gmail.com | 11-09 14:09 | 11-09 14:09 | 1 | sin licencia |
+| dv21002@gmail.com | 11-08 22:14 | 11-08 22:14 | 1 | sin licencia |
+| romero671103@gmail.com | 11-08 21:37 | 11-08 21:37 | 1 | sin licencia |
+| courtneycasey.47635@gmail.com | 11-08 17:41 | 11-08 17:41 | 1 | sin licencia |
+| beckyhunt.07207@gmail.com | 11-08 17:22 | 11-08 17:22 | 1 | sin licencia |
 | mandyfrench.08210@gmail.com | 11-07 21:09 | 11-07 21:09 | 1 | sin licencia |
 | sandrawong.28374@gmail.com | 11-07 21:09 | 11-07 21:09 | 1 | sin licencia |
 | rubyflowers.77582@gmail.com | 11-07 18:37 | 11-07 18:37 | 1 | sin licencia |
@@ -46,7 +53,7 @@ Generado: 2026-11-08 18:07 UTC. Cuenta visitas únicas (una por pestaña).
 | glozano30506@gmail.com | 10-24 00:12 | 10-24 00:12 | 1 | sin licencia |
 | nikte06bacabespinoza@gmail.com | 10-23 18:23 | 10-23 18:23 | 1 | sin licencia |
 | wilmafields.72871@gmail.com | 10-23 12:15 | 10-23 12:15 | 1 | sin licencia |
-| jeal1498@gmail.com | 10-22 17:15 | 11-07 19:20 | 2 | sin licencia |
+| jeal1498@gmail.com | 10-22 17:15 | 11-08 20:38 | 2 | sin licencia |
 | ciberbumker@gmail.com | 10-22 16:24 | 10-22 16:40 | 2 | sin licencia |
 | diberdiub@gmail.com | 10-21 18:24 | 10-21 18:24 | 1 | sin licencia |
 | ceverthbernabe@gmail.com | 10-21 14:00 | 10-21 14:00 | 1 | sin licencia |
@@ -79,7 +86,7 @@ Generado: 2026-11-08 18:07 UTC. Cuenta visitas únicas (una por pestaña).
 | edent402@gmail.com | 10-16 07:42 | 11-04 12:54 | 1 | sin licencia |
 | lufercab@gmail.com | 10-15 18:21 | 10-15 18:21 | 1 | 20270113 |
 | landingbot01@gmail.com | 10-11 15:23 | 10-21 19:26 | 1 | sin licencia |
-| lalolopezxd@gmail.com | 10-11 15:08 | 11-07 14:34 | 2 | 99991231 |
+| lalolopezxd@gmail.com | 10-11 15:08 | 11-08 22:05 | 3 | 99991231 |
 
 ## Pagos por plan
 Sin datos todavía.
@@ -111,7 +118,7 @@ Sin datos todavía.
 ## Embudo
 | evento | visitas | veces |
 | --- | --- | --- |
-| visita | 646 | 906 |
+| visita | 652 | 913 |
 | descarga | 264 | 297 |
 | clic_descargar | 124 | 136 |
 | descarga_instalar | 69 | 147 |
@@ -123,7 +130,7 @@ Sin datos todavía.
 ## Por fuente (visitas → descargas)
 | fuente | campana | visitas | descargas |
 | --- | --- | --- | --- |
-| directo |  | 494 | 198 |
+| directo |  | 500 | 198 |
 | tiktok |  | 98 | 55 |
 | tiktok | prueba-en-google-play | 22 | 0 |
 | app | compartir | 17 | 9 |
@@ -139,8 +146,8 @@ Sin datos todavía.
 ## Por dispositivo
 | dispositivo | visitas | descargas |
 | --- | --- | --- |
-| android | 512 | 264 |
-| pc | 78 | 0 |
+| android | 513 | 264 |
+| pc | 83 | 0 |
 | iphone | 57 | 0 |
 
 ## Qué botón lleva a descargar
@@ -162,7 +169,8 @@ Sin datos todavía.
 ## Por día
 | dia | visitas | descargas |
 | --- | --- | --- |
-| 2026-11-08 | 2 | 0 |
+| 2026-11-09 | 3 | 0 |
+| 2026-11-08 | 5 | 0 |
 | 2026-11-07 | 14 | 0 |
 | 2026-11-05 | 4 | 1 |
 | 2026-11-04 | 13 | 1 |
