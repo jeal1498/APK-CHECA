@@ -112,6 +112,21 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#0C0C10;font-fam
 #gp{position:absolute;left:50%;top:1070px;margin-left:-250px;width:500px;padding:14px 0;border-radius:999px;background:#1B1B22;border:3px solid #2A2A33;color:#F4F4EF;display:flex;align-items:center;justify-content:center;gap:18px;font-size:48px;font-weight:700;z-index:6;opacity:0}
 #sub10{top:1175px!important}
 .mt{transition:none}
+#din{position:absolute;inset:0;transform-origin:540px 900px}
+#pila{position:absolute;border-radius:14px;background:repeating-linear-gradient(0deg,#E6E6DE 0 22px,#8C8C84 22px 25px);overflow:hidden}
+#pverde{position:absolute;inset:0;background:repeating-linear-gradient(0deg,#22C55E 0 22px,#137A39 22px 25px);opacity:0}
+#rebanada{position:absolute;border-radius:14px 14px 4px 4px;background:repeating-linear-gradient(0deg,#E6E6DE 0 22px,#8C8C84 22px 25px);transform-origin:50% 50%}
+#rebanada.rojo{background:repeating-linear-gradient(0deg,#EF4444 0 22px,#8F1F1F 22px 25px);box-shadow:0 0 50px rgba(239,68,68,.6)}
+#pmonto,#c1m{position:absolute;width:600px;text-align:center;font-family:"Bricolage Grotesque";font-weight:800;font-size:120px;letter-spacing:-4px;line-height:1;white-space:nowrap}
+#c1m{left:20px;color:#A3A3AD}
+#ptacha{position:absolute;left:12%;top:52%;height:14px;width:0;background:#EF4444;border-radius:7px;transform:rotate(-4deg)}
+#mang{position:absolute;left:640px;top:120px;opacity:0}
+#llanta{position:absolute;left:0;top:965px;opacity:0}
+#raspa{position:absolute;width:16px;background:#EF4444;box-shadow:0 0 30px #EF4444;opacity:0}
+#col1{position:absolute;left:155px;width:330px;border-radius:14px;background:repeating-linear-gradient(0deg,#5A5A64 0 22px,#2E2E36 22px 25px);opacity:0}
+#lab1,#lab2{position:absolute;top:1168px;width:420px;text-align:center;font-family:"JetBrains Mono";font-weight:700;font-size:44px;letter-spacing:4px;opacity:0}
+#lab1{left:110px;color:#A3A3AD}#lab2{left:535px}
+#neq{position:absolute;left:470px;top:800px;width:140px;text-align:center;font-family:"Bricolage Grotesque";font-weight:800;font-size:200px;line-height:1;color:#FACC15;text-shadow:0 10px 40px rgba(0,0,0,.8);opacity:0}
 #ejemplo{position:absolute;left:0;right:0;top:1385px;text-align:center;font-family:"JetBrains Mono";font-weight:500;font-size:30px;letter-spacing:5px;color:#B4B4BE;z-index:6;text-shadow:0 2px 14px rgba(0,0,0,.9)}
 </style></head><body><div id="st">
 <div id="bks" class="capa"></div>
@@ -129,6 +144,11 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#0C0C10;font-fam
 <div id="chip"><div id="chipclip"><div id="scan"></div></div><div><div id="cprice">$180.00</div><div id="csub">8 min (3 km) · 67 min (37 km)</div></div><div id="cbtn">Aceptar</div>
   <svg id="ban" width="120" height="120" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="#EF4444" stroke-width="10"/><path d="M20 80 L80 20" stroke="#EF4444" stroke-width="10" stroke-linecap="round"/></svg>
   <svg id="cur" width="64" height="64" viewBox="0 0 50 60"><path d="M6 4 L6 46 L18 36 L26 54 L34 50 L26 33 L42 32 Z" fill="#fff" stroke="#0C0C10" stroke-width="3" stroke-linejoin="round"/></svg></div>
+ <div id="din"><div id="col1"></div><div id="c1m"></div><div id="pila"><div id="pverde"></div></div><div id="rebanada"></div><div id="raspa"></div>
+  <div id="pmonto"><span id="pmv">$1,500</span><div id="ptacha"></div></div>
+  <svg id="mang" width="460" height="360" viewBox="0 0 460 360"><path d="M470 40 C 330 30, 300 160, 200 200 S 90 250, 70 300" fill="none" stroke="#2A2A33" stroke-width="44" stroke-linecap="round"/><path d="M470 40 C 330 30, 300 160, 200 200 S 90 250, 70 300" fill="none" stroke="#3A3A44" stroke-width="30" stroke-linecap="round"/><rect x="20" y="280" width="110" height="70" rx="16" fill="#EF4444" transform="rotate(-35 75 315)"/><text x="230" y="120" font-family="JetBrains Mono" font-weight="700" font-size="40" fill="#EF4444">GAS</text></svg>
+  <svg id="llanta" width="185" height="185" viewBox="0 0 100 100"><circle cx="50" cy="50" r="47" fill="#1B1B22" stroke="#5A5A64" stroke-width="6"/><circle cx="50" cy="50" r="22" fill="#3A3A44" stroke="#8C8C84" stroke-width="4"/><g stroke="#5A5A64" stroke-width="7"><path d="M50 3V14M50 86V97M3 50H14M86 50H97M17 17l8 8M75 75l8 8M83 17l-8 8M25 75l-8 8"/></g><circle cx="50" cy="50" r="6" fill="#8C8C84"/></svg>
+  <div id="neq">≠</div><div id="lab1">FACTURAS</div><div id="lab2">GANAS</div></div>
 </div></div>
 <div id="stamp">te quedan $100</div>
 <svg id="ring" width="190" height="190" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="#0C0C10aa" stroke="#2A2A33" stroke-width="8"/><circle id="rc" cx="50" cy="50" r="42" fill="none" stroke="#EF4444" stroke-width="8" stroke-linecap="round" stroke-dasharray="264" transform="rotate(-90 50 50)"/><text id="rt" x="50" y="62" text-anchor="middle" font-family="JetBrains Mono" font-weight="700" font-size="34" fill="#F4F4EF">10 s</text></svg>

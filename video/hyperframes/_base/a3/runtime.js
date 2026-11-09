@@ -14,7 +14,8 @@ const TXT={gris:'CHECA',verde:'ACEPTAR',amarillo:'CONSIDERAR',rojo:'RECHAZAR'};
 function pop(o){
   const nv=o.nivel;$('cp').className='cp cp-'+(nv=='amarillo'?'amarillo':nv);$('cb').className='cp-banda'+(nv=='gris'?' gris':'');
   $('ca').textContent=o.txt||TXT[nv];
-  ['f1','f2','f3'].forEach((id,i)=>$(id).className='cp-ficha'+(o.ok?(i<2?' cp-ok':''):(i<2?' cp-mal':'')));
+  const okA=Array.isArray(o.ok)?o.ok:[o.ok,o.ok];
+  ['f1','f2','f3'].forEach((id,i)=>$(id).className='cp-ficha'+(i<2?(okA[i]?' cp-ok':' cp-mal'):''));
   $('fh').textContent=o.h||'';$('fk').textContent=o.k||'';$('fm').textContent=o.m||'';$('fkm').textContent=o.km||'';}
 function linea(t){let s=0;for(let i=0;i<N;i++)if(t>=L[i].start)s=i;return s}
 function golpe(g,t){const k=back(p(t,g.a,g.a+.16)),e=$('gol');e.textContent=g.txt;e.style.fontSize=(g.txt.length>14?'96px':(g.txt.length>9?'108px':'130px'));e.style.color=COL[g.color]||g.color||'#F4F4EF';e.style.opacity=cl(k*2)*(1-p(t,g.b-.12,g.b));e.style.transform=`scale(${lerp(2,1,eo(p(t,g.a,g.a+.14)))}) rotate(${lerp(-5,-1.5,p(t,g.a,g.b))}deg)`}
@@ -22,7 +23,7 @@ function set(t){
   const s=linea(t),Ls=L[s],ts=t-Ls.start,vt=Ls.vista;
   [...$('bks').children].forEach((d,i)=>{const b=B[i];const x=b[0]+Math.sin(t*.9+i)*30,y=b[1]+Math.cos(t*.7+i*2)*24-t*8;d.style.cssText=`left:${x-b[2]/2}px;top:${y-b[2]/2}px;width:${b[2]}px;height:${b[2]}px;background:${b[3]};opacity:${b[4]}`});
   // ===== cámara: órbita lenta, zoom por línea y un corte distinto cada vez (lateral, zoom, giro)
-  const punch=Math.max(0,1-ts/.35),orb=Math.sin(t*.55)*10;
+  const punch=s?Math.max(0,1-ts/.35):0,orb=Math.sin(t*.55)*10;
   const zs=lerp(1,Ls.zoom,eio(p(ts,0,1.4))),pk3=Math.pow(punch,2),sg=(s%2?1:-1),mode=s%3;
   const shk=D.sacude.reduce((m,x)=>Math.max(m,Math.max(0,1-Math.abs(t-x)/.3)*12),0);
   $('world').style.transform=`translate(${(mode==0?sg*340*Math.pow(punch,3):0)+Math.sin(t*95)*shk}px,${Math.cos(t*85)*shk}px) scale(${zs*(1+.03*Math.sin(t*.8)+(mode==1?.38*pk3:.05*eo(punch)))}) rotateZ(${(mode==2?sg*7*pk3:0)+sg*1.6*Math.sin(Math.min(ts,2.5)*1.3)}deg) rotateY(${orb}deg) rotateX(${Math.cos(t*.4)*3}deg)`;
@@ -30,8 +31,11 @@ function set(t){
   const tin=eo(p(t,0,.25)),verTel=(vt=='telefono'||vt=='metas'),tl=Ls.tel;
   const cae=tl&&tl.cae!=null?tl.cae:-99;
   $('tel').style.transform=`translateZ(${lerp(-380,-60,tin)}px) rotateY(${lerp(-32,-10,eio(p(t,0,1.2)))+Math.sin(t*.9)*5}deg) rotateX(${lerp(24,6,eio(p(t,0,1.5)))}deg) translateY(${Math.sin(t*2)*10-(vt=='metas'?40:0)-(vt=='telefono'?165:0)}px) scale(${vt=='metas'?1.12:(vt=='telefono'?.84:1)}) translateX(${Math.sin(t*70)*14*Math.max(0,1-Math.abs(t-cae)/.25)}px)`;
-  $('tel').style.opacity=(.75+.25*tin)*(verTel?1:0);
-  const rt=tl&&tl.ruta;$('rp').style.strokeDashoffset=rt?900*(1-eio(p(t,rt[0],rt[1]))):0;
+  const dinF=D.din?D.din.fin:-99,tdi=eo(p(t,dinF,dinF+.45));  // el teléfono nace de la columna verde
+  $('tel').style.opacity=(.75+.25*tin)*(verTel?1:0)*(D.din&&t<dinF+.45?tdi:1);
+  if(D.din&&t<dinF+.45)$('tel').style.transform+=` scale(${lerp(.35,1,tdi)})`;
+  dinero(t,vt);
+  const rt=tl&&tl.ruta;$('rp').style.strokeDashoffset=rt?900*(1-eio(p(t,rt[0],rt[1]))):900;
   if(tl&&tl.oferta){$('om').textContent=tl.oferta.precio;$('o1').textContent=tl.oferta.l1;$('o2').textContent=tl.oferta.l2}
   const zz=tl&&tl.zoom?1+.22*Math.sin(Math.PI*p(t,tl.zoom[0],tl.zoom[1])):1;
   const caeA=tl&&tl.cae!=null;
@@ -112,6 +116,52 @@ function set(t){
   $('wash').style.background=wc;$('wash').style.opacity=.3*wo;
   $('prog').style.width=(t/D.total*100)+'%';
   $('flash').style.opacity=Math.max(0,...L.slice(1).map(x=>.14*Math.max(0,1-Math.abs(t-x.start)/.1)));
+}
+// ===== escena de billetes: la altura de la pila es proporcional al dinero
+function dinero(t,vt){
+  const z=D.din,el=$('din');if(!z){el.style.display='none';return}
+  const sale=eo(p(t,z.fin,z.fin+.4));el.style.display=t<z.fin+.45?'block':'none';
+  el.style.opacity=1-sale;el.style.transform=`translate(${lerp(0,-100,sale)}px,${lerp(0,80,sale)}px) scale(${lerp(1,.35,sale)})`;
+  const BASE=1150,HM=620,h=v=>v/z.max*HM;
+  const c=z.corte,cv=c?c.valor:0;
+  let monto=z.monto;for(const k of z.cuenta)if(t>=k.t0)monto=Math.round(lerp(k.de,k.a,eo(p(t,k.t0,k.t1))));
+  // columnas
+  const co=z.cols,ck=co?eio(p(t,co.t,co.t+.5)):0;
+  const W=lerp(400,330,ck),X=lerp(540,745,ck),hc=h(z.max-cv);
+  const pila=$('pila');pila.style.left=(X-W/2)+'px';pila.style.width=W+'px';pila.style.top=(BASE-hc)+'px';pila.style.height=hc+'px';
+  const gv=co?Math.max(0,Math.sin(Math.PI*p(t,co.verde-.05,co.verde+.9))):0;
+  $('pverde').style.opacity=ck;
+  pila.style.boxShadow=`0 30px 60px rgba(0,0,0,.6),0 0 ${80*gv}px ${16*gv}px rgba(34,197,94,${.6*gv})`;
+  // rebanada de gasolina (a escala) que se traga la manguera
+  const rb=$('rebanada');
+  if(c){const rojo=t>=c.t,ch=eio(p(t,c.chupa,c.chupa+.5)),hr=h(cv);
+    rb.style.display=ch<1?'block':'none';rb.className=rojo?'rojo':'';
+    rb.style.left=(540-200)+'px';rb.style.width='400px';rb.style.top=(BASE-hc-hr)+'px';rb.style.height=hr+'px';
+    const sk=rojo?Math.max(0,1-(t-c.t)/.3)*10:0;
+    rb.style.transform=`translate(${lerp(0,330,ch)+Math.sin(t*90)*sk}px,${lerp(0,-300,ch)}px) scale(${lerp(1,.08,ch)})`;rb.style.opacity=1-p(t,c.chupa+.35,c.chupa+.5);
+  }else rb.style.display='none';
+  // manguera
+  const mg=$('mang');
+  if(z.manguera!=null){const mi=back(p(t,z.manguera,z.manguera+.35)),mo=c?eio(p(t,c.chupa+.7,c.chupa+1.1)):0;
+    mg.style.opacity=cl(mi*2)*(1-mo);mg.style.transform=`translate(${lerp(500,0,mi)+lerp(0,500,mo)}px,${c&&t>=c.chupa&&t<c.chupa+.5?Math.sin(t*60)*6:0}px)`}else mg.style.opacity=0;
+  // monto arriba de la pila (baja con ella)
+  const topV=(c&&t>=c.chupa)?lerp(z.max,z.max-cv,eio(p(t,c.chupa,c.chupa+.5))):z.max;
+  const lb=$('pmonto');$('pmv').textContent='$'+monto.toLocaleString('en-US');
+  lb.style.left=(X-300)+'px';lb.style.top=(BASE-h(topV)-130)+'px';lb.style.color=ck>0?'#22C55E':'#F4F4EF';
+  $('ptacha').style.width=(z.tacha!=null?eo(p(t,z.tacha,z.tacha+.25))*76*(1-(c?p(t,c.chupa,c.chupa+.2):0)):0)+'%';
+  // llanta que rueda y raspa
+  const ll=$('llanta');
+  if(z.llanta!=null){const lk=eo(p(t,z.llanta-.55,z.llanta)),lo=co?p(t,co.t,co.t+.3):0,x=lerp(-260,X-W/2-185,lk);
+    ll.style.opacity=(t>z.llanta-.55?1:0)*(1-lo);ll.style.transform=`translate(${x}px,0) rotate(${lerp(-540,0,lk)}deg)`;
+    const rs=Math.max(0,1-Math.abs(t-z.llanta-.15)/.35);$('raspa').style.opacity=rs;$('raspa').style.left=(X-W/2-6)+'px';$('raspa').style.top=(BASE-hc)+'px';$('raspa').style.height=hc+'px'}
+  else{ll.style.opacity=0;$('raspa').style.opacity=0}
+  // columna de lo que facturas, etiquetas y sello ≠
+  const c1=$('col1'),h1=h(z.max)*ck;c1.style.height=h1+'px';c1.style.top=(BASE-h1)+'px';c1.style.opacity=cl(ck*3);
+  $('c1m').style.opacity=ck;$('c1m').style.top=(BASE-h(z.max)-130)+'px';
+  $('lab1').style.opacity=ck;$('lab2').style.opacity=ck;
+  if(co){$('lab1').textContent=co.l1;$('lab2').textContent=co.l2;$('c1m').textContent='$'+z.max.toLocaleString('en-US')}
+  const nk=co?back(p(t,co.neq,co.neq+.25)):0;$('neq').style.opacity=cl(nk*2);$('neq').style.transform=`scale(${lerp(2.4,1,nk)}) rotate(-8deg)`;
+  $('lab2').style.color=gv>.05||t>(co?co.verde:1e9)?'#22C55E':'#A3A3AD';
 }
 const __base=set;
 function setLoop(t){

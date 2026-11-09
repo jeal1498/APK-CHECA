@@ -61,7 +61,7 @@ class Compilador:
         fin_voz = max(s["start"] + s["words"][-1][2] for s in self.sc if s.get("words"))
         total = A.get("total") or round(fin_voz + 1.65, 1)
         D = {"total": total, "hook": A["hook"], "lines": [], "golpes": [], "lavado": [], "sacude": [], "ml": [], "scan": [], "cursor": [],
-             "stamp": [], "ring": [], "ojo": [], "altavoz": [], "chipPulso": [], "chipBrillo": [], "chipRuns": []}
+             "stamp": [], "ring": [], "ojo": [], "altavoz": [], "chipPulso": [], "chipBrillo": [], "chipRuns": [], "din": None}
         n = len(A["lineas"])
         previa_pop = previa_chip = False
         run = None
@@ -105,7 +105,7 @@ class Compilador:
                 ests = []
                 for k in pp["estados"]:
                     e = {"t": self.t(i, k.get("en")) if k.get("en") is not None else sc["start"] - 1,
-                         "nivel": k["nivel"], "pv": k.get("pv", ""), "gas": k.get("gas"), "ok": 1 if k.get("ok") else 0,
+                         "nivel": k["nivel"], "pv": k.get("pv", ""), "gas": k.get("gas"), "ok": ([1 if x else 0 for x in k["ok"]] if isinstance(k.get("ok"), list) else 1 if k.get("ok") else 0),
                          "h": k.get("h"), "k": k.get("k"), "m": k.get("m"), "km": k.get("km"), "nl": k.get("nl", "netos"), "txt": k.get("txt")}
                     if k["nivel"] not in NIVELES:
                         raise SystemExit(f"línea {sc['n']}: nivel «{k['nivel']}» (usa {NIVELES})")
@@ -135,6 +135,9 @@ class Compilador:
                     self.nota(ln["popup"]["gas_en"], i, "aparece la gasolina en rojo")
                 if ln["popup"]["fichas"] not in (None, 1):
                     self.nota(ln["popup"]["fichas"], i, "entran las 3 fichas con su valor final")
+            # dinero (vista «dinero»): pila de billetes a escala, manguera de gasolina, llanta y dos columnas
+            if "dinero" in a:
+                self.dinero(i, a["dinero"], D)
             # metas
             if "metas" in a:
                 m = a["metas"]
@@ -198,6 +201,9 @@ class Compilador:
             D["lines"].append(ln)
         if run:
             D["chipRuns"].append(run)
+        if D["din"] is not None:
+            ult = max(j for j, a in enumerate(A["lineas"]) if a["vista"] == "dinero")
+            D["din"]["fin"] = self.sc[ult + 1]["start"] if ult + 1 < n else total
         if cta_i is None:
             raise SystemExit("falta una línea con vista «cta» (la última)")
         if pop_entra is None:
@@ -209,6 +215,34 @@ class Compilador:
         D["capFin"] = round(fin_voz + 0.06, 3)
         D["caps"] = self.subtitulos()
         return D
+
+    def dinero(self, i, d, D):
+        """Datos de la escena de billetes; se acumulan en D["din"] (una sola pila por video)."""
+        z = D["din"] = D["din"] or {"max": d.get("max", 1500), "monto": d.get("monto", 1500), "cuenta": [], "tacha": None, "corte": None,
+                                    "manguera": None, "llanta": None, "cols": None}
+        if d.get("tacha") is not None:
+            z["tacha"] = self.t(i, d["tacha"])
+            self.nota(z["tacha"], i, "se tacha el monto de la pila")
+        if d.get("manguera") is not None:
+            z["manguera"] = self.t(i, d["manguera"])
+            self.nota(z["manguera"], i, "entra la manguera de gasolina")
+        if d.get("corte"):
+            c = d["corte"]
+            z["corte"] = {"valor": c["valor"], "t": self.t(i, c["en"]), "chupa": self.t(i, c["chupa"])}
+            self.nota(z["corte"]["t"], i, f"la rebanada de ${c['valor']} se pinta de rojo (a escala)")
+            self.nota(z["corte"]["chupa"], i, "la manguera se traga la rebanada")
+        for c in d.get("cuenta", []):
+            z["cuenta"].append({"de": c["de"], "a": c["a"], "t0": self.t(i, c["en"]), "t1": self.t(i, c["hasta"])})
+            self.nota(z["cuenta"][-1]["t0"], i, f"el monto baja de ${c['de']} a ${c['a']}")
+        if d.get("llanta") is not None:
+            z["llanta"] = self.t(i, d["llanta"])
+            self.nota(z["llanta"], i, "llega la llanta y raspa la pila")
+        if d.get("columnas"):
+            c = d["columnas"]
+            z["cols"] = {"t": self.t(i, c["en"]), "neq": self.t(i, c["neq"]), "verde": self.t(i, c["verde"]), "a": c["a"], "l1": c.get("l1", "FACTURAS"), "l2": c.get("l2", "GANAS")}
+            self.nota(z["cols"]["t"], i, f"la pila se parte en dos columnas a escala: {z['cols']['l1']} ${z['max']} y {z['cols']['l2']} ${c['a']}")
+            self.nota(z["cols"]["neq"], i, "sello ≠ entre las columnas")
+            self.nota(z["cols"]["verde"], i, "la columna de lo que ganas brilla en verde")
 
     def subtitulos(self):
         """Grupos de hasta 3 palabras (corte en puntuación); resalta la más larga."""
@@ -264,6 +298,20 @@ def sonidos(D, T):
             add("popup-entra", pp["fichas"], .4)
     for m in D["ml"]:
         add("logo-semaforo", m, .45)
+    z = D.get("din")
+    if z:
+        if z["corte"]:
+            add("thump", z["corte"]["t"], .7)
+            add("whoosh", z["corte"]["chupa"], .6)
+        for c in z["cuenta"]:
+            add("numero-sube", c["t0"], .45)
+        if z["llanta"] is not None:
+            add("whoosh", z["llanta"] - .5, .4)
+            add("thump", z["llanta"], .5)
+        if z["cols"]:
+            add("whoosh", z["cols"]["t"], .45)
+            add("sello", z["cols"]["neq"], .55)
+            add("aceptar", z["cols"]["verde"], .4)
     for ln in D["lines"]:
         if ln.get("metas"):
             add("numero-sube", ln["metas"]["km"], .35)
