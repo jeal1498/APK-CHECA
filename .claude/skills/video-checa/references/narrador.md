@@ -11,7 +11,7 @@ Eduardo eligió este diseño a partir de un video de referencia (`video/referenc
   3. `checa.py claro <proyecto> --hoja` → `renders/storyboard-claro.png` (20 cuadros); revísalo antes de renderizar.
   4. `checa.py claro <proyecto> --render` (unos 10 min por 35 s, en segundo plano) → `renders/video-claro.mp4`; luego `checa.py revisar`.
 - **Reglas aprendidas (10 nov):** el gráfico dice lo que dice la voz en ese instante; un golpe a la vez (cada uno termina cuando empieza el siguiente de su línea); el contenido entra en su palabra, nunca antes; cuadro 0 completo y el último igual al primero; nada pegado a los bordes de la tarjeta; ni nombres ni logos de apps; sin promesas de ganancia.
-- **Pendiente:** `checa.py auditar`, `calidad` y `entregar` están hechos para A3 y aún no leen `claro/`; revisa a ojo con la hoja de cuadros hasta adaptarlos.
+- **Cierre:** `checa.py auditar` (usa `renders/video-claro.mp4`), `entregar` (portada como primer cuadro) y `calidad` ya leen el estilo claro.
 
 ## 0. Historia: A3 con loop (Eduardo, 2 nov 2026; reemplazado por «claro» el 10 nov, ver §00)
 Todos los videos nuevos sin su cara se hacen en **un solo estilo**: el del C19 aprobado como «A3 con loop». Lo genera el motor (`checa.py a3`) desde un archivo de datos; el ejemplo completo es `video/hyperframes/checa-lee-la-oferta-a3/` (`a3.json` + `tiempos.json`). Los estilos de §8 (golpes del 32) y §9 (híbrido del 22) y los tipos de escena viejos de `construir.py` son **historia**: sirven para rehacer videos ya aprobados, no para videos nuevos.
