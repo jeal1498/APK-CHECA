@@ -99,14 +99,14 @@ object Parser {
             num = if (moneda.miles.isEmpty()) "($alt)"
                 else """(\d{1,3}(?:${sep(moneda.miles)}\d{3})+(?:$d\d{1,2})?|$alt)"""
             sim = moneda.simbolos().joinToString("|") { Regex.escape(it) }
-            pre = if (legado) """\$""" else """(?:${Regex.escape(moneda.codigo)}\s?)?(?:$sim)"""
+            pre = if (legado) """(?:\$|MXN\s?)""" else """(?:${Regex.escape(moneda.codigo)}\s?)?(?:$sim)"""
             val cola = """\s*(?:[⚡x×\d.\s]*)$"""
             if (legado || !moneda.despues) {
-                val preSolo = if (legado) """(?:MXN?\s?)?\$""" else pre
+                val preSolo = if (legado) """(?:(?:MXN?\s?)?\$|MXN\s?)""" else pre
                 montoSolo = Regex("""^\s*$preSolo\s?$num$cola""")
                 monto = Regex("""(?<!\+)$pre\s?$num(?!\s?/)""")
                 incluido = Regex("""\+?\s?$pre\s?$num\s*incluid""", RegexOption.IGNORE_CASE)
-                montoGrande = if (legado) Regex("""^\$\s?[\d,]+(?:\.\d{1,2})?$""")
+                montoGrande = if (legado) Regex("""^(?:\$|MXN\s?)\s?[\d,]+(?:\.\d{1,2})?$""")
                     else Regex("""^\s*$pre\s?$num\s*$""")
             } else {
                 // «12,50 €»; también se acepta «€12,50».
@@ -140,8 +140,9 @@ object Parser {
     private val noTarifa = Regex("""(adicional|/km|/h|aceptar|considerar|rechazar|por inicio|propina|ganancia|hoy|semana|saldo|quedan|gasolina|netos|meta\s)""", RegexOption.IGNORE_CASE)
 
     // "5min (1.7km)", "A 5 min (1.6 km)", "Viaje: 8 min (3.2 km)", "2min (720m)", "1 h 5 min (40 km)"
+    // Uber nuevo (nov 2026): "8 min • 2.2 km", "1 h 20 min • 32.9 km" (sin paréntesis, con viñeta).
     private val tramo = Regex(
-        """(?:(\d+)\s?h(?:rs?|oras?)?\s*)?(\d+)\s?min\s*\(\s*(\d+(?:[.,]\d+)?)\s?(km|m)\s*\)""",
+        """(?:(\d+)\s?h(?:rs?|oras?)?\s*)?(\d+)\s?min\s*(?:\(\s*(\d+(?:[.,]\d+)?)\s?(km|m)\s*\)|[•·*|\-–.]\s*(\d+(?:[.,]\d+)?)\s?(km|m)\b)""",
         RegexOption.IGNORE_CASE
     )
 
@@ -188,10 +189,11 @@ object Parser {
                 if (!vistos.add(m.value.replace(" ", "").lowercase())) continue
                 val h = m.groupValues[1].toDoubleOrNull() ?: 0.0
                 val mi = m.groupValues[2].toDoubleOrNull() ?: 0.0
-                val numero = m.groupValues[3]
+                val numero = m.groupValues[3].ifEmpty { m.groupValues[5] }
+                val unidad = m.groupValues[4].ifEmpty { m.groupValues[6] }
                 val d = numero.replace(",", ".").toDoubleOrNull() ?: 0.0
                 // Metros reales siempre son enteros ≥ 30 ("720m"). "2.4m" o "1m" son km mal leídos.
-                val esMetros = m.groupValues[4].equals("m", ignoreCase = true) &&
+                val esMetros = unidad.equals("m", ignoreCase = true) &&
                     !numero.contains('.') && !numero.contains(',') && d >= 30
                 val tramoKm = if (esMetros) d / 1000.0 else d
                 val tramoMin = h * 60.0 + mi

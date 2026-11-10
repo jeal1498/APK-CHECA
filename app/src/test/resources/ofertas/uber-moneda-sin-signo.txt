@@ -1,0 +1,16 @@
+# Uber nuevo: «MXN185.78» sin $ y tramos «8 min • 2.2 km» sin paréntesis, con horas.
+UberX
+Exclusivo
+MXN185.78
+MXN5.29/km est.
+8 min • 2.2 km
+Avenida Central Santa Clara - Santa Clara
+Identidad verificada
+4.82 (388)
+1 destino
+1 h 20 min • 32.9 km
+Lázaro Cárdenas 72B, Benito Juárez
+Viaje largo (60+ min)
+Aceptar
+---
+tarifa=185.78 km=35.1 min=88 recKm=2.2 recMin=8
