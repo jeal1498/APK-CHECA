@@ -103,12 +103,12 @@ const ficha=(v,m,c,bg)=>'<div style="flex:1;height:150px;border-radius:26px;back
  C(ofertaU(120,10,700,'$60.00','A 5 min (2 km)','Viaje: 20 min (10 km)','Calle Hidalgo 120','Av. Principal 450'),a,e);
  const sc=C('<div style="position:absolute;left:80px;top:60px;width:780px;height:8px;border-radius:4px;background:linear-gradient(90deg,transparent,'+G+',transparent);box-shadow:0 0 30px '+G+'"></div>',T(i,'lee')-.05,e);
  sc._scan=[T(i,'lee')-.05,T(i,'oferta')+.55,40,500];
- C('<div style="position:absolute;left:375px;top:850px;width:150px;height:150px;zoom:.72;border-radius:50%;background:'+G+';display:flex;align-items:center;justify-content:center"><svg width="80" height="80" viewBox="0 0 56 56" fill="none" stroke="#04210F" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 29l11 11 21-24"/></svg></div>',T(i,'sola')-.05,e);
- C('<div style="position:absolute;left:778px;top:850px;width:150px;height:150px;zoom:.72"><svg width="150" height="150" viewBox="0 0 150 150" fill="none"><circle cx="75" cy="75" r="62" stroke="'+R+'" stroke-width="12"/><path d="M31 119L119 31" stroke="'+R+'" stroke-width="12" stroke-linecap="round"/><circle cx="75" cy="75" r="16" fill="'+K+'" opacity=".85"/></svg></div>',T(i,'toques')-.05,e);}
+ C('<div style="position:absolute;left:375px;top:866px;width:150px;height:150px;zoom:.72;border-radius:50%;background:'+G+';display:flex;align-items:center;justify-content:center"><svg width="80" height="80" viewBox="0 0 56 56" fill="none" stroke="#04210F" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 29l11 11 21-24"/></svg></div>',T(i,'sola')-.05,e);
+ C('<div style="position:absolute;left:778px;top:866px;width:150px;height:150px;zoom:.72"><svg width="150" height="150" viewBox="0 0 150 150" fill="none"><circle cx="75" cy="75" r="62" stroke="'+R+'" stroke-width="12"/><path d="M31 119L119 31" stroke="'+R+'" stroke-width="12" stroke-linecap="round"/><circle cx="75" cy="75" r="16" fill="'+K+'" opacity=".85"/></svg></div>',T(i,'toques')-.05,e);}
 // L3 — módulo dos: tu meta
 {const i=3,a=LS(i),e=LE(i);
- C(oferta(260,40,420,'$60.00','5 min (2 km)','20 min (10 km)'),T(i,'compara')-.1,e);
- const mc=(x,l,v)=>'<div style="position:absolute;left:'+x+'px;top:360px;width:410px;height:270px;border-radius:34px;background:#FBFAF2;border:3px solid #E2DDC4;text-align:center"><div style="margin-top:34px;font:700 28px/1 \'JetBrains Mono\';letter-spacing:3px;color:#8A8678">'+l+'</div><div style="margin-top:34px;font:800 132px/1 \'Bricolage Grotesque\';letter-spacing:-5px;color:'+K+'">'+v+'</div></div>';
+ C(ofertaU(260,30,420,'$60.00','A 5 min (2 km)','Viaje: 20 min (10 km)','Calle Hidalgo 120','Av. Principal 450'),T(i,'compara')-.1,e);
+ const mc=(x,l,v)=>'<div style="position:absolute;left:'+x+'px;top:420px;width:410px;height:270px;border-radius:34px;background:#FBFAF2;border:3px solid #E2DDC4;text-align:center"><div style="margin-top:34px;font:700 28px/1 \'JetBrains Mono\';letter-spacing:3px;color:#8A8678">'+l+'</div><div style="margin-top:34px;font:800 132px/1 \'Bricolage Grotesque\';letter-spacing:-5px;color:'+K+'">'+v+'</div></div>';
  C(mc(40,'META POR HORA','$200'),T(i,'hora')-.1,e);
  C(mc(490,'META POR KM','$10'),T(i,'kilómetro')-.1,e);}
 // L4 — rechazar (pop-up real de la app)
@@ -120,13 +120,13 @@ const ficha=(v,m,c,bg)=>'<div style="flex:1;height:150px;border-radius:26px;back
  C(popApp({amt:'$60',m1:h,m2:k,tot:v}),T(i,'5')-.05,r-.05,true);}
 // L5-6 — comparar dos ofertas (izquierda 240/h, derecha 300/h)
 {const e=LE(6),d=T(5,'dos');
- const cl=C(oferta(40,70,420,'$100.00','5 min (2 km)','20 min (9 km)'),d-.1,e);
- const cr=C(oferta(480,70,420,'$70.00','4 min (1.5 km)','10 min (5 km)'),d+.25,e);
- C('<div style="position:absolute;left:431px;top:150px;width:78px;height:78px;border-radius:50%;background:'+K+';color:#fff;font:800 30px/78px \'Bricolage Grotesque\';text-align:center">VS</div>',T(5,'mismo'),e);
- C('<div style="position:absolute;left:300px;top:420px;width:340px;height:70px;border-radius:99px;background:#F3F0DC;border:3px solid #E2DDC4;text-align:center;font:700 30px/64px \'JetBrains Mono\';letter-spacing:4px;color:'+K+'">COMPARA</div>',T(5,'compara'),e);
- C('<div style="position:absolute;left:70px;top:290px;width:360px;height:76px;border-radius:99px;background:'+Y+';color:'+K+';text-align:center;font:800 40px/76px \'JetBrains Mono\'">$240/h</div>',T(6,'240')-.05,e);
- C('<div style="position:absolute;left:510px;top:290px;width:360px;height:76px;border-radius:99px;background:'+G+';color:#04210F;text-align:center;font:800 40px/76px \'JetBrains Mono\'">$300/h</div>',T(6,'300')-.05,e);
- C('<div style="position:absolute;left:300px;top:540px;width:340px;height:92px;border-radius:99px;background:'+G+';color:#04210F;text-align:center;font:800 46px/92px \'Bricolage Grotesque\';letter-spacing:5px;box-shadow:0 0 60px rgba(34,197,94,.5)">GANA ✓</div>',T(6,'gana'),e);
+ const cl=C(ofertaU(40,40,420,'$100.00','A 5 min (2 km)','Viaje: 20 min (9 km)','Calle Hidalgo 120','Av. Principal 450'),d-.1,e);
+ const cr=C(ofertaU(480,40,420,'$70.00','A 4 min (1.5 km)','Viaje: 10 min (5 km)','Calle Juárez 85','Calzada Norte 300'),d+.25,e);
+ C('<div style="position:absolute;left:431px;top:150px;width:78px;height:78px;z-index:2;border-radius:50%;background:'+K+';color:#fff;font:800 30px/78px \'Bricolage Grotesque\';text-align:center">VS</div>',T(5,'mismo'),e);
+ C('<div style="position:absolute;left:300px;top:496px;width:340px;height:70px;border-radius:99px;background:#F3F0DC;border:3px solid #E2DDC4;text-align:center;font:700 30px/64px \'JetBrains Mono\';letter-spacing:4px;color:'+K+'">COMPARA</div>',T(5,'compara'),e);
+ C('<div style="position:absolute;left:70px;top:416px;width:360px;height:76px;border-radius:99px;background:'+Y+';color:'+K+';text-align:center;font:800 40px/76px \'JetBrains Mono\'">$240/h</div>',T(6,'240')-.05,e);
+ C('<div style="position:absolute;left:510px;top:416px;width:360px;height:76px;border-radius:99px;background:'+G+';color:#04210F;text-align:center;font:800 40px/76px \'JetBrains Mono\'">$300/h</div>',T(6,'300')-.05,e);
+ C('<div style="position:absolute;left:300px;top:610px;width:340px;height:92px;border-radius:99px;background:'+G+';color:#04210F;text-align:center;font:800 46px/92px \'Bricolage Grotesque\';letter-spacing:5px;box-shadow:0 0 60px rgba(34,197,94,.5)">GANA ✓</div>',T(6,'gana'),e);
  cl._gana=[T(6,'gana'),cl.firstChild];cr._gana=[T(6,'gana'),cr.firstChild];}
 // L7 — aceptar
 {const i=7,a=LS(i),e=LE(i),ac=T(i,'aceptar'),n=T(i,'cumple'),v='14 min (6.5 km) total';
@@ -201,7 +201,7 @@ window.set=function(t){
   const a=.4+.6*w;n.style.opacity=a;const nb=n.firstChild;nb.style.borderColor=w>.5?K:'#E2DDC4';nb.style.transform='scale('+(1+.12*w)+')';nb.style.background=w>.5?'#FBFAF2':'#fff';});
  chainBox.querySelectorAll('.cl').forEach((l,k)=>{const on=ACT.some(([ln,idx])=>t>=LS(ln)&&t<LE(ln)&&(idx>k||idx===-1));l.setAttribute('stroke',on?'#0C0C10':'#D8D3BD');});
  // items
- items.forEach(it=>{const p=ease(clamp((t-it.t0)/(it.pop?.22:.35)));const q=t>it.t1?ease(clamp((t-it.t1)/.2)):0;
+ items.forEach(it=>{const p=ease(clamp((t-it.t0)/(it.pop?.22:.35)));const q=t>it.t1?ease(clamp((t-it.t1)/(it.pop?.07:.2))):0;
   vis(it.el,p*(1-q),it.tf,it.pop);
   const el=it.el;
   if(el._scan){const [a,b,y0,y1]=el._scan;const u=clamp((t-a)/(b-a));el.firstChild.style.top=(y0+(y1-y0)*u)+'px';el.style.opacity=(u>0&&u<1?1:0)*(1-q);}
