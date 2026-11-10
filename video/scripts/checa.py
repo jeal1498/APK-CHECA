@@ -187,6 +187,8 @@ def cmd_entregar(args):
     d, cuenta, nn = proyecto(args[0]), args[1], args[2]
     dest = buscar_carpeta(cuenta, nn)
     video, portada = os.path.join(d, "renders", "video.mp4"), os.path.join(d, "portada", "portada.jpg")
+    if os.path.exists(os.path.join(d, "claro", "pagina.js")):  # estilo claro (narrador.md §00)
+        video = os.path.join(d, "renders", "video-claro.mp4")
     for f in (video, portada):
         if not os.path.exists(f):
             fallar(f"falta {f}")
@@ -342,13 +344,23 @@ def cmd_calidad(args):
         voz = [l.strip() for l in leer(os.path.join(proy, "SCRIPT.md")).split("\n") if l.startswith("    ")]
         ok(voz and not any("$" in l for l in voz), "voz sin «$» (montos sin moneda)")
         ok(voz and voz[-1].rstrip(".") == CTA_VOZ, "la última línea de voz es el CTA vigente")
-        esc = json.loads(leer(os.path.join(proy, "escenas.json")) or "[]")
+        pcl = os.path.join(proy, "claro", "pagina.js")
+        if os.path.exists(pcl):  # estilo claro: sin nombres de apps, con el letrero de ejemplo y el pop-up de la app
+            src = leer(pcl)
+            ok(not re.search(r"uber|didi", src, re.I), "claro/pagina.js sin nombres de apps (Uber, DiDi)")
+            ok("NÚMEROS DE EJEMPLO" in src, "letrero «NÚMEROS DE EJEMPLO»")
+            ok("popApp(" in src, "pop-up réplica de la app (popApp)")
+            ok(voz[-1].startswith("Comenta CHECA"), "termina con el cierre «Comenta CHECA»")
+            esc = []
+        else:
+            esc = json.loads(leer(os.path.join(proy, "escenas.json")) or "[]")
         pops = []
         for e in esc:
             pops += ([e["popup"]] if "popup" in e else []) + e.get("popups", [])
         ok(all(p.get("app", "OFERTA") == "OFERTA" for p in pops), "pop-ups con «OFERTA» (sin nombres de apps)")
         ok(all(p["viaje"] - p["gasolina"] == p["neta"] for p in pops if "neta" in p), "neta = viaje − gasolina en todos los pop-ups")
-        ok(esc and esc[-1]["tipo"] == "cierre", "termina con la pantalla final")
+        if esc or not os.path.exists(pcl):
+            ok(esc and esc[-1]["tipo"] == "cierre", "termina con la pantalla final")
         pj = os.path.join(proy, "portada", "portada.json")
         if os.path.exists(pj):
             c = json.load(open(pj, encoding="utf-8"))
@@ -578,7 +590,8 @@ def _palabras_con_golpe(esc, tiempos):
 def cmd_auditar(args):
     import numpy as np
     d = proyecto(args[0])
-    mp4 = args[1] if len(args) > 1 else os.path.join(d, "renders", "video.mp4")
+    claro = os.path.exists(os.path.join(d, "claro", "pagina.js")) and not os.path.exists(os.path.join(d, "a3.json"))
+    mp4 = args[1] if len(args) > 1 else os.path.join(d, "renders", "video-claro.mp4" if claro else "video.mp4")
     if not os.path.exists(mp4):
         fallar(f"falta {mp4} (renderiza antes con `construir --render`; usa el render del proyecto, no el entregado con portada)")
     leer = lambda f: json.load(open(os.path.join(d, f), encoding="utf-8")) if os.path.exists(os.path.join(d, f)) else None
@@ -588,6 +601,17 @@ def cmd_auditar(args):
         m = _a3_mod()
         _D, _plan = m.construir(d, os.path.relpath(os.path.join(BASE, "assets", "fonts"), os.path.join(d, "a3")))
         op = {"subs_top": 1250}
+    if claro:  # estilo claro: subtítulos en y=1250 y los golpes salen de la lista GOL de claro/pagina.js
+        op = {"subs_top": 1250}
+        pj = open(os.path.join(d, "claro", "pagina.js"), encoding="utf-8").read()
+        bloque = pj[pj.index("const GOL=["):pj.index("GOL.forEach")]
+        _plan = []
+        for ln, w, txt, _c in re.findall(r"\[(\d+),'([^']+)','([^']+)','(\w+)',[\d.]+\]", bloque):
+            sc = tiempos["scenes"][int(ln) - 1]
+            for x, a, _b in sc["words"]:
+                if re.sub(r"[:,.¿?¡!…]", "", x.lower()) == w:
+                    _plan.append((sc["start"] + a, int(ln), f"golpe «{txt}»"))
+                    break
     res = []
     ok = lambda cond, txt, aviso=False: res.append(("✓" if cond else ("⚠" if aviso else "✗"), txt))
     dur = float(json.loads(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "json", mp4]))["format"]["duration"])
@@ -608,15 +632,17 @@ def cmd_auditar(args):
     ok(top <= 1450, f"subtítulos arriba de la franja de TikTok (empiezan en y={top}; máximo 1450)", aviso=True)
     # 5. Nada cortado en los bordes: texto brillante pegado al borde izquierdo o derecho
     c = _cuadros(mp4, 540, 960, fps=2, gris=False)
-    pegado = [bool((np.concatenate([f[60:900, :3], f[60:900, -3:]], axis=1).max(axis=2) > 200).sum() > 25) for f in c]
+    borde = lambda f: np.concatenate([f[60:900, :3], f[60:900, -3:]], axis=1)
+    # fondo claro: lo que se corta es el texto oscuro; fondo oscuro: el brillante
+    pegado = [bool((borde(f).min(axis=2) < 70).sum() > 25) if claro else bool((borde(f).max(axis=2) > 200).sum() > 25) for f in c]
     # solo cuenta si dura 1 s o más (en un corte lateral el contenido cruza el borde a propósito)
     cortes = [i / 2 for i in range(1, len(pegado)) if pegado[i] and pegado[i - 1]]
     ok(not cortes, "nada cortado en los bordes" + (f" (revisa los segundos {', '.join(f'{t:.1f}' for t in cortes[:8])})" if cortes else ""))
     # 6. Adelanto: los golpes caen con la palabra, no 0.25 s antes
-    malos = [] if a3 else [str(i + 1) for i, e in enumerate(esc) if (e.get("golpes") or e.get("telefonos")) and e.get("adelanto", 0.25) > 0.1]
+    malos = [] if (a3 or claro) else [str(i + 1) for i, e in enumerate(esc) if (e.get("golpes") or e.get("telefonos")) and e.get("adelanto", 0.25) > 0.1]
     ok(not malos, "golpes y teléfonos con «adelanto» ≤ 0.1 s" + (f" (escenas {', '.join(malos)} sin \"adelanto\": 0.04)" if malos else ""))
     # 7. Algo pasa en cada palabra con golpe (±0.25 s)
-    if tiempos and (esc or a3):
+    if tiempos and (esc or a3 or claro):
         # cambio por zonas (rejilla 5×10, sin la banda de subtítulos): un logo o un chip chico también cuenta
         dd = abs(np.diff(g.astype(np.int16), axis=0))
         dd[:, top // 8: top // 8 + 42, :] = 0
@@ -624,7 +650,7 @@ def cmd_auditar(args):
         base = float(np.median(mov)) + 0.05
         fps = len(g) / dur
         quietas = []
-        puntos = [(t, txt.split("«")[1].split("»")[0] if "«" in txt else txt[:22], n) for t, n, txt in _plan if "late" not in txt and "brilla" not in txt] if a3 else _palabras_con_golpe(esc, tiempos)
+        puntos = [(t, txt.split("«")[1].split("»")[0] if "«" in txt else txt[:22], n) for t, n, txt in _plan if "late" not in txt and "brilla" not in txt] if (a3 or claro) else _palabras_con_golpe(esc, tiempos)
         for t, palabra, n in puntos:
             a, b = int(max(0, (t - 0.25) * fps)), int(min(len(mov), (t + 0.25) * fps + 1))
             if a < b and mov[a:b].max() < 2.5 * base:

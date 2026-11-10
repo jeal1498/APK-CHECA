@@ -1,13 +1,13 @@
 {
- "etiqueta": "OFERTA DE 110",
+ "etiqueta": "OFERTA DE 60",
  "titulo": [
-  "Te ofrecen 110",
-  "y te quedan 54"
+  "Decide tu viaje",
+  "en 3 segundos"
  ],
- "precio": "$110.00",
- "linea": "28 km en total",
- "recogida": "A 6 min (3 km)",
- "viaje": "Viaje: 40 min (25 km)",
- "sello_texto": "CADA KM VALE",
- "sello_valor": "3.93"
+ "precio": "$60.00",
+ "linea": "12 km en total",
+ "recogida": "A 5 min (2 km)",
+ "viaje": "Viaje: 20 min (10 km)",
+ "sello_texto": "POR HORA",
+ "sello_valor": "$144"
 }
