@@ -1,5 +1,5 @@
 # CHECA 33 · Facturar no es ganar
-Estado: **propuesto** (9 nov 2026). Estilo A3 con loop (`video-checa` §0).
+Estado: **avance sin voz guardado** (`video-sin-voz.mp4`, 10 nov 2026, concepto «Las casetas», proyecto `video/hyperframes/facturar-ganar-33`). Falta la voz (ElevenLabs sin créditos) y la aprobación de Eduardo.
 
 Concepto / Problema detectado en el repo: el conductor ve lo que factura (tarifa y total del día) y no lo que le queda; `Parser.neta()` = tarifa − gasolina − desgaste y el pop-up muestra ese neto antes de aceptar. Mensaje de marca: «Facturar no es lo mismo que ganar».
 
