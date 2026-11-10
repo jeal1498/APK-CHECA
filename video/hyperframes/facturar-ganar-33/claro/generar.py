@@ -20,13 +20,12 @@ def t(i, w):
     for x, a, b in sc["words"]:
         if x.lower().strip(":,.") == w: return sc["start"] + a
     raise SystemExit(f"{w} no está en la línea {i}")
-ev = [("thump", 0, .8)]
-for i in (2, 4, 5, 7): ev.append(("whoosh", int(T["scenes"][i - 1]["start"] * 1000), .4))
 ms = lambda s: int(s * 1000)
-ev += [("thump", ms(t(1, "ganaste")), .6), ("rechazar", ms(t(2, "400")), .5), ("numero-sube", ms(t(2, "gasolina")), .4),
-       ("thump", ms(t(3, "desgaste")), .5), ("sello", ms(t(4, "mismo")), .55), ("aceptar", ms(t(4, "ganar")), .4),
-       ("sello", ms(t(5, "ciegas")), .5), ("popup-entra", ms(t(7, "checa")), .5), ("whoosh", ms(t(7, "32")), .35),
-       ("sello", ms(t(8, "118")), .45), ("considerar", ms(t(9, "decides")), .45),
+ev = [("thump", 0, .8), ("whoosh", ms(T["scenes"][2]["start"] - .2), .4), ("whoosh", ms(T["scenes"][4]["start"]), .4), ("whoosh", ms(T["scenes"][6]["start"]), .4)]
+ev += [("thump", ms(t(1, "no")), .7), ("rechazar", ms(t(2, "400")), .5), ("numero-sube", ms(t(2, "gasolina")), .4),
+       ("thump", ms(t(3, "desgaste")), .6), ("sello", ms(t(4, "mismo")), .55), ("aceptar", ms(t(4, "ganar")), .4),
+       ("sello", ms(t(5, "ciegas")), .5), ("whoosh", ms(t(6, "oferta")), .4), ("popup-entra", ms(t(7, "checa")), .5),
+       ("whoosh", ms(t(7, "32")), .35), ("sello", ms(t(8, "118")), .45), ("considerar", ms(t(9, "decides")), .45),
        ("logo-semaforo", ms(T["scenes"][9]["start"] + .15), .7)]
 ev.sort(key=lambda e: e[1])
 json.dump({"duracion": T["total"], "fade_out": [round(T["total"] - .25, 2), .25], "eventos": [list(e) for e in ev]}, open(os.path.join(AQUI, "sonidos.json"), "w"), indent=1)
