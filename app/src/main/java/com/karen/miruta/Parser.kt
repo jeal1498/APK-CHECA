@@ -142,7 +142,7 @@ object Parser {
     // "5min (1.7km)", "A 5 min (1.6 km)", "Viaje: 8 min (3.2 km)", "2min (720m)", "1 h 5 min (40 km)"
     // Uber nuevo (nov 2026): "8 min • 2.2 km", "1 h 20 min • 32.9 km" (sin paréntesis, con viñeta).
     private val tramo = Regex(
-        """(?:(\d+)\s?h(?:rs?|oras?)?\s*)?(\d+)\s?min\s*(?:\(\s*(\d+(?:[.,]\d+)?)\s?(km|m)\s*\)|[•·*|\-–.]\s*(\d+(?:[.,]\d+)?)\s?(km|m)\b)""",
+        """(?:(\d+)\s?h(?:rs?|oras?)?\s*)?(\d+)\s?min\s*(?:\(\s*(\d+(?:[.,]\d+)?)\s?(km|m)\s*\)|[^\d(\s]{0,3}\s*(\d+(?:[.,]\d+)?)\s?(km|m)\b)""",
         RegexOption.IGNORE_CASE
     )
 
@@ -223,9 +223,13 @@ object Parser {
     }
 
     // El OCR lee "11 min" como "ll min" o "1l min": esas l/I/| junto a "min" son unos.
-    private val minutosOcr = Regex("""(?<![A-Za-z0-9])[0-9lI|]*[lI|][0-9lI|]*(?=\s?min)""")
+    // Con letra gruesa también confunde 8→B, 0→O, 5→S ("B min • 2.2 km") y «1 h» → «Ih».
+    private val minutosOcr = Regex("""(?<![A-Za-z0-9])[0-9lI|BOoS]*[lI|BOoS][0-9lI|BOoS]*(?=\s?min)""")
+    private val horasOcr = Regex("""(?<![A-Za-z0-9])[lI|](?=\s?h(?:rs?|oras?)?\s*\d+\s?min)""")
     private fun corregirMinutos(t: String): String =
-        minutosOcr.replace(t) { it.value.replace(Regex("[lI|]"), "1") }
+        horasOcr.replace(minutosOcr.replace(t) {
+            it.value.replace(Regex("[lI|]"), "1").replace('B', '8').replace(Regex("[Oo]"), "0").replace('S', '5')
+        }, "1")
 
     private fun buscarTarifa(textos: List<String>, r: Reglas): Double? {
         // 1) Primer texto que es solo un monto (la tarifa grande va antes que los botones).

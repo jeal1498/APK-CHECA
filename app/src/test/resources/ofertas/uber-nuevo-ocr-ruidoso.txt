@@ -1,0 +1,11 @@
+# Uber nuevo leído por el OCR del teléfono: 8→B, «1 h»→«Ih». Resultado real v10.44: 20 min y 32.9 km.
+UberX
+MXN185.78
+MXN5.29/km est.
+B min • 2.2 km
+Avenida Central Santa Clara
+Ih 20 min • 32.9 km
+Lázaro Cárdenas 72B
+Aceptar
+---
+tarifa=185.78 km=35.1 min=88 recKm=2.2 recMin=8
