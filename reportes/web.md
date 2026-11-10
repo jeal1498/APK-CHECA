@@ -1,18 +1,19 @@
 # Reporte de Checa (web + app) · últimos 30 días
 
-Generado: 2026-11-09 22:44 UTC. Cuenta visitas únicas (una por pestaña).
+Generado: 2026-11-10 20:03 UTC. Cuenta visitas únicas (una por pestaña).
 
 ## Resumen
 | visitas | descargas | cuentas_nuevas | pagos | ingresos | licencias_activas |
 | --- | --- | --- | --- | --- | --- |
-| 652 | 264 | 54 | 0 | 0 | 3 |
+| 664 | 264 | 57 | 0 | 0 | 3 |
 
 # App
 
 ## Cuentas nuevas por día (inicio con Google)
 | dia | cuentas |
 | --- | --- |
-| 2026-11-09 | 1 |
+| 2026-11-10 | 1 |
+| 2026-11-09 | 3 |
 | 2026-11-08 | 4 |
 | 2026-11-07 | 4 |
 | 2026-11-05 | 1 |
@@ -33,6 +34,9 @@ Generado: 2026-11-09 22:44 UTC. Cuenta visitas únicas (una por pestaña).
 ## Quiénes son (cuentas con Google)
 | correo | registro | ultimo_acceso | equipos | licencia_vence |
 | --- | --- | --- | --- | --- |
+| ula45363@gmail.com | 11-10 08:52 | 11-10 08:52 | 1 | sin licencia |
+| chivaseden80@gmail.com | 11-09 20:22 | 11-09 20:22 | 1 | sin licencia |
+| termico40@gmail.com | 11-09 18:52 | 11-09 18:52 | 1 | sin licencia |
 | shon.gg26@gmail.com | 11-09 14:09 | 11-09 14:09 | 1 | sin licencia |
 | dv21002@gmail.com | 11-08 22:14 | 11-08 22:14 | 1 | sin licencia |
 | romero671103@gmail.com | 11-08 21:37 | 11-08 21:37 | 1 | sin licencia |
@@ -118,7 +122,7 @@ Sin datos todavía.
 ## Embudo
 | evento | visitas | veces |
 | --- | --- | --- |
-| visita | 652 | 913 |
+| visita | 664 | 925 |
 | descarga | 264 | 297 |
 | clic_descargar | 124 | 136 |
 | descarga_instalar | 69 | 147 |
@@ -130,25 +134,26 @@ Sin datos todavía.
 ## Por fuente (visitas → descargas)
 | fuente | campana | visitas | descargas |
 | --- | --- | --- | --- |
-| directo |  | 500 | 198 |
+| directo |  | 503 | 198 |
 | tiktok |  | 98 | 55 |
-| tiktok | prueba-en-google-play | 22 | 0 |
+| tiktok | prueba-en-google-play | 26 | 0 |
 | app | compartir | 17 | 9 |
 | facebook | beta | 6 | 2 |
+| app |  | 5 | 0 |
 | web | cierre | 3 | 0 |
 | prueba |  | 3 | 1 |
-| chatgpt.com |  | 2 | 0 |
 | tiktok-personal | prueba-en-google-play | 2 | 0 |
-| web | precio_pro | 1 | 0 |
+| chatgpt.com |  | 2 | 0 |
 | tiktok | beta-testers-corto | 1 | 0 |
 | web | hero | 1 | 0 |
+| web | precio_pro | 1 | 0 |
 
 ## Por dispositivo
 | dispositivo | visitas | descargas |
 | --- | --- | --- |
-| android | 513 | 264 |
-| pc | 83 | 0 |
-| iphone | 57 | 0 |
+| android | 516 | 264 |
+| pc | 91 | 0 |
+| iphone | 58 | 0 |
 
 ## Qué botón lleva a descargar
 | boton | descargas |
@@ -169,7 +174,8 @@ Sin datos todavía.
 ## Por día
 | dia | visitas | descargas |
 | --- | --- | --- |
-| 2026-11-09 | 3 | 0 |
+| 2026-11-10 | 2 | 0 |
+| 2026-11-09 | 13 | 0 |
 | 2026-11-08 | 5 | 0 |
 | 2026-11-07 | 14 | 0 |
 | 2026-11-05 | 4 | 1 |
