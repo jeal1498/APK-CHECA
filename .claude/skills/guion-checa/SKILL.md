@@ -7,6 +7,9 @@ description: Escribe los guiones de video vertical de Checa para TikTok, Reels y
 
 Escribe guiones que retienen a un conductor de Uber o DiDi en los primeros segundos y le muestran algo que Checa de verdad hace. El tono es de creador a creador: directo, sin tono de anuncio. Evita «revoluciona», «la solución definitiva», «no te lo pierdas», «descubre» e «increíble», además de emojis, saludos e intros. Esas fórmulas suenan a publicidad y el conductor se va. Esto convive con el vocabulario de barrio de §2b: lo prohibido es el tono de anuncio, no el habla de chofer.
 
+## 0. Referencias
+Antes de escribir un guion nuevo, haz `git pull origin main` y revisa `video/referencias/` (README y archivos): si hay una referencia nueva, tómala en cuenta para la estructura y el ritmo.
+
 ## 1. Lee el código antes de escribir
 Las cifras y las funciones tienen que ser reales. Si no, un conductor lo nota y se pierde la confianza.
 1. En `CLAUDE.md`, lee Arquitectura, las reglas del lector y los filtros.

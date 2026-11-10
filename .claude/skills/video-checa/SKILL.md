@@ -7,6 +7,9 @@ description: Produce los videos de Checa para TikTok, Reels y Shorts con la marc
 
 Lleva un guion aprobado a un video terminado, con una aprobación de Eduardo en cada etapa. Él revisa desde el teléfono y escucha el chat en voz alta. Por eso cada entrega es un archivo o un texto corto, sin explicaciones largas.
 
+## Paso 0, siempre
+Antes de cualquier video nuevo: `git pull origin main` y revisa `video/referencias/` (README y archivos). Si hay una referencia nueva o sin fila en el README, míralas (cuadros con ffmpeg) y toma de ella lo que aplique; dilo en una línea a Eduardo. Aplica también a la skill `guion-checa` cuando el guion es de un video nuevo.
+
 ## Elige el modo
 - **Sin la cara de Eduardo** (CHECA y su v2 PERSONAL): lee `references/narrador.md`. Regla de oro de los gráficos (Eduardo, 1 nov): cada gráfico dice **exactamente lo que dice la voz en ese instante**, nunca texto que la voz no pronuncia; detalle en `narrador.md` §8 y «Aprendizajes de la v2 del 32». **Estilo vigente (10 nov): «claro» (mapa de nodos, pop-up y oferta como en la app)**, `narrador.md` §00; lo genera `checa.py claro` (ejemplo y plantilla: `video/hyperframes/sistema-decide-34/` y `_base/claro/`); las referencias de diseño están en `video/referencias/`. El A3 oscuro (§0 y §10) es historia. Los estilos de §8 y §9 son historia (solo para rehacer videos ya aprobados). Muestra primero una imagen de cuadros para su visto bueno. Una v2 con el mismo audio reutiliza `assets/voice` y `tiempos.json`.
 - **Con Eduardo a cámara** (cuenta @Eduardoalv9802, tutoriales): lee `references/camara.md`. Para elegir qué escena acompaña cada frase usa `plantillas/guion-escenas.md`.
