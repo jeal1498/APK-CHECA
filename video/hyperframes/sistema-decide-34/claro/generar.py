@@ -21,10 +21,10 @@ def t(i, w):
         if x.lower().strip(":,.") == w: return sc["start"] + a
     raise SystemExit(f"{w} no está en la línea {i}")
 ev = [("thump", 0, .8)]
-for i in (2, 3, 5, 6, 9): ev.append(("whoosh", int(T["scenes"][i - 1]["start"] * 1000), .4))
-ev += [("numero-sube", int((t(3, "quedan") - .05) * 1000), .4), ("rechazar", int(t(5, "rechazar") * 1000), .5), ("popup-entra", int((t(5, "146") - .05) * 1000), .4),
-       ("sello", int(t(7, "gana") * 1000), .5), ("aceptar", int(t(8, "aceptar") * 1000), .5), ("sello", int(t(10, "ganar") * 1000), .45),
-       ("logo-semaforo", int(T["scenes"][10]["start"] * 1000 + 150), .7)]
+for i in (2, 3, 5, 8): ev.append(("whoosh", int(T["scenes"][i - 1]["start"] * 1000), .4))
+ev += [("popup-entra", int((t(4, "144") - .05) * 1000), .4), ("rechazar", int(t(4, "rechazar") * 1000), .5), ("sello", int(t(6, "gana") * 1000), .5),
+       ("aceptar", int(t(7, "aceptar") * 1000), .5), ("numero-sube", int(t(8, "día") * 1000), .4), ("sello", int(t(9, "suposiciones") * 1000), .45),
+       ("logo-semaforo", int(T["scenes"][9]["start"] * 1000 + 150), .7)]
 ev.sort(key=lambda e: e[1])
 json.dump({"duracion": T["total"], "fade_out": [round(T["total"] - .25, 2), .25], "eventos": [list(e) for e in ev]}, open(os.path.join(AQUI, "sonidos.json"), "w"), indent=1)
 print("total", T["total"])
