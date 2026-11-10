@@ -9,6 +9,9 @@ object Novedades {
     class Version(val codigo: Int, val nombre: String, val puntos: List<String>, val widgets: Boolean = false, val vistaQr: Boolean = false)
 
     val LISTA = listOf(
+        Version(123, "10.43", listOf(
+            "Los widgets ahora se ven con su propia vista previa al elegirlos, con datos de ejemplo."
+        )),
         Version(122, "10.42", listOf(
             "Widget nuevo «Mi QR»: un toque muestra un código para que tus pasajeros te escriban por WhatsApp.",
             "Así te piden viajes por fuera de las apps. La primera vez que lo tocas pones tu número de WhatsApp; el nombre es el de tu cuenta de Google y todo queda ligado a ella.",
