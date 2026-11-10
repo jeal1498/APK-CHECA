@@ -49,7 +49,7 @@ function fDash(t){const ph=(dist(t)*.35)%1;
   const w0=2+11*u,w1=2+11*u2,y0=RY(u),y1=RY(u2);p.setAttribute('points',(540-w0)+','+y0+' '+(540+w0)+','+y0+' '+(540+w1)+','+y1+' '+(540-w1)+','+y1);});}
 
 // ---------- auto visto desde atrás ----------
-const car=$('<div style="position:absolute;left:330px;top:950px;width:420px;height:270px"><svg width="420" height="270" viewBox="0 0 420 270">'
+const car=$('<div style="position:absolute;left:330px;top:985px;width:420px;height:270px;transform-origin:50% 0"><svg width="420" height="270" viewBox="0 0 420 270">'
  +'<rect x="40" y="0" width="340" height="120" rx="34" fill="#33333D"/><rect x="66" y="16" width="288" height="78" rx="18" fill="#B9CBD3"/>'
  +'<g id="driver"><circle cx="210" cy="52" r="26" fill="#F1C9A5"/><path d="M186 44 Q210 24 234 44 L234 40 Q210 18 186 40Z" fill="#3A2A20"/><rect x="170" y="74" width="80" height="22" rx="11" fill="#2A2A33"/></g>'
  +'<g id="venda" style="opacity:0"><rect x="178" y="42" width="64" height="17" rx="6" fill="#0C0C10"/><path d="M242 45 l18 -9 l-4 22Z" fill="#0C0C10"/></g>'
@@ -58,15 +58,21 @@ const car=$('<div style="position:absolute;left:330px;top:950px;width:420px;heig
 zCar.appendChild(car);
 const venda=car.querySelector('#venda');
 
-// ---------- torre de billetes ----------
-const bills=(a,b)=>'repeating-linear-gradient(0deg,'+a+' 0 14px,'+b+' 14px 17px)';
-const mkTow=(bg,extra)=>{const d=$('<div style="position:absolute;box-sizing:border-box;border-radius:6px 6px 3px 3px;background:'+bg+';box-shadow:inset 0 0 0 3px rgba(0,0,0,.28);'+(extra||'')+'"></div>');zTow.appendChild(d);return d};
-const towN=mkTow(bills('#CFE6CF','#7FB58A')),towG=mkTow(bills('#86EFAC','#16A34A'),'opacity:0'),towGh=mkTow(bills('#DAD7C8','#B4B09A'),'opacity:0'),
- sl1=mkTow(bills('#F87171','#B91C1C'),'opacity:0;z-index:3;box-shadow:0 0 36px rgba(239,68,68,.6),inset 0 0 0 3px rgba(0,0,0,.28)'),
- sl2=mkTow(bills('#F87171','#B91C1C'),'opacity:0;z-index:3;box-shadow:0 0 36px rgba(239,68,68,.6),inset 0 0 0 3px rgba(0,0,0,.28)');
+// ---------- torre de billetes: billetes apilados (cada billete = 100; en el viaje = 20) ----------
+const ROOF=985,STEP=22.1,BH=70;
+const Hh=(c,s)=>s*(STEP*(c-1)+BH);
+const BL={azul:['#8DBBEA','#5B97D6','#2B5E99'],verde:['#7DDB9A','#34B160','#16703A'],gris:['#E3E0D2','#C9C5B0','#8A8678'],rojo:['#FB8E8E','#EF4444','#9B1C1C']};
+const billHtml=c=>'<div style="position:absolute;left:0;top:0;width:220px;height:70px;box-sizing:border-box;border-radius:7px;border:3px solid '+c[2]+';background:linear-gradient(100deg,'+c[0]+','+c[1]+' 60%,'+c[0]+');transform-origin:0 0;overflow:hidden">'
+ +'<div style="position:absolute;inset:6px;border:2px solid rgba(255,255,255,.6);border-radius:4px"></div>'
+ +'<div style="position:absolute;left:70px;top:9px;width:80px;height:46px;border-radius:50%;border:3px solid rgba(255,255,255,.75);background:rgba(255,255,255,.2);font:800 31px/40px \'Bricolage Grotesque\';text-align:center;color:'+c[2]+'">$</div>'
+ +'<div class="n1" style="position:absolute;left:14px;top:46px;font:800 18px/1 \'JetBrains Mono\';color:'+c[2]+'">100</div><div class="n2" style="position:absolute;right:14px;top:46px;font:800 18px/1 \'JetBrains Mono\';color:'+c[2]+'">100</div></div>';
+function mkPile(c,n,extra){const el=$('<div style="position:absolute;box-sizing:border-box;'+(extra||'')+'"></div>');el._b=[];for(let i=0;i<n;i++){const b=$(billHtml(c));el.appendChild(b);el._b.push(b);}zTow.appendChild(el);return el;}
+const pN=mkPile(BL.azul,15),pG=mkPile(BL.verde,15,'opacity:0'),pGh=mkPile(BL.gris,15,'opacity:0'),sl1=mkPile(BL.rojo,4,'opacity:0;z-index:3;filter:drop-shadow(0 0 22px rgba(239,68,68,.7))'),sl2=mkPile(BL.rojo,3,'opacity:0;z-index:3;filter:drop-shadow(0 0 22px rgba(239,68,68,.7))');
+function setLab(p,s){if(p._lab===s)return;p._lab=s;p._b.forEach(b=>{b.querySelector('.n1').textContent=s;b.querySelector('.n2').textContent=s;});}
 const ZZ=[0,.8,.3,1,.2,.9,.4,1,.1,.7,.3,0];
 const zig=(w,h,a)=>{if(a<=.5)return 'none';let p=[[0,h],[w,h]];for(let i=ZZ.length-1;i>=0;i--)p.push([w*i/(ZZ.length-1),a*ZZ[i]]);return 'polygon('+p.map(q=>q[0].toFixed(1)+'px '+q[1].toFixed(1)+'px').join(',')+')';};
-function box(el,cx,base,sc,H0,amp){const w=220*sc,h=H0*sc;el.style.left=px(cx-w/2);el.style.top=px(base-h);el.style.width=px(w);el.style.height=px(h);el.style.clipPath=zig(w,h,(amp||0)*sc);}
+function drawPile(p,cx,base,sc,count,amp){const H=Hh(count,sc),w=220*sc;p.style.left=px(cx-w/2);p.style.top=px(base-H);p.style.width=px(w);p.style.height=px(H);p.style.clipPath=zig(w,H,(amp||0)*sc);
+ const n=Math.ceil(count-1e-6);p._b.forEach((b,i)=>{if(i>=n){b.style.display='none';return;}b.style.display='block';b.style.transform='translate(0px,'+px(sc*STEP*(count-1-i))+') scale('+sc+')';});}
 const lbl=(css,size)=>{const d=$('<div style="position:absolute;text-align:center;font:800 '+size+'px/1 \'Bricolage Grotesque\';letter-spacing:-3px;color:#F4F4EF;text-shadow:0 4px 18px rgba(0,0,0,.65);white-space:nowrap;'+css+'"></div>');zTow.appendChild(d);return d};
 const lbTop=lbl('width:420px',104),lbSide=lbl('width:200px;text-align:left',66),lbL=lbl('width:320px;color:#8A8678',64),lbR=lbl('width:320px',64);
 const panLab=(s)=>{const d=$('<div style="position:absolute;width:320px;text-align:center;font:700 30px/1 \'JetBrains Mono\';letter-spacing:4px;white-space:nowrap">'+s+'</div>');zPan.appendChild(d);return d};
@@ -77,7 +83,7 @@ const tbL=panLab('FACTURAS'),tbR=panLab('GANAS');tbL.style.color='#8A8678';tbR.s
 const neq=$('<div style="position:absolute;left:480px;top:560px;width:120px;height:120px;border-radius:50%;background:'+K+';color:#fff;font:800 78px/120px \'Bricolage Grotesque\';text-align:center;opacity:0;box-shadow:0 16px 40px rgba(0,0,0,.25)">≠</div>');zPan.appendChild(neq);
 // migajas del desgaste
 const CR=[[-70,-.4,.9],[-35,.2,1.2],[-5,-.1,.7],[25,.5,1.1],[55,-.3,.8],[80,.3,1.3],[-55,.1,1],[10,-.6,.9],[45,.4,.7]];
-const crumbs=CR.map(()=>{const d=$('<div style="position:absolute;width:26px;height:16px;border-radius:3px;background:'+bills('#CFE6CF','#7FB58A')+';opacity:0;box-shadow:inset 0 0 0 2px rgba(0,0,0,.28)"></div>');zTow.appendChild(d);return d});
+const crumbs=CR.map(()=>{const d=$('<div style="position:absolute;width:34px;height:20px;border-radius:3px;border:2px solid #2B5E99;background:linear-gradient(100deg,#8DBBEA,#5B97D6);opacity:0"></div>');zTow.appendChild(d);return d});
 // llanta que rueda
 const tire=$('<div style="position:absolute;left:0;top:0;width:170px;height:170px;opacity:0"><svg width="170" height="170" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#1B1B22"/><circle cx="50" cy="50" r="40" fill="none" stroke="#3A3A44" stroke-width="6" stroke-dasharray="7 5"/><circle cx="50" cy="50" r="23" fill="#9C9576"/><circle cx="50" cy="50" r="9" fill="#2A2A33"/><path d="M50 27v10M50 63v10M27 50h10M63 50h10" stroke="#2A2A33" stroke-width="5"/></svg></div>');zTire.appendChild(tire);
 
@@ -100,18 +106,35 @@ function place(b,u,op,ang){const s=SCL(u)*BK,xc=540-RW(u)/2-110*s,yb=RY(u);
  return {xc,yb,s};}
 const UST=.535,SA=SCL(UST)*BK,XA=540-RW(UST)/2-110*SA,NOZ=[XA+180*SA,RY(UST)-70*SA];
 // manguera (de la caseta a la torre)
-const hose=$('<svg width="1080" height="1920" style="position:absolute;left:0;top:0"><path id="hp" d="M'+NOZ[0]+' '+NOZ[1]+' C'+(NOZ[0]+70)+' '+(NOZ[1]+50)+' 340 650 440 620" fill="none" stroke="#2A2A33" stroke-width="30" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/><path d="M'+NOZ[0]+' '+NOZ[1]+' C'+(NOZ[0]+70)+' '+(NOZ[1]+50)+' 340 650 440 620" fill="none" stroke="#EF4444" stroke-width="8" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" id="hp2"/></svg>');zHose.appendChild(hose);
+const hose=$('<svg width="1080" height="1920" style="position:absolute;left:0;top:0"><path id="hp" d="M'+NOZ[0]+' '+NOZ[1]+' C'+(NOZ[0]+70)+' '+(NOZ[1]+50)+' 340 700 440 680" fill="none" stroke="#2A2A33" stroke-width="30" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/><path d="M'+NOZ[0]+' '+NOZ[1]+' C'+(NOZ[0]+70)+' '+(NOZ[1]+50)+' 340 700 440 680" fill="none" stroke="#EF4444" stroke-width="8" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" id="hp2"/></svg>');zHose.appendChild(hose);
 const hp=hose.querySelector('#hp'),hp2=hose.querySelector('#hp2');
 const bez=(p0,p1,p2,p3,s)=>{const a=1-s;return [a*a*a*p0[0]+3*a*a*s*p1[0]+3*a*s*s*p2[0]+s*s*s*p3[0],a*a*a*p0[1]+3*a*a*s*p1[1]+3*a*s*s*p2[1]+s*s*s*p3[1]];};
 
 // ---------- cartel de la oferta, semáforo y carriles (L6–L9) ----------
-const board=$('<div style="position:absolute;left:375px;top:575px;width:330px;height:165px;border-radius:28px;background:#fff;border:3px solid #E8E4D2;box-shadow:0 16px 40px rgba(80,70,20,.2);opacity:0"><div style="position:absolute;left:18px;top:14px;padding:3px 14px;border-radius:7px;background:'+K+';color:#fff;font:700 21px/1.3 \'DM Sans\'">Viaje</div><div id="bpr" style="position:absolute;left:14px;top:46px;padding:0 10px;border-radius:12px;font:800 78px/1.05 \'Bricolage Grotesque\';letter-spacing:-3px;color:'+K+'">$150.00</div><div id="bkm" style="position:absolute;left:18px;top:128px;padding:0 8px;border-radius:8px;font:500 25px/1.1 \'JetBrains Mono\';color:#4A463A">32 min · 16 km</div></div>');zBoard.appendChild(board);
-const semaf=$('<div style="position:absolute;left:375px;top:600px;width:330px;height:130px;border-radius:65px;background:'+K+';opacity:0;box-shadow:0 16px 40px rgba(0,0,0,.3)"><i id="sr" style="position:absolute;left:44px;top:25px;width:80px;height:80px;border-radius:50%;background:#5A2222"></i><i id="sy" style="position:absolute;left:125px;top:25px;width:80px;height:80px;border-radius:50%;background:#5A4A10"></i><i id="sg" style="position:absolute;left:206px;top:25px;width:80px;height:80px;border-radius:50%;background:#14501F"></i></div>');zBoard.appendChild(semaf);
-const hiP=board.querySelector('#bpr'),hiK=board.querySelector('#bkm');
-const lane=(txt,x,c)=>{const d=$('<div style="position:absolute;left:'+(x-150)+'px;top:752px;width:300px;text-align:center;transform:scaleY(.7);opacity:0"><span style="display:inline-block;padding:6px 26px;border-radius:99px;background:'+K+';font:800 42px/1.1 \'Bricolage Grotesque\';letter-spacing:5px;color:'+c+'">'+txt+'</span></div>');zLane.appendChild(d);return d};
+function ofertaU(x,y,w,precio,a,v,ad1,ad2){const s=w/760;const px=n=>(n*s).toFixed(1)+'px';
+ const star='<svg viewBox="0 0 24 24" width="'+px(34)+'" height="'+px(34)+'" fill="#0C0C10" style="vertical-align:-.12em"><path d="M12 1.5l3.2 7.2 7.8.8-5.9 5.2 1.7 7.7L12 18.4 5.2 22.4l1.7-7.7L1 9.5l7.8-.8z"/></svg>';
+ return '<div style="position:absolute;left:'+x+'px;top:'+y+'px;width:'+w+'px;height:'+px(640)+';border-radius:'+px(40)+';background:#fff;border:2px solid #E8E4D2;box-shadow:0 22px 56px rgba(80,70,20,.16);overflow:hidden">'
+ +'<div style="position:absolute;left:'+px(34)+';top:'+px(30)+';padding:'+px(8)+' '+px(24)+';border-radius:'+px(10)+';background:#0C0C10;color:#fff;font:700 '+px(32)+'/1.2 \'DM Sans\'">Viaje</div>'
+ +'<svg viewBox="0 0 16 16" width="'+px(40)+'" height="'+px(40)+'" style="position:absolute;right:'+px(34)+';top:'+px(30)+'" fill="none" stroke="#0C0C10" stroke-width="2.1" stroke-linecap="square"><path d="M2 2l12 12M14 2L2 14"/></svg>'
+ +'<div style="position:absolute;left:'+px(34)+';top:'+px(96)+';font:800 '+px(126)+'/1 \'Bricolage Grotesque\';letter-spacing:'+px(-4)+';color:#0C0C10">'+precio+'</div>'
+ +'<div style="position:absolute;left:'+px(38)+';top:'+px(236)+';font:500 '+px(34)+'/1 \'DM Sans\';color:#0C0C10">'+star+'&nbsp; 4.92</div>'
+ +'<div style="position:absolute;left:'+px(60)+';top:'+px(330)+';width:'+px(4)+';height:'+px(110)+';background:#0C0C10"></div>'
+ +'<div style="position:absolute;left:'+px(50)+';top:'+px(318)+';width:'+px(24)+';height:'+px(24)+';border-radius:50%;background:#0C0C10"></div>'
+ +'<div style="position:absolute;left:'+px(50)+';top:'+px(436)+';width:'+px(24)+';height:'+px(24)+';border-radius:'+px(4)+';background:#0C0C10"></div>'
+ +'<div style="position:absolute;left:'+px(104)+';top:'+px(300)+'"><div style="font:700 '+px(38)+'/1.1 \'DM Sans\';color:#0C0C10">'+a+'</div><div style="font:400 '+px(30)+'/1.2 \'DM Sans\';color:#6A665A;margin-top:'+px(6)+'">'+ad1+'</div></div>'
+ +'<div style="position:absolute;left:'+px(104)+';top:'+px(418)+'"><div style="font:700 '+px(38)+'/1.1 \'DM Sans\';color:#0C0C10">'+v+'</div><div style="font:400 '+px(30)+'/1.2 \'DM Sans\';color:#6A665A;margin-top:'+px(6)+'">'+ad2+'</div></div>'
+ +'<div style="position:absolute;left:'+px(30)+';right:'+px(30)+';bottom:'+px(28)+';height:'+px(96)+';border-radius:'+px(14)+';background:#0C0C10;overflow:hidden"><div style="position:absolute;left:0;top:0;bottom:0;width:62%;background:#2B2B33"></div><div style="position:relative;text-align:center;color:#fff;font:700 '+px(36)+'/'+px(96)+' \'DM Sans\'">Viaje disponible</div></div></div>';}
+const offer=$('<div style="position:absolute;left:0;top:0;width:760px;height:640px;transform-origin:0 0;opacity:0"></div>');
+offer.innerHTML=ofertaU(0,0,760,'$150.00','A 4 min (1.5 km)','Viaje: 28 min (14.5 km)','Calle Hidalgo 120','Av. Principal 450')
+ +'<div id="hiP" style="position:absolute;left:22px;top:84px;width:456px;height:146px;border-radius:26px;background:rgba(250,204,21,.5);opacity:0"></div>'
+ +'<div id="hiK" style="position:absolute;left:92px;top:290px;width:640px;height:246px;border-radius:26px;background:rgba(250,204,21,.4);opacity:0"></div>';
+zBoard.appendChild(offer);
+const hiP=offer.querySelector('#hiP'),hiK=offer.querySelector('#hiK');
+const semaf=$('<div style="position:absolute;left:375px;top:565px;width:330px;height:130px;border-radius:65px;background:'+K+';opacity:0;box-shadow:0 16px 40px rgba(0,0,0,.3)"><i id="sr" style="position:absolute;left:44px;top:25px;width:80px;height:80px;border-radius:50%;background:#5A2222"></i><i id="sy" style="position:absolute;left:125px;top:25px;width:80px;height:80px;border-radius:50%;background:#5A4A10"></i><i id="sg" style="position:absolute;left:206px;top:25px;width:80px;height:80px;border-radius:50%;background:#14501F"></i></div>');zBoard.appendChild(semaf);
+const lane=(txt,x,c)=>{const d=$('<div style="position:absolute;left:'+(x-150)+'px;top:775px;width:300px;text-align:center;transform:scaleY(.7);opacity:0"><span style="display:inline-block;padding:6px 26px;border-radius:99px;background:'+K+';font:800 42px/1.1 \'Bricolage Grotesque\';letter-spacing:5px;color:'+c+'">'+txt+'</span></div>');zLane.appendChild(d);return d};
 const laneA=lane('ACEPTAR',375,'#4ADE80'),laneP=lane('PASAR',705,'#F4F4EF');
 // ruta de 16 km sobre la carretera
-const route=$('<svg width="1080" height="1920" style="position:absolute;left:0;top:0"><path id="rt" d="M540 930 L540 262" stroke="#22C55E" stroke-width="14" stroke-linecap="round" fill="none" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/><circle id="rd" cx="540" cy="262" r="16" fill="#22C55E" opacity="0"/></svg>');zRoute.appendChild(route);
+const route=$('<svg width="1080" height="1920" style="position:absolute;left:0;top:0"><path id="rt" d="M540 960 L540 262" stroke="#22C55E" stroke-width="14" stroke-linecap="round" fill="none" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/><circle id="rd" cx="540" cy="262" r="16" fill="#22C55E" opacity="0"/></svg>');zRoute.appendChild(route);
 const rt=route.querySelector('#rt'),rd=route.querySelector('#rd');
 // pop-up de la app (copiado de Popup.kt)
 function popApp(o){const T0='#A3A3AD';
@@ -122,15 +145,15 @@ function popApp(o){const T0='#A3A3AD';
  +'<div style="text-align:center;padding:6px 0;font:800 168px/1.1 \'Bricolage Grotesque\';letter-spacing:-3px;color:#F4F4EF">'+o.amt+'</div>'
  +'<div style="display:flex;align-items:center;padding:18px 20px 0">'+met(o.m1)+'<div style="width:4px;height:56px;background:rgba(163,163,173,.43);margin:0 12px"></div>'+met(o.m2)+'</div>'
  +'<div style="text-align:center;padding:22px 0 34px;font:500 43px/1.2 \'JetBrains Mono\';color:'+T0+'">'+o.tot+'</div></div>';}
-const SCP=.62;
-const popA=$('<div style="position:absolute;left:'+(540-490*SCP)+'px;top:'+(250-90*SCP)+'px;width:1000px;height:640px;transform-origin:0 0;transform:scale('+SCP+');opacity:0"></div>');zPop.appendChild(popA);
+const SCP=.56;
+const popA=$('<div style="position:absolute;left:'+(540-490*SCP)+'px;top:'+(235-90*SCP)+'px;width:1000px;height:640px;transform-origin:0 0;transform:scale('+SCP+');opacity:0"></div>');zPop.appendChild(popA);
 const popB=$('<div style="position:absolute;inset:0;transform-origin:490px 340px">'+popApp({hdr:'CONSIDERAR',hc:Y,bc:Y,amt:'$118',m1:['$281/h',G,'✓'],m2:['$9.4/km',R,'✕'],tot:'32 min (16.0 km) total'})+'</div>');popA.appendChild(popB);
 
 // ---------- escena en función del tiempo ----------
 function scene(t){
  fDash(t);
  const bob=Math.sin(dist(t)*38)*2.2*(dist(t)>.01?1:0);
- car.style.transform='translateY('+bob+'px)';
+ car.style.transform='translateY('+bob+'px) scale(.86)';
  // conductor y venda (a ciegas)
  const vi=ease(c01(t,tCiegas-.05,tCiegas+.25)),vo=ease(c01(t,tOferta-.05,tOferta+.35));
  venda.style.opacity=vi*(1-vo);venda.style.transform='translateY('+(-26*vo)+'px)';
@@ -141,57 +164,60 @@ function scene(t){
  // --- caseta DESGASTE (L3)
  const uB=t<tDes+.9?lerp(.08,UST,ease(c01(t,LS(3)-.5,tDes-.6))):lerp(UST,1.25,eio(c01(t,tDes+.9,tDes+1.9)));
  place(bB,uB,(t<LS(3)-.5?0:ease(c01(t,LS(3)-.5,LS(3)-.2)))*(1-c01(uB,.95,1.08)),null);
- // --- torre de billetes
+ // --- torre de billetes (cada billete = 100; en el viaje = 20)
  const gas=ease(c01(t,tGas-.05,tGas+.4));
- let H0=380-(380-279)*gas,cx=540,base=950,sc=1;
- const pm=eio(c01(t,tFact,tFact+.6));cx=lerp(540,850,pm);base=lerp(950,840,pm);sc=lerp(1,.87,pm);
- const rb=eio(c01(t,LS(5)+.05,LS(5)+.65));cx=lerp(cx,540,rb);base=lerp(base,950,rb);sc=lerp(sc,1,rb);H0=lerp(H0,170,rb);
- const g32=ease(c01(t,t32+.35,t32+.75));H0-=36*g32;
+ const pm=eio(c01(t,tFact,tFact+.6)),rb=eio(c01(t,LS(5)+.05,LS(5)+.65));
+ let cnt=15-4*gas,cx=lerp(540,850,pm),base=lerp(ROOF,840,pm),sc=lerp(1,.87,pm);
+ cx=lerp(cx,540,rb);base=lerp(base,ROOF,rb);sc=lerp(sc,.7,rb);cnt=lerp(cnt,7.5,rb);
+ const g32=ease(c01(t,t32+.35,t32+.75));cnt-=1.6*g32;
+ const lab=rb>.5?'20':'100';setLab(pN,lab);setLab(pG,lab);
  // mordida de la llanta
  const tx=lerp(300,880,c01(t,tDes-.2,tDes+.6));
  const bite=ease(c01(tx,430,690))*22*(1-rb);
  const gv=Math.max(ease(c01(t,tGanar,tGanar+.3))*(1-ease(c01(t,LS(5)+.15,LS(5)+.55))),ease(c01(t,t118,t118+.3)));
- box(towN,cx,base,sc,H0,bite);box(towG,cx,base,sc,H0,bite);
- towN.style.opacity=1-gv;towG.style.opacity=gv;
- // rebanada roja de gasolina (400 → manguera → caseta)
+ drawPile(pN,cx,base,sc,cnt,bite);drawPile(pG,cx,base,sc,cnt,bite);
+ pN.style.opacity=1-gv;pG.style.opacity=gv;
+ const HT=Hh(cnt,sc);
+ // rebanada roja de gasolina (4 billetes de 100 → manguera → caseta)
  const pth=ease(c01(t,tGas,tGas+.5)),sv=(t>=t400-.05?ease(c01(t,t400-.05,t400+.1)):0)*(1-c01(t,tGas+.42,tGas+.5));
- {const w=220*lerp(1,.18,pth),h=101*lerp(1,.18,pth),x=lerp(540,NOZ[0],pth),y=lerp(570+50,NOZ[1],pth);
-  sl1.style.left=px(x-w/2);sl1.style.top=px(y-h/2);sl1.style.width=px(w);sl1.style.height=px(h);sl1.style.opacity=sv;}
+ {const y0=ROOF-Hh(15,1)+Hh(4,1)/2,cy=lerp(y0,NOZ[1],pth),cxs=lerp(540,NOZ[0],pth),scs=lerp(1,.2,pth);
+  drawPile(sl1,cxs,cy+Hh(4,scs)/2,scs,4,0);sl1.style.opacity=sv;}
  // manguera
  const ext=ease(c01(t,tTragan,tTragan+.35))*(1-ease(c01(t,tGas+.6,tGas+.95)));
  hp.setAttribute('stroke-dashoffset',1-ext);hp2.setAttribute('stroke-dashoffset',1-ext);
- // fantasma de FACTURAS (1,500) que sale de la torre y se vuelve el letrero de la izquierda
+ // fantasma de FACTURAS (15 billetes) que sale de la torre y se vuelve el letrero de la izquierda
  {const gh=eio(c01(t,tFact,tFact+.6)),go=1-ease(c01(t,LS(5)+.05,LS(5)+.35));
-  box(towGh,lerp(540,230,gh),lerp(950,840,gh),lerp(1,.87,gh),380,0);towGh.style.opacity=(t>=tFact-.02?1:0)*go;}
+  setLab(pGh,'100');drawPile(pGh,lerp(540,230,gh),lerp(ROOF,840,gh),lerp(1,.87,gh),15,0);pGh.style.opacity=(t>=tFact-.02?1:0)*go;}
  // etiquetas del monto
  const val=1500-400*gas;
  const showTop=t<tFact?1:0;
- lbTop.style.opacity=showTop;lbTop.textContent=fm(val);lbTop.style.left=px(cx-210);lbTop.style.top=px(base-H0*sc-122);
+ lbTop.style.opacity=showTop;lbTop.textContent=fm(val);lbTop.style.left=px(cx-210);lbTop.style.top=px(base-HT-122);
  {const pk=Math.max(0,1-Math.abs(t-t1100)/.25);lbTop.style.transform='scale('+(1+.12*pk)+')';lbTop.style.color='#F4F4EF';}
  // panel L4
  {const pa=back(c01(t,tFact-.05,tFact+.4)),pf=1-ease(c01(t,LS(5)+.05,LS(5)+.35)),o=clamp(pa*1.6)*pf,tr='scale('+lerp(.8,1,pa)+')';
   panL.style.opacity=o;panR.style.opacity=o;panL.style.transform=tr;panR.style.transform=tr;
   tbL.style.left=px(70);tbL.style.top=px(862);tbR.style.left=px(690);tbR.style.top=px(862);tbL.style.opacity=o;tbR.style.opacity=o;
   lbL.style.opacity=o;lbR.style.opacity=o;lbL.textContent='$1,500';lbR.textContent='$1,100';lbR.style.color=gv>.5?'#16A34A':K;lbR.style.textShadow='none';lbL.style.textShadow='none';
-  lbL.style.left=px(70);lbL.style.top=px(840-330-96);lbR.style.left=px(690);lbR.style.top=px(840-242-96);
+  lbL.style.left=px(70);lbL.style.top=px(840-330-96);lbR.style.left=px(690);lbR.style.top=px(840-253-96);
   const nk=c01(t,tMismo,tMismo+.28);neq.style.opacity=Math.min(1,nk*2)*pf;neq.style.transform='scale('+(2.4-1.4*Math.min(1.08,nk*1.08))+') rotate(-8deg)';}
  // etiqueta lateral del viaje
- {const on=t>=LS(6)?1:0;lbSide.style.opacity=ease(c01(t,t150-.05,t150+.2))*(1-0);lbSide.textContent=t>=t118?'$118':'$150';lbSide.style.left=px(670);lbSide.style.top=px(base-H0*sc/2-34);lbSide.style.color=t>=t118?'#4ADE80':'#F4F4EF';}
+ {const on=t>=LS(6)?1:0;lbSide.style.opacity=ease(c01(t,t150-.05,t150+.2))*(1-0);lbSide.textContent=t>=t118?'$118':'$150';lbSide.style.left=px(670);lbSide.style.top=px(base-HT/2-34);lbSide.style.color=t>=t118?'#4ADE80':'#F4F4EF';}
  // llanta + migajas
- {const rx=tx,tc=950-279+10;tire.style.opacity=(t>tDes-.6&&t<tDes+1.2)?1:0;
+ {const rx=tx,tc=ROOF-291+10;tire.style.opacity=(t>tDes-.6&&t<tDes+1.2)?1:0;
   tire.style.transform='translate('+(rx-85)+'px,'+(tc-85+Math.abs(Math.sin(rx*.05))*-6)+'px) rotate('+(rx*.7)+'deg)';
-  const t0=tDes+.05;crumbs.forEach((c,k)=>{const dt=t-t0,[dx,vx,vy]=CR[k];const y=950-279-4+(-120*vy*dt+900*dt*dt*.55),x=540+dx+vx*160*dt;
+  const t0=tDes+.05;crumbs.forEach((c,k)=>{const dt=t-t0,[dx,vx,vy]=CR[k];const y=ROOF-291-4+(-120*vy*dt+900*dt*dt*.55),x=540+dx+vx*160*dt;
    c.style.opacity=(dt>0&&dt<.9)?1-dt/.9:0;c.style.transform='translate('+(x-13)+'px,'+y+'px) rotate('+(dt*400*vx)+'deg)';});}
- // rebanada de −$32 que sube de la torre al pop-up
+ // rebanada de −$32 (1.6 billetes de 20) que sube de la torre al pop-up
  {const p2=ease(c01(t,t32,t32+.6)),sv2=(t>=t32-.05?ease(c01(t,t32-.05,t32+.08)):0)*(1-c01(t,t32+.5,t32+.62));
-  const w=220*lerp(1,.2,p2),h=36*lerp(1,.4,p2),x=lerp(540,540,p2),y=lerp(950-170+18,540,p2);
-  sl2.style.left=px(x-w/2);sl2.style.top=px(y-h/2);sl2.style.width=px(w);sl2.style.height=px(h);sl2.style.opacity=sv2;}
- // --- cartel de la oferta (L6) y semáforo (L9)
- {const bi=back(c01(t,tOferta,tOferta+.4)),fl=ease(c01(t,tDec-.05,tDec+.12)),fb=ease(c01(t,tDec+.1,tDec+.3));
-  board.style.opacity=clamp(bi*2)*(1-fl);board.style.transform='translateY('+lerp(-160,0,bi)+'px) scaleX('+(1-fl)+')';
+  const y0=ROOF-Hh(7.5,.7)+Hh(1.6,.7)/2,cy=lerp(y0,520,p2),scs=lerp(.7,.2,p2);
+  drawPile(sl2,540,cy+Hh(1.6,scs)/2,scs,1.6,0);sl2.style.opacity=sv2;}
+ // --- tarjeta de oferta (L6–L9) y semáforo (L9)
+ {const bi=back(c01(t,tOferta,tOferta+.4)),fl=ease(c01(t,tDec-.05,tDec+.12)),fb=ease(c01(t,tDec+.1,tDec+.3)),mv=ease(c01(t,tCheca-.25,tCheca+.3));
+  const S=lerp(.684,.474,mv),left=lerp(280,360,mv),top=lerp(330,525,mv)+(1-Math.min(1,bi))*-340,sx=1-fl;
+  offer.style.opacity=clamp(bi*2)*(1-fl*.9);offer.style.transform='translate('+(left+760*S*(1-sx)/2)+'px,'+top+'px) scale('+(S*sx)+','+S+')';
   semaf.style.opacity=fb;semaf.style.transform='scaleX('+fb+')';
   const sy=ease(c01(t,tDec+.15,tDec+.4));document.getElementById('sy').style.background=sy>.5?Y:'#5A4A10';document.getElementById('sy').style.boxShadow=sy>.5?'0 0 40px '+Y:'none';
-  hiP.style.background=t>=t150?'rgba(250,204,21,.55)':'transparent';hiK.style.background=t>=t16?'rgba(250,204,21,.45)':'transparent';
+  hiP.style.opacity=t>=t150&&t<t16?1:0;hiK.style.opacity=t>=t16&&t<LS(7)?1:0;
   const ln=ease(c01(t,tDec+.25,tDec+.55));laneA.style.opacity=ln;laneP.style.opacity=ln;}
  // ruta de 16 km
  {const rp=ease(c01(t,t16,t16+.9));rt.setAttribute('stroke-dashoffset',1-rp);rd.setAttribute('opacity',rp>.98?1:0);
@@ -215,7 +241,7 @@ const GOL=[[1,'hoy','$1,500 HOY','amarillo',99],[1,'no','NO GANASTE','rojo',1.3]
  [8,'118','$118 TUYOS','verde',1.4],[9,'decides','TÚ DECIDES','amarillo',1.1]];
 GOL.forEach(([i,w,txt,k,d],gi)=>{const hook=gi===0;const t=hook?0:T(i,w)-.04;const [bg,fg]=col[k];const nx=GOL[gi+1];
  const t1=hook?T(nx[0],nx[1])-.06:Math.min(t+d,(nx&&nx[0]===i)?T(i,nx[1])-.06:1e9);
- const el=$('<div style="position:absolute;left:0;right:0;top:118px;text-align:center"><span style="display:inline-block;padding:12px 44px;border-radius:99px;background:'+bg+';color:'+fg+';font:800 '+(txt.length>9?84:110)+'px/1.05 \'Bricolage Grotesque\';letter-spacing:-2px;box-shadow:0 16px 40px rgba(0,0,0,.18);white-space:nowrap">'+txt+'</span></div>');
+ const el=$('<div style="position:absolute;left:0;right:0;top:100px;text-align:center"><span style="display:inline-block;padding:12px 44px;border-radius:99px;background:'+bg+';color:'+fg+';font:800 '+(txt.length>9?84:110)+'px/1.05 \'Bricolage Grotesque\';letter-spacing:-2px;box-shadow:0 16px 40px rgba(0,0,0,.18);white-space:nowrap">'+txt+'</span></div>');
  Lgol.appendChild(el);el.style.opacity=0;items.push({el,t0:t,t1:t1,pop:1,hook});});
 const LAV=[[1,'no',R],[2,'400',R],[4,'ganar',G],[8,'118',G],[9,'decides',Y]].map(([i,w,c])=>({t:T(i,w),c}));
 const SAC=[T(1,'no'),T(2,'400'),T(3,'desgaste'),T(5,'ciegas')];
