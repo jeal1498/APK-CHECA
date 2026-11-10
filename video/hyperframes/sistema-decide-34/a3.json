@@ -1,0 +1,560 @@
+{
+ "hook": "SISTEMA CHECA",
+ "lineas": [
+  {
+   "vista": "telefono",
+   "zoom": 1.0,
+   "tel": {
+    "oferta": {
+     "precio": "$85.00",
+     "l1": "5 min (2 km)",
+     "l2": "20 min (10 km)"
+    },
+    "ruta": [
+     0.1,
+     1.1
+    ],
+    "zoom": [
+     1.05,
+     1.65
+    ]
+   },
+   "golpes": [
+    {
+     "en": "decide",
+     "texto": "DECIDE",
+     "color": "amarillo",
+     "a": 0.8
+    },
+    {
+     "en": "tres",
+     "texto": "3 SEGUNDOS",
+     "color": "verde",
+     "a": 0.9
+    }
+   ]
+  },
+  {
+   "vista": "pop",
+   "zoom": 1.0,
+   "chip": {
+    "kfs": [
+     {
+      "precio": "$85.00",
+      "sub": "5 min (2 km) · 20 min (10 km)"
+     }
+    ],
+    "escaneo": [
+     0.06,
+     1.06
+    ]
+   },
+   "popup": {
+    "entra": "lee@-0.05",
+    "estados": [
+     {
+      "nivel": "gris",
+      "pv": "$85",
+      "gas": null,
+      "neta": "···",
+      "ok": 0,
+      "h": "",
+      "k": "",
+      "m": "",
+      "km": ""
+     }
+    ]
+   },
+   "golpes": [
+    {
+     "en": "uno",
+     "texto": "MÓDULO 1",
+     "color": "hueso",
+     "a": 0.8
+    },
+    {
+     "en": "sola",
+     "texto": "SOLA",
+     "color": "verde",
+     "a": 0.8
+    }
+   ]
+  },
+  {
+   "vista": "pop",
+   "zoom": 1.08,
+   "chip": {
+    "kfs": [
+     {
+      "precio": "$85.00",
+      "sub": "5 min (2 km) · 20 min (10 km)"
+     }
+    ]
+   },
+   "popup": {
+    "gas_en": "gasolina@-0.05",
+    "estados": [
+     {
+      "nivel": "gris",
+      "pv": "$85",
+      "gas": "Gasolina −$24",
+      "neta": "···",
+      "ok": 0,
+      "h": "",
+      "k": "",
+      "m": "",
+      "km": ""
+     },
+     {
+      "nivel": "gris",
+      "pv": "$85",
+      "gas": "Gasolina −$24",
+      "neta": {
+       "cuenta": {
+        "de": 85,
+        "a": 61,
+        "en": "quedan@-0.05",
+        "hasta": "61@+0.2"
+       }
+      },
+      "ok": 0,
+      "h": "",
+      "k": "",
+      "m": "",
+      "km": "",
+      "nl": "viaje",
+      "en": "quedan@-0.05"
+     },
+     {
+      "nivel": "gris",
+      "pv": "$85",
+      "gas": "Gasolina −$24",
+      "neta": "$61",
+      "ok": 0,
+      "h": "",
+      "k": "",
+      "m": "",
+      "km": "",
+      "bump": "61",
+      "en": "61@+0.25"
+     }
+    ]
+   },
+   "golpes": [
+    {
+     "en": "dos",
+     "texto": "MÓDULO 2",
+     "color": "hueso",
+     "a": 0.6
+    },
+    {
+     "en": "gasolina",
+     "texto": "GASOLINA",
+     "color": "rojo",
+     "a": 0.8
+    }
+   ]
+  },
+  {
+   "vista": "pop",
+   "zoom": 1.1,
+   "chip": {
+    "kfs": [
+     {
+      "precio": "$85.00",
+      "sub": "5 min (2 km) · 20 min (10 km)"
+     }
+    ],
+    "brillo": "queda"
+   },
+   "popup": {
+    "estados": [
+     {
+      "nivel": "gris",
+      "pv": "$85",
+      "gas": "Gasolina −$24",
+      "neta": "$61",
+      "ok": 0,
+      "h": "",
+      "k": "",
+      "m": "",
+      "km": ""
+     }
+    ]
+   },
+   "golpes": [
+    {
+     "en": "no",
+     "texto": "NO",
+     "color": "rojo",
+     "a": 0.8
+    },
+    {
+     "en": "queda",
+     "texto": "TE QUEDA",
+     "color": "verde",
+     "a": 0.9
+    }
+   ],
+   "sacude": [
+    "no"
+   ]
+  },
+  {
+   "vista": "pop",
+   "zoom": 1.08,
+   "chip": {
+    "kfs": [
+     {
+      "precio": "$85.00",
+      "sub": "5 min (2 km) · 20 min (10 km)"
+     }
+    ]
+   },
+   "popup": {
+    "fichas": "146@-0.05",
+    "estados": [
+     {
+      "nivel": "gris",
+      "pv": "$85",
+      "gas": "Gasolina −$24",
+      "neta": "$61",
+      "ok": 0,
+      "h": "$146/h",
+      "k": "$5.1/km",
+      "m": "25 min",
+      "km": "12 km total"
+     },
+     {
+      "nivel": "rojo",
+      "pv": "$85",
+      "gas": "Gasolina −$24",
+      "neta": "$61",
+      "ok": 0,
+      "h": "$146/h",
+      "k": "$5.1/km",
+      "m": "25 min",
+      "km": "12 km total",
+      "en": "rechazar"
+     }
+    ]
+   },
+   "golpes": [
+    {
+     "en": "tres",
+     "texto": "MÓDULO 3",
+     "color": "hueso",
+     "a": 0.6
+    },
+    {
+     "en": "146",
+     "texto": "$146/H",
+     "color": "rojo",
+     "a": 0.7
+    },
+    {
+     "en": "rechazar",
+     "texto": "RECHAZAR",
+     "color": "rojo",
+     "de": 0,
+     "a": 0.9
+    }
+   ],
+   "lavado": [
+    {
+     "en": "rechazar",
+     "color": "rojo"
+    }
+   ],
+   "sacude": [
+    "rechazar"
+   ]
+  },
+  {
+   "vista": "pop",
+   "zoom": 1.06,
+   "chip": {
+    "kfs": [
+     {
+      "precio": "$70.00",
+      "sub": "4 min (1.5 km) · 10 min (5 km)"
+     },
+     {
+      "precio": "$120.00",
+      "sub": "5 min (2 km) · 15 min (7 km)",
+      "en": "compara"
+     }
+    ]
+   },
+   "popup": {
+    "fichas": "siempre",
+    "estados": [
+     {
+      "nivel": "gris",
+      "pv": "$70",
+      "gas": "Gasolina −$13",
+      "neta": "$57",
+      "ok": 1,
+      "h": "$244/h",
+      "k": "$8.8/km",
+      "m": "14 min",
+      "km": "6.5 km total"
+     },
+     {
+      "nivel": "gris",
+      "pv": "$120",
+      "gas": "Gasolina −$18",
+      "neta": "$102",
+      "ok": 1,
+      "h": "$306/h",
+      "k": "$11.3/km",
+      "m": "20 min",
+      "km": "9 km total",
+      "en": "compara"
+     }
+    ]
+   },
+   "golpes": [
+    {
+     "en": "dos",
+     "texto": "2 OFERTAS",
+     "color": "amarillo",
+     "a": 0.8
+    },
+    {
+     "en": "solita",
+     "texto": "SOLITA",
+     "color": "verde",
+     "a": 0.8
+    }
+   ]
+  },
+  {
+   "vista": "pop",
+   "zoom": 1.08,
+   "chip": {
+    "kfs": [
+     {
+      "precio": "$70.00",
+      "sub": "4 min (1.5 km) · 10 min (5 km)"
+     },
+     {
+      "precio": "$120.00",
+      "sub": "5 min (2 km) · 15 min (7 km)",
+      "en": "otra"
+     }
+    ]
+   },
+   "popup": {
+    "fichas": "siempre",
+    "estados": [
+     {
+      "nivel": "gris",
+      "pv": "$70",
+      "gas": "Gasolina −$13",
+      "neta": "$57",
+      "ok": 1,
+      "h": "$244/h",
+      "k": "$8.8/km",
+      "m": "14 min",
+      "km": "6.5 km total"
+     },
+     {
+      "nivel": "gris",
+      "pv": "$120",
+      "gas": "Gasolina −$18",
+      "neta": "$102",
+      "ok": 1,
+      "h": "$306/h",
+      "k": "$11.3/km",
+      "m": "20 min",
+      "km": "9 km total",
+      "en": "otra"
+     },
+     {
+      "nivel": "verde",
+      "pv": "$120",
+      "gas": "Gasolina −$18",
+      "neta": "$102",
+      "ok": 1,
+      "h": "$306/h",
+      "k": "$11.3/km",
+      "m": "20 min",
+      "km": "9 km total",
+      "en": "gana"
+     }
+    ]
+   },
+   "golpes": [
+    {
+     "en": "244",
+     "texto": "$244/H",
+     "color": "amarillo",
+     "a": 0.9
+    },
+    {
+     "en": "306",
+     "texto": "$306/H",
+     "color": "verde",
+     "a": 0.9
+    }
+   ],
+   "lavado": [
+    {
+     "en": "gana",
+     "color": "verde"
+    }
+   ]
+  },
+  {
+   "vista": "popup",
+   "zoom": 1.0,
+   "popup": {
+    "fichas": "siempre",
+    "estados": [
+     {
+      "nivel": "gris",
+      "pv": "$120",
+      "gas": "Gasolina −$18",
+      "neta": "$102",
+      "ok": 1,
+      "h": "$306/h",
+      "k": "$11.3/km",
+      "m": "20 min",
+      "km": "9 km total"
+     },
+     {
+      "nivel": "verde",
+      "pv": "$120",
+      "gas": "Gasolina −$18",
+      "neta": "$102",
+      "ok": 1,
+      "h": "$306/h",
+      "k": "$11.3/km",
+      "m": "20 min",
+      "km": "9 km total",
+      "en": "aceptar"
+     }
+    ]
+   },
+   "golpes": [
+    {
+     "en": "aceptar",
+     "texto": "ACEPTAR",
+     "color": "verde",
+     "a": 0.8
+    },
+    {
+     "en": "102",
+     "texto": "$102 NETOS",
+     "color": "verde",
+     "a": 0.9
+    }
+   ],
+   "lavado": [
+    {
+     "en": "aceptar",
+     "color": "verde"
+    }
+   ]
+  },
+  {
+   "vista": "popup",
+   "zoom": 1.04,
+   "popup": {
+    "fichas": "siempre",
+    "estados": [
+     {
+      "nivel": "verde",
+      "pv": "$120",
+      "gas": "Gasolina −$18",
+      "neta": "$102",
+      "ok": 1,
+      "h": "$306/h",
+      "k": "$11.3/km",
+      "m": "20 min",
+      "km": "9 km total"
+     }
+    ]
+   },
+   "golpes": [
+    {
+     "en": "día",
+     "texto": "TU DÍA",
+     "color": "amarillo",
+     "a": 0.8
+    },
+    {
+     "en": "hora",
+     "texto": "CADA HORA",
+     "color": "verde",
+     "a": 0.9
+    }
+   ]
+  },
+  {
+   "vista": "pop",
+   "zoom": 1.06,
+   "chip": {
+    "kfs": [
+     {
+      "precio": "$85.00",
+      "sub": "5 min (2 km) · 20 min (10 km)"
+     }
+    ]
+   },
+   "popup": {
+    "estados": [
+     {
+      "nivel": "gris",
+      "pv": "$85",
+      "gas": "Gasolina −$24",
+      "neta": "···",
+      "ok": 0,
+      "h": "",
+      "k": "",
+      "m": "",
+      "km": ""
+     },
+     {
+      "nivel": "gris",
+      "pv": "$85",
+      "gas": "Gasolina −$24",
+      "neta": "$61",
+      "ok": 0,
+      "h": "$146/h",
+      "k": "$5.1/km",
+      "m": "25 min",
+      "km": "12 km total",
+      "en": "ganar"
+     }
+    ]
+   },
+   "golpes": [
+    {
+     "en": "Facturar",
+     "texto": "FACTURAR",
+     "color": "rojo",
+     "a": 0.9
+    },
+    {
+     "en": "ganar",
+     "texto": "GANAR",
+     "color": "verde",
+     "a": 0.9
+    }
+   ],
+   "sacude": [
+    "ganar"
+   ]
+  },
+  {
+   "vista": "cta",
+   "zoom": 1.0,
+   "cta": {
+    "pill": 0.5,
+    "google": "google"
+   }
+  }
+ ]
+}
