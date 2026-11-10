@@ -674,7 +674,7 @@ def cmd_claro(args):
             shutil.copy(os.path.join(BASE, "claro", f), os.path.join(cl, f))
         print("plantilla copiada a", cl, "→ edita los bloques de cada línea en claro/pagina.js y los efectos en generar.py")
     if "--sin-voz" in args:  # tiempos estimados + voces en silencio (para ver el video antes de tener la voz)
-        lineas = [l.strip() for l in open(os.path.join(d, "SCRIPT.md"), encoding="utf-8") if l.startswith("    ")]
+        lineas = [re.sub(r"\[[^\]]*\]\s*", "", l.strip()) for l in open(os.path.join(d, "SCRIPT.md"), encoding="utf-8") if l.startswith("    ")]  # sin las etiquetas [firm] de la voz
         os.makedirs(os.path.join(d, "assets", "voice"), exist_ok=True)
         escenas, t = [], 0.0
         for i, l in enumerate(lineas, 1):
