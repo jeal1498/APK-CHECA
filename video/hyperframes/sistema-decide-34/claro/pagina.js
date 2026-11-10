@@ -74,6 +74,20 @@ function oferta(x,y,w,precio,l1,l2){const s=w/760;return '<div style="position:a
  +'<div style="position:absolute;left:'+(36*s)+'px;top:'+(28*s)+'px;font:800 '+(118*s)+'px/1 \'Bricolage Grotesque\';letter-spacing:-'+(4*s)+'px;color:'+K+'">'+precio+'</div>'
  +'<div style="position:absolute;left:'+(38*s)+'px;top:'+(172*s)+'px;font:500 '+(34*s)+'px/1.35 \'JetBrains Mono\';color:#4A463A">'+l1+'<br>'+l2+'</div>'
  +'<div style="position:absolute;right:'+(30*s)+'px;bottom:'+(28*s)+'px;width:'+(210*s)+'px;height:'+(78*s)+'px;border-radius:99px;background:'+K+';color:#fff;font:700 '+(30*s)+'px/'+(78*s)+'px \'DM Sans\';text-align:center">Aceptar</div></div>';}
+
+function ofertaU(x,y,w,precio,a,v,ad1,ad2){const s=w/760;const px=n=>(n*s).toFixed(1)+'px';
+ const star='<svg viewBox="0 0 24 24" width="'+px(34)+'" height="'+px(34)+'" fill="#0C0C10" style="vertical-align:-.12em"><path d="M12 1.5l3.2 7.2 7.8.8-5.9 5.2 1.7 7.7L12 18.4 5.2 22.4l1.7-7.7L1 9.5l7.8-.8z"/></svg>';
+ return '<div style="position:absolute;left:'+x+'px;top:'+y+'px;width:'+w+'px;height:'+px(640)+';border-radius:'+px(40)+';background:#fff;border:2px solid #E8E4D2;box-shadow:0 22px 56px rgba(80,70,20,.16);overflow:hidden">'
+ +'<div style="position:absolute;left:'+px(34)+';top:'+px(30)+';padding:'+px(8)+' '+px(24)+';border-radius:'+px(10)+';background:#0C0C10;color:#fff;font:700 '+px(32)+'/1.2 \'DM Sans\'">Viaje</div>'
+ +'<svg viewBox="0 0 16 16" width="'+px(40)+'" height="'+px(40)+'" style="position:absolute;right:'+px(34)+';top:'+px(30)+'" fill="none" stroke="#0C0C10" stroke-width="2.1" stroke-linecap="square"><path d="M2 2l12 12M14 2L2 14"/></svg>'
+ +'<div style="position:absolute;left:'+px(34)+';top:'+px(96)+';font:800 '+px(126)+'/1 \'Bricolage Grotesque\';letter-spacing:'+px(-4)+';color:#0C0C10">'+precio+'</div>'
+ +'<div style="position:absolute;left:'+px(38)+';top:'+px(236)+';font:500 '+px(34)+'/1 \'DM Sans\';color:#0C0C10">'+star+'&nbsp; 4.92</div>'
+ +'<div style="position:absolute;left:'+px(60)+';top:'+px(330)+';width:'+px(4)+';height:'+px(110)+';background:#0C0C10"></div>'
+ +'<div style="position:absolute;left:'+px(50)+';top:'+px(318)+';width:'+px(24)+';height:'+px(24)+';border-radius:50%;background:#0C0C10"></div>'
+ +'<div style="position:absolute;left:'+px(50)+';top:'+px(436)+';width:'+px(24)+';height:'+px(24)+';border-radius:'+px(4)+';background:#0C0C10"></div>'
+ +'<div style="position:absolute;left:'+px(104)+';top:'+px(300)+'"><div style="font:700 '+px(38)+'/1.1 \'DM Sans\';color:#0C0C10">'+a+'</div><div style="font:400 '+px(30)+'/1.2 \'DM Sans\';color:#6A665A;margin-top:'+px(6)+'">'+ad1+'</div></div>'
+ +'<div style="position:absolute;left:'+px(104)+';top:'+px(418)+'"><div style="font:700 '+px(38)+'/1.1 \'DM Sans\';color:#0C0C10">'+v+'</div><div style="font:400 '+px(30)+'/1.2 \'DM Sans\';color:#6A665A;margin-top:'+px(6)+'">'+ad2+'</div></div>'
+ +'<div style="position:absolute;left:'+px(30)+';right:'+px(30)+';bottom:'+px(28)+';height:'+px(96)+';border-radius:'+px(14)+';background:#0C0C10;overflow:hidden"><div style="position:absolute;left:0;top:0;bottom:0;width:62%;background:#2B2B33"></div><div style="position:relative;text-align:center;color:#fff;font:700 '+px(36)+'/'+px(96)+' \'DM Sans\'">Viaje disponible</div></div></div>';}
 function popApp(o){const T0='#A3A3AD',N={hdr:'···',hc:T0,bc:'#3A3A45',amt:'',m1:['···',T0,''],m2:['···',T0,''],tot:''};o=Object.assign(N,o);
  const met=m=>'<div style="flex:1;text-align:center;font:500 58px/1 \'JetBrains Mono\';color:'+m[1]+';white-space:nowrap">'+(m[2]?m[2]+' ':'')+m[0]+'</div>';
  return '<div style="position:absolute;left:100px;top:90px;width:780px;border-radius:58px;background:#16161C;border:10px solid '+o.bc+';box-shadow:0 30px 70px rgba(0,0,0,.28)">'
@@ -86,11 +100,11 @@ const ficha=(v,m,c,bg)=>'<div style="flex:1;height:150px;border-radius:26px;back
 
 // L2 — módulo uno: lee la oferta
 {const i=2,a=LS(i),e=LE(i);
- C(oferta(90,60,760,'$60.00','5 min (2 km)','20 min (10 km)'),a,e);
+ C(ofertaU(120,10,700,'$60.00','A 5 min (2 km)','Viaje: 20 min (10 km)','Calle Hidalgo 120','Av. Principal 450'),a,e);
  const sc=C('<div style="position:absolute;left:80px;top:60px;width:780px;height:8px;border-radius:4px;background:linear-gradient(90deg,transparent,'+G+',transparent);box-shadow:0 0 30px '+G+'"></div>',T(i,'lee')-.05,e);
- sc._scan=[T(i,'lee')-.05,T(i,'oferta')+.55,60,350];
- C('<div style="position:absolute;left:150px;top:440px;width:150px;height:150px;border-radius:50%;background:'+G+';display:flex;align-items:center;justify-content:center"><svg width="80" height="80" viewBox="0 0 56 56" fill="none" stroke="#04210F" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 29l11 11 21-24"/></svg></div>',T(i,'sola')-.05,e);
- C('<div style="position:absolute;left:640px;top:440px;width:150px;height:150px"><svg width="150" height="150" viewBox="0 0 150 150" fill="none"><circle cx="75" cy="75" r="62" stroke="'+R+'" stroke-width="12"/><path d="M31 119L119 31" stroke="'+R+'" stroke-width="12" stroke-linecap="round"/><circle cx="75" cy="75" r="16" fill="'+K+'" opacity=".85"/></svg></div>',T(i,'toques')-.05,e);}
+ sc._scan=[T(i,'lee')-.05,T(i,'oferta')+.55,40,500];
+ C('<div style="position:absolute;left:375px;top:850px;width:150px;height:150px;zoom:.72;border-radius:50%;background:'+G+';display:flex;align-items:center;justify-content:center"><svg width="80" height="80" viewBox="0 0 56 56" fill="none" stroke="#04210F" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 29l11 11 21-24"/></svg></div>',T(i,'sola')-.05,e);
+ C('<div style="position:absolute;left:778px;top:850px;width:150px;height:150px;zoom:.72"><svg width="150" height="150" viewBox="0 0 150 150" fill="none"><circle cx="75" cy="75" r="62" stroke="'+R+'" stroke-width="12"/><path d="M31 119L119 31" stroke="'+R+'" stroke-width="12" stroke-linecap="round"/><circle cx="75" cy="75" r="16" fill="'+K+'" opacity=".85"/></svg></div>',T(i,'toques')-.05,e);}
 // L3 — módulo dos: tu meta
 {const i=3,a=LS(i),e=LE(i);
  C(oferta(260,40,420,'$60.00','5 min (2 km)','20 min (10 km)'),T(i,'compara')-.1,e);
