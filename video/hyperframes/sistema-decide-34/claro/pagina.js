@@ -74,11 +74,14 @@ function oferta(x,y,w,precio,l1,l2){const s=w/760;return '<div style="position:a
  +'<div style="position:absolute;left:'+(36*s)+'px;top:'+(28*s)+'px;font:800 '+(118*s)+'px/1 \'Bricolage Grotesque\';letter-spacing:-'+(4*s)+'px;color:'+K+'">'+precio+'</div>'
  +'<div style="position:absolute;left:'+(38*s)+'px;top:'+(172*s)+'px;font:500 '+(34*s)+'px/1.35 \'JetBrains Mono\';color:#4A463A">'+l1+'<br>'+l2+'</div>'
  +'<div style="position:absolute;right:'+(30*s)+'px;bottom:'+(28*s)+'px;width:'+(210*s)+'px;height:'+(78*s)+'px;border-radius:99px;background:'+K+';color:#fff;font:700 '+(30*s)+'px/'+(78*s)+'px \'DM Sans\';text-align:center">Aceptar</div></div>';}
-function pop(banda,bc,bt,neta,nc,viaje,f1,f2){return '<div style="position:absolute;left:80px;top:34px;width:780px;height:600px;border-radius:40px;background:'+K+';overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.28)">'
- +'<div style="height:92px;background:'+bc+';color:'+bt+';text-align:center;font:800 46px/92px \'Bricolage Grotesque\';letter-spacing:6px">'+banda+'</div>'
- +'<div style="text-align:center;margin-top:34px;font:800 150px/1 \'Bricolage Grotesque\';letter-spacing:-6px;color:'+nc+'">'+neta+'<span style="font:500 30px \'JetBrains Mono\';letter-spacing:0;color:#A3A3AD"> viaje</span></div>'
- +'<div style="text-align:center;margin-top:18px;font:400 34px \'DM Sans\';color:#C8C8D0">'+viaje+'</div>'
- +'<div style="display:flex;gap:22px;margin:34px 34px 0">'+f1+f2+'</div></div>';}
+function popApp(o){const T0='#A3A3AD',N={hdr:'···',hc:T0,bc:'#3A3A45',amt:'',m1:['···',T0,''],m2:['···',T0,''],tot:''};o=Object.assign(N,o);
+ const met=m=>'<div style="flex:1;text-align:center;font:500 58px/1 \'JetBrains Mono\';color:'+m[1]+';white-space:nowrap">'+(m[2]?m[2]+' ':'')+m[0]+'</div>';
+ return '<div style="position:absolute;left:100px;top:90px;width:780px;border-radius:58px;background:#16161C;border:10px solid '+o.bc+';box-shadow:0 30px 70px rgba(0,0,0,.28)">'
+ +'<div style="text-align:center;padding-top:30px;font:800 62px/1.15 \'Bricolage Grotesque\';letter-spacing:6px;color:'+o.hc+'">'+o.hdr+'</div>'
+ +'<svg width="40" height="40" viewBox="0 0 24 24" style="position:absolute;right:26px;top:26px" fill="none" stroke="'+T0+'" stroke-width="3" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg>'
+ +'<div style="text-align:center;padding:6px 0;font:800 168px/1.1 \'Bricolage Grotesque\';letter-spacing:-3px;color:#F4F4EF">'+o.amt+'</div>'
+ +'<div style="display:flex;align-items:center;padding:18px 20px 0">'+met(o.m1)+'<div style="width:4px;height:56px;background:rgba(163,163,173,.43);margin:0 12px"></div>'+met(o.m2)+'</div>'
+ +'<div style="text-align:center;padding:22px 0 34px;font:500 43px/1.2 \'JetBrains Mono\';color:'+T0+'">'+o.tot+'</div></div>';}
 const ficha=(v,m,c,bg)=>'<div style="flex:1;height:150px;border-radius:26px;background:'+bg+';border:3px solid '+c+';display:flex;flex-direction:column;align-items:center;justify-content:center"><b style="font:700 46px \'JetBrains Mono\';color:'+c+'">'+v+'</b><span style="font:400 30px \'DM Sans\';color:#C8C8D0;margin-top:6px">'+m+'</span></div>';
 
 // L2 — módulo uno: lee la oferta
@@ -94,13 +97,13 @@ const ficha=(v,m,c,bg)=>'<div style="flex:1;height:150px;border-radius:26px;back
  const mc=(x,l,v)=>'<div style="position:absolute;left:'+x+'px;top:360px;width:410px;height:270px;border-radius:34px;background:#FBFAF2;border:3px solid #E2DDC4;text-align:center"><div style="margin-top:34px;font:700 28px/1 \'JetBrains Mono\';letter-spacing:3px;color:#8A8678">'+l+'</div><div style="margin-top:34px;font:800 132px/1 \'Bricolage Grotesque\';letter-spacing:-5px;color:'+K+'">'+v+'</div></div>';
  C(mc(40,'META POR HORA','$200'),T(i,'hora')-.1,e);
  C(mc(490,'META POR KM','$10'),T(i,'kilómetro')-.1,e);}
-// L4 — rechazar
-{const i=4,a=LS(i),e=LE(i),r=T(i,'rechazar'),v='25 min (12 km) total',m1='meta $200',m2='meta $10';
- const gris=ficha('···',m1,'#4A4A55','#1B1B22'),gris2=ficha('···',m2,'#4A4A55','#1B1B22');
- C(pop('···','#3A3A44','#fff','$60','#fff',v,gris,gris2),a,r-.05);
- C(pop('RECHAZAR',R,'#fff','$60','#fff',v,ficha('$144/h',m1,R,'#3A1616'),ficha('$5/km',m2,R,'#3A1616')),r-.05,e,true);
- C(pop('···','#3A3A44','#fff','$60','#fff',v,ficha('$144/h',m1,R,'#3A1616'),gris2),T(i,'144')-.05,r-.05,true);
- C(pop('···','#3A3A44','#fff','$60','#fff',v,ficha('$144/h',m1,R,'#3A1616'),ficha('$5/km',m2,R,'#3A1616')),T(i,'5')-.05,r-.05,true);}
+// L4 — rechazar (pop-up real de la app)
+{const i=4,a=LS(i),e=LE(i),r=T(i,'rechazar'),v='25 min (12.0 km) total';
+ const h=['$144/h',R,'✕'],k=['$5.0/km',R,'✕'],n=['···','#A3A3AD',''];
+ C(popApp({amt:'$60',tot:v}),a,r-.05);
+ C(popApp({hdr:'RECHAZAR',hc:R,bc:R,amt:'$60',m1:h,m2:k,tot:v}),r-.05,e,true);
+ C(popApp({amt:'$60',m1:h,tot:v}),T(i,'144')-.05,r-.05,true);
+ C(popApp({amt:'$60',m1:h,m2:k,tot:v}),T(i,'5')-.05,r-.05,true);}
 // L5-6 — comparar dos ofertas (izquierda 240/h, derecha 300/h)
 {const e=LE(6),d=T(5,'dos');
  const cl=C(oferta(40,70,420,'$100.00','5 min (2 km)','20 min (9 km)'),d-.1,e);
@@ -113,11 +116,10 @@ const ficha=(v,m,c,bg)=>'<div style="flex:1;height:150px;border-radius:26px;back
  cl._gana=[T(6,'gana'),cl.firstChild];cr._gana=[T(6,'gana'),cr.firstChild];}
 // L7 — aceptar
 {const i=7,a=LS(i),e=LE(i),ac=T(i,'aceptar'),n=T(i,'cumple'),v='14 min (6.5 km) total';
- const g1=ficha('···','meta $200','#4A4A55','#1B1B22'),g2=ficha('···','meta $10','#4A4A55','#1B1B22');
- C(pop('···','#3A3A44','#fff','$70','#fff',v,g1,g2),a,ac-.05);
- C(pop('ACEPTAR',G,'#04210F','$70','#fff',v,g1,g2),ac-.05,n-.05,true);
- C(pop('ACEPTAR',G,'#04210F','$70','#fff',v,ficha('$300/h','meta $200',G,'#12301F'),ficha('$10.8/km','meta $10',G,'#12301F')),n-.05,e,true);
- C('<div style="position:absolute;left:250px;top:650px;width:440px;height:64px;border-radius:99px;background:'+G+';color:#04210F;text-align:center;font:800 32px/64px \'JetBrains Mono\';letter-spacing:3px">LAS 2 METAS ✓</div>',T(i,'metas')-.1,e);}
+ C(popApp({amt:'$70',tot:v}),a,ac-.05);
+ C(popApp({hdr:'ACEPTAR',hc:G,bc:G,amt:'$70',tot:v}),ac-.05,n-.05,true);
+ C(popApp({hdr:'ACEPTAR',hc:G,bc:G,amt:'$70',m1:['$300/h',G,'✓'],m2:['$10.8/km',G,'✓'],tot:v}),n-.05,e,true);
+ C('<div style="position:absolute;left:250px;top:640px;width:440px;height:64px;border-radius:99px;background:'+G+';color:#04210F;text-align:center;font:800 32px/64px \'JetBrains Mono\';letter-spacing:3px">LAS 2 METAS ✓</div>',T(i,'metas')-.1,e);}
 // L8 — mi día
 {const i=8,a=LS(i),e=LE(i),d=T(i,'día');
  C(mono('MI DÍA',70,50,'#8A8678',34),d-.1,e);
