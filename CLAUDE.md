@@ -37,6 +37,7 @@ Excepciones: explica completo si lo piden; confirma antes de acciones destructiv
 - **Estado:** el real está en el calendario web (`PWA-Checa-Multimedia/calendario-d4f81c/data.json`); `marketing/plan/calendario.md` lo acompaña y `marketing/plan/plan-ponerse-al-dia.md` tiene el plan. Al empezar: `git pull origin main` en los dos repos.
 - **Se sube video todos los días, domingos incluidos** (Eduardo, 31 oct; antes los domingos no se subía).
 - **Énfasis (Eduardo, 31 oct):** lo escribe Gémini en una lista bajo cada línea de voz (`fuerte`, `pausa`, `tono`, `voz`, `pantalla`) sin cambiar el texto; formato y cómo se aplica en `.claude/skills/video-checa/references/narrador.md` §7. Los gráficos de cada énfasis son golpes visuales que caen en la palabra (escena `impacto`, §8). Estilo híbrido teléfono + golpes (oferta real, pop-up de la app, `adelanto` 0.04): `narrador.md` §9.
+- **Estilo de video vigente (10 nov):** «claro» (mapa de nodos, pop-up y oferta réplica de la app), `checa.py claro`, detalle en `narrador.md` §00. Los videos de referencia de diseño se guardan en `video/referencias/` (con su README).
 - El `video.mp4` se commitea **una sola vez**, ya aprobado (cada mp4 commiteado engorda el repo para siempre).
 
 ## Entorno y compilación

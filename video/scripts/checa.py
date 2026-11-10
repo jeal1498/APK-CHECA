@@ -18,6 +18,8 @@ Uso: python3 -I video/scripts/checa.py <comando> ...
   loop <proyecto>                          recorta la cola y funde el final con el primer cuadro (renders/video.mp4)
   auditar <proyecto> [video.mp4]           auditoría visual medible (narrador.md §10): primer cuadro, loop, cola, bordes,
                                            subtítulos fuera de la franja de TikTok y que algo pase en cada palabra con golpe
+  claro <proyecto> [--sin-voz|--hoja|--render]  estilo claro (mapa de nodos, referencia 10 nov): claro/pagina.js → index.html, storyboard y video
+                                           --sin-voz = tiempos estimados desde SCRIPT.md y voces en silencio; sin --render solo compila
   subir "<mensaje>"                        commit y push (main y rama actual) en APK-CHECA y PWA-Checa-Multimedia
 
 <proyecto> es un nombre (video/hyperframes/<nombre>) o una ruta. <carpeta> es marketing/videos/CHECA|PERSONAL/NN - Nombre.
@@ -635,9 +637,71 @@ def cmd_auditar(args):
         sys.exit(1)
 
 
+def cmd_claro(args):
+    """Estilo «claro» (narrador.md §00): el proyecto lleva claro/pagina.js (bloques por línea) y claro/generar.py. Plantilla: _base/claro/."""
+    import shutil
+    d = proyecto(args[0])
+    cl = os.path.join(d, "claro")
+    if not os.path.exists(os.path.join(cl, "pagina.js")):
+        os.makedirs(cl, exist_ok=True)
+        for f in ("pagina.js", "generar.py"):
+            shutil.copy(os.path.join(BASE, "claro", f), os.path.join(cl, f))
+        print("plantilla copiada a", cl, "→ edita los bloques de cada línea en claro/pagina.js y los efectos en generar.py")
+    if "--sin-voz" in args:  # tiempos estimados + voces en silencio (para ver el video antes de tener la voz)
+        lineas = [l.strip() for l in open(os.path.join(d, "SCRIPT.md"), encoding="utf-8") if l.startswith("    ")]
+        os.makedirs(os.path.join(d, "assets", "voice"), exist_ok=True)
+        escenas, t = [], 0.0
+        for i, l in enumerate(lineas, 1):
+            w = l.split()
+            dur = max(2.5, round((0.3 * len(w) + 0.5) * 2) / 2)
+            c, tot, ws = 0.05, sum(len(x) + 2 for x in w), []
+            for x in w:
+                e = c + (dur - 0.4) * (len(x) + 2) / tot
+                ws.append([x, round(c, 2), round(e - 0.03, 2)])
+                c = e
+            escenas.append({"n": i, "start": t, "words": ws, "dur": dur, "voice": dur - 0.2})
+            subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", "anullsrc=r=44100:cl=mono", "-t", str(dur),
+                            os.path.join(d, "assets", "voice", f"{i:02d}.wav")], check=True)
+            t += dur
+        json.dump({"total": t, "scenes": escenas}, open(os.path.join(d, "tiempos.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+        print(f"tiempos estimados: {len(escenas)} líneas, {t:.1f} s")
+    if not os.path.exists(os.path.join(d, "tiempos.json")):
+        fallar("falta tiempos.json: `checa.py construir <proyecto> --solo-tiempos` (con voz) o `checa.py claro <proyecto> --sin-voz`")
+    subprocess.run(["python3", "-I", os.path.join(cl, "generar.py")], check=True)
+    html = os.path.join(cl, "index.html")
+    total = json.load(open(os.path.join(cl, "sonidos.json")))["duracion"]
+    n = int(round(total * 30)) - 1
+    os.makedirs(os.path.join(d, "renders"), exist_ok=True)
+    if "--hoja" in args:
+        tmp = os.path.join(d, "renders", "_hoja")
+        shutil.rmtree(tmp, ignore_errors=True)
+        os.makedirs(tmp)
+        lista = sorted({min(n, int((i + .5) * n / 20)) for i in range(20)})
+        subprocess.run(["node", os.path.join(BASE, "a3", "cuadros.js"), html, tmp, ",".join(map(str, lista))], check=True, env=_node_env())
+        hoja = os.path.join(d, "renders", "storyboard-claro.png")
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-framerate", "1", "-pattern_type", "glob", "-i", os.path.join(tmp, "*.png"), "-vf",
+                        "scale=216:-1,tile=10x2", "-frames:v", "1", hoja], check=True)
+        shutil.rmtree(tmp, ignore_errors=True)
+        print("storyboard:", hoja)
+    if "--render" in args:
+        cuadros = os.path.join(d, "renders", "claro-cuadros")
+        shutil.rmtree(cuadros, ignore_errors=True)
+        os.makedirs(cuadros)
+        total_f = n + 1
+        r = [round(total_f * i / 4) for i in range(5)]
+        env = _node_env()
+        ps = [subprocess.Popen(["node", os.path.join(BASE, "a3", "render.js"), html, cuadros, str(r[i]), str(r[i + 1])], env=env) for i in range(4)]
+        if any(p.wait() for p in ps) or len(os.listdir(cuadros)) != total_f:
+            fallar(f"el render de cuadros falló ({len(os.listdir(cuadros))}/{total_f})")
+        video = os.path.join(d, "renders", "video-claro.mp4")
+        subprocess.run(["python3", "-I", os.path.join(BASE, "a3", "mezclar.py"), cuadros, os.path.join(cl, "sonidos.json"), video, "--proyecto", d], check=True)
+        shutil.rmtree(cuadros, ignore_errors=True)
+        print("listo:", video, "(unos 10 min por 35 s; corre en segundo plano). Revisa con `checa.py revisar`.")
+
+
 COMANDOS = {"nuevo": cmd_nuevo, "construir": cmd_construir, "portada": cmd_portada, "revisar": cmd_revisar, "entregar": cmd_entregar,
             "dm": cmd_dm, "tabla": cmd_tabla, "hecho": cmd_hecho, "publicado": cmd_publicado, "subir": cmd_subir, "calidad": cmd_calidad,
-            "auditar": cmd_auditar, "plan": cmd_plan, "loop": cmd_loop, "a3": cmd_a3}
+            "auditar": cmd_auditar, "plan": cmd_plan, "loop": cmd_loop, "a3": cmd_a3, "claro": cmd_claro}
 
 if __name__ == "__main__":
     if len(sys.argv) < 2 or sys.argv[1] not in COMANDOS:
