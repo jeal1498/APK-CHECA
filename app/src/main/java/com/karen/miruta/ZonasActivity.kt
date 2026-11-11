@@ -14,6 +14,7 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.view.Gravity
 import android.view.MotionEvent
+import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -238,7 +239,7 @@ class ZonasActivity : Activity() {
     private fun preguntarBorrar(i: Int) {
         if (dibujando) return
         AlertDialog.Builder(this)
-            .setTitle("¿Borrar la zona ${i + 1}?")
+            .setTitle("¿Borrar «${Zonas.nombre(zonas, i)}»?")
             .setMessage("Las ofertas que vayan ahí dejarán de salir en rojo por esta zona.")
             .setPositiveButton("Borrar") { _, _ ->
                 if (i < zonas.size) { zonas.removeAt(i); guardar() }
@@ -257,8 +258,28 @@ class ZonasActivity : Activity() {
             mapa.invalidate()
             return
         }
-        zonas.add(Zonas.Zona(Zonas.simplificar(pts)))
-        guardar()
+        val puntos = Zonas.simplificar(pts)
+        // El nombre sale en el pop-up («Destino en zona bloqueada · Centro»). Vacío = «Zona N».
+        val sugerido = "Zona ${zonas.size + 1}"
+        val campo = EditText(this).apply {
+            hint = sugerido
+            setSingleLine()
+            filters = arrayOf(android.text.InputFilter.LengthFilter(30))
+        }
+        val marco = FrameLayout(this).apply { setPadding(dp(20), dp(8), dp(20), 0); addView(campo) }
+        fun agregar(n: String) {
+            zonas.add(Zonas.Zona(puntos, Zonas.limpiarNombre(n).ifEmpty { sugerido }))
+            guardar()
+        }
+        AlertDialog.Builder(this)
+            .setTitle("¿Cómo se llama esta zona?")
+            .setView(marco)
+            .setPositiveButton("Guardar") { _, _ -> agregar(campo.text.toString()) }
+            .setNegativeButton("Sin nombre") { _, _ -> agregar("") }
+            .setCancelable(false)
+            .show()
+        pintarControles()
+        mapa.invalidate()
     }
 
     // ------------------------------------------------------------------

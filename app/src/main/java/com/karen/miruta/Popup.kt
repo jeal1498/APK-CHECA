@@ -343,13 +343,15 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
             LinearLayout.LayoutParams(0, -2, 1f))
         col.addView(fila, LinearLayout.LayoutParams(-1, -2))
 
-        // Si falla recogida, duración o tarifa mínima, una línea roja dice cuál.
+        // Si el origen o destino cae en zona bloqueada, o falla recogida, duración o tarifa mínima, una línea roja dice cuál.
         // Abajo, chico: tiempo y distancia totales. «total» evita que el lector lo tome por un tramo.
         val recFalla = prefs.filtroRecMax && o.recogidaKm > 0 && o.recogidaKm > prefs.recogidaMaxKm
         val durFalla = prefs.filtroDurMax && o.viajeMin > prefs.duracionMax
         val baseMin = o.baseTarifaMinima(prefs)
         val tarFalla = prefs.filtroTarMin && prefs.tarifaMinima > 0 && baseMin < prefs.tarifaMinima
         val aviso = when {
+            // La zona bloqueada manda sobre los filtros económicos (rojo con su motivo).
+            o.bloqueada -> o.motivoZona()
             recFalla -> "Recogida lejana · " + fmt(o.recogidaKm, 1) + " km total"
             durFalla -> "Viaje largo · " + fmt(o.viajeMin, 0) + " min total"
             tarFalla -> "Menos de tu mínimo · " + mon.monto(baseMin, 0)

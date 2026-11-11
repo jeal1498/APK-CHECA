@@ -9,35 +9,75 @@ import java.net.URLEncoder
 import java.util.Locale
 
 /**
- * Zonas bloqueadas (10.60): el conductor dibuja en un mapa las zonas a las que no quiere ir
- * y, si el destino de una oferta cae dentro de una, el pop-up sale en rojo.
+ * Zonas bloqueadas (10.60–10.61): el conductor dibuja en un mapa las zonas a las que no quiere ir
+ * y, si el origen o el destino de una oferta cae dentro de una, el pop-up sale en rojo.
  *
  * Las zonas se guardan en [Prefs.zonasTexto]: zonas separadas por «;», cada una con puntos
- * «lat,lon» separados por espacios. El destino sale del texto de la oferta ([Parser.destino])
- * y se convierte en coordenadas por internet ([ubicar]); sin internet no se bloquea nada.
+ * «lat,lon» separados por espacios y, opcional, su nombre delante con «|» («Centro|21.1,-86.8 …»).
+ * El origen y el destino salen del texto de la oferta ([Parser.origen], [Parser.destino]) y se
+ * convierten en coordenadas por internet ([ubicar]), con caché; sin internet ni caché no se bloquea nada.
+ * Solo sale del teléfono el texto de la dirección: ni capturas ni datos de la oferta.
  */
 object Zonas {
     class Punto(val lat: Double, val lon: Double)
-    class Zona(val puntos: List<Punto>)
+    class Zona(val puntos: List<Punto>, val nombre: String = "")
+
+    /** Cuál punto de la oferta se evalúa. */
+    enum class Tipo { ORIGEN, DESTINO }
+
+    /** Estado de la evaluación: «fuera de zona» no es lo mismo que «no se pudo comprobar». */
+    enum class Estado { BLOQUEADA, LIBRE, SIN_DIRECCION, SIN_COORDENADAS, ERROR_RED }
+
+    /** Resultado de evaluar un punto. Solo [Estado.BLOQUEADA] pone el pop-up en rojo. */
+    data class Resultado(
+        val tipo: Tipo,
+        val estado: Estado,
+        val direccion: String? = null,
+        /** Nombre de la zona que lo contiene (solo con [Estado.BLOQUEADA]). */
+        val zona: String = "",
+        val lat: Double? = null,
+        val lon: Double? = null
+    ) {
+        val bloqueada: Boolean get() = estado == Estado.BLOQUEADA
+    }
+
+    /** Respuesta del geocodificador para una dirección. */
+    sealed class Geo {
+        class Hallado(val lat: Double, val lon: Double) : Geo()
+        object NoHallado : Geo()
+        object ErrorRed : Geo()
+    }
+
+    /** Nombre con el que se muestra la zona [i] (0, 1…): el suyo o «Zona N». */
+    fun nombre(zonas: List<Zona>, i: Int): String =
+        zonas.getOrNull(i)?.nombre?.ifBlank { null } ?: "Zona ${i + 1}"
+
+    /** Quita del nombre lo que rompe el formato guardado. */
+    fun limpiarNombre(n: String): String = n.replace(Regex("[;|\\n\\r]"), " ").trim().take(30)
 
     fun leer(texto: String): List<Zona> =
-        texto.split(";").mapNotNull { z ->
+        texto.split(";").mapNotNull { z0 ->
+            val nombre = if (z0.contains("|")) z0.substringBefore("|").trim() else ""
+            val z = z0.substringAfter("|")
             val pts = z.trim().split(" ").mapNotNull { p ->
                 val d = p.split(",")
                 val la = d.getOrNull(0)?.toDoubleOrNull()
                 val lo = d.getOrNull(1)?.toDoubleOrNull()
                 if (la != null && lo != null) Punto(la, lo) else null
             }
-            if (pts.size >= 3) Zona(pts) else null
+            if (pts.size >= 3) Zona(pts, nombre) else null
         }
 
     fun escribir(zonas: List<Zona>): String =
         zonas.joinToString(";") { z ->
-            z.puntos.joinToString(" ") { String.format(Locale.US, "%.6f,%.6f", it.lat, it.lon) }
+            val n = limpiarNombre(z.nombre)
+            (if (n.isEmpty()) "" else "$n|") +
+                z.puntos.joinToString(" ") { String.format(Locale.US, "%.6f,%.6f", it.lat, it.lon) }
         }
 
-    /** Punto dentro del polígono (rayo hacia la derecha). */
+    /** Punto dentro del polígono (rayo hacia la derecha). Un punto sobre el borde cuenta como dentro. */
     fun contiene(z: Zona, lat: Double, lon: Double): Boolean {
+        if (enBorde(z, lat, lon)) return true
         var dentro = false
         var j = z.puntos.size - 1
         for (i in z.puntos.indices) {
@@ -49,6 +89,23 @@ object Zonas {
             j = i
         }
         return dentro
+    }
+
+    /** true si el punto cae sobre un lado del polígono (con tolerancia de ~1 cm). */
+    private fun enBorde(z: Zona, lat: Double, lon: Double): Boolean {
+        val eps = 1e-7
+        var j = z.puntos.size - 1
+        for (i in z.puntos.indices) {
+            val a = z.puntos[i]
+            val b = z.puntos[j]
+            j = i
+            if (lat < minOf(a.lat, b.lat) - eps || lat > maxOf(a.lat, b.lat) + eps) continue
+            if (lon < minOf(a.lon, b.lon) - eps || lon > maxOf(a.lon, b.lon) + eps) continue
+            val cruz = (b.lat - a.lat) * (lon - a.lon) - (b.lon - a.lon) * (lat - a.lat)
+            val largo = Math.hypot(b.lat - a.lat, b.lon - a.lon)
+            if (largo == 0.0 || Math.abs(cruz) / largo <= eps) return true
+        }
+        return false
     }
 
     /** Número (1, 2…) de la primera zona que contiene el punto; 0 si ninguna. */
@@ -63,13 +120,72 @@ object Zonas {
     }
 
     // ------------------------------------------------------------------
-    // Destino → coordenadas (Nominatim de OpenStreetMap, solo el texto de la dirección)
+    // Evaluación de origen y destino
     // ------------------------------------------------------------------
 
-    private val cache = object : LinkedHashMap<String, DoubleArray?>(64, 0.75f, true) {
-        override fun removeEldestEntry(e: MutableMap.MutableEntry<String, DoubleArray?>?) = size > 100
+    /**
+     * Evalúa un punto de la oferta: dirección → coordenadas ([geo]) → ¿en qué zona cae?
+     * Sin dirección, sin coordenadas o con error de red NO se bloquea (se prefiere no avisar
+     * a avisar mal).
+     */
+    fun evaluar(tipo: Tipo, direccion: String?, zonas: List<Zona>, geo: (String) -> Geo): Resultado {
+        if (direccion.isNullOrBlank()) return Resultado(tipo, Estado.SIN_DIRECCION)
+        return when (val g = geo(direccion)) {
+            is Geo.ErrorRed -> Resultado(tipo, Estado.ERROR_RED, direccion)
+            is Geo.NoHallado -> Resultado(tipo, Estado.SIN_COORDENADAS, direccion)
+            is Geo.Hallado -> {
+                val n = cual(zonas, g.lat, g.lon)
+                if (n == 0) Resultado(tipo, Estado.LIBRE, direccion, "", g.lat, g.lon)
+                else Resultado(tipo, Estado.BLOQUEADA, direccion, nombre(zonas, n - 1), g.lat, g.lon)
+            }
+        }
+    }
+
+    /** Oferta con las marcas de los puntos bloqueados (las que ya tenía se conservan). */
+    fun marcar(o: Oferta, origen: Resultado, destino: Resultado): Oferta =
+        o.copy(
+            zonaOrigen = if (origen.bloqueada) origen.zona else o.zonaOrigen,
+            zonaDestino = if (destino.bloqueada) destino.zona else o.zonaDestino
+        )
+
+    /** La corrección [nueva] del revisor conserva las marcas de zona de la oferta [anterior] del mismo pop-up. */
+    fun conservar(anterior: Oferta, nueva: Oferta): Oferta =
+        if (!anterior.bloqueada || nueva.bloqueada) nueva
+        else nueva.copy(zonaOrigen = anterior.zonaOrigen, zonaDestino = anterior.zonaDestino)
+
+    /**
+     * Turno de la oferta que muestra cada pop-up (por app). Cada oferta nueva recibe un turno
+     * nuevo; un resultado que llega tarde con un turno viejo se descarta. Solo hilo principal.
+     */
+    class Turnos {
+        private val ids = HashMap<String, Long>()
+        private var ultimo = 0L
+        fun nuevo(clave: String): Long { ultimo++; ids[clave] = ultimo; return ultimo }
+        fun actual(clave: String): Long? = ids[clave]
+        fun vigente(clave: String, turno: Long): Boolean = ids[clave] == turno
+        fun quitar(clave: String) { ids.remove(clave) }
+    }
+
+    /** Hilo único para ubicar direcciones: no toca el hilo principal y las consultas no se enciman. */
+    val hilo: java.util.concurrent.ExecutorService = java.util.concurrent.Executors.newSingleThreadExecutor()
+
+    // ------------------------------------------------------------------
+    // Dirección → coordenadas (Nominatim de OpenStreetMap, solo el texto de la dirección)
+    // ------------------------------------------------------------------
+
+    /** Entrada de caché: coordenadas, o null si Nominatim no halló la dirección (con su hora). */
+    private class Entrada(val punto: DoubleArray?, val t: Long)
+
+    private val cache = object : LinkedHashMap<String, Entrada>(64, 0.75f, true) {
+        override fun removeEldestEntry(e: MutableMap.MutableEntry<String, Entrada>?) = size > 200
     }
     private var ultimaConsulta = 0L
+
+    /** Una dirección que no se halló se vuelve a buscar hasta pasados 30 min. */
+    private const val NO_HALLADO_MS = 30 * 60_000L
+
+    /** Solo para pruebas. */
+    internal fun limpiarCache() = synchronized(cache) { cache.clear() }
 
     /** Direcciones a probar: completa y, si no se halla, sin números sueltos ni repetidos. */
     fun consultas(destino: String): List<String> {
@@ -85,11 +201,35 @@ object Zonas {
         cm.activeNetwork != null
     } catch (_: Exception) { false }
 
-    /** Coordenadas (lat, lon) del destino, o null. Bloquea el hilo: llamar fuera del hilo principal. */
-    fun ubicar(ctx: Context, destino: String, zonas: List<Zona>, pais: String): Pair<Double, Double>? {
-        val clave = destino.lowercase(Locale.ROOT)
-        synchronized(cache) { if (cache.containsKey(clave)) return cache[clave]?.let { it[0] to it[1] } }
-        if (!hayRed(ctx)) return null
+    /**
+     * Coordenadas de [direccion] con caché: lo hallado se recuerda; lo no hallado, 30 min; un
+     * error de red no se recuerda (se puede reintentar). [buscar] hace la consulta real.
+     */
+    internal fun ubicarCon(direccion: String, buscar: (String) -> Geo, ahora: Long = System.currentTimeMillis()): Geo {
+        val clave = direccion.replace(Regex("\\s+"), " ").trim().lowercase(Locale.ROOT)
+        synchronized(cache) {
+            cache[clave]?.let { e ->
+                val p = e.punto
+                if (p != null) return Geo.Hallado(p[0], p[1])
+                if (ahora - e.t < NO_HALLADO_MS) return Geo.NoHallado
+            }
+        }
+        for (q in consultas(direccion)) {
+            when (val r = buscar(q)) {
+                is Geo.Hallado -> {
+                    synchronized(cache) { cache[clave] = Entrada(doubleArrayOf(r.lat, r.lon), ahora) }
+                    return r
+                }
+                is Geo.ErrorRed -> return r
+                is Geo.NoHallado -> {}
+            }
+        }
+        synchronized(cache) { cache[clave] = Entrada(null, ahora) }
+        return Geo.NoHallado
+    }
+
+    /** Coordenadas de [direccion]. Bloquea el hilo: llamar desde [hilo], nunca del principal. */
+    fun ubicar(ctx: Context, direccion: String, zonas: List<Zona>, pais: String): Geo {
         // Un recuadro alrededor de tus zonas sesga la búsqueda hacia tu ciudad.
         val pts = zonas.flatMap { it.puntos }
         val margen = 0.4
@@ -98,17 +238,10 @@ object Zonas {
             pts.minOf { it.lon } - margen, pts.maxOf { it.lat } + margen,
             pts.maxOf { it.lon } + margen, pts.minOf { it.lat } - margen
         )
-        var res: Pair<Double, Double>? = null
-        for (q in consultas(destino)) {
-            res = buscar(q, caja, pais)
-            if (res != null) break
-        }
-        // Solo se recuerda lo hallado: un fallo por red se puede reintentar.
-        if (res != null) synchronized(cache) { cache[clave] = doubleArrayOf(res.first, res.second) }
-        return res
+        return ubicarCon(direccion, { q -> if (!hayRed(ctx)) Geo.ErrorRed else buscar(q, caja, pais) })
     }
 
-    private fun buscar(q: String, caja: String, pais: String): Pair<Double, Double>? {
+    private fun buscar(q: String, caja: String, pais: String): Geo {
         // Nominatim pide máximo 1 consulta por segundo.
         synchronized(this) {
             val espera = 1100 - (System.currentTimeMillis() - ultimaConsulta)
@@ -125,12 +258,12 @@ object Zonas {
             c.setRequestProperty("User-Agent", "Checa-Android/" + BuildConfig.VERSION_NAME)
             c.setRequestProperty("Accept-Language", "es")
             try {
-                if (c.responseCode != 200) return null
+                if (c.responseCode != 200) return Geo.ErrorRed
                 val arr = JSONArray(c.inputStream.bufferedReader().readText())
-                if (arr.length() == 0) return null
+                if (arr.length() == 0) return Geo.NoHallado
                 val o = arr.getJSONObject(0)
-                o.getString("lat").toDouble() to o.getString("lon").toDouble()
+                Geo.Hallado(o.getString("lat").toDouble(), o.getString("lon").toDouble())
             } finally { c.disconnect() }
-        } catch (_: Exception) { null }
+        } catch (_: Exception) { Geo.ErrorRed }
     }
 }

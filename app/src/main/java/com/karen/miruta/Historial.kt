@@ -8,7 +8,9 @@ data class Registro(
     val hora: Long, val app: String, val tarifa: Double,
     val km: Double, val min: Double, val nivel: Int,
     val recogidaKm: Double = 0.0, val recogidaMin: Double = 0.0,
-    val multiplicador: Double = 0.0
+    val multiplicador: Double = 0.0,
+    /** Zona bloqueada donde cayó el origen / el destino (vacío si ninguna). */
+    val zonaOrigen: String = "", val zonaDestino: String = ""
 ) {
     val porKm: Double get() = if (km > 0) tarifa / km else 0.0
     val porHora: Double get() = if (min > 0) tarifa / min * 60.0 else 0.0
@@ -24,10 +26,14 @@ object Historial {
 
     private fun archivo(ctx: Context) = File(ctx.filesDir, ARCHIVO)
 
+    /** El nombre de la zona no puede llevar el separador ni saltos de línea. */
+    private fun limpio(t: String) = t.replace(Regex("[|\\n\\r]"), " ").trim()
+
     fun registrar(ctx: Context, o: Oferta, app: String, nivel: Int) {
         val linea = listOf(
             System.currentTimeMillis(), app.replace("|", ""),
-            o.tarifa, o.km, o.min, nivel, o.recogidaKm, o.recogidaMin, o.multiplicador
+            o.tarifa, o.km, o.min, nivel, o.recogidaKm, o.recogidaMin, o.multiplicador,
+            limpio(o.zonaOrigen), limpio(o.zonaDestino)
         ).joinToString("|")
         val app0 = ctx.applicationContext
         try {
@@ -55,7 +61,8 @@ object Historial {
                     val t = lineas.getOrNull(i)?.substringBefore("|")?.toLongOrNull() ?: return@execute
                     if (System.currentTimeMillis() - t > 5 * 60_000L) return@execute
                     lineas[i] = listOf(
-                        t, nombre, o.tarifa, o.km, o.min, nivel, o.recogidaKm, o.recogidaMin, o.multiplicador
+                        t, nombre, o.tarifa, o.km, o.min, nivel, o.recogidaKm, o.recogidaMin, o.multiplicador,
+                        limpio(o.zonaOrigen), limpio(o.zonaDestino)
                     ).joinToString("|")
                     f.writeText(lineas.joinToString("\n", postfix = "\n"))
                 } catch (_: Exception) { }
@@ -73,7 +80,8 @@ object Historial {
                     Registro(
                         p[0].toLong(), p[1], p[2].toDouble(), p[3].toDouble(), p[4].toDouble(), p[5].toInt(),
                         p.getOrNull(6)?.toDoubleOrNull() ?: 0.0, p.getOrNull(7)?.toDoubleOrNull() ?: 0.0,
-                        p.getOrNull(8)?.toDoubleOrNull() ?: 0.0
+                        p.getOrNull(8)?.toDoubleOrNull() ?: 0.0,
+                        p.getOrNull(9) ?: "", p.getOrNull(10) ?: ""
                     )
                 } catch (_: Exception) { null }
             }
@@ -105,7 +113,7 @@ object Historial {
         // nunca baja de 200 KB y se reescribiría completo en cada oferta (2000 ≈ 130 KB).
         val quedan = todos(ctx).filter { it.hora >= limite }.takeLast(MAX_OFERTAS)
         f.writeText(quedan.joinToString("") {
-            "${it.hora}|${it.app}|${it.tarifa}|${it.km}|${it.min}|${it.nivel}|${it.recogidaKm}|${it.recogidaMin}|${it.multiplicador}\n"
+            "${it.hora}|${it.app}|${it.tarifa}|${it.km}|${it.min}|${it.nivel}|${it.recogidaKm}|${it.recogidaMin}|${it.multiplicador}|${it.zonaOrigen}|${it.zonaDestino}\n"
         })
     }
 }

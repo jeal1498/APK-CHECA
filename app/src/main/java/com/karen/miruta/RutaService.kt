@@ -35,6 +35,8 @@ class RutaService : AccessibilityService() {
     private val popups = HashMap<String, Popup>()
     private val activas = LinkedHashMap<String, Pair<Oferta, Rect?>>()
     private val ultimaFirma = HashMap<String, Pair<Oferta, Long>>()
+    /** Turno de la oferta de cada pop-up: un resultado de zonas solo se aplica a la oferta que lo pidió. */
+    private val turnos = Zonas.Turnos()
     /** Dónde se vieron por última vez los tramos de cada oferta activa, y lecturas seguidas sin verlos. */
     private val tramosVistos = HashMap<String, List<Rect>>()
     private val sinVer = HashMap<String, Int>()
@@ -406,6 +408,7 @@ class RutaService : AccessibilityService() {
             Popup(this, prefs, WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY).also { p ->
                 p.alCerrar = {
                     activas.remove(clave)
+                    turnos.quitar(clave)
                     tramosVistos.remove(clave)
                     sinVer.remove(clave)
                     confirmadasTexto.remove(clave)
@@ -424,6 +427,7 @@ class RutaService : AccessibilityService() {
             }
         }
         activas[clave] = oferta to zona
+        val turno = turnos.nuevo(clave)
         tramosVistos.remove(clave)
         sinVer.remove(clave)
         redibujar(clave)
@@ -432,7 +436,7 @@ class RutaService : AccessibilityService() {
         alertas?.avisar(nivel)
         Historial.registrar(this, oferta, app, nivel)
         Confirmador.contarOferta(this)
-        if (lineas != null) revisarZona(clave, oferta, lineas)
+        if (lineas != null) revisarZona(clave, turno, lineas)
         confirmadasTexto.remove(clave)
         esperas.remove(clave)?.vencer?.let { handler.removeCallbacks(it) }
         // El lector de texto no vio esta oferta (la sacó la foto): cuenta para dejar de usarlo en esta app.
@@ -554,49 +558,65 @@ class RutaService : AccessibilityService() {
         if (popupVisible(app)) return
         if (lineas.none { LectorOcr.esTramo(it) } || !Parser.tieneMonto(lineas, prefs.moneda)) return
         Confirmador.rescatar(this, app, lineas, prefs.moneda, lector) { oferta ->
-            handler.post { mostrarOferta(oferta, app, zona) }
+            handler.post {
+                mostrarOferta(oferta, app, zona)
+                // El rescate no trae líneas al pop-up: las zonas se revisan aquí, si salió esta oferta.
+                val clave = app.ifEmpty { "?" }
+                if (activas[clave]?.first === oferta) turnos.actual(clave)?.let { revisarZona(clave, it, lineas) }
+            }
         }
     }
 
     /**
-     * Zonas bloqueadas: si el destino de la oferta cae en una zona dibujada por el conductor,
-     * el pop-up pasa a rojo («Zona bloqueada»). Necesita internet para ubicar la dirección;
-     * sin él (o si no se ve el destino) no se bloquea nada.
+     * Zonas bloqueadas: si el origen o el destino de la oferta cae en una zona dibujada por el
+     * conductor, el pop-up pasa a rojo con el motivo. El pop-up económico ya salió: esto corre
+     * en [Zonas.hilo] y solo corrige después. Necesita internet o la caché para ubicar las
+     * direcciones; sin ellas (o si no se ve la dirección) no se bloquea nada.
      */
-    private fun revisarZona(clave: String, oferta: Oferta, lineas: List<String>) {
-        if (!prefs.zonasOn || oferta.zona.isNotEmpty()) return
+    private fun revisarZona(clave: String, turno: Long, lineas: List<String>) {
+        if (!prefs.zonasOn) return
         val zonas = Zonas.leer(prefs.zonasTexto)
         if (zonas.isEmpty()) return
-        val destino = Parser.destino(lineas) ?: return
+        val origen = Parser.origen(lineas)
+        val destino = Parser.destino(lineas)
+        if (origen == null && destino == null) return
         val pais = Pais.actual(prefs).codigo
-        Thread {
-            val pt = Zonas.ubicar(this, destino, zonas, pais) ?: return@Thread
-            val n = Zonas.cual(zonas, pt.first, pt.second)
-            if (n == 0) return@Thread
-            handler.post {
-                val par = activas[clave] ?: return@post
-                if (!parecida(par.first, oferta)) return@post
-                val antes = par.first.nivel(prefs)
-                val marcada = par.first.copy(zona = "zona $n")
-                activas[clave] = marcada to par.second
-                ultimaFirma[clave] = marcada to System.currentTimeMillis()
-                redibujar(null)
-                if (antes != Oferta.ROJO) alertas?.avisar(Oferta.ROJO)
-                Historial.corregirUltima(this, clave, marcada, Oferta.ROJO)
+        val ctx = applicationContext
+        try {
+            Zonas.hilo.execute {
+                val geo = { d: String -> Zonas.ubicar(ctx, d, zonas, pais) }
+                val ro = Zonas.evaluar(Zonas.Tipo.ORIGEN, origen, zonas, geo)
+                val rd = Zonas.evaluar(Zonas.Tipo.DESTINO, destino, zonas, geo)
+                if (ro.bloqueada || rd.bloqueada) handler.post { aplicarZonas(clave, turno, ro, rd) }
             }
-        }.start()
+        } catch (_: java.util.concurrent.RejectedExecutionException) { }
+    }
+
+    /** Pone las marcas de zona en la oferta del pop-up, si sigue siendo la misma que las pidió. Una sola alerta. */
+    private fun aplicarZonas(clave: String, turno: Long, ro: Zonas.Resultado, rd: Zonas.Resultado) {
+        if (!turnos.vigente(clave, turno)) return
+        val par = activas[clave] ?: return
+        val marcada = Zonas.marcar(par.first, ro, rd)
+        if (marcada == par.first) return
+        val antes = par.first.nivel(prefs)
+        activas[clave] = marcada to par.second
+        ultimaFirma[clave] = marcada to System.currentTimeMillis()
+        redibujar(null)
+        if (antes != Oferta.ROJO) alertas?.avisar(Oferta.ROJO)
+        Historial.corregirUltima(this, clave, marcada, Oferta.ROJO)
     }
 
     /** La revisión en segundo plano no coincidió: el pop-up se corrige sin anunciarlo. */
     private fun aplicarCorreccion(clave: String, app: String, leida: Oferta, nueva0: Oferta) {
         val par = activas[clave] ?: return
         if (!esMostrada(par.first, leida)) return
-        // La zona bloqueada que ya se marcó no se pierde con la corrección.
-        val nueva = if (par.first.zona.isNotEmpty() && nueva0.zona.isEmpty()) nueva0.copy(zona = par.first.zona) else nueva0
+        // Las zonas bloqueadas que ya se marcaron no se pierden con la corrección.
+        val nueva = Zonas.conservar(par.first, nueva0)
         activas[clave] = nueva to par.second
         ultimaFirma[clave] = nueva to System.currentTimeMillis()
         redibujar(null)
-        val antes = leida.nivel(prefs)
+        // Contra lo que se ve (con su marca de zona): si ya era rojo por zona no suena otra vez.
+        val antes = par.first.nivel(prefs)
         val ahora = nueva.nivel(prefs)
         // Solo si cambia el color suena la alerta normal, como con cualquier oferta.
         if (ahora != antes) alertas?.avisar(ahora)
@@ -604,9 +624,9 @@ class RutaService : AccessibilityService() {
         Confirmador.contarCorreccion(this)
     }
 
-    /** [actual] es la oferta [mostrada], con o sin la marca de zona bloqueada que se le pudo agregar. */
+    /** [actual] es la oferta [mostrada], con o sin las marcas de zona bloqueada que se le pudieron agregar. */
     private fun esMostrada(actual: Oferta?, mostrada: Oferta) =
-        actual === mostrada || (actual != null && actual.zona.isNotEmpty() && actual.copy(zona = "") == mostrada)
+        actual === mostrada || (actual != null && actual.bloqueada && actual.sinZonas() == mostrada)
 
     private fun parecida(a: Oferta, b: Oferta) =
         Math.abs(a.km - b.km) < 0.15 && Math.abs(a.min - b.min) < 1.1 && Math.abs(a.tarifa - b.tarifa) < 1.0

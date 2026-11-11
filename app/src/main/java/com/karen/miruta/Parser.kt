@@ -9,9 +9,27 @@ data class Oferta(
     val multiplicador: Double = 0.0,
     /** Dinámica de Uber en pesos ("+$62.00 incluido"), ya incluida en la tarifa. */
     val dinamica: Double = 0.0,
-    /** Nombre de la zona bloqueada donde cae el destino (vacío si no cae en ninguna). */
-    val zona: String = ""
+    /** Nombre de la zona bloqueada donde cae el origen (recogida); vacío si no cae en ninguna. */
+    val zonaOrigen: String = "",
+    /** Nombre de la zona bloqueada donde cae el destino; vacío si no cae en ninguna. */
+    val zonaDestino: String = ""
 ) {
+    /** true si el origen o el destino cayeron en una zona bloqueada. */
+    val bloqueada: Boolean get() = zonaOrigen.isNotEmpty() || zonaDestino.isNotEmpty()
+
+    /** La misma oferta sin las marcas de zona (para comparar con la lectura original). */
+    fun sinZonas(): Oferta = if (bloqueada) copy(zonaOrigen = "", zonaDestino = "") else this
+
+    /** Motivo del bloqueo por zona, corto para leerlo manejando; null si no hay. */
+    fun motivoZona(): String? = when {
+        zonaOrigen.isNotEmpty() && zonaDestino.isNotEmpty() ->
+            if (zonaOrigen == zonaDestino) "Origen y destino bloqueados · $zonaOrigen"
+            else "Origen y destino bloqueados · $zonaOrigen / $zonaDestino"
+        zonaOrigen.isNotEmpty() -> "Origen en zona bloqueada · $zonaOrigen"
+        zonaDestino.isNotEmpty() -> "Destino en zona bloqueada · $zonaDestino"
+        else -> null
+    }
+
     val porKm: Double get() = if (km > 0) tarifa / km else 0.0
     val porHora: Double get() = if (min > 0) tarifa / min * 60.0 else 0.0
     val viajeKm: Double get() = km - recogidaKm
@@ -35,7 +53,7 @@ data class Oferta(
         val f1 = { v: Double -> String.format(java.util.Locale.US, "%.1f", v) }
         val f0 = { v: Double -> String.format(java.util.Locale.US, "%.0f", v) }
         return when {
-            zona.isNotEmpty() -> "Zona bloqueada · $zona"
+            bloqueada -> motivoZona()
             p.filtroRecMax && recogidaKm > 0 && recogidaKm > p.recogidaMaxKm ->
                 "Recogida lejana: ${f1(recogidaKm)} km (máx ${f1(p.recogidaMaxKm.toDouble())})"
             p.filtroDurMax && viajeMin > p.duracionMax ->
@@ -178,30 +196,50 @@ object Parser {
     }
 
     private val noDireccion = Regex(
-        """(\$|aceptar|considerar|rechazar|adicional|por inicio|incluid|calificaci|viajes|perfil|verificad|exclusivo|priority|/km|/h)""",
+        """(\$|aceptar|considerar|rechazar|adicional|por inicio|incluid|calificaci|viajes|perfil|verificad|exclusivo|priority|/km|/h|me interesa|contraofert|ofrecer|ignorar|omitir|cancelar|ver m[aá]s|punto\(s\)|pasajer|efectivo|tarjeta)""",
         RegexOption.IGNORE_CASE
     )
 
-    /**
-     * Dirección del destino: las 1–2 líneas que siguen al último tramo «N min (X km)»
-     * (Uber: «Viaje: 15 min (6.9 km)» y debajo la dirección; DiDi: el segundo tramo y debajo la dirección).
-     * null si no se ve ninguna (entonces no se bloquea nada).
-     */
-    fun destino(textos: List<String>): String? {
-        var ultimo = -1
-        for ((i, t) in textos.withIndex()) {
-            if (t.contains("total", ignoreCase = true)) continue
-            if (tramo.containsMatchIn(corregirMinutos(t))) ultimo = i
+    /** Índices de los tramos «N min (X km)» de la oferta, sin resúmenes («total», «/km»). */
+    private fun indicesTramos(textos: List<String>): List<Int> =
+        textos.indices.filter { i ->
+            val t = textos[i]
+            !t.contains("total", ignoreCase = true) && !porKmTexto.containsMatchIn(t) &&
+                tramo.containsMatchIn(corregirMinutos(t))
         }
-        if (ultimo < 0) return null
+
+    /** Las 1–2 líneas de dirección justo debajo del tramo [i]; se corta en el siguiente tramo, botón o dato. */
+    private fun direccionTras(textos: List<String>, i: Int): String? {
         val partes = ArrayList<String>()
-        for (t in textos.drop(ultimo + 1)) {
+        for (t in textos.drop(i + 1)) {
             val s = t.trim()
             if (partes.size >= 2 || s.length < 4) break
-            if (!s.any { it.isLetter() } || noDireccion.containsMatchIn(s) || tramo.containsMatchIn(corregirMinutos(s))) break
+            if (s.count { it.isLetter() } < 3 || noDireccion.containsMatchIn(s) || tramo.containsMatchIn(corregirMinutos(s))) break
             partes.add(s)
         }
         return partes.joinToString(" ").ifBlank { null }
+    }
+
+    /**
+     * Dirección del origen (donde se recoge al pasajero): las 1–2 líneas debajo del PRIMER tramo.
+     * Uber: «A 3 min (1.1 km)» / «6 min · 2.3 km» y debajo la calle; DiDi: «3min (835m)» y debajo.
+     * Solo con dos tramos a la vista (recogida y viaje): con uno solo no se sabe cuál es (null).
+     */
+    fun origen(textos: List<String>): String? {
+        val t = indicesTramos(textos)
+        if (t.size < 2) return null
+        return direccionTras(textos, t.first())
+    }
+
+    /**
+     * Dirección del destino: las 1–2 líneas que siguen al ÚLTIMO tramo «N min (X km)»
+     * (Uber: «Viaje: 15 min (6.9 km)» y debajo la dirección; DiDi: el segundo tramo y debajo la dirección).
+     * Solo con dos tramos a la vista; null si no se ve (entonces no se bloquea nada).
+     */
+    fun destino(textos: List<String>): String? {
+        val t = indicesTramos(textos)
+        if (t.size < 2) return null
+        return direccionTras(textos, t.last())
     }
 
     fun analizar(textos: List<String>, moneda: Moneda = Moneda.MXN): Oferta? {

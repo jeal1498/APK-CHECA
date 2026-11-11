@@ -9,6 +9,10 @@ object Novedades {
     class Version(val codigo: Int, val nombre: String, val puntos: List<String>, val widgets: Boolean = false, val vistaQr: Boolean = false)
 
     val LISTA = listOf(
+        Version(141, "10.61", listOf(
+            "Zonas bloqueadas también por el origen: si recoges o dejas en una zona bloqueada, el pop-up sale en rojo y dice cuál.",
+            "Ponle nombre a cada zona al dibujarla."
+        )),
         Version(140, "10.60", listOf(
             "Zonas bloqueadas: dibuja en un mapa las zonas a las que no quieres ir (Mis metas › Zonas bloqueadas).",
             "Si el destino de una oferta cae en una de ellas, el pop-up sale en rojo. Necesita internet para ubicar la dirección.",
