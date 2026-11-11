@@ -581,8 +581,8 @@ class RutaService : AccessibilityService() {
                 activas[clave] = marcada to par.second
                 ultimaFirma[clave] = marcada to System.currentTimeMillis()
                 redibujar(null)
-                if (antes != Parser.ROJO) alertas?.avisar(Parser.ROJO)
-                Historial.corregirUltima(this, clave, marcada, Parser.ROJO)
+                if (antes != Oferta.ROJO) alertas?.avisar(Oferta.ROJO)
+                Historial.corregirUltima(this, clave, marcada, Oferta.ROJO)
             }
         }.start()
     }
