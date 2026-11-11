@@ -1,5 +1,6 @@
 package com.karen.miruta
 
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.File
@@ -48,5 +49,14 @@ class ParserTest {
             }
         }
         assertTrue(fallas.joinToString("\n"), fallas.isEmpty())
+    }
+
+    @Test
+    fun revisionPlausible() {
+        val l = listOf("\$66.21", "33 min · 10.6 km · \$6.25/km est.", "9 min · 3.0 km", "24 min · 7.6 km")
+        assertTrue(Parser.plausible(Oferta(66.21, 10.6, 33.0, 3.0, 9.0), l))
+        // Tarifa que no está en pantalla (otra tarjeta del radar) o que no da el $/km del resumen.
+        assertFalse(Parser.plausible(Oferta(108.99, 10.6, 33.0, 3.0, 9.0), l))
+        assertFalse(Parser.plausible(Oferta(66.21, 21.2, 66.0, 3.0, 9.0), l))
     }
 }

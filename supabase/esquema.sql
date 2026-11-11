@@ -441,3 +441,62 @@ create trigger dueno_y_hora before insert or update on public.horas_checa
   for each row execute function public.dueno_y_hora();
 revoke all on public.horas_checa from anon;
 grant select, insert, update, delete on public.horas_checa to authenticated;
+
+-- ---------- Revisión de lecturas (10.48): la función confirmar-oferta guarda las diferencias ----------
+-- Solo la función (service role) escribe y lee estas tablas; la app no tiene acceso directo.
+create table if not exists public.errores_lector (
+  id        bigserial primary key,
+  usuario   uuid references auth.users (id) on delete cascade,
+  app       text,
+  moneda    text,
+  version   text,
+  lineas    jsonb not null,
+  local     jsonb not null,
+  ia        jsonb not null,
+  resuelto  boolean not null default false,
+  creado    timestamptz not null default now()
+);
+create index if not exists errores_lector_pendientes on public.errores_lector (creado) where not resuelto;
+alter table public.errores_lector enable row level security;
+revoke all on public.errores_lector from anon, authenticated;
+
+create table if not exists public.uso_confirmar (
+  usuario uuid not null references auth.users (id) on delete cascade,
+  dia     date not null default ((now() at time zone 'America/Mexico_City')::date),
+  n       integer not null default 0,
+  primary key (usuario, dia)
+);
+alter table public.uso_confirmar enable row level security;
+revoke all on public.uso_confirmar from anon, authenticated;
+
+create table if not exists public.fallas_ia (
+  dia    date not null default ((now() at time zone 'America/Mexico_City')::date),
+  tipo   text not null,
+  n      integer not null default 0,
+  ultima timestamptz not null default now(),
+  primary key (dia, tipo)
+);
+alter table public.fallas_ia enable row level security;
+revoke all on public.fallas_ia from anon, authenticated;
+
+-- Suma una consulta del día y devuelve cuántas lleva.
+create or replace function public.sumar_uso_confirmar(u uuid) returns integer
+language sql security definer set search_path = public as $$
+  insert into public.uso_confirmar as t (usuario, dia, n)
+  values (u, (now() at time zone 'America/Mexico_City')::date, 1)
+  on conflict (usuario, dia) do update set n = t.n + 1
+  returning n;
+$$;
+revoke all on function public.sumar_uso_confirmar(uuid) from public, anon, authenticated;
+grant execute on function public.sumar_uso_confirmar(uuid) to service_role;
+
+-- Anota que la revisión no respondió (sin saldo, clave, caída) para avisarlo en la revisión semanal.
+create or replace function public.anotar_falla_ia(tipo text) returns integer
+language sql security definer set search_path = public as $$
+  insert into public.fallas_ia as f (dia, tipo, n)
+  values ((now() at time zone 'America/Mexico_City')::date, anotar_falla_ia.tipo, 1)
+  on conflict (dia, tipo) do update set n = f.n + 1, ultima = now()
+  returning n;
+$$;
+revoke all on function public.anotar_falla_ia(text) from public, anon, authenticated;
+grant execute on function public.anotar_falla_ia(text) to service_role;

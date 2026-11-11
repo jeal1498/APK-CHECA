@@ -65,8 +65,19 @@ Agregar en Play Console → Seguridad de los datos (todo «Recopilado», «Compa
 
 **Eliminación:** `horas_checa` se borra en cascada con el usuario de Auth (agregarla en `eliminar-cuenta.html` y Privacidad).
 
+## Cambios de la 10.48 (11 nov 2026): revisión de lecturas
+Con sesión, la app envía a la función `confirmar-oferta` de Supabase **solo las líneas con números** de cada oferta (monto, minutos, km, multiplicador; nunca direcciones ni nombres) para verificar la lectura. Supabase la pasa a un proveedor de procesamiento que trabaja por cuenta de Checa (no es «compartir» según Play). Si no coincide, el caso queda en `errores_lector` para corregir el lector. Agregar en Play Console → Seguridad de los datos («Recopilado», «Compartido: No», cifrado en tránsito, se puede borrar):
+| Categoría → tipo | Qué es | Propósitos |
+|---|---|---|
+| Actividad en la app → Otras acciones | Texto de la oferta (monto, minutos, km) para verificar la lectura; las diferencias se guardan en `errores_lector` | Funcionalidad; Analítica |
+| Información y rendimiento de la app → Otros datos de rendimiento | Versión de la app y lectura local de la oferta, para corregir errores del lector | Analítica |
+
+**Texto sugerido para Privacidad (sin mencionar la tecnología):** «Para verificar que la lectura de cada oferta sea correcta, Checa envía a nuestro servidor el monto, los minutos y los kilómetros de la oferta (nunca direcciones ni datos del pasajero). Si la verificación no coincide, guardamos ese caso para mejorar el lector.»
+
+**Eliminación:** `errores_lector` y `uso_confirmar` se borran en cascada con el usuario de Auth. El punto «Texto, OCR y capturas» de abajo ahora es solo para lo que no son estas líneas.
+
 ## Qué NO se declara y por qué
-- **Texto, OCR y capturas de las ofertas:** se procesan solo en el teléfono. Con «Guardar pantallas de ofertas» se guardan localmente, máximo 7 días.
+- **Capturas y el resto del texto de las ofertas:** se procesan solo en el teléfono (las líneas con números van a la revisión de la 10.48). Con «Guardar pantallas de ofertas» se guardan localmente, máximo 7 días.
 - **Apps instaladas:** la app consulta las apps con lanzador solo para ubicar Uber y DiDi, sin enviarlas.
 - **Contactos del teléfono, mensajes, fotos, audio, calendario y archivos:** la app no tiene esos permisos. (Ubicación: ver la sección del 4 nov.)
 - **Pagos y compras:** el flavor play no tiene pagos. Revisar al llegar Google Play Billing (Fase 7).

@@ -345,8 +345,10 @@ class RutaService : AccessibilityService() {
     fun mostrarOferta(oferta: Oferta) = mostrarOferta(oferta, appActual, null)
 
     /** Muestra la oferta de [app] sobre su [zona] (sin repetir la misma en 60 s). */
-    fun mostrarOferta(oferta: Oferta, app: String, zona: Rect?) {
+    fun mostrarOferta(leida: Oferta, app: String, zona: Rect?, lineas: List<String>? = null) {
         if (!Licencia.activa(this) || !Cuenta.puedeUsar(this)) return
+        // Si la revisión en segundo plano ya corrigió esta misma lectura, se usa la corregida.
+        val oferta = Confirmador.corregida(leida) ?: leida
         prefs.ultimaOferta = System.currentTimeMillis()
         val clave = app.ifEmpty { "?" }
         // Con el pop-up encima, el lector ve la oferta tapada y lee otros montos.
@@ -391,6 +393,25 @@ class RutaService : AccessibilityService() {
         val nivel = oferta.nivel(prefs)
         alertas?.avisar(nivel)
         Historial.registrar(this, oferta, app, nivel)
+        if (lineas != null && oferta === leida) {
+            Confirmador.revisar(this, app, lineas, leida, prefs.moneda) { nueva ->
+                handler.post { aplicarCorreccion(clave, app, leida, nueva) }
+            }
+        }
+    }
+
+    /** La revisión en segundo plano no coincidió: el pop-up se corrige sin anunciarlo. */
+    private fun aplicarCorreccion(clave: String, app: String, leida: Oferta, nueva: Oferta) {
+        val par = activas[clave] ?: return
+        if (par.first !== leida) return
+        activas[clave] = nueva to par.second
+        ultimaFirma[clave] = nueva to System.currentTimeMillis()
+        redibujar(null)
+        val antes = leida.nivel(prefs)
+        val ahora = nueva.nivel(prefs)
+        // Solo si cambia el color suena la alerta normal, como con cualquier oferta.
+        if (ahora != antes) alertas?.avisar(ahora)
+        Historial.corregirUltima(this, app, nueva, ahora)
     }
 
     private fun parecida(a: Oferta, b: Oferta) =
@@ -659,7 +680,7 @@ class RutaService : AccessibilityService() {
                 val oferta = leida ?: continue
                 val r = Rect()
                 w.getBoundsInScreen(r)
-                mostrarOferta(oferta, app, r)
+                mostrarOferta(oferta, app, r, textos.toList())
             }
         } catch (_: Exception) { }
     }

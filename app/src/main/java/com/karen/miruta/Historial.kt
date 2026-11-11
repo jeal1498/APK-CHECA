@@ -40,6 +40,29 @@ object Historial {
         } catch (_: Exception) { }
     }
 
+    /** Cambia la última oferta registrada de [app] por su lectura corregida (revisión en segundo plano). */
+    fun corregirUltima(ctx: Context, app: String, o: Oferta, nivel: Int) {
+        val app0 = ctx.applicationContext
+        val nombre = app.replace("|", "")
+        try {
+            io.execute {
+                try {
+                    val f = archivo(app0)
+                    if (!f.exists()) return@execute
+                    val lineas = f.readLines().toMutableList()
+                    val i = lineas.indexOfLast { it.split("|").getOrNull(1) == nombre }
+                    // Solo la de los últimos 5 min: si no, ya es otra oferta.
+                    val t = lineas.getOrNull(i)?.substringBefore("|")?.toLongOrNull() ?: return@execute
+                    if (System.currentTimeMillis() - t > 5 * 60_000L) return@execute
+                    lineas[i] = listOf(
+                        t, nombre, o.tarifa, o.km, o.min, nivel, o.recogidaKm, o.recogidaMin, o.multiplicador
+                    ).joinToString("|")
+                    f.writeText(lineas.joinToString("\n", postfix = "\n"))
+                } catch (_: Exception) { }
+            }
+        } catch (_: Exception) { }
+    }
+
     fun todos(ctx: Context): List<Registro> {
         val f = archivo(ctx)
         if (!f.exists()) return emptyList()

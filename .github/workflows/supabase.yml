@@ -53,3 +53,5 @@ jobs:
           supabase functions deploy mp-webhook --yes --project-ref "$PROYECTO" --no-verify-jwt --use-api
           # Esta función conserva la verificación JWT y valida además la sesión en el handler.
           supabase functions deploy eliminar-cuenta --yes --project-ref "$PROYECTO" --use-api
+          # Revisión de lecturas: valida la sesión en el handler; la clave de Anthropic la carga Eduardo a mano.
+          supabase functions deploy confirmar-oferta --yes --project-ref "$PROYECTO" --use-api

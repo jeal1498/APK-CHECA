@@ -250,6 +250,31 @@ object Parser {
         return o
     }
 
+    /**
+     * Revisa una lectura que llegó de fuera ([Confirmador]) con los mismos límites del lector.
+     * Además, la tarifa tiene que estar escrita en [textos] y, si Uber muestra «$Y/km est.»,
+     * debe dar ese $/km sobre los km totales.
+     */
+    fun plausible(o: Oferta, textos: List<String>, moneda: Moneda = Moneda.MXN): Boolean {
+        val f = moneda.factor
+        val holgura = if (moneda.codigo == "MXN") 1.0 else 2.0
+        if (o.tarifa <= 0 || o.km < 0.3 || o.km > 500 || o.min < 1 || o.min > 600) return false
+        if (o.recogidaKm > o.km || o.recogidaMin > o.min) return false
+        if (f != null && (o.tarifa * f < 10 / holgura || o.tarifa * f > 20000 * holgura)) return false
+        if (f != null && (o.porKm * f > 80 * holgura || o.porHora * f > 3000 * holgura)) return false
+        val digitos = textos.joinToString(" ") { t -> t.filter { it.isDigit() || it == ' ' } }
+        val cent = Math.round(o.tarifa * 100)
+        val conDec = cent.toString()
+        val sinDec = (cent / 100).toString()
+        if (!digitos.contains(conDec) && !(cent % 100 == 0L && Regex("""(?<!\d)$sinDec(?!\d)""").containsMatchIn(digitos))) return false
+        for (t in textos) {
+            if (tramo.find(corregirMinutos(t)) == null) continue
+            val p = porKmTexto.find(t)?.groupValues?.get(1)?.replace(",", ".")?.toDoubleOrNull() ?: continue
+            if (Math.abs(o.porKm - p) > p * 0.06 + 0.1) return false
+        }
+        return true
+    }
+
     // El OCR lee "11 min" como "ll min" o "1l min": esas l/I/| junto a "min" son unos.
     // Con letra gruesa también confunde 8→B, 0→O, 5→S ("B min • 2.2 km") y «1 h» → «Ih».
     private val minutosOcr = Regex("""(?<![A-Za-z0-9])[0-9lI|BOoS]*[lI|BOoS][0-9lI|BOoS]*(?=\s?min)""")

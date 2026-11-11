@@ -205,7 +205,7 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
         if (oferta == null) return
         leyoPasada = true
         val servicio = RutaService.instancia ?: return
-        if (app != null) servicio.mostrarOferta(oferta, app, zona) else servicio.mostrarOferta(oferta)
+        if (app != null) servicio.mostrarOferta(oferta, app, zona, lineas) else servicio.mostrarOferta(oferta)
     }
 
     /** Brillo de una rejilla de puntos de la imagen. null si falla. */

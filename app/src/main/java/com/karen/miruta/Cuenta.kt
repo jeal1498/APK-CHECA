@@ -313,6 +313,12 @@ object Cuenta {
         e.commit()
     }
 
+    /** Revisión de una oferta en segundo plano ([Confirmador]). null si no hay sesión o falla. */
+    fun revisarOferta(ctx: Context, cuerpo: String): String? = try {
+        if (sp(ctx).getString("refresco", null) == null) null
+        else pedir("POST", "/functions/v1/confirmar-oferta", token(ctx), cuerpo)
+    } catch (_: Exception) { null }
+
     /** Token vigente; si ya venció, lo renueva. */
     private fun token(ctx: Context): String {
         val s = sp(ctx)
