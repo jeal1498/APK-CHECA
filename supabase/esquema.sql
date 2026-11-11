@@ -500,3 +500,44 @@ language sql security definer set search_path = public as $$
 $$;
 revoke all on function public.anotar_falla_ia(text) from public, anon, authenticated;
 grant execute on function public.anotar_falla_ia(text) to service_role;
+
+-- ---------- Métricas de los lunes (10.49) ----------
+-- Una fila por revisión: tiempos (pop-up local y revisión), tokens reales y resultado.
+create table if not exists public.revisiones (
+  id                   bigserial primary key,
+  usuario              uuid references auth.users (id) on delete cascade,
+  app                  text,
+  version              text,
+  modelo               text,
+  ms_popup             integer,  -- captura (o evento) → pop-up, en el teléfono
+  ms_ia                integer,  -- llamada al modelo, en el servidor
+  ms_revision_anterior integer,  -- ida y vuelta de la revisión anterior, vista desde el teléfono
+  tokens_entrada       integer not null default 0,
+  tokens_salida        integer not null default 0,
+  imagenes             integer not null default 0,
+  reintentos           integer not null default 0,
+  ok                   boolean not null,
+  coincide             boolean,
+  error                text,
+  creado               timestamptz not null default now()
+);
+create index if not exists revisiones_creado on public.revisiones (creado);
+alter table public.revisiones enable row level security;
+revoke all on public.revisiones from anon, authenticated;
+
+-- Juicio de la revisión semanal sobre cada diferencia: ¿la corrección fue correcta?
+alter table public.errores_lector add column if not exists veredicto text
+  check (veredicto in ('ia_bien', 'ia_mal', 'dudoso'));
+alter table public.errores_lector add column if not exists nota text;
+
+-- Capturas verificadas a mano (de «Guardar pantallas de ofertas»): base de la precisión real.
+create table if not exists public.verificacion_manual (
+  id        bigserial primary key,
+  semana    date not null,            -- lunes de la semana revisada
+  app       text,
+  correcta  boolean not null,          -- el pop-up final coincidió con la pantalla
+  error     text,                      -- qué falló, si falló
+  creado    timestamptz not null default now()
+);
+alter table public.verificacion_manual enable row level security;
+revoke all on public.verificacion_manual from anon, authenticated;

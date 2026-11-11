@@ -115,17 +115,33 @@ Deno.serve(async (req) => {
   const moneda = String(cuerpo.moneda ?? "MXN").slice(0, 3);
   const version = String(cuerpo.version ?? "").slice(0, 12);
   if (lineas.length === 0 || !local) return json({ ok: false, error: "sin_datos" }, 400);
+  const msPopup = Math.round(Number(cuerpo.msPopup ?? -1));
+  const msRevisionAnterior = Math.round(Number(cuerpo.msRevisionAnterior ?? -1));
+  // Una fila por revisión: tiempos, tokens reales y resultado (métricas de los lunes).
+  const registro: Record<string, unknown> = {
+    usuario: id, app, version, modelo: "claude-haiku-5-5",
+    ms_popup: Number.isFinite(msPopup) ? msPopup : null,
+    ms_revision_anterior: Number.isFinite(msRevisionAnterior) ? msRevisionAnterior : null,
+    imagenes: 0, reintentos: 0,
+  };
 
   // Tope diario por cuenta (cuenta también las que fallan).
   try {
     const n = Number(await rpc("sumar_uso_confirmar", { u: id }));
-    if (n > TOPE_DIARIO) return json({ ok: false, error: "tope_diario" });
+    if (n > TOPE_DIARIO) {
+      await insertar("revisiones", { ...registro, ok: false, error: "tope_diario" });
+      return json({ ok: false, error: "tope_diario" });
+    }
   } catch {
     return json({ ok: false, error: "sin_contador" }, 503);
   }
-  if (!CLAVE) return json({ ok: false, error: "sin_clave" });
+  if (!CLAVE) {
+    await insertar("revisiones", { ...registro, ok: false, error: "sin_clave" });
+    return json({ ok: false, error: "sin_clave" });
+  }
 
   let ia: Lectura & { oferta: boolean };
+  const t0 = Date.now();
   try {
     const cliente = new Anthropic({ apiKey: CLAVE, timeout: 8000, maxRetries: 0 });
     const r = await cliente.messages.create({
@@ -136,6 +152,8 @@ Deno.serve(async (req) => {
       messages: [{ role: "user", content: `App: ${app || "?"} · moneda: ${moneda}\nLíneas:\n${lineas.join("\n")}` }],
     // deno-lint-ignore no-explicit-any
     } as any);
+    registro.tokens_entrada = r.usage?.input_tokens ?? 0;
+    registro.tokens_salida = r.usage?.output_tokens ?? 0;
     if (r.stop_reason === "refusal") throw new Error("refusal");
     const texto = r.content.filter((b) => b.type === "text").map((b) => (b as { text: string }).text).join("");
     const d = JSON.parse(texto);
@@ -146,11 +164,17 @@ Deno.serve(async (req) => {
     try {
       await rpc("anotar_falla_ia", { tipo: status ? `http_${status}` : String((e as Error)?.message ?? "error").slice(0, 40) });
     } catch { /* nada */ }
+    await insertar("revisiones", {
+      ...registro, ms_ia: Date.now() - t0, ok: false,
+      error: status ? `http_${status}` : String((e as Error)?.message ?? "error").slice(0, 40),
+    });
     return json({ ok: false, error: "ia_no_disponible" });
   }
 
   const coincide = ia.oferta &&
     Math.abs(ia.tarifa - local.tarifa) < 1 && Math.abs(ia.km - local.km) < 0.15 && Math.abs(ia.min - local.min) < 1.1;
+  registro.ms_ia = Date.now() - t0;
+  await insertar("revisiones", { ...registro, ok: true, coincide });
   if (!coincide) {
     await insertar("errores_lector", { usuario: id, app, moneda, version, lineas, local, ia });
   }

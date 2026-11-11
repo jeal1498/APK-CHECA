@@ -345,7 +345,7 @@ class RutaService : AccessibilityService() {
     fun mostrarOferta(oferta: Oferta) = mostrarOferta(oferta, appActual, null)
 
     /** Muestra la oferta de [app] sobre su [zona] (sin repetir la misma en 60 s). */
-    fun mostrarOferta(leida: Oferta, app: String, zona: Rect?, lineas: List<String>? = null) {
+    fun mostrarOferta(leida: Oferta, app: String, zona: Rect?, lineas: List<String>? = null, msLectura: Long = -1) {
         if (!Licencia.activa(this) || !Cuenta.puedeUsar(this)) return
         // Si la revisión en segundo plano ya corrigió esta misma lectura, se usa la corregida.
         val oferta = Confirmador.corregida(leida) ?: leida
@@ -394,7 +394,9 @@ class RutaService : AccessibilityService() {
         alertas?.avisar(nivel)
         Historial.registrar(this, oferta, app, nivel)
         if (lineas != null && oferta === leida) {
-            Confirmador.revisar(this, app, lineas, leida, prefs.moneda) { nueva ->
+            // Desde la captura (o el evento) hasta el pop-up en pantalla.
+            val msPopup = if (msLectura >= 0) msLectura else -1
+            Confirmador.revisar(this, app, lineas, leida, prefs.moneda, msPopup) { nueva ->
                 handler.post { aplicarCorreccion(clave, app, leida, nueva) }
             }
         }
@@ -654,6 +656,7 @@ class RutaService : AccessibilityService() {
 
     /** Analiza cada ventana de Uber/DiDi POR SEPARADO para no mezclar ofertas. */
     private fun analizar() {
+        val inicio = android.os.SystemClock.elapsedRealtime()
         try {
             val ventanas = windows ?: return
             for (w in ventanas) {
@@ -680,7 +683,7 @@ class RutaService : AccessibilityService() {
                 val oferta = leida ?: continue
                 val r = Rect()
                 w.getBoundsInScreen(r)
-                mostrarOferta(oferta, app, r, textos.toList())
+                mostrarOferta(oferta, app, r, textos.toList(), android.os.SystemClock.elapsedRealtime() - inicio)
             }
         } catch (_: Exception) { }
     }

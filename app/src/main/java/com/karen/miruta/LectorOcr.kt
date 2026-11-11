@@ -18,6 +18,8 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
 
     /** Hay un OCR en curso: la imagen nueva se descarta. */
     @Volatile var ocupado = false
+    /** Momento de la captura que se está leyendo (para medir cuánto tarda el pop-up). */
+    @Volatile private var inicioCaptura = 0L
         private set
     /** La última lectura vio un tramo «N min (» (hay una oferta en pantalla). */
     @Volatile var ofertaEnPantalla = false
@@ -68,6 +70,7 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
         saltosGate = 0
         huellaOcr = hu
         ocupado = true
+        inicioCaptura = android.os.SystemClock.elapsedRealtime()
         val turno = ++turnoOcr
         try {
             ocr.process(InputImage.fromBitmap(bmp, 0))
@@ -205,7 +208,8 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
         if (oferta == null) return
         leyoPasada = true
         val servicio = RutaService.instancia ?: return
-        if (app != null) servicio.mostrarOferta(oferta, app, zona, lineas) else servicio.mostrarOferta(oferta)
+        val msLectura = android.os.SystemClock.elapsedRealtime() - inicioCaptura
+        if (app != null) servicio.mostrarOferta(oferta, app, zona, lineas, msLectura) else servicio.mostrarOferta(oferta)
     }
 
     /** Brillo de una rejilla de puntos de la imagen. null si falla. */

@@ -15,6 +15,8 @@ import java.util.concurrent.Executors
  */
 object Confirmador {
     private val hilo = Executors.newSingleThreadExecutor()
+    /** Lo que tardó la revisión anterior (teléfono → servidor → teléfono); -1 = sin dato. */
+    @Volatile private var msRevision = -1L
     private val enCurso = HashSet<String>()
     /** Lectura local → corrección (null = coincidió o no hubo respuesta). Así no se pregunta dos veces. */
     private val revisadas = object : LinkedHashMap<String, Oferta?>(32, 0.75f, true) {
@@ -37,7 +39,7 @@ object Confirmador {
     fun corregida(o: Oferta): Oferta? = revisadas[firma(o)]
 
     /** Pide la revisión de [o] una sola vez; [listo] se llama (en otro hilo) solo si hay que corregir. */
-    fun revisar(ctx: Context, app: String, lineas: List<String>, o: Oferta, moneda: Moneda, listo: (Oferta) -> Unit) {
+    fun revisar(ctx: Context, app: String, lineas: List<String>, o: Oferta, moneda: Moneda, msPopup: Long, listo: (Oferta) -> Unit) {
         if (!Cuenta.conectada(ctx)) return
         val enviar = filtrar(lineas)
         if (enviar.isEmpty()) return
@@ -50,15 +52,20 @@ object Confirmador {
             hilo.execute {
                 var nueva: Oferta? = null
                 try {
+                    val t0 = android.os.SystemClock.elapsedRealtime()
                     val cuerpo = JSONObject()
                         .put("app", app)
                         .put("moneda", moneda.codigo)
                         .put("version", BuildConfig.VERSION_NAME)
                         .put("lineas", JSONArray(enviar))
+                        .put("msPopup", msPopup)
+                        .put("msRevisionAnterior", msRevision)
                         .put("local", JSONObject()
                             .put("tarifa", o.tarifa).put("km", o.km).put("min", o.min)
                             .put("recKm", o.recogidaKm).put("recMin", o.recogidaMin).put("multi", o.multiplicador))
                     val r = JSONObject(Cuenta.revisarOferta(app0, cuerpo.toString()) ?: "{}")
+                    // Ida y vuelta completa de la revisión, vista desde el teléfono: va en la siguiente.
+                    msRevision = android.os.SystemClock.elapsedRealtime() - t0
                     val ia = r.optJSONObject("ia")
                     if (r.optBoolean("ok") && !r.optBoolean("coincide", true) && ia != null && ia.optBoolean("oferta")) {
                         val c = Oferta(
