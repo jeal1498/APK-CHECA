@@ -10,7 +10,7 @@
 - Release directo con la 9.6 hecho.
 
 ## … Falta
-- Prueba cerrada: día 8 de 14 seguidos; 12 testers para pedir producción (van 2 verificadores).
+- Prueba cerrada: día 8 de 14 seguidos; 12 testers (= verificadores) para pedir producción; llevas 2.
 - Fase 7 (Play Billing) antes del 1 feb 2027: necesita su «adelante» y una cuenta de Google admitida a su nombre.
 
 ## ✗ No tocar
