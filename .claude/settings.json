@@ -1,6 +1,26 @@
 {
   "extraKnownMarketplaces": {
-    "i-have-adhd": { "source": { "source": "github", "repo": "ayghri/i-have-adhd" } }
+    "i-have-adhd": {
+      "source": {
+        "source": "github",
+        "repo": "ayghri/i-have-adhd"
+      }
+    }
   },
-  "enabledPlugins": { "i-have-adhd@i-have-adhd": true }
+  "enabledPlugins": {
+    "i-have-adhd@i-have-adhd": true
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "clear|startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"Sugiere al usuario retomar con /parte (una línea).\"}}'"
+          }
+        ]
+      }
+    ]
+  }
 }
