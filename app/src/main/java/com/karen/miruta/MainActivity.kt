@@ -632,12 +632,18 @@ class MainActivity : Activity() {
         })
         gas.addView(costoFila, margenArriba(Tema.S1))
         pintarCostoAuto()
+        if (!prefs.gasRevisada) {
+            gas.addView(texto("Revisa estos dos números: con ellos se pinta cada oferta. Si están mal, el color sale mal en todas.",
+                Tema.T_NOTA, cAmarillo, false).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
+        }
         gas.addView(campoDato("Rendimiento", prefs.kmPorLitro, "", " km/l") {
             prefs.kmPorLitro = it
+            prefs.gasRevisada = true
             refrescarVistaPrevia()
         }, margenArriba(Tema.S1))
         gas.addView(campoDato("Gasolina", prefs.precioLitro, simAntes(), simDespues("/l")) {
             prefs.precioLitro = it
+            prefs.gasRevisada = true
             refrescarVistaPrevia()
         }, margenArriba(Tema.S1))
         valorDesgaste = texto("", Tema.T_TEXTO, cTexto, true).apply { typeface = Fuentes.numero }
@@ -3902,14 +3908,22 @@ class MainActivity : Activity() {
                     margenArriba(Tema.S1))
                 // Tu auto, en la misma pantalla: para restar la gasolina y mostrar lo que te queda.
                 c.addView(etiqueta("TU AUTO"), margenArriba(Tema.S1))
+                // La gasolina pesa en todas las ofertas: si está mal, todos los colores salen mal.
+                c.addView(texto("Pon los números reales de tu auto: con ellos se pinta cada oferta. Si están mal, el color sale mal en todas.",
+                    Tema.T_NOTA, if (prefs.gasRevisada) cTenue else cAmarillo, false).apply { setLineSpacing(0f, 1.3f) },
+                    margenArriba(Tema.S1))
+                c.addView(texto("Rendimiento: los km que haces con 1 litro en ciudad. Gasolina: lo que pagaste por litro la última vez.",
+                    Tema.T_NOTA, cTenue, false).apply { setLineSpacing(0f, 1.3f) }, margenArriba(4))
                 val costo = texto("", 22f, cTexto, true)
                 fun pintarCosto() { costo.text = "\$" + num1((prefs.precioLitro / prefs.kmPorLitro).toDouble()) }
                 c.addView(campoGuia("Rendimiento", { num(prefs.kmPorLitro) + " km/l" }) { signo ->
                     prefs.kmPorLitro = (prefs.kmPorLitro + signo).coerceIn(4f, 40f)
+                    prefs.gasRevisada = true
                     pintarCosto()
                 }, margenArriba(Tema.S2))
                 c.addView(campoGuia("Precio de la gasolina", { "\$" + num(prefs.precioLitro) + "/l" }) { signo ->
                     prefs.precioLitro = (prefs.precioLitro + 0.5f * signo).coerceIn(5f, 60f)
+                    prefs.gasRevisada = true
                     pintarCosto()
                 }, margenArriba(Tema.ENTRE_TARJETAS))
                 val t = tarjeta()
@@ -3919,7 +3933,21 @@ class MainActivity : Activity() {
                 t.addView(f)
                 pintarCosto()
                 c.addView(t, margenArriba(Tema.ENTRE_TARJETAS))
-                principal("Siguiente") { pintarGuia(4) }
+                principal("Siguiente") {
+                    if (prefs.gasRevisada) {
+                        pintarGuia(4)
+                    } else {
+                        // No tocó la gasolina: se le pregunta si de verdad son sus números.
+                        AlertDialog.Builder(this)
+                            .setTitle("¿Tu auto es así?")
+                            .setMessage("Rinde " + num(prefs.kmPorLitro) + " km/l y la gasolina te cuesta \$" +
+                                num(prefs.precioLitro) + " por litro.\n\n" +
+                                "Con estos números Checa pinta todas tus ofertas. Si no son los tuyos, el color puede salir mal.")
+                            .setPositiveButton("Sí, son correctos") { _, _ -> prefs.gasRevisada = true; pintarGuia(4) }
+                            .setNegativeButton("Corregir", null)
+                            .show()
+                    }
+                }
             }
             else -> {
                 val o = ofertaEjemplo()

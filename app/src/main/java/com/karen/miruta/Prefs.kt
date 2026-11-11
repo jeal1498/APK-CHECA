@@ -103,6 +103,11 @@ class Prefs(context: Context) {
         get() = sp.getFloat("precioL", 24f)
         set(v) { sp.edit().putFloat("precioL", v).apply() }
 
+    /** El conductor ya revisó su rendimiento y su gasolina (o los cambió de los de fábrica, 12 km/l y $24/l). */
+    var gasRevisada: Boolean
+        get() = sp.getBoolean("gas_revisada", false) || kmPorLitro != 12f || precioLitro != 24f
+        set(v) { sp.edit().putBoolean("gas_revisada", v).apply() }
+
     /** Monto directo de desgaste por km (el de siempre). Solo cuenta si no se llena ningún concepto. */
     var desgasteDirecto: Float
         get() = sp.getFloat("desgKm", 0f)
