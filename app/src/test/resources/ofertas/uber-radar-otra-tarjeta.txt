@@ -1,0 +1,12 @@
+# Radar con varias ofertas: la tarifa de otra tarjeta ($108.99) llegó primero. La 10.45 mostró $109.
+$108.99
+UberX
+$66.21
+33 min · 10.6 km · $6.25/km est.
+9 min · 3.0 km
+Calle Peyote - Iztacalco
+24 min · 7.6 km
+Calle Luis Braile 191
+Me interesa
+---
+tarifa=66.21 km=10.6 min=33 recKm=3 recMin=9

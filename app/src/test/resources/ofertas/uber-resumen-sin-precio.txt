@@ -1,0 +1,11 @@
+# El resumen llega separado de su $/km: se reconoce porque vale la suma de los tramos.
+UberX
+$51.74
+25 min · 9.0 km
+$5.75/km est.
+5 min · 2.4 km
+Callejón de Santa María - Iztacalco
+20 min · 6.6 km
+Me interesa
+---
+tarifa=51.74 km=9.0 min=25 recKm=2.4 recMin=5

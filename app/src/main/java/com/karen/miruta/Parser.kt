@@ -146,6 +146,9 @@ object Parser {
         RegexOption.IGNORE_CASE
     )
 
+    // "$6.29/km est." (Uber nuevo): precio por km del resumen.
+    private val porKmTexto = Regex("""(\d+(?:[.,]\d{1,2})?)\s?/\s?km""", RegexOption.IGNORE_CASE)
+
     // "⚡1.4x", "1.2x", "1,5 x" (tarifa dinámica). No confunde calificaciones como "4.98".
     private val multi = Regex("""(?<![.,$])([1-4](?:[.,]\d{1,2})?)\s?[x×X](?![a-zA-Z0-9])""")
 
@@ -173,17 +176,17 @@ object Parser {
 
     fun analizar(textos: List<String>, moneda: Moneda = Moneda.MXN): Oferta? {
         val r = reglasDe(moneda)
-        val tarifa = buscarTarifa(textos, r) ?: return null
+        var tarifa = buscarTarifa(textos, r) ?: return null
 
-        var km = 0.0
-        var min = 0.0
-        var tramos = 0
-        var recKm = 0.0
-        var recMin = 0.0
+        // Tramos en orden: (km, min, ¿es resumen?).
+        val lista = ArrayList<Triple<Double, Double, Boolean>>()
+        var resPorKm = 0.0
         val vistos = HashSet<String>()
         for (t in textos) {
             // "42 min (14.9 km) total" es un resumen (nuestro pop-up u otra app): no sumar.
             if (t.contains("total", ignoreCase = true)) continue
+            // Uber nuevo: "50 min • 16.4 km • $6.29/km est." es el resumen del viaje completo.
+            val porKm = porKmTexto.find(t)?.groupValues?.get(1)?.replace(",", ".")?.toDoubleOrNull()
             for (m in tramo.findAll(corregirMinutos(t))) {
                 // Evita contar dos veces el mismo tramo si un contenedor repite el texto.
                 if (!vistos.add(m.value.replace(" ", "").lowercase())) continue
@@ -197,11 +200,36 @@ object Parser {
                     !numero.contains('.') && !numero.contains(',') && d >= 30
                 val tramoKm = if (esMetros) d / 1000.0 else d
                 val tramoMin = h * 60.0 + mi
-                if (tramos == 0) { recKm = tramoKm; recMin = tramoMin }
-                min += tramoMin
-                km += tramoKm
-                tramos++
+                val resumen = porKm != null
+                if (resumen && porKm != null) resPorKm = porKm
+                lista.add(Triple(tramoKm, tramoMin, resumen))
             }
+        }
+        // Sin «/km» a la vista: un tramo que vale la suma de los demás también es el resumen.
+        if (lista.count { !it.third } >= 3) {
+            val reales = lista.filter { !it.third }
+            val sk = reales.sumOf { it.first }
+            val sm = reales.sumOf { it.second }
+            val i = lista.indexOfFirst { !it.third &&
+                Math.abs(it.first - (sk - it.first)) <= 0.2 && Math.abs(it.second - (sm - it.second)) <= 2.0 }
+            if (i >= 0) lista[i] = lista[i].copy(third = true)
+        }
+        val resumen = lista.firstOrNull { it.third }
+        val tramosReales = lista.filter { !it.third }.ifEmpty { listOfNotNull(resumen) }
+        val tramos = tramosReales.size
+        var km = tramosReales.sumOf { it.first }
+        var min = tramosReales.sumOf { it.second }
+        var recKm = tramosReales.firstOrNull()?.first ?: 0.0
+        var recMin = tramosReales.firstOrNull()?.second ?: 0.0
+        // Si solo se ve un tramo pero hay resumen, el resumen es el total.
+        if (resumen != null && tramos < 2) { km = resumen.first; min = resumen.second }
+        // Tarifa ≈ $/km del resumen × km del resumen: así no se toma el monto de otra tarjeta (radar).
+        if (resumen != null && resPorKm > 0) {
+            val esperada = resPorKm * resumen.first
+            val cerca = textos.mapNotNull { t -> r.montoSolo.find(t)?.let { r.valor(it) } }
+                .filter { Math.abs(it - esperada) <= esperada * 0.06 + 0.5 }
+                .minByOrNull { Math.abs(it - esperada) }
+            if (cerca != null) tarifa = cerca
         }
 
         // Una oferta siempre trae 2 tramos (recogida + viaje); con 1 aceptamos también.
