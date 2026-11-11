@@ -9,6 +9,9 @@ object Novedades {
     class Version(val codigo: Int, val nombre: String, val puntos: List<String>, val widgets: Boolean = false, val vistaQr: Boolean = false)
 
     val LISTA = listOf(
+        Version(135, "10.55", listOf(
+            "Con el teléfono en vertical sale un solo pop-up: el de la oferta que acaba de llegar. Dos a la vez, solo en horizontal."
+        )),
         Version(134, "10.54", listOf(
             "El pop-up se quita solo cuando la oferta ya no está en pantalla.",
             "Con varias ofertas a la vista (lista de DiDi) se lee cada una por separado."

@@ -111,7 +111,7 @@ object Confirmador {
     private const val ENTRE_RESCATES_MS = 3_000L
 
     /** Pide el rescate de una oferta que el lector no entendió; [listo] recibe la oferta (en otro hilo). */
-    fun rescatar(ctx: Context, app: String, lineas: List<String>, moneda: Moneda, listo: (Oferta) -> Unit) {
+    fun rescatar(ctx: Context, app: String, lineas: List<String>, moneda: Moneda, lector: String, listo: (Oferta) -> Unit) {
         if (!Cuenta.conectada(ctx)) return
         val enviar = filtrar(lineas)
         if (enviar.isEmpty()) return
@@ -132,6 +132,7 @@ object Confirmador {
                     val (conteo, conteoAnterior) = conteos(app0)
                     val cuerpo = JSONObject()
                         .put("modo", "rescate")
+                        .put("lector", lector)
                         .put("conteo", conteo)
                         .put("conteoAnterior", conteoAnterior ?: JSONObject.NULL)
                         .put("app", app)
@@ -174,7 +175,7 @@ object Confirmador {
     fun corregida(o: Oferta): Oferta? = revisadas[firma(o)]
 
     /** Pide la revisión de [o] una sola vez; [listo] se llama (en otro hilo) solo si hay que corregir. */
-    fun revisar(ctx: Context, app: String, lineas: List<String>, o: Oferta, moneda: Moneda, msPopup: Long, listo: (Oferta) -> Unit) {
+    fun revisar(ctx: Context, app: String, lineas: List<String>, o: Oferta, moneda: Moneda, msPopup: Long, lector: String, listo: (Oferta) -> Unit) {
         if (!Cuenta.conectada(ctx)) return
         val enviar = filtrar(lineas)
         if (enviar.isEmpty()) return
@@ -197,6 +198,7 @@ object Confirmador {
                         .put("version", BuildConfig.VERSION_NAME)
                         .put("lineas", JSONArray(enviar))
                         .put("msPopup", msPopup)
+                        .put("lector", lector)
                         .put("msRevisionAnterior", msRevision)
                         .put("local", JSONObject()
                             .put("tarifa", o.tarifa).put("km", o.km).put("min", o.min)

@@ -686,3 +686,7 @@ alter table public.revisiones add column if not exists tokens_cache integer not 
 -- ---------- Rescate (10.51): el lector no entendió una oferta y el revisor dio los datos ----------
 alter table public.revisiones add column if not exists modo text not null default 'revision';
 alter table public.errores_lector add column if not exists tipo text not null default 'diferencia';
+
+-- ---------- 10.55: de qué lector vino cada oferta («ocr» = foto, «texto» = texto de la app) ----------
+alter table public.revisiones add column if not exists lector text;
+alter table public.errores_lector add column if not exists lector text;

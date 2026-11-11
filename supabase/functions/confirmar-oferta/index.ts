@@ -240,6 +240,8 @@ Deno.serve(async (req) => {
   const app = String(cuerpo.app ?? "").slice(0, 10);
   const moneda = String(cuerpo.moneda ?? "MXN").slice(0, 3);
   const version = String(cuerpo.version ?? "").slice(0, 12);
+  // De qué lector del teléfono vino (10.55): «ocr» (foto) o «texto» (texto de la app).
+  const lector = cuerpo.lector === "texto" || cuerpo.lector === "ocr" ? cuerpo.lector : null;
   if (lineas.length === 0 || !local) return json({ ok: false, error: "sin_datos" }, 400);
   await anotarConteo(id, cuerpo.conteo);
   await anotarConteo(id, cuerpo.conteoAnterior);
@@ -247,7 +249,7 @@ Deno.serve(async (req) => {
   const msRevisionAnterior = Math.round(Number(cuerpo.msRevisionAnterior ?? -1));
   // Una fila por revisión: tiempos, tokens reales y resultado (métricas de los lunes).
   const registro: Record<string, unknown> = {
-    usuario: id, app, version, modelo: MODELO, modo,
+    usuario: id, app, version, modelo: MODELO, modo, lector,
     ms_popup: Number.isFinite(msPopup) ? msPopup : null,
     ms_revision_anterior: Number.isFinite(msRevisionAnterior) ? msRevisionAnterior : null,
     imagenes: 0, reintentos: 0,
@@ -299,7 +301,7 @@ Deno.serve(async (req) => {
   if (!coincide) {
     // En el rescate solo se guarda si el revisor sí vio una oferta (si no, no hay nada que aprender).
     if (modo === "revision" || ia.oferta) {
-      await insertar("errores_lector", { usuario: id, app, moneda, version, lineas, local, ia, tipo: modo === "rescate" ? "rescate" : "diferencia" });
+      await insertar("errores_lector", { usuario: id, app, moneda, version, lineas, local, ia, lector, tipo: modo === "rescate" ? "rescate" : "diferencia" });
     }
   }
   return json({ ok: true, coincide, ia });

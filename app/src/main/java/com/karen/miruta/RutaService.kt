@@ -352,7 +352,7 @@ class RutaService : AccessibilityService() {
     fun mostrarOferta(oferta: Oferta) = mostrarOferta(oferta, appActual, null)
 
     /** Muestra la oferta de [app] sobre su [zona] (sin repetir la misma en 60 s). */
-    fun mostrarOferta(leida: Oferta, app: String, zona: Rect?, lineas: List<String>? = null, msLectura: Long = -1) {
+    fun mostrarOferta(leida: Oferta, app: String, zona: Rect?, lineas: List<String>? = null, msLectura: Long = -1, lector: String = LECTOR_OCR) {
         if (!Licencia.activa(this) || !Cuenta.puedeUsar(this)) return
         // Si la revisión en segundo plano ya corrigió esta misma lectura, se usa la corregida.
         val oferta = Confirmador.corregida(leida) ?: leida
@@ -390,7 +390,9 @@ class RutaService : AccessibilityService() {
             }
         }
         // Plan de 1 mes: un pop-up a la vez (Uber y DiDi juntos es del plan de 6 meses).
-        if (Licencia.basico(this)) {
+        // En vertical también uno solo: el de la oferta que acaba de llegar tapa a los anteriores
+        // (Eduardo, 11 nov). Dos a la vez solo en horizontal (pantalla dividida).
+        if (Licencia.basico(this) || !horizontal()) {
             activas.keys.filter { it != clave }.forEach { otra ->
                 activas.remove(otra)
                 popups[otra]?.ocultar()
@@ -408,7 +410,7 @@ class RutaService : AccessibilityService() {
         if (lineas != null && oferta === leida) {
             // Desde la captura (o el evento) hasta el pop-up en pantalla.
             val msPopup = if (msLectura >= 0) msLectura else -1
-            Confirmador.revisar(this, app, lineas, leida, prefs.moneda, msPopup) { nueva ->
+            Confirmador.revisar(this, app, lineas, leida, prefs.moneda, msPopup, lector) { nueva ->
                 handler.post { aplicarCorreccion(clave, app, leida, nueva) }
             }
         }
@@ -418,12 +420,12 @@ class RutaService : AccessibilityService() {
      * El lector no entendió una oferta que sí está en pantalla: se piden los datos al revisor
      * y, si pasan las revisiones del teléfono, sale el pop-up normal (1–2 s después).
      */
-    fun rescatar(app: String, zona: Rect?, lineas: List<String>) {
+    fun rescatar(app: String, zona: Rect?, lineas: List<String>, lector: String = LECTOR_OCR) {
         if (!::prefs.isInitialized || !Licencia.activa(this) || !Cuenta.puedeUsar(this)) return
         // Con el pop-up encima la oferta se ve tapada: no es una lectura fallida.
         if (popupVisible(app)) return
         if (lineas.none { LectorOcr.esTramo(it) } || !Parser.tieneMonto(lineas, prefs.moneda)) return
-        Confirmador.rescatar(this, app, lineas, prefs.moneda) { oferta ->
+        Confirmador.rescatar(this, app, lineas, prefs.moneda, lector) { oferta ->
             handler.post { mostrarOferta(oferta, app, zona) }
         }
     }
@@ -466,6 +468,9 @@ class RutaService : AccessibilityService() {
             if (n >= LECTURAS_SIN_OFERTA) popups[clave]?.ocultar()
         }
     }
+
+    private fun horizontal() =
+        resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
 
     /** true si el pop-up de [app] está en pantalla (entonces tapa la oferta y el lector no la ve completa). */
     fun popupVisible(app: String?): Boolean = popups[app ?: "?"]?.rect() != null
@@ -716,9 +721,14 @@ class RutaService : AccessibilityService() {
                 // búsqueda del sistema dice si hay algún «min» a la vista. Sin él no hay oferta.
                 val conMin = try { raiz.findAccessibilityNodeInfosByText("min") } catch (e: Exception) { null }
                 if (conMin != null && conMin.isEmpty() && !prefs.diagnostico) continue
-                val textos = LinkedHashSet<String>()
-                recolectar(raiz, textos, 0)
-                if (textos.isEmpty()) continue
+                // Solo lo que se ve (10.55), con su posición para separar varias tarjetas.
+                val renglones = ArrayList<Tarjetas.Renglon>()
+                recolectar(raiz, renglones, HashSet(), 0)
+                if (renglones.isEmpty()) continue
+                val porAltura = renglones.indices.sortedBy { renglones[it].arriba }
+                val elegidos = Tarjetas.primera(porAltura.map { renglones[it] }, prefs.moneda)
+                    ?.map { porAltura[it] }?.toHashSet()
+                val textos = renglones.indices.filter { elegidos == null || it in elegidos }.map { renglones[it].texto }
                 val leida = Parser.analizar(textos.toList(), prefs.moneda)
                 if (prefs.diagnostico && textos.any { TRAMO.containsMatchIn(it) }) {
                     val firma = leida?.let { "${it.tarifa}|${it.km}|${it.min}" } ?: "?"
@@ -730,19 +740,25 @@ class RutaService : AccessibilityService() {
                 }
                 val r = Rect()
                 w.getBoundsInScreen(r)
-                if (leida == null) { rescatar(app, r, textos.toList()); continue }
+                if (leida == null) { rescatar(app, r, textos, LECTOR_TEXTO); continue }
                 val oferta = leida
-                mostrarOferta(oferta, app, r, textos.toList(), android.os.SystemClock.elapsedRealtime() - inicio)
+                mostrarOferta(oferta, app, r, textos, android.os.SystemClock.elapsedRealtime() - inicio, LECTOR_TEXTO)
             }
         } catch (_: Exception) { }
     }
 
-    private fun recolectar(n: AccessibilityNodeInfo, salida: MutableSet<String>, nivel: Int) {
+    private fun recolectar(n: AccessibilityNodeInfo, salida: MutableList<Tarjetas.Renglon>, vistos: MutableSet<String>, nivel: Int) {
         if (nivel > 40) return
+        // Uber y DiDi guardan en el árbol tarjetas ocultas o fuera de pantalla: no cuentan.
+        if (!n.isVisibleToUser) return
         val t = (n.text ?: n.contentDescription)?.toString()?.trim()
-        if (!t.isNullOrEmpty()) salida.add(t)
+        if (!t.isNullOrEmpty() && vistos.add(t)) {
+            val r = Rect()
+            n.getBoundsInScreen(r)
+            salida.add(Tarjetas.Renglon(t, r.top, r.bottom))
+        }
         for (i in 0 until n.childCount) {
-            n.getChild(i)?.let { recolectar(it, salida, nivel + 1) }
+            n.getChild(i)?.let { recolectar(it, salida, vistos, nivel + 1) }
         }
     }
 
@@ -773,6 +789,9 @@ class RutaService : AccessibilityService() {
         private const val VIGILANTE_CADA = 5000L
         /** Lecturas seguidas sin ver la oferta para quitar su pop-up. */
         private const val LECTURAS_SIN_OFERTA = 2
+        /** De qué lector vino una oferta (se guarda en la revisión para comparar). */
+        const val LECTOR_OCR = "ocr"
+        const val LECTOR_TEXTO = "texto"
         private const val VIGILANTE_QUIETO = 10_000L
     }
 }
