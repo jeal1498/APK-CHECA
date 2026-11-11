@@ -663,3 +663,22 @@ where cfg.id = 1;
 
 revoke all on public.consumo_conductor_dia, public.consumo_conductor_mes, public.consumo_global_mes, public.margen_planes
   from anon, authenticated;
+
+-- ---------- Revisor intercambiable (10.50, solo servidor): DeepSeek o Claude Haiku ----------
+-- Precio de lista (hora pico) en USD por millón de tokens; DeepSeek cobra la mitad fuera de pico.
+create table if not exists public.precios_modelo (
+  modelo            text primary key,
+  usd_mtok_entrada  numeric not null,
+  usd_mtok_cache    numeric not null,
+  usd_mtok_salida   numeric not null,
+  factor_fuera_pico numeric not null default 1,
+  actualizado       timestamptz not null default now()
+);
+insert into public.precios_modelo (modelo, usd_mtok_entrada, usd_mtok_cache, usd_mtok_salida, factor_fuera_pico) values
+  ('deepseek-flash', 0.30, 0.006, 1.20, 0.5),
+  ('claude-haiku-5-5', 0.10, 0.01, 0.50, 1)
+on conflict (modelo) do nothing;
+alter table public.precios_modelo enable row level security;
+revoke all on public.precios_modelo from anon, authenticated;
+
+alter table public.revisiones add column if not exists tokens_cache integer not null default 0;

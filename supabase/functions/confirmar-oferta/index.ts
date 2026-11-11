@@ -1,4 +1,4 @@
-// Revisa en segundo plano la lectura de una oferta (Uber/DiDi) que hizo el lector local.
+// Revisa en segundo plano (DeepSeek o Claude Haiku, según el secreto REVISOR) la lectura de una oferta (Uber/DiDi) que hizo el lector local.
 // Recibe solo líneas con números (montos, min, km, ⚡); nunca direcciones.
 // Si la lectura no coincide, guarda el caso en `errores_lector` para corregir el lector.
 // Sin saldo o con cualquier falla responde { ok: false }: la app sigue con su lectura.
@@ -7,7 +7,12 @@ import Anthropic from "npm:@anthropic-ai/sdk@1.2.0";
 const SUPA = Deno.env.get("SUPABASE_URL")!;
 const ANON = Deno.env.get("SUPABASE_ANON_KEY")!;
 const SERVICIO = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const CLAVE = Deno.env.get("ANTHROPIC_API_KEY") ?? "";
+const CLAVE_ANTHROPIC = Deno.env.get("ANTHROPIC_API_KEY") ?? "";
+const CLAVE_DEEPSEEK = Deno.env.get("DEEPSEEK_API_KEY") ?? "";
+// Revisor: el secreto REVISOR manda («deepseek» o «anthropic»); si no está, DeepSeek si hay su clave.
+const REVISOR = (Deno.env.get("REVISOR") ?? (CLAVE_DEEPSEEK ? "deepseek" : "anthropic")).toLowerCase();
+const MODELO = REVISOR === "deepseek" ? "deepseek-flash" : "claude-haiku-5-5";
+const CLAVE = REVISOR === "deepseek" ? CLAVE_DEEPSEEK : CLAVE_ANTHROPIC;
 /** Consultas por cuenta al día. */
 const TOPE_DIARIO = 300;
 
@@ -51,16 +56,88 @@ function filtrar(lineas: unknown): string[] {
     .slice(0, 30);
 }
 
-// Precios vigentes (tabla consumo_config); se leen a lo más cada 10 min.
-let precios = { entrada: 0.10, salida: 0.50, leido: 0 };
-async function preciosVigentes() {
-  if (Date.now() - precios.leido < 600_000) return precios;
-  try {
-    const r = await fetch(`${SUPA}/rest/v1/consumo_config?id=eq.1&select=usd_mtok_entrada,usd_mtok_salida`, { headers: headersServicio });
-    const [c] = await r.json();
-    if (c) precios = { entrada: Number(c.usd_mtok_entrada), salida: Number(c.usd_mtok_salida), leido: Date.now() };
-  } catch { /* se quedan los anteriores */ }
-  return precios;
+// Precios por modelo (tabla precios_modelo, USD por millón de tokens); se leen a lo más cada 10 min.
+type Precio = { entrada: number; cache: number; salida: number; fueraPico: number };
+const PRECIO_BASE: Record<string, Precio> = {
+  "deepseek-flash": { entrada: 0.30, cache: 0.006, salida: 1.20, fueraPico: 0.5 },
+  "claude-haiku-5-5": { entrada: 0.10, cache: 0.01, salida: 0.50, fueraPico: 1 },
+};
+let precios = { tabla: PRECIO_BASE, leido: 0 };
+async function precioDe(modelo: string): Promise<Precio> {
+  if (Date.now() - precios.leido > 600_000) {
+    try {
+      const r = await fetch(`${SUPA}/rest/v1/precios_modelo?select=*`, { headers: headersServicio });
+      const filas = await r.json();
+      const tabla = { ...PRECIO_BASE };
+      for (const f of filas) {
+        tabla[f.modelo] = { entrada: Number(f.usd_mtok_entrada), cache: Number(f.usd_mtok_cache), salida: Number(f.usd_mtok_salida), fueraPico: Number(f.factor_fuera_pico) };
+      }
+      precios = { tabla, leido: Date.now() };
+    } catch { /* se quedan los anteriores */ }
+  }
+  return precios.tabla[modelo] ?? PRECIO_BASE[modelo];
+}
+
+// DeepSeek cobra tarifa pico (lun–vie 01–04 y 06–10 UTC) y la mitad fuera de ella.
+// No se descuentan los feriados chinos: en esos días el costo guardado queda un poco alto.
+function esPico(modelo: string, d = new Date()): boolean {
+  if (modelo !== "deepseek-flash") return true;
+  const dia = d.getUTCDay();
+  const h = d.getUTCHours();
+  return dia >= 1 && dia <= 5 && ((h >= 1 && h < 4) || (h >= 6 && h < 10));
+}
+
+class FallaRevisor extends Error {
+  constructor(public status: number, msg: string) { super(msg); }
+}
+
+type Respuesta = { datos: Record<string, unknown>; tIn: number; tCache: number; tOut: number; rechazo: boolean };
+
+async function preguntarAnthropic(usuario: string): Promise<Respuesta> {
+  const cliente = new Anthropic({ apiKey: CLAVE, timeout: 8000, maxRetries: 0 });
+  const r = await cliente.messages.create({
+    model: "claude-haiku-5-5",
+    max_tokens: 2048,
+    system: SISTEMA,
+    output_config: { effort: "low", format: { type: "json_schema", schema: ESQUEMA } },
+    messages: [{ role: "user", content: usuario }],
+  // deno-lint-ignore no-explicit-any
+  } as any);
+  const texto = r.content.filter((b) => b.type === "text").map((b) => (b as { text: string }).text).join("");
+  return {
+    datos: r.stop_reason === "refusal" || !texto.trim() ? {} : JSON.parse(texto),
+    tIn: r.usage?.input_tokens ?? 0, tCache: 0, tOut: r.usage?.output_tokens ?? 0,
+    rechazo: r.stop_reason === "refusal",
+  };
+}
+
+async function preguntarDeepSeek(usuario: string): Promise<Respuesta> {
+  const r = await fetch("https://api.deepseek.com/chat/completions", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${CLAVE}`, "Content-Type": "application/json" },
+    signal: AbortSignal.timeout(8000),
+    body: JSON.stringify({
+      model: "deepseek-flash",
+      // Sin razonamiento: es una extracción corta y así responde más rápido y más barato.
+      thinking: { type: "disabled" },
+      response_format: { type: "json_object" },
+      max_tokens: 300,
+      temperature: 0,
+      messages: [
+        { role: "system", content: SISTEMA + "\n\n" + EJEMPLO_JSON },
+        { role: "user", content: usuario },
+      ],
+    }),
+  });
+  if (!r.ok) throw new FallaRevisor(r.status, `http_${r.status}`);
+  const j = await r.json();
+  const u = j.usage ?? {};
+  const tIn = Number(u.prompt_tokens ?? 0);
+  const tCache = Number(u.prompt_cache_hit_tokens ?? 0);
+  const texto = String(j.choices?.[0]?.message?.content ?? "");
+  // Si DeepSeek no logra un JSON válido devuelve espacios: se trata como falla (sin reintento).
+  if (!texto.trim()) throw Object.assign(new FallaRevisor(0, "json_vacio"), { tIn, tCache, tOut: Number(u.completion_tokens ?? 0) });
+  return { datos: JSON.parse(texto), tIn, tCache, tOut: Number(u.completion_tokens ?? 0), rechazo: false };
 }
 
 // Conteo del teléfono: { dia: "2026-11-11", ofertas, correcciones }.
@@ -106,6 +183,10 @@ const ESQUEMA = {
   additionalProperties: false,
 };
 
+// DeepSeek pide la palabra «json» y un ejemplo del formato en la instrucción.
+const EJEMPLO_JSON = `Responde solo con un objeto json con exactamente estas claves, por ejemplo:
+{"oferta": true, "tarifa": 103.13, "km": 16.4, "min": 50, "recKm": 2.3, "recMin": 6, "multi": 0}`;
+
 const SISTEMA = `Lees ofertas de viaje de Uber y DiDi a partir de líneas de texto de la pantalla (OCR o accesibilidad; puede haber errores como «B min» por «8 min» o «Ih» por «1 h»).
 Devuelve:
 - tarifa: lo que paga el viaje (el monto grande de la tarjeta). No sumes bonos («adicionales», «+$… por inicio»); «+$… incluido» ya viene dentro de la tarifa. No uses contraofertas de DiDi, el $/km ni montos de otras tarjetas: si hay un resumen «N min · X km · $Y/km est.», la tarifa ≈ Y × X.
@@ -113,6 +194,19 @@ Devuelve:
 - recKm y recMin: el primer tramo (ir por el pasajero). 0 si no se distingue.
 - multi: multiplicador «1.4x» de la tarifa; ignora rangos del mapa «1.8X-2.4X». 0 si no hay.
 Si no hay una oferta clara, oferta=false y todo en 0. Nunca inventes números que no estén en las líneas.`;
+
+/** Guarda en la fila los tokens reales y el costo con el precio vigente (y la hora pico). */
+async function anotarCosto(registro: Record<string, unknown>, tIn: number, tCache: number, tOut: number) {
+  const p = await precioDe(MODELO);
+  const f = esPico(MODELO) ? 1 : p.fueraPico;
+  const sinCache = Math.max(tIn - tCache, 0);
+  registro.tokens_entrada = tIn;
+  registro.tokens_cache = tCache;
+  registro.tokens_salida = tOut;
+  registro.usd_mtok_entrada = p.entrada * f;
+  registro.usd_mtok_salida = p.salida * f;
+  registro.costo_usd = (sinCache * p.entrada + tCache * p.cache + tOut * p.salida) * f / 1_000_000;
+}
 
 Deno.serve(async (req) => {
   if (req.method !== "POST") return json({ ok: false, error: "metodo_no_permitido" }, 405);
@@ -148,7 +242,7 @@ Deno.serve(async (req) => {
   const msRevisionAnterior = Math.round(Number(cuerpo.msRevisionAnterior ?? -1));
   // Una fila por revisión: tiempos, tokens reales y resultado (métricas de los lunes).
   const registro: Record<string, unknown> = {
-    usuario: id, app, version, modelo: "claude-haiku-5-5",
+    usuario: id, app, version, modelo: MODELO,
     ms_popup: Number.isFinite(msPopup) ? msPopup : null,
     ms_revision_anterior: Number.isFinite(msRevisionAnterior) ? msRevisionAnterior : null,
     imagenes: 0, reintentos: 0,
@@ -172,32 +266,17 @@ Deno.serve(async (req) => {
   let ia: Lectura & { oferta: boolean };
   const t0 = Date.now();
   try {
-    const cliente = new Anthropic({ apiKey: CLAVE, timeout: 8000, maxRetries: 0 });
-    const r = await cliente.messages.create({
-      model: "claude-haiku-5-5",
-      max_tokens: 2048,
-      system: SISTEMA,
-      output_config: { effort: "low", format: { type: "json_schema", schema: ESQUEMA } },
-      messages: [{ role: "user", content: `App: ${app || "?"} · moneda: ${moneda}\nLíneas:\n${lineas.join("\n")}` }],
-    // deno-lint-ignore no-explicit-any
-    } as any);
-    // Tokens reales que cobra Anthropic (la salida incluye el razonamiento; las imágenes, si
-    // algún día se mandan, vienen dentro de la entrada).
-    const tIn = r.usage?.input_tokens ?? 0;
-    const tOut = r.usage?.output_tokens ?? 0;
-    const p = await preciosVigentes();
-    registro.tokens_entrada = tIn;
-    registro.tokens_salida = tOut;
-    registro.usd_mtok_entrada = p.entrada;
-    registro.usd_mtok_salida = p.salida;
-    registro.costo_usd = (tIn * p.entrada + tOut * p.salida) / 1_000_000;
-    if (r.stop_reason === "refusal") throw new Error("refusal");
-    const texto = r.content.filter((b) => b.type === "text").map((b) => (b as { text: string }).text).join("");
-    const d = JSON.parse(texto);
+    const pregunta = `App: ${app || "?"} · moneda: ${moneda}\nLíneas:\n${lineas.join("\n")}`;
+    const r = REVISOR === "deepseek" ? await preguntarDeepSeek(pregunta) : await preguntarAnthropic(pregunta);
+    await anotarCosto(registro, r.tIn, r.tCache, r.tOut);
+    if (r.rechazo) throw new Error("refusal");
+    const d = r.datos;
     ia = { oferta: d.oferta === true, tarifa: num(d.tarifa), km: num(d.km), min: num(d.min), recKm: num(d.recKm), recMin: num(d.recMin), multi: num(d.multi) };
   } catch (e) {
     // Sin saldo, clave mala, caída o tiempo agotado: se anota una vez por día y tipo.
     const status = (e as { status?: number })?.status ?? 0;
+    const cobrado = e as { tIn?: number; tCache?: number; tOut?: number };
+    if (cobrado.tIn) await anotarCosto(registro, cobrado.tIn, cobrado.tCache ?? 0, cobrado.tOut ?? 0);
     try {
       await rpc("anotar_falla_ia", { tipo: status ? `http_${status}` : String((e as Error)?.message ?? "error").slice(0, 40) });
     } catch { /* nada */ }
