@@ -207,12 +207,19 @@ object Zonas {
         fun sinNum(t: String) = t.split(",", " ").map { it.trim() }.filter { it.isNotEmpty() }
             .filterNot { it.length <= 4 && it.all { c -> c.isDigit() } }
             .distinct().joinToString(" ")
-        val calle = sinNum(base.substringBefore(","))
+        val primero = base.substringBefore(",")
+        val resto = if (base.contains(",")) base.substringAfter(",").trim() else ""
+        // DiDi junta negocio y calle: «Ferretería Peryca - Avenida Francisco I. Madero, …». Cada
+        // parte (de 2 palabras o más) se prueba con el resto de la dirección (colonia y ciudad).
+        val partes = if (primero.contains(" - ")) primero.split(" - ").map { it.trim() }
+            .filter { it.split(" ").size >= 2 }.reversed() else emptyList()
+        val conResto = partes.map { if (resto.isEmpty()) it else "$it, $resto" }
+        val calle = sinNum(primero)
         val sinTipo = calle.replace(tipoVia, "").trim()
-        return listOf(base, sinNum(base), calle, sinTipo)
+        return (listOf(base) + conResto + listOf(sinNum(base), calle, sinTipo))
             // Nada que sea solo «Calle» o «Av.»: eso no ubica nada.
             .filter { it.length >= 5 && it.count { c -> c.isLetter() } >= 4 && "$it ".replace(tipoVia, "").isNotBlank() }
-            .distinct()
+            .distinct().take(5)
     }
 
     fun hayRed(ctx: Context): Boolean = try {

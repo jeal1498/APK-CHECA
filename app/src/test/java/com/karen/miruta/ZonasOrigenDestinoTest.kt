@@ -63,6 +63,32 @@ class ZonasOrigenDestinoTest {
         assertEquals("Ligia Arceo Mendoza 13, 13, Benito Juárez", Parser.destino(didi))
     }
 
+    @Test fun didiConDireccionEnLaMismaLinea() {
+        // DiDi claro (11 nov): «(6 min 1.3 km) Ferretería…» con la dirección partida en dos líneas.
+        val l = listOf(
+            "$58.80", "Pon Tu Precio", "4.95 • 475 viajes • Tarjeta bancaria verificada",
+            "(6 min 1.3 km) Ferretería Peryca - Avenida Francisco I. Madero, Supermanzana",
+            "Reg 102, Benito Juárez",
+            "(17 min 7.3 km) Hospital Azura Cancún, 6, Benito Juárez",
+            "Aceptar $58.80", "$63.80", "$65.80"
+        )
+        assertEquals("Ferretería Peryca - Avenida Francisco I. Madero, Supermanzana Reg 102, Benito Juárez", Parser.origen(l))
+        assertEquals("Hospital Azura Cancún, 6, Benito Juárez", Parser.destino(l))
+        val o = Parser.analizar(l)!!
+        assertEquals(58.80, o.tarifa, 0.001)
+        assertEquals(8.6, o.km, 0.01)
+        assertEquals(23.0, o.min, 0.01)
+    }
+
+    @Test fun consultasNegocioYCalle() {
+        val q = Zonas.consultas("Ferretería Peryca - Avenida Francisco I. Madero, Supermanzana Reg 102, Benito Juárez")
+        assertEquals("Avenida Francisco I. Madero, Supermanzana Reg 102, Benito Juárez", q[1])
+        assertEquals("Ferretería Peryca, Supermanzana Reg 102, Benito Juárez", q[2])
+        assertTrue(q.size <= 5)
+        // «Calle Peyote - Iztacalco»: una sola palabra suelta no se busca.
+        assertFalse(Zonas.consultas("Calle Peyote - Iztacalco").contains("Iztacalco"))
+    }
+
     @Test fun botonesNoSonDireccion() {
         assertEquals("Calle Peyote - Iztacalco", Parser.origen(radar))
         assertEquals("Calle Luis Braile 191", Parser.destino(radar))

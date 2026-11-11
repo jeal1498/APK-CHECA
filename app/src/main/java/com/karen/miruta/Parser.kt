@@ -196,7 +196,7 @@ object Parser {
     }
 
     private val noDireccion = Regex(
-        """(\$|aceptar|considerar|rechazar|adicional|por inicio|incluid|calificaci|viajes|perfil|verificad|exclusivo|priority|/km|/h|me interesa|contraofert|ofrecer|ignorar|omitir|cancelar|ver m[aá]s|punto\(s\)|pasajer|efectivo|tarjeta)""",
+        """(\$|aceptar|considerar|rechazar|adicional|por inicio|incluid|calificaci|viajes|perfil|verificad|exclusivo|priority|/km|/h|me interesa|contraofert|ofrecer|ignorar|omitir|cancelar|ver m[aá]s|punto\(s\)|parada|pasajer|efectivo|tarjeta)""",
         RegexOption.IGNORE_CASE
     )
 
@@ -208,12 +208,25 @@ object Parser {
                 tramo.containsMatchIn(corregirMinutos(t))
         }
 
-    /** Las 1–2 líneas de dirección justo debajo del tramo [i]; se corta en el siguiente tramo, botón o dato. */
+    /** Lo que sigue al tramo en su misma línea (DiDi: «(6 min 1.3 km) Ferretería…, Benito Juárez»). */
+    private fun restoDelTramo(t: String): String {
+        val c = corregirMinutos(t)
+        val m = tramo.find(c) ?: return ""
+        return c.substring(m.range.last + 1).trimStart(')', ' ', '·', '•', '-', ',', ':', '\u00A0').trim()
+    }
+
+    /**
+     * La dirección del tramo [i]: lo que va en su misma línea (si hay) y 1–2 líneas debajo
+     * (la dirección larga se parte en dos); se corta en el siguiente tramo, botón o dato.
+     */
     private fun direccionTras(textos: List<String>, i: Int): String? {
         val partes = ArrayList<String>()
+        val misma = restoDelTramo(textos[i])
+        if (misma.length >= 4 && misma.count { it.isLetter() } >= 3 && !noDireccion.containsMatchIn(misma)) partes.add(misma)
+        val max = if (partes.isEmpty()) 2 else 3
         for (t in textos.drop(i + 1)) {
             val s = t.trim()
-            if (partes.size >= 2 || s.length < 4) break
+            if (partes.size >= max || s.length < 4) break
             if (s.count { it.isLetter() } < 3 || noDireccion.containsMatchIn(s) || tramo.containsMatchIn(corregirMinutos(s))) break
             partes.add(s)
         }

@@ -9,6 +9,10 @@ object Novedades {
     class Version(val codigo: Int, val nombre: String, val puntos: List<String>, val widgets: Boolean = false, val vistaQr: Boolean = false)
 
     val LISTA = listOf(
+        Version(144, "10.64", listOf(
+            "Zonas bloqueadas: ahora lee la dirección cuando DiDi la pone junto al tiempo («(17 min 7.3 km) Hospital…»).",
+            "Mejor ubicación de direcciones con negocio y calle («Ferretería - Avenida…»)."
+        )),
         Version(143, "10.63", listOf(
             "Zonas bloqueadas renovada: lista con nombre y cuántas ofertas bloqueó cada zona en 30 días.",
             "Cambia el nombre o borra una zona desde la lista; tócala para verla en el mapa.",
