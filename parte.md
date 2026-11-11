@@ -16,7 +16,7 @@
 
 ## … Falta
 - Play Console › Seguridad de los datos: agregar modelo del teléfono, Android y tiempos (ver `docs/google-play/data-safety.md`, 10.57–10.58).
-- Subir a Play Console el AAB 138 (10.58) de «Preparar AAB Google Play» (generado 11 nov).
+- Generar el AAB 138 (10.58): Eduardo lanza «Run workflow» en «Preparar AAB Google Play» (Claude no tiene permiso) y lo sube a Prueba cerrada.
 - En unos días: «Estado de la revisión» para ver qué lector falla más y cuántas ofertas se confirman sin IA.
 - Prueba cerrada: día 8 de 14 seguidos con 12 testers (= verificadores). Faltan 6 días para pedir producción.
 - Fase 7 (Play Billing) antes del 1 feb 2027: necesita su «adelante» y una cuenta de Google admitida a su nombre.
