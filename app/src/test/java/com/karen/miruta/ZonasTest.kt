@@ -54,7 +54,18 @@ class ZonasTest {
     @Test
     fun consultasSinNumerosSueltos() {
         val q = Zonas.consultas("Ligia Arceo Mendoza 13, 13, Benito Juárez")
-        assertEquals(2, q.size)
+        assertEquals("Ligia Arceo Mendoza 13, 13, Benito Juárez", q[0])
         assertEquals("Ligia Arceo Mendoza Benito Juárez", q[1])
+        assertEquals("Ligia Arceo Mendoza", q[2])
+        assertEquals(3, q.size)
+    }
+
+    @Test
+    fun consultasSinTipoDeVia() {
+        val q = Zonas.consultas("Calle Privada Playa Norte, Benito Juárez")
+        assertEquals("Calle Privada Playa Norte", q[2])
+        assertEquals("Playa Norte", q[3])
+        // Una calle de puros números no se busca suelta.
+        assertFalse(Zonas.consultas("Calle 5, Centro").contains("5"))
     }
 }

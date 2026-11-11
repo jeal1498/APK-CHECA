@@ -141,6 +141,13 @@ object Zonas {
         }
     }
 
+    /** Una línea para el diagnóstico: «Destino: Calle X → BLOQUEADA (21.1, -86.8) Centro». */
+    fun informe(r: Resultado): String =
+        (if (r.tipo == Tipo.ORIGEN) "Origen: " else "Destino: ") + (r.direccion ?: "(no se vio)") +
+            " → " + r.estado.name +
+            (if (r.lat != null && r.lon != null) String.format(Locale.US, " (%.5f, %.5f)", r.lat, r.lon) else "") +
+            (if (r.zona.isNotEmpty()) " " + r.zona else "")
+
     /** Oferta con las marcas de los puntos bloqueados (las que ya tenía se conservan). */
     fun marcar(o: Oferta, origen: Resultado, destino: Resultado): Oferta =
         o.copy(
@@ -187,13 +194,25 @@ object Zonas {
     /** Solo para pruebas. */
     internal fun limpiarCache() = synchronized(cache) { cache.clear() }
 
-    /** Direcciones a probar: completa y, si no se halla, sin números sueltos ni repetidos. */
+    private val tipoVia = Regex("""^(?:(?:calle|c\.|av\.?|avenida|privada|priv\.|calzada|blvd\.?|boulevard|andador|retorno|cerrada)\s+)+""", RegexOption.IGNORE_CASE)
+
+    /**
+     * Direcciones a probar, de la más precisa a la menos: completa; sin números sueltos ni
+     * repetidos; solo la calle (antes de la primera coma, sin números); y la calle sin «Calle»,
+     * «Privada», «Av.»… (OSM a veces la tiene sin el tipo). La búsqueda queda limitada al
+     * recuadro de tus zonas, así una calle de otra ciudad no se confunde.
+     */
     fun consultas(destino: String): List<String> {
         val base = destino.replace(Regex("\\s+"), " ").trim()
-        val sinNumeros = base.split(",", " ").map { it.trim() }.filter { it.isNotEmpty() }
+        fun sinNum(t: String) = t.split(",", " ").map { it.trim() }.filter { it.isNotEmpty() }
             .filterNot { it.length <= 4 && it.all { c -> c.isDigit() } }
             .distinct().joinToString(" ")
-        return listOf(base, sinNumeros).filter { it.isNotEmpty() }.distinct()
+        val calle = sinNum(base.substringBefore(","))
+        val sinTipo = calle.replace(tipoVia, "").trim()
+        return listOf(base, sinNum(base), calle, sinTipo)
+            // Nada que sea solo «Calle» o «Av.»: eso no ubica nada.
+            .filter { it.length >= 5 && it.count { c -> c.isLetter() } >= 4 && "$it ".replace(tipoVia, "").isNotBlank() }
+            .distinct()
     }
 
     fun hayRed(ctx: Context): Boolean = try {
@@ -234,7 +253,9 @@ object Zonas {
         val pts = zonas.flatMap { it.puntos }
         val margen = 0.4
         val caja = if (pts.isEmpty()) "" else String.format(
-            Locale.US, "&viewbox=%.5f,%.5f,%.5f,%.5f",
+            // bounded=1: solo resultados dentro del recuadro. Lo que caiga fuera no puede estar
+            // en una zona, y así «Benito Juárez» no se va a la Ciudad de México.
+            Locale.US, "&bounded=1&viewbox=%.5f,%.5f,%.5f,%.5f",
             pts.minOf { it.lon } - margen, pts.maxOf { it.lat } + margen,
             pts.maxOf { it.lon } + margen, pts.minOf { it.lat } - margen
         )

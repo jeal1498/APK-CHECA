@@ -588,6 +588,9 @@ class RutaService : AccessibilityService() {
                 val ro = Zonas.evaluar(Zonas.Tipo.ORIGEN, origen, zonas, geo)
                 val rd = Zonas.evaluar(Zonas.Tipo.DESTINO, destino, zonas, geo)
                 if (ro.bloqueada || rd.bloqueada) handler.post { aplicarZonas(clave, turno, ro, rd) }
+                // «Guardar pantallas»: qué dirección se leyó y dónde quedó, para revisar fallas.
+                if (prefs.diagnostico) Guardado.guardar(ctx, "Zonas", ro.bloqueada || rd.bloqueada,
+                    Zonas.informe(ro) + "\n" + Zonas.informe(rd) + "\n\n" + lineas.take(40).joinToString("\n"), null)
             }
         } catch (_: java.util.concurrent.RejectedExecutionException) { }
     }
