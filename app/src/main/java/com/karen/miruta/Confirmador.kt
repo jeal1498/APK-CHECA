@@ -124,6 +124,7 @@ object Confirmador {
             pausaRescate[app] = ahora + ENTRE_RESCATES_MS
         }
         val app0 = ctx.applicationContext
+        val pant = pantalla(app, null)
         try {
             hilo.execute {
                 var oferta: Oferta? = null
@@ -133,6 +134,8 @@ object Confirmador {
                     val cuerpo = JSONObject()
                         .put("modo", "rescate")
                         .put("lector", lector)
+                        .put("equipo", equipo())
+                        .put("pantalla", pant ?: JSONObject.NULL)
                     val lote = tomarCoincidencias()
                     if (lote.isNotEmpty()) cuerpo.put("coincidencias", JSONArray(lote))
                         .put("conteo", conteo)
@@ -182,7 +185,16 @@ object Confirmador {
 
     /** Pide la revisión de [o] una sola vez; [listo] se llama (en otro hilo) solo si hay que corregir. */
     /** La lectura del otro lector cuando no coinciden (10.57): la IA revisa las dos juntas. */
-    class Otra(val lector: String, val lineas: List<String>, val oferta: Oferta)
+    class Otra(val lector: String, val lineas: List<String>, val oferta: Oferta, val ms: Long = -1)
+
+    /** Teléfono y Android (10.58): explican por qué falla un lector en ciertos equipos. */
+    private fun equipo(): JSONObject = JSONObject()
+        .put("telefono", "${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}".trim().take(40))
+        .put("android", android.os.Build.VERSION.RELEASE ?: "")
+
+    /** Pantalla al momento de la lectura (se toma en el hilo principal, antes de enviar). */
+    private fun pantalla(app: String, o: Oferta?): JSONObject? =
+        try { RutaService.instancia?.contexto(app, o) } catch (_: Exception) { null }
 
     // ---------- Coincidencias (10.57) ----------
     // Ofertas donde el texto y la foto leyeron lo mismo: no se pregunta a la IA, solo se anotan.
@@ -196,6 +208,7 @@ object Confirmador {
             .put("tarifa", o.tarifa).put("km", o.km).put("min", o.min)
             .put("recKm", o.recogidaKm).put("recMin", o.recogidaMin).put("multi", o.multiplicador)
             .put("msTexto", msTexto).put("msFoto", msFoto).put("visto", System.currentTimeMillis())
+            .put("pantalla", pantalla(app, o) ?: JSONObject.NULL)
         val lote = synchronized(this) {
             coincidencias.add(fila)
             while (coincidencias.size > COINCIDENCIAS_MAX) coincidencias.removeAt(0)
@@ -204,7 +217,7 @@ object Confirmador {
         val app0 = ctx.applicationContext
         try {
             hilo.execute {
-                val cuerpo = JSONObject().put("modo", "coincidencias").put("version", BuildConfig.VERSION_NAME)
+                val cuerpo = JSONObject().put("modo", "coincidencias").put("version", BuildConfig.VERSION_NAME).put("equipo", equipo())
                     .put("coincidencias", JSONArray(lote))
                 val r = try { Cuenta.revisarOferta(app0, cuerpo.toString()) } catch (_: Exception) { null }
                 if (r == null) devolverCoincidencias(lote)
@@ -234,6 +247,7 @@ object Confirmador {
             if (revisadas.containsKey(f) || !enCurso.add(f)) return
         }
         val app0 = ctx.applicationContext
+        val pant = pantalla(app, o)
         try {
             hilo.execute {
                 var nueva: Oferta? = null
@@ -249,6 +263,8 @@ object Confirmador {
                         .put("lineas", JSONArray(enviar))
                         .put("msPopup", msPopup)
                         .put("lector", lector)
+                        .put("equipo", equipo())
+                        .put("pantalla", pant ?: JSONObject.NULL)
                         .put("msRevisionAnterior", msRevision)
                         .put("local", local(o))
                     if (otra != null) {
@@ -256,6 +272,7 @@ object Confirmador {
                             .put("lectorOtro", otra.lector)
                             .put("lineasOtro", JSONArray(filtrar(otra.lineas)))
                             .put("localOtro", local(otra.oferta))
+                            .put("msFoto", otra.ms)
                     }
                     val lote = tomarCoincidencias()
                     if (lote.isNotEmpty()) cuerpo.put("coincidencias", JSONArray(lote))

@@ -76,6 +76,14 @@ Con sesión, la app envía a la función `confirmar-oferta` de Supabase **solo l
 
 **Eliminación:** `errores_lector` y `uso_confirmar` se borran en cascada con el usuario de Auth. El punto «Texto, OCR y capturas» de abajo ahora es solo para lo que no son estas líneas.
 
+## Cambios de la 10.57–10.58 (11 nov 2026): cascada de lectores y contexto de lectura
+La revisión ahora también envía: el modelo del teléfono y la versión de Android, la orientación de la pantalla, si Android informó las ventanas de cada app, cuántas ofertas había a la vista, el color del semáforo y los tiempos de cada lector. Las ofertas donde los dos lectores coinciden se guardan en `coincidencias` (monto, km, min). Ajustar en Play Console → Seguridad de los datos:
+| Categoría → tipo | Qué es | Propósitos |
+|---|---|---|
+| Información y rendimiento de la app → Otros datos de rendimiento | Modelo del teléfono, versión de Android, orientación y tiempos de lectura, para corregir el lector en cada equipo | Analítica |
+
+**Eliminación:** `coincidencias` se borra en cascada con el usuario de Auth.
+
 ## Qué NO se declara y por qué
 - **Capturas y el resto del texto de las ofertas:** se procesan solo en el teléfono (las líneas con números van a la revisión de la 10.48). Con «Guardar pantallas de ofertas» se guardan localmente, máximo 7 días.
 - **Apps instaladas:** la app consulta las apps con lanzador solo para ubicar Uber y DiDi, sin enviarlas.

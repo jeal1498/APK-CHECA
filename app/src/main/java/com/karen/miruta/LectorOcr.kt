@@ -220,6 +220,7 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
         // Sin zonas (algunos teléfonos no dicen dónde está cada ventana): la app que está en
         // pantalla. Antes se mostraba sin las líneas y no había revisión ni rescate (10.52).
         val appOferta = app ?: servicio.appEnPantalla(detectarApp(grupo))
+        servicio.anotarTarjetas(appOferta, todasOrd.map { normalizar(it.text, conPeso) })
         if (oferta == null) {
             servicio.rescatar(appOferta, zona, lineas)
             return

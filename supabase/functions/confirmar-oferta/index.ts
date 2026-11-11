@@ -157,8 +157,25 @@ async function anotarConteo(id: string, c: unknown) {
 
 type Lectura = { tarifa: number; km: number; min: number; recKm: number; recMin: number; multi: number };
 
+// Teléfono y pantalla al leer (10.58): explican por qué falla un lector. Sin datos personales.
+type Equipo = { telefono: string | null; android: string | null };
+function leerEquipo(v: unknown): Equipo {
+  const o = (v && typeof v === "object" ? v : {}) as Record<string, unknown>;
+  return { telefono: String(o.telefono ?? "").slice(0, 40) || null, android: String(o.android ?? "").slice(0, 10) || null };
+}
+function leerPantalla(v: unknown): Record<string, unknown> {
+  const o = (v && typeof v === "object" ? v : {}) as Record<string, unknown>;
+  const t = Math.round(Number(o.tarjetas));
+  return {
+    orientacion: o.orientacion === "horizontal" || o.orientacion === "vertical" ? o.orientacion : null,
+    zonas: typeof o.zonas === "boolean" ? o.zonas : null,
+    tarjetas: Number.isFinite(t) && t > 0 && t < 20 ? t : null,
+    nivel: o.nivel === "verde" || o.nivel === "amarillo" || o.nivel === "rojo" ? o.nivel : null,
+  };
+}
+
 // Ofertas donde el texto y la foto del teléfono leyeron lo mismo (10.57): se anotan sin IA.
-async function anotarCoincidencias(id: string, version: string, v: unknown) {
+async function anotarCoincidencias(id: string, version: string, equipo: Equipo, v: unknown) {
   if (!Array.isArray(v) || v.length === 0) return;
   const filas = v.slice(0, 50).filter((c) => c && typeof c === "object").map((c) => {
     const o = c as Record<string, unknown>;
@@ -167,7 +184,7 @@ async function anotarCoincidencias(id: string, version: string, v: unknown) {
     return {
       usuario: id, version, app: String(o.app ?? "").slice(0, 10),
       tarifa: num(o.tarifa), km: num(o.km), min: num(o.min), rec_km: num(o.recKm), rec_min: num(o.recMin), multi: num(o.multi),
-      ms_texto: ms(o.msTexto), ms_foto: ms(o.msFoto),
+      ms_texto: ms(o.msTexto), ms_foto: ms(o.msFoto), ...equipo, ...leerPantalla(o.pantalla),
       visto: Number.isFinite(visto) && visto > 0 ? new Date(visto).toISOString() : null,
     };
   });
@@ -254,7 +271,9 @@ Deno.serve(async (req) => {
     return json({ ok: false, error: "cuerpo_invalido" }, 400);
   }
   const version = String(cuerpo.version ?? "").slice(0, 12);
-  await anotarCoincidencias(id, version, cuerpo.coincidencias);
+  const equipo = leerEquipo(cuerpo.equipo);
+  const pantalla = leerPantalla(cuerpo.pantalla);
+  await anotarCoincidencias(id, version, equipo, cuerpo.coincidencias);
   // Solo coincidencias (lote de 10 sin otra revisión pendiente): no hay nada que preguntar.
   if (cuerpo.modo === "coincidencias") return json({ ok: true });
   const lineas = filtrar(cuerpo.lineas);
@@ -282,6 +301,8 @@ Deno.serve(async (req) => {
     ms_popup: Number.isFinite(msPopup) ? msPopup : null,
     ms_revision_anterior: Number.isFinite(msRevisionAnterior) ? msRevisionAnterior : null,
     imagenes: 0, reintentos: 0,
+    ms_foto: Number.isFinite(Number(cuerpo.msFoto)) && Number(cuerpo.msFoto) >= 0 ? Math.round(Number(cuerpo.msFoto)) : null,
+    ...equipo, ...pantalla,
   };
 
   // Tope diario por cuenta (cuenta también las que fallan).
@@ -337,11 +358,12 @@ Deno.serve(async (req) => {
     await insertar("errores_lector", {
       usuario: id, app, moneda, version, lineas: [...lineas, "---", ...lineasOtro], local, ia, lector,
       lector_otro: lectorOtro, local_otro: localOtro, acerto, tipo: "desacuerdo",
+      ms_texto: registro.ms_popup, ms_foto: registro.ms_foto, ...equipo, ...pantalla,
     });
   } else if (!coincide) {
     // En el rescate solo se guarda si el revisor sí vio una oferta (si no, no hay nada que aprender).
     if (modo === "revision" || ia.oferta) {
-      await insertar("errores_lector", { usuario: id, app, moneda, version, lineas, local, ia, lector, tipo: modo === "rescate" ? "rescate" : "diferencia" });
+      await insertar("errores_lector", { usuario: id, app, moneda, version, lineas, local, ia, lector, tipo: modo === "rescate" ? "rescate" : "diferencia", ...equipo, ...pantalla });
     }
   }
   return json({ ok: true, coincide, ia });

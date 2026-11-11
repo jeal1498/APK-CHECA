@@ -716,3 +716,26 @@ revoke all on public.coincidencias from anon, authenticated;
 alter table public.errores_lector add column if not exists lector_otro text;
 alter table public.errores_lector add column if not exists local_otro jsonb;
 alter table public.errores_lector add column if not exists acerto text;
+
+-- ---------- 10.58: teléfono y pantalla de cada lectura (sin datos personales) ----------
+alter table public.revisiones add column if not exists telefono text;
+alter table public.revisiones add column if not exists android text;
+alter table public.revisiones add column if not exists orientacion text;
+alter table public.revisiones add column if not exists zonas boolean;
+alter table public.revisiones add column if not exists tarjetas integer;
+alter table public.revisiones add column if not exists nivel text;
+alter table public.revisiones add column if not exists ms_foto integer;
+alter table public.errores_lector add column if not exists telefono text;
+alter table public.errores_lector add column if not exists android text;
+alter table public.errores_lector add column if not exists orientacion text;
+alter table public.errores_lector add column if not exists zonas boolean;
+alter table public.errores_lector add column if not exists tarjetas integer;
+alter table public.errores_lector add column if not exists nivel text;
+alter table public.errores_lector add column if not exists ms_texto integer;
+alter table public.errores_lector add column if not exists ms_foto integer;
+alter table public.coincidencias add column if not exists telefono text;
+alter table public.coincidencias add column if not exists android text;
+alter table public.coincidencias add column if not exists orientacion text;
+alter table public.coincidencias add column if not exists zonas boolean;
+alter table public.coincidencias add column if not exists tarjetas integer;
+alter table public.coincidencias add column if not exists nivel text;

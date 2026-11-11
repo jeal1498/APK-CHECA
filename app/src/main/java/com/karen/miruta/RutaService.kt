@@ -52,6 +52,8 @@ class RutaService : AccessibilityService() {
     /** Ofertas seguidas que el lector de texto no vio, por app, y hasta cuándo se deja de usar. */
     private val fallosTexto = HashMap<String, Int>()
     private val textoApagadoHasta = HashMap<String, Long>()
+    /** Tarjetas de oferta a la vista en la última lectura de cada app (10.58, para la revisión). */
+    private val tarjetasVistas = HashMap<String, Int>()
     private val ultimoAviso = HashMap<String, Long>()
     /** Último evento de cada app (para saber cuándo se abrió de nuevo) y último «Lista para trabajar». */
     private val ultimoEventoPorApp = HashMap<String, Long>()
@@ -485,11 +487,32 @@ class RutaService : AccessibilityService() {
             Confirmador.anotarCoincidencia(this, e.app, a, e.ms, if (msFoto >= 0) msFoto else -1)
         } else {
             Confirmador.revisar(this, e.app, e.lineas, a, prefs.moneda, e.ms, LECTOR_TEXTO,
-                Confirmador.Otra(LECTOR_OCR, lineas, foto)) { nueva ->
+                Confirmador.Otra(LECTOR_OCR, lineas, foto, msFoto)) { nueva ->
                 handler.post { aplicarCorreccion(clave, e.app, e.mostrada, nueva) }
             }
         }
         return true
+    }
+
+    /** Cuenta las tarjetas de oferta en [lineas] (todas las de la zona, antes de separarlas). */
+    fun anotarTarjetas(app: String, lineas: List<String>) {
+        // El resumen de Uber («33 min · 10.6 km · $6.25/km est.») no es un tramo de otra tarjeta.
+        val tramos = lineas.count { LectorOcr.esTramo(it) && !it.contains("/km") }
+        if (tramos > 0) tarjetasVistas[app.ifEmpty { "?" }] = maxOf(1, (tramos + 1) / 2)
+    }
+
+    /** Cómo estaba la pantalla al leer [o] (10.58): orientación, zonas, tarjetas y color. Sin datos personales. */
+    fun contexto(app: String, o: Oferta?): org.json.JSONObject {
+        val nivel: Any = if (o == null || !::prefs.isInitialized) org.json.JSONObject.NULL else when (o.nivel(prefs)) {
+            Oferta.VERDE -> "verde"
+            Oferta.AMARILLO -> "amarillo"
+            else -> "rojo"
+        }
+        return org.json.JSONObject()
+            .put("orientacion", if (horizontal()) "horizontal" else "vertical")
+            .put("zonas", try { zonasApps().isNotEmpty() } catch (_: Exception) { false })
+            .put("tarjetas", tarjetasVistas[app.ifEmpty { "?" }] ?: 1)
+            .put("nivel", nivel)
     }
 
     private fun textoAcerto(app: String) {
@@ -835,6 +858,7 @@ class RutaService : AccessibilityService() {
                 val elegidos = Tarjetas.primera(porAltura.map { renglones[it] }, prefs.moneda)
                     ?.map { porAltura[it] }?.toHashSet()
                 val textos = renglones.indices.filter { elegidos == null || it in elegidos }.map { renglones[it].texto }
+                anotarTarjetas(app, renglones.map { it.texto })
                 val leida = Parser.analizar(textos.toList(), prefs.moneda)
                 if (prefs.diagnostico && textos.any { TRAMO.containsMatchIn(it) }) {
                     val firma = leida?.let { "${it.tarifa}|${it.km}|${it.min}" } ?: "?"
