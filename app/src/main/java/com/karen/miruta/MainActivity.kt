@@ -139,6 +139,23 @@ class MainActivity : Activity() {
         }
     }
 
+    // Android 15+ ignora (y marca obsoleto) el color de las barras: solo se pone en 14 o menos.
+    @Suppress("DEPRECATION")
+    private fun colorBarras(w: android.view.Window?, color: Int = cFondo) {
+        if (w == null || Build.VERSION.SDK_INT >= 35) return
+        w.statusBarColor = color
+        w.navigationBarColor = color
+    }
+
+    // En Android 15+ los diálogos también van de borde a borde: respeta los insets.
+    private fun margenesSistema(v: View) {
+        ViewCompat.setOnApplyWindowInsetsListener(v) { vista, insets ->
+            val b = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
+            vista.setPadding(b.left, b.top, b.right, b.bottom)
+            insets
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ajustesSeccion = savedInstanceState?.getInt("ajSec") ?: 0
@@ -149,8 +166,7 @@ class MainActivity : Activity() {
         // API 36 impone edge-to-edge. Dibujamos el fondo bajo las barras, pero
         // mantenemos los controles dentro de los insets para no taparlos.
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        window.statusBarColor = Color.TRANSPARENT
-        window.navigationBarColor = Color.TRANSPARENT
+        colorBarras(window, Color.TRANSPARENT)
         WindowCompat.getInsetsController(window, window.decorView).apply {
             isAppearanceLightStatusBars = Tema.claro
             isAppearanceLightNavigationBars = Tema.claro
@@ -3734,8 +3750,8 @@ class MainActivity : Activity() {
         }
         raiz.addView(guiaPie)
         d.setContentView(raiz)
-        d.window?.statusBarColor = cFondo
-        d.window?.navigationBarColor = cFondo
+        colorBarras(d.window)
+        margenesSistema(raiz)
         d.setOnDismissListener {
             prefs.guiaVista = true
             Cuenta.marcarBienvenida(this)
@@ -4117,8 +4133,8 @@ class MainActivity : Activity() {
         raiz.addView(permisosPie)
         d.setContentView(raiz)
         d.setCancelable(false)
-        d.window?.statusBarColor = cFondo
-        d.window?.navigationBarColor = cFondo
+        colorBarras(d.window)
+        margenesSistema(raiz)
         d.setOnDismissListener {
             prefs.permisosVistos = true
             dialogoPermisos = null
@@ -5188,8 +5204,8 @@ class MainActivity : Activity() {
         }
         raiz.addView(pie)
         d.setContentView(raiz)
-        d.window?.statusBarColor = cFondo
-        d.window?.navigationBarColor = cFondo
+        colorBarras(d.window)
+        margenesSistema(raiz)
         return Triple(d, cuerpo, pie)
     }
 
