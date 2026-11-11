@@ -11,6 +11,7 @@ Lo vigente para trabajar en Checa. La historia con fecha y el detalle largo vive
 ## Cómo trabajar con Eduardo
 - **Respuestas cortas, en español.** Él escucha el chat con lectura en voz alta: nada de textos largos.
 - Cambios **directo a `main`** (tiene permiso) en commits pequeños; sube también la rama de la sesión. Ningún secreto en el repo. No publicar en Play Console sin su autorización.
+- Él prueba en su teléfono con el APK del workflow **«Compilar flavor play»** (`play-compilar.yml`, artefacto de la última corrida en `main`), no con el AAB de Play. Cuando haya algo que probar, mándale el link de esa corrida.
 - Él prueba en su teléfono y manda capturas. Para fallas de lectura, pídele que active «Guardar pantallas de ofertas» y comparta lo guardado.
 - `rm` con comodín está bloqueado en el entorno: usa `mv`. Tareas de más de 2 min, en segundo plano.
 
