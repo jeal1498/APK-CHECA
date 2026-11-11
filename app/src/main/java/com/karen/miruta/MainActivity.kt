@@ -352,6 +352,8 @@ class MainActivity : Activity() {
             } else {
                 abrirActualizacion = false
             }
+        } else {
+            ActualizacionPlay.revisar(this)
         }
         if (esperandoPago && Cuenta.conectada(this)) {
             Cuenta.revisarAhora(this) { r ->
