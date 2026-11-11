@@ -9,6 +9,11 @@ object Novedades {
     class Version(val codigo: Int, val nombre: String, val puntos: List<String>, val widgets: Boolean = false, val vistaQr: Boolean = false)
 
     val LISTA = listOf(
+        Version(140, "10.60", listOf(
+            "Zonas bloqueadas: dibuja en un mapa las zonas a las que no quieres ir (Mis metas › Zonas bloqueadas).",
+            "Si el destino de una oferta cae en una de ellas, el pop-up sale en rojo. Necesita internet para ubicar la dirección.",
+            "Pantalla de borde a borde en Android 15."
+        )),
         Version(137, "10.57", listOf(
             "Lectura más eficiente: menos batería cuando la oferta ya está confirmada."
         )),

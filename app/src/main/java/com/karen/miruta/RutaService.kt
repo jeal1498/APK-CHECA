@@ -432,6 +432,7 @@ class RutaService : AccessibilityService() {
         alertas?.avisar(nivel)
         Historial.registrar(this, oferta, app, nivel)
         Confirmador.contarOferta(this)
+        if (lineas != null) revisarZona(clave, oferta, lineas)
         confirmadasTexto.remove(clave)
         esperas.remove(clave)?.vencer?.let { handler.removeCallbacks(it) }
         // El lector de texto no vio esta oferta (la sacó la foto): cuenta para dejar de usarlo en esta app.
@@ -470,7 +471,7 @@ class RutaService : AccessibilityService() {
      */
     private fun confirmarConFoto(app: String, foto: Oferta, lineas: List<String>, msFoto: Long): Boolean {
         val ahora = System.currentTimeMillis()
-        fun vigente(k: String, w: Espera) = ahora - w.t <= ESPERA_FOTO_MS && activas[k]?.first === w.mostrada
+        fun vigente(k: String, w: Espera) = ahora - w.t <= ESPERA_FOTO_MS && esMostrada(activas[k]?.first, w.mostrada)
         // La espera de la misma app; si no, la de otra app con la misma oferta (la foto sin
         // zonas puede confundir la app). Otra oferta de otra app sigue su camino normal.
         val (clave, e) = esperas[app]?.takeIf { vigente(app, it) }?.let { app to it }
@@ -557,10 +558,41 @@ class RutaService : AccessibilityService() {
         }
     }
 
+    /**
+     * Zonas bloqueadas: si el destino de la oferta cae en una zona dibujada por el conductor,
+     * el pop-up pasa a rojo («Zona bloqueada»). Necesita internet para ubicar la dirección;
+     * sin él (o si no se ve el destino) no se bloquea nada.
+     */
+    private fun revisarZona(clave: String, oferta: Oferta, lineas: List<String>) {
+        if (!prefs.zonasOn || oferta.zona.isNotEmpty()) return
+        val zonas = Zonas.leer(prefs.zonasTexto)
+        if (zonas.isEmpty()) return
+        val destino = Parser.destino(lineas) ?: return
+        val pais = Pais.actual(prefs).codigo
+        Thread {
+            val pt = Zonas.ubicar(this, destino, zonas, pais) ?: return@Thread
+            val n = Zonas.cual(zonas, pt.first, pt.second)
+            if (n == 0) return@Thread
+            handler.post {
+                val par = activas[clave] ?: return@post
+                if (!parecida(par.first, oferta)) return@post
+                val antes = par.first.nivel(prefs)
+                val marcada = par.first.copy(zona = "zona $n")
+                activas[clave] = marcada to par.second
+                ultimaFirma[clave] = marcada to System.currentTimeMillis()
+                redibujar(null)
+                if (antes != Parser.ROJO) alertas?.avisar(Parser.ROJO)
+                Historial.corregirUltima(this, clave, marcada, Parser.ROJO)
+            }
+        }.start()
+    }
+
     /** La revisión en segundo plano no coincidió: el pop-up se corrige sin anunciarlo. */
-    private fun aplicarCorreccion(clave: String, app: String, leida: Oferta, nueva: Oferta) {
+    private fun aplicarCorreccion(clave: String, app: String, leida: Oferta, nueva0: Oferta) {
         val par = activas[clave] ?: return
-        if (par.first !== leida) return
+        if (!esMostrada(par.first, leida)) return
+        // La zona bloqueada que ya se marcó no se pierde con la corrección.
+        val nueva = if (par.first.zona.isNotEmpty() && nueva0.zona.isEmpty()) nueva0.copy(zona = par.first.zona) else nueva0
         activas[clave] = nueva to par.second
         ultimaFirma[clave] = nueva to System.currentTimeMillis()
         redibujar(null)
@@ -571,6 +603,10 @@ class RutaService : AccessibilityService() {
         Historial.corregirUltima(this, app, nueva, ahora)
         Confirmador.contarCorreccion(this)
     }
+
+    /** [actual] es la oferta [mostrada], con o sin la marca de zona bloqueada que se le pudo agregar. */
+    private fun esMostrada(actual: Oferta?, mostrada: Oferta) =
+        actual === mostrada || (actual != null && actual.zona.isNotEmpty() && actual.copy(zona = "") == mostrada)
 
     private fun parecida(a: Oferta, b: Oferta) =
         Math.abs(a.km - b.km) < 0.15 && Math.abs(a.min - b.min) < 1.1 && Math.abs(a.tarifa - b.tarifa) < 1.0

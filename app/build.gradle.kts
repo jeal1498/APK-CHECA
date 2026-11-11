@@ -10,8 +10,8 @@ android {
     defaultConfig {
         minSdk = 26
         targetSdk = 36
-        versionCode = 139
-        versionName = "10.59"
+        versionCode = 140
+        versionName = "10.60"
     }
 
     buildFeatures { buildConfig = true }
@@ -97,6 +97,8 @@ dependencies {
     implementation("com.google.mlkit:text-recognition:16.0.1")
     // QR de contacto para pasajeros (10.42)
     implementation("com.google.zxing:core:3.5.3")
+    // Mapa para dibujar las zonas bloqueadas (10.60): OpenStreetMap, sin llave.
+    implementation("org.osmdroid:osmdroid-android:6.1.20")
     // Aviso de versión nueva en Google Play (solo se usa en el canal play).
     implementation("com.google.android.play:app-update:2.1.0")
     // Iniciar sesión con Google (licencia ligada a la cuenta)

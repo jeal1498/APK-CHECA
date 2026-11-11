@@ -135,6 +135,14 @@ class Prefs(context: Context) {
         set(v) { sp.edit().putFloat("tarMin", v).apply() }
 
     /** true: cuenta la ganancia neta (después de gasolina y desgaste); false: la tarifa que muestra la app. */
+    /** Zonas bloqueadas (10.60): ver [Zonas]. */
+    var zonasTexto: String
+        get() = sp.getString("zonas", "") ?: ""
+        set(v) { sp.edit().putString("zonas", v).apply() }
+    var zonasOn: Boolean
+        get() = sp.getBoolean("zonasOn", true)
+        set(v) { sp.edit().putBoolean("zonasOn", v).apply() }
+
     var tarMinNeta: Boolean
         get() = sp.getBoolean("tarMinNeta", true)
         set(v) { sp.edit().putBoolean("tarMinNeta", v).apply() }

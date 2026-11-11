@@ -105,3 +105,8 @@ La revisión ahora también envía: el modelo del teléfono y la versión de And
 3. Confirmar en un teléfono si «Entrar sin cuenta» se ve en el flavor play.
 4. ~~Agregar correo de contacto y plazo~~ Hecho en `PWA-Checa-Multimedia` (`8f9d5cb`): correo y plazo de 30 días en la página de eliminación y en la política.
 5. Actualizar este documento si cambian las llamadas de red o los SDKs.
+
+## Cambios de la 10.60 (11 nov 2026): zonas bloqueadas
+- **Ubicación aproximada y precisa:** solo para centrar el mapa de zonas en primer plano (ya se declaraba por el SOS). No se guarda ni se envía.
+- **Direcciones:** el texto del destino de una oferta (calle y colonia) se envía a Nominatim (OpenStreetMap) para convertirlo en coordenadas, solo si el conductor dibujó zonas. No incluye cuenta ni identificador. Revisar si cuenta como «Ubicación aproximada: recopilada/compartida» y mencionarlo en la política de privacidad.
+- Los mosaicos del mapa se bajan de OpenStreetMap (internet).

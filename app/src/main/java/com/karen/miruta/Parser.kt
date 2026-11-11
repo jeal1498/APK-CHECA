@@ -8,7 +8,9 @@ data class Oferta(
     val recogidaMin: Double = 0.0,
     val multiplicador: Double = 0.0,
     /** Dinámica de Uber en pesos ("+$62.00 incluido"), ya incluida en la tarifa. */
-    val dinamica: Double = 0.0
+    val dinamica: Double = 0.0,
+    /** Nombre de la zona bloqueada donde cae el destino (vacío si no cae en ninguna). */
+    val zona: String = ""
 ) {
     val porKm: Double get() = if (km > 0) tarifa / km else 0.0
     val porHora: Double get() = if (min > 0) tarifa / min * 60.0 else 0.0
@@ -33,6 +35,7 @@ data class Oferta(
         val f1 = { v: Double -> String.format(java.util.Locale.US, "%.1f", v) }
         val f0 = { v: Double -> String.format(java.util.Locale.US, "%.0f", v) }
         return when {
+            zona.isNotEmpty() -> "Zona bloqueada · $zona"
             p.filtroRecMax && recogidaKm > 0 && recogidaKm > p.recogidaMaxKm ->
                 "Recogida lejana: ${f1(recogidaKm)} km (máx ${f1(p.recogidaMaxKm.toDouble())})"
             p.filtroDurMax && viajeMin > p.duracionMax ->
@@ -172,6 +175,33 @@ object Parser {
             if (v > 1.0 && v <= 4.0) return v
         }
         return 0.0
+    }
+
+    private val noDireccion = Regex(
+        """(\$|aceptar|considerar|rechazar|adicional|por inicio|incluid|calificaci|viajes|perfil|verificad|exclusivo|priority|/km|/h)""",
+        RegexOption.IGNORE_CASE
+    )
+
+    /**
+     * Dirección del destino: las 1–2 líneas que siguen al último tramo «N min (X km)»
+     * (Uber: «Viaje: 15 min (6.9 km)» y debajo la dirección; DiDi: el segundo tramo y debajo la dirección).
+     * null si no se ve ninguna (entonces no se bloquea nada).
+     */
+    fun destino(textos: List<String>): String? {
+        var ultimo = -1
+        for ((i, t) in textos.withIndex()) {
+            if (t.contains("total", ignoreCase = true)) continue
+            if (tramo.containsMatchIn(corregirMinutos(t))) ultimo = i
+        }
+        if (ultimo < 0) return null
+        val partes = ArrayList<String>()
+        for (t in textos.drop(ultimo + 1)) {
+            val s = t.trim()
+            if (partes.size >= 2 || s.length < 4) break
+            if (!s.any { it.isLetter() } || noDireccion.containsMatchIn(s) || tramo.containsMatchIn(corregirMinutos(s))) break
+            partes.add(s)
+        }
+        return partes.joinToString(" ").ifBlank { null }
     }
 
     fun analizar(textos: List<String>, moneda: Moneda = Moneda.MXN): Oferta? {

@@ -310,6 +310,7 @@ class MainActivity : Activity() {
         // «Automático» sigue al teléfono: si cambió de oscuro a claro mientras estaba en segundo plano, se redibuja.
         if (Tema.esClaro(this, prefs.tema) != Tema.claro) { recreate(); return }
         actualizarAcceso()
+        pintarZonas()
         Cuenta.actualizarPrivados(this) { pintarJornada() }
         // Ajustes cerró al instante la página del lector (ese teléfono no la soporta): se abre la lista.
         if (detalleAbiertoEn > 0L) {
@@ -674,6 +675,19 @@ class MainActivity : Activity() {
             Tema.T_NOTA, cTenue, false), margenArriba(4))
         col.addView(gas, margenTarjeta())
 
+        // --- Zonas bloqueadas (10.60) ---
+        val zon = tarjeta()
+        zon.addView(etiquetaTarjeta("ZONAS BLOQUEADAS"))
+        valorZonas = texto("", Tema.T_TEXTO, cTexto, true).apply { typeface = Fuentes.numero }
+        zon.addView(filaAbrir("Mapa de zonas", valorZonas!!) {
+            startActivity(Intent(this, ZonasActivity::class.java))
+        }, margenArriba(Tema.S1))
+        pintarZonas()
+        zon.addView(texto("Dibuja en un mapa las zonas a las que no quieres ir. Si el destino de una oferta cae dentro, sale en rojo. " +
+            "Necesita internet para ubicar la dirección.",
+            Tema.T_NOTA, cTenue, false).apply { setLineSpacing(0f, 1.2f) }, margenArriba(4))
+        col.addView(zon, margenTarjeta())
+
         // --- Dos ofertas a la vez ---
         val cmp = tarjeta()
         cmp.addView(etiquetaTarjeta("DOS OFERTAS A LA VEZ"))
@@ -705,6 +719,17 @@ class MainActivity : Activity() {
     private var costoAutoValor: TextView? = null
     private var costoAutoDetalle: TextView? = null
     private var valorTarMin: TextView? = null
+    private var valorZonas: TextView? = null
+
+    private fun pintarZonas() {
+        val n = Zonas.leer(prefs.zonasTexto).size
+        valorZonas?.text = when {
+            n == 0 -> "Sin zonas"
+            !prefs.zonasOn -> "Apagado"
+            n == 1 -> "1 zona"
+            else -> "$n zonas"
+        }
+    }
 
     /** Fila de «Tu auto» que abre una ventana: nombre a la izquierda, valor y › a la derecha. */
     private fun filaAbrir(titulo: String, valor: TextView, abrir: () -> Unit): View {

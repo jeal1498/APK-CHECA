@@ -10,3 +10,6 @@
 -keep class androidx.credentials.playservices.** {
   *;
 }
+
+# Mapa de zonas bloqueadas (osmdroid).
+-dontwarn org.osmdroid.**
