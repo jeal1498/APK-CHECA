@@ -45,6 +45,7 @@ Excepciones: explica completo si lo piden; confirma antes de acciones destructiv
 
 ## Revisión de lecturas (DeepSeek / Haiku)
 - **Frase de arranque: «Estado de la revisión»** (opcional: «de hoy», «de la semana», «del mes»). Al leerla, con las herramientas de Supabase (proyecto `gqsadclvftkzwrihfipz`) responde en máximo 5 líneas: revisiones y ofertas del periodo, % que coincidió, correcciones y rescates (`errores_lector`, con su `veredicto` si ya lo hay), tiempos (mediana de `ms_popup` y `ms_ia`), costo real en USD y MXN por conductor (`consumo_conductor_dia`/`_mes`, `margen_planes`) y fallas (`fallas_ia`; `http_402` = sin saldo en DeepSeek). Sin cambiar código.
+- **Formato de las métricas (Eduardo, 11 nov):** cuando pida métricas, una tabla con una fila por conductor y estas columnas: Conductor (primeros 8 caracteres del id) · Revisiones · Coincidió (n y %) · Diferencias · Apps · Versión · IA (tiempo medio) · Costo (USD). Excluye a `a23854c9` (es Eduardo) salvo que pida incluirlo. Los tiempos y costos van de `revisiones`; «coincidió» solo significa que la IA leyó lo mismo que el lector local, no que sea correcto.
 - La revisión semanal automática corre los lunes a las 7:12 a.m. (CDMX) en la sesión donde se creó; si esa sesión ya no existe, se hace a mano con la frase «Revisión semanal del lector».
 
 ## Entorno y compilación
