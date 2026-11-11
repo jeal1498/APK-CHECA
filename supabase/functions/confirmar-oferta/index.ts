@@ -51,6 +51,33 @@ function filtrar(lineas: unknown): string[] {
     .slice(0, 30);
 }
 
+// Precios vigentes (tabla consumo_config); se leen a lo más cada 10 min.
+let precios = { entrada: 0.10, salida: 0.50, leido: 0 };
+async function preciosVigentes() {
+  if (Date.now() - precios.leido < 600_000) return precios;
+  try {
+    const r = await fetch(`${SUPA}/rest/v1/consumo_config?id=eq.1&select=usd_mtok_entrada,usd_mtok_salida`, { headers: headersServicio });
+    const [c] = await r.json();
+    if (c) precios = { entrada: Number(c.usd_mtok_entrada), salida: Number(c.usd_mtok_salida), leido: Date.now() };
+  } catch { /* se quedan los anteriores */ }
+  return precios;
+}
+
+// Conteo del teléfono: { dia: "2026-11-11", ofertas, correcciones }.
+async function anotarConteo(id: string, c: unknown) {
+  if (!c || typeof c !== "object") return;
+  const o = c as Record<string, unknown>;
+  const dia = String(o.dia ?? "");
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dia)) return;
+  try {
+    await rpc("anotar_consumo_dia", {
+      u: id, d: dia,
+      ofertas: Math.min(Math.round(num(o.ofertas)), 100000),
+      correcciones: Math.min(Math.round(num(o.correcciones)), 100000),
+    });
+  } catch { /* la medición nunca frena la revisión */ }
+}
+
 type Lectura = { tarifa: number; km: number; min: number; recKm: number; recMin: number; multi: number };
 
 function num(v: unknown): number {
@@ -115,6 +142,8 @@ Deno.serve(async (req) => {
   const moneda = String(cuerpo.moneda ?? "MXN").slice(0, 3);
   const version = String(cuerpo.version ?? "").slice(0, 12);
   if (lineas.length === 0 || !local) return json({ ok: false, error: "sin_datos" }, 400);
+  await anotarConteo(id, cuerpo.conteo);
+  await anotarConteo(id, cuerpo.conteoAnterior);
   const msPopup = Math.round(Number(cuerpo.msPopup ?? -1));
   const msRevisionAnterior = Math.round(Number(cuerpo.msRevisionAnterior ?? -1));
   // Una fila por revisión: tiempos, tokens reales y resultado (métricas de los lunes).
@@ -152,8 +181,16 @@ Deno.serve(async (req) => {
       messages: [{ role: "user", content: `App: ${app || "?"} · moneda: ${moneda}\nLíneas:\n${lineas.join("\n")}` }],
     // deno-lint-ignore no-explicit-any
     } as any);
-    registro.tokens_entrada = r.usage?.input_tokens ?? 0;
-    registro.tokens_salida = r.usage?.output_tokens ?? 0;
+    // Tokens reales que cobra Anthropic (la salida incluye el razonamiento; las imágenes, si
+    // algún día se mandan, vienen dentro de la entrada).
+    const tIn = r.usage?.input_tokens ?? 0;
+    const tOut = r.usage?.output_tokens ?? 0;
+    const p = await preciosVigentes();
+    registro.tokens_entrada = tIn;
+    registro.tokens_salida = tOut;
+    registro.usd_mtok_entrada = p.entrada;
+    registro.usd_mtok_salida = p.salida;
+    registro.costo_usd = (tIn * p.entrada + tOut * p.salida) / 1_000_000;
     if (r.stop_reason === "refusal") throw new Error("refusal");
     const texto = r.content.filter((b) => b.type === "text").map((b) => (b as { text: string }).text).join("");
     const d = JSON.parse(texto);

@@ -393,6 +393,7 @@ class RutaService : AccessibilityService() {
         val nivel = oferta.nivel(prefs)
         alertas?.avisar(nivel)
         Historial.registrar(this, oferta, app, nivel)
+        Confirmador.contarOferta(this)
         if (lineas != null && oferta === leida) {
             // Desde la captura (o el evento) hasta el pop-up en pantalla.
             val msPopup = if (msLectura >= 0) msLectura else -1
@@ -414,6 +415,7 @@ class RutaService : AccessibilityService() {
         // Solo si cambia el color suena la alerta normal, como con cualquier oferta.
         if (ahora != antes) alertas?.avisar(ahora)
         Historial.corregirUltima(this, app, nueva, ahora)
+        Confirmador.contarCorreccion(this)
     }
 
     private fun parecida(a: Oferta, b: Oferta) =

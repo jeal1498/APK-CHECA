@@ -541,3 +541,125 @@ create table if not exists public.verificacion_manual (
 );
 alter table public.verificacion_manual enable row level security;
 revoke all on public.verificacion_manual from anon, authenticated;
+
+-- ---------- Consumo de la revisión por conductor (10.50) ----------
+-- Precios y tipo de cambio editables sin tocar código (una sola fila, id = 1).
+create table if not exists public.consumo_config (
+  id                    smallint primary key default 1 check (id = 1),
+  usd_mtok_entrada      numeric not null default 0.10,  -- Haiku 5.5, USD por millón de tokens
+  usd_mtok_salida       numeric not null default 0.50,
+  mxn_por_usd           numeric not null default 18.5,
+  comision_tienda       numeric not null default 0.15,  -- Google Play
+  actualizado           timestamptz not null default now()
+);
+insert into public.consumo_config (id) values (1) on conflict (id) do nothing;
+alter table public.consumo_config enable row level security;
+revoke all on public.consumo_config from anon, authenticated;
+
+create table if not exists public.planes_precio (
+  plan       text primary key,
+  precio_mxn numeric not null,
+  meses      integer not null check (meses > 0)
+);
+insert into public.planes_precio (plan, precio_mxn, meses) values
+  ('Básico 1 mes', 119, 1), ('Estratega 6 meses', 589, 6), ('Pro 1 año', 1059, 12),
+  ('Fundador 1 mes', 71, 1), ('Fundador 6 meses', 353, 6), ('Fundador 1 año', 635, 12)
+on conflict (plan) do update set precio_mxn = excluded.precio_mxn, meses = excluded.meses;
+alter table public.planes_precio enable row level security;
+revoke all on public.planes_precio from anon, authenticated;
+
+-- Costo de cada consulta con el precio vigente en ese momento.
+alter table public.revisiones add column if not exists costo_usd numeric not null default 0;
+alter table public.revisiones add column if not exists usd_mtok_entrada numeric;
+alter table public.revisiones add column if not exists usd_mtok_salida numeric;
+
+-- Lo que cuenta el teléfono (sin llamadas extra: viaja dentro de la siguiente revisión).
+create table if not exists public.consumo_dia (
+  usuario      uuid not null references auth.users (id) on delete cascade,
+  dia          date not null,
+  ofertas      integer not null default 0,  -- ofertas nuevas con pop-up
+  correcciones integer not null default 0,  -- correcciones que la app aplicó
+  actualizado  timestamptz not null default now(),
+  primary key (usuario, dia)
+);
+alter table public.consumo_dia enable row level security;
+revoke all on public.consumo_dia from anon, authenticated;
+
+create or replace function public.anotar_consumo_dia(u uuid, d date, ofertas integer, correcciones integer)
+returns void language sql security definer set search_path = public as $$
+  insert into public.consumo_dia as c (usuario, dia, ofertas, correcciones)
+  values (u, d, greatest(anotar_consumo_dia.ofertas, 0), greatest(anotar_consumo_dia.correcciones, 0))
+  on conflict (usuario, dia) do update set
+    ofertas = greatest(c.ofertas, excluded.ofertas),
+    correcciones = greatest(c.correcciones, excluded.correcciones),
+    actualizado = now();
+$$;
+revoke all on function public.anotar_consumo_dia(uuid, date, integer, integer) from public, anon, authenticated;
+grant execute on function public.anotar_consumo_dia(uuid, date, integer, integer) to service_role;
+
+-- Resúmenes. «conductor» es un ID anónimo (8 caracteres) en vez del correo.
+create or replace view public.consumo_conductor_dia with (security_invoker = on) as
+with r as (
+  select usuario, (creado at time zone 'America/Mexico_City')::date as dia,
+         count(*) as consultas,
+         count(*) filter (where ok) as respondidas,
+         count(*) filter (where ok and coincide = false) as diferencias,
+         count(*) filter (where not ok) as errores,
+         coalesce(sum(reintentos), 0) as reintentos,
+         coalesce(sum(imagenes), 0) as imagenes,
+         coalesce(sum(tokens_entrada), 0) as tokens_entrada,
+         coalesce(sum(tokens_salida), 0) as tokens_salida,
+         coalesce(sum(costo_usd), 0) as costo_usd
+  from public.revisiones group by 1, 2
+)
+select left(md5(coalesce(r.usuario, c.usuario)::text), 8) as conductor,
+       coalesce(r.dia, c.dia) as dia,
+       coalesce(c.ofertas, 0) as ofertas,
+       coalesce(r.consultas, 0) as consultas,
+       coalesce(r.respondidas, 0) as respondidas,
+       coalesce(r.diferencias, 0) as diferencias,
+       coalesce(c.correcciones, 0) as correcciones,
+       coalesce(r.errores, 0) as errores,
+       coalesce(r.reintentos, 0) as reintentos,
+       coalesce(r.imagenes, 0) as imagenes,
+       coalesce(r.tokens_entrada, 0) as tokens_entrada,
+       coalesce(r.tokens_salida, 0) as tokens_salida,
+       round(coalesce(r.costo_usd, 0), 6) as costo_usd,
+       round(coalesce(r.costo_usd, 0) * (select mxn_por_usd from public.consumo_config where id = 1), 4) as costo_mxn
+from r full join public.consumo_dia c on c.usuario = r.usuario and c.dia = r.dia;
+
+create or replace view public.consumo_conductor_mes with (security_invoker = on) as
+select conductor, date_trunc('month', dia)::date as mes,
+       count(*) filter (where consultas > 0 or ofertas > 0) as dias_activos,
+       sum(ofertas) as ofertas, sum(consultas) as consultas, sum(diferencias) as diferencias,
+       sum(correcciones) as correcciones, sum(errores) as errores, sum(reintentos) as reintentos,
+       sum(imagenes) as imagenes, sum(tokens_entrada) as tokens_entrada, sum(tokens_salida) as tokens_salida,
+       round(sum(costo_usd), 4) as costo_usd, round(sum(costo_mxn), 2) as costo_mxn,
+       round(sum(costo_mxn) / nullif(count(*) filter (where consultas > 0 or ofertas > 0), 0), 4) as costo_mxn_por_dia_activo
+from public.consumo_conductor_dia group by 1, 2;
+
+create or replace view public.consumo_global_mes with (security_invoker = on) as
+select mes,
+       count(*) as conductores,
+       sum(ofertas) as ofertas, sum(consultas) as consultas, sum(diferencias) as diferencias,
+       sum(correcciones) as correcciones, sum(errores) as errores,
+       round(sum(costo_usd), 4) as costo_usd, round(sum(costo_mxn), 2) as costo_mxn,
+       round(avg(costo_mxn), 2) as costo_mxn_promedio_conductor,
+       round((percentile_cont(0.9) within group (order by costo_mxn))::numeric, 2) as costo_mxn_p90_conductor,
+       round(max(costo_mxn), 2) as costo_mxn_max_conductor,
+       round(sum(costo_usd) * 1000000 / nullif(sum(consultas), 0), 2) as usd_por_millon_consultas
+from public.consumo_conductor_mes group by 1;
+
+-- Margen mensual por plan: precio al mes − comisión de la tienda − costo de la revisión (promedio y p90).
+create or replace view public.margen_planes with (security_invoker = on) as
+select g.mes, p.plan, round(p.precio_mxn / p.meses, 2) as precio_mes_mxn,
+       round(p.precio_mxn / p.meses * (1 - cfg.comision_tienda), 2) as neto_tienda_mxn,
+       g.costo_mxn_promedio_conductor, g.costo_mxn_p90_conductor,
+       round(p.precio_mxn / p.meses * (1 - cfg.comision_tienda) - g.costo_mxn_promedio_conductor, 2) as margen_promedio_mxn,
+       round(p.precio_mxn / p.meses * (1 - cfg.comision_tienda) - g.costo_mxn_p90_conductor, 2) as margen_p90_mxn,
+       round(g.costo_mxn_p90_conductor / nullif(p.precio_mxn / p.meses, 0) * 100, 2) as costo_p90_pct_precio
+from public.consumo_global_mes g cross join public.planes_precio p cross join public.consumo_config cfg
+where cfg.id = 1;
+
+revoke all on public.consumo_conductor_dia, public.consumo_conductor_mes, public.consumo_global_mes, public.margen_planes
+  from anon, authenticated;

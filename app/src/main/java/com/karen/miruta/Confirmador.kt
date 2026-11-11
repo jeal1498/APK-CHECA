@@ -3,6 +3,10 @@ package com.karen.miruta
 import android.content.Context
 import org.json.JSONArray
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 import java.util.concurrent.Executors
 
 /**
@@ -24,6 +28,66 @@ object Confirmador {
     }
 
     private val util = Regex("""(min|km|\$|mxn|/km|\dx\b|×|⚡|incluid|adicional|por inicio)""", RegexOption.IGNORE_CASE)
+
+    // ---------- Medición de consumo (10.50) ----------
+    // Solo números del día: ofertas con pop-up y correcciones aplicadas. Viajan dentro de la
+    // siguiente revisión (sin llamadas extra). Al cambiar de día, el del día anterior se manda
+    // hasta que el servidor lo recibe.
+    private fun medicion(ctx: Context) = ctx.applicationContext.getSharedPreferences("medicion", Context.MODE_PRIVATE)
+
+    private fun hoy(): String = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        .apply { timeZone = TimeZone.getTimeZone("America/Mexico_City") }.format(Date())
+
+    @Synchronized
+    private fun cambiarDia(ctx: Context) {
+        val m = medicion(ctx)
+        val d = hoy()
+        val dia = m.getString("dia", null)
+        if (dia == d) return
+        val e = m.edit()
+        if (dia != null && (m.getInt("ofertas", 0) > 0 || m.getInt("correcciones", 0) > 0)) {
+            e.putString("ant_dia", dia).putInt("ant_ofertas", m.getInt("ofertas", 0))
+                .putInt("ant_correcciones", m.getInt("correcciones", 0))
+        }
+        e.putString("dia", d).putInt("ofertas", 0).putInt("correcciones", 0).apply()
+    }
+
+    /** Una oferta nueva con pop-up (se cuenta aunque no haya sesión). */
+    @Synchronized
+    fun contarOferta(ctx: Context) {
+        cambiarDia(ctx)
+        val m = medicion(ctx)
+        m.edit().putInt("ofertas", m.getInt("ofertas", 0) + 1).apply()
+    }
+
+    /** La app aplicó una corrección de la revisión. */
+    @Synchronized
+    fun contarCorreccion(ctx: Context) {
+        cambiarDia(ctx)
+        val m = medicion(ctx)
+        m.edit().putInt("correcciones", m.getInt("correcciones", 0) + 1).apply()
+    }
+
+    @Synchronized
+    private fun conteos(ctx: Context): Pair<JSONObject, JSONObject?> {
+        cambiarDia(ctx)
+        val m = medicion(ctx)
+        val actual = JSONObject().put("dia", m.getString("dia", null) ?: hoy())
+            .put("ofertas", m.getInt("ofertas", 0)).put("correcciones", m.getInt("correcciones", 0))
+        val ant = m.getString("ant_dia", null)?.let {
+            JSONObject().put("dia", it).put("ofertas", m.getInt("ant_ofertas", 0))
+                .put("correcciones", m.getInt("ant_correcciones", 0))
+        }
+        return actual to ant
+    }
+
+    @Synchronized
+    private fun anteriorRecibido(ctx: Context, dia: String) {
+        val m = medicion(ctx)
+        if (m.getString("ant_dia", null) == dia) {
+            m.edit().remove("ant_dia").remove("ant_ofertas").remove("ant_correcciones").apply()
+        }
+    }
 
     private fun firma(o: Oferta) = "${o.tarifa}|${o.km}|${o.min}"
 
@@ -53,7 +117,10 @@ object Confirmador {
                 var nueva: Oferta? = null
                 try {
                     val t0 = android.os.SystemClock.elapsedRealtime()
+                    val (conteo, conteoAnterior) = conteos(app0)
                     val cuerpo = JSONObject()
+                        .put("conteo", conteo)
+                        .put("conteoAnterior", conteoAnterior ?: JSONObject.NULL)
                         .put("app", app)
                         .put("moneda", moneda.codigo)
                         .put("version", BuildConfig.VERSION_NAME)
@@ -63,7 +130,10 @@ object Confirmador {
                         .put("local", JSONObject()
                             .put("tarifa", o.tarifa).put("km", o.km).put("min", o.min)
                             .put("recKm", o.recogidaKm).put("recMin", o.recogidaMin).put("multi", o.multiplicador))
-                    val r = JSONObject(Cuenta.revisarOferta(app0, cuerpo.toString()) ?: "{}")
+                    val respuesta = Cuenta.revisarOferta(app0, cuerpo.toString())
+                    // El servidor respondió (aunque sea sin saldo): ya anotó el conteo del día anterior.
+                    if (respuesta != null && conteoAnterior != null) anteriorRecibido(app0, conteoAnterior.getString("dia"))
+                    val r = JSONObject(respuesta ?: "{}")
                     // Ida y vuelta completa de la revisión, vista desde el teléfono: va en la siguiente.
                     msRevision = android.os.SystemClock.elapsedRealtime() - t0
                     val ia = r.optJSONObject("ia")
