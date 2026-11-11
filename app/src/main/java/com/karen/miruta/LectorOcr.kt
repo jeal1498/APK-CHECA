@@ -244,7 +244,8 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
         /** …y la pantalla es «casi igual» si cambió menos de este % de puntos. */
         private const val GATE_PORC = 2
         private const val GATE_MAX = 3
-        val tramoTexto = Regex("""\d\s?min\s*\(""", RegexOption.IGNORE_CASE)
+        // «5min (1.7km)» (DiDi, Uber viejo) y «6 min · 2.3 km» (Uber nov 2026).
+        val tramoTexto = Regex("""\d\s?min\s*(?:\(|[^\d(\s]{0,3}\s*\d+(?:[.,]\d+)?\s?k?m\b)""", RegexOption.IGNORE_CASE)
 
         /** Un tramo «N min (» de una oferta; el resumen «… total» (pop-up propio o de otra app) no cuenta. */
         fun esTramo(t: String) = tramoTexto.containsMatchIn(t) && !t.contains("total", ignoreCase = true)

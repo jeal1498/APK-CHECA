@@ -1,3 +1,5 @@
+v127 (10.47): **Detector de ofertas con Uber nuevo.** El aviso de «hay una oferta en pantalla» (reintento rápido y «Guardar pantallas de ofertas») solo reconocía «N min (»; con «6 min · 2.3 km» las ofertas de Uber no se guardaban. Ahora acepta los dos formatos (`LectorOcr.tramoTexto`, también en `RutaService`).
+
 v126 (10.46): **Lector Uber: resumen y radar.** Uber muestra arriba «50 min · 16.4 km · $6.29/km est.» (el total) y la 10.45 lo sumaba como tramo (doble de min y km). Ahora un tramo en un texto con «/km», o que vale la suma de los demás, es el resumen y no se suma. La tarifa se confirma con $/km × km del resumen para no tomar el monto de otra tarjeta del radar. Casos: `uber-resumen-arriba.txt`, `uber-radar-otra-tarjeta.txt`, `uber-resumen-sin-precio.txt`.
 
 v125 (10.45): **Lector Uber nuevo, OCR ruidoso.** En el teléfono del tester la 10.44 leyó 20 min y 32.9 km: el OCR leyó «8 min» como «B min» y «1 h» como «Ih». `corregirMinutos` ahora corrige B→8, O→0, S→5 junto a «min» y «Ih»→«1 h»; el separador entre minutos y km acepta cualquier símbolo de hasta 3 caracteres. Caso nuevo: `uber-nuevo-ocr-ruidoso.txt`.

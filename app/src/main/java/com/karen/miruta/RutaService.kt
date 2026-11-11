@@ -675,7 +675,7 @@ class RutaService : AccessibilityService() {
 
     companion object {
         /** Un tramo «N min (X km)»: la pantalla tiene una oferta. */
-        private val TRAMO = Regex("""\d\s?min\s*\(""", RegexOption.IGNORE_CASE)
+        private val TRAMO = LectorOcr.tramoTexto
         @Volatile
         var instancia: RutaService? = null
         /** Android apagó el servicio (o la captura falló) con la lectura encendida. */
