@@ -690,3 +690,29 @@ alter table public.errores_lector add column if not exists tipo text not null de
 -- ---------- 10.55: de qué lector vino cada oferta («ocr» = foto, «texto» = texto de la app) ----------
 alter table public.revisiones add column if not exists lector text;
 alter table public.errores_lector add column if not exists lector text;
+
+-- ---------- 10.57: cascada de lectores ----------
+-- Ofertas donde el texto de la app y la foto (OCR) leyeron lo mismo: confirmadas sin IA.
+create table if not exists public.coincidencias (
+  id        bigserial primary key,
+  usuario   uuid references auth.users (id) on delete cascade,
+  app       text,
+  version   text,
+  tarifa    numeric,
+  km        numeric,
+  min       numeric,
+  rec_km    numeric,
+  rec_min   numeric,
+  multi     numeric,
+  ms_texto  integer,
+  ms_foto   integer,
+  visto     timestamptz,
+  creado    timestamptz not null default now()
+);
+create index if not exists coincidencias_creado on public.coincidencias (creado);
+alter table public.coincidencias enable row level security;
+revoke all on public.coincidencias from anon, authenticated;
+-- Desacuerdos entre lectores: la otra lectura y cuál acertó según la IA (texto / ocr / ninguno).
+alter table public.errores_lector add column if not exists lector_otro text;
+alter table public.errores_lector add column if not exists local_otro jsonb;
+alter table public.errores_lector add column if not exists acerto text;

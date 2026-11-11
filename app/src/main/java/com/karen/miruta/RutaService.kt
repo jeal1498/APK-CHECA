@@ -38,6 +38,20 @@ class RutaService : AccessibilityService() {
     /** Dónde se vieron por última vez los tramos de cada oferta activa, y lecturas seguidas sin verlos. */
     private val tramosVistos = HashMap<String, List<Rect>>()
     private val sinVer = HashMap<String, Int>()
+
+    // ---------- Cascada de lectores (10.57) ----------
+    /** Pop-up que sacó el lector de texto y espera la foto para confirmarse (sin IA si coinciden). */
+    private class Espera(val app: String, val mostrada: Oferta, val leida: Oferta, val lineas: List<String>, val ms: Long, val t: Long) {
+        var vencer: Runnable? = null
+    }
+    private val esperas = HashMap<String, Espera>()
+    /** Pop-ups cuya oferta confirmaron los dos lectores (la foto puede descansar). */
+    private val confirmadasTexto = HashSet<String>()
+    /** Última vez que el lector de texto vio una oferta de cada app. */
+    private val vistoTexto = HashMap<String, Long>()
+    /** Ofertas seguidas que el lector de texto no vio, por app, y hasta cuándo se deja de usar. */
+    private val fallosTexto = HashMap<String, Int>()
+    private val textoApagadoHasta = HashMap<String, Long>()
     private val ultimoAviso = HashMap<String, Long>()
     /** Último evento de cada app (para saber cuándo se abrió de nuevo) y último «Lista para trabajar». */
     private val ultimoEventoPorApp = HashMap<String, Long>()
@@ -239,6 +253,7 @@ class RutaService : AccessibilityService() {
         // Con la pantalla apagada no hay ofertas que ver (y la captura fallaría).
         val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
         if (!pm.isInteractive) { programar(LATIDO_SIN_APP); return }
+        if (textoCubre()) { programar(INTERVALO_MIN); return }
         // Al apagar o bloquear la pantalla, una captura u OCR puede quedar colgado sin avisar:
         // pasados 6 s se da por perdido y se sigue leyendo (si no, tras desbloquear no leía nada).
         if ((capturando || lector.ocupado) && SystemClock.uptimeMillis() - ultimaCaptura > 6000L) {
@@ -354,10 +369,16 @@ class RutaService : AccessibilityService() {
     /** Muestra la oferta de [app] sobre su [zona] (sin repetir la misma en 60 s). */
     fun mostrarOferta(leida: Oferta, app: String, zona: Rect?, lineas: List<String>? = null, msLectura: Long = -1, lector: String = LECTOR_OCR) {
         if (!Licencia.activa(this) || !Cuenta.puedeUsar(this)) return
+        val clave = app.ifEmpty { "?" }
+        if (lector == LECTOR_TEXTO) { vistoTexto[clave] = System.currentTimeMillis(); textoAcerto(clave) }
+        // La foto vuelve a leer la oferta que ya sacó el texto: confirma (sin IA) o se revisan las dos.
+        if (lineas != null && lector == LECTOR_OCR && confirmarConFoto(clave, leida, lineas, msLectura)) return
         // Si la revisión en segundo plano ya corrigió esta misma lectura, se usa la corregida.
         val oferta = Confirmador.corregida(leida) ?: leida
         prefs.ultimaOferta = System.currentTimeMillis()
-        val clave = app.ifEmpty { "?" }
+        // La misma oferta que ya está en el pop-up de la otra app (la foto, sin zonas, puede
+        // confundir de qué app es): no sale otro pop-up.
+        if (activas.any { (k, par) -> k != clave && parecida(par.first, oferta) }) return
         // Con el pop-up encima, el lector ve la oferta tapada y lee otros montos.
         // Si los tramos son los mismos (o se perdió uno), es la misma oferta: no se toca.
         activas[clave]?.first?.let { a ->
@@ -385,6 +406,8 @@ class RutaService : AccessibilityService() {
                     activas.remove(clave)
                     tramosVistos.remove(clave)
                     sinVer.remove(clave)
+                    confirmadasTexto.remove(clave)
+                    esperas.remove(clave)?.vencer?.let { handler.removeCallbacks(it) }
                     redibujar(null)
                 }
             }
@@ -407,13 +430,94 @@ class RutaService : AccessibilityService() {
         alertas?.avisar(nivel)
         Historial.registrar(this, oferta, app, nivel)
         Confirmador.contarOferta(this)
+        confirmadasTexto.remove(clave)
+        esperas.remove(clave)?.vencer?.let { handler.removeCallbacks(it) }
+        // El lector de texto no vio esta oferta (la sacó la foto): cuenta para dejar de usarlo en esta app.
+        if (lector == LECTOR_OCR && lineas != null) textoFallo(clave)
         if (lineas != null && oferta === leida) {
             // Desde la captura (o el evento) hasta el pop-up en pantalla.
             val msPopup = if (msLectura >= 0) msLectura else -1
-            Confirmador.revisar(this, app, lineas, leida, prefs.moneda, msPopup, lector) { nueva ->
-                handler.post { aplicarCorreccion(clave, app, leida, nueva) }
+            if (lector == LECTOR_TEXTO && leyendo) {
+                // Se espera a la foto (≈ 0.5–1.5 s): si coinciden no se pregunta a la IA.
+                val e = Espera(app, oferta, leida, lineas, msPopup, System.currentTimeMillis())
+                val r = Runnable {
+                    if (esperas[clave] === e) {
+                        esperas.remove(clave)
+                        revisarUna(clave, e.app, e.lineas, e.leida, e.ms, LECTOR_TEXTO)
+                    }
+                }
+                e.vencer = r
+                esperas[clave] = e
+                handler.postDelayed(r, ESPERA_FOTO_MS)
+            } else {
+                revisarUna(clave, app, lineas, leida, msPopup, lector)
             }
         }
+    }
+
+    private fun revisarUna(clave: String, app: String, lineas: List<String>, leida: Oferta, msPopup: Long, lector: String) {
+        Confirmador.revisar(this, app, lineas, leida, prefs.moneda, msPopup, lector) { nueva ->
+            handler.post { aplicarCorreccion(clave, app, leida, nueva) }
+        }
+    }
+
+    /**
+     * La foto leyó una oferta mientras un pop-up del texto espera confirmación. Si es la misma,
+     * queda confirmada (se anota en `coincidencias`, sin IA). Si no, la IA revisa las dos
+     * lecturas juntas y corrige el pop-up si hace falta. true = esta lectura ya se usó.
+     */
+    private fun confirmarConFoto(app: String, foto: Oferta, lineas: List<String>, msFoto: Long): Boolean {
+        val ahora = System.currentTimeMillis()
+        fun vigente(k: String, w: Espera) = ahora - w.t <= ESPERA_FOTO_MS && activas[k]?.first === w.mostrada
+        // La espera de la misma app; si no, la de otra app con la misma oferta (la foto sin
+        // zonas puede confundir la app). Otra oferta de otra app sigue su camino normal.
+        val (clave, e) = esperas[app]?.takeIf { vigente(app, it) }?.let { app to it }
+            ?: esperas.entries.firstOrNull { (k, w) -> vigente(k, w) && parecida(w.leida, foto) }?.toPair()
+            ?: return false
+        val a = e.leida
+        // Con el pop-up encima la foto puede ver la oferta incompleta (un tramo tapado): se espera otra.
+        fun cerca(km: Double, min: Double) = Math.abs(km - foto.km) < 0.15 && Math.abs(min - foto.min) < 1.1
+        if (a.recogidaMin > 0 && foto.recogidaMin == 0.0 && (cerca(a.viajeKm, a.viajeMin) || cerca(a.recogidaKm, a.recogidaMin))) return true
+        esperas.remove(clave)
+        e.vencer?.let { handler.removeCallbacks(it) }
+        if (parecida(a, foto)) {
+            confirmadasTexto.add(clave)
+            Confirmador.anotarCoincidencia(this, e.app, a, e.ms, if (msFoto >= 0) msFoto else -1)
+        } else {
+            Confirmador.revisar(this, e.app, e.lineas, a, prefs.moneda, e.ms, LECTOR_TEXTO,
+                Confirmador.Otra(LECTOR_OCR, lineas, foto)) { nueva ->
+                handler.post { aplicarCorreccion(clave, e.app, e.mostrada, nueva) }
+            }
+        }
+        return true
+    }
+
+    private fun textoAcerto(app: String) {
+        fallosTexto[app] = 0
+    }
+
+    private fun textoFallo(app: String) {
+        val n = (fallosTexto[app] ?: 0) + 1
+        fallosTexto[app] = n
+        if (n >= FALLOS_TEXTO_MAX) {
+            // En este teléfono el texto de esta app no sirve: 30 min solo con la foto.
+            textoApagadoHasta[app] = System.currentTimeMillis() + TEXTO_PAUSA_MS
+            fallosTexto[app] = 0
+        }
+    }
+
+    private fun textoApagado(app: String) = System.currentTimeMillis() < (textoApagadoHasta[app] ?: 0L)
+
+    /**
+     * Las ofertas en pantalla ya las confirmaron los dos lectores y el texto las sigue viendo:
+     * la foto descansa (menos batería). Si el texto deja de verlas, la foto vuelve en ≤ 1.5 s.
+     */
+    private fun textoCubre(): Boolean {
+        if (activas.isEmpty()) return false
+        // Solo si el texto ya leyó la última oferta de cada app (si no, la foto podría perder una).
+        if (APPS.any { textoApagado(it) || fallosTexto[it] != 0 }) return false
+        val ahora = System.currentTimeMillis()
+        return activas.keys.all { it in confirmadasTexto && ahora - (vistoTexto[it] ?: 0L) < TEXTO_FRESCO_MS }
     }
 
     /**
@@ -717,6 +821,8 @@ class RutaService : AccessibilityService() {
                 val pkg = raiz.packageName?.toString() ?: continue
                 if (pkg == packageName) continue
                 val app = nombreApp(pkg) ?: continue
+                // En este teléfono el texto de esta app no sirvió en las últimas ofertas: solo foto.
+                if (textoApagado(app) && !prefs.diagnostico) continue
                 // Antes de recorrer todo el árbol (caro: Uber cambia el mapa sin parar), una
                 // búsqueda del sistema dice si hay algún «min» a la vista. Sin él no hay oferta.
                 val conMin = try { raiz.findAccessibilityNodeInfosByText("min") } catch (e: Exception) { null }
@@ -740,7 +846,9 @@ class RutaService : AccessibilityService() {
                 }
                 val r = Rect()
                 w.getBoundsInScreen(r)
-                if (leida == null) { rescatar(app, r, textos, LECTOR_TEXTO); continue }
+                // Si el texto no la entiende, no se pide rescate: la foto la lee en ≤ 1.5 s y, si
+                // tampoco la entiende, ella pide el rescate (10.57).
+                if (leida == null) continue
                 val oferta = leida
                 mostrarOferta(oferta, app, r, textos, android.os.SystemClock.elapsedRealtime() - inicio, LECTOR_TEXTO)
             }
@@ -792,6 +900,15 @@ class RutaService : AccessibilityService() {
         /** De qué lector vino una oferta (se guarda en la revisión para comparar). */
         const val LECTOR_OCR = "ocr"
         const val LECTOR_TEXTO = "texto"
+        private val APPS = listOf("Uber", "DiDi")
+        /** Lo que espera un pop-up del texto a que la foto lo confirme. */
+        private const val ESPERA_FOTO_MS = 2500L
+        /** Ofertas seguidas que el texto no ve antes de usar solo la foto en esa app… */
+        private const val FALLOS_TEXTO_MAX = 5
+        /** …durante este tiempo. */
+        private const val TEXTO_PAUSA_MS = 30 * 60_000L
+        /** El texto vio la oferta hace menos de esto: la foto puede descansar. */
+        private const val TEXTO_FRESCO_MS = 1500L
         private const val VIGILANTE_QUIETO = 10_000L
     }
 }

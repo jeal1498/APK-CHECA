@@ -9,6 +9,9 @@ object Novedades {
     class Version(val codigo: Int, val nombre: String, val puntos: List<String>, val widgets: Boolean = false, val vistaQr: Boolean = false)
 
     val LISTA = listOf(
+        Version(137, "10.57", listOf(
+            "Lectura más eficiente: menos batería cuando la oferta ya está confirmada."
+        )),
         Version(136, "10.56", listOf(
             "Al abrir Checa te avisamos cuando hay una versión nueva en Google Play y se instala sin salir de la app."
         )),

@@ -133,6 +133,8 @@ object Confirmador {
                     val cuerpo = JSONObject()
                         .put("modo", "rescate")
                         .put("lector", lector)
+                    val lote = tomarCoincidencias()
+                    if (lote.isNotEmpty()) cuerpo.put("coincidencias", JSONArray(lote))
                         .put("conteo", conteo)
                         .put("conteoAnterior", conteoAnterior ?: JSONObject.NULL)
                         .put("app", app)
@@ -170,12 +172,60 @@ object Confirmador {
         }
     }
 
+    private fun local(o: Oferta) = JSONObject()
+        .put("tarifa", o.tarifa).put("km", o.km).put("min", o.min)
+        .put("recKm", o.recogidaKm).put("recMin", o.recogidaMin).put("multi", o.multiplicador)
+
     /** La corrección ya conocida para esta lectura local, si la hubo. */
     @Synchronized
     fun corregida(o: Oferta): Oferta? = revisadas[firma(o)]
 
     /** Pide la revisión de [o] una sola vez; [listo] se llama (en otro hilo) solo si hay que corregir. */
-    fun revisar(ctx: Context, app: String, lineas: List<String>, o: Oferta, moneda: Moneda, msPopup: Long, lector: String, listo: (Oferta) -> Unit) {
+    /** La lectura del otro lector cuando no coinciden (10.57): la IA revisa las dos juntas. */
+    class Otra(val lector: String, val lineas: List<String>, val oferta: Oferta)
+
+    // ---------- Coincidencias (10.57) ----------
+    // Ofertas donde el texto y la foto leyeron lo mismo: no se pregunta a la IA, solo se anotan.
+    // Viajan dentro de la siguiente revisión o, al juntar 10, en un envío propio (sin IA).
+    private val coincidencias = ArrayList<JSONObject>()
+    private const val COINCIDENCIAS_LOTE = 10
+    private const val COINCIDENCIAS_MAX = 50
+
+    fun anotarCoincidencia(ctx: Context, app: String, o: Oferta, msTexto: Long, msFoto: Long) {
+        val fila = JSONObject().put("app", app)
+            .put("tarifa", o.tarifa).put("km", o.km).put("min", o.min)
+            .put("recKm", o.recogidaKm).put("recMin", o.recogidaMin).put("multi", o.multiplicador)
+            .put("msTexto", msTexto).put("msFoto", msFoto).put("visto", System.currentTimeMillis())
+        val lote = synchronized(this) {
+            coincidencias.add(fila)
+            while (coincidencias.size > COINCIDENCIAS_MAX) coincidencias.removeAt(0)
+            if (coincidencias.size < COINCIDENCIAS_LOTE || !Cuenta.conectada(ctx)) null else tomarCoincidencias()
+        } ?: return
+        val app0 = ctx.applicationContext
+        try {
+            hilo.execute {
+                val cuerpo = JSONObject().put("modo", "coincidencias").put("version", BuildConfig.VERSION_NAME)
+                    .put("coincidencias", JSONArray(lote))
+                val r = try { Cuenta.revisarOferta(app0, cuerpo.toString()) } catch (_: Exception) { null }
+                if (r == null) devolverCoincidencias(lote)
+            }
+        } catch (_: Exception) { devolverCoincidencias(lote) }
+    }
+
+    @Synchronized
+    private fun tomarCoincidencias(): List<JSONObject> {
+        val l = ArrayList(coincidencias)
+        coincidencias.clear()
+        return l
+    }
+
+    @Synchronized
+    private fun devolverCoincidencias(l: List<JSONObject>) {
+        coincidencias.addAll(0, l)
+        while (coincidencias.size > COINCIDENCIAS_MAX) coincidencias.removeAt(0)
+    }
+
+    fun revisar(ctx: Context, app: String, lineas: List<String>, o: Oferta, moneda: Moneda, msPopup: Long, lector: String, otra: Otra? = null, listo: (Oferta) -> Unit) {
         if (!Cuenta.conectada(ctx)) return
         val enviar = filtrar(lineas)
         if (enviar.isEmpty()) return
@@ -200,10 +250,17 @@ object Confirmador {
                         .put("msPopup", msPopup)
                         .put("lector", lector)
                         .put("msRevisionAnterior", msRevision)
-                        .put("local", JSONObject()
-                            .put("tarifa", o.tarifa).put("km", o.km).put("min", o.min)
-                            .put("recKm", o.recogidaKm).put("recMin", o.recogidaMin).put("multi", o.multiplicador))
+                        .put("local", local(o))
+                    if (otra != null) {
+                        cuerpo.put("modo", "desacuerdo")
+                            .put("lectorOtro", otra.lector)
+                            .put("lineasOtro", JSONArray(filtrar(otra.lineas)))
+                            .put("localOtro", local(otra.oferta))
+                    }
+                    val lote = tomarCoincidencias()
+                    if (lote.isNotEmpty()) cuerpo.put("coincidencias", JSONArray(lote))
                     val respuesta = Cuenta.revisarOferta(app0, cuerpo.toString())
+                    if (respuesta == null && lote.isNotEmpty()) devolverCoincidencias(lote)
                     // El servidor respondió (aunque sea sin saldo): ya anotó el conteo del día anterior.
                     if (respuesta != null && conteoAnterior != null) anteriorRecibido(app0, conteoAnterior.getString("dia"))
                     val r = JSONObject(respuesta ?: "{}")
@@ -220,7 +277,7 @@ object Confirmador {
                             multiplicador = ia.optDouble("multi", 0.0).let { if (it > 1.0) it else o.multiplicador },
                             dinamica = o.dinamica
                         )
-                        if (Parser.plausible(c, lineas, moneda)) nueva = c
+                        if (Parser.plausible(c, lineas + otra?.lineas.orEmpty(), moneda)) nueva = c
                     }
                 } catch (_: Exception) { }
                 synchronized(this) {

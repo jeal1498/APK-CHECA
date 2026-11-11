@@ -38,7 +38,7 @@ async function rpc(nombre: string, args: Record<string, unknown>): Promise<unkno
   return await r.json();
 }
 
-async function insertar(tabla: string, fila: Record<string, unknown>) {
+async function insertar(tabla: string, fila: Record<string, unknown> | Record<string, unknown>[]) {
   await fetch(`${SUPA}/rest/v1/${tabla}`, {
     method: "POST",
     headers: { ...headersServicio, Prefer: "return=minimal" },
@@ -157,6 +157,28 @@ async function anotarConteo(id: string, c: unknown) {
 
 type Lectura = { tarifa: number; km: number; min: number; recKm: number; recMin: number; multi: number };
 
+// Ofertas donde el texto y la foto del teléfono leyeron lo mismo (10.57): se anotan sin IA.
+async function anotarCoincidencias(id: string, version: string, v: unknown) {
+  if (!Array.isArray(v) || v.length === 0) return;
+  const filas = v.slice(0, 50).filter((c) => c && typeof c === "object").map((c) => {
+    const o = c as Record<string, unknown>;
+    const visto = Number(o.visto);
+    const ms = (x: unknown) => { const n = Math.round(Number(x)); return Number.isFinite(n) && n >= 0 ? n : null; };
+    return {
+      usuario: id, version, app: String(o.app ?? "").slice(0, 10),
+      tarifa: num(o.tarifa), km: num(o.km), min: num(o.min), rec_km: num(o.recKm), rec_min: num(o.recMin), multi: num(o.multi),
+      ms_texto: ms(o.msTexto), ms_foto: ms(o.msFoto),
+      visto: Number.isFinite(visto) && visto > 0 ? new Date(visto).toISOString() : null,
+    };
+  });
+  if (filas.length > 0) {
+    try { await insertar("coincidencias", filas); } catch { /* nunca frena la revisión */ }
+  }
+}
+
+const igual = (a: Lectura, b: Lectura) =>
+  Math.abs(a.tarifa - b.tarifa) < 1 && Math.abs(a.km - b.km) < 0.15 && Math.abs(a.min - b.min) < 1.1;
+
 function num(v: unknown): number {
   const n = Number(v);
   return Number.isFinite(n) && n >= 0 ? n : 0;
@@ -231,18 +253,25 @@ Deno.serve(async (req) => {
   } catch {
     return json({ ok: false, error: "cuerpo_invalido" }, 400);
   }
+  const version = String(cuerpo.version ?? "").slice(0, 12);
+  await anotarCoincidencias(id, version, cuerpo.coincidencias);
+  // Solo coincidencias (lote de 10 sin otra revisión pendiente): no hay nada que preguntar.
+  if (cuerpo.modo === "coincidencias") return json({ ok: true });
   const lineas = filtrar(cuerpo.lineas);
   // «rescate»: el lector del teléfono no entendió la oferta y no hay lectura local que comparar.
-  const modo = cuerpo.modo === "rescate" ? "rescate" : "revision";
+  // «desacuerdo» (10.57): el texto y la foto leyeron distinto; la IA ve las dos.
+  const modo = cuerpo.modo === "rescate" ? "rescate" : cuerpo.modo === "desacuerdo" ? "desacuerdo" : "revision";
   const local = modo === "rescate"
     ? { tarifa: 0, km: 0, min: 0, recKm: 0, recMin: 0, multi: 0 }
     : leerLocal(cuerpo.local);
   const app = String(cuerpo.app ?? "").slice(0, 10);
   const moneda = String(cuerpo.moneda ?? "MXN").slice(0, 3);
-  const version = String(cuerpo.version ?? "").slice(0, 12);
   // De qué lector del teléfono vino (10.55): «ocr» (foto) o «texto» (texto de la app).
   const lector = cuerpo.lector === "texto" || cuerpo.lector === "ocr" ? cuerpo.lector : null;
   if (lineas.length === 0 || !local) return json({ ok: false, error: "sin_datos" }, 400);
+  const lectorOtro = cuerpo.lectorOtro === "texto" || cuerpo.lectorOtro === "ocr" ? cuerpo.lectorOtro : null;
+  const lineasOtro = modo === "desacuerdo" ? filtrar(cuerpo.lineasOtro) : [];
+  const localOtro = modo === "desacuerdo" ? leerLocal(cuerpo.localOtro) : null;
   await anotarConteo(id, cuerpo.conteo);
   await anotarConteo(id, cuerpo.conteoAnterior);
   const msPopup = Math.round(Number(cuerpo.msPopup ?? -1));
@@ -273,7 +302,11 @@ Deno.serve(async (req) => {
   let ia: Lectura & { oferta: boolean };
   const t0 = Date.now();
   try {
-    const pregunta = `App: ${app || "?"} · moneda: ${moneda}\nLíneas:\n${lineas.join("\n")}`;
+    const nombre = (l: unknown) => l === "texto" ? "texto de la app (números exactos)" : "foto con OCR (lo que se ve; puede confundir letras)";
+    const pregunta = modo === "desacuerdo" && lineasOtro.length > 0
+      ? `App: ${app || "?"} · moneda: ${moneda}\nDos lecturas de la MISMA pantalla que no coinciden; usa las dos para dar la oferta correcta.\n` +
+        `Lectura A, ${nombre(lector)}:\n${lineas.join("\n")}\n\nLectura B, ${nombre(lectorOtro)}:\n${lineasOtro.join("\n")}`
+      : `App: ${app || "?"} · moneda: ${moneda}\nLíneas:\n${lineas.join("\n")}`;
     const r = REVISOR === "deepseek" ? await preguntarDeepSeek(pregunta) : await preguntarAnthropic(pregunta);
     await anotarCosto(registro, r.tIn, r.tCache, r.tOut);
     if (r.rechazo) throw new Error("refusal");
@@ -294,11 +327,18 @@ Deno.serve(async (req) => {
     return json({ ok: false, error: "ia_no_disponible" });
   }
 
-  const coincide = modo === "revision" && ia.oferta &&
-    Math.abs(ia.tarifa - local.tarifa) < 1 && Math.abs(ia.km - local.km) < 0.15 && Math.abs(ia.min - local.min) < 1.1;
+  // «coincide» = la IA da lo mismo que el pop-up que ya se ve (lectura A): no hay que corregir.
+  const coincide = modo !== "rescate" && ia.oferta && igual(ia, local);
   registro.ms_ia = Date.now() - t0;
   await insertar("revisiones", { ...registro, ok: true, coincide });
-  if (!coincide) {
+  if (modo === "desacuerdo") {
+    // Siempre se guarda: los lectores no coincidieron. «acerto» dice cuál tenía razón.
+    const acerto = !ia.oferta ? "ninguno" : igual(ia, local) ? lector : localOtro && igual(ia, localOtro) ? lectorOtro : "ninguno";
+    await insertar("errores_lector", {
+      usuario: id, app, moneda, version, lineas: [...lineas, "---", ...lineasOtro], local, ia, lector,
+      lector_otro: lectorOtro, local_otro: localOtro, acerto, tipo: "desacuerdo",
+    });
+  } else if (!coincide) {
     // En el rescate solo se guarda si el revisor sí vio una oferta (si no, no hay nada que aprender).
     if (modo === "revision" || ia.oferta) {
       await insertar("errores_lector", { usuario: id, app, moneda, version, lineas, local, ia, lector, tipo: modo === "rescate" ? "rescate" : "diferencia" });
