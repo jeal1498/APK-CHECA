@@ -11,12 +11,12 @@
 - 10.54–10.58 en `main` (compilan 10.54–10.57): pop-up se quita al irse la oferta; ofertas de DiDi por tarjeta; lector de texto solo con lo visible; aviso de versión nueva de Play.
 - Pop-ups: en vertical uno solo (el de la oferta nueva tapa a los anteriores); dos solo en horizontal.
 - Cascada de lectores: texto primero, la foto confirma sin IA (`coincidencias`); si no coinciden, la IA revisa las dos y guarda cuál acertó; rescate solo si ambos fallan.
+- 10.58 probada con el APK.
 - Supabase guarda en cada lectura: lector, teléfono, Android, orientación, zonas, tarjetas, color y tiempos.
 
 ## … Falta
-- Probar la 10.58 con el APK de «Compilar flavor play».
 - Play Console › Seguridad de los datos: agregar modelo del teléfono, Android y tiempos (ver `docs/google-play/data-safety.md`, 10.57–10.58).
-- Subir un AAB nuevo (10.56 o posterior) para que el aviso de actualización funcione desde la siguiente.
+- Subir a Play Console el AAB 138 (10.58) de «Preparar AAB Google Play» (generado 11 nov).
 - En unos días: «Estado de la revisión» para ver qué lector falla más y cuántas ofertas se confirman sin IA.
 - Prueba cerrada: día 8 de 14 seguidos con 12 testers (= verificadores). Faltan 6 días para pedir producción.
 - Fase 7 (Play Billing) antes del 1 feb 2027: necesita su «adelante» y una cuenta de Google admitida a su nombre.
