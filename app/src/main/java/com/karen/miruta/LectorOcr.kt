@@ -205,14 +205,17 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
                 Guardado.guardar(ctx, app, oferta != null, texto, recorte)
             }
         }
+        val servicio = RutaService.instancia ?: return
+        // Sin zonas (algunos teléfonos no dicen dónde está cada ventana): la app que está en
+        // pantalla. Antes se mostraba sin las líneas y no había revisión ni rescate (10.52).
+        val appOferta = app ?: servicio.appEnPantalla(detectarApp(grupo))
         if (oferta == null) {
-            if (app != null) RutaService.instancia?.rescatar(app, zona, lineas)
+            servicio.rescatar(appOferta, zona, lineas)
             return
         }
         leyoPasada = true
-        val servicio = RutaService.instancia ?: return
         val msLectura = android.os.SystemClock.elapsedRealtime() - inicioCaptura
-        if (app != null) servicio.mostrarOferta(oferta, app, zona, lineas, msLectura) else servicio.mostrarOferta(oferta)
+        servicio.mostrarOferta(oferta, appOferta, zona, lineas, msLectura)
     }
 
     /** Brillo de una rejilla de puntos de la imagen. null si falla. */

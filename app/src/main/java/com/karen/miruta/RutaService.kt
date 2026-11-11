@@ -341,6 +341,10 @@ class RutaService : AccessibilityService() {
     // Pop-ups y comparación
     // ------------------------------------------------------------------
 
+    /** App de una oferta leída sin zonas: la que se ve en el texto, o la última Uber/DiDi abierta. */
+    fun appEnPantalla(delTexto: String?): String =
+        delTexto ?: appActual.takeIf { it == "Uber" || it == "DiDi" } ?: appActual
+
     /** Compatibilidad: oferta sin app/zona conocida. */
     fun mostrarOferta(oferta: Oferta) = mostrarOferta(oferta, appActual, null)
 

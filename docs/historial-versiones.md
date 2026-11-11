@@ -1,3 +1,5 @@
+v132 (10.52): **Revisión y rescate también sin zonas.** Cuando el teléfono no informa la ventana de Uber/DiDi (Honor de Eduardo), `LectorOcr.procesarGrupo` mostraba la oferta sin las líneas y no había revisión ni rescate (0 llamadas a `confirmar-oferta` con la 10.51). Ahora usa `RutaService.appEnPantalla()` (app del texto o la última Uber/DiDi) y siempre manda las líneas.
+
 v131 (10.51): **Rescate.** Si en pantalla hay una oferta (tramo de min y km + un monto) y el lector no la entiende, `RutaService.rescatar` → `Confirmador.rescatar` manda las líneas con números al revisor (`modo: "rescate"`); si su respuesta pasa `Parser.plausible`, sale el pop-up normal 1–2 s después. Una vez por pantalla, nunca con el pop-up encima, 3 s entre rescates por app y 60 s de pausa si el revisor dice que no era oferta. Se guarda en `errores_lector` con `tipo = rescate`; `revisiones.modo`.
 
 (servidor, 11 nov): límite de espera del revisor de 8 s a 4 s (Eduardo): más tarde la corrección ya no sirve; se anota como falla y queda la lectura local.
