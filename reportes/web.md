@@ -1,18 +1,19 @@
 # Reporte de Checa (web + app) · últimos 30 días
 
-Generado: 2026-11-10 20:03 UTC. Cuenta visitas únicas (una por pestaña).
+Generado: 2026-11-11 19:53 UTC. Cuenta visitas únicas (una por pestaña).
 
 ## Resumen
 | visitas | descargas | cuentas_nuevas | pagos | ingresos | licencias_activas |
 | --- | --- | --- | --- | --- | --- |
-| 664 | 264 | 57 | 0 | 0 | 3 |
+| 673 | 264 | 58 | 0 | 0 | 3 |
 
 # App
 
 ## Cuentas nuevas por día (inicio con Google)
 | dia | cuentas |
 | --- | --- |
-| 2026-11-10 | 1 |
+| 2026-11-11 | 2 |
+| 2026-11-10 | 2 |
 | 2026-11-09 | 3 |
 | 2026-11-08 | 4 |
 | 2026-11-07 | 4 |
@@ -29,11 +30,13 @@ Generado: 2026-11-10 20:03 UTC. Cuenta visitas únicas (una por pestaña).
 | 2026-10-17 | 3 |
 | 2026-10-16 | 5 |
 | 2026-10-15 | 1 |
-| 2026-10-11 | 2 |
 
 ## Quiénes son (cuentas con Google)
 | correo | registro | ultimo_acceso | equipos | licencia_vence |
 | --- | --- | --- | --- | --- |
+| alanmcdonald.32378@gmail.com | 11-11 11:23 | 11-11 11:23 | 1 | sin licencia |
+| mauricio.francisci.3@gmail.com | 11-11 08:24 | 11-11 08:24 | 1 | sin licencia |
+| naomigarrett.09897@gmail.com | 11-10 22:10 | 11-10 22:10 | 1 | sin licencia |
 | ula45363@gmail.com | 11-10 08:52 | 11-10 08:52 | 1 | sin licencia |
 | chivaseden80@gmail.com | 11-09 20:22 | 11-09 20:22 | 1 | sin licencia |
 | termico40@gmail.com | 11-09 18:52 | 11-09 18:52 | 1 | sin licencia |
@@ -90,7 +93,7 @@ Generado: 2026-11-10 20:03 UTC. Cuenta visitas únicas (una por pestaña).
 | edent402@gmail.com | 10-16 07:42 | 11-04 12:54 | 1 | sin licencia |
 | lufercab@gmail.com | 10-15 18:21 | 10-15 18:21 | 1 | 20270113 |
 | landingbot01@gmail.com | 10-11 15:23 | 10-21 19:26 | 1 | sin licencia |
-| lalolopezxd@gmail.com | 10-11 15:08 | 11-08 22:05 | 3 | 99991231 |
+| lalolopezxd@gmail.com | 10-11 15:08 | 11-11 12:32 | 2 | 99991231 |
 
 ## Pagos por plan
 Sin datos todavía.
@@ -122,7 +125,7 @@ Sin datos todavía.
 ## Embudo
 | evento | visitas | veces |
 | --- | --- | --- |
-| visita | 664 | 925 |
+| visita | 673 | 934 |
 | descarga | 264 | 297 |
 | clic_descargar | 124 | 136 |
 | descarga_instalar | 69 | 147 |
@@ -134,7 +137,7 @@ Sin datos todavía.
 ## Por fuente (visitas → descargas)
 | fuente | campana | visitas | descargas |
 | --- | --- | --- | --- |
-| directo |  | 503 | 198 |
+| directo |  | 512 | 198 |
 | tiktok |  | 98 | 55 |
 | tiktok | prueba-en-google-play | 26 | 0 |
 | app | compartir | 17 | 9 |
@@ -152,7 +155,7 @@ Sin datos todavía.
 | dispositivo | visitas | descargas |
 | --- | --- | --- |
 | android | 516 | 264 |
-| pc | 91 | 0 |
+| pc | 100 | 0 |
 | iphone | 58 | 0 |
 
 ## Qué botón lleva a descargar
@@ -174,7 +177,8 @@ Sin datos todavía.
 ## Por día
 | dia | visitas | descargas |
 | --- | --- | --- |
-| 2026-11-10 | 2 | 0 |
+| 2026-11-11 | 5 | 0 |
+| 2026-11-10 | 6 | 0 |
 | 2026-11-09 | 13 | 0 |
 | 2026-11-08 | 5 | 0 |
 | 2026-11-07 | 14 | 0 |
