@@ -133,6 +133,12 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
         }
         // ¿Hay una oferta a la vista (tramo «N min (»)? Si sí pero no se entendió, se reintenta rápido.
         val hayTramo = todas.any { esTramo(it.text) }
+        // ¿Sigue cada oferta en pantalla? Si no, su pop-up se quita (no queda uno sin oferta).
+        RutaService.instancia?.revisarSalida(todas.filter { esTramo(it.text) }.mapNotNull { l ->
+            l.boundingBox?.let {
+                Rect((it.left * escalaX).toInt(), (it.top * escalaY).toInt(), (it.right * escalaX).toInt(), (it.bottom * escalaY).toInt())
+            }
+        })
         ofertaEnPantalla = hayTramo
         fallos = if (hayTramo && !leyoPasada) minOf(fallos + 1, 99) else 0
     }
@@ -166,7 +172,8 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
         val t = ls.joinToString(" ") { it.text }.lowercase()
         return when {
             t.contains("uber") || t.contains("me interesa") || t.contains("/km (est") -> "Uber"
-            t.contains("didi") || t.contains("pon tu precio") || t.contains("aceptar $") -> "DiDi"
+            t.contains("didi") || t.contains("pon tu precio") || t.contains("aceptar $") ||
+                tramoEntreParentesis.containsMatchIn(t) -> "DiDi"
             else -> null
         }
     }
@@ -178,7 +185,11 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
     private fun procesarGrupo(grupo: List<Text.Line>, app: String?, zona: Rect?) {
         val moneda = prefs.moneda
         val conPeso = moneda.simbolos().contains("$")
-        val ordenadas = grupo.sortedWith(compareBy({ it.boundingBox?.top ?: 0 }, { it.boundingBox?.left ?: 0 }))
+        val todasOrd = grupo.sortedWith(compareBy({ it.boundingBox?.top ?: 0 }, { it.boundingBox?.left ?: 0 }))
+        // Varias ofertas en la zona (lista o ventana flotante de DiDi): solo la primera tarjeta completa.
+        val ordenadas = Tarjetas.primera(todasOrd.map {
+            Tarjetas.Renglon(normalizar(it.text, conPeso), it.boundingBox?.top ?: 0, it.boundingBox?.bottom ?: 0)
+        }, moneda)?.map { todasOrd[it] } ?: todasOrd
         // La tarifa es el monto con letra más grande: se pone primero.
         val tarifa = ordenadas
             .filter { Parser.esMontoSolo(normalizar(it.text, conPeso), moneda) }
@@ -254,11 +265,10 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
         /** …y la pantalla es «casi igual» si cambió menos de este % de puntos. */
         private const val GATE_PORC = 2
         private const val GATE_MAX = 3
-        // «5min (1.7km)» (DiDi, Uber viejo) y «6 min · 2.3 km» (Uber nov 2026).
-        val tramoTexto = Regex("""\d\s?min\s*(?:\(|[^\d(\s]{0,3}\s*\d+(?:[.,]\d+)?\s?k?m\b)""", RegexOption.IGNORE_CASE)
-
-        /** Un tramo «N min (» de una oferta; el resumen «… total» (pop-up propio o de otra app) no cuenta. */
-        fun esTramo(t: String) = tramoTexto.containsMatchIn(t) && !t.contains("total", ignoreCase = true)
+        val tramoTexto get() = Tarjetas.tramoTexto
+        /** «(9 min 2.6 km) Calle…»: tramo completo entre paréntesis, como en la ventana flotante de DiDi. */
+        private val tramoEntreParentesis = Regex("""\(\s*\d+\s?min\s*[•·.]?\s*\d+(?:[.,]\d+)?\s?k?m\s*\)""")
+        fun esTramo(t: String) = Tarjetas.esTramo(t)
 
         /** Factor para que el lado mayor quede en [LADO_MAX] o menos (1 si ya cabe). */
         fun factor(ancho: Int, alto: Int): Float {

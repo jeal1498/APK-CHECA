@@ -9,6 +9,10 @@ object Novedades {
     class Version(val codigo: Int, val nombre: String, val puntos: List<String>, val widgets: Boolean = false, val vistaQr: Boolean = false)
 
     val LISTA = listOf(
+        Version(134, "10.54", listOf(
+            "El pop-up se quita solo cuando la oferta ya no está en pantalla.",
+            "Con varias ofertas a la vista (lista de DiDi) se lee cada una por separado."
+        )),
         Version(123, "10.43", listOf(
             "Los widgets ahora se ven con su propia vista previa al elegirlos, con datos de ejemplo."
         )),

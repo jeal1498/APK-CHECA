@@ -192,6 +192,7 @@ Devuelve:
 - tarifa: lo que paga el viaje (el monto grande de la tarjeta). No sumes bonos («adicionales», «+$… por inicio»); «+$… incluido» ya viene dentro de la tarifa. No uses contraofertas de DiDi, el $/km ni montos de otras tarjetas: si hay un resumen «N min · X km · $Y/km est.», la tarifa ≈ Y × X.
 - km y min: TOTALES (recogida + viaje). Si hay un resumen «N min · X km», ese es el total; no lo sumes con los tramos. Metros «720 m» = 0.72 km.
 - recKm y recMin: el primer tramo (ir por el pasajero). 0 si no se distingue.
+- Varias tarjetas (lista o ventana flotante de DiDi): usa solo una tarjeta completa (su monto grande y sus dos tramos); un tramo suelto arriba es de otra tarjeta. DiDi escribe cada tramo «(9 min 2.6 km) Calle…»: el primero es la recogida y el segundo el viaje, y los km/min TOTALES son la suma de los dos.
 - multi: multiplicador «1.4x» de la tarifa; ignora rangos del mapa «1.8X-2.4X». 0 si no hay.
 Si no hay una oferta clara, oferta=false y todo en 0. Nunca inventes números que no estén en las líneas.`;
 

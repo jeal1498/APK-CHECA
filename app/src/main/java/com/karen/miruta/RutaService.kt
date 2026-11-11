@@ -35,6 +35,9 @@ class RutaService : AccessibilityService() {
     private val popups = HashMap<String, Popup>()
     private val activas = LinkedHashMap<String, Pair<Oferta, Rect?>>()
     private val ultimaFirma = HashMap<String, Pair<Oferta, Long>>()
+    /** Dónde se vieron por última vez los tramos de cada oferta activa, y lecturas seguidas sin verlos. */
+    private val tramosVistos = HashMap<String, List<Rect>>()
+    private val sinVer = HashMap<String, Int>()
     private val ultimoAviso = HashMap<String, Long>()
     /** Último evento de cada app (para saber cuándo se abrió de nuevo) y último «Lista para trabajar». */
     private val ultimoEventoPorApp = HashMap<String, Long>()
@@ -380,6 +383,8 @@ class RutaService : AccessibilityService() {
             Popup(this, prefs, WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY).also { p ->
                 p.alCerrar = {
                     activas.remove(clave)
+                    tramosVistos.remove(clave)
+                    sinVer.remove(clave)
                     redibujar(null)
                 }
             }
@@ -392,6 +397,8 @@ class RutaService : AccessibilityService() {
             }
         }
         activas[clave] = oferta to zona
+        tramosVistos.remove(clave)
+        sinVer.remove(clave)
         redibujar(clave)
 
         val nivel = oferta.nivel(prefs)
@@ -438,6 +445,27 @@ class RutaService : AccessibilityService() {
 
     private fun parecida(a: Oferta, b: Oferta) =
         Math.abs(a.km - b.km) < 0.15 && Math.abs(a.min - b.min) < 1.1 && Math.abs(a.tarifa - b.tarifa) < 1.0
+
+    /**
+     * Cada lectura del OCR dice dónde hay tramos «N min (X km)» a la vista ([tramos], en
+     * coordenadas de pantalla, sin lo que tapan los pop-ups). Si la oferta de un pop-up ya no
+     * está en dos lecturas seguidas (la tomó otro, se venció o se aceptó), el pop-up se quita.
+     * Si el pop-up tapa donde estaba la oferta no se sabe si sigue: lo cierra su tiempo.
+     */
+    fun revisarSalida(tramos: List<Rect>) {
+        if (activas.isEmpty()) return
+        val tapado = rectsPopups()
+        for ((clave, par) in activas.entries.toList()) {
+            val zona = par.second
+            val suyos = tramos.filter { zona == null || zona.contains(it.centerX(), it.centerY()) }
+            if (suyos.isNotEmpty()) { tramosVistos[clave] = suyos; sinVer[clave] = 0; continue }
+            val antes = tramosVistos[clave] ?: continue
+            if (antes.all { r -> tapado.any { it.contains(r.centerX(), r.centerY()) } }) continue
+            val n = (sinVer[clave] ?: 0) + 1
+            sinVer[clave] = n
+            if (n >= LECTURAS_SIN_OFERTA) popups[clave]?.ocultar()
+        }
+    }
 
     /** true si el pop-up de [app] está en pantalla (entonces tapa la oferta y el lector no la ve completa). */
     fun popupVisible(app: String?): Boolean = popups[app ?: "?"]?.rect() != null
@@ -743,6 +771,8 @@ class RutaService : AccessibilityService() {
         private const val ESPERA_OCUPADO = 150L
         private const val FALLOS_CAPTURA_MAX = 5
         private const val VIGILANTE_CADA = 5000L
+        /** Lecturas seguidas sin ver la oferta para quitar su pop-up. */
+        private const val LECTURAS_SIN_OFERTA = 2
         private const val VIGILANTE_QUIETO = 10_000L
     }
 }

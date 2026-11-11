@@ -68,4 +68,24 @@ class ParserTest {
         // El pop-up propio («… total») no cuenta como monto de oferta.
         assertFalse(Parser.tieneMonto(listOf("24 min (6.0 km) total")))
     }
+
+    @Test
+    fun dosTarjetasDeDidi() {
+        // 11 nov (10.53): ventana flotante de DiDi con el final de una tarjeta arriba, una completa
+        // y el monto de otra abajo. Antes sumó los tres tramos (26.6 km).
+        val r = listOf(
+            Tarjetas.Renglon("O (14 min 7.8 km) Jardín de Niños Madre", 100, 130),
+            Tarjetas.Renglon("\$95.21", 200, 260),
+            Tarjetas.Renglon("(9 min 2.6 km) Carlos Hank González 9,", 290, 320),
+            Tarjetas.Renglon("(42 min 16.2 km) Alcaldia Gustavo A.", 340, 370),
+            Tarjetas.Renglon("Aceptar \$95.21", 400, 430),
+            Tarjetas.Renglon("\$97.21", 400, 430),
+            Tarjetas.Renglon("\$85.15", 500, 560)
+        )
+        val idx = Tarjetas.primera(r) ?: error("No separó las tarjetas")
+        val o = Parser.analizar(idx.map { r[it].texto }) ?: error("No leyó la tarjeta")
+        assertTrue("km ${o.km}", Math.abs(o.km - 18.8) < 0.01 && Math.abs(o.tarifa - 95.21) < 0.01)
+        // Una sola oferta (dos tramos): no se toca.
+        assertTrue(Tarjetas.primera(r.subList(1, 5)) == null)
+    }
 }
