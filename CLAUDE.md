@@ -42,6 +42,10 @@ Excepciones: explica completo si lo piden; confirma antes de acciones destructiv
 - **Estilo de video vigente (10 nov):** «claro» (mapa de nodos, pop-up y oferta réplica de la app), `checa.py claro`, detalle en `narrador.md` §00. Los videos de referencia de diseño se guardan en `video/referencias/` (con su README).
 - El `video.mp4` se commitea **una sola vez**, ya aprobado (cada mp4 commiteado engorda el repo para siempre).
 
+## Revisión de lecturas (DeepSeek / Haiku)
+- **Frase de arranque: «Estado de la revisión»** (opcional: «de hoy», «de la semana», «del mes»). Al leerla, con las herramientas de Supabase (proyecto `gqsadclvftkzwrihfipz`) responde en máximo 5 líneas: revisiones y ofertas del periodo, % que coincidió, correcciones y rescates (`errores_lector`, con su `veredicto` si ya lo hay), tiempos (mediana de `ms_popup` y `ms_ia`), costo real en USD y MXN por conductor (`consumo_conductor_dia`/`_mes`, `margen_planes`) y fallas (`fallas_ia`; `http_402` = sin saldo en DeepSeek). Sin cambiar código.
+- La revisión semanal automática corre los lunes a las 7:12 a.m. (CDMX) en la sesión donde se creó; si esa sesión ya no existe, se hace a mano con la frase «Revisión semanal del lector».
+
 ## Entorno y compilación
 - No hay Android SDK, Gradle ni Kotlin en el contenedor: **no se puede compilar localmente**. Revisa el Kotlin con cuidado antes de subir; las regex se prueban con `python3 -I`. Hay git, Python 3.12, Node 22, Java 21 (sin `javac`), ffmpeg y Playwright (`NODE_PATH=$(npm root -g)`).
 - La red solo permite GitHub, PyPI y npm. No llega a `productionresultssa1.blob.core.windows.net` (artefactos y logs de Actions); el estado de los workflows sí se lee con las herramientas de GitHub MCP (el repo es privado).
