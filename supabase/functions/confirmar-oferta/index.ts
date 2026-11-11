@@ -94,7 +94,7 @@ class FallaRevisor extends Error {
 type Respuesta = { datos: Record<string, unknown>; tIn: number; tCache: number; tOut: number; rechazo: boolean };
 
 async function preguntarAnthropic(usuario: string): Promise<Respuesta> {
-  const cliente = new Anthropic({ apiKey: CLAVE, timeout: 8000, maxRetries: 0 });
+  const cliente = new Anthropic({ apiKey: CLAVE, timeout: 4000, maxRetries: 0 });
   const r = await cliente.messages.create({
     model: "claude-haiku-5-5",
     max_tokens: 2048,
@@ -115,7 +115,7 @@ async function preguntarDeepSeek(usuario: string): Promise<Respuesta> {
   const r = await fetch("https://api.deepseek.com/chat/completions", {
     method: "POST",
     headers: { Authorization: `Bearer ${CLAVE}`, "Content-Type": "application/json" },
-    signal: AbortSignal.timeout(8000),
+    signal: AbortSignal.timeout(4000),  // más tarde la corrección ya no sirve (oferta de ~15 s)
     body: JSON.stringify({
       model: "deepseek-flash",
       // Sin razonamiento: es una extracción corta y así responde más rápido y más barato.

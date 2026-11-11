@@ -1,3 +1,5 @@
+(servidor, 11 nov): límite de espera del revisor de 8 s a 4 s (Eduardo): más tarde la corrección ya no sirve; se anota como falla y queda la lectura local.
+
 (servidor, 11 nov): **Revisor DeepSeek mientras no hay saldo para Haiku.** `confirmar-oferta` elige el modelo con el secreto `REVISOR` (`deepseek` por defecto si existe `DEEPSEEK_API_KEY`; `anthropic` = Claude Haiku 5.5). DeepSeek: `deepseek-flash`, sin razonamiento, JSON, 8 s de límite, sin reintento. Costo por consulta con caché y tarifa pico/fuera de pico (`precios_modelo`); `revisiones.modelo` y `tokens_cache`. La app no cambia.
 
 v130 (10.50): **Medición de consumo de la revisión.** La app cuenta ofertas con pop-up y correcciones aplicadas por día (`Confirmador.contarOferta/contarCorreccion`, sin datos personales) y las manda dentro de la siguiente revisión (sin llamadas extra). `confirmar-oferta` guarda el costo real de cada consulta con el precio vigente (`consumo_config`). Vistas: `consumo_conductor_dia`, `consumo_conductor_mes`, `consumo_global_mes` y `margen_planes` (precio al mes − 15 % de Play − costo promedio y p90). ID anónimo = 8 caracteres de md5 del usuario.
