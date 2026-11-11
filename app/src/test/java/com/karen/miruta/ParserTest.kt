@@ -59,4 +59,13 @@ class ParserTest {
         assertFalse(Parser.plausible(Oferta(108.99, 10.6, 33.0, 3.0, 9.0), l))
         assertFalse(Parser.plausible(Oferta(66.21, 21.2, 66.0, 3.0, 9.0), l))
     }
+
+    @Test
+    fun rescateSoloConMonto() {
+        // Navegación de un viaje: minutos y km sin monto → no se pide rescate.
+        assertFalse(Parser.tieneMonto(listOf("Llegada 12:40", "8 min · 3.1 km", "Av. Insurgentes")))
+        assertTrue(Parser.tieneMonto(listOf("UberX", "\$103.13", "6 min · 2.3 km")))
+        // El pop-up propio («… total») no cuenta como monto de oferta.
+        assertFalse(Parser.tieneMonto(listOf("24 min (6.0 km) total")))
+    }
 }

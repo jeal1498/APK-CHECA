@@ -231,7 +231,11 @@ Deno.serve(async (req) => {
     return json({ ok: false, error: "cuerpo_invalido" }, 400);
   }
   const lineas = filtrar(cuerpo.lineas);
-  const local = leerLocal(cuerpo.local);
+  // «rescate»: el lector del teléfono no entendió la oferta y no hay lectura local que comparar.
+  const modo = cuerpo.modo === "rescate" ? "rescate" : "revision";
+  const local = modo === "rescate"
+    ? { tarifa: 0, km: 0, min: 0, recKm: 0, recMin: 0, multi: 0 }
+    : leerLocal(cuerpo.local);
   const app = String(cuerpo.app ?? "").slice(0, 10);
   const moneda = String(cuerpo.moneda ?? "MXN").slice(0, 3);
   const version = String(cuerpo.version ?? "").slice(0, 12);
@@ -242,7 +246,7 @@ Deno.serve(async (req) => {
   const msRevisionAnterior = Math.round(Number(cuerpo.msRevisionAnterior ?? -1));
   // Una fila por revisión: tiempos, tokens reales y resultado (métricas de los lunes).
   const registro: Record<string, unknown> = {
-    usuario: id, app, version, modelo: MODELO,
+    usuario: id, app, version, modelo: MODELO, modo,
     ms_popup: Number.isFinite(msPopup) ? msPopup : null,
     ms_revision_anterior: Number.isFinite(msRevisionAnterior) ? msRevisionAnterior : null,
     imagenes: 0, reintentos: 0,
@@ -287,12 +291,15 @@ Deno.serve(async (req) => {
     return json({ ok: false, error: "ia_no_disponible" });
   }
 
-  const coincide = ia.oferta &&
+  const coincide = modo === "revision" && ia.oferta &&
     Math.abs(ia.tarifa - local.tarifa) < 1 && Math.abs(ia.km - local.km) < 0.15 && Math.abs(ia.min - local.min) < 1.1;
   registro.ms_ia = Date.now() - t0;
   await insertar("revisiones", { ...registro, ok: true, coincide });
   if (!coincide) {
-    await insertar("errores_lector", { usuario: id, app, moneda, version, lineas, local, ia });
+    // En el rescate solo se guarda si el revisor sí vio una oferta (si no, no hay nada que aprender).
+    if (modo === "revision" || ia.oferta) {
+      await insertar("errores_lector", { usuario: id, app, moneda, version, lineas, local, ia, tipo: modo === "rescate" ? "rescate" : "diferencia" });
+    }
   }
   return json({ ok: true, coincide, ia });
 });

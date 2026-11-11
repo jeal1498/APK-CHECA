@@ -205,7 +205,10 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
                 Guardado.guardar(ctx, app, oferta != null, texto, recorte)
             }
         }
-        if (oferta == null) return
+        if (oferta == null) {
+            if (app != null) RutaService.instancia?.rescatar(app, zona, lineas)
+            return
+        }
         leyoPasada = true
         val servicio = RutaService.instancia ?: return
         val msLectura = android.os.SystemClock.elapsedRealtime() - inicioCaptura

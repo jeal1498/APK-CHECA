@@ -682,3 +682,7 @@ alter table public.precios_modelo enable row level security;
 revoke all on public.precios_modelo from anon, authenticated;
 
 alter table public.revisiones add column if not exists tokens_cache integer not null default 0;
+
+-- ---------- Rescate (10.51): el lector no entendió una oferta y el revisor dio los datos ----------
+alter table public.revisiones add column if not exists modo text not null default 'revision';
+alter table public.errores_lector add column if not exists tipo text not null default 'diferencia';

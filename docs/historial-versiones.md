@@ -1,3 +1,5 @@
+v131 (10.51): **Rescate.** Si en pantalla hay una oferta (tramo de min y km + un monto) y el lector no la entiende, `RutaService.rescatar` → `Confirmador.rescatar` manda las líneas con números al revisor (`modo: "rescate"`); si su respuesta pasa `Parser.plausible`, sale el pop-up normal 1–2 s después. Una vez por pantalla, nunca con el pop-up encima, 3 s entre rescates por app y 60 s de pausa si el revisor dice que no era oferta. Se guarda en `errores_lector` con `tipo = rescate`; `revisiones.modo`.
+
 (servidor, 11 nov): límite de espera del revisor de 8 s a 4 s (Eduardo): más tarde la corrección ya no sirve; se anota como falla y queda la lectura local.
 
 (servidor, 11 nov): **Revisor DeepSeek mientras no hay saldo para Haiku.** `confirmar-oferta` elige el modelo con el secreto `REVISOR` (`deepseek` por defecto si existe `DEEPSEEK_API_KEY`; `anthropic` = Claude Haiku 5.5). DeepSeek: `deepseek-flash`, sin razonamiento, JSON, 8 s de límite, sin reintento. Costo por consulta con caché y tarifa pico/fuera de pico (`precios_modelo`); `revisiones.modelo` y `tokens_cache`. La app no cambia.

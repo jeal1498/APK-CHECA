@@ -250,6 +250,12 @@ object Parser {
         return o
     }
 
+    /** true si algún texto trae un monto (sin montos no es una oferta: p. ej. la navegación de un viaje). */
+    fun tieneMonto(textos: List<String>, moneda: Moneda = Moneda.MXN): Boolean {
+        val r = reglasDe(moneda)
+        return textos.any { t -> !t.contains("total", ignoreCase = true) && (r.montoSolo.containsMatchIn(t) || r.monto.containsMatchIn(t)) }
+    }
+
     /**
      * Revisa una lectura que llegó de fuera ([Confirmador]) con los mismos límites del lector.
      * Además, la tarifa tiene que estar escrita en [textos] y, si Uber muestra «$Y/km est.»,

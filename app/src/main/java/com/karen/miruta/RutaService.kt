@@ -403,6 +403,20 @@ class RutaService : AccessibilityService() {
         }
     }
 
+    /**
+     * El lector no entendió una oferta que sí está en pantalla: se piden los datos al revisor
+     * y, si pasan las revisiones del teléfono, sale el pop-up normal (1–2 s después).
+     */
+    fun rescatar(app: String, zona: Rect?, lineas: List<String>) {
+        if (!::prefs.isInitialized || !Licencia.activa(this) || !Cuenta.puedeUsar(this)) return
+        // Con el pop-up encima la oferta se ve tapada: no es una lectura fallida.
+        if (popupVisible(app)) return
+        if (lineas.none { LectorOcr.esTramo(it) } || !Parser.tieneMonto(lineas, prefs.moneda)) return
+        Confirmador.rescatar(this, app, lineas, prefs.moneda) { oferta ->
+            handler.post { mostrarOferta(oferta, app, zona) }
+        }
+    }
+
     /** La revisión en segundo plano no coincidió: el pop-up se corrige sin anunciarlo. */
     private fun aplicarCorreccion(clave: String, app: String, leida: Oferta, nueva: Oferta) {
         val par = activas[clave] ?: return
@@ -682,9 +696,10 @@ class RutaService : AccessibilityService() {
                             (leida?.let { "tarifa \$${it.tarifa}, ${it.km} km, ${it.min} min" } ?: "nada (no reconoció la oferta)"), null)
                     }
                 }
-                val oferta = leida ?: continue
                 val r = Rect()
                 w.getBoundsInScreen(r)
+                if (leida == null) { rescatar(app, r, textos.toList()); continue }
+                val oferta = leida
                 mostrarOferta(oferta, app, r, textos.toList(), android.os.SystemClock.elapsedRealtime() - inicio)
             }
         } catch (_: Exception) { }

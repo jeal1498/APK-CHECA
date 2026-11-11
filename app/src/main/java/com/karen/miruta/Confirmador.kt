@@ -98,6 +98,77 @@ object Confirmador {
             !it.contains("total", ignoreCase = true) }
         .take(30).toList()
 
+    // ---------- Rescate (10.51) ----------
+    // Hay una oferta en pantalla (min y km + un monto) pero el lector no la entiende: se piden los
+    // datos al revisor y, si pasan Parser.plausible, sale el pop-up. Una vez por pantalla, y con
+    // pausa por app para no gastar si no era una oferta (navegación, pantallas raras).
+    private val rescates = object : LinkedHashMap<Int, Oferta?>(16, 0.75f, true) {
+        override fun removeEldestEntry(eldest: MutableMap.MutableEntry<Int, Oferta?>?) = size > 20
+    }
+    private val rescateEnCurso = HashSet<String>()
+    private val pausaRescate = HashMap<String, Long>()
+    private const val PAUSA_SIN_OFERTA_MS = 60_000L
+    private const val ENTRE_RESCATES_MS = 3_000L
+
+    /** Pide el rescate de una oferta que el lector no entendió; [listo] recibe la oferta (en otro hilo). */
+    fun rescatar(ctx: Context, app: String, lineas: List<String>, moneda: Moneda, listo: (Oferta) -> Unit) {
+        if (!Cuenta.conectada(ctx)) return
+        val enviar = filtrar(lineas)
+        if (enviar.isEmpty()) return
+        val clave = enviar.hashCode()
+        val ahora = System.currentTimeMillis()
+        synchronized(this) {
+            if (rescates.containsKey(clave)) { rescates[clave]?.let(listo); return }
+            if (app in rescateEnCurso || ahora < (pausaRescate[app] ?: 0L)) return
+            rescateEnCurso.add(app)
+            pausaRescate[app] = ahora + ENTRE_RESCATES_MS
+        }
+        val app0 = ctx.applicationContext
+        try {
+            hilo.execute {
+                var oferta: Oferta? = null
+                var noEraOferta = false
+                try {
+                    val (conteo, conteoAnterior) = conteos(app0)
+                    val cuerpo = JSONObject()
+                        .put("modo", "rescate")
+                        .put("conteo", conteo)
+                        .put("conteoAnterior", conteoAnterior ?: JSONObject.NULL)
+                        .put("app", app)
+                        .put("moneda", moneda.codigo)
+                        .put("version", BuildConfig.VERSION_NAME)
+                        .put("lineas", JSONArray(enviar))
+                    val respuesta = Cuenta.revisarOferta(app0, cuerpo.toString())
+                    if (respuesta != null && conteoAnterior != null) anteriorRecibido(app0, conteoAnterior.getString("dia"))
+                    val r = JSONObject(respuesta ?: "{}")
+                    val ia = r.optJSONObject("ia")
+                    if (r.optBoolean("ok") && ia != null) {
+                        if (!ia.optBoolean("oferta")) noEraOferta = true
+                        else {
+                            val c = Oferta(
+                                tarifa = ia.optDouble("tarifa", 0.0),
+                                km = ia.optDouble("km", 0.0),
+                                min = ia.optDouble("min", 0.0),
+                                recogidaKm = ia.optDouble("recKm", 0.0),
+                                recogidaMin = ia.optDouble("recMin", 0.0),
+                                multiplicador = ia.optDouble("multi", 0.0).let { if (it > 1.0) it else 0.0 }
+                            )
+                            if (Parser.plausible(c, lineas, moneda)) oferta = c else noEraOferta = true
+                        }
+                    }
+                } catch (_: Exception) { }
+                synchronized(this) {
+                    rescateEnCurso.remove(app)
+                    rescates[clave] = oferta
+                    if (noEraOferta) pausaRescate[app] = System.currentTimeMillis() + PAUSA_SIN_OFERTA_MS
+                }
+                oferta?.let(listo)
+            }
+        } catch (_: Exception) {
+            synchronized(this) { rescateEnCurso.remove(app) }
+        }
+    }
+
     /** La corrección ya conocida para esta lectura local, si la hubo. */
     @Synchronized
     fun corregida(o: Oferta): Oferta? = revisadas[firma(o)]
