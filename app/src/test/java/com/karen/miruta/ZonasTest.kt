@@ -46,7 +46,7 @@ class ZonasTest {
 
     @Test
     fun guardarYLeer() {
-        val texto = "21.000000,-87.000000 21.000000,-86.000000 22.000000,-86.000000;10.0,10.0 10.0,11.0 11.0,11.0"
+        val texto = "21.000000,-87.000000 21.000000,-86.000000 22.000000,-86.000000;10.000000,10.000000 10.000000,11.000000 11.000000,11.000000"
         assertEquals(texto, Zonas.escribir(Zonas.leer(texto)))
         assertTrue(Zonas.leer("").isEmpty())
     }
