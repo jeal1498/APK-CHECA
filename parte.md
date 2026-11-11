@@ -12,12 +12,13 @@
 - Pop-ups: en vertical uno solo (el de la oferta nueva tapa a los anteriores); dos solo en horizontal.
 - Cascada de lectores: texto primero, la foto confirma sin IA (`coincidencias`); si no coinciden, la IA revisa las dos y guarda cuál acertó; rescate solo si ambos fallan.
 - 10.58 probada con el APK.
-- AAB 138 (10.58) enviado a revisión en Prueba cerrada «Alpha» (11 nov), con nota de versión.
+- AAB 138 (10.58) ya pasó revisión en Prueba cerrada «Alpha»; algunos testers ya lo prueban (11 nov).
+- 10.59 en `main`: borde a borde Android 15 (sin colores de barras obsoletos, diálogos con insets). Sin AAB todavía.
 - Supabase guarda en cada lectura: lector, teléfono, Android, orientación, zonas, tarjetas, color y tiempos.
 
 ## … Falta
 - Play Console › Seguridad de los datos: agregar modelo del teléfono, Android y tiempos (ver `docs/google-play/data-safety.md`, 10.57–10.58).
-- Esperar que Google apruebe el AAB 138 (10.58) en Prueba cerrada «Alpha».
+- Redes sociales en la app (Ayuda y soporte y Cuenta): esperar de Eduardo qué redes y enlaces.
 - En unos días: «Estado de la revisión» para ver qué lector falla más y cuántas ofertas se confirman sin IA.
 - Prueba cerrada: día 8 de 14 seguidos con 12 testers (= verificadores). Faltan 6 días para pedir producción.
 - Fase 7 (Play Billing) antes del 1 feb 2027: necesita su «adelante» y una cuenta de Google admitida a su nombre.
