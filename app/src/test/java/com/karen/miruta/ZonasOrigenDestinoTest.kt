@@ -199,6 +199,12 @@ class ZonasOrigenDestinoTest {
         assertEquals(1, n)
     }
 
+    @Test fun respaldoConSoloDosVersiones() {
+        var n = 0
+        Zonas.ubicarCon("Calle Privada Playa Norte, Benito Juárez", { _ -> n++; Zonas.Geo.NoHallado }, maxConsultas = 2)
+        assertEquals(2, n)
+    }
+
     @Test fun loHalladoSeGuarda() {
         var guardado: String? = null
         Zonas.ubicarCon("Calle  Cuatro", { _ -> adentro }, alHallar = { k, _, _ -> guardado = k })

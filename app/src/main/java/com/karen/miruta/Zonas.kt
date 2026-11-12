@@ -279,19 +279,25 @@ object Zonas {
      * Coordenadas de [direccion] con caché: lo hallado se recuerda; lo no hallado, 30 min; un
      * error de red no se recuerda (se puede reintentar). [buscar] hace la consulta real.
      */
+    /** Lo que la caché sabe de [clave]: hallado, no hallado (30 min) o null si hay que buscar. */
+    private fun enCache(clave: String, ahora: Long): Geo? = synchronized(cache) {
+        val e = cache[clave] ?: return null
+        val p = e.punto
+        when {
+            p != null -> Geo.Hallado(p[0], p[1])
+            ahora - e.t < NO_HALLADO_MS -> Geo.NoHallado
+            else -> null
+        }
+    }
+
     internal fun ubicarCon(
         direccion: String, buscar: (String) -> Geo, ahora: Long = System.currentTimeMillis(),
-        recordarNoHallado: Boolean = true, alHallar: ((String, Double, Double) -> Unit)? = null
+        recordarNoHallado: Boolean = true, alHallar: ((String, Double, Double) -> Unit)? = null,
+        maxConsultas: Int = 5
     ): Geo {
         val clave = normalizar(direccion)
-        synchronized(cache) {
-            cache[clave]?.let { e ->
-                val p = e.punto
-                if (p != null) return Geo.Hallado(p[0], p[1])
-                if (ahora - e.t < NO_HALLADO_MS) return Geo.NoHallado
-            }
-        }
-        for (q in consultas(direccion)) {
+        enCache(clave, ahora)?.let { return it }
+        for (q in consultas(direccion).take(maxConsultas)) {
             when (val r = buscar(q)) {
                 is Geo.Hallado -> {
                     synchronized(cache) { cache[clave] = Entrada(doubleArrayOf(r.lat, r.lon), ahora) }
@@ -316,49 +322,73 @@ object Zonas {
 
     /**
      * Coordenadas de [direccion]. Bloquea el hilo: llamar desde [hilo], nunca del principal.
-     * Orden (10.65): caché (memoria y archivo) → buscador del teléfono (≈ 0.5 s, sin límite por
-     * segundo) → Nominatim de respaldo. Las dos búsquedas se limitan al recuadro de tus zonas:
-     * lo que cae fuera no puede estar en una zona. [sigue] = false corta la búsqueda (la oferta ya se fue).
+     * Orden: caché (memoria y archivo) → buscador del teléfono con TODAS las versiones de la
+     * dirección a la vez (10.66; gana la más precisa que se halle, máx. 2.5 s) → Nominatim de
+     * respaldo con solo 2 versiones. Las búsquedas se limitan al recuadro de tus zonas: lo que
+     * cae fuera no puede estar en una zona. [sigue] = false corta la búsqueda (la oferta ya se fue).
      */
     fun ubicar(ctx: Context, direccion: String, zonas: List<Zona>, pais: String, sigue: () -> Boolean = { true }): Geo {
         cargarCache(ctx)
+        val clave = normalizar(direccion)
+        enCache(clave, System.currentTimeMillis())?.let { return it }
         val caja = recuadro(zonas)
         val guardar = { k: String, la: Double, lo: Double -> guardarEnArchivo(ctx, k, la, lo) }
-        val delTelefono = ubicarCon(direccion, { q ->
-            if (!sigue()) Geo.ErrorRed else buscarTelefono(ctx, q, caja, pais)
-        }, recordarNoHallado = false, alHallar = guardar)
-        if (delTelefono is Geo.Hallado || !sigue()) return delTelefono
+        val delTelefono = buscarTelefono(ctx, consultas(direccion), caja, pais, sigue)
+        if (delTelefono is Geo.Hallado) {
+            synchronized(cache) { cache[clave] = Entrada(doubleArrayOf(delTelefono.lat, delTelefono.lon), System.currentTimeMillis()) }
+            guardar(clave, delTelefono.lat, delTelefono.lon)
+            return delTelefono
+        }
+        if (!sigue()) return Geo.ErrorRed
         // bounded=1: solo resultados dentro del recuadro, así «Benito Juárez» no se va a la CDMX.
         val cajaTexto = if (caja == null) "" else String.format(
             Locale.US, "&bounded=1&viewbox=%.5f,%.5f,%.5f,%.5f", caja[1], caja[2], caja[3], caja[0]
         )
         return ubicarCon(direccion, { q ->
             if (!sigue() || !hayRed(ctx)) Geo.ErrorRed else buscar(q, cajaTexto, pais)
-        }, alHallar = guardar)
+        }, alHallar = guardar, maxConsultas = 2)
     }
 
-    /** Buscador de direcciones del teléfono (Android `Geocoder`, de Google Play en casi todos). Máx. 2.5 s. */
+    /**
+     * Buscador de direcciones del teléfono (Android `Geocoder`, de Google Play en casi todos).
+     * Lanza todas las [qs] a la vez y devuelve la primera hallada en orden de precisión; en
+     * total espera máx. 2.5 s. Sin buscador, con error o fuera de tiempo: [Geo.ErrorRed].
+     */
     @Suppress("DEPRECATION")
-    private fun buscarTelefono(ctx: Context, q: String, caja: DoubleArray?, pais: String): Geo {
-        if (!Geocoder.isPresent()) return Geo.ErrorRed
-        val tarea = try {
-            telefono.submit(java.util.concurrent.Callable {
-                val g = Geocoder(ctx.applicationContext, Locale("es", if (pais.length == 2) pais.uppercase(Locale.ROOT) else "MX"))
-                if (caja != null) g.getFromLocationName(q, 1, caja[0], caja[1], caja[2], caja[3])
-                else g.getFromLocationName(q, 1)
-            })
-        } catch (_: Exception) { return Geo.ErrorRed }
-        return try {
-            val a = tarea.get(2500, java.util.concurrent.TimeUnit.MILLISECONDS)?.firstOrNull() ?: return Geo.NoHallado
-            if (!a.hasLatitude() || !a.hasLongitude()) return Geo.NoHallado
-            // Por si el teléfono ignora el recuadro: lo de fuera no cuenta.
-            if (caja != null && (a.latitude < caja[0] || a.latitude > caja[2] || a.longitude < caja[1] || a.longitude > caja[3])) {
-                return Geo.NoHallado
+    private fun buscarTelefono(ctx: Context, qs: List<String>, caja: DoubleArray?, pais: String, sigue: () -> Boolean): Geo {
+        if (qs.isEmpty() || !sigue() || !Geocoder.isPresent()) return Geo.ErrorRed
+        val app = ctx.applicationContext
+        val loc = Locale("es", if (pais.length == 2) pais.uppercase(Locale.ROOT) else "MX")
+        val tareas = try {
+            qs.map { q ->
+                telefono.submit(java.util.concurrent.Callable {
+                    val g = Geocoder(app, loc)
+                    if (caja != null) g.getFromLocationName(q, 1, caja[0], caja[1], caja[2], caja[3])
+                    else g.getFromLocationName(q, 1)
+                })
             }
-            Geo.Hallado(a.latitude, a.longitude)
-        } catch (_: java.util.concurrent.TimeoutException) {
-            tarea.cancel(true); Geo.ErrorRed
-        } catch (_: Exception) { Geo.ErrorRed }
+        } catch (_: Exception) { return Geo.ErrorRed }
+        val limite = System.currentTimeMillis() + 2500
+        var huboError = false
+        try {
+            for (t in tareas) {
+                if (!sigue()) return Geo.ErrorRed
+                val resta = limite - System.currentTimeMillis()
+                if (resta <= 0) return Geo.ErrorRed
+                val a = (try {
+                    t.get(resta, java.util.concurrent.TimeUnit.MILLISECONDS)?.firstOrNull()
+                } catch (_: java.util.concurrent.TimeoutException) {
+                    return Geo.ErrorRed
+                } catch (_: Exception) { huboError = true; null }) ?: continue
+                if (!a.hasLatitude() || !a.hasLongitude()) continue
+                // Por si el teléfono ignora el recuadro: lo de fuera no cuenta.
+                if (caja != null && (a.latitude < caja[0] || a.latitude > caja[2] || a.longitude < caja[1] || a.longitude > caja[3])) continue
+                return Geo.Hallado(a.latitude, a.longitude)
+            }
+        } finally {
+            tareas.forEach { it.cancel(true) }
+        }
+        return if (huboError) Geo.ErrorRed else Geo.NoHallado
     }
 
     private fun buscar(q: String, caja: String, pais: String): Geo {
