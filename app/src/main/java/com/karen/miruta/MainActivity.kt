@@ -2647,15 +2647,8 @@ class MainActivity : Activity() {
 
     /** Filas de la pestaña Cuenta, con el estado de cada cosa a la vista. */
     private fun filasCuenta(): View {
-        // Tres grupos con nombre: Tus equipos, Ayuda y Privacidad.
+        // Dos grupos con nombre: Ayuda y Privacidad.
         val col = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        val equipos = Cuenta.equipos(this)
-        val gEquipos = grupoFilas()
-        filaMenu(gEquipos, Icono.CUENTA, "Equipos",
-            "${equipos.size} ${if (equipos.size == 1) "equipo" else "equipos"}" +
-                if (equipos.isEmpty()) "" else " · " + equipos.joinToString(", ") { it.visible() }) { mostrarEquipos() }
-        col.addView(etiqueta("TUS EQUIPOS"))
-        col.addView(gEquipos, margenTarjeta())
         val gAyuda = grupoFilas()
         filaMenu(gAyuda, Icono.AYUDA, "Ayuda y soporte", "Preguntas frecuentes y WhatsApp") { mostrarAyuda() }
         filaMenu(gAyuda, Icono.PLAY, "Guía de inicio", "Cómo usar Checa paso a paso") { mostrarGuia() }
