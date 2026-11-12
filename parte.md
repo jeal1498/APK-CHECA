@@ -27,12 +27,15 @@
 - Nota de Play y la imagen del grupo de la 10.69 (zonas bloqueadas destacadas) entregadas.
 - AAB 149 (10.69) generado (corrida 15 de «play-aab-firmado», en verde) y enviado a revisión en «Alpha» (12 nov).
 - AAB 149 (10.69) aprobado en «Alpha» e imagen de novedades publicada en el grupo (12 nov).
+- 10.70 en `main` (sin AAB): reseña nativa de Play (`Resena.kt`, tras 10 viajes aceptados, 1 vez cada 60 días).
+- Crashlytics preparado solo para `play`: se activa al poner `app/google-services.json`.
 
 ## … Falta
 - 13 nov: «Estado de la revisión de hoy» para revisar el revisor v26: sin `json`/`json_vacio` en `fallas_ia`, mediana de `ms_ia` < 4 s, % coincidió > 49 %, sin `oferta=true` con km 0.
 - ~20 nov: comparar 10.69 contra 10.58 y decidir si se construyen las reglas remotas (10–14 h).
 - Redes sociales en la app (Ayuda y soporte y Cuenta): esperar de Eduardo qué redes y enlaces.
 - Prueba cerrada: día 9 de 14 seguidos con 12 testers (= verificadores). Faltan 5 días para pedir producción.
+- Crashlytics: Eduardo crea el proyecto en Firebase con dos apps (`com.jeal1498.checa` y `com.karen.miruta`) y manda `google-services.json`; luego actualizar Seguridad de los datos (informes de fallos).
 - Fase 7 (Play Billing) antes del 1 feb 2027: necesita su «adelante» y una cuenta de Google admitida a su nombre.
 
 ## ✗ No tocar
