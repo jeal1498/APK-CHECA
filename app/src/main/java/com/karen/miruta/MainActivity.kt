@@ -2391,6 +2391,36 @@ class MainActivity : Activity() {
         grupo.addView(f)
     }
 
+    /** 10.67: un solo ajuste en lugar de «Iniciar sola» y «Avisarme» (se repetían). Iniciar sola deja
+     *  el aviso de respaldo por si no puede encender la lectura; «No hacer nada» apaga los dos. */
+    private fun filaAlAbrir(grupo: LinearLayout) {
+        if (grupo.childCount > 0) grupo.addView(View(this).apply { setBackgroundColor(Tema.BORDE) },
+            LinearLayout.LayoutParams(-1, dp(1)))
+        val f = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(14), dp(10), dp(14), dp(12))
+        }
+        val subs = listOf(
+            "Enciende la lectura y avisa «Lista para trabajar». Tú la apagas al terminar",
+            "Si la lectura está apagada, te ofrece iniciarla",
+            "No enciende la lectura ni avisa: la inicias tú con ▶"
+        )
+        fun elegida() = when {
+            prefs.inicioAutomatico -> 0
+            prefs.avisarApertura -> 1
+            else -> 2
+        }
+        f.addView(texto("Al abrir Uber o DiDi", Tema.T_TEXTO, cTexto, true))
+        val sub = texto(subs[elegida()], Tema.T_NOTA, cTenue, false).apply { setLineSpacing(0f, 1.15f) }
+        f.addView(sub, margenArriba(2))
+        f.addView(pildoras(listOf("Iniciar sola", "Preguntarme", "Nada"), { elegida() }) { i ->
+            prefs.inicioAutomatico = i == 0
+            prefs.avisarApertura = i != 2
+            sub.text = subs[i]
+        }, margenArriba(Tema.S1))
+        grupo.addView(f)
+    }
+
     /** Fila con nombre, descripción e interruptor dentro de un grupo (marca v2). */
     private fun filaInterruptor(grupo: LinearLayout, titulo: String, sub: String?, valor: Boolean, cambio: (Boolean) -> Unit) {
         if (grupo.childCount > 0) grupo.addView(View(this).apply { setBackgroundColor(Tema.BORDE) },
@@ -2591,12 +2621,7 @@ class MainActivity : Activity() {
                 else -> "${guardadas.size} ofertas guardadas"
             },
             if (noLeidas > 0) cAmarillo else cTenue) { mostrarAyudaLectura() }
-        filaInterruptor(g, "Iniciar sola al abrir Uber o DiDi", "Enciende la lectura y avisa «Lista para trabajar». Tú la apagas al terminar", prefs.inicioAutomatico) {
-            prefs.inicioAutomatico = it
-        }
-        filaInterruptor(g, "Avisarme al abrir Uber o DiDi", "Si la lectura está apagada, te ofrece iniciarla", prefs.avisarApertura) {
-            prefs.avisarApertura = it
-        }
+        filaAlAbrir(g)
         caja.addView(g)
         pintarPaisSeguridad()
     }

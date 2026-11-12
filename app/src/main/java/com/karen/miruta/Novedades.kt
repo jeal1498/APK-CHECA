@@ -9,6 +9,9 @@ object Novedades {
     class Version(val codigo: Int, val nombre: String, val puntos: List<String>, val widgets: Boolean = false, val vistaQr: Boolean = false)
 
     val LISTA = listOf(
+        Version(147, "10.67", listOf(
+            "Ajustes más claros: «Al abrir Uber o DiDi» junta en un solo lugar iniciar sola, preguntarte o no hacer nada."
+        )),
         Version(146, "10.66", listOf(
             "Zonas bloqueadas: las direcciones difíciles también se resuelven en unos 2 segundos."
         )),
@@ -68,7 +71,7 @@ object Novedades {
             "Al abrir Uber o DiDi, Checa enciende sola la lectura y avisa «Lista para trabajar».",
             "Al terminar tu jornada, apágala tú: toca «Apagar ahora» o «Detener» en la notificación.",
             "Si pasan 30 minutos sin Uber ni DiDi con la lectura encendida, te sugiere apagarla.",
-            "Puedes desactivarlo en Ajustes › «Iniciar sola al abrir Uber o DiDi»."
+            "Puedes desactivarlo en Ajustes › «Al abrir Uber o DiDi»."
         )),
         Version(119, "10.39", listOf(
             "Si cambias de teléfono, tu país y tu apariencia (claro u oscuro) regresan con tu cuenta.",
