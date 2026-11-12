@@ -1,18 +1,19 @@
 # Reporte de Checa (web + app) · últimos 30 días
 
-Generado: 2026-11-11 19:53 UTC. Cuenta visitas únicas (una por pestaña).
+Generado: 2026-11-12 20:29 UTC. Cuenta visitas únicas (una por pestaña).
 
 ## Resumen
 | visitas | descargas | cuentas_nuevas | pagos | ingresos | licencias_activas |
 | --- | --- | --- | --- | --- | --- |
-| 673 | 264 | 58 | 0 | 0 | 3 |
+| 671 | 262 | 65 | 0 | 0 | 3 |
 
 # App
 
 ## Cuentas nuevas por día (inicio con Google)
 | dia | cuentas |
 | --- | --- |
-| 2026-11-11 | 2 |
+| 2026-11-12 | 2 |
+| 2026-11-11 | 7 |
 | 2026-11-10 | 2 |
 | 2026-11-09 | 3 |
 | 2026-11-08 | 4 |
@@ -34,6 +35,13 @@ Generado: 2026-11-11 19:53 UTC. Cuenta visitas únicas (una por pestaña).
 ## Quiénes son (cuentas con Google)
 | correo | registro | ultimo_acceso | equipos | licencia_vence |
 | --- | --- | --- | --- | --- |
+| og.rangelc@gmail.com | 11-12 11:35 | 11-12 11:35 | 1 | sin licencia |
+| billgeorge.23797@gmail.com | 11-12 10:00 | 11-12 10:00 | 1 | sin licencia |
+| vicojc7701@gmail.com | 11-11 22:11 | 11-11 22:11 | 1 | sin licencia |
+| wmcastillo.50428@gmail.com | 11-11 21:42 | 11-11 21:42 | 1 | sin licencia |
+| lorihawkins.41270@gmail.com | 11-11 21:26 | 11-11 21:26 | 1 | sin licencia |
+| terimanning.21998@gmail.com | 11-11 18:53 | 11-11 18:53 | 0 | sin licencia |
+| marshallmunoz.25832@gmail.com | 11-11 18:36 | 11-11 18:36 | 1 | sin licencia |
 | alanmcdonald.32378@gmail.com | 11-11 11:23 | 11-11 11:23 | 1 | sin licencia |
 | mauricio.francisci.3@gmail.com | 11-11 08:24 | 11-11 08:24 | 1 | sin licencia |
 | naomigarrett.09897@gmail.com | 11-10 22:10 | 11-10 22:10 | 1 | sin licencia |
@@ -60,7 +68,7 @@ Generado: 2026-11-11 19:53 UTC. Cuenta visitas únicas (una por pestaña).
 | glozano30506@gmail.com | 10-24 00:12 | 10-24 00:12 | 1 | sin licencia |
 | nikte06bacabespinoza@gmail.com | 10-23 18:23 | 10-23 18:23 | 1 | sin licencia |
 | wilmafields.72871@gmail.com | 10-23 12:15 | 10-23 12:15 | 1 | sin licencia |
-| jeal1498@gmail.com | 10-22 17:15 | 11-08 20:38 | 2 | sin licencia |
+| jeal1498@gmail.com | 10-22 17:15 | 11-12 07:19 | 2 | sin licencia |
 | ciberbumker@gmail.com | 10-22 16:24 | 10-22 16:40 | 2 | sin licencia |
 | diberdiub@gmail.com | 10-21 18:24 | 10-21 18:24 | 1 | sin licencia |
 | ceverthbernabe@gmail.com | 10-21 14:00 | 10-21 14:00 | 1 | sin licencia |
@@ -82,7 +90,7 @@ Generado: 2026-11-11 19:53 UTC. Cuenta visitas únicas (una por pestaña).
 | carloshernandez.soles@gmail.com | 10-18 21:09 | 10-18 21:09 | 1 | sin licencia |
 | mcamposl0088@gmail.com | 10-18 19:57 | 11-06 16:40 | 2 | sin licencia |
 | migajas.tlx@gmail.com | 10-18 13:24 | 10-18 13:24 | 1 | sin licencia |
-| dcisnerosdanys@gmail.com | 10-18 13:11 | 11-04 12:28 | 2 | sin licencia |
+| dcisnerosdanys@gmail.com | 10-18 13:11 | 11-11 14:53 | 2 | sin licencia |
 | fercho75.1he@gmail.com | 10-17 21:02 | 10-17 21:02 | 1 | sin licencia |
 | fran2026mx@gmail.com | 10-17 20:31 | 10-17 20:31 | 1 | sin licencia |
 | danvasquez.74625@gmail.com | 10-17 18:19 | 10-17 18:19 | 0 | sin licencia |
@@ -93,7 +101,7 @@ Generado: 2026-11-11 19:53 UTC. Cuenta visitas únicas (una por pestaña).
 | edent402@gmail.com | 10-16 07:42 | 11-04 12:54 | 1 | sin licencia |
 | lufercab@gmail.com | 10-15 18:21 | 10-15 18:21 | 1 | 20270113 |
 | landingbot01@gmail.com | 10-11 15:23 | 10-21 19:26 | 1 | sin licencia |
-| lalolopezxd@gmail.com | 10-11 15:08 | 11-11 12:32 | 2 | 99991231 |
+| lalolopezxd@gmail.com | 10-11 15:08 | 11-11 22:03 | 3 | 99991231 |
 
 ## Pagos por plan
 Sin datos todavía.
@@ -125,11 +133,11 @@ Sin datos todavía.
 ## Embudo
 | evento | visitas | veces |
 | --- | --- | --- |
-| visita | 673 | 934 |
-| descarga | 264 | 297 |
-| clic_descargar | 124 | 136 |
+| visita | 671 | 924 |
+| descarga | 262 | 294 |
+| clic_descargar | 122 | 133 |
 | descarga_instalar | 69 | 147 |
-| video_play | 68 | 72 |
+| video_play | 66 | 69 |
 | beta_whatsapp | 23 | 27 |
 | beta | 20 | 20 |
 | whatsapp_ayuda | 13 | 13 |
@@ -137,35 +145,34 @@ Sin datos todavía.
 ## Por fuente (visitas → descargas)
 | fuente | campana | visitas | descargas |
 | --- | --- | --- | --- |
-| directo |  | 512 | 198 |
+| directo |  | 514 | 197 |
 | tiktok |  | 98 | 55 |
 | tiktok | prueba-en-google-play | 26 | 0 |
 | app | compartir | 17 | 9 |
-| facebook | beta | 6 | 2 |
 | app |  | 5 | 0 |
+| facebook | beta | 5 | 2 |
 | web | cierre | 3 | 0 |
-| prueba |  | 3 | 1 |
-| tiktok-personal | prueba-en-google-play | 2 | 0 |
 | chatgpt.com |  | 2 | 0 |
+| tiktok-personal | prueba-en-google-play | 2 | 0 |
+| web | precio_pro | 1 | 0 |
 | tiktok | beta-testers-corto | 1 | 0 |
 | web | hero | 1 | 0 |
-| web | precio_pro | 1 | 0 |
 
 ## Por dispositivo
 | dispositivo | visitas | descargas |
 | --- | --- | --- |
-| android | 516 | 264 |
-| pc | 100 | 0 |
+| android | 512 | 262 |
+| pc | 102 | 0 |
 | iphone | 58 | 0 |
 
 ## Qué botón lleva a descargar
 | boton | descargas |
 | --- | --- |
-| fijo | 84 |
-| hero | 80 |
+| fijo | 83 |
+| hero | 79 |
 | tiktok | 53 |
 | app | 33 |
-| nav | 20 |
+| nav | 19 |
 | cierre | 12 |
 | registro | 8 |
 | Rhc | 2 |
@@ -177,7 +184,8 @@ Sin datos todavía.
 ## Por día
 | dia | visitas | descargas |
 | --- | --- | --- |
-| 2026-11-11 | 5 | 0 |
+| 2026-11-12 | 1 | 0 |
+| 2026-11-11 | 7 | 0 |
 | 2026-11-10 | 6 | 0 |
 | 2026-11-09 | 13 | 0 |
 | 2026-11-08 | 5 | 0 |
@@ -205,4 +213,4 @@ Sin datos todavía.
 | 2026-10-16 | 69 | 46 |
 | 2026-10-15 | 125 | 34 |
 | 2026-10-14 | 2 | 0 |
-| 2026-10-13 | 14 | 4 |
+| 2026-10-13 | 9 | 2 |
