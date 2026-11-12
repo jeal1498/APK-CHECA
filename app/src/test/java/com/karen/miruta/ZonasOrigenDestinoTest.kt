@@ -191,6 +191,38 @@ class ZonasOrigenDestinoTest {
         assertTrue(n > antes)
     }
 
+    @Test fun telefonoSinHallarNoTapaANominatim() {
+        // 1ª pasada (teléfono) sin recordar el «no hallado»: la 2ª (Nominatim) sí busca.
+        Zonas.ubicarCon("Calle Tres", { _ -> Zonas.Geo.NoHallado }, recordarNoHallado = false)
+        var n = 0
+        assertTrue(Zonas.ubicarCon("Calle Tres", { _ -> n++; adentro }) is Zonas.Geo.Hallado)
+        assertEquals(1, n)
+    }
+
+    @Test fun loHalladoSeGuarda() {
+        var guardado: String? = null
+        Zonas.ubicarCon("Calle  Cuatro", { _ -> adentro }, alHallar = { k, _, _ -> guardado = k })
+        assertEquals("calle cuatro", guardado)
+    }
+
+    @Test fun recuadroDeLasZonas() {
+        val c = Zonas.recuadro(zonas)!!
+        assertEquals(10.0 - 0.4, c[0], 1e-9)
+        assertEquals(-87.0 - 0.4, c[1], 1e-9)
+        assertEquals(22.0 + 0.4, c[2], 1e-9)
+        assertEquals(11.0 + 0.4, c[3], 1e-9)
+        assertNull(Zonas.recuadro(emptyList()))
+    }
+
+    @Test fun cadaPuntoMarcaPorSeparado() {
+        val solo = Zonas.marcar(base, res(Zonas.Tipo.DESTINO, enHotelera))
+        assertEquals("Hotelera", solo.zonaDestino)
+        assertEquals("", solo.zonaOrigen)
+        val ambos = Zonas.marcar(solo, res(Zonas.Tipo.ORIGEN, adentro))
+        assertEquals("Origen y destino bloqueados · Centro / Hotelera", ambos.motivoZona())
+        assertEquals(ambos, Zonas.marcar(ambos, res(Zonas.Tipo.ORIGEN, afuera)))
+    }
+
     // ---------------- Recomendación ----------------
 
     private fun res(tipo: Zonas.Tipo, g: Zonas.Geo) = Zonas.evaluar(tipo, "Calle", zonas) { g }

@@ -37,6 +37,8 @@ class RutaService : AccessibilityService() {
     private val ultimaFirma = HashMap<String, Pair<Oferta, Long>>()
     /** Turno de la oferta de cada pop-up: un resultado de zonas solo se aplica a la oferta que lo pidió. */
     private val turnos = Zonas.Turnos()
+    /** Por app: turno de la oferta y puntos ya mandados a ubicar (1 = origen, 2 = destino). */
+    private val zonasPedidas = HashMap<String, Pair<Long, Int>>()
     /** Dónde se vieron por última vez los tramos de cada oferta activa, y lecturas seguidas sin verlos. */
     private val tramosVistos = HashMap<String, List<Rect>>()
     private val sinVer = HashMap<String, Int>()
@@ -393,14 +395,14 @@ class RutaService : AccessibilityService() {
             fun cerca(km: Double, min: Double) = Math.abs(km - oferta.km) < 0.15 && Math.abs(min - oferta.min) < 1.1
             val tramoTapado = a.recogidaMin > 0 && oferta.recogidaMin == 0.0 &&
                 (cerca(a.viajeKm, a.viajeMin) || cerca(a.recogidaKm, a.recogidaMin))
-            if (mismosTramos || tramoTapado) return
+            if (mismosTramos || tramoTapado) { revisarZonaSiFalta(clave, lineas); return }
         }
         // La misma oferta (con pequeñas variaciones del OCR) no vuelve a salir mientras siga en
         // pantalla: cada vez que se ve de nuevo se renueva el plazo de 60 s. Así, al cerrar el
         // pop-up con la ✕ o por tiempo, no reaparece (parpadeo).
         val ahora = System.currentTimeMillis()
         ultimaFirma[clave]?.let { (o, t) ->
-            if (ahora - t < 60_000 && parecida(o, oferta)) { ultimaFirma[clave] = o to ahora; return }
+            if (ahora - t < 60_000 && parecida(o, oferta)) { ultimaFirma[clave] = o to ahora; revisarZonaSiFalta(clave, lineas); return }
         }
         ultimaFirma[clave] = oferta to ahora
 
@@ -409,6 +411,7 @@ class RutaService : AccessibilityService() {
                 p.alCerrar = {
                     activas.remove(clave)
                     turnos.quitar(clave)
+                    zonasPedidas.remove(clave)
                     tramosVistos.remove(clave)
                     sinVer.remove(clave)
                     confirmadasTexto.remove(clave)
@@ -487,6 +490,8 @@ class RutaService : AccessibilityService() {
         if (a.recogidaMin > 0 && foto.recogidaMin == 0.0 && (cerca(a.viajeKm, a.viajeMin) || cerca(a.recogidaKm, a.recogidaMin))) return true
         esperas.remove(clave)
         e.vencer?.let { handler.removeCallbacks(it) }
+        // Si el texto no traía la dirección, la foto sí puede: la zona se busca con ella.
+        revisarZonaSiFalta(clave, lineas)
         if (parecida(a, foto)) {
             confirmadasTexto.add(clave)
             Confirmador.anotarCoincidencia(this, e.app, a, e.ms, if (msFoto >= 0) msFoto else -1)
@@ -572,34 +577,51 @@ class RutaService : AccessibilityService() {
      * conductor, el pop-up pasa a rojo con el motivo. El pop-up económico ya salió: esto corre
      * en [Zonas.hilo] y solo corrige después. Necesita internet o la caché para ubicar las
      * direcciones; sin ellas (o si no se ve la dirección) no se bloquea nada.
+     *
+     * 10.65: se llama con las líneas de CADA lector (texto, foto, rescate) y busca cada punto
+     * con el primero que traiga su dirección, una sola vez por oferta ([zonasPedidas]). Origen y
+     * destino se buscan a la vez y cada uno pinta el rojo apenas llega; si la oferta se va, la
+     * búsqueda se corta.
      */
     private fun revisarZona(clave: String, turno: Long, lineas: List<String>) {
         if (!prefs.zonasOn) return
         val zonas = Zonas.leer(prefs.zonasTexto)
         if (zonas.isEmpty()) return
-        val origen = Parser.origen(lineas)
-        val destino = Parser.destino(lineas)
+        val ya = zonasPedidas[clave]?.takeIf { it.first == turno }?.second ?: 0
+        val origen = if ((ya and 1) == 0) Parser.origen(lineas) else null
+        val destino = if ((ya and 2) == 0) Parser.destino(lineas) else null
         if (origen == null && destino == null) return
+        zonasPedidas[clave] = turno to (ya or (if (origen != null) 1 else 0) or (if (destino != null) 2 else 0))
         val pais = Pais.actual(prefs).codigo
         val ctx = applicationContext
-        try {
-            Zonas.hilo.execute {
-                val geo = { d: String -> Zonas.ubicar(ctx, d, zonas, pais) }
-                val ro = Zonas.evaluar(Zonas.Tipo.ORIGEN, origen, zonas, geo)
-                val rd = Zonas.evaluar(Zonas.Tipo.DESTINO, destino, zonas, geo)
-                if (ro.bloqueada || rd.bloqueada) handler.post { aplicarZonas(clave, turno, ro, rd) }
-                // «Guardar pantallas»: qué dirección se leyó y dónde quedó, para revisar fallas.
-                if (prefs.diagnostico) Guardado.guardar(ctx, "Zonas", ro.bloqueada || rd.bloqueada,
-                    Zonas.informe(ro) + "\n" + Zonas.informe(rd) + "\n\n" + lineas.take(40).joinToString("\n"), null)
-            }
-        } catch (_: java.util.concurrent.RejectedExecutionException) { }
+        val diagnostico = prefs.diagnostico
+        val sigue = { turnos.vigente(clave, turno) }
+        for ((tipo, dir) in listOf(Zonas.Tipo.ORIGEN to origen, Zonas.Tipo.DESTINO to destino)) {
+            if (dir == null) continue
+            try {
+                Zonas.hilo.execute {
+                    if (!sigue()) return@execute
+                    val r = Zonas.evaluar(tipo, dir, zonas) { d -> Zonas.ubicar(ctx, d, zonas, pais, sigue) }
+                    if (r.bloqueada) handler.post { aplicarZona(clave, turno, r) }
+                    // «Guardar pantallas»: qué dirección se leyó y dónde quedó, para revisar fallas.
+                    if (diagnostico) Guardado.guardar(ctx, "Zonas", r.bloqueada,
+                        Zonas.informe(r) + "\n\n" + lineas.take(40).joinToString("\n"), null)
+                }
+            } catch (_: java.util.concurrent.RejectedExecutionException) { }
+        }
     }
 
-    /** Pone las marcas de zona en la oferta del pop-up, si sigue siendo la misma que las pidió. Una sola alerta. */
-    private fun aplicarZonas(clave: String, turno: Long, ro: Zonas.Resultado, rd: Zonas.Resultado) {
+    /** Busca las direcciones que falten con las líneas de otro lector (la foto o el rescate). */
+    private fun revisarZonaSiFalta(clave: String, lineas: List<String>?) {
+        if (lineas == null) return
+        turnos.actual(clave)?.let { revisarZona(clave, it, lineas) }
+    }
+
+    /** Pone la marca de zona en la oferta del pop-up, si sigue siendo la que la pidió. Una sola alerta roja. */
+    private fun aplicarZona(clave: String, turno: Long, r: Zonas.Resultado) {
         if (!turnos.vigente(clave, turno)) return
         val par = activas[clave] ?: return
-        val marcada = Zonas.marcar(par.first, ro, rd)
+        val marcada = Zonas.marcar(par.first, r)
         if (marcada == par.first) return
         val antes = par.first.nivel(prefs)
         activas[clave] = marcada to par.second

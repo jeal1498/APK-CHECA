@@ -1,6 +1,7 @@
 package com.karen.miruta
 
 import android.content.Context
+import android.location.Geocoder
 import android.net.ConnectivityManager
 import org.json.JSONArray
 import java.net.HttpURLConnection
@@ -148,12 +149,15 @@ object Zonas {
             (if (r.lat != null && r.lon != null) String.format(Locale.US, " (%.5f, %.5f)", r.lat, r.lon) else "") +
             (if (r.zona.isNotEmpty()) " " + r.zona else "")
 
+    /** Oferta con la marca de un punto, si está bloqueado (las que ya tenía se conservan). */
+    fun marcar(o: Oferta, r: Resultado): Oferta = when {
+        !r.bloqueada -> o
+        r.tipo == Tipo.ORIGEN -> o.copy(zonaOrigen = r.zona)
+        else -> o.copy(zonaDestino = r.zona)
+    }
+
     /** Oferta con las marcas de los puntos bloqueados (las que ya tenía se conservan). */
-    fun marcar(o: Oferta, origen: Resultado, destino: Resultado): Oferta =
-        o.copy(
-            zonaOrigen = if (origen.bloqueada) origen.zona else o.zonaOrigen,
-            zonaDestino = if (destino.bloqueada) destino.zona else o.zonaDestino
-        )
+    fun marcar(o: Oferta, origen: Resultado, destino: Resultado): Oferta = marcar(marcar(o, origen), destino)
 
     /** La corrección [nueva] del revisor conserva las marcas de zona de la oferta [anterior] del mismo pop-up. */
     fun conservar(anterior: Oferta, nueva: Oferta): Oferta =
@@ -162,19 +166,26 @@ object Zonas {
 
     /**
      * Turno de la oferta que muestra cada pop-up (por app). Cada oferta nueva recibe un turno
-     * nuevo; un resultado que llega tarde con un turno viejo se descarta. Solo hilo principal.
+     * nuevo; un resultado que llega tarde con un turno viejo se descarta. Se consulta también
+     * desde los hilos de búsqueda (para no buscar direcciones de ofertas que ya se fueron).
      */
     class Turnos {
         private val ids = HashMap<String, Long>()
         private var ultimo = 0L
-        fun nuevo(clave: String): Long { ultimo++; ids[clave] = ultimo; return ultimo }
-        fun actual(clave: String): Long? = ids[clave]
-        fun vigente(clave: String, turno: Long): Boolean = ids[clave] == turno
-        fun quitar(clave: String) { ids.remove(clave) }
+        @Synchronized fun nuevo(clave: String): Long { ultimo++; ids[clave] = ultimo; return ultimo }
+        @Synchronized fun actual(clave: String): Long? = ids[clave]
+        @Synchronized fun vigente(clave: String, turno: Long): Boolean = ids[clave] == turno
+        @Synchronized fun quitar(clave: String) { ids.remove(clave) }
     }
 
-    /** Hilo único para ubicar direcciones: no toca el hilo principal y las consultas no se enciman. */
-    val hilo: java.util.concurrent.ExecutorService = java.util.concurrent.Executors.newSingleThreadExecutor()
+    /**
+     * Hilos para ubicar direcciones fuera del hilo principal: origen y destino se buscan a la vez
+     * (10.65). Nominatim sigue con su límite de 1 consulta por segundo ([buscar]).
+     */
+    val hilo: java.util.concurrent.ExecutorService = java.util.concurrent.Executors.newFixedThreadPool(3)
+
+    /** Hilo aparte para el buscador del teléfono, que puede colgarse: se le da un tiempo máximo. */
+    private val telefono = java.util.concurrent.Executors.newCachedThreadPool()
 
     // ------------------------------------------------------------------
     // Dirección → coordenadas (Nominatim de OpenStreetMap, solo el texto de la dirección)
@@ -192,7 +203,44 @@ object Zonas {
     private const val NO_HALLADO_MS = 30 * 60_000L
 
     /** Solo para pruebas. */
-    internal fun limpiarCache() = synchronized(cache) { cache.clear() }
+    internal fun limpiarCache() = synchronized(cache) { cache.clear(); cargada = true }
+
+    // Lo hallado también se guarda en el teléfono (10.65): tus lugares de siempre salen al instante
+    // aunque cierres la app. Solo coordenadas de direcciones de ofertas, nunca sale del teléfono.
+    private const val ARCHIVO_CACHE = "zonas_direcciones.txt"
+    private const val MAX_GUARDADAS = 500
+    @Volatile private var cargada = false
+
+    private fun cargarCache(ctx: Context) {
+        if (cargada) return
+        synchronized(cache) {
+            if (cargada) return
+            cargada = true
+            try {
+                val f = java.io.File(ctx.applicationContext.filesDir, ARCHIVO_CACHE)
+                if (!f.exists()) return
+                val lineas = f.readLines().takeLast(MAX_GUARDADAS)
+                for (l in lineas) {
+                    val p = l.split("|", limit = 3)
+                    val la = p.getOrNull(0)?.toDoubleOrNull() ?: continue
+                    val lo = p.getOrNull(1)?.toDoubleOrNull() ?: continue
+                    val k = p.getOrNull(2)?.takeIf { it.isNotBlank() } ?: continue
+                    cache[k] = Entrada(doubleArrayOf(la, lo), 0L)
+                }
+                // Se poda de vez en cuando para que el archivo no crezca sin fin.
+                if (lineas.size >= MAX_GUARDADAS) f.writeText(lineas.joinToString("\n", postfix = "\n"))
+            } catch (_: Exception) { }
+        }
+    }
+
+    private fun guardarEnArchivo(ctx: Context, clave: String, lat: Double, lon: Double) {
+        try {
+            java.io.File(ctx.applicationContext.filesDir, ARCHIVO_CACHE)
+                .appendText(String.format(Locale.US, "%.6f|%.6f|%s\n", lat, lon, clave.replace("\n", " ")))
+        } catch (_: Exception) { }
+    }
+
+    private fun normalizar(direccion: String) = direccion.replace(Regex("\\s+"), " ").trim().lowercase(Locale.ROOT)
 
     private val tipoVia = Regex("""^(?:(?:calle|c\.|av\.?|avenida|privada|priv\.|calzada|blvd\.?|boulevard|andador|retorno|cerrada)\s+)+""", RegexOption.IGNORE_CASE)
 
@@ -231,8 +279,11 @@ object Zonas {
      * Coordenadas de [direccion] con caché: lo hallado se recuerda; lo no hallado, 30 min; un
      * error de red no se recuerda (se puede reintentar). [buscar] hace la consulta real.
      */
-    internal fun ubicarCon(direccion: String, buscar: (String) -> Geo, ahora: Long = System.currentTimeMillis()): Geo {
-        val clave = direccion.replace(Regex("\\s+"), " ").trim().lowercase(Locale.ROOT)
+    internal fun ubicarCon(
+        direccion: String, buscar: (String) -> Geo, ahora: Long = System.currentTimeMillis(),
+        recordarNoHallado: Boolean = true, alHallar: ((String, Double, Double) -> Unit)? = null
+    ): Geo {
+        val clave = normalizar(direccion)
         synchronized(cache) {
             cache[clave]?.let { e ->
                 val p = e.punto
@@ -244,29 +295,70 @@ object Zonas {
             when (val r = buscar(q)) {
                 is Geo.Hallado -> {
                     synchronized(cache) { cache[clave] = Entrada(doubleArrayOf(r.lat, r.lon), ahora) }
+                    alHallar?.invoke(clave, r.lat, r.lon)
                     return r
                 }
                 is Geo.ErrorRed -> return r
                 is Geo.NoHallado -> {}
             }
         }
-        synchronized(cache) { cache[clave] = Entrada(null, ahora) }
+        if (recordarNoHallado) synchronized(cache) { cache[clave] = Entrada(null, ahora) }
         return Geo.NoHallado
     }
 
-    /** Coordenadas de [direccion]. Bloquea el hilo: llamar desde [hilo], nunca del principal. */
-    fun ubicar(ctx: Context, direccion: String, zonas: List<Zona>, pais: String): Geo {
-        // Un recuadro alrededor de tus zonas sesga la búsqueda hacia tu ciudad.
+    /** Recuadro de tus zonas con 0.4° de margen: [latMín, lonMín, latMáx, lonMáx], o null sin zonas. */
+    internal fun recuadro(zonas: List<Zona>): DoubleArray? {
         val pts = zonas.flatMap { it.puntos }
-        val margen = 0.4
-        val caja = if (pts.isEmpty()) "" else String.format(
-            // bounded=1: solo resultados dentro del recuadro. Lo que caiga fuera no puede estar
-            // en una zona, y así «Benito Juárez» no se va a la Ciudad de México.
-            Locale.US, "&bounded=1&viewbox=%.5f,%.5f,%.5f,%.5f",
-            pts.minOf { it.lon } - margen, pts.maxOf { it.lat } + margen,
-            pts.maxOf { it.lon } + margen, pts.minOf { it.lat } - margen
+        if (pts.isEmpty()) return null
+        val m = 0.4
+        return doubleArrayOf(pts.minOf { it.lat } - m, pts.minOf { it.lon } - m, pts.maxOf { it.lat } + m, pts.maxOf { it.lon } + m)
+    }
+
+    /**
+     * Coordenadas de [direccion]. Bloquea el hilo: llamar desde [hilo], nunca del principal.
+     * Orden (10.65): caché (memoria y archivo) → buscador del teléfono (≈ 0.5 s, sin límite por
+     * segundo) → Nominatim de respaldo. Las dos búsquedas se limitan al recuadro de tus zonas:
+     * lo que cae fuera no puede estar en una zona. [sigue] = false corta la búsqueda (la oferta ya se fue).
+     */
+    fun ubicar(ctx: Context, direccion: String, zonas: List<Zona>, pais: String, sigue: () -> Boolean = { true }): Geo {
+        cargarCache(ctx)
+        val caja = recuadro(zonas)
+        val guardar = { k: String, la: Double, lo: Double -> guardarEnArchivo(ctx, k, la, lo) }
+        val delTelefono = ubicarCon(direccion, { q ->
+            if (!sigue()) Geo.ErrorRed else buscarTelefono(ctx, q, caja, pais)
+        }, recordarNoHallado = false, alHallar = guardar)
+        if (delTelefono is Geo.Hallado || !sigue()) return delTelefono
+        // bounded=1: solo resultados dentro del recuadro, así «Benito Juárez» no se va a la CDMX.
+        val cajaTexto = if (caja == null) "" else String.format(
+            Locale.US, "&bounded=1&viewbox=%.5f,%.5f,%.5f,%.5f", caja[1], caja[2], caja[3], caja[0]
         )
-        return ubicarCon(direccion, { q -> if (!hayRed(ctx)) Geo.ErrorRed else buscar(q, caja, pais) })
+        return ubicarCon(direccion, { q ->
+            if (!sigue() || !hayRed(ctx)) Geo.ErrorRed else buscar(q, cajaTexto, pais)
+        }, alHallar = guardar)
+    }
+
+    /** Buscador de direcciones del teléfono (Android `Geocoder`, de Google Play en casi todos). Máx. 2.5 s. */
+    @Suppress("DEPRECATION")
+    private fun buscarTelefono(ctx: Context, q: String, caja: DoubleArray?, pais: String): Geo {
+        if (!Geocoder.isPresent()) return Geo.ErrorRed
+        val tarea = try {
+            telefono.submit(java.util.concurrent.Callable {
+                val g = Geocoder(ctx.applicationContext, Locale("es", if (pais.length == 2) pais.uppercase(Locale.ROOT) else "MX"))
+                if (caja != null) g.getFromLocationName(q, 1, caja[0], caja[1], caja[2], caja[3])
+                else g.getFromLocationName(q, 1)
+            })
+        } catch (_: Exception) { return Geo.ErrorRed }
+        return try {
+            val a = tarea.get(2500, java.util.concurrent.TimeUnit.MILLISECONDS)?.firstOrNull() ?: return Geo.NoHallado
+            if (!a.hasLatitude() || !a.hasLongitude()) return Geo.NoHallado
+            // Por si el teléfono ignora el recuadro: lo de fuera no cuenta.
+            if (caja != null && (a.latitude < caja[0] || a.latitude > caja[2] || a.longitude < caja[1] || a.longitude > caja[3])) {
+                return Geo.NoHallado
+            }
+            Geo.Hallado(a.latitude, a.longitude)
+        } catch (_: java.util.concurrent.TimeoutException) {
+            tarea.cancel(true); Geo.ErrorRed
+        } catch (_: Exception) { Geo.ErrorRed }
     }
 
     private fun buscar(q: String, caja: String, pais: String): Geo {
