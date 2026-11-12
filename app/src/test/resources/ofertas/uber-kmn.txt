@@ -1,0 +1,7 @@
+# 12 nov (10.53, 46): «kmn» y el ícono «8» delante; se perdía el viaje.
+$135.38
+$7.65/km est.
+8 6 min 2.3 km
+43 min •15.4 kmn
+---
+tarifa=135.38 km=17.7 min=49 recKm=2.3 recMin=6

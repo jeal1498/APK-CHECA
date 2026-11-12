@@ -1,0 +1,7 @@
+# 12 nov (10.53, 22): «70 km» es 7.0 (se perdió el punto); lo confirma $6.46/km est.
+$54.27
+$6.46/km est.
+8 5 min •1.4 km
+15 min 70 km
+---
+tarifa=54.27 km=8.4 min=20 recKm=1.4 recMin=5

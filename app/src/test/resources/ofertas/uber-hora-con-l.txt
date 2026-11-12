@@ -1,0 +1,7 @@
+# 12 nov (10.58, 134): «1hl2 min» es 1 h 12 min.
+$180.82
+$5.81/km est.
+3 min 0.6 km
+1hl2 min30.5 km
+---
+tarifa=180.82 km=31.1 min=75 recKm=0.6 recMin=3

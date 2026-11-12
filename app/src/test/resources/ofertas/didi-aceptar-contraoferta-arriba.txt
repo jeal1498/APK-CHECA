@@ -1,0 +1,10 @@
+# 12 nov (10.58, errores_lector 193): una contraoferta quedó arriba; la tarifa es «Aceptar $X».
+$100.62
+$94.62 1.7x
+5 min (790 m)
+26 min (4.7 km)
+Aceptar $94.62
+$103.62
+$97.62
+---
+tarifa=94.62 km=5.49 min=31 recKm=0.79 recMin=5 multi=1.7

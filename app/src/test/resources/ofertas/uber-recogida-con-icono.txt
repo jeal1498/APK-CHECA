@@ -1,0 +1,7 @@
+# 12 nov (10.53, 34): el lector acertó; la revisión olvidó sumar la recogida.
+$152.57
+$7.74/km est.
+8 8 min 1.9 km
+49 min•17.8 km
+---
+tarifa=152.57 km=19.7 min=57 recKm=1.9 recMin=8

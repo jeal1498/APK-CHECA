@@ -1,0 +1,11 @@
+# 12 nov (10.58, 255): el monto del pop-up propio ($123) se coló; la tarifa es la del multiplicador.
+$123
+RECHAZAR 1.1x
+X $155/h
+$9.9/km
+$149.82 1.1x
+$3.23 de tarifa base dinámica
+5 min (1.1 km)
+53 min (14.1 km)
+---
+tarifa=149.82 km=15.2 min=58 recKm=1.1 recMin=5

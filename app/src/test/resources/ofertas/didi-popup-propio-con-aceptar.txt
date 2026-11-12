@@ -1,0 +1,12 @@
+# 12 nov (10.58, 244): pop-up propio arriba; manda «Aceptar $X».
+$56
+X $108/h X $5.7/km
+$80.98
+8 min (1.8 km)
+37 min (12.5 km)
+Aceptar $80.98
+$86.98
+$90.98
+$93.98
+---
+tarifa=80.98 km=14.3 min=45 recKm=1.8 recMin=8

@@ -1,0 +1,5 @@
+# 12 nov (10.53, 110): la fecha de la barra («$2 mié») no es tarifa.
+$2 mié, de nov
+2 min & 0.7 km
+---
+nada

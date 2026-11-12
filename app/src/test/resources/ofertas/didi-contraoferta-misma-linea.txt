@@ -1,0 +1,9 @@
+# 12 nov (10.58, 243): dos contraofertas en una línea; manda «Aceptar $X».
+$110.97
+$101.97 1.3x
+8 min (1.5 km)
+32 min (7.8 km)
+Aceptar $101.97
+$104.97 $107.97
+---
+tarifa=101.97 km=9.3 min=40 recKm=1.5 recMin=8

@@ -1,0 +1,9 @@
+# 12 nov (10.58, 252): pop-up propio ($28 y su línea $/h) antes de la tarifa real.
+$28
+X $175/h/ $12.9/km
+$32.04
+9$14.21 de tarifa base dinámica
+5 min (989 m)
+6 min (1.5 km)
+---
+tarifa=32.04 km=2.489 min=11 recKm=0.989 recMin=5

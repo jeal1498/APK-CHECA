@@ -1,0 +1,7 @@
+# 12 nov (10.58, 206): el OCR lee «1.9» como «l.9» y salía 9 km.
+$103.26
+$9.65/km est.
+6 min l.9 km
+37 min • 8.8 km
+---
+tarifa=103.26 km=10.7 min=43 recKm=1.9 recMin=6
