@@ -214,9 +214,8 @@ class Prefs(context: Context) {
         set(v) { sp.edit().putInt("vol", v).apply() }
 
     var diagnostico: Boolean
-        // En Google Play el guardado de capturas/texto es opcional y empieza apagado.
-        // El canal directo conserva su comportamiento actual.
-        get() = sp.getBoolean("diag", !BuildConfig.ES_PLAY)
+        // Empieza encendido en los dos canales (Eduardo, 12 nov) para revisar lecturas; sigue siendo opcional.
+        get() = sp.getBoolean("diag", true)
         set(v) { sp.edit().putBoolean("diag", v).apply() }
 
     /** Ya vio el aviso de qué guarda «Guardar pantallas de ofertas». */
