@@ -3,6 +3,13 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
+// Crashlytics (solo canal play): se activa cuando existe app/google-services.json (Firebase).
+val conFirebase = file("google-services.json").isFile
+if (conFirebase) {
+    apply(plugin = "com.google.gms.google-services")
+    apply(plugin = "com.google.firebase.crashlytics")
+}
+
 android {
     namespace = "com.karen.miruta"
     compileSdk = 36
@@ -103,6 +110,10 @@ dependencies {
     implementation("com.google.android.play:app-update:2.1.0")
     // Reseña nativa de Google Play (solo se usa en el canal play).
     implementation("com.google.android.play:review:2.0.2")
+    if (conFirebase) {
+        "playImplementation"(platform("com.google.firebase:firebase-bom:33.7.0"))
+        "playImplementation"("com.google.firebase:firebase-crashlytics")
+    }
     // Iniciar sesión con Google (licencia ligada a la cuenta)
     implementation("androidx.credentials:credentials:1.3.0")
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
