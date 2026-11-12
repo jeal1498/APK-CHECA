@@ -3,6 +3,7 @@
 // Si la lectura no coincide, guarda el caso en `errores_lector` para corregir el lector.
 // Sin saldo o con cualquier falla responde { ok: false }: la app sigue con su lectura.
 import Anthropic from "npm:@anthropic-ai/sdk@1.2.0";
+import { calcular, ESQUEMA_LECTOR, LECTOR, type Lectura } from "./lector.ts";
 
 const SUPA = Deno.env.get("SUPABASE_URL")!;
 const ANON = Deno.env.get("SUPABASE_ANON_KEY")!;
@@ -98,8 +99,8 @@ async function preguntarAnthropic(usuario: string): Promise<Respuesta> {
   const r = await cliente.messages.create({
     model: "claude-haiku-5-5",
     max_tokens: 2048,
-    system: SISTEMA,
-    output_config: { effort: "low", format: { type: "json_schema", schema: ESQUEMA } },
+    system: LECTOR,
+    output_config: { effort: "low", format: { type: "json_schema", schema: ESQUEMA_LECTOR } },
     messages: [{ role: "user", content: usuario }],
   // deno-lint-ignore no-explicit-any
   } as any);
@@ -121,10 +122,10 @@ async function preguntarDeepSeek(usuario: string): Promise<Respuesta> {
       // Sin razonamiento: es una extracción corta y así responde más rápido y más barato.
       thinking: { type: "disabled" },
       response_format: { type: "json_object" },
-      max_tokens: 300,
+      max_tokens: 400,
       temperature: 0,
       messages: [
-        { role: "system", content: SISTEMA + "\n\n" + EJEMPLO_JSON },
+        { role: "system", content: LECTOR },
         { role: "user", content: usuario },
       ],
     }),
@@ -155,7 +156,6 @@ async function anotarConteo(id: string, c: unknown) {
   } catch { /* la medición nunca frena la revisión */ }
 }
 
-type Lectura = { tarifa: number; km: number; min: number; recKm: number; recMin: number; multi: number };
 
 // Teléfono y pantalla al leer (10.58): explican por qué falla un lector. Sin datos personales.
 type Equipo = { telefono: string | null; android: string | null };
@@ -206,34 +206,6 @@ function leerLocal(v: unknown): Lectura | null {
   const o = v as Record<string, unknown>;
   return { tarifa: num(o.tarifa), km: num(o.km), min: num(o.min), recKm: num(o.recKm), recMin: num(o.recMin), multi: num(o.multi) };
 }
-
-const ESQUEMA = {
-  type: "object",
-  properties: {
-    oferta: { type: "boolean", description: "true si las líneas describen una oferta de viaje" },
-    tarifa: { type: "number" },
-    km: { type: "number" },
-    min: { type: "number" },
-    recKm: { type: "number" },
-    recMin: { type: "number" },
-    multi: { type: "number" },
-  },
-  required: ["oferta", "tarifa", "km", "min", "recKm", "recMin", "multi"],
-  additionalProperties: false,
-};
-
-// DeepSeek pide la palabra «json» y un ejemplo del formato en la instrucción.
-const EJEMPLO_JSON = `Responde solo con un objeto json con exactamente estas claves, por ejemplo:
-{"oferta": true, "tarifa": 103.13, "km": 16.4, "min": 50, "recKm": 2.3, "recMin": 6, "multi": 0}`;
-
-const SISTEMA = `Lees ofertas de viaje de Uber y DiDi a partir de líneas de texto de la pantalla (OCR o accesibilidad; puede haber errores como «B min» por «8 min» o «Ih» por «1 h»).
-Devuelve:
-- tarifa: lo que paga el viaje (el monto grande de la tarjeta). No sumes bonos («adicionales», «+$… por inicio»); «+$… incluido» ya viene dentro de la tarifa. No uses contraofertas de DiDi, el $/km ni montos de otras tarjetas: si hay un resumen «N min · X km · $Y/km est.», la tarifa ≈ Y × X.
-- km y min: TOTALES (recogida + viaje). Si hay un resumen «N min · X km», ese es el total; no lo sumes con los tramos. Metros «720 m» = 0.72 km.
-- recKm y recMin: el primer tramo (ir por el pasajero). 0 si no se distingue.
-- Varias tarjetas (lista o ventana flotante de DiDi): usa solo una tarjeta completa (su monto grande y sus dos tramos); un tramo suelto arriba es de otra tarjeta. DiDi escribe cada tramo «(9 min 2.6 km) Calle…»: el primero es la recogida y el segundo el viaje, y los km/min TOTALES son la suma de los dos.
-- multi: multiplicador «1.4x» de la tarifa; ignora rangos del mapa «1.8X-2.4X». 0 si no hay.
-Si no hay una oferta clara, oferta=false y todo en 0. Nunca inventes números que no estén en las líneas.`;
 
 /** Guarda en la fila los tokens reales y el costo con el precio vigente (y la hora pico). */
 async function anotarCosto(registro: Record<string, unknown>, tIn: number, tCache: number, tOut: number) {
@@ -332,7 +304,8 @@ Deno.serve(async (req) => {
     await anotarCosto(registro, r.tIn, r.tCache, r.tOut);
     if (r.rechazo) throw new Error("refusal");
     const d = r.datos;
-    ia = { oferta: d.oferta === true, tarifa: num(d.tarifa), km: num(d.km), min: num(d.min), recKm: num(d.recKm), recMin: num(d.recMin), multi: num(d.multi) };
+    // La IA solo lee; las cuentas (horas, metros, recogida + viaje, $/km est.) van en lector.ts.
+    ia = calcular(d, app);
   } catch (e) {
     // Sin saldo, clave mala, caída o tiempo agotado: se anota una vez por día y tipo.
     const status = (e as { status?: number })?.status ?? 0;
