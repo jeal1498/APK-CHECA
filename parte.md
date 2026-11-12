@@ -31,8 +31,14 @@
 - Crashlytics preparado solo para `play`: se activa al poner `app/google-services.json`.
 - Tablero Checa (artifact privado, fijado en la barra lateral de claude.ai, https://claude.ai/artifact/DZiwZpPwnT6StCWXCpuDQ3): datos en vivo de Supabase, colores de marca, secciones Estado, Calidad, Crecimiento, Uso, Dispositivos, Viajes y horas, Web. Solo abre con su cuenta de Claude.
 - Skill `parte`: ahora `/parte` actualiza los 3 puntos desde la conversación; «lee el parte» solo lee.
+- 10.71 en `main`: «Guardar pantallas de ofertas» viene encendido por defecto (los dos canales).
+- 10.72 (AAB 152) enviado a revisión en Prueba cerrada «Alpha» (12 nov): las capturas de lecturas dudosas (`diferencia`, `desacuerdo`, `rescate`) se suben solas a Supabase (almacén privado `capturas`, WebP, 7 días) con aviso de una vez «Capturas para mejorar la lectura». Almacén y `confirmar-oferta` ya desplegados.
+- Seguridad de los datos en Play Console: «Fotos» (recopiladas, no compartidas, no efímeras, opcional, Funciones de la app y Estadísticas) y Ubicación aproximada capturadas el 12 nov.
+- Plan del lunes 16 nov hecho: `docs/plan-lunes-16-nov.md` (meta: coincidencia de 10.72 ≥ 85 %; 10.69 tuvo 72.8 %).
 
 ## … Falta
+- **16 nov (lunes):** ejecutar `docs/plan-lunes-16-nov.md`. Arranca con «Estado de la revisión»; luego función `ver-capturas` (enlaces temporales), clasificar las capturas, corregir los 3 patrones más frecuentes (10.73) y medir el lunes 23. Si hay menos de 30 capturas, esperar al miércoles.
+- Confirmar que Seguridad de los datos (Fotos y Ubicación aproximada) quedó enviada en Play Console junto con el AAB 152, y que 10.72 ya tenga instalaciones (mirar revisiones con versión 10.72).
 - 13 nov: «Estado de la revisión de hoy» para revisar el revisor v26: sin `json`/`json_vacio` en `fallas_ia`, mediana de `ms_ia` < 4 s, % coincidió > 49 %, sin `oferta=true` con km 0.
 - ~20 nov: comparar 10.69 contra 10.58 y decidir si se construyen las reglas remotas (10–14 h).
 - Redes sociales en la app (Ayuda y soporte y Cuenta): esperar de Eduardo qué redes y enlaces.
