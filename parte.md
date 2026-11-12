@@ -26,9 +26,9 @@
 - Reglas remotas (corregir sin APK): diseño hecho, **no construir** hasta medir 1 semana con la 10.69.
 - Nota de Play y la imagen del grupo de la 10.69 (zonas bloqueadas destacadas) entregadas.
 - AAB 149 (10.69) generado (corrida 15 de «play-aab-firmado», en verde) y enviado a revisión en «Alpha» (12 nov).
+- AAB 149 (10.69) aprobado en «Alpha» e imagen de novedades publicada en el grupo (12 nov).
 
 ## … Falta
-- AAB 149 (10.69): esperar que pase la revisión en «Alpha». Al aprobarse, publicar la imagen en el grupo.
 - 13 nov: «Estado de la revisión de hoy» para revisar el revisor v26: sin `json`/`json_vacio` en `fallas_ia`, mediana de `ms_ia` < 4 s, % coincidió > 49 %, sin `oferta=true` con km 0.
 - ~20 nov: comparar 10.69 contra 10.58 y decidir si se construyen las reglas remotas (10–14 h).
 - Redes sociales en la app (Ayuda y soporte y Cuenta): esperar de Eduardo qué redes y enlaces.
