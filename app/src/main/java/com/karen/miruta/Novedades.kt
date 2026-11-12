@@ -9,6 +9,11 @@ object Novedades {
     class Version(val codigo: Int, val nombre: String, val puntos: List<String>, val widgets: Boolean = false, val vistaQr: Boolean = false)
 
     val LISTA = listOf(
+        Version(149, "10.69", listOf(
+            "DiDi: el pop-up toma la tarifa del botón «Aceptar», no la de una contraoferta.",
+            "Uber: km y minutos mejor leídos cuando la pantalla se ve borrosa.",
+            "Ya no sale pop-up en el mapa de calor ni cuando el pasajero cancela."
+        )),
         Version(148, "10.68", listOf(
             "Mis metas más ordenada: todo en una pantalla, con la oferta de ejemplo junto a tus metas.",
             "Recogida y duración máximas ahora con − y +: de 1 a 5 km y de 10 a 60 min, o «Sin límite»."
