@@ -10,8 +10,8 @@ android {
     defaultConfig {
         minSdk = 26
         targetSdk = 36
-        versionCode = 149
-        versionName = "10.69"
+        versionCode = 150
+        versionName = "10.70"
     }
 
     buildFeatures { buildConfig = true }
@@ -101,6 +101,8 @@ dependencies {
     implementation("org.osmdroid:osmdroid-android:6.1.20")
     // Aviso de versión nueva en Google Play (solo se usa en el canal play).
     implementation("com.google.android.play:app-update:2.1.0")
+    // Reseña nativa de Google Play (solo se usa en el canal play).
+    implementation("com.google.android.play:review:2.0.2")
     // Iniciar sesión con Google (licencia ligada a la cuenta)
     implementation("androidx.credentials:credentials:1.3.0")
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
