@@ -233,9 +233,6 @@ Devuelve:
 - recKm y recMin: el primer tramo (ir por el pasajero). 0 si no se distingue.
 - Varias tarjetas (lista o ventana flotante de DiDi): usa solo una tarjeta completa (su monto grande y sus dos tramos); un tramo suelto arriba es de otra tarjeta. DiDi escribe cada tramo «(9 min 2.6 km) Calle…»: el primero es la recogida y el segundo el viaje, y los km/min TOTALES son la suma de los dos.
 - multi: multiplicador «1.4x» de la tarifa; ignora rangos del mapa «1.8X-2.4X». 0 si no hay.
-- Uber sin resumen (12 nov): «6 min · 1.9 km» y «37 min · 8.8 km» → km = 1.9 + 8.8 = 10.7 y min = 6 + 37 = 43. NUNCA devuelvas solo el viaje: km y min siempre incluyen la recogida. Con «$Y/km est.» en su propia línea, km ≈ tarifa ÷ Y: úsalo para revisar (el OCR lee «l.9» por 1.9, «kmn» por km o pierde el punto: «70 km» = 7.0).
-- DiDi: si hay «Aceptar $X», la tarifa es X; si no, el monto con multiplicador «$X 1.3x». Un monto entero junto a «$N/h» o «ACEPTAR/CONSIDERAR/RECHAZAR» es de otro pop-up: ignóralo.
-- Si hay dos tramos «N min … km» y un monto, o un «$/km est.», sí es oferta (oferta=true).
 Si no hay una oferta clara, oferta=false y todo en 0. Nunca inventes números que no estén en las líneas.`;
 
 /** Guarda en la fila los tokens reales y el costo con el precio vigente (y la hora pico). */
