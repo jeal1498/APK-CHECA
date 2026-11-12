@@ -47,6 +47,37 @@ async function insertar(tabla: string, fila: Record<string, unknown> | Record<st
   });
 }
 
+// Igual que insertar, pero devuelve el id de la fila (para enlazar la captura del teléfono).
+async function insertarId(tabla: string, fila: Record<string, unknown>): Promise<number | null> {
+  try {
+    const r = await fetch(`${SUPA}/rest/v1/${tabla}`, {
+      method: "POST",
+      headers: { ...headersServicio, Prefer: "return=representation" },
+      body: JSON.stringify(fila),
+    });
+    const d = await r.json();
+    return Array.isArray(d) && d[0]?.id ? Number(d[0].id) : null;
+  } catch { return null; }
+}
+
+// Capturas de más de 7 días: se borran del almacén (de vez en cuando, en alguna llamada).
+async function limpiarCapturas() {
+  try {
+    const l = await fetch(`${SUPA}/storage/v1/object/list/capturas`, {
+      method: "POST", headers: headersServicio,
+      body: JSON.stringify({ limit: 100, sortBy: { column: "created_at", order: "asc" } }),
+    });
+    const lista = await l.json();
+    if (!Array.isArray(lista)) return;
+    const limite = Date.now() - 7 * 86400_000;
+    const viejas = lista.filter((o: { name: string; created_at?: string }) => o.created_at && Date.parse(o.created_at) < limite).map((o: { name: string }) => o.name);
+    if (viejas.length === 0) return;
+    await fetch(`${SUPA}/storage/v1/object/capturas`, {
+      method: "DELETE", headers: headersServicio, body: JSON.stringify({ prefixes: viejas }),
+    });
+  } catch { /* nada */ }
+}
+
 // Solo líneas cortas con un número y algo de oferta: así no viajan direcciones ni nombres.
 const UTIL = /(min|km|\$|mxn|\/km|\dx\b|×|⚡|incluid|adicional|por inicio)/i;
 function filtrar(lineas: unknown): string[] {
@@ -325,10 +356,12 @@ Deno.serve(async (req) => {
   const coincide = modo !== "rescate" && ia.oferta && igual(ia, local);
   registro.ms_ia = Date.now() - t0;
   await insertar("revisiones", { ...registro, ok: true, coincide });
+  let caso: number | null = null;
+  if (Math.random() < 0.02) await limpiarCapturas();
   if (modo === "desacuerdo") {
     // Siempre se guarda: los lectores no coincidieron. «acerto» dice cuál tenía razón.
     const acerto = !ia.oferta ? "ninguno" : igual(ia, local) ? lector : localOtro && igual(ia, localOtro) ? lectorOtro : "ninguno";
-    await insertar("errores_lector", {
+    caso = await insertarId("errores_lector", {
       usuario: id, app, moneda, version, lineas: [...lineas, "---", ...lineasOtro], local, ia, lector,
       lector_otro: lectorOtro, local_otro: localOtro, acerto, tipo: "desacuerdo",
       ms_texto: registro.ms_popup, ms_foto: registro.ms_foto, ...equipo, ...pantalla,
@@ -336,8 +369,8 @@ Deno.serve(async (req) => {
   } else if (!coincide) {
     // En el rescate solo se guarda si el revisor sí vio una oferta (si no, no hay nada que aprender).
     if (modo === "revision" || ia.oferta) {
-      await insertar("errores_lector", { usuario: id, app, moneda, version, lineas, local, ia, lector, tipo: modo === "rescate" ? "rescate" : "diferencia", ...equipo, ...pantalla });
+      caso = await insertarId("errores_lector", { usuario: id, app, moneda, version, lineas, local, ia, lector, tipo: modo === "rescate" ? "rescate" : "diferencia", ...equipo, ...pantalla });
     }
   }
-  return json({ ok: true, coincide, ia });
+  return json({ ok: true, coincide, ia, caso });
 });

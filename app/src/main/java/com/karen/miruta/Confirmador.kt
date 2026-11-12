@@ -89,6 +89,13 @@ object Confirmador {
         }
     }
 
+    /** Si el servidor guardó un caso (`caso`), manda la captura reciente de esa app para revisarlo. */
+    private fun subirCaptura(ctx: Context, app: String, r: JSONObject) {
+        val caso = r.optLong("caso", 0L)
+        if (caso <= 0L) return
+        Guardado.tomarReciente(app)?.let { Cuenta.subirCaptura(ctx, caso, it) }
+    }
+
     private fun firma(o: Oferta) = "${o.tarifa}|${o.km}|${o.min}"
 
     /** Líneas que se pueden enviar: cortas, con un número y con algo de la oferta. */
@@ -147,6 +154,7 @@ object Confirmador {
                     val respuesta = Cuenta.revisarOferta(app0, cuerpo.toString())
                     if (respuesta != null && conteoAnterior != null) anteriorRecibido(app0, conteoAnterior.getString("dia"))
                     val r = JSONObject(respuesta ?: "{}")
+                    subirCaptura(app0, app, r)
                     val ia = r.optJSONObject("ia")
                     if (r.optBoolean("ok") && ia != null) {
                         if (!ia.optBoolean("oferta")) noEraOferta = true
@@ -281,6 +289,7 @@ object Confirmador {
                     // El servidor respondió (aunque sea sin saldo): ya anotó el conteo del día anterior.
                     if (respuesta != null && conteoAnterior != null) anteriorRecibido(app0, conteoAnterior.getString("dia"))
                     val r = JSONObject(respuesta ?: "{}")
+                    subirCaptura(app0, app, r)
                     // Ida y vuelta completa de la revisión, vista desde el teléfono: va en la siguiente.
                     msRevision = android.os.SystemClock.elapsedRealtime() - t0
                     val ia = r.optJSONObject("ia")

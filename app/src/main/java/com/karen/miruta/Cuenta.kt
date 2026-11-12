@@ -319,6 +319,26 @@ object Cuenta {
         else pedir("POST", "/functions/v1/confirmar-oferta", token(ctx), cuerpo)
     } catch (_: Exception) { null }
 
+    /** Sube la captura de un caso dudoso (10.72) al almacén privado «capturas»; se borra a los 7 días. */
+    fun subirCaptura(ctx: Context, caso: Long, bytes: ByteArray) {
+        try {
+            if (sp(ctx).getString("refresco", null) == null) return
+            val con = URL(URL_BASE + "/storage/v1/object/capturas/$caso.webp").openConnection() as HttpURLConnection
+            try {
+                con.requestMethod = "POST"
+                con.connectTimeout = 15_000
+                con.readTimeout = 20_000
+                con.setRequestProperty("apikey", ANON)
+                con.setRequestProperty("Authorization", "Bearer " + token(ctx))
+                con.setRequestProperty("Content-Type", "image/webp")
+                con.doOutput = true
+                con.setFixedLengthStreamingMode(bytes.size)
+                con.outputStream.use { it.write(bytes) }
+                con.responseCode
+            } finally { con.disconnect() }
+        } catch (_: Exception) { }
+    }
+
     /** Token vigente; si ya venció, lo renueva. */
     private fun token(ctx: Context): String {
         val s = sp(ctx)

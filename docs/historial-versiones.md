@@ -1,3 +1,5 @@
+v152 (10.72): **Capturas de lecturas dudosas a Supabase.** Si el revisor no coincide, hay desacuerdo o rescate, el teléfono sube la captura (WebP, solo la zona de Uber/DiDi) al almacén privado `capturas`, enlazada por el id de `errores_lector`; se borra a los 7 días. Aviso de una vez «Capturas para mejorar la lectura». `Guardado.tomarReciente`, `Cuenta.subirCaptura`, `insertarId` y `limpiarCapturas` en `confirmar-oferta`. Seguridad de los datos: declarar «Fotos» (`docs/google-play/data-safety.md`).
+
 v151 (10.71): **«Guardar pantallas de ofertas» viene encendido por defecto** en los dos canales (`Prefs.diagnostico`, antes apagado en `play`). Quien ya lo tenía definido conserva su elección; sigue local, 7 días y sin envío automático.
 
 v150 (10.70): **Reseña nativa de Google Play** (solo `play`). `Resena.pedir` (In-App Review, `play:review:2.0.2`) al abrir la app si ya aceptó 10 viajes (`Jornada`) y pasaron 60 días desde la última vez; Google puede no mostrarla. Sin datos del conductor.

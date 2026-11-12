@@ -59,6 +59,24 @@ object Guardado {
 
     private fun nombreApp(app: String?) = (app ?: "Pantalla").replace("-", "")
 
+    /** Última captura de cada app, ya en WebP, para mandarla si la revisión encuentra una diferencia (10.72). */
+    private val reciente = HashMap<String, Pair<Long, ByteArray>>()
+    private const val VIGENTE_MS = 30_000L
+
+    /** Toma (y olvida) la captura reciente de [app]; null si no hay o ya es vieja. */
+    fun tomarReciente(app: String?): ByteArray? = synchronized(reciente) {
+        val p = reciente.remove(nombreApp(app)) ?: return null
+        if (System.currentTimeMillis() - p.first <= VIGENTE_MS) p.second else null
+    }
+
+    @Suppress("DEPRECATION")
+    private fun aWebp(b: Bitmap): ByteArray? = try {
+        val s = java.io.ByteArrayOutputStream()
+        val formato = if (android.os.Build.VERSION.SDK_INT >= 30) Bitmap.CompressFormat.WEBP_LOSSY else Bitmap.CompressFormat.WEBP
+        b.compress(formato, 65, s)
+        s.toByteArray()
+    } catch (_: Exception) { null }
+
     /** true si es una oferta distinta a la última guardada de esa app (la misma en pantalla no se repite). */
     fun esNueva(app: String?, leida: Boolean, firma: String): Boolean {
         val clave = nombreApp(app)
@@ -86,6 +104,7 @@ object Guardado {
                 val base = SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US).format(Date(ahora)) +
                     "-$app2-" + if (leida) "leida" else "noleida"
                 if (recorte != null) {
+                    aWebp(recorte)?.let { synchronized(reciente) { reciente[app2] = ahora to it } }
                     FileOutputStream(File(dir, "$base.jpg")).use { recorte.compress(Bitmap.CompressFormat.JPEG, 70, it) }
                     recorte.recycle()
                 }

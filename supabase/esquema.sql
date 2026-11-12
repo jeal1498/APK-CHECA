@@ -739,3 +739,12 @@ alter table public.coincidencias add column if not exists orientacion text;
 alter table public.coincidencias add column if not exists zonas boolean;
 alter table public.coincidencias add column if not exists tarjetas integer;
 alter table public.coincidencias add column if not exists nivel text;
+
+-- 10.72: capturas de lecturas dudosas (almacén privado). El teléfono solo puede subir;
+-- las lee el servicio. Se borran a los 7 días (confirmar-oferta › limpiarCapturas).
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('capturas', 'capturas', false, 500000, array['image/webp'])
+on conflict (id) do nothing;
+drop policy if exists "subir capturas" on storage.objects;
+create policy "subir capturas" on storage.objects
+  for insert to authenticated with check (bucket_id = 'capturas');

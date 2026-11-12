@@ -84,8 +84,13 @@ La revisión ahora también envía: el modelo del teléfono y la versión de And
 
 **Eliminación:** `coincidencias` se borra en cascada con el usuario de Auth.
 
+## Capturas de pantalla (10.72, por declarar en Play Console)
+- **Declarar:** Fotos y videos → **Fotos**. Recopilados: sí. Compartidos: no. Se procesan: no en el teléfono, se suben. Opcional: sí (se apaga en «Guardar pantallas de ofertas»). Finalidad: **Funcionalidad de la app** y **Análisis**.
+- **Qué se sube:** solo la zona de Uber/DiDi de las ofertas que el lector y el revisor leyeron distinto (tipos `diferencia`, `desacuerdo` y `rescate`), en WebP, a Supabase Storage (almacén privado `capturas`, nombre = id de `errores_lector`). Pueden salir nombre del pasajero o direcciones.
+- **Retención:** 7 días (`limpiarCapturas` en `confirmar-oferta`). Aviso de una sola vez en la app: «Capturas para mejorar la lectura».
+
 ## Qué NO se declara y por qué
-- **Capturas y el resto del texto de las ofertas:** se procesan solo en el teléfono (las líneas con números van a la revisión de la 10.48). Con «Guardar pantallas de ofertas» se guardan localmente, máximo 7 días.
+- **El resto del texto de las ofertas:** se procesa solo en el teléfono (las líneas con números van a la revisión de la 10.48).
 - **Apps instaladas:** la app consulta las apps con lanzador solo para ubicar Uber y DiDi, sin enviarlas.
 - **Contactos del teléfono, mensajes, fotos, audio, calendario y archivos:** la app no tiene esos permisos. (Ubicación: ver la sección del 4 nov.)
 - **Pagos y compras:** el flavor play no tiene pagos. Revisar al llegar Google Play Billing (Fase 7).

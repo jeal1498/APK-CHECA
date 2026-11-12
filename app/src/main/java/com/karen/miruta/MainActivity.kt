@@ -326,8 +326,8 @@ class MainActivity : Activity() {
         // Sin los 3 permisos Checa no funciona bien: la pantalla vuelve a salir hasta completarlos.
         if (dialogoPermisos?.isShowing == true) pintarPermisos()
         else if (Cuenta.puedeUsar(this) && !autoIniciar && faltanPermisos() && !configuracionPermisosPospuestaPlay()) mostrarPermisos()
-        else if (Cuenta.puedeUsar(this) && prefs.diagnostico && !prefs.diagAvisoVisto && !hayVentana())
-            handler.postDelayed({ if (!isFinishing && !prefs.diagAvisoVisto && !hayVentana()) avisoDiagnostico() }, 1200)
+        else if (Cuenta.puedeUsar(this) && prefs.diagnostico && !prefs.diagEnvioVisto && !hayVentana())
+            handler.postDelayed({ if (!isFinishing && !prefs.diagEnvioVisto && !hayVentana()) avisoDiagnostico() }, 1200)
         Guardado.borrarPendientes(this)
         Guardado.podar(this)
         pintarDiag()
@@ -4363,7 +4363,7 @@ class MainActivity : Activity() {
                 } catch (_: Exception) { abrirInfoApp() }
             }
         }
-        filaInterruptor(g, "Guardar pantallas de ofertas", "Opcional · para revisar las que se lean mal · 7 días", prefs.diagnostico) {
+        filaInterruptor(g, "Guardar pantallas de ofertas", "Para mejorar la lectura · 7 días", prefs.diagnostico) {
             prefs.diagnostico = it
         }
         c.addView(g, margenArriba(Tema.S2))
@@ -5251,11 +5251,11 @@ class MainActivity : Activity() {
         val tSw = tarjeta()
         tSw.addView(interruptor(
             "Guardar pantallas de ofertas",
-            "Solo en tu teléfono. Se borran solas a los 7 días.",
+            "En tu teléfono 7 días. Si Checa duda de una lectura, manda esa captura.",
             prefs.diagnostico
         ) { on ->
             prefs.diagnostico = on
-            if (on && !prefs.diagAvisoVisto) avisoDiagnostico()
+            if (on && !prefs.diagEnvioVisto) avisoDiagnostico()
             handler.post { pintarDiag() }
         })
         c.addView(tSw, margenArriba(Tema.ENTRE_TARJETAS))
@@ -5313,10 +5313,10 @@ class MainActivity : Activity() {
         if (dialogoDiagAviso?.isShowing == true) return
         val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         listOf(
-            "Solo cuando hay una oferta de Uber o DiDi, y solo la parte de esa app.",
-            "Se quedan en tu teléfono y se borran solas a los 7 días.",
-            "Pueden salir el nombre del pasajero o direcciones. Antes de enviar algo, tú lo revisas.",
-            "Nada se envía solo."
+            "Checa guarda la parte de Uber o DiDi donde ve una oferta, en tu teléfono, por 7 días.",
+            "Si Checa no entiende una oferta, manda esa captura para mejorar la lectura.",
+            "Puede salir el nombre del pasajero o direcciones. Se borra del servidor a los 7 días.",
+            "Puedes apagarlo en Ayuda con la lectura › Guardar pantallas de ofertas."
         ).forEachIndexed { i, s ->
             val f = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
             f.addView(View(this).apply { background = punto(Tema.HUESO) },
@@ -5324,19 +5324,13 @@ class MainActivity : Activity() {
             f.addView(texto(s, Tema.T_TEXTO, cTexto2, false).apply { setLineSpacing(0f, 1.2f) }, LinearLayout.LayoutParams(0, -2, 1f))
             cuerpo.addView(f, if (i > 0) margenArriba(Tema.S1) else LinearLayout.LayoutParams(-1, -2))
         }
-        cuerpo.addView(boton("Sí, guardar", cVerde, Color.BLACK) {
+        cuerpo.addView(boton("Entendido", cVerde, Color.BLACK) {
             prefs.diagAvisoVisto = true
-            prefs.diagnostico = true
+            prefs.diagEnvioVisto = true
             dialogoDiagAviso?.dismiss()
             pintarDiag()
         }, margenArriba(Tema.S2))
-        cuerpo.addView(boton("No guardar", cTarjeta2, cTexto) {
-            prefs.diagAvisoVisto = true
-            prefs.diagnostico = false
-            dialogoDiagAviso?.dismiss()
-            pintarDiag()
-        }, margenArriba(Tema.S1))
-        dialogoDiagAviso = hoja("Checa guarda las pantallas de tus ofertas", null, cuerpo).apply { setCancelable(false) }
+        dialogoDiagAviso = hoja("Capturas para mejorar la lectura", null, cuerpo).apply { setCancelable(false) }
     }
 
     /** Ventana de pantalla completa con encabezado (título + cerrar), cuerpo y pie. */
