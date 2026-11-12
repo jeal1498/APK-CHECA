@@ -1,4 +1,4 @@
-# PARTE · 12 nov 2026
+# PARTE · 12 nov 2026 (noche)
 
 ## ✓ Decidido
 - Imagen de novedades para testers hecha (7 tarjetas, marca v2) y publicada en el grupo.
@@ -20,11 +20,17 @@
 - Rediseño de la pantalla de Zonas (lista, nombres, contador, Activo/Apagado) aprobado con la muestra.
 - AAB 146 (10.66) enviado a revisión en Prueba cerrada «Alpha» junto con Seguridad de los datos (12 nov).
 - Privacidad de la web con la sección «Zonas bloqueadas» (12 nov). Texto de Seguridad de los datos y nota del AAB 146 entregados.
+- 10.67–10.69 en `main`: «Al abrir Uber o DiDi» con 3 opciones, Mis metas compacta, y lector más preciso (DiDi toma «Aceptar $X», Uber corrige km con «$/km est.», sin pop-up en mapa de calor ni si cancelan). 10.69 probada con sus capturas: «va bien».
+- Revisión de 305 ofertas mal leídas con veredicto en `errores_lector` (`ia_bien`, `ia_mal`, `dudoso`) y 15 casos nuevos en las pruebas.
+- Revisor `confirmar-oferta` v26 en producción (commit `f6def4b`): la IA solo lee y las cuentas van en `lector.ts`. Prueba: 101 de 107 (antes 45). Se pierden 2 rescates de Uber (aceptado). `probar-revisor` borrada.
+- Reglas remotas (corregir sin APK): diseño hecho, **no construir** hasta medir 1 semana con la 10.69.
+- Nota de Play y la imagen del grupo de la 10.69 (zonas bloqueadas destacadas) entregadas.
 
 ## … Falta
-- AAB 146 (10.66): esperar que pase la revisión en «Alpha» y avisar a los testers.
+- AAB 149 (10.69): generar con «play-aab-firmado», subir a «Alpha» con la nota y esperar revisión (reemplaza al 146). Al aprobarse, publicar la imagen en el grupo.
+- 13 nov: «Estado de la revisión de hoy» para revisar el revisor v26: sin `json`/`json_vacio` en `fallas_ia`, mediana de `ms_ia` < 4 s, % coincidió > 49 %, sin `oferta=true` con km 0.
+- ~20 nov: comparar 10.69 contra 10.58 y decidir si se construyen las reglas remotas (10–14 h).
 - Redes sociales en la app (Ayuda y soporte y Cuenta): esperar de Eduardo qué redes y enlaces.
-- En unos días: «Estado de la revisión» para ver qué lector falla más y cuántas ofertas se confirman sin IA.
 - Prueba cerrada: día 9 de 14 seguidos con 12 testers (= verificadores). Faltan 5 días para pedir producción.
 - Fase 7 (Play Billing) antes del 1 feb 2027: necesita su «adelante» y una cuenta de Google admitida a su nombre.
 
