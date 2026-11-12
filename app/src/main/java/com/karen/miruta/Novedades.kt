@@ -9,6 +9,10 @@ object Novedades {
     class Version(val codigo: Int, val nombre: String, val puntos: List<String>, val widgets: Boolean = false, val vistaQr: Boolean = false)
 
     val LISTA = listOf(
+        Version(148, "10.68", listOf(
+            "Mis metas más ordenada: todo en una pantalla, con la oferta de ejemplo junto a tus metas.",
+            "Recogida y duración máximas ahora con − y +: de 1 a 5 km y de 10 a 60 min, o «Sin límite»."
+        )),
         Version(147, "10.67", listOf(
             "Ajustes más claros: «Al abrir Uber o DiDi» junta en un solo lugar iniciar sola, preguntarte o no hacer nada."
         )),

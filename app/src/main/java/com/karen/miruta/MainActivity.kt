@@ -630,80 +630,47 @@ class MainActivity : Activity() {
         cab.addView(texto("Mis metas", 26f, cTexto, true), LinearLayout.LayoutParams(-1, -2).apply {
             bottomMargin = dp(Tema.S1)
         })
+        // 10.68: la oferta de ejemplo a la izquierda (a escala) y su nota a la derecha, en una tarjeta.
+        val previaFila = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(dp(10), dp(10), dp(12), dp(10))
+            background = redondo(cTarjeta, Tema.R_TARJETA)
+        }
         val previaMetas = FrameLayout(this)
         vistaPreviaMetas = previaMetas
-        cab.addView(previaMetas, LinearLayout.LayoutParams(-1, -2))
-        cab.addView(texto("Oferta de ejemplo con tus metas", Tema.T_NOTA, cTenue, false).apply { gravity = Gravity.CENTER },
-            margenArriba(4))
+        previaFila.addView(previaMetas, LinearLayout.LayoutParams(-2, -2))
+        previaFila.addView(texto("Oferta de ejemplo: cambia al mover tus metas.", Tema.T_NOTA, cTenue, false).apply {
+            setLineSpacing(0f, 1.2f)
+        }, LinearLayout.LayoutParams(0, -2, 1f).apply { leftMargin = dp(12) })
+        cab.addView(previaFila, LinearLayout.LayoutParams(-1, -2))
         raiz.addView(cab, LinearLayout.LayoutParams(-1, -2))
         val col = columna()
         tarjetaFiltros(col)
 
-        // --- Tu auto ---
-        val gas = tarjeta()
-        gas.addView(etiquetaTarjeta("TU AUTO"))
-        val costoFila = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.BOTTOM }
-        costoAutoValor = numero("", 28f, cTexto)
+        // --- Tu auto: costo por km (abre rendimiento, gasolina y desgaste) y tarifa mínima ---
+        col.addView(etiqueta("TU AUTO"))
+        val auto = grupoFilas()
+        costoAutoValor = valorFila()
         costoAutoDetalle = texto("", Tema.T_NOTA, cTenue, false)
-        costoFila.addView(costoAutoValor)
-        costoFila.addView(costoAutoDetalle, LinearLayout.LayoutParams(0, -2, 1f).apply {
-            leftMargin = dp(Tema.S1); bottomMargin = dp(4)
-        })
-        gas.addView(costoFila, margenArriba(Tema.S1))
-        pintarCostoAuto()
-        if (!prefs.gasRevisada) {
-            gas.addView(texto("Revisa estos dos números: con ellos se pinta cada oferta. Si están mal, el color sale mal en todas.",
-                Tema.T_NOTA, cAmarillo, false).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
-        }
-        gas.addView(campoDato("Rendimiento", prefs.kmPorLitro, "", " km/l") {
-            prefs.kmPorLitro = it
-            prefs.gasRevisada = true
-            refrescarVistaPrevia()
-        }, margenArriba(Tema.S1))
-        gas.addView(campoDato("Gasolina", prefs.precioLitro, simAntes(), simDespues("/l")) {
-            prefs.precioLitro = it
-            prefs.gasRevisada = true
-            refrescarVistaPrevia()
-        }, margenArriba(Tema.S1))
-        valorDesgaste = texto("", Tema.T_TEXTO, cTexto, true).apply { typeface = Fuentes.numero }
-        gas.addView(filaAbrir("Desgaste", valorDesgaste!!) { mostrarDesgaste() }, margenArriba(Tema.S1))
-        valorTarMin = texto("", Tema.T_TEXTO, cTexto, true).apply { typeface = Fuentes.numero }
-        gas.addView(filaAbrir("Tarifa mínima", valorTarMin!!) { mostrarTarifaMinima() }, margenArriba(Tema.S1))
+        filaValor(auto, "Costo por km", costoAutoDetalle, costoAutoValor!!) { mostrarCostoAuto() }
+        valorTarMin = valorFila()
+        filaValor(auto, "Tarifa mínima", null, valorTarMin!!) { mostrarTarifaMinima() }
         pintarValoresAuto()
-        gas.addView(texto("Desgaste: llantas, seguro, licencia y más, repartidos entre tus km. " +
-            "Tarifa mínima: lo menos que aceptas por un viaje.",
-            Tema.T_NOTA, cTenue, false), margenArriba(4))
-        col.addView(gas, margenTarjeta())
+        col.addView(auto, margenTarjeta())
 
-        // --- Zonas bloqueadas (10.60) ---
-        val zon = tarjeta()
-        zon.addView(etiquetaTarjeta("ZONAS BLOQUEADAS"))
-        valorZonas = texto("", Tema.T_TEXTO, cTexto, true).apply { typeface = Fuentes.numero }
-        zon.addView(filaAbrir("Mapa de zonas", valorZonas!!) {
+        // --- Más: zonas bloqueadas (10.60) y dos ofertas a la vez ---
+        col.addView(etiqueta("MÁS"))
+        val mas = grupoFilas()
+        valorZonas = valorFila()
+        filaValor(mas, "Zonas bloqueadas", null, valorZonas!!) {
             startActivity(Intent(this, ZonasActivity::class.java))
-        }, margenArriba(Tema.S1))
+        }
         pintarZonas()
-        zon.addView(texto("Dibuja en un mapa las zonas a las que no quieres ir. Si el destino de una oferta cae dentro, sale en rojo. " +
-            "Necesita internet para ubicar la dirección.",
-            Tema.T_NOTA, cTenue, false).apply { setLineSpacing(0f, 1.2f) }, margenArriba(4))
-        col.addView(zon, margenTarjeta())
-
-        // --- Dos ofertas a la vez ---
-        val cmp = tarjeta()
-        cmp.addView(etiquetaTarjeta("DOS OFERTAS A LA VEZ"))
-        notaComparador = texto("Disponible en los paquetes de 6 meses y 1 año. Con el de 1 mes se muestra una oferta a la vez.",
-            Tema.T_NOTA, cAmarillo, false).apply { setLineSpacing(0f, 1.2f) }
-        cmp.addView(notaComparador, margenArriba(Tema.S1))
-        cmp.addView(texto(
-            "Si llegan ofertas de Uber y DiDi al mismo tiempo, la mejor se marca con ⭐. " +
-                "Primero gana la de mejor color; si empatan, gana la que deja:",
-            Tema.T_NOTA, cTenue, false
-        ).apply { setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
-        val criterios = listOf(Comparador.NETA_HORA, Comparador.NETA_KM, Comparador.NETA_TOTAL)
-        cmp.addView(pildoras(listOf("Más por hora", "Más por km", "Más en total"), { criterios.indexOf(prefs.criterio) }) { i ->
-            prefs.criterio = criterios[i]
-        }, margenArriba(12))
-        col.addView(cmp, margenTarjeta())
+        valorCriterio = valorFila()
+        filaValor(mas, "Si llegan dos ofertas", null, valorCriterio!!) { mostrarDosOfertas() }
+        pintarCriterio()
+        col.addView(mas, margenTarjeta())
 
         raiz.addView(scroll(col), LinearLayout.LayoutParams(-1, 0, 1f))
         refrescarPreviaMetas()
@@ -731,6 +698,132 @@ class MainActivity : Activity() {
         }
     }
 
+    private var valorCriterio: TextView? = null
+
+    /** Valor a la derecha de una fila de grupo (10.68). */
+    private fun valorFila() = texto("", Tema.T_TEXTO, cTexto, true).apply { typeface = Fuentes.numero; maxLines = 1 }
+
+    /** 10.68: fila de un grupo (estilo Ajustes) con nombre, nota opcional, valor y › que abre una ventana. */
+    private fun filaValor(grupo: LinearLayout, titulo: String, sub: TextView?, valor: TextView, abrir: () -> Unit) {
+        if (grupo.childCount > 0) grupo.addView(View(this).apply { setBackgroundColor(Tema.BORDE) },
+            LinearLayout.LayoutParams(-1, dp(1)))
+        val f = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            minimumHeight = dp(52)
+            setPadding(dp(14), dp(6), dp(12), dp(6))
+            background = ripple(Color.TRANSPARENT, Tema.R_TARJETA)
+            isClickable = true
+            setOnClickListener { abrir() }
+        }
+        val textos = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        textos.addView(texto(titulo, Tema.T_TEXTO, cTexto, false))
+        if (sub != null) textos.addView(sub)
+        f.addView(textos, LinearLayout.LayoutParams(0, -2, 1f).apply { rightMargin = dp(Tema.S1) })
+        f.addView(valor)
+        f.addView(texto("›", 20f, cTenue, false), LinearLayout.LayoutParams(-2, -2).apply { leftMargin = dp(6) })
+        grupo.addView(f)
+    }
+
+    /** 10.68: fila de un grupo con nombre y − valor + (mantener presionado avanza rápido). Devuelve su pintor. */
+    private fun filaPaso(
+        grupo: LinearLayout, titulo: String, leer: () -> String, apagado: () -> Boolean, cambiar: (Int) -> Unit
+    ): () -> Unit {
+        if (grupo.childCount > 0) grupo.addView(View(this).apply { setBackgroundColor(Tema.BORDE) },
+            LinearLayout.LayoutParams(-1, dp(1)))
+        val f = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            minimumHeight = dp(52)
+            setPadding(dp(14), dp(6), dp(10), dp(6))
+        }
+        f.addView(texto(titulo, Tema.T_TEXTO, cTexto, false).apply { maxLines = 1 }, LinearLayout.LayoutParams(0, -2, 1f))
+        val vt = texto("", Tema.T_TEXTO, cTexto, true).apply {
+            typeface = Fuentes.numero
+            gravity = Gravity.CENTER
+            maxLines = 1
+            setAutoSizeTextTypeUniformWithConfiguration(10, 14, 1, TypedValue.COMPLEX_UNIT_SP)
+        }
+        val pintar: () -> Unit = {
+            vt.text = leer()
+            vt.setTextColor(if (apagado()) cTenue else cTexto)
+        }
+        fun tecla(sim: String, signo: Int) = texto(sim, 20f, cTexto, false).apply {
+            typeface = Fuentes.numero
+            gravity = Gravity.CENTER
+            background = ripple(Tema.CAMPO, 10)
+            isClickable = true
+            setOnClickListener { cambiar(signo); pintar() }
+            val repetir = object : Runnable {
+                override fun run() { cambiar(signo); pintar(); this@MainActivity.handler.postDelayed(this, 90) }
+            }
+            setOnLongClickListener { this@MainActivity.handler.post(repetir); true }
+            setOnTouchListener { _, ev ->
+                if (ev.action == android.view.MotionEvent.ACTION_UP || ev.action == android.view.MotionEvent.ACTION_CANCEL) {
+                    this@MainActivity.handler.removeCallbacks(repetir)
+                }
+                false
+            }
+        }
+        f.addView(tecla("−", -1), LinearLayout.LayoutParams(dp(40), dp(40)))
+        f.addView(vt, LinearLayout.LayoutParams(dp(84), dp(40)))
+        f.addView(tecla("+", 1), LinearLayout.LayoutParams(dp(40), dp(40)))
+        grupo.addView(f)
+        pintar()
+        return pintar
+    }
+
+    /** 10.68: «Costo por km» abre rendimiento, gasolina y desgaste. */
+    private fun mostrarCostoAuto() {
+        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        cuerpo.addView(texto("Pon los números reales de tu auto: con ellos se pinta cada oferta. Si están mal, el color sale mal en todas.",
+            Tema.T_NOTA, if (prefs.gasRevisada) cTenue else cAmarillo, false).apply { setLineSpacing(0f, 1.2f) })
+        cuerpo.addView(campoDato("Rendimiento", prefs.kmPorLitro, "", " km/l") {
+            prefs.kmPorLitro = it
+            prefs.gasRevisada = true
+            refrescarVistaPrevia()
+        }, margenArriba(Tema.S1))
+        cuerpo.addView(campoDato("Gasolina", prefs.precioLitro, simAntes(), simDespues("/l")) {
+            prefs.precioLitro = it
+            prefs.gasRevisada = true
+            refrescarVistaPrevia()
+        }, margenArriba(Tema.S1))
+        valorDesgaste = valorFila()
+        cuerpo.addView(filaAbrir("Desgaste", valorDesgaste!!) { mostrarDesgaste() }, margenArriba(Tema.S1))
+        pintarValoresAuto()
+        cuerpo.addView(texto("Desgaste: llantas, seguro, licencia y más, repartidos entre tus km.",
+            Tema.T_NOTA, cTenue, false).apply { setLineSpacing(0f, 1.2f) }, margenArriba(4))
+        hoja("Costo por km", null, cuerpo)
+    }
+
+    private fun pintarCriterio() {
+        valorCriterio?.text = when (prefs.criterio) {
+            Comparador.NETA_KM -> "Más por km"
+            Comparador.NETA_TOTAL -> "Más en total"
+            else -> "Más por hora"
+        }
+    }
+
+    /** 10.68: «Si llegan dos ofertas» (antes la tarjeta «Dos ofertas a la vez»). */
+    private fun mostrarDosOfertas() {
+        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        val nota = texto("Disponible en los paquetes de 6 meses y 1 año. Con el de 1 mes se muestra una oferta a la vez.",
+            Tema.T_NOTA, cAmarillo, false).apply { setLineSpacing(0f, 1.2f) }
+        nota.visibility = if (!BuildConfig.ES_PLAY && Licencia.estado(this).basico) View.VISIBLE else View.GONE
+        cuerpo.addView(nota, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(Tema.S1) })
+        cuerpo.addView(texto(
+            "Si llegan ofertas de Uber y DiDi al mismo tiempo, la mejor se marca con ⭐. " +
+                "Primero gana la de mejor color; si empatan, gana la que deja:",
+            Tema.T_NOTA, cTenue, false
+        ).apply { setLineSpacing(0f, 1.2f) })
+        val criterios = listOf(Comparador.NETA_HORA, Comparador.NETA_KM, Comparador.NETA_TOTAL)
+        cuerpo.addView(pildoras(listOf("Más por hora", "Más por km", "Más en total"), { criterios.indexOf(prefs.criterio) }) { i ->
+            prefs.criterio = criterios[i]
+            pintarCriterio()
+        }, margenArriba(12))
+        hoja("Si llegan dos ofertas", null, cuerpo)
+    }
+
     /** Fila de «Tu auto» que abre una ventana: nombre a la izquierda, valor y › a la derecha. */
     private fun filaAbrir(titulo: String, valor: TextView, abrir: () -> Unit): View {
         val fila = LinearLayout(this).apply {
@@ -752,6 +845,7 @@ class MainActivity : Activity() {
         pintarCostoAuto()
         valorDesgaste?.text = dinero(prefs.desgastePorKm.toDouble(), 2) + "/km"
         valorTarMin?.text = if (prefs.filtroTarMin) dinero(prefs.tarifaMinima.toDouble(), 0) + "/viaje" else "Apagada"
+        valorTarMin?.setTextColor(if (prefs.filtroTarMin) cTexto else cTenue)
     }
 
     private fun alCambiarAuto() {
@@ -1277,57 +1371,52 @@ class MainActivity : Activity() {
     // Filtros inteligentes
     // =====================================================================
 
-    /** Una sola tarjeta «Qué te conviene» (maqueta v2): metas por km y por hora, y píldoras de recogida y duración. */
+    /** «Lo que te conviene» (10.68): metas por km y por hora, recogida y duración máximas, todas con − +.
+     *  Bajando del mínimo, recogida y duración quedan en «Sin límite» (filtro apagado). */
     private fun tarjetaFiltros(col: LinearLayout) {
-        val t = tarjeta()
-        t.addView(etiquetaTarjeta("QUÉ TE CONVIENE"))
         // Sin interruptores: la meta por km y la de por hora siempre cuentan (antes se podían apagar).
         prefs.filtroKm = true
         prefs.filtroHora = true
-        // La meta por hora se calcula sola: $/km × 20 (sigue siendo editable).
+        col.addView(etiqueta("LO QUE TE CONVIENE"))
+        val g = grupoFilas()
         var pintarHora: () -> Unit = {}
-        t.addView(campoMeta(
-            "Por km", simAntes(), simDespues("/km"), 0.5f,
-            null, null,
-            { prefs.minPorKm }, { v ->
+        filaPaso(g, "Por km", { simAntes() + num(prefs.minPorKm) + simDespues("/km") }, { false }) { signo ->
+            val v = Math.round((prefs.minPorKm + 0.5f * signo) * 100f) / 100f
+            if (v >= 0.5f) {
                 prefs.minPorKm = v
+                // La meta por hora se calcula sola: $/km × 20 (sigue siendo editable).
                 prefs.minPorHora = v * 20f
                 pintarHora()
                 pintarMejoresHoras(false)
                 refrescarVistaPrevia()
             }
-        ), margenArriba(Tema.S1))
-        t.addView(campoMeta(
-            "Por hora", simAntes(), simDespues("/h"), 10f,
-            null, null,
-            { prefs.minPorHora }, { prefs.minPorHora = it; refrescarVistaPrevia() }
-        ) { pintarHora = it }, margenArriba(Tema.S1))
-
-        // Tocar la opción elegida otra vez apaga el filtro.
-        t.addView(texto("Recogida máxima", Tema.T_TEXTO, cTexto2, false), margenArriba(Tema.S2))
-        val rec = listOf(2f, 3f, 4f)
-        t.addView(pildoras(rec.map { num(it) + " km" }, { if (prefs.filtroRecMax) rec.indexOf(prefs.recogidaMaxKm) else -1 }) { i ->
-            if (prefs.filtroRecMax && prefs.recogidaMaxKm == rec[i]) {
-                prefs.filtroRecMax = false
-            } else {
-                prefs.recogidaMaxKm = rec[i]
-                prefs.filtroRecMax = true
-            }
+        }
+        pintarHora = filaPaso(g, "Por hora", { simAntes() + num(prefs.minPorHora) + simDespues("/h") }, { false }) { signo ->
+            val v = prefs.minPorHora + 10f * signo
+            if (v >= 10f) { prefs.minPorHora = v; refrescarVistaPrevia() }
+        }
+        val rec = listOf(1f, 2f, 3f, 4f, 5f)
+        filaPaso(g, "Recogida máx.",
+            { if (prefs.filtroRecMax) num(prefs.recogidaMaxKm) + " km" else "Sin límite" }, { !prefs.filtroRecMax }) { signo ->
+            // 0 = sin límite; 1..5 = rec[n - 1]
+            val actual = if (!prefs.filtroRecMax) 0
+                else rec.indexOfFirst { it >= prefs.recogidaMaxKm }.let { if (it < 0) rec.size else it + 1 }
+            val n = (actual + signo).coerceIn(0, rec.size)
+            if (n == 0) prefs.filtroRecMax = false
+            else { prefs.recogidaMaxKm = rec[n - 1]; prefs.filtroRecMax = true }
             refrescarVistaPrevia()
-        }, margenArriba(Tema.S1))
-        t.addView(texto("Duración máxima", Tema.T_TEXTO, cTexto2, false), margenArriba(Tema.S2))
-        val dur = listOf(15, 20, 30)
-        t.addView(pildoras(dur.map { "$it min" }, { if (prefs.filtroDurMax) dur.indexOf(prefs.duracionMax) else -1 }) { i ->
-            if (prefs.filtroDurMax && prefs.duracionMax == dur[i]) {
-                prefs.filtroDurMax = false
-            } else {
-                prefs.duracionMax = dur[i]
-                prefs.filtroDurMax = true
-            }
+        }
+        val dur = (10..60 step 5).toList()
+        filaPaso(g, "Duración máx.",
+            { if (prefs.filtroDurMax) "${prefs.duracionMax} min" else "Sin límite" }, { !prefs.filtroDurMax }) { signo ->
+            val actual = if (!prefs.filtroDurMax) 0
+                else dur.indexOfFirst { it >= prefs.duracionMax }.let { if (it < 0) dur.size else it + 1 }
+            val n = (actual + signo).coerceIn(0, dur.size)
+            if (n == 0) prefs.filtroDurMax = false
+            else { prefs.duracionMax = dur[n - 1]; prefs.filtroDurMax = true }
             refrescarVistaPrevia()
-        }, margenArriba(Tema.S1))
-        t.addView(texto("Toca otra vez la opción elegida para apagarla.", Tema.T_NOTA, cTenue, false), margenArriba(Tema.S1))
-        col.addView(t, margenTarjeta())
+        }
+        col.addView(g, margenTarjeta())
     }
 
     /** Valor dentro de un campo: nombre, − valor + (mantener presionado para avanzar rápido) e interruptor si [leerOn] no es null. */
@@ -5038,11 +5127,24 @@ class MainActivity : Activity() {
         val caja = vistaPreviaMetas ?: return
         caja.removeAllViews()
         val v = Popup(this, prefs, WindowManager.LayoutParams.TYPE_APPLICATION).construir(ofertaEjemplo(), false)
-        val real = DisplayMetrics()
-        @Suppress("DEPRECATION")
-        windowManager.defaultDisplay.getRealMetrics(real)
-        val ancho = minOf((real.widthPixels * 0.94f).toInt(), Popup.anchoPx(this, prefs))
-        caja.addView(v, FrameLayout.LayoutParams(ancho, -2, Gravity.CENTER_HORIZONTAL))
+        // 10.68: a su tamaño real, pero reducida para ocupar a lo más el 55 % del ancho (la nota va a la derecha).
+        val ancho = Popup.anchoPx(this, prefs)
+        val escala = minOf(1f, resources.displayMetrics.widthPixels * 0.55f / ancho)
+        v.measure(
+            View.MeasureSpec.makeMeasureSpec(ancho, View.MeasureSpec.EXACTLY),
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        )
+        val alto = v.measuredHeight
+        v.pivotX = 0f
+        v.pivotY = 0f
+        v.scaleX = escala
+        v.scaleY = escala
+        caja.layoutParams?.let {
+            it.width = (ancho * escala).toInt()
+            it.height = (alto * escala).toInt()
+            caja.layoutParams = it
+        }
+        caja.addView(v, FrameLayout.LayoutParams(ancho, alto))
     }
 
     /** Tu auto: lo que te cuesta cada km (gasolina + desgaste). */
@@ -5050,7 +5152,15 @@ class MainActivity : Activity() {
         val gas = if (prefs.kmPorLitro > 0) (prefs.precioLitro / prefs.kmPorLitro).toDouble() else 0.0
         val desg = prefs.desgastePorKm.toDouble()
         costoAutoValor?.text = dinero(gas + desg, 2)
-        costoAutoDetalle?.text = "por km · gasolina ${dinero(gas, 2)} + desgaste ${dinero(desg, 2)}"
+        costoAutoDetalle?.apply {
+            if (prefs.gasRevisada) {
+                text = "gasolina ${dinero(gas, 2)} + desgaste ${dinero(desg, 2)}"
+                setTextColor(cTenue)
+            } else {
+                text = "Revisa rendimiento y gasolina"
+                setTextColor(cAmarillo)
+            }
+        }
     }
 
     private fun refrescarVistaPrevia() {
