@@ -110,3 +110,9 @@ La revisión ahora también envía: el modelo del teléfono y la versión de And
 - **Ubicación aproximada y precisa:** solo para centrar el mapa de zonas en primer plano (ya se declaraba por el SOS). No se guarda ni se envía.
 - **Direcciones:** el texto del destino de una oferta (calle y colonia) se envía a Nominatim (OpenStreetMap) para convertirlo en coordenadas, solo si el conductor dibujó zonas. No incluye cuenta ni identificador. Revisar si cuenta como «Ubicación aproximada: recopilada/compartida» y mencionarlo en la política de privacidad.
 - Los mosaicos del mapa se bajan de OpenStreetMap (internet).
+
+## Cambios de la 10.61–10.66 (12 nov 2026): zonas por origen y destino
+- **Direcciones:** el texto del **origen y del destino** de la oferta se envía para convertirlo en coordenadas: primero al buscador del teléfono (Android `Geocoder`, servicios de Google Play) y, si no lo halla, a Nominatim (OpenStreetMap). Solo si el conductor dibujó zonas y el bloqueo está activo. Sin cuenta, identificador, captura ni otros datos de la oferta.
+- **Declaración en Play Console (criterio conservador):** «Ubicación › Ubicación aproximada» · Recopilada: sí · Compartida: sí (OpenStreetMap) · Procesamiento efímero: sí · Opcional · Finalidad: Funcionalidad de la app. Encriptado en tránsito: sí (HTTPS).
+- Las coordenadas halladas se guardan solo en el teléfono (`zonas_direcciones.txt`, 500 máx.); se borran al desinstalar o borrar datos.
+- **Política de privacidad:** agregar el párrafo de «Zonas bloqueadas» (repo `PWA-Checa-Multimedia`).
