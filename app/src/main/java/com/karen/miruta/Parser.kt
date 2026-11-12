@@ -113,6 +113,12 @@ object Parser {
         val incluido: Regex
         /** Solo el monto, sin nada más (la tarifa grande, para ponerla primero). */
         val montoGrande: Regex
+        /** DiDi: «Aceptar $94.62» (el botón trae la tarifa). */
+        val aceptarMonto: Regex
+        /** DiDi: «$94.62 1.7x» (la tarifa con su multiplicador). */
+        val montoMulti: Regex
+        /** Línea del pop-up propio («X $155/h | $9.9/km») que el OCR alcanzó a leer. */
+        val lineaPopup: Regex
 
         init {
             val d = sep(moneda.decimal)
@@ -136,6 +142,9 @@ object Parser {
                 incluido = Regex("""\+?\s?(?:$num\s?(?:$sim)|$pre\s?$num)\s*incluid""", RegexOption.IGNORE_CASE)
                 montoGrande = Regex("""^\s*(?:$num\s?(?:$sim)|$pre\s?$num)\s*$""")
             }
+            aceptarMonto = Regex("""^\s*aceptar\s*$pre\s?$num""", RegexOption.IGNORE_CASE)
+            montoMulti = Regex("""^\s*$pre\s?$num\s+\S?\s?[1-4](?:[.,]\d{1,2})?\s?[x×X]\s*$""")
+            lineaPopup = Regex("""(?:$sim)\s?\d+(?:[.,]\d)?\s?/\s?h""", RegexOption.IGNORE_CASE)
         }
 
         /** El número del primer grupo que se llenó, ya como Double. */
@@ -194,6 +203,13 @@ object Parser {
         }
         return 0.0
     }
+
+    // Mapa de calor de DiDi («1.1X-1.4X»): con dos o más rangos y un solo tramo es la pantalla de inicio.
+    private val rango = Regex("""\d\s?[xX×]\s?[-–]""")
+    // «El pasajero canceló»: aviso, no oferta.
+    private val cancelo = Regex("""cancel[oó]\b""", RegexOption.IGNORE_CASE)
+    // Uber «$9.65/km est.» en su propia línea: km totales ≈ tarifa ÷ $/km.
+    private val kmEstimado = Regex("""(\d{1,2}[.,]\d{2})\s?/\s?km""", RegexOption.IGNORE_CASE)
 
     private val noDireccion = Regex(
         """(\$|aceptar|considerar|rechazar|adicional|por inicio|incluid|calificaci|viajes|perfil|verificad|exclusivo|priority|/km|/h|me interesa|contraofert|ofrecer|ignorar|omitir|cancelar|ver m[aá]s|punto\(s\)|parada|pasajer|efectivo|tarjeta)""",
@@ -258,6 +274,7 @@ object Parser {
     fun analizar(textos: List<String>, moneda: Moneda = Moneda.MXN): Oferta? {
         val r = reglasDe(moneda)
         var tarifa = buscarTarifa(textos, r) ?: return null
+        if (textos.any { cancelo.containsMatchIn(it) }) return null
 
         // Tramos en orden: (km, min, ¿es resumen?).
         val lista = ArrayList<Triple<Double, Double, Boolean>>()
@@ -315,6 +332,17 @@ object Parser {
 
         // Una oferta siempre trae 2 tramos (recogida + viaje); con 1 aceptamos también.
         if (tramos == 0) return null
+        if (tramos < 2 && textos.count { rango.containsMatchIn(it) } >= 2 &&
+            textos.none { r.aceptarMonto.containsMatchIn(it) }) return null
+        // Uber: si los km no dan el «$/km est.», el OCR perdió un punto («70 km» = 7.0): manda el $/km.
+        if (resumen == null && tramos >= 2) {
+            val linea = textos.firstOrNull { t -> kmEstimado.containsMatchIn(t) && !tramo.containsMatchIn(corregirMinutos(t)) }
+            val p = linea?.let { kmEstimado.find(it)?.groupValues?.get(1)?.replace(",", ".")?.toDoubleOrNull() }
+            if (p != null && p >= 2 && p <= 80) {
+                val est = tarifa / p
+                if (Math.abs(km - est) > Math.max(0.3, est * 0.08) && recKm < est) km = est
+            }
+        }
         // Límites en pesos mexicanos; en otra moneda se convierten (aproximado) con más holgura.
         val f = moneda.factor
         val holgura = if (moneda.codigo == "MXN") 1.0 else 2.0
@@ -364,14 +392,33 @@ object Parser {
 
     // El OCR lee "11 min" como "ll min" o "1l min": esas l/I/| junto a "min" son unos.
     // Con letra gruesa también confunde 8→B, 0→O, 5→S ("B min • 2.2 km") y «1 h» → «Ih».
-    private val minutosOcr = Regex("""(?<![A-Za-z0-9])[0-9lI|BOoS]*[lI|BOoS][0-9lI|BOoS]*(?=\s?min)""")
+    // «1hl2 min»: también después de la «h» de las horas.
+    private val minutosOcr = Regex("""(?<![A-Za-gi-z0-9])[0-9lI|BOoS]*[lI|BOoS][0-9lI|BOoS]*(?=\s?min)""")
     private val horasOcr = Regex("""(?<![A-Za-z0-9])[lI|](?=\s?h(?:rs?|oras?)?\s*\d+\s?min)""")
-    private fun corregirMinutos(t: String): String =
-        horasOcr.replace(minutosOcr.replace(t) {
+    // Uber nuevo (12 nov): «6 min l.9 km», «minl.2 km» (l por 1) y «15.4 kmn», «4.7 krn».
+    private val unoKm = Regex("""(?:(?<=min)|(?<![A-Za-z]))[lI|](?=[\d.,lI|]*\s?(?:km|m)\b)""")
+    private val kmOcr = Regex("""(?<=\d)(\s?)(?:krn|knm|kmn|kon)\b""", RegexOption.IGNORE_CASE)
+    private fun corregirMinutos(t: String): String {
+        val c = horasOcr.replace(minutosOcr.replace(t) {
             it.value.replace(Regex("[lI|]"), "1").replace('B', '8').replace(Regex("[Oo]"), "0").replace('S', '5')
         }, "1")
+        return unoKm.replace(kmOcr.replace(c, "\$1km"), "1")
+    }
 
     private fun buscarTarifa(textos: List<String>, r: Reglas): Double? {
+        // 0) DiDi (12 nov): «Aceptar $X» y luego «$X 1.3x» mandan; las contraofertas o el
+        //    monto del pop-up propio pueden quedar arriba en el OCR.
+        for (t in textos) r.aceptarMonto.find(t)?.let { m -> r.valor(m)?.let { return it } }
+        for (t in textos) r.montoMulti.find(t)?.let { m -> r.valor(m)?.let { return it } }
+        // Si se ve la línea «$/h» del pop-up propio, su monto (entero, sin centavos) no es la tarifa.
+        if (!r.moneda.sinCentavos && textos.any { r.lineaPopup.containsMatchIn(it) }) {
+            for (t in textos) {
+                val m = r.montoSolo.find(t) ?: continue
+                val s = m.groupValues.drop(1).firstOrNull { it.isNotEmpty() } ?: continue
+                if (!s.contains(r.moneda.decimal)) continue
+                return r.valor(m)
+            }
+        }
         // 1) Primer texto que es solo un monto (la tarifa grande va antes que los botones).
         for (t in textos) {
             val m = r.montoSolo.find(t) ?: continue
