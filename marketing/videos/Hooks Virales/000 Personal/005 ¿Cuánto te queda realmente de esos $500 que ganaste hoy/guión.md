@@ -1,11 +1,11 @@
-# 005 — ¿Cuánto te queda realmente de esos $500 que ganaste hoy?
+# 005 — ¿Cuánto te queda de esos $500 que ganaste hoy?
 
 **Duración estimada:** 20–35 segundos
 
 **Versión:** Marca personal
 
 ### Guion
-Si hoy regresaste con quinientos pesos, falta revisar la otra parte. ¿Cuánto combustible consumiste? ¿Cuánto tiempo estuviste fuera? ¿Qué cantidad reservarás para cuidar tu auto? Anota los gastos y calcula lo que queda. **[Cierre]** Haz la prueba durante una semana.
+Si hoy juntaste quinientos pesos, todavía falta hacer una cuenta. ¿Cuánto gastaste en gasolina? ¿Cuánto vas a guardar para el servicio del coche? ¿Cuántas horas estuviste fuera? Anota esos datos y mira cuánto te queda. **[Cierre]** Haz la prueba durante siete días.
 
 ### Producción
-Grabar en primera persona. Priorizar opinión, experiencia y conversación con conductores; no convertirlo en un anuncio de Checa.
+A cámara, con cortes a una nota o calculadora. No presentes cifras de ejemplo como datos de una jornada real.
