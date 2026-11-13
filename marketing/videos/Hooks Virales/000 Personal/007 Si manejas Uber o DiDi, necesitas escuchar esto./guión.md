@@ -5,7 +5,7 @@
 **Versión:** Marca personal
 
 ### Guion
-Compañero conductor: antes de tu siguiente turno, define qué solicitudes se ajustan a tus metas. No todos los recorridos son iguales y no tienes que decidir por impulso. Revisa los datos y cuida tus recursos. **[Cierre]** Envíale este consejo a alguien que maneje por aplicación.
+Si manejas por app, escucha esto: no salgas sin una meta para tu día. Define cuánto quieres juntar y cuánto vas a gastar en gasolina. También decide cuántas horas vas a estar en la calle. Así no acabas el día sin saber si te fue bien. **[Cierre]** Envíale esto a otro conductor.
 
 ### Producción
-Grabar en primera persona. Priorizar opinión, experiencia y conversación con conductores; no convertirlo en un anuncio de Checa.
+A cámara, con tono cercano. Evita dar una meta de ingresos como si fuera igual para todos.
