@@ -1,17 +1,18 @@
 # Reporte de Checa (web + app) · últimos 30 días
 
-Generado: 2026-11-12 20:29 UTC. Cuenta visitas únicas (una por pestaña).
+Generado: 2026-11-13 20:06 UTC. Cuenta visitas únicas (una por pestaña).
 
 ## Resumen
 | visitas | descargas | cuentas_nuevas | pagos | ingresos | licencias_activas |
 | --- | --- | --- | --- | --- | --- |
-| 671 | 262 | 65 | 0 | 0 | 3 |
+| 677 | 260 | 67 | 0 | 0 | 3 |
 
 # App
 
 ## Cuentas nuevas por día (inicio con Google)
 | dia | cuentas |
 | --- | --- |
+| 2026-11-13 | 2 |
 | 2026-11-12 | 2 |
 | 2026-11-11 | 7 |
 | 2026-11-10 | 2 |
@@ -35,6 +36,8 @@ Generado: 2026-11-12 20:29 UTC. Cuenta visitas únicas (una por pestaña).
 ## Quiénes son (cuentas con Google)
 | correo | registro | ultimo_acceso | equipos | licencia_vence |
 | --- | --- | --- | --- | --- |
+| ebonywalton.27072@gmail.com | 11-13 01:22 | 11-13 01:22 | 1 | sin licencia |
+| andywells.10653@gmail.com | 11-13 01:03 | 11-13 01:03 | 1 | sin licencia |
 | og.rangelc@gmail.com | 11-12 11:35 | 11-12 11:35 | 1 | sin licencia |
 | billgeorge.23797@gmail.com | 11-12 10:00 | 11-12 10:00 | 1 | sin licencia |
 | vicojc7701@gmail.com | 11-11 22:11 | 11-11 22:11 | 1 | sin licencia |
@@ -88,7 +91,7 @@ Generado: 2026-11-12 20:29 UTC. Cuenta visitas únicas (una por pestaña).
 | patpechluisfernando89@gmail.com | 10-18 21:35 | 10-18 21:35 | 1 | sin licencia |
 | carrasquedomiguel36@gmail.com | 10-18 21:24 | 10-18 21:24 | 1 | sin licencia |
 | carloshernandez.soles@gmail.com | 10-18 21:09 | 10-18 21:09 | 1 | sin licencia |
-| mcamposl0088@gmail.com | 10-18 19:57 | 11-06 16:40 | 2 | sin licencia |
+| mcamposl0088@gmail.com | 10-18 19:57 | 11-12 23:14 | 2 | sin licencia |
 | migajas.tlx@gmail.com | 10-18 13:24 | 10-18 13:24 | 1 | sin licencia |
 | dcisnerosdanys@gmail.com | 10-18 13:11 | 11-11 14:53 | 2 | sin licencia |
 | fercho75.1he@gmail.com | 10-17 21:02 | 10-17 21:02 | 1 | sin licencia |
@@ -101,7 +104,7 @@ Generado: 2026-11-12 20:29 UTC. Cuenta visitas únicas (una por pestaña).
 | edent402@gmail.com | 10-16 07:42 | 11-04 12:54 | 1 | sin licencia |
 | lufercab@gmail.com | 10-15 18:21 | 10-15 18:21 | 1 | 20270113 |
 | landingbot01@gmail.com | 10-11 15:23 | 10-21 19:26 | 1 | sin licencia |
-| lalolopezxd@gmail.com | 10-11 15:08 | 11-11 22:03 | 3 | 99991231 |
+| lalolopezxd@gmail.com | 10-11 15:08 | 11-12 21:44 | 3 | 99991231 |
 
 ## Pagos por plan
 Sin datos todavía.
@@ -133,25 +136,25 @@ Sin datos todavía.
 ## Embudo
 | evento | visitas | veces |
 | --- | --- | --- |
-| visita | 671 | 924 |
-| descarga | 262 | 294 |
-| clic_descargar | 122 | 133 |
+| visita | 677 | 928 |
+| descarga | 260 | 292 |
+| clic_descargar | 121 | 132 |
 | descarga_instalar | 69 | 147 |
 | video_play | 66 | 69 |
-| beta_whatsapp | 23 | 27 |
+| beta_whatsapp | 22 | 26 |
 | beta | 20 | 20 |
 | whatsapp_ayuda | 13 | 13 |
 
 ## Por fuente (visitas → descargas)
 | fuente | campana | visitas | descargas |
 | --- | --- | --- | --- |
-| directo |  | 514 | 197 |
-| tiktok |  | 98 | 55 |
+| directo |  | 523 | 196 |
+| tiktok |  | 97 | 54 |
 | tiktok | prueba-en-google-play | 26 | 0 |
 | app | compartir | 17 | 9 |
 | app |  | 5 | 0 |
-| facebook | beta | 5 | 2 |
 | web | cierre | 3 | 0 |
+| facebook | beta | 3 | 2 |
 | chatgpt.com |  | 2 | 0 |
 | tiktok-personal | prueba-en-google-play | 2 | 0 |
 | web | precio_pro | 1 | 0 |
@@ -161,16 +164,16 @@ Sin datos todavía.
 ## Por dispositivo
 | dispositivo | visitas | descargas |
 | --- | --- | --- |
-| android | 512 | 262 |
-| pc | 102 | 0 |
+| android | 507 | 260 |
+| pc | 113 | 0 |
 | iphone | 58 | 0 |
 
 ## Qué botón lleva a descargar
 | boton | descargas |
 | --- | --- |
-| fijo | 83 |
+| fijo | 82 |
 | hero | 79 |
-| tiktok | 53 |
+| tiktok | 52 |
 | app | 33 |
 | nav | 19 |
 | cierre | 12 |
@@ -184,7 +187,8 @@ Sin datos todavía.
 ## Por día
 | dia | visitas | descargas |
 | --- | --- | --- |
-| 2026-11-12 | 1 | 0 |
+| 2026-11-13 | 11 | 0 |
+| 2026-11-12 | 5 | 0 |
 | 2026-11-11 | 7 | 0 |
 | 2026-11-10 | 6 | 0 |
 | 2026-11-09 | 13 | 0 |
@@ -213,4 +217,3 @@ Sin datos todavía.
 | 2026-10-16 | 69 | 46 |
 | 2026-10-15 | 125 | 34 |
 | 2026-10-14 | 2 | 0 |
-| 2026-10-13 | 9 | 2 |
