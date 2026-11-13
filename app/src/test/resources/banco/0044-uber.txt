@@ -1,0 +1,9 @@
+# errores_lector 44 · Uber · 10.53 · rescate
+# Respuesta correcta según la revisión (veredicto ia_bien).
+# Nota: no entendida: el lector no sacó oferta
+# Recogida: 0.7 km, 0 min
+O LTE+ll $94
+0.7 km
+3 min EO 0.9 km
+---
+tarifa=94 km=0.9 min=3

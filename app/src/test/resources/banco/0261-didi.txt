@@ -1,0 +1,12 @@
+# errores_lector 261 · DiDi · 10.53 · diferencia
+# Respuesta correcta según la revisión (veredicto ia_bien).
+# Nota: tarifa: tomó contraoferta o el pop-up propio en vez de Aceptar/multiplicador
+# Recogida: 2.3 km, 9 min
+$42.64
+$44.90
+(9 min 2.3 km) Akach (Tabano)
+(12 min 4.8 km) UQROO
+Aceptar $44.90
+$48.90 $49.90 $51.90
+---
+tarifa=44.9 km=7.1 min=21

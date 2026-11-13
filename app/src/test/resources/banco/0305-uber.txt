@@ -1,0 +1,11 @@
+# errores_lector 305 · Uber · 10.58 · desacuerdo
+# Respuesta correcta según el lector del teléfono (veredicto ia_mal).
+# Nota: lector · km/min: coincide con $/km est.
+# Recogida: 1.6 km, 6 min
+$40.75
+$8.86/km est.
++$10.23 incluido para inicio de viaje prioritario
+6 min • 1.6 km
+9 min • 3.0 km
+---
+tarifa=40.75 km=4.6 min=15

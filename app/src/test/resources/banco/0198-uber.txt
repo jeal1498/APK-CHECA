@@ -1,0 +1,15 @@
+# errores_lector 198 · Uber · 10.53 · rescate
+# Respuesta correcta según la revisión (veredicto ia_bien).
+# Nota: no entendida: el lector no sacó oferta
+# Recogida: 3.6 km, 10 min
+$153.66
+A 1-2 min
+A 1-2 min
++$4
++$10
+$8.73/km est.
++$21.24 incluido para inicio de viaje prioritario
+10 min (3.6 km)
+51 min (14.0 km)
+---
+tarifa=153.66 km=17.6 min=61

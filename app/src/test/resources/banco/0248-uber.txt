@@ -1,0 +1,7 @@
+# errores_lector 248 · Uber · 10.53 · diferencia
+# Respuesta correcta según la revisión (veredicto ia_bien).
+# Nota: fantasma: no era oferta (mapa de calor, aviso, barra)
+$5:17 mié, II de nov Haven't Me
+9 min 3.2 km
+---
+nada

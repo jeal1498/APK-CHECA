@@ -1,0 +1,11 @@
+# errores_lector 64 · Uber · 10.53 · diferencia
+# Respuesta correcta según la revisión (veredicto ia_bien).
+# Nota: km/min: OCR (l por 1, punto perdido, kmn)
+# Recogida: 1.6 km, 5 min
+$157.64
+$5.29/km est.
+e 5 min •l.6 km
+Cerrada Condominio 17 - Aragon
+43 min• 28.2 km
+---
+tarifa=157.64 km=28.2 min=43

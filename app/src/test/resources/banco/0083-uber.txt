@@ -1,0 +1,11 @@
+# errores_lector 83 · Uber · 10.53 · rescate
+# Respuesta correcta según la revisión (veredicto ia_bien).
+# Nota: no entendida: el lector no sacó oferta
+# Recogida: 0.7 km, 2 min
+$85.58
+0.5 km
+$9.62/km est.
+2 min (0.7 km)
+30 min (8.2 km)
+---
+tarifa=85.58 km=8.9 min=32

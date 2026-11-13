@@ -1,0 +1,11 @@
+# errores_lector 890 · ? · 10.74 · diferencia
+# Respuesta correcta según revisión manual de las líneas (13 nov).
+# Nota: oferta real con el aviso de otra app encima; 45.92 ÷ 3.753 km = 12.23/km, como dice ese aviso
+# Recogida: 0.353 km, 3 min
+$45.92
+$ 45.92
+$ 229.59 /h $ 12.23 /km
+3min (353m)
+9min (3.4km)
+---
+tarifa=45.92 km=3.753 min=12

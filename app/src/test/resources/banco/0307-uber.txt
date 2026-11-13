@@ -1,0 +1,12 @@
+# errores_lector 307 · Uber · 10.53 · diferencia
+# Respuesta correcta según el lector del teléfono (veredicto ia_mal).
+# Nota: lector · km/min: coincide con $/km est.
+# Recogida: 2 km, 9 min
+$74.98
+$7.98/km est.
++$10.56 incluido para inicio de viaje prioritario
+9 min (2.0 km)
+o 22 min (7.4 km)
+R Haz 4 viajes para obtener $65 adicionales
+---
+tarifa=74.98 km=9.4 min=31

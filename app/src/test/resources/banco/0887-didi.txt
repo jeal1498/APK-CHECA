@@ -1,0 +1,10 @@
+# errores_lector 887 · DiDi · 10.74 · diferencia
+# Respuesta correcta según revisión manual de las líneas (13 nov).
+# Nota: navegación con el pop-up propio a la vista
+$45
+$225/h|V $16.7I
+12 min (2.7 km) tota
+1 min más rápida
+12 min 2.7 km
+---
+nada

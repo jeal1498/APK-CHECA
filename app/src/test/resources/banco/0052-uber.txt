@@ -1,0 +1,10 @@
+# errores_lector 52 · Uber · 10.53 · diferencia
+# Respuesta correcta según la revisión (veredicto ia_bien).
+# Nota: km/min: «minl.0 km» = 1.0; 14.2 km cuadra con $/km est.
+# Recogida: 1 km, 4 min
+$88.04
+$6.20/km est.
+4 minl.0 km
+32 min 13.2 km
+---
+tarifa=88.04 km=14.2 min=36

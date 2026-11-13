@@ -1,0 +1,8 @@
+# errores_lector 81 · Uber · 10.53 · diferencia
+# Respuesta correcta según la revisión (veredicto ia_bien).
+# Nota: fantasma: no era oferta (mapa de calor, aviso, barra)
+$10:58 mié, II de noy Emaria
+2 min 1.4 km
+Avenida Lago De Guadalupe km 3.5 Caseta G, 52926 Ciudad
+---
+nada

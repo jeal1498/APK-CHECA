@@ -1,0 +1,11 @@
+# errores_lector 137 · Uber · 10.58 · diferencia
+# Respuesta correcta según la revisión (veredicto ia_bien).
+# Nota: km/min: OCR (l por 1, punto perdido, kmn)
+# Recogida: 4.1 km, 12 min
+$195.73
+$5.29/km est.
+12 min 4.l km
+lh 12 min • 32.9 km
+SỰ Viaje largo (60+ min)
+---
+tarifa=195.73 km=37 min=72

@@ -1,0 +1,10 @@
+# errores_lector 99 · Uber · 10.53 · rescate
+# Respuesta correcta según la revisión (veredicto ia_bien).
+# Nota: no entendida: el lector no sacó oferta
+# Recogida: 1.1 km, 4 min
+MXNZ4.06
+$5.29/km est.
+4 min (1.l km)
+b 25 min (12.9 km)
+---
+tarifa=68.24 km=14 min=29

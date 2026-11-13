@@ -1,0 +1,18 @@
+# errores_lector 897 · DiDi · 10.76 · diferencia
+# Respuesta correcta según revisión manual de las líneas (13 nov).
+# Nota: un «$7.61/km» que no es «est.» no debe cambiar los km; 2.8 + 16.1
+# Recogida: 2.8 km, 9 min
+$208.94
+s 1.1X-1.6X
+s 1.1X-1.5X
+s 1.1X-1,4X
+s 1.1X-1.5X)
+$7.61/km
+9 min (2.8 km)
+38 min (16.1 km)
+Aceptar $208.94
+$215.94
+$222.94
+$230.94
+---
+tarifa=208.94 km=18.9 min=47

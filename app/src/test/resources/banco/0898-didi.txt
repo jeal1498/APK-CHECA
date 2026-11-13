@@ -1,0 +1,12 @@
+# errores_lector 898 · DiDi · 10.76 · diferencia
+# Respuesta correcta según revisión manual de las líneas (13 nov).
+# Nota: dos tarjetas de DiDi; la primera es 1.6 + 6.1
+# Recogida: 1.6 km, 7 min
+$68.20
+• (7 min 1.6 km) Calle Rosas, Los Pinos, Maza
+(19 min 6.1 km) Emiliano Zapata, Centro, M
+$70.00+
+• (9 min 2.6 km) The Coffee, Puerta del Mar
+(30 min 12.1 km) Callejón J. Jesús, El Venad
+---
+tarifa=68.2 km=7.7 min=26

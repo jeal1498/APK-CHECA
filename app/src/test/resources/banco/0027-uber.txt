@@ -1,0 +1,10 @@
+# errores_lector 27 · Uber · 10.53 · diferencia
+# Respuesta correcta según la revisión (veredicto ia_bien).
+# Nota: km/min: OCR (l por 1, punto perdido, kmn)
+# Recogida: 1.5 km, 5 min
+$100.37
+$6.97/km est.
+5 min l.5 km
+32 min12.9 km
+---
+tarifa=100.37 km=14.4 min=37

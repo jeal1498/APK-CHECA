@@ -1,0 +1,14 @@
+# errores_lector 263 · DiDi · 10.53 · rescate
+# Respuesta correcta según la revisión (veredicto ia_bien).
+# Nota: no entendida: el lector no sacó oferta
+# Recogida: 2.3 km, 9 min
+$9
+X $74/hX $3.7/km
+$44.90
+o (9 min 2.3 km) Akach (Tabano)
+o (12 min 4.8 km) UQROO
+Aceptar $44.90
+$48.90 $49.90 $51.90
+$42.64
+---
+tarifa=44.9 km=7.1 min=21

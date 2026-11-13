@@ -1,0 +1,12 @@
+# errores_lector 230 · DiDi · 10.58 · diferencia
+# Respuesta correcta según la revisión (veredicto ia_bien).
+# Nota: tarifa: tomó contraoferta o el pop-up propio en vez de Aceptar/multiplicador
+# Recogida: 2.5 km, 9 min
+$44
+O (9 mın Z.5 Km) AKdCN (Tabano)
+o (12 min 4.8 km) UQRO0
+Aceptar $44.90
+$48.90 $49.90 $51.90
+$42.64
+---
+tarifa=44.9 km=7.3 min=21

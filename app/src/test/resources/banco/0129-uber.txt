@@ -1,0 +1,15 @@
+# errores_lector 129 · Uber · 10.53 · rescate
+# Respuesta correcta según la revisión (veredicto ia_bien).
+# Nota: no entendida: el lector no sacó oferta
+# Recogida: 1.1 km, 5 min
+$52
+RECHAZAR 4+$4
+X $136/h X $7.1/km
+$42.67
+$11.23/km est.
+O ldentidad verificada * 5.00 (1) 9 +$4.00 incluido
++$10.1l incluido para inicio de viaje prioritario
+5 min (1.l km)
+o 13 min (2.7 km)
+---
+tarifa=52 km=3.8 min=18

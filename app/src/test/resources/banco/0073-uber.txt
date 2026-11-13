@@ -1,0 +1,11 @@
+# errores_lector 73 · Uber · 10.53 · rescate
+# Respuesta correcta según la revisión (veredicto ia_bien).
+# Nota: no entendida: el lector no sacó oferta
+# Recogida: 1.4 km, 5 min
+$148.39
+$7.94/km est.
+2 5 min •1.4 km
+lh3 min •17.3 knm
+SỰ Viaje largo (60+ min)
+---
+tarifa=148.39 km=18.7 min=28

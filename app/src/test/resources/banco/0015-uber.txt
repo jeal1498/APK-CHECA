@@ -1,0 +1,11 @@
+# errores_lector 15 · Uber · 10.53 · diferencia
+# Respuesta correcta según el lector del teléfono (veredicto ia_mal).
+# Nota: lector · km/min: coincide con $/km est.
+# Recogida: 1.1 km, 5 min
+$34.79
+$ 84
+$8.09/km est.
+A 5 min •1.1 km
+10 min 3.2 km
+---
+tarifa=34.79 km=4.3 min=15

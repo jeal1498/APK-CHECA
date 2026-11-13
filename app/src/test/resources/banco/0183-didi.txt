@@ -1,0 +1,13 @@
+# errores_lector 183 · DiDi · 10.58 · diferencia
+# Respuesta correcta según la revisión (veredicto ia_bien).
+# Nota: tarifa: tomó contraoferta o el pop-up propio en vez de Aceptar/multiplicador
+# Recogida: 0.94 km, 6 min
+$61.61
+$56.61 1.6x
+6 min (941 m)
+18 min (3.2 km)
+Aceptar $56.61
+$63.61
+$65.61
+---
+tarifa=56.61 km=4.14 min=24

@@ -1,0 +1,14 @@
+# errores_lector 283 · DiDi · 10.58 · diferencia
+# Respuesta correcta según la revisión (veredicto ia_bien).
+# Nota: fantasma: no era oferta (mapa de calor, aviso, barra)
+$23
+$226.50
+4 1.3X-1.9X
+X $134/h |X $8.6/km
+$ 1.4X-2.0X
+4 1.4X-2.0X
+$ 1.2X-1.8X
+$29.07
+(4 min 778 m) Estafetas 46, Benito Juárez,
+---
+nada

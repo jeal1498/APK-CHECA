@@ -1,0 +1,18 @@
+# errores_lector 899 · DiDi · 10.76 · diferencia
+# Respuesta correcta según revisión manual de las líneas (13 nov).
+# Nota: dos tarjetas de DiDi; la primera es 1.5 + 15
+# Recogida: 1.5 km, 6 min
+$76.02
+• (6 min 1.5 km) Sevilla, Portales
+(34 min 15 km) Física, Las Palm.
+Aceptar $76.02
+$82.02
+$85.02
+$140.30 x1.4
+(8 min 2.2 km) Edzná, Letrán Va
+(54 min 19.9 km) Gladiola, Loma
+Aceptar $140.30
+$144.30
+$148.30
+---
+tarifa=76.02 km=16.5 min=40

@@ -1,0 +1,11 @@
+# errores_lector 65 · Uber · 10.53 · diferencia
+# Respuesta correcta según el lector del teléfono (veredicto ia_mal).
+# Nota: lector · km/min: coincide con $/km est.
+# Recogida: 1.6 km, 5 min
+$157.64
+$5.29/km est.
+e 5 min 1.6 km
+Cerrada Condominio 17 - Aragon
+43 min 28.2 km
+---
+tarifa=157.64 km=29.8 min=48

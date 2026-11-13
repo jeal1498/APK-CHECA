@@ -1,0 +1,15 @@
+# errores_lector 2 · Uber · 10.53 · diferencia
+# Respuesta correcta según el lector del teléfono (veredicto ia_mal).
+# Nota: lector · km/min: coincide con $/km est.
+# Recogida: 0.2 km, 1 min
+$55.35
+A 1-3 min
+-4 min
+a 1-5 min
+a 1-6 min
+$9.07/km est.
+l min•0.2 km
+Terminal 1, Puerta 6 - Aeropuerto
+12 min 5.9 km
+---
+tarifa=55.35 km=6.1 min=13

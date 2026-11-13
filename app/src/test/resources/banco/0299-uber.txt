@@ -1,0 +1,10 @@
+# errores_lector 299 · Uber · 10.58 · diferencia
+# Respuesta correcta según la revisión (veredicto ia_bien).
+# Nota: km/min: «l.2» = 1.2 y «9,2» = 9.2; 10.4 km
+# Recogida: 1.2 km, 3 min
+$51.70
+$4.97/km est.
+3 min l.2 km
+20 min• 9,2 km
+---
+tarifa=51.7 km=10.4 min=23

@@ -1,0 +1,9 @@
+# errores_lector 894 · DiDi · 10.75 · diferencia
+# Respuesta correcta según revisión manual de las líneas (13 nov).
+# Nota: navegación con el pop-up propio a la vista
+$21
+$420/h
+V $46.5/km
+3 min 448 m
+---
+nada

@@ -1,0 +1,11 @@
+# errores_lector 229 · DiDi · 10.58 · diferencia
+# Respuesta correcta según la revisión (veredicto ia_bien).
+# Nota: tarifa: tomó contraoferta o el pop-up propio en vez de Aceptar/multiplicador
+# Recogida: 0 km, 0 min
+$44,90
+O (12 min 4.3 Km) UQRO0
+Aceptar $44.90
+$48.90 $49.90 $51.90
+$42.64
+---
+tarifa=44.9 km=4.3 min=12

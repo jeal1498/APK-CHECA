@@ -1,0 +1,12 @@
+# errores_lector 900 · DiDi · 10.76 · diferencia
+# Respuesta correcta según revisión manual de las líneas (13 nov).
+# Nota: dos tarjetas de DiDi («$120.18 sx1.5»); la primera es 2.7 + 14.3
+# Recogida: 2.7 km, 10 min
+$120.18 sx1.5
+• (10 min 2.7 km) OXX0 Quintín Arauz - Perifé
+• (19 min 14.3 km) Fraccionamiento "El Coun
+$32.79 sx1.2
+• (5 min 833 m) Cerrada Plutarco Elías Calles
+• (10 min 3.4 km) A Toda Salsa! Plaza Las Am
+---
+tarifa=120.18 km=17 min=29

@@ -1,0 +1,16 @@
+# errores_lector 896 · DiDi · 10.76 · diferencia
+# Respuesta correcta según revisión manual de las líneas (13 nov).
+# Nota: recogida y viaje iguales (7 min, 2.3 km): son dos tramos, no uno repetido
+# Recogida: 2.3 km, 7 min
+$25.29
+$27.29
+s1.2x
+$0.99 de tarifa de gasolina
+• 7 min (2.3 km)
+7 min (2.3 km)
+Aceptar $25.29
+$29.29
+$28.29
+$31.29
+---
+tarifa=25.29 km=4.6 min=14

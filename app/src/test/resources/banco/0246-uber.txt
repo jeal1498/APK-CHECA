@@ -1,0 +1,9 @@
+# errores_lector 246 · Uber · 10.53 · diferencia
+# Respuesta correcta según la revisión (veredicto ia_bien).
+# Nota: fantasma: no era oferta (mapa de calor, aviso, barra)
+2.5 km
+-$3
+X $35/h |X $1.3/km
+13 min 5.1 km
+---
+nada
