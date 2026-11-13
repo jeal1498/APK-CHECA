@@ -42,6 +42,9 @@ class RutaService : AccessibilityService() {
     /** Dónde se vieron por última vez los tramos de cada oferta activa, y lecturas seguidas sin verlos. */
     private val tramosVistos = HashMap<String, List<Rect>>()
     private val sinVer = HashMap<String, Int>()
+    /** Zona de la última oferta mostrada de cada app y lecturas seguidas sin ver sus tramos (10.75). */
+    private val zonaFirma = HashMap<String, Rect?>()
+    private val sinVerFirma = HashMap<String, Int>()
 
     // ---------- Cascada de lectores (10.57) ----------
     /** Pop-up que sacó el lector de texto y espera la foto para confirmarse (sin IA si coinciden). */
@@ -399,12 +402,21 @@ class RutaService : AccessibilityService() {
         }
         // La misma oferta (con pequeñas variaciones del OCR) no vuelve a salir mientras siga en
         // pantalla: cada vez que se ve de nuevo se renueva el plazo de 60 s. Así, al cerrar el
-        // pop-up con la ✕ o por tiempo, no reaparece (parpadeo).
+        // pop-up con la ✕ o por tiempo, no reaparece (parpadeo). Cuando la oferta sale de
+        // pantalla se olvida antes ([olvidarIdas]) y una igual que llegue después sí avisa.
         val ahora = System.currentTimeMillis()
         ultimaFirma[clave]?.let { (o, t) ->
-            if (ahora - t < 60_000 && parecida(o, oferta)) { ultimaFirma[clave] = o to ahora; revisarZonaSiFalta(clave, lineas); return }
+            if (ahora - t < 60_000 && parecida(o, oferta)) {
+                ultimaFirma[clave] = o to ahora
+                zonaFirma[clave] = zona
+                sinVerFirma[clave] = 0
+                revisarZonaSiFalta(clave, lineas)
+                return
+            }
         }
         ultimaFirma[clave] = oferta to ahora
+        zonaFirma[clave] = zona
+        sinVerFirma[clave] = 0
 
         popups.getOrPut(clave) {
             Popup(this, prefs, WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY).also { p ->
@@ -665,6 +677,7 @@ class RutaService : AccessibilityService() {
      * Si el pop-up tapa donde estaba la oferta no se sabe si sigue: lo cierra su tiempo.
      */
     fun revisarSalida(tramos: List<Rect>) {
+        olvidarIdas(tramos)
         if (activas.isEmpty()) return
         val tapado = rectsPopups()
         for ((clave, par) in activas.entries.toList()) {
@@ -676,6 +689,29 @@ class RutaService : AccessibilityService() {
             val n = (sinVer[clave] ?: 0) + 1
             sinVer[clave] = n
             if (n >= LECTURAS_SIN_OFERTA) popups[clave]?.ocultar()
+        }
+    }
+
+    /**
+     * La memoria de «esta oferta ya salió» dura mientras la oferta siga en pantalla. Si en
+     * [LECTURAS_PARA_OLVIDAR] lecturas seguidas ya no hay tramos en su zona (sin un pop-up que
+     * los tape), se olvida: una oferta igual que llegue después vuelve a avisar sin esperar 60 s.
+     */
+    private fun olvidarIdas(tramos: List<Rect>) {
+        if (ultimaFirma.isEmpty()) return
+        val tapado = rectsPopups()
+        for (clave in ultimaFirma.keys.toList()) {
+            val zona = zonaFirma[clave]
+            // Con un pop-up encima (el suyo o el de la otra app) los tramos pueden estar tapados: no se cuenta.
+            if (tapado.any { zona == null || Rect.intersects(zona, it) }) continue
+            if (tramos.any { zona == null || zona.contains(it.centerX(), it.centerY()) }) { sinVerFirma[clave] = 0; continue }
+            val n = (sinVerFirma[clave] ?: 0) + 1
+            sinVerFirma[clave] = n
+            if (n >= LECTURAS_PARA_OLVIDAR) {
+                ultimaFirma.remove(clave)
+                zonaFirma.remove(clave)
+                sinVerFirma.remove(clave)
+            }
         }
     }
 
@@ -1004,6 +1040,8 @@ class RutaService : AccessibilityService() {
         private const val VIGILANTE_CADA = 5000L
         /** Lecturas seguidas sin ver la oferta para quitar su pop-up. */
         private const val LECTURAS_SIN_OFERTA = 2
+        /** Lecturas seguidas sin la oferta a la vista para olvidar que ya se mostró. */
+        private const val LECTURAS_PARA_OLVIDAR = 3
         /** De qué lector vino una oferta (se guarda en la revisión para comparar). */
         const val LECTOR_OCR = "ocr"
         const val LECTOR_TEXTO = "texto"

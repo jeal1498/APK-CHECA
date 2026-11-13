@@ -44,6 +44,9 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
     /** Muestras de brillo de la última imagen a la que se le hizo OCR (filtro de cambios). */
     private var huellaOcr: IntArray? = null
     private var saltosGate = 0
+    /** La última lectura entendió la oferta que había a la vista. */
+    @Volatile private var ultimaLeida = false
+    private var repetidas = 0
 
     /**
      * Analiza [bmp] (ya reducida; el lector la recicla). [ancho] y [alto] son el tamaño real
@@ -67,6 +70,16 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
             bmp.recycle()
             return true
         }
+        // Misma imagen que la que ya se leyó bien (10.75): el OCR daría lo mismo, no se repite.
+        // Es más estricto que el filtro de arriba y se lee de verdad cada REPE_MAX saltos.
+        if (hu != null && previa != null && ofertaEnPantalla && ultimaLeida && fallos == 0 &&
+            repetidas < REPE_MAX && parecidas(previa, hu, REPE_POR_MIL)
+        ) {
+            repetidas++
+            bmp.recycle()
+            return true
+        }
+        repetidas = 0
         saltosGate = 0
         huellaOcr = hu
         ocupado = true
@@ -140,6 +153,7 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
             }
         })
         ofertaEnPantalla = hayTramo
+        ultimaLeida = hayTramo && leyoPasada
         fallos = if (hayTramo && !leyoPasada) minOf(fallos + 1, 99) else 0
     }
 
@@ -173,6 +187,7 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
         return when {
             t.contains("uber") || t.contains("me interesa") || t.contains("/km (est") -> "Uber"
             t.contains("didi") || t.contains("pon tu precio") || t.contains("aceptar $") ||
+                t.contains("tarifa base din") ||
                 tramoEntreParentesis.containsMatchIn(t) -> "DiDi"
             else -> null
         }
@@ -247,12 +262,12 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
         out
     } catch (e: Exception) { null }
 
-    /** true si casi ningún punto cambió de brillo (menos de GATE_PORC %). */
-    private fun parecidas(a: IntArray, b: IntArray): Boolean {
+    /** true si casi ningún punto cambió de brillo (menos de [porMil] de cada mil). */
+    private fun parecidas(a: IntArray, b: IntArray, porMil: Int = GATE_PORC * 10): Boolean {
         if (a.size != b.size) return false
         var dif = 0
         for (k in a.indices) if (Math.abs(a[k] - b[k]) > GATE_DIF) dif++
-        return dif * 100 < a.size * GATE_PORC
+        return dif * 1000 < a.size * porMil
     }
 
     companion object {
@@ -266,6 +281,10 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
         /** …y la pantalla es «casi igual» si cambió menos de este % de puntos. */
         private const val GATE_PORC = 2
         private const val GATE_MAX = 3
+        /** Con una oferta ya leída: «misma imagen» si cambió menos de 5 de cada mil puntos… */
+        private const val REPE_POR_MIL = 5
+        /** …y como mucho se saltan 2 lecturas seguidas (1 s) antes de leer de verdad. */
+        private const val REPE_MAX = 2
         val tramoTexto get() = Tarjetas.tramoTexto
         /** «(9 min 2.6 km) Calle…»: tramo completo entre paréntesis, como en la ventana flotante de DiDi. */
         private val tramoEntreParentesis = Regex("""\(\s*\d+\s?min\s*[•·.]?\s*\d+(?:[.,]\d+)?\s?k?m\s*\)""")
