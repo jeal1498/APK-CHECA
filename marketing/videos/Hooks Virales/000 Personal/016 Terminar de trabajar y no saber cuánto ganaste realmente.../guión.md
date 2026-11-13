@@ -1,11 +1,11 @@
-# 016 — Terminar de trabajar y no saber cuánto ganaste realmente...
+# 016 — Terminar de trabajar y no saber cuánto ganaste...
 
 **Duración estimada:** 20–35 segundos
 
 **Versión:** Marca personal
 
 ### Guion
-Apagas el motor y te queda una duda: ¿cuánto dinero quedó para ti? No basta con sumar los pagos recibidos. Revisa lo que salió de tu bolsillo y el tiempo que dedicaste. Apunta tus números cada noche. **[Cierre]** Mañana tendrás una referencia mejor.
+Apagas el coche y te haces una pregunta: ¿cuánto dinero quedó para ti? No basta con sumar los pagos. También debes restar gasolina y apartar algo para el servicio del coche. Anota tus gastos al final del día. **[Cierre]** Si no haces esta cuenta, empieza hoy.
 
 ### Producción
-Grabar en primera persona. Priorizar opinión, experiencia y conversación con conductores; no convertirlo en un anuncio de Checa.
+Graba al terminar tu jornada, si es seguro hacerlo. Puedes mostrar tus propias cuentas sin enseñar datos privados.
