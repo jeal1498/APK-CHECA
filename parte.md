@@ -1,4 +1,4 @@
-# PARTE · 12 nov 2026 (noche)
+# PARTE · 13 nov 2026
 
 ## ✓ Decidido
 - Imagen de novedades para testers hecha (7 tarjetas, marca v2) y publicada en el grupo.
@@ -36,6 +36,9 @@
 - Seguridad de los datos con «Fotos» (recopiladas, no compartidas, no efímeras, opcional, Funciones de la app y Estadísticas) y Ubicación aproximada, **enviada junto con el AAB 152** (12 nov, confirmado por Eduardo).
 - AAB 152 (10.72) aprobado en «Alpha» (12 nov); falta que los conductores actualicen. Imagen de invitación a actualizar entregada (no va al repo).
 - Plan del lunes 16 nov hecho: `docs/plan-lunes-16-nov.md` (meta: coincidencia de 10.72 ≥ 85 %; 10.69 tuvo 72.8 %).
+- Análisis estático del APK de Ruta Rentable hecho (13 nov): captura cada 1–1.4 s y OCR, sin leer el texto por accesibilidad; no resta gasolina. Informe fuera del repo; no se copió código ni patrones.
+- 10.75 en `main` (compila, corrida 146): una oferta igual que vuelve a llegar sí avisa (la memoria se borra al salir de pantalla), menos OCR con la oferta ya leída y «Tarifa base dinámica» como señal de DiDi. La tarifa por altura de letra ya existía.
+- 10.76 en `main` (compila, corrida 148, https://github.com/jeal1498/APK-CHECA/actions/runs/43371008469): la navegación de DiDi ya no pasa como oferta cuando el OCR lee nuestro pop-up; la zona de un pop-up recién cerrado se tapa 2 s. Tres casos de prueba nuevos.
 
 ## … Falta
 - **16 nov (lunes):** ejecutar `docs/plan-lunes-16-nov.md`. Arranca con «Estado de la revisión»; luego función `ver-capturas` (enlaces temporales), clasificar las capturas, corregir los 3 patrones más frecuentes (10.73) y medir el lunes 23. Si hay menos de 30 capturas, esperar al miércoles.
@@ -47,6 +50,9 @@
 - Crashlytics: Eduardo crea el proyecto en Firebase con dos apps (`com.jeal1498.checa` y `com.karen.miruta`) y manda `google-services.json`; luego actualizar Seguridad de los datos (informes de fallos).
 - Tablero: confirmar si la letra de marca (Bricolage, DM Sans) se ve; página pública solo si la pide (necesita inicio de sesión propio por privacidad).
 - Fase 7 (Play Billing) antes del 1 feb 2027: necesita su «adelante» y una cuenta de Google admitida a su nombre.
+- Eduardo: probar la 10.76 yendo por un pasajero en DiDi; si sale pop-up, mandar la **primera** captura guardada (la de antes del pop-up). No se confirmó qué sacó el primero.
+- Tester con 10.72 (pop-up en navegación): que actualice; el arreglo aún no está en Play (falta AAB de la 10.76, con su autorización).
+- `CLAUDE.md` dice 10.68 y que Ruta Rentable nunca se descompiló: Eduardo decide si se corrige.
 
 ## ✗ No tocar
 - Publicar en Play Console sin su autorización.
