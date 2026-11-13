@@ -5,7 +5,7 @@
 **Versión:** Marca personal
 
 ### Guion
-El teléfono suena, miras la pantalla, dudas un instante y tienes que decidir rápido. Tener reglas personales para valorar pagos y recorridos ayuda a no depender solamente del impulso. **[Cierre]** Cuéntame cuál es tu método para elegir.
+Suena el teléfono. Miras la oferta. Tienes unos segundos para decidir y no siempre tienes todos los datos. Por eso ayuda tener claro qué pago te conviene, cuánto tiempo puedes dedicar y qué zonas te sirven. **[Cierre]** ¿Qué es lo primero que miras al recibir una oferta?
 
 ### Producción
-Grabar en primera persona. Priorizar opinión, experiencia y conversación con conductores; no convertirlo en un anuncio de Checa.
+Graba una escena sencilla con el teléfono y luego habla a cámara. No muestres datos personales.
