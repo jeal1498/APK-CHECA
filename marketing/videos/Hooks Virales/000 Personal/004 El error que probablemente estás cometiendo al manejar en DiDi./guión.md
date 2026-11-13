@@ -5,7 +5,7 @@
 **Versión:** Marca personal
 
 ### Guion
-**[A cámara]** Hay una costumbre que puede salirte cara: ver el monto, emocionarte y aceptar sin pensar en el recorrido. Antes de tocar la pantalla, pregúntate cuánto vas a conducir y cuánto tiempo te llevará. Esa pausa puede cambiar tu decisión. **[Cierre]** ¿Te ha pasado? Cuéntame.
+Hay una costumbre que puede salirte cara: ver el monto, emocionarte y aceptar sin pensar en el recorrido. Antes de tocar la pantalla, pregúntate cuánto vas a conducir y cuánto tiempo te llevará. **[Cierre]** ¿Te ha pasado? Cuéntame.
 
-### Nota de producción
-Grabar en primera persona y priorizar experiencia, opinión y conversación con otros conductores; no convertirlo en un anuncio de Checa.
+### Producción
+Grabar en primera persona. Priorizar opinión, experiencia y conversación con conductores; no convertirlo en un anuncio de Checa.

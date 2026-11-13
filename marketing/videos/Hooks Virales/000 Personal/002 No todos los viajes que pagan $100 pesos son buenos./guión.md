@@ -5,7 +5,7 @@
 **Versión:** Marca personal
 
 ### Guion
-**[A cámara]** Cien pesos pueden ser una buena oportunidad o una mala decisión. Todo depende del recorrido que tengas que hacer para cobrarlos. No compares servicios únicamente por el pago: considera la distancia, el tiempo y el gasto que implican. **[Cierre]** ¿Aceptarías cualquier viaje de cien pesos?
+Cien pesos pueden ser una buena oportunidad o una mala decisión. Todo depende del recorrido que tengas que hacer para cobrarlos. No compares servicios únicamente por el pago: considera distancia, tiempo y gasto. **[Cierre]** ¿Aceptarías cualquier viaje de cien pesos?
 
-### Nota de producción
-Grabar en primera persona y priorizar experiencia, opinión y conversación con otros conductores; no convertirlo en un anuncio de Checa.
+### Producción
+Grabar en primera persona. Priorizar opinión, experiencia y conversación con conductores; no convertirlo en un anuncio de Checa.

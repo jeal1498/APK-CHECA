@@ -5,7 +5,7 @@
 **Versión:** Marca personal
 
 ### Guion
-**[A cámara]** Puede que estés dejando dinero en el camino sin darte cuenta. Cuando aparece una solicitud, no basta con mirar la cantidad: piensa cuánto vas a recorrer y cuánto tiempo vas a invertir. Haz una pausa, compara esos datos con tus propios gastos y decide con criterio. **[Cierre]** ¿Qué revisas primero cuando te llega un servicio?
+Puede que estés dejando dinero en el camino sin notarlo. Cuando aparece un servicio, no mires únicamente la cantidad: piensa cuánto vas a recorrer y cuánto tiempo invertirás. Compara esos datos con tus gastos y decide con criterio. **[Cierre]** ¿Qué revisas primero cuando te llega una solicitud?
 
-### Nota de producción
-Grabar en primera persona y priorizar experiencia, opinión y conversación con otros conductores; no convertirlo en un anuncio de Checa.
+### Producción
+Grabar en primera persona. Priorizar opinión, experiencia y conversación con conductores; no convertirlo en un anuncio de Checa.

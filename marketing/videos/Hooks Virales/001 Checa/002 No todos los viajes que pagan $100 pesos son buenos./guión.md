@@ -5,7 +5,7 @@
 **Versión:** Checa
 
 ### Guion
-**[Mostrar dos ofertas ficticias]** Dos viajes pagan cien pesos, pero uno exige muchos más kilómetros y minutos. ¿Son igual de convenientes? No necesariamente. **[Mostrar Checa]** Mira las métricas de la solicitud y compáralas antes de aceptar. El monto no cuenta toda la historia. **[Cierre]** Descubre Checa y revisa cada oferta con más contexto.
+**[Pantalla: dos ofertas ficticias]** Ambas pagan cien pesos, pero una exige muchos más kilómetros y minutos. ¿Son igual de convenientes? No necesariamente. **[Checa en pantalla]** Mira las métricas de la solicitud y compáralas antes de aceptar. El monto no cuenta toda la historia. **[Cierre]** Analiza mejor cada oferta con Checa.
 
-### Nota de producción
-Usar una oferta de demostración o datos autorizados; identificar claramente los ejemplos ficticios y no prometer resultados garantizados.
+### Producción
+Mostrar la interfaz real de Checa cuando se mencione. Usar datos de prueba o autorizados; marcar los ejemplos ficticios. No prometer ganancias ni resultados garantizados.

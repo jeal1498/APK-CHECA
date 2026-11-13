@@ -1,0 +1,11 @@
+# 013 — Un viaje de $150 puede dejarte menos dinero que uno de $80. Te explico.
+
+**Duración estimada:** 20–35 segundos
+
+**Versión:** Marca personal
+
+### Guion
+Te pongo un reto: ¿prefieres cobrar ciento cincuenta o tomar una oportunidad de ochenta? No respondas todavía. Si el primer trayecto consume mucho más combustible y tiempo, la diferencia podría no compensar. **[Cierre]** La cifra más alta no siempre gana.
+
+### Producción
+Grabar en primera persona. Priorizar opinión, experiencia y conversación con conductores; no convertirlo en un anuncio de Checa.
