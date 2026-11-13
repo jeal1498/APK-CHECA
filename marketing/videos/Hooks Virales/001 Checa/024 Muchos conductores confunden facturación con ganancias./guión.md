@@ -1,11 +1,15 @@
-# 024 — Muchos conductores confunden facturación con ganancias.
+# Muchos conductores confunden facturación con ganancias.
 
-**Duración estimada:** 20–35 segundos
+**Duración estimada:** 25–35 segundos
 
-**Versión:** Checa
+## Guion
 
-### Guion
-Cobrar mil pesos no significa que hayas ganado mil. Facturación es lo que entra; ganancia es lo que queda después de cubrir los costos. **[Mostrar Checa]** Evalúa ofertas y resta los gastos reales para conocer tu resultado. **[Cierre]** Distingue esos dos números.
+Si hoy cobraste mil pesos, eso no significa que ganaste mil pesos.
 
-### Producción
-Mostrar la interfaz real de Checa cuando se mencione. Usar datos de prueba o autorizados; marcar los ejemplos ficticios. No prometer ganancias ni resultados garantizados.
+De ese monto sale la gasolina. Y también debes tomar en cuenta el mantenimiento, las llantas y el desgaste del coche.
+
+**[Mostrar una cuenta simple en pantalla]**
+
+Checa calcula el gasto estimado de gasolina por oferta. Los demás gastos debes sumarlos aparte.
+
+**Cierre:** Facturar no es lo mismo que ganar.
