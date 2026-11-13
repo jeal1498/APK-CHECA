@@ -1,11 +1,19 @@
-# 013 — Un viaje de $150 puede dejarte menos dinero que uno de $80. Te explico.
+# Un viaje de $150 puede dejarte menos dinero que uno de $80. Te explico.
 
-**Duración estimada:** 20–35 segundos
+**Duración estimada:** 30–40 segundos
 
-**Versión:** Checa
+## Guion
 
-### Guion
-¿Cómo puede convenir menos un viaje de ciento cincuenta que uno de ochenta? Si el primero requiere mucho más tiempo y recorrido, el pago mayor quizá no compense. **[Mostrar Checa]** Compara distancia y duración antes de decidir. **[Cierre]** ¿Cuál escogerías?
+Un viaje paga ciento cincuenta pesos y otro paga ochenta.
 
-### Producción
-Mostrar la interfaz real de Checa cuando se mencione. Usar datos de prueba o autorizados; marcar los ejemplos ficticios. No prometer ganancias ni resultados garantizados.
+¿El de ciento cincuenta es mejor? No siempre.
+
+**[Mostrar dos ofertas ficticias]**
+
+Si el primero pide muchos más kilómetros y más tiempo, puede gastar más gasolina y dejarte menos dinero.
+
+**[Mostrar comparación en Checa]**
+
+Por eso conviene comparar lo que cobras con la distancia, el tiempo y el gasto de gasolina.
+
+**Cierre:** Un monto alto no siempre es la mejor oferta.
