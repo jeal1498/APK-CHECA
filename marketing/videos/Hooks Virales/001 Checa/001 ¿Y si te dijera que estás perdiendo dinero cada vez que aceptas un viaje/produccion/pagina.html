@@ -3,25 +3,31 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{width:1080px;height:1920px;overflow:hidden;background:#1A1040;font-family:"Pix";font-weight:400;color:#F4F4EF}
 #via{position:absolute;left:0;top:0}
-#g{position:absolute;left:60px;top:200px;width:808px;height:960px}
+#g{position:absolute;left:136px;top:912px;width:808px;height:480px}
 #g>div{position:absolute;left:0;top:0;will-change:transform,opacity}
 svg{shape-rendering:crispEdges;display:block}
 .t{white-space:nowrap;text-shadow:8px 8px 0 #000}
 .pan{background:#1B1447;border:8px solid #F4F4EF;box-shadow:8px 8px 0 #000}
 .card{width:400px;height:520px;background:#F4F4EF;color:#0C0C10;border:8px solid #0C0C10;box-shadow:8px 8px 0 #000}
 .card>*{position:absolute}
-.tile{width:336px;height:144px;display:flex;align-items:center;gap:20px;padding:0 20px;font-size:26px}
+.tile{width:376px;height:136px;display:flex;align-items:center;gap:20px;padding:0 20px;font-size:26px}
 .pop{width:640px;background:#16161C;border:8px solid #3A3A45;box-shadow:8px 8px 0 #000;text-align:center}
 .mini{width:232px;height:264px;background:#16161C;border:8px solid;box-shadow:8px 8px 0 #000;display:flex;align-items:center;justify-content:center}
-#sub{position:absolute;left:0;top:1190px;width:928px;height:120px;display:flex;align-items:center;justify-content:center;font-size:54px;text-transform:uppercase;white-space:nowrap;-webkit-text-stroke:12px #000;paint-order:stroke fill;text-shadow:8px 8px 0 #000}
+#sub{position:absolute;left:0;top:804px;width:1080px;height:120px;z-index:5;display:flex;align-items:center;justify-content:center;font-size:54px;text-transform:uppercase;white-space:nowrap;-webkit-text-stroke:12px #000;paint-order:stroke fill;text-shadow:8px 8px 0 #000}
 #sub b{display:inline-block;margin:0 14px}
-#ej{position:absolute;left:0;top:1322px;width:928px;text-align:center;font-size:20px;letter-spacing:2px;color:#B9B3E6}
+#ej{position:absolute;left:0;top:1400px;width:1080px;text-align:center;font-size:20px;letter-spacing:2px;color:#B9B3E6}
+#camtxt{position:absolute;left:0;top:0;width:1080px;height:864px;background:#24435d;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:44px;line-height:1.6}
+#camtxt span{font-size:18px;color:#B9C7D6}
+#cam i{position:absolute;left:0;top:858px;width:1080px;height:8px;background:#FACC15}
 </style></head><body>
 <svg id="via" width="1080" height="1920" viewBox="0 0 1080 1920"></svg>
+<div id="camtxt">TU CAMARA<span>45 % DE LA PANTALLA</span></div>
+<div id="cam"><i id="li"></i><i id="ld"></i></div>
 <div id="g"></div><div id="sub"></div><div id="ej">NUMEROS DE EJEMPLO</div>
 <script src="palabras.js"></script>
 <script>
-// CHECA · Hooks Virales 001 · estilo Pixel Art (todo en cuadrícula de 8 px). A pantalla completa, sin cámara.
+// CHECA · Hooks Virales 001 · estilo Pixel Art (todo en cuadrícula de 8 px). Eduardo a cámara en el 45 % de arriba; gráficos centrados en el 55 % de abajo.
+if(location.search.includes('llave')){const c=document.getElementById('camtxt');c.innerHTML='';c.style.background='#FF00FF'}
 const Y='#FACC15',R='#EF4444',V='#22C55E',H='#F4F4EF',K='#0C0C10',GR='#A3A3AD';
 const P=D.palabras,TOTAL=D.total,norm=w=>w.toLowerCase().replace(/[¿?¡!.,:;]/g,'');
 function W(k){let[w,n]=k.split('#');n=+(n||0);for(const p of P)if(norm(p[0])===w&&n--===0)return p[1];throw new Error('no está la palabra: '+k)}
@@ -45,13 +51,13 @@ const moneda=u=>pix(SP.moneda,{a:'#7A5500',b:Y,c:'#FFF3B0',d:'#D9A80F'},u);
 const s2=W('cuando')-.12,s3=W('también')-.12,s4=W('con#1')-.12,s5=W('porque')-.12,s6=W('tu')-.12;
 
 // ── 1 · «¿…algunos viajes te dejan mucho menos dinero del que piensas?»  ACCIÓN: una pila alta de 8 monedas pierde 5.
-C('<div class="t" style="width:808px;text-align:center;font-size:56px">ALGUNOS VIAJES</div>',0,s2+.15,{fx:(t,d)=>{d.style.transform='translateY(16px)';d.style.opacity=cl((s2+.15-t)/.15)}});
-for(let k=0;k<8;k++){const y0=648-k*72,a=W('mucho')+(7-k)*.13;
- C(moneda(18),0,k<3?W('oferta'):a+.7,{z:10-k,fx:(t,d)=>{let x=332,y=y0,o=1,s=1;
-  if(k>=3){const p=cl((t-a)/.6);x+=q8(260*p*(k%2?1:-1));y+=q8(-140*p+700*p*p);o=1-cl((p-.7)/.3)}
-  else{const p=A(t,s2,.5);x=q8(mix(332,236,p));y=q8(mix(y0,238,p));s=mix(1,.4,p);o=1-cl((t-W('oferta')+.25)/.2)}
+C('<div class="t" style="font-size:60px;line-height:1.35">ALGUNOS<br>VIAJES</div>',0,s2+.15,{fx:(t,d)=>{d.style.transform='translate(264px,48px)';d.style.opacity=cl((s2+.15-t)/.15)}});
+for(let k=0;k<8;k++){const y0=376-k*44,a=W('mucho')+(7-k)*.13;
+ C(moneda(11),0,k<3?W('oferta'):a+.7,{z:10-k,fx:(t,d)=>{let x=88,y=y0,o=1,s=1;
+  if(k>=3){const p=cl((t-a)/.6);x+=q8(-90*p);y+=q8(-90*p+560*p*p);o=1-cl((p-.7)/.3)}
+  else{const p=A(t,s2,.5);x=q8(mix(88,64,p));y=q8(mix(y0,120,p));s=mix(1,.6,p);o=1-cl((t-W('oferta')+.25)/.2)}
   d.style.transform='translate('+x+'px,'+y+'px) scale('+s+')';d.style.opacity=o}})}
-C('<div class="t" style="width:808px;text-align:center;font-size:60px"><span style="color:'+R+'">MENOS</span> DINERO</div>',W('menos'),s2+.15,{fx:(t,d)=>{const p=A(t,W('menos'),.25);d.style.transform='translateY('+q8(848+24*(1-p))+'px)';d.style.opacity=Math.min(cl((t-W('menos'))/.1),cl((s2+.15-t)/.15))}});
+C('<div class="t" style="font-size:64px;line-height:1.35"><span style="color:'+R+'">MENOS</span><br>DINERO</div>',W('menos'),s2+.15,{fx:(t,d)=>{const p=A(t,W('menos'),.25);d.style.transform='translate(264px,'+q8(256+24*(1-p))+'px)';d.style.opacity=Math.min(cl((t-W('menos'))/.1),cl((s2+.15-t)/.15))}});
 
 // ── 2 · «Cuando recibes una oferta, no basta con mirar cuánto vas a cobrar.»  ACCIÓN: las monedas se vuelven la oferta; un ojo mira solo el precio.
 const card=C('<div class="card"><div style="left:20px;top:20px;padding:8px 12px;background:#0C0C10;color:#F4F4EF;font-size:22px">VIAJE</div>'
@@ -59,18 +65,18 @@ const card=C('<div class="card"><div style="left:20px;top:20px;padding:8px 12px;
  +'<div style="left:28px;top:270px;font-size:22px"><span class="m">6 min</span> · <span class="k">2.1 km</span></div>'
  +'<div style="left:28px;top:330px;font-size:21px"><span class="m">24 min</span> · <span class="k">11.4 km</span></div>'
  +'<div style="left:20px;right:20px;bottom:20px;height:80px;background:#0C0C10;color:#F4F4EF;font-size:28px;line-height:80px;text-align:center">ACEPTAR</div></div>',W('oferta')-.3,s5+.3,{fx:(t,d)=>{
-  const e=A(t,W('oferta')-.3,.4),l=A(t,s3,.45),m=A(t,s4,.45),f=A(t,s5,.3);let x=mix(204,16,l),y=mix(40,40,l),s=mix(.3,1,e);
-  x=mix(x,270,m);y=mix(y,0,m);s=mix(s,.5,m);d.style.transformOrigin='0 0';d.style.transform='translate('+q8(x)+'px,'+q8(y)+'px) scale('+s+')';d.style.opacity=Math.min(cl((t-W('oferta')+.3)/.12),1-f)}});
+  const e=A(t,W('oferta')-.3,.4),m=A(t,s4,.45),f=A(t,s5,.3);let x=24,y=mix(120,8,e),s=mix(.3,.88,e);
+  x=mix(x,0,m);y=mix(y,136,m);s=mix(s,.4,m);d.style.transformOrigin='0 0';d.style.transform='translate('+q8(x)+'px,'+q8(y)+'px) scale('+s+')';d.style.opacity=Math.min(cl((t-W('oferta')+.3)/.12),1-f)}});
 const precio=card.querySelector('#precio'),ks=card.querySelectorAll('.k'),ms=card.querySelectorAll('.m');
 FX.push(t=>{const on=t>=W('cuánto')&&t<s3;precio.style.borderColor=on?Y:'transparent';precio.style.background=on?'#FDE98A':'transparent';precio.style.opacity=t>=s3+.3&&t<s4?.35:1;
  ks.forEach(e=>e.style.background=t>=W('kilómetros')?Y:'transparent');ms.forEach(e=>e.style.background=t>=W('tiempo')?Y:'transparent')});
-C(pix(SP.ojo,{a:H,b:Y},16),W('mirar'),s3,{fx:(t,d)=>{const p=A(t,W('mirar'),.3);d.style.transform='translate('+q8(mix(760,624,p))+'px,104px)';d.style.opacity=Math.min(cl((t-W('mirar'))/.1),cl((s3-t)/.12))}});
-C('<div class="t" style="width:808px;display:flex;justify-content:center;align-items:center;gap:28px;font-size:72px">'+pix(SP.x,{a:R},12)+'NO BASTA</div>',W('no'),s3,{fx:(t,d)=>{const p=A(t,W('no'),.25);d.style.transform='translateY('+q8(640+24*(1-p))+'px) scale('+(1+.06*Math.sin(Math.PI*p))+')';d.style.opacity=Math.min(cl((t-W('no'))/.1),cl((s3-t)/.12))}});
+C(pix(SP.ojo,{a:H,b:Y},14),W('mirar'),s3,{fx:(t,d)=>{const p=A(t,W('mirar'),.3);d.style.transform='translate('+q8(mix(600,416,p))+'px,96px)';d.style.opacity=Math.min(cl((t-W('mirar'))/.1),cl((s3-t)/.12))}});
+C('<div class="t" style="display:flex;align-items:center;gap:24px;font-size:64px;line-height:1.3">'+pix(SP.x,{a:R},12)+'<div>NO<br>BASTA</div></div>',W('no'),s3,{fx:(t,d)=>{const p=A(t,W('no'),.25);d.style.transform='translate(408px,'+q8(256+24*(1-p))+'px)';d.style.opacity=Math.min(cl((t-W('no'))/.1),cl((s3-t)/.12))}});
 
-// ── 3 · «También cuentan los kilómetros, el tiempo y la gasolina.»  ACCIÓN: la oferta se hace a un lado y de ella salen los tres datos.
-const TY=[40,216,392],TW=['kilómetros','tiempo','gasolina'],TN=['KM','TIEMPO','GASOLINA'],TS=[SP.pin,SP.reloj,SP.bomba],DE=[[230,330],[130,300],[220,470]];
+// ── 3 · «También cuentan los kilómetros, el tiempo y la gasolina.»  ACCIÓN: de la oferta salen los tres datos.
+const TY=[8,160,312],TW=['kilómetros','tiempo','gasolina'],TN=['KM','TIEMPO','GASOLINA'],TS=[SP.pin,SP.reloj,SP.bomba],DE=[[220,250],[90,240],[200,400]];
 TW.forEach((w,k)=>{const a=W(w);C('<div class="pan tile">'+pix(TS[k],{a:Y,b:K},8)+TN[k]+'</div>',a,W('checa')+.35,{z:3,fx:(t,d)=>{const p=A(t,a,.35),m=A(t,W('checa')-.1,.4);
-  let x=mix(DE[k][0],456,p),y=mix(DE[k][1],TY[k],p),s=mix(.2,1,p);x=mix(x,236,m);y=mix(y,560,m);s=mix(s,.25,m);
+  let x=mix(DE[k][0],416,p),y=mix(DE[k][1],TY[k],p),s=mix(.2,1,p);x=mix(x,420,m);y=mix(y,200,m);s=mix(s,.25,m);
   d.style.transformOrigin='0 0';d.style.transform='translate('+q8(x)+'px,'+q8(y)+'px) scale('+s+')';d.style.opacity=Math.min(cl((t-a)/.1),1-cl((m-.6)/.4))}})});
 
 // ── 4 · «Con Checa puedes ver datos clave de cada oferta antes de tomar una decisión.»  ACCIÓN: los tres datos se funden en el pop-up de Checa, que da el veredicto.
@@ -80,39 +86,39 @@ const pop=C('<div class="pop"><div id="ph" style="padding-top:28px;font-size:40p
  +'<div style="font-size:128px;line-height:1.35">$58</div>'
  +'<div style="display:flex;justify-content:center;gap:20px;font-size:30px"><span class="me">$170/h</span><span style="color:#55556A">|</span><span class="me">$6.3/km</span></div>'
  +'<div style="padding:26px 0 30px;font-size:24px;color:'+GR+'">30 min (13.5 km) total</div></div>',W('checa')-.05,s5+.5,{z:4,fx:(t,d)=>{
-  const a=W('checa')-.05,p=A(t,a,.4),m=A(t,s5,.5),x=mix(84,20,m),y=mix(mix(400,300,p),300,m),s=mix(mix(.3,1,p),.36,m);
+  const a=W('checa')-.05,p=A(t,a,.4),m=A(t,s5,.5),x=mix(176,24,m),y=mix(mix(96,40,p),184,m),s=mix(mix(.3,.96,p),.36,m);
   d.style.transformOrigin=m>0?'0 0':'50% 50%';d.style.transform='translate('+q8(x)+'px,'+q8(y)+'px) scale('+(s+.04*Math.sin(Math.PI*cl((t-W('decisión'))/.35)))+')';d.style.opacity=Math.min(cl((t-a)/.1),1-cl((m-.75)/.25))}});
 const ph=pop.querySelector('#ph'),pp=pop.firstChild,mes=pop.querySelectorAll('.me');
 FX.push(t=>{const dato=t>=W('datos'),dec=t>=W('decisión');mes.forEach(e=>{e.style.color=dato?R:GR;e.textContent=(dato?'X ':'')+e.textContent.replace('X ','')});
  ph.textContent=dec?'RECHAZAR':'···';ph.style.color=dec?R:GR;pp.style.borderColor=dec?R:'#3A3A45'});
 
 // ── 5 · «Porque no se trata de aceptar más viajes. Se trata de elegir mejor.»  ACCIÓN: el pop-up se vuelve una de tres ofertas; las dos malas caen y la buena crece.
-const MX=[20,288,556],MA=[s5+.3,W('más'),W('viajes#1')],el=W('elegir');
+const MX=[24,288,552],MA=[s5+.3,W('más'),W('viajes#1')],el=W('elegir');
 [0,1,2].forEach(k=>C('<div class="mini" style="border-color:'+(k<2?R:V)+'">'+(k<2?pix(SP.x,{a:R},18):pix(SP.ok,{a:V},18))+'</div>',MA[k],k<2?el+.8:s6+.45,{z:k==2?5:2,fx:(t,d)=>{
-  const p=A(t,MA[k],.3),f=cl((t-el-(k*.12))/.6);let x=MX[k],y=300,s=mix(.6,1,p),o=cl((t-MA[k])/.1);
-  if(k<2&&t>=el){y+=q8(900*f*f);o=1-cl((f-.6)/.4)}
-  if(k==2){const c=A(t,el+.1,.45),z=A(t,s6,.45);x=mix(x,288,c);y=mix(y,330,c);s=mix(s,1.5,c);x=mix(x,288,z);y=mix(y,250,z);s=mix(s,.9,z);o=Math.min(o,1-cl((z-.6)/.4))}
+  const p=A(t,MA[k],.3),f=cl((t-el-(k*.12))/.6);let x=MX[k],y=184,s=mix(.6,1,p),o=cl((t-MA[k])/.1);
+  if(k<2&&t>=el){y+=q8(600*f*f);o=1-cl((f-.6)/.4)}
+  if(k==2){const c=A(t,el+.1,.45),z=A(t,s6,.45);x=mix(x,288,c);y=mix(y,168,c);s=mix(s,1.15,c);x=mix(x,8,z);y=mix(y,104,z);s=mix(s,.9,z);o=Math.min(o,1-cl((z-.6)/.4))}
   d.style.transform='translate('+q8(x)+'px,'+q8(y)+'px) scale('+s+')';d.style.opacity=o}}));
 C('<div class="t" style="width:808px;text-align:center;font-size:64px;position:relative">MAS VIAJES<div id="tacha" style="position:absolute;left:76px;top:24px;height:16px;background:'+R+';box-shadow:8px 8px 0 #000"></div></div>',W('más'),el,{fx:(t,d)=>{const p=A(t,W('más'),.25);
-  d.style.transform='translateY('+q8(96+24*(1-p))+'px)';d.style.opacity=Math.min(cl((t-W('más'))/.1),cl((el-t)/.12));d.querySelector('#tacha').style.width=q8(656*cl((t-W('viajes#1')-.2)/.25))+'px'}});
-C('<div class="t" style="width:808px;text-align:center;font-size:64px">ELEGIR <span style="color:'+V+'">MEJOR</span></div>',el,s6+.1,{fx:(t,d)=>{const p=A(t,el,.25);d.style.transform='translateY('+q8(96+24*(1-p))+'px)';d.style.opacity=Math.min(cl((t-el)/.1),cl((s6+.1-t)/.12))}});
+  d.style.transform='translateY('+q8(48+24*(1-p))+'px)';d.style.opacity=Math.min(cl((t-W('más'))/.1),cl((el-t)/.12));d.querySelector('#tacha').style.width=q8(656*cl((t-W('viajes#1')-.2)/.25))+'px'}});
+C('<div class="t" style="width:808px;text-align:center;font-size:64px">ELEGIR <span style="color:'+V+'">MEJOR</span></div>',el,s6+.1,{fx:(t,d)=>{const p=A(t,el,.25);d.style.transform='translateY('+q8(48+24*(1-p))+'px)';d.style.opacity=Math.min(cl((t-el)/.1),cl((s6+.1-t)/.12))}});
 
 // ── 6 · «Tu trabajo vale. Asegúrate de que cada viaje también.»  ACCIÓN: la oferta buena se vuelve el semáforo de Checa; se encienden rojo, ámbar y verde con ✓.
 const LUZ=['tu','trabajo','vale'];
 C('<div id="sem"></div>',s6+.2,1e9,{fx:(t,d)=>{const on=k=>t>=W(LUZ[k]),r=on(0)?R:'#4A1E1E',a=on(1)?Y:'#4A3F12',v=on(2)?V:'#123D22';
   const rows=['.kkkkkkk.','kkkkkkkkk'];[['r'],['a'],['v']].forEach(([c],i)=>{for(let j=0;j<5;j++)rows.push('kk'+(i==2&&on(2)?['vvvvw','vvvww','wvwwv','wwwvv','vwvvv'][j]:c.repeat(5))+'kk');rows.push('kkkkkkkkk')});rows.push('.kkkkkkk.');
-  d.firstChild.innerHTML=pix(rows,{k:'#16161C',r,a,v,w:H},24);const p=A(t,s6+.2,.4);d.style.transform='translate(296px,'+q8(mix(120,24,p))+'px) scale('+mix(.5,1,p)+')';d.style.transformOrigin='50% 50%';d.style.opacity=cl((t-s6-.2)/.15)}});
-C('<div class="t" style="width:808px;text-align:center;font-size:48px">TU TRABAJO <span style="color:'+V+'">VALE</span></div>',W('tu'),W('cada#1'),{fx:(t,d)=>{d.style.transform='translateY(608px)';d.style.opacity=Math.min(cl((t-W('tu'))/.1),cl((W('cada#1')-t)/.12))}});
-C('<div class="t" style="width:808px;text-align:center;font-size:42px">CADA VIAJE <span style="color:'+V+'">TAMBIEN</span></div>',W('cada#1'),1e9,{fx:(t,d)=>{d.style.transform='translateY(608px)';d.style.opacity=cl((t-W('cada#1'))/.1)}});
-C('<div class="t" style="width:808px;text-align:center;font-size:110px;letter-spacing:4px">CHECA</div>',W('cada#1'),1e9,{fx:(t,d)=>{const p=A(t,W('cada#1'),.3);d.style.transform='translateY('+q8(736+24*(1-p))+'px)';d.style.opacity=cl((t-W('cada#1'))/.1)}});
+  d.firstChild.innerHTML=pix(rows,{k:'#16161C',r,a,v,w:H},16);const p=A(t,s6+.2,.4);d.style.transform='translate(56px,'+q8(mix(96,48,p))+'px) scale('+mix(.5,1,p)+')';d.style.transformOrigin='50% 50%';d.style.opacity=cl((t-s6-.2)/.15)}});
+C('<div class="t" style="font-size:52px;line-height:1.4">TU TRABAJO<br><span style="color:'+V+'">VALE</span></div>',W('tu'),W('cada#1'),{fx:(t,d)=>{d.style.transform='translate(256px,64px)';d.style.opacity=Math.min(cl((t-W('tu'))/.1),cl((W('cada#1')-t)/.12))}});
+C('<div class="t" style="font-size:52px;line-height:1.4">CADA VIAJE<br><span style="color:'+V+'">TAMBIEN</span></div>',W('cada#1'),1e9,{fx:(t,d)=>{d.style.transform='translate(256px,64px)';d.style.opacity=cl((t-W('cada#1'))/.1)}});
+C('<div class="t" style="font-size:100px;letter-spacing:4px">CHECA</div>',W('cada#1'),1e9,{fx:(t,d)=>{const p=A(t,W('cada#1'),.3);d.style.transform='translate(256px,'+q8(280+24*(1-p))+'px)';d.style.opacity=cl((t-W('cada#1'))/.1)}});
 
 // ── fondo: noche en pixel, estrellas que parpadean, luna, nubes moradas, ciudad con ventanas encendidas y un auto que pasa
 const via=document.getElementById('via'),rnd=n=>{const x=Math.sin(n*127.1)*43758.5453;return x-Math.floor(x)};
-const EDI=Array.from({length:11},(_,i)=>({x:i*104-24,w:88+q8(rnd(i)*24),h:296+q8(rnd(i+9)*240),c:i%2?'#120C30':'#0B071F'}));
-function fondo(t){let h='';['#1A1040','#20144C','#271A5A','#2E2068','#352676','#3B2C84'].forEach((c,i)=>h+='<rect y="'+i*250+'" width="1080" height="260" fill="'+c+'"/>');
- for(let i=0;i<70;i++){const o=.35+.65*Math.abs(Math.sin(t*1.2+i*1.7));h+='<rect x="'+q8(rnd(i)*1080)+'" y="'+q8(rnd(i+50)*1350)+'" width="8" height="8" fill="#F4F4EF" opacity="'+(o>.6?1:.35)+'"/>'}
- h+='<g transform="translate(880,40)">'+pix(SP.luna,{a:'#FFF3B0',b:'#D9C777'},14).replace(/<\/?svg[^>]*>/g,'')+'</g>';
- [[0,1220,7,10],[500,1300,5,6],[900,1180,6,14]].forEach(([x,y,v,u])=>h+='<g transform="translate('+(q8((x+t*v)%1300)-160)+','+y+')" opacity=".9">'+pix(SP.nube,{a:'#9B7BE8',b:'#7A5CC9'},u).replace(/<\/?svg[^>]*>/g,'')+'</g>');
+const EDI=Array.from({length:11},(_,i)=>({x:i*104-24,w:88+q8(rnd(i)*24),h:192+q8(rnd(i+9)*208),c:i%2?'#120C30':'#0B071F'}));
+function fondo(t){let h='';['#1A1040','#20144C','#271A5A','#2E2068','#352676','#3B2C84'].forEach((c,i)=>h+='<rect y="'+(864+i*136)+'" width="1080" height="400" fill="'+c+'"/>');
+ for(let i=0;i<70;i++){const o=.35+.65*Math.abs(Math.sin(t*1.2+i*1.7));h+='<rect x="'+q8(rnd(i)*1080)+'" y="'+(872+q8(rnd(i+50)*640))+'" width="8" height="8" fill="#F4F4EF" opacity="'+(o>.6?1:.35)+'"/>'}
+ h+='<g transform="translate(952,888)">'+pix(SP.luna,{a:'#FFF3B0',b:'#D9C777'},14).replace(/<\/?svg[^>]*>/g,'')+'</g>';
+ [[0,1420,7,10],[500,1470,5,6],[900,1400,6,12]].forEach(([x,y,v,u])=>h+='<g transform="translate('+(q8((x+t*v)%1300)-160)+','+y+')" opacity=".9">'+pix(SP.nube,{a:'#9B7BE8',b:'#7A5CC9'},u).replace(/<\/?svg[^>]*>/g,'')+'</g>');
  EDI.forEach((e,i)=>{const y=1848-e.h;h+='<rect x="'+e.x+'" y="'+y+'" width="'+e.w+'" height="'+e.h+'" fill="'+e.c+'"/>';
   for(let yy=y+24;yy<1824;yy+=32)for(let xx=e.x+16;xx<e.x+e.w-16;xx+=24){const r=rnd(xx*3.1+yy*7.3+i);if(r>.42){const par=r>.93&&Math.sin(t*2+xx)>0;h+='<rect x="'+xx+'" y="'+yy+'" width="8" height="16" fill="'+(par?'#7A5500':'#FACC15')+'"/>'}}});
  h+='<rect y="1848" width="1080" height="72" fill="#07050F"/>';for(let k=0;k<8;k++)h+='<rect x="'+(k*160+40)+'" y="1880" width="64" height="8" fill="#55508A"/>';
@@ -128,7 +134,10 @@ function subt(t){let i=-1;GRU.forEach((c,k)=>{if(t>=c[0][1]-.04)i=k});
  let act=null;GRU[i].forEach(p=>{if(t>=p[1]-.04)act=p});if(act&&t>=act[2]+.05)act=null;
  sub.innerHTML=GRU[i].map(p=>'<b style="color:'+(p===act?(CLAVE[norm(p[0])]||Y):H)+'">'+p[0].replace(/[.,]/g,'').normalize('NFD').replace(/[\u0300-\u036f]/g,'')+'</b>').join('')}
 const ej=document.getElementById('ej');
+// la raya amarilla de la frontera se abre para dejar pasar el subtítulo
+function raya(){const b=sub.children,li=document.getElementById('li'),ld=document.getElementById('ld');if(!b.length){li.style.width='1080px';ld.style.width='0';return}
+ const a=b[0].getBoundingClientRect().left-24,z=b[b.length-1].getBoundingClientRect().right+24;li.style.width=q8(Math.max(0,a))+'px';ld.style.left=q8(z)+'px';ld.style.width=Math.max(0,1080-q8(z))+'px'}
 window.seek=t=>{for(const{d,ini,fin,o}of IT){const on=t>=ini&&t<fin;d.style.display=on?'':'none';if(on)o.fx(t,d)}
- FX.forEach(f=>f(t));subt(t);fondo(t);ej.style.opacity=t>=W('oferta')-.3&&t<s5+.3?1:0};
+ FX.forEach(f=>f(t));subt(t);fondo(t);raya();ej.style.opacity=t>=W('oferta')-.3&&t<s5+.3?1:0};
 window.TOTAL=TOTAL;seek(+(new URLSearchParams(location.search).get('t')||0));
 </script></body></html>
