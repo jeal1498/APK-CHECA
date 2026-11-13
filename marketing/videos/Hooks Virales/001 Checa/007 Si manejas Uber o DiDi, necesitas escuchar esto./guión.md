@@ -1,11 +1,17 @@
-# 007 — Si manejas Uber o DiDi, necesitas escuchar esto.
+# Si manejas Uber o DiDi, necesitas escuchar esto.
 
-**Duración estimada:** 20–35 segundos
+**Duración estimada:** 25–35 segundos
 
-**Versión:** Checa
+## Guion
 
-### Guion
-Si trabajas con Uber o DiDi, escucha esto: el pago que aparece no es toda la decisión. Distancia, duración y costos también importan. **[Mostrar Checa]** La app te ayuda a leer los indicadores de la oferta con más claridad. **[Cierre]** Conduce con información y comparte este video.
+Si manejas Uber o DiDi, tu tiempo tiene un valor.
 
-### Producción
-Mostrar la interfaz real de Checa cuando se mencione. Usar datos de prueba o autorizados; marcar los ejemplos ficticios. No prometer ganancias ni resultados garantizados.
+Cada viaje ocupa minutos, gasolina y kilómetros de tu coche. Y si no tomas eso en cuenta, puedes pasar el día trabajando sin saber cuánto te quedó.
+
+**[Mostrar Checa en pantalla]**
+
+Checa te ayuda a analizar las ofertas antes de aceptarlas y a comparar sus datos.
+
+Haz cuentas antes de decir que sí.
+
+**Cierre:** Tu trabajo vale. Asegúrate de que cada viaje también.
