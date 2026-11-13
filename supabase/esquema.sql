@@ -748,3 +748,52 @@ on conflict (id) do nothing;
 drop policy if exists "subir capturas" on storage.objects;
 create policy "subir capturas" on storage.objects
   for insert to authenticated with check (bucket_id = 'capturas');
+
+-- 10.77: reporte «Leyó mal» del conductor (errores_lector.tipo = 'reporte', sin IA: `ia` va vacío)
+-- y tablero de calidad del lector por versión de la app. Una fila por versión:
+--   revisadas / coinciden: lecturas que revisó la IA y cuántas dieron lo mismo (no prueba que estén bien);
+--   fantasmas: pop-ups donde la revisión dijo «no era oferta»; rescates: ofertas que el lector no entendió;
+--   reportes: «Leyó mal» de los conductores; fallas_confirmadas: casos con veredicto ia_bien (falló el lector);
+--   sin_veredicto: casos aún sin revisar (mientras haya muchos, fallas_por_100 queda corto);
+--   sin_revisar_tope: lecturas que no se revisaron por el tope diario de la cuenta.
+create or replace view public.calidad_version with (security_invoker = on) as
+with r as (
+  select version,
+         count(distinct usuario) as conductores,
+         count(*) filter (where ok and modo <> 'rescate') as revisadas,
+         count(*) filter (where ok and modo <> 'rescate' and coincide) as coinciden,
+         count(*) filter (where error = 'tope_diario') as sin_revisar_tope,
+         round((percentile_cont(0.5) within group (order by ms_popup) filter (where ms_popup >= 0))::numeric) as ms_popup,
+         min(creado) as desde, max(creado) as hasta
+  from public.revisiones group by 1
+), e as (
+  select version,
+         count(*) filter (where tipo = 'diferencia') as diferencias,
+         count(*) filter (where tipo = 'diferencia' and ia->>'oferta' = 'false') as fantasmas,
+         count(*) filter (where tipo = 'rescate') as rescates,
+         count(*) filter (where tipo = 'desacuerdo') as desacuerdos,
+         count(*) filter (where tipo = 'reporte') as reportes,
+         count(*) filter (where veredicto = 'ia_bien') as fallas_confirmadas,
+         count(*) filter (where veredicto is null and tipo <> 'reporte') as sin_veredicto
+  from public.errores_lector group by 1
+)
+select version,
+       coalesce(r.conductores, 0) as conductores,
+       coalesce(r.revisadas, 0) as revisadas,
+       coalesce(r.coinciden, 0) as coinciden,
+       round(100.0 * r.coinciden / nullif(r.revisadas, 0), 1) as pct_coincide,
+       coalesce(e.diferencias, 0) as diferencias,
+       coalesce(e.fantasmas, 0) as fantasmas,
+       coalesce(e.rescates, 0) as rescates,
+       coalesce(e.desacuerdos, 0) as desacuerdos,
+       coalesce(e.reportes, 0) as reportes,
+       coalesce(e.fallas_confirmadas, 0) as fallas_confirmadas,
+       coalesce(e.sin_veredicto, 0) as sin_veredicto,
+       round(100.0 * e.fallas_confirmadas / nullif(r.revisadas, 0), 1) as fallas_por_100,
+       round(100.0 * e.reportes / nullif(r.revisadas, 0), 1) as reportes_por_100,
+       coalesce(r.sin_revisar_tope, 0) as sin_revisar_tope,
+       r.ms_popup,
+       r.desde::date as desde, r.hasta::date as hasta
+from r full join e using (version)
+order by (case when version ~ '^\d+(\.\d+)*$' then string_to_array(version, '.')::int[] end) desc nulls last;
+revoke all on public.calidad_version from anon, authenticated;
