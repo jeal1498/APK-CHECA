@@ -41,3 +41,19 @@ Medido aquí con Java 21. En Actions (Java 17) sale un acierto más: `0210-didi.
 - 4: pop-up cuando no era oferta.
 - 3: minutos mal.
 - 2: tarifa equivocada.
+
+## Revisión con capturas (pendiente, lunes 16 nov)
+
+**Para qué:** hoy la respuesta correcta de cada caso del banco sale de texto y de juicios, no de la pantalla. Las capturas (desde la 10.72, WebP de la zona de Uber/DiDi) dejan confirmarla viendo la oferta real. El resultado es un banco nuevo y la precisión del lector en los casos dudosos.
+
+**Qué se revisa:** todas las capturas de la versión más reciente que haya ese día. Solo existen para casos de `errores_lector` (diferencia, desacuerdo, rescate): no hay de las ofertas donde los lectores coincidieron, así que el número mide casos difíciles, no la precisión en todas las ofertas.
+
+**Cómo:**
+1. Lista: `storage.objects` del almacén `capturas` unido con `errores_lector` (`name = id || '.webp'`) para ver versión y tipo. Quitar duplicados (mismas líneas leídas o misma tarifa, km y min).
+2. Bajarlas: el almacén es **privado** y no hay llave de servicio en la sesión. Se despliega una función temporal que entrega la imagen por id solo con una clave aleatoria en un encabezado (`SUPABASE_SERVICE_ROLE_KEY` ya está en su entorno), se bajan con `curl` y se **desactiva** (se vuelve a desplegar como stub que responde 410). Ya existe `tmp-capturas-9f3k` desactivada: se despliega encima con clave nueva. No hay herramienta para borrar funciones: Eduardo la quita en el panel si quiere.
+3. Las imágenes **no van al repositorio**: traen direcciones y nombres. Se convierten a PNG con `ffmpeg` en el directorio de la sesión y se borran al terminar. Al final solo entran al banco las líneas cortas con números.
+4. Por cada una: tarifa, km y min que se ven, contra lo leído por el teléfono y por la revisión. Veredicto: lector, revisión, los dos, ninguno o «no era oferta». Si la oferta cambió entre la captura y la lectura, se marca dudosa y no entra.
+5. Para borrar capturas de Supabase se usa la API de Storage (la función temporal con `DELETE /storage/v1/object/capturas` y `prefixes`); borrar filas de `storage.objects` por SQL no quita el archivo.
+6. Agregar los casos confirmados a `banco/` (o a un banco nuevo), subir `minimo.txt`, corregir el lector, medir con `docs/banco/calificar.sh` y anotar el marcador arriba.
+
+Las capturas se borran a los 7 días (`limpiarCapturas`, al azar en 2 % de las llamadas): las de la 10.77 vencen desde el 20 nov.

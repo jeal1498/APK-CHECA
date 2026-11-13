@@ -8,6 +8,13 @@ Lo vigente para trabajar en Checa. La historia con fecha y el detalle largo vive
 - En el material de marca: sin ciudad ni país, sin logos de Uber/DiDi, sin nombres de competencia.
 - Usuario: **Eduardo** (Lalo, hombre: tratarlo en masculino; la cuenta de Claude está a nombre de Karen; donde algún documento diga «ella», es él). Usa la app en su teléfono y en una tablet en horizontal con pantalla dividida (DiDi a la izquierda, Uber a la derecha).
 
+## PENDIENTE DEL LUNES 16 NOV: revisión de capturas (decidido con Eduardo, 13 nov)
+**Al abrir cualquier sesión el lunes 16 nov, lo primero: recuérdale este trabajo y pregúntale si arrancamos.** Frase de arranque: «Banco con capturas».
+- **Qué es:** revisar **todas** las capturas de la versión más reciente que haya en el almacén `capturas` de Supabase en ese momento (13 nov: 85, todas de la 10.77; ya se borraron las de la 10.72). Quitar duplicados (la misma oferta vista varias veces), mirar cada imagen, anotar quién acertó (lector, revisión, los dos, ninguno, «no era oferta») y armar un banco nuevo con respuesta confirmada por la imagen. Después corregir el lector con lo que salga. Procedimiento y límites: `docs/banco-lector.md` › «Revisión con capturas».
+- **Cambios en pausa hasta entonces:** cualquier cambio a la app que pida Eduardo antes de esa revisión va a la rama **`pausa-lunes`**, **no a `main`**, y **sin subir `versionCode`/`versionName`**. Así no se compila ni sale versión suelta. Después de la revisión, los cambios en pausa y las correcciones del lector salen **juntos en una sola versión**.
+- **Excepción:** un fallo grave (la app se cierra, no abre, no lee nada) sí sale de inmediato por `main`; avisa a Eduardo.
+- Cuando termine el trabajo, quita esta sección.
+
 ## Cómo trabajar con Eduardo
 - **Respuestas cortas, en español.** Él escucha el chat con lectura en voz alta: nada de textos largos.
 - Cambios **directo a `main`** (tiene permiso) en commits pequeños; sube también la rama de la sesión. Ningún secreto en el repo. No publicar en Play Console sin su autorización.
