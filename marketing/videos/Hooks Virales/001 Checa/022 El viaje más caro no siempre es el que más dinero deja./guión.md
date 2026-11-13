@@ -1,11 +1,17 @@
-# 022 — El viaje más caro no siempre es el que más dinero deja.
+# El viaje más caro no siempre es el que más dinero deja.
 
-**Duración estimada:** 20–35 segundos
+**Duración estimada:** 25–35 segundos
 
-**Versión:** Checa
+## Guion
 
-### Guion
-El viaje con el pago más alto puede no ser el que más te conviene. Un cobro grande puede traer muchos kilómetros, minutos y gastos. **[Mostrar Checa]** Revisa las métricas de la oferta antes de decidir. **[Cierre]** Evalúa el recorrido completo.
+El viaje que más paga no siempre es el que más te conviene.
 
-### Producción
-Mostrar la interfaz real de Checa cuando se mencione. Usar datos de prueba o autorizados; marcar los ejemplos ficticios. No prometer ganancias ni resultados garantizados.
+Uno puede pagar mucho, pero pedir más kilómetros, más tiempo y más gasolina.
+
+Otro puede pagar menos y dejarte una mejor cantidad después del gasto de gasolina.
+
+**[Mostrar dos ofertas ficticias en Checa]**
+
+Compara los datos antes de decidir.
+
+**Cierre:** No elijas solo por el precio del viaje.
