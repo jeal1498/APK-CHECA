@@ -5,7 +5,7 @@
 **Versión:** Marca personal
 
 ### Guion
-Yo también habría pensado que era una gran oportunidad. Pero cuando miras cuánto tienes que recorrer y cuánto tiempo invertirás, la primera impresión puede cambiar. No juzgues un servicio por una sola cifra. **[Cierre]** ¿Qué habrías hecho tú?
+A primera vista, este viaje parece una gran oferta. Pero mira los kilómetros y el tiempo que te pide. Cuando sumas esos datos, puede que ya no se vea tan bueno. No te quedes solo con el pago que aparece en pantalla. **[Cierre]** ¿Tú lo habrías aceptado?
 
 ### Producción
-Grabar en primera persona. Priorizar opinión, experiencia y conversación con conductores; no convertirlo en un anuncio de Checa.
+Usa una oferta ficticia o una captura con datos ocultos. Aclara que es un ejemplo si no viene de un viaje real.
