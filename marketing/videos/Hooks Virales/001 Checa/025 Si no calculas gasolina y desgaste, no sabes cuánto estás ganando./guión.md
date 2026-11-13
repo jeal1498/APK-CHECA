@@ -1,11 +1,15 @@
-# 025 — Si no calculas gasolina y desgaste, no sabes cuánto estás ganando.
+# Si no calculas gasolina y desgaste, no sabes cuánto estás ganando.
 
-**Duración estimada:** 20–35 segundos
+**Duración estimada:** 25–35 segundos
 
-**Versión:** Checa
+## Guion
 
-### Guion
-Si no cuentas gasolina y desgaste, tu ganancia está incompleta. El combustible se paga hoy; llantas y reparaciones llegan después, pero todo forma parte del costo. **[Mostrar Checa]** Analiza las métricas de cada oferta y compáralas con tu costo por kilómetro. **[Cierre]** No dejes que los gastos invisibles se coman tu esfuerzo.
+Te hago una pregunta: ¿sabes cuánto te cuesta salir a trabajar cada día?
 
-### Producción
-Mostrar la interfaz real de Checa cuando se mencione. Usar datos de prueba o autorizados; marcar los ejemplos ficticios. No prometer ganancias ni resultados garantizados.
+No basta con sumar lo que cobraste. Resta la gasolina y aparta una parte para llantas, aceite, frenos y mantenimiento.
+
+**[Mostrar Checa y luego una lista de gastos]**
+
+Checa te ayuda con el cálculo de gasolina de cada oferta. Completa tus cuentas con los demás gastos del coche.
+
+**Cierre:** Si no sabes cuánto gastas, no sabes cuánto te queda.
