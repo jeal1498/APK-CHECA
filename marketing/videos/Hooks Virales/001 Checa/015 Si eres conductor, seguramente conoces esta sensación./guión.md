@@ -1,11 +1,19 @@
-# 015 — Si eres conductor, seguramente conoces esta sensación.
+# Si eres conductor, seguramente conoces esta sensación.
 
-**Duración estimada:** 20–35 segundos
+**Duración estimada:** 25–35 segundos
 
-**Versión:** Checa
+## Guion
 
-### Guion
-Si conduces por aplicación, conoces este momento: aparece una solicitud y tienes segundos para decidir. **[Mostrar Checa]** Tener a la vista los indicadores importantes puede ayudarte a evaluar el servicio con más contexto. **[Cierre]** ¿Qué miras primero?
+Terminas un día largo, ves todo lo que cobraste y piensas: hoy me fue bien.
 
-### Producción
-Mostrar la interfaz real de Checa cuando se mencione. Usar datos de prueba o autorizados; marcar los ejemplos ficticios. No prometer ganancias ni resultados garantizados.
+Pero luego cargas gasolina y pagas otros gastos.
+
+Y ahí llega la duda: ¿cuánto dinero me quedó?
+
+**[Toma a cámara y luego mostrar Checa]**
+
+Por eso conviene analizar cada oferta desde el inicio y llevar tus cuentas del día.
+
+Checa te ayuda con los datos de cada viaje y el gasto estimado de gasolina.
+
+**Cierre:** Que tu esfuerzo sí se note en tus cuentas.
