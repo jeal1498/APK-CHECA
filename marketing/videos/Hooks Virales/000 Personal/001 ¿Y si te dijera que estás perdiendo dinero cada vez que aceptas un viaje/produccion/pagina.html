@@ -8,18 +8,18 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#0C0C10;font-fam
 html.marco,body.marco{background:transparent}
 body.marco #sub,body.marco #g,body.marco #camtxt,body.marco #bajo{display:none}
 #cam{position:absolute;left:0;top:0;width:1080px;height:864px;overflow:hidden}
-#cam i{position:absolute;left:0;right:0;bottom:0;height:6px;background:#FACC15}
+#cam i{position:absolute;left:0;width:1080px;bottom:0;height:6px;background:#FACC15}
 #camtxt{position:absolute;left:0;top:0;width:1080px;height:864px;background:#24435d;display:flex;flex-direction:column;align-items:center;justify-content:center;font:800 54px "Bricolage Grotesque";color:#F4F4EF}
 #camtxt span{font:700 24px "JetBrains Mono";letter-spacing:3px;margin-top:10px}
-#sub{position:absolute;left:147px;top:789px;width:785px;height:150px;z-index:5;display:flex;align-items:center;justify-content:center;font:800 64px/1 "Bricolage Grotesque";letter-spacing:-1px;white-space:nowrap;text-shadow:0 4px 14px rgba(0,0,0,.6)}
+#sub{position:absolute;left:140px;top:789px;width:785px;height:150px;z-index:5;display:flex;align-items:center;justify-content:center;font:800 64px/1 "Bricolage Grotesque";letter-spacing:-1px;white-space:nowrap;}
 .pas{background:#0C0C10;border-radius:22px;padding:14px 18px 18px;border:3px solid #FACC15}
-.pasb{text-transform:uppercase;font-size:82px;letter-spacing:-1px;-webkit-text-stroke:16px #0C0C10;paint-order:stroke fill;padding:30px 70px;background:radial-gradient(closest-side,rgba(12,12,16,.92) 55%,rgba(12,12,16,0))}
-.pasb b{margin:0 12px!important}
+.pasb{text-transform:uppercase;font-size:82px;letter-spacing:-1px;-webkit-text-stroke:16px #0C0C10;paint-order:stroke fill;text-shadow:7px 0 #0C0C10,-7px 0 #0C0C10,0 6px #0C0C10}
+.pasb b{margin:0 16px!important}
 #sub b{font-weight:800;margin:0 9px}
 #bajo{position:absolute;left:0;top:864px;width:1080px;height:1056px;background:#16161C;overflow:hidden}
 #luz{position:absolute;left:-60px;top:-150px;width:1200px;height:900px;border-radius:50%;filter:blur(40px)}
 #via{position:absolute;left:0;top:0}
-#g{position:absolute;left:147px;top:912px;width:785px;height:510px;overflow:hidden}
+#g{position:absolute;left:140px;transform:scale(.9);transform-origin:50% 0;top:912px;width:785px;height:510px;overflow:hidden}
 #g>div{position:absolute;left:0;top:0;will-change:transform,opacity}
 .mono{font:700 26px "JetBrains Mono";letter-spacing:3px;color:#A3A3AD;text-transform:uppercase}
 .big{font:800 124px/0.95 "Bricolage Grotesque";letter-spacing:-4px;text-align:center}
@@ -42,7 +42,7 @@ body.marco #sub,body.marco #g,body.marco #camtxt,body.marco #bajo{display:none}
 <text x="735" y="262" font-family="JetBrains Mono" font-weight="700" font-size="26" fill="#FACC15" text-anchor="start">OJOS AQUÍ</text>
 <text x="985" y="520" font-family="JetBrains Mono" font-weight="700" font-size="22" fill="#F4F4EF" text-anchor="middle" transform="rotate(90 985 520)">BOTONES DE TIKTOK</text>
 </svg>
-<div id="cam"><i></i></div>
+<div id="cam"><i id="li"></i><i id="ld"></i></div>
 <div id="bajo"><div id="luz"></div><svg id="via" width="1080" height="1056" viewBox="0 0 1080 1056">
 <path d="M540 0L-44 1056H1124z" fill="#1C1C24"/><path d="M540 0L-44 1056M540 0L1124 1056" stroke="#F4F4EF" stroke-opacity=".13" stroke-width="5" fill="none"/><g id="rayas" fill="#FACC15" fill-opacity=".30"></g></svg></div>
 <div id="sub"></div>
@@ -138,12 +138,13 @@ C('<div style="width:785px;text-align:center;font:800 68px/1 \'Bricolage Grotesq
 const GR=[];{let c=[];const cierra=()=>{if(c.length)GR.push(c);c=[]};
  P.forEach(p=>{if(c.length&&(c.length>=3||c.map(q=>q[0]).join(' ').length+p[0].length>16))cierra();c.push(p);if(/[.,?]$/.test(p[0]))cierra()});cierra()}
 const sub=document.getElementById('sub');
-// ?sub=b → propuesta B: palabra golpe sin caja (mayúsculas, contorno negro, palabras clave con el color del semáforo)
-const SUBB=location.search.includes('sub=b'),CLAVE={dinero:V,gasolina:R,pago:Y,paga:Y,'kilómetros':Y,tiempo:Y,aceptar:V};
+// Estilo elegido por Eduardo (B): palabra golpe sin caja; ?sub=a deja la pastilla anterior. Solo se destaca la palabra que suena (mayúsculas, contorno negro, palabras clave con el color del semáforo)
+const SUBB=!location.search.includes('sub=a'),CLAVE={dinero:V,gasolina:R,pago:Y,paga:Y,'kilómetros':Y,tiempo:Y,aceptar:V};
 function subt(t){let i=-1;GR.forEach((c,k)=>{if(t>=c[0][1]-.04)i=k});
  if(i<0||(i===GR.length-1&&t>GR[i][GR[i].length-1][2]+.6)){sub.innerHTML='';return}
- if(SUBB){sub.innerHTML='<span class="pasb">'+GR[i].map(p=>{const on=t>=p[1]-.04&&t<p[2]+.05,k=CLAVE[norm(p[0])],pp=cl((t-p[1]+.04)/.12);
-   return '<b style="display:inline-block;color:'+(on?(k||Y):H)+';transform:scale('+(on?1+.14*Math.sin(Math.PI*Math.min(1,.5+pp/2)):1)+')">'+p[0].replace(/[.,]/g,'')+'</b>'}).join('')+'</span>';return}
+ if(SUBB){let act=null;GR[i].forEach(p=>{if(t>=p[1]-.04)act=p});if(act&&t>=act[2]+.05)act=null;
+  sub.innerHTML='<span class="pasb">'+GR[i].map(p=>{const on=p===act,k=CLAVE[norm(p[0])],pp=cl((t-p[1]+.04)/.12);
+   return '<b style="display:inline-block;color:'+(on?(k||Y):H)+';transform:scale('+(on?1+.08*Math.sin(Math.PI*Math.min(1,.5+pp/2)):1)+')">'+p[0].replace(/[.,]/g,'')+'</b>'}).join('')+'</span>';return}
  sub.innerHTML='<span class="pas">'+GR[i].map(p=>'<b style="color:'+(t>=p[1]-.04&&t<p[2]+.05?Y:H)+'">'+p[0]+'</b>').join('')+'</span>'}
 
 // ── fondo: carretera que avanza (raya punteada de la marca) y luz del semáforo según el bloque
@@ -153,9 +154,12 @@ function fondo(t){let h='';const N=7,v=.55;for(let k=0;k<N;k++){const u=((k+t*v)
  const rojo=cl((t-W('no#1'))/.4)*(1-cl((t-W('quedar'))/.4)),verde=cl((t-W('quedar'))/.4);
  const c=verde>0?[34,197,94]:rojo>0?[239,68,68]:[250,204,21],o=verde>0?.20:rojo>0?.08+.12*rojo:.10;
  luz.style.background='radial-gradient(closest-side,rgba('+c+','+o+'),rgba('+c+',0))'}
+// la raya amarilla de la frontera se abre para dejar pasar el subtítulo
+function raya(){const p=sub.firstElementChild,r=p&&SUBB?p.getBoundingClientRect():null,li=document.getElementById('li'),ld=document.getElementById('ld');
+ if(!r){li.style.width='1080px';ld.style.width='0';return}li.style.width=Math.max(0,r.left-6)+'px';ld.style.left=(r.right+6)+'px';ld.style.width=Math.max(0,1080-r.right-6)+'px'}
 window.seek=t=>{for(const{d,ini,fin,o}of IT){const on=t>=ini&&t<fin;d.style.display=on?'':'none';if(!on)continue;if(o.fx){o.fx(t,d);continue}
   const p=o.sinEntrada?1:eo((t-ini)/(o.cae?.42:.3)),q=cl((fin-t)/.12);d.style.opacity=Math.min(cl((t-ini)/.12+(o.sinEntrada?1:0)),q);
   d.style.transform=o.cae?'translateY('+(-70*(1-p))+'px) rotate('+(-4*(1-p))+'deg)':o.pop?'scale('+(.8+.2*p+.06*Math.sin(Math.PI*cl((t-ini)/.3)))+')':'translateY('+(22*(1-p))+'px)'}
- FX.forEach(f=>f(t));subt(t);fondo(t)};
+ FX.forEach(f=>f(t));subt(t);fondo(t);raya()};
 window.TOTAL=TOTAL;seek(+(new URLSearchParams(location.search).get('t')||0));
 </script></body></html>
