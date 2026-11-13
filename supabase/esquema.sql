@@ -797,3 +797,22 @@ select version,
 from r full join e using (version)
 order by (case when version ~ '^\d+(\.\d+)*$' then string_to_array(version, '.')::int[] end) desc nulls last;
 revoke all on public.calidad_version from anon, authenticated;
+
+-- Marcador del banco del lector (docs/banco-lector.md): aciertos de cada versión contra las
+-- mismas ofertas reales. Lo lee el monitor de Checa; se agrega una fila por versión medida.
+create table if not exists public.banco_lector (
+  version  text primary key,
+  aciertos integer not null,
+  total    integer not null,
+  nota     text,
+  medido   date not null default current_date
+);
+alter table public.banco_lector enable row level security;
+revoke all on public.banco_lector from anon, authenticated;
+insert into public.banco_lector (version, aciertos, total, nota, medido) values
+  ('10.69', 175, 235, null, '2026-11-13'),
+  ('10.72', 175, 235, null, '2026-11-13'),
+  ('10.74', 177, 235, 'La navegación ya no es oferta', '2026-11-13'),
+  ('10.76', 185, 235, 'Navegación con el pop-up propio a la vista', '2026-11-13'),
+  ('10.77', 185, 235, 'Sin cambios en el lector', '2026-11-13')
+on conflict (version) do update set aciertos = excluded.aciertos, total = excluded.total, nota = excluded.nota, medido = excluded.medido;
