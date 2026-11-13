@@ -1,11 +1,17 @@
-# 019 — ¿Cuántas veces has aceptado un viaje y después te has arrepentido?
+# ¿Cuántas veces has aceptado un viaje y después te has arrepentido?
 
-**Duración estimada:** 20–35 segundos
+**Duración estimada:** 25–35 segundos
 
-**Versión:** Checa
+## Guion
 
-### Guion
-¿Cuántas veces aceptaste y, minutos después, pensaste: «¿para qué me metí aquí?» A veces el pago parecía bueno, pero el trayecto fue más largo de lo esperado. **[Mostrar Checa]** Revisa distancia y duración para decidir con más contexto. **[Cierre]** Cuéntame tu viaje más arrepentido.
+¿Cuántas veces has aceptado un viaje y después pensaste: mejor no lo hubiera tomado?
 
-### Producción
-Mostrar la interfaz real de Checa cuando se mencione. Usar datos de prueba o autorizados; marcar los ejemplos ficticios. No prometer ganancias ni resultados garantizados.
+Tal vez la distancia era más larga de lo que parecía. O el tiempo y la gasolina hicieron que ya no se viera tan bueno.
+
+**[Mostrar una oferta en pantalla]**
+
+Con Checa puedes ver datos clave antes de aceptar y decidir con más información.
+
+No siempre vas a tener la oferta ideal, pero sí puedes hacer mejor tus cuentas.
+
+**Cierre:** Piensa antes de aceptar.
