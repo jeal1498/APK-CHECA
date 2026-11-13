@@ -562,6 +562,8 @@ class RutaService : AccessibilityService() {
         // Con el pop-up encima la oferta se ve tapada: no es una lectura fallida.
         if (popupVisible(app)) return
         if (lineas.none { LectorOcr.esTramo(it) } || !Parser.tieneMonto(lineas, prefs.moneda)) return
+        // Navegación de un viaje en curso («12 min · 2.7 km»): no es una oferta, no se rescata.
+        if (Parser.esNavegacion(lineas, prefs.moneda)) return
         Confirmador.rescatar(this, app, lineas, prefs.moneda, lector) { oferta ->
             handler.post {
                 mostrarOferta(oferta, app, zona)

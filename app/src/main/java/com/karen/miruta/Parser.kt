@@ -332,6 +332,7 @@ object Parser {
 
         // Una oferta siempre trae 2 tramos (recogida + viaje); con 1 aceptamos también.
         if (tramos == 0) return null
+        if (esNavegacion(textos, moneda)) return null
         if (tramos < 2 && textos.count { rango.containsMatchIn(it) } >= 2 &&
             textos.none { r.aceptarMonto.containsMatchIn(it) }) return null
         // Uber: si los km no dan el «$/km est.», el OCR perdió un punto («70 km» = 7.0): manda el $/km.
@@ -357,6 +358,29 @@ object Parser {
         // Descarta lecturas imposibles.
         if (f != null && (o.porKm * f > 80 * holgura || o.porHora * f > 3000 * holgura)) return null
         return o
+    }
+
+    /**
+     * La barra de navegación de un viaje en curso («12 min · 2.7 km», 13 nov: Jonny, 10.72): un
+     * solo tramo con viñeta, sin paréntesis, sin «$/km est.» ni «Aceptar $X». Una oferta real trae
+     * recogida y viaje (y Uber su «$/km est.»). El OCR leía la batería como monto («5G .!$ 45»).
+     */
+    fun esNavegacion(textos: List<String>, moneda: Moneda = Moneda.MXN): Boolean {
+        val r = reglasDe(moneda)
+        if (textos.any { porKmTexto.containsMatchIn(it) || r.aceptarMonto.containsMatchIn(it) }) return false
+        val claves = HashSet<String>()
+        var conParentesis = false
+        for (t in textos) {
+            if (t.contains("total", ignoreCase = true)) continue
+            val c = corregirMinutos(t)
+            for (m in tramo.findAll(c)) {
+                if (m.groupValues[3].isNotEmpty() || c.substring(0, m.range.first).trimEnd().endsWith("(")) conParentesis = true
+                val numero = m.groupValues[3].ifEmpty { m.groupValues[5] }.replace(",", ".")
+                val unidad = m.groupValues[4].ifEmpty { m.groupValues[6] }.lowercase()
+                claves.add("${m.groupValues[1]}|${m.groupValues[2]}|$numero|$unidad")
+            }
+        }
+        return claves.size == 1 && !conParentesis
     }
 
     /** true si algún texto trae un monto (sin montos no es una oferta: p. ej. la navegación de un viaje). */
