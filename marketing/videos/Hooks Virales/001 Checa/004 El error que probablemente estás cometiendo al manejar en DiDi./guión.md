@@ -1,11 +1,17 @@
-# 004 — El error que probablemente estás cometiendo al manejar en DiDi.
+# El error que probablemente estás cometiendo al manejar en DiDi.
 
-**Duración estimada:** 20–35 segundos
+**Duración estimada:** 25–35 segundos
 
-**Versión:** Checa
+## Guion
 
-### Guion
-Si manejas en DiDi, cuidado con este error: decidir mirando únicamente el pago. Una solicitud también implica kilómetros y minutos que afectan tu jornada. **[Mostrar Checa]** Revisa esos indicadores antes de elegir y establece tus propios criterios. **[Cierre]** No se trata de aceptar más; se trata de decidir mejor.
+Hay un error que puede salirte caro al manejar en DiDi: aceptar una oferta solo porque el monto se ve bien.
 
-### Producción
-Mostrar la interfaz real de Checa cuando se mencione. Usar datos de prueba o autorizados; marcar los ejemplos ficticios. No prometer ganancias ni resultados garantizados.
+Pero antes de aceptar, piensa en tres cosas: cuánto vas a manejar, cuánto tiempo te va a tomar y cuánta gasolina vas a usar.
+
+**[Mostrar una oferta en Checa]**
+
+Checa te ayuda a ver esos datos antes de decidir.
+
+No se trata de tomar todos los viajes. Se trata de saber cuáles vale la pena tomar.
+
+**Cierre:** Tu tiempo también cuesta.
