@@ -5,7 +5,7 @@
 **Versión:** Marca personal
 
 ### Guion
-Hay gastos que no aparecen cuando aceptas un servicio, pero tarde o temprano llegan. Cada recorrido consume combustible y acerca el siguiente mantenimiento. Calcula tus costos por kilómetro y reserva dinero para cuidar tu vehículo. **[Cierre]** Tu yo del próximo servicio te lo agradecerá.
+Hay gastos que no ves al aceptar un viaje. Cada kilómetro usa gasolina y suma desgaste al coche. Si solo cuentas lo que cobras, te falta una parte de la cuenta. Anota tus gastos y guarda dinero para el servicio. **[Cierre]** Tu coche también necesita que lo cuides.
 
 ### Producción
-Grabar en primera persona. Priorizar opinión, experiencia y conversación con conductores; no convertirlo en un anuncio de Checa.
+Muestra gasolina, odómetro o una nota con gastos. Aclara que el neto después de gasolina aún no descuenta todos los costos del coche.
