@@ -5,7 +5,7 @@
 **Versión:** Marca personal
 
 ### Guion
-No te dejes impresionar por el número más grande. Una tarifa elevada puede exigir una vuelta larga y consumir buena parte de tu turno. Compara lo que recibes con el esfuerzo que entregas. **[Cierre]** ¿Alguna vez rechazaste una tarifa alta y luego te alegraste?
+No te dejes llevar por el pago más alto. Un viaje puede pagar más, pero pedirte muchos kilómetros y buena parte de tu tiempo. Compara lo que cobras con lo que gastas y el tiempo que das. **[Cierre]** ¿Alguna vez un pago alto terminó siendo mala opción?
 
 ### Producción
-Grabar en primera persona. Priorizar opinión, experiencia y conversación con conductores; no convertirlo en un anuncio de Checa.
+Muestra dos ofertas de ejemplo y compara sus costos. Identifica como ficticias las cifras que no vengan de un viaje real.
