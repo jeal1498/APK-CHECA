@@ -1,11 +1,11 @@
-# 012 — ¿Sabes cuánto cuesta realmente cada kilómetro que manejas?
+# 012 — ¿Sabes cuánto cuesta cada kilómetro que manejas?
 
 **Duración estimada:** 20–35 segundos
 
 **Versión:** Marca personal
 
 ### Guion
-Cada kilómetro tiene un precio, aunque no lo pagues hoy. Tu coche consume combustible y acumula desgaste. Suma tus gastos de operación, divídelos entre los kilómetros recorridos y actualiza el cálculo cuando cambien tus costos. **[Cierre]** ¿Ya conoces esa cifra?
+Cada kilómetro te cuesta dinero, aunque no lo notes ese día. Está la gasolina y también el desgaste del coche. Suma tus gastos del mes y divídelos entre los kilómetros que hiciste. Así tendrás una idea de cuánto te cuesta salir a trabajar. **[Cierre]** ¿Ya sabes cuánto pagas por kilómetro?
 
 ### Producción
-Grabar en primera persona. Priorizar opinión, experiencia y conversación con conductores; no convertirlo en un anuncio de Checa.
+Muestra la cuenta paso a paso. Aclara qué gastos incluyes; no presentes el cálculo como una cifra exacta si faltan costos.
