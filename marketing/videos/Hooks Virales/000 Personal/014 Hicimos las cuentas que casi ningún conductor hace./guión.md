@@ -5,7 +5,7 @@
 **Versión:** Marca personal
 
 ### Guion
-Saquemos la calculadora. Anota cuánto cobraste, cuántos kilómetros recorriste, cuánto tiempo invertiste y cuánto gastaste para operar. Al juntar esos datos tendrás una visión más honesta de tu jornada. **[Cierre]** Hazlo hoy y dime si el resultado te sorprendió.
+Vamos a hacer una cuenta sencilla. Anota cuánto cobraste, cuántos kilómetros hiciste, cuánto tiempo estuviste fuera y cuánto gastaste en gasolina. Después suma el costo del servicio y otros gastos del coche. Así sabrás cuánto te queda, no solo cuánto cobraste. **[Cierre]** Haz la cuenta hoy.
 
 ### Producción
-Grabar en primera persona. Priorizar opinión, experiencia y conversación con conductores; no convertirlo en un anuncio de Checa.
+A cámara y con una nota o calculadora en pantalla. Explica qué gastos estás contando.
