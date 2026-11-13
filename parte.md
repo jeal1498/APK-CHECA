@@ -52,7 +52,6 @@
 - Fase 7 (Play Billing) antes del 1 feb 2027: necesita su «adelante» y una cuenta de Google admitida a su nombre.
 - Eduardo: probar la 10.76 yendo por un pasajero en DiDi; si sale pop-up, mandar la **primera** captura guardada (la de antes del pop-up). No se confirmó qué sacó el primero.
 - Tester con 10.72 (pop-up en navegación): que actualice; el arreglo aún no está en Play (falta AAB de la 10.76, con su autorización).
-- `CLAUDE.md` dice 10.68 y que Ruta Rentable nunca se descompiló: Eduardo decide si se corrige.
 
 ## ✗ No tocar
 - Publicar en Play Console sin su autorización.
