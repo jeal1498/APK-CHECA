@@ -31,6 +31,13 @@ body.marco #sub,body.marco #g,body.marco #camtxt,body.marco #bajo{display:none}
 .card{width:400px;height:450px;border-radius:26px;background:#fff;color:#0C0C10;box-shadow:0 18px 40px rgba(0,0,0,.5)}
 .card>*{position:absolute}
 .hl{border-radius:8px;padding:0 6px;margin:0 -6px}
+
+/* ── estilo PS2 (Personal): paneles de menú de consola y sombras sólidas */
+#bajo{background:#3F8FE8}
+#g{color:#fff;text-shadow:3px 3px 0 #0B1E47,-2px -2px 0 #0B1E47,2px -2px 0 #0B1E47,-2px 2px 0 #0B1E47,0 7px 0 #0B1E47}
+.card{text-shadow:none;border-radius:14px;box-shadow:10px 10px 0 #0B1E47;border:4px solid #0B1E47}
+.fila,.chip{background:linear-gradient(#1D4FA8,#12306B);border:4px solid #fff;border-radius:14px;box-shadow:7px 7px 0 #0B1E47}
+.chip{border-radius:14px}
 </style></head><body>
 <div id="camtxt">TU CÁMARA<span>45 % DE LA PANTALLA · 1080 × 864</span></div>
 <svg id="tercios" width="1080" height="864" viewBox="0 0 1080 864" style="position:absolute;left:0;top:0;display:none">
@@ -43,8 +50,7 @@ body.marco #sub,body.marco #g,body.marco #camtxt,body.marco #bajo{display:none}
 <text x="985" y="520" font-family="JetBrains Mono" font-weight="700" font-size="22" fill="#F4F4EF" text-anchor="middle" transform="rotate(90 985 520)">BOTONES DE TIKTOK</text>
 </svg>
 <div id="cam"><i id="li"></i><i id="ld"></i></div>
-<div id="bajo"><div id="luz"></div><svg id="via" width="1080" height="1056" viewBox="0 0 1080 1056">
-<path d="M540 0L-44 1056H1124z" fill="#1C1C24"/><path d="M540 0L-44 1056M540 0L1124 1056" stroke="#F4F4EF" stroke-opacity=".13" stroke-width="5" fill="none"/><g id="rayas" fill="#FACC15" fill-opacity=".30"></g></svg></div>
+<div id="bajo"><svg id="via" width="1080" height="1056" viewBox="0 0 1080 1056"></svg></div>
 <div id="sub"></div>
 <div id="g"></div>
 <script src="palabras.js"></script>
@@ -68,14 +74,14 @@ const I={km:svg('<path d="M12 21s-6-6.1-6-10.5a6 6 0 0112 0C18 14.9 12 21 12 21z
 // Reglas (Eduardo, 13 nov): una acción clara por bloque, textos de máx. 4 palabras, analogías literales,
 // escala para proporciones, los elementos se transforman de un bloque al siguiente y cada bloque cierra con una imagen clara.
 const mix=(a,b,p)=>a+(b-a)*p,A=(t,a,d)=>eo((t-a)/d);
-const moneda=(s,c=Y)=>'<div style="width:'+s+'px;height:'+s+'px;border-radius:50%;border:'+Math.round(s/16)+'px solid '+c+';color:'+c+';font:800 '+Math.round(s*.56)+'px/'+Math.round(s*.86)+'px \'Bricolage Grotesque\';text-align:center">$</div>';
+const moneda=(s)=>'<svg width="'+s+'" height="'+s+'" viewBox="0 0 100 100"><path d="M30 2h40l28 28v40l-28 28h-40l-28-28v-40z" fill="#B98206"/><path d="M32 8h36l24 24v36l-24 24h-36l-24-24v-36z" fill="#F5C518"/><path d="M32 8h36l24 24L50 50z" fill="#FFE27A"/><path d="M8 68l24 24h36l24-24L50 50z" fill="#D9A80F"/><text x="50" y="69" text-anchor="middle" font-family="Bricolage Grotesque" font-weight="800" font-size="56" fill="#7A5500">$</text></svg>';
 const s2=W('cuando')-.12,s3=W('ten')-.12,s4=W('un')-.12,s5=W('qué')-.12;
 
 // ── 1 · «Puede que estés dejando dinero sin darte cuenta.»  ACCIÓN: de 5 monedas, 3 se caen.
 C('<div class="big" style="font-size:112px;text-align:left">DEJANDO<br><span style="color:'+Y+'">DINERO</span></div>',0,s2+.2,40,34,{sinEntrada:1});
-C('<svg width="150" height="150" viewBox="0 0 24 24" fill="none" stroke="#A3A3AD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.500S22 12 22 12s-3.6 6.5-10 6.500S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 3l16 18" stroke="'+R+'" stroke-width="2.4"/></svg>',W('sin'),s2+.2,585,60,{pop:1});
+C('<svg width="150" height="150" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.500S22 12 22 12s-3.6 6.5-10 6.500S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 3l16 18" stroke="'+R+'" stroke-width="2.4"/></svg>',W('sin'),s2+.2,585,60,{pop:1});
 for(let k=0;k<5;k++){const x=40+k*146,y=330;
- if(k>=2)C('<div style="width:120px;height:120px;border-radius:50%;border:5px dashed #4A4A56"></div>',W('dejando')+(k-2)*.34,s2+.2,x,y);
+ if(k>=2)C('<div style="width:120px;height:120px;border-radius:50%;border:5px dashed #FFFFFF"></div>',W('dejando')+(k-2)*.34,s2+.2,x,y);
  const a=W('dejando')+(k-2)*.34;
  C(moneda(120),0,k<2?W('llega'):a+.7,x,y,{fx:(t,d)=>{
   if(k>=2){const p=cl((t-a)/.6);d.style.transform='translateY('+(260*p*p)+'px) rotate('+(70*p)+'deg)';d.style.opacity=1}
@@ -98,7 +104,7 @@ const card=C('<div class="card">'
 const precio=card.querySelector('#precio'),ks=card.querySelectorAll('.k'),ms=card.querySelectorAll('.m');
 FX.push(t=>{const a=W('cuánto');precio.style.borderColor=t>=a&&t<s3?Y:'transparent';precio.style.background=t>=a&&t<s3?'rgba(250,204,21,.25)':'transparent';precio.style.opacity=t>=s3+.3?.3:1;
  const on=(els,a)=>els.forEach(e=>{e.style.background=t>=a?Y:'transparent'});on(ks,W('kilómetros'));on(ms,W('tiempo'))});
-C('<div style="width:785px;display:flex;justify-content:center"><div style="padding:14px 30px 18px;border-radius:22px;background:#0C0C10;border:3px solid '+R+';font:800 54px/1 \'Bricolage Grotesque\';white-space:nowrap">NO SOLO<span id="cp" style="color:'+Y+'"> cuánto paga</span></div></div>',W('solo'),s3,0,392,{pop:1})
+C('<div style="width:785px;display:flex;justify-content:center"><div style="padding:14px 30px 18px;border-radius:22px;background:#12306B;box-shadow:7px 7px 0 #0B1E47;border:4px solid #fff;font:800 54px/1 \'Bricolage Grotesque\';white-space:nowrap">NO SOLO<span id="cp" style="color:'+Y+'"> cuánto paga</span></div></div>',W('solo'),s3,0,392,{pop:1})
  .querySelector('#cp').id='cp';
 FX.push(t=>{document.getElementById('cp').style.display=t>=W('cuánto')?'':'none'}); // el letrero crece con su texto: nunca queda un hueco esperando
 
@@ -117,9 +123,9 @@ RK.forEach((w,k)=>{const a=W(w);
 
 // ── 4 · «Un pago alto no siempre significa que te va a quedar más dinero.»  ACCIÓN: el precio se vuelve una barra alta; km, tiempo y gasolina le muerden pedazos; queda un tramo chico.
 const BX=300,BW=185,BY=30,BH=420,SEG=104,RES=BH-3*SEG;
-C('<div style="width:'+BW+'px;height:'+BH+'px;border-radius:18px;border:4px solid '+H+';background:#16161C"></div>',W('pago'),s5+.3,BX,BY,{fx:(t,d)=>{d.style.opacity=Math.min(cl((t-W('alto'))/.2),cl((s5+.3-t)/.25))}});
-[0,1,2].forEach(k=>C('<div style="width:'+BW+'px;height:4px;background:'+H+'"></div>',W(['no#1','siempre','significa'][k]),s5+.3,BX,BY+(k+1)*SEG-2,{fx:(t,d)=>{d.style.opacity=cl((s5+.3-t)/.25)}}));
-const barra=C('<div style="width:100%;height:100%;border-radius:14px;background:'+H+';display:flex;align-items:center;justify-content:center;font:800 40px \'Bricolage Grotesque\';color:#04210F"><span></span></div>',W('pago'),1e9,0,0,{fx:(t,d)=>{
+C('<div style="width:'+BW+'px;height:'+BH+'px;border-radius:18px;border:5px solid #fff;background:#12306B;box-shadow:10px 10px 0 #0B1E47"></div>',W('pago'),s5+.3,BX,BY,{fx:(t,d)=>{d.style.opacity=Math.min(cl((t-W('alto'))/.2),cl((s5+.3-t)/.25))}});
+[0,1,2].forEach(k=>C('<div style="width:'+BW+'px;height:4px;background:#fff"></div>',W(['no#1','siempre','significa'][k]),s5+.3,BX,BY+(k+1)*SEG-2,{fx:(t,d)=>{d.style.opacity=cl((s5+.3-t)/.25)}}));
+const barra=C('<div style="width:100%;height:100%;border-radius:14px;background:'+H+';display:flex;align-items:center;justify-content:center;font:800 40px \'Bricolage Grotesque\';color:#04210F;text-shadow:none;box-shadow:8px 8px 0 #0B1E47"><span></span></div>',W('pago'),1e9,0,0,{fx:(t,d)=>{
   const g=A(t,W('pago'),W('alto')+.15-W('pago')),n=[0,1,2].reduce((s,k)=>s+A(t,W(['no#1','siempre','significa'][k]),.3),0),v=A(t,W('quedar'),.3),b=A(t,s5,.45);
   const h=mix(mix(mix(60,BH,g),RES,n/3),88,b),w=mix(BW,360,b),x=mix(BX,212,b),y=mix(BY+BH-h,396,b);
   d.style.left=x+'px';d.style.top=y+'px';d.style.width=w+'px';d.style.height=h+'px';
@@ -147,13 +153,18 @@ function subt(t){let i=-1;GR.forEach((c,k)=>{if(t>=c[0][1]-.04)i=k});
    return '<b style="display:inline-block;color:'+(on?(k||Y):H)+';transform:scale('+(on?1+.08*Math.sin(Math.PI*Math.min(1,.5+pp/2)):1)+')">'+p[0].replace(/[.,]/g,'')+'</b>'}).join('')+'</span>';return}
  sub.innerHTML='<span class="pas">'+GR[i].map(p=>'<b style="color:'+(t>=p[1]-.04&&t<p[2]+.05?Y:H)+'">'+p[0]+'</b>').join('')+'</span>'}
 
-// ── fondo: carretera que avanza (raya punteada de la marca) y luz del semáforo según el bloque
-const rayas=document.getElementById('rayas'),luz=document.getElementById('luz');
-function fondo(t){let h='';const N=7,v=.55;for(let k=0;k<N;k++){const u=((k+t*v)%N)/N,u2=u+.5/N,y1=1056*u*u,y2=1056*Math.min(1,u2*u2),w1=3+26*u*u,w2=3+26*u2*u2;
-  h+='<path d="M'+(540-w1/2)+' '+y1+'h'+w1+'L'+(540+w2/2)+' '+y2+'h'+(-w2)+'z"/>'}rayas.innerHTML=h;
- const rojo=cl((t-W('no#1'))/.4)*(1-cl((t-W('quedar'))/.4)),verde=cl((t-W('quedar'))/.4);
- const c=verde>0?[34,197,94]:rojo>0?[239,68,68]:[250,204,21],o=verde>0?.20:rojo>0?.08+.12*rojo:.10;
- luz.style.background='radial-gradient(closest-side,rgba('+c+','+o+'),rgba('+c+',0))'}
+// ── fondo estilo PS2 (low-poly): cielo, nubes facetadas, ciudad de bloques y calle con autos que pasan
+const via=document.getElementById('via');
+const nube=(x,y,k)=>'<g transform="translate('+x+','+y+') scale('+k+')"><path d="M0 60L40 10L95 0L150 22L200 60z" fill="#FFFFFF"/><path d="M0 60L40 10L70 60z" fill="#DCEBFA"/><path d="M95 0L150 22L120 60L70 60z" fill="#EEF5FD"/><path d="M150 22L200 60L120 60z" fill="#CFE1F5"/></g>';
+const EDI=[[-20,150,230,'#E8D9B8','#B9A57C'],[120,120,330,'#C9D3DE','#93A1B1'],[232,160,200,'#E2B58F','#B08460'],[385,130,290,'#D9DEE6','#9FAABA'],[505,170,240,'#EFE3C4','#C2B48C'],[668,125,345,'#C6CFDA','#8E9BAC'],[786,150,215,'#E6C3A0','#B5916F'],[930,140,275,'#DCE2EA','#A3AEBD']];
+const auto=(x,y,c,c2,d)=>'<g transform="translate('+x+','+y+') scale('+d+',1)"><path d="M0 44L6 22L40 18L62 0L118 0L140 20L172 24L178 44z" fill="'+c+'"/><path d="M40 18L62 0L118 0L140 20z" fill="'+c2+'"/><path d="M66 5L88 5L88 19L50 19zM94 5L114 5L130 19L94 19z" fill="#BFE3FF"/><path d="M26 44l8-12h14l8 12l-8 10h-14zM122 44l8-12h14l8 12l-8 10h-14z" fill="#22262E"/></g>';
+function fondo(t){let h='<defs><linearGradient id="cielo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3F8FE8"/><stop offset=".75" stop-color="#A9D6FB"/><stop offset="1" stop-color="#D8EEFF"/></linearGradient></defs><rect width="1080" height="1056" fill="url(#cielo)"/>';
+ h+=nube(((60+t*9)%1400)-200,505,1.1)+nube(((760+t*6)%1400)-200,470,.8)+nube(((1150+t*12)%1400)-200,540,.6);
+ EDI.forEach(([x,w,a,c,c2])=>{const y=930-a,f=w*.68;h+='<path d="M'+x+' '+y+'h'+f+'v'+a+'h'+(-f)+'z" fill="'+c+'"/><path d="M'+(x+f)+' '+y+'l'+(w-f)+' 16v'+(a-16)+'h'+(-(w-f))+'z" fill="'+c2+'"/>';
+  for(let yy=y+22;yy<905;yy+=34)for(let xx=x+12;xx<x+f-16;xx+=26)h+='<rect x="'+xx+'" y="'+yy+'" width="12" height="18" fill="#5C7FA8" opacity=".75"/>'});
+ h+='<rect y="930" width="1080" height="126" fill="#4B5059"/><rect y="930" width="1080" height="8" fill="#7C838E"/>';
+ for(let k=0;k<9;k++)h+='<rect x="'+(((k*150-t*40)%1350+1350)%1350-140)+'" y="988" width="80" height="8" fill="#F4F4EF"/>';
+ h+=auto(((t*150)%1500)-250,932,'#E5484D','#B4282D',1)+auto(1400-((t*110+500)%1700),1000,'#F5C518','#C99A06',-1);via.innerHTML=h}
 // la raya amarilla de la frontera se abre para dejar pasar el subtítulo
 function raya(){const p=sub.firstElementChild,r=p&&SUBB?p.getBoundingClientRect():null,li=document.getElementById('li'),ld=document.getElementById('ld');
  if(!r){li.style.width='1080px';ld.style.width='0';return}li.style.width=Math.max(0,r.left-6)+'px';ld.style.left=(r.right+6)+'px';ld.style.width=Math.max(0,1080-r.right-6)+'px'}
