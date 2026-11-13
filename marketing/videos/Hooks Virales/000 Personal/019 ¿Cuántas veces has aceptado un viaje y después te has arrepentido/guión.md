@@ -5,7 +5,7 @@
 **Versión:** Marca personal
 
 ### Guion
-Seguro recuerdas un servicio que no debiste tomar. Empezó pareciendo rápido y terminó consumiendo buena parte de tu turno. Convierte esa experiencia en una regla: identifica qué señal ignoraste y úsala la próxima vez. **[Cierre]** ¿Cuál fue tu peor recorrido?
+Aceptas un viaje porque el pago se ve bien. Luego notas que vas a gastar más tiempo y gasolina de lo que pensabas. A mí me interesa aprender de esos casos: ¿qué dato no tomaste en cuenta? **[Cierre]** Cuéntame cuál ha sido tu peor viaje.
 
 ### Producción
-Grabar en primera persona. Priorizar opinión, experiencia y conversación con conductores; no convertirlo en un anuncio de Checa.
+Habla desde tu experiencia si tienes un caso propio. Si usas una historia de ejemplo, aclara que es ficticia.
