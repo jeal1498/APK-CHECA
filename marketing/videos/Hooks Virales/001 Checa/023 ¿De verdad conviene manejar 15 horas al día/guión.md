@@ -1,11 +1,17 @@
-# 023 — ¿De verdad conviene manejar 15 horas al día?
+# ¿De verdad conviene manejar 15 horas al día?
 
-**Duración estimada:** 20–35 segundos
+**Duración estimada:** 30–40 segundos
 
-**Versión:** Checa
+## Guion
 
-### Guion
-¿De verdad vale la pena manejar quince horas? Más tiempo conectado también puede significar más combustible, cansancio y desgaste. **[Mostrar Checa]** Revisa cuánto producen las ofertas y compara con tus costos. **[Cierre]** Tu salud y seguridad también forman parte de la cuenta.
+Quince horas al volante suenan a mucho trabajo.
 
-### Producción
-Mostrar la interfaz real de Checa cuando se mencione. Usar datos de prueba o autorizados; marcar los ejemplos ficticios. No prometer ganancias ni resultados garantizados.
+Pero la pregunta es: ¿cuánto dinero te queda después de tantas horas?
+
+También debes tomar en cuenta la gasolina, el desgaste del coche y el cansancio.
+
+**[Mostrar una cuenta diaria de ejemplo ficticio]**
+
+Checa te ayuda a evaluar cada oferta, pero también lleva una cuenta de tus gastos y cuida tus horas de descanso.
+
+**Cierre:** Más horas no siempre significan más dinero.
