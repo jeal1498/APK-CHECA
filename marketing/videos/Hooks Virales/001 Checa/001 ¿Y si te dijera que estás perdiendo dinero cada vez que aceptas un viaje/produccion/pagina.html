@@ -1,142 +1,132 @@
 <!doctype html><html><head><meta charset="utf-8"><style>
-@font-face{font-family:"Pix";src:url(../../../estilos/fuentes/press-start-2p-latin-400-normal.woff2)}
+@font-face{font-family:"BG";font-weight:800;src:url(../../../../../../video/hyperframes/checa-marca-v2/assets/fonts/bricolage-grotesque-latin-800-normal.woff2)}
+@font-face{font-family:"DM";font-weight:500;src:url(../../../../../../video/hyperframes/checa-marca-v2/assets/fonts/dm-sans-latin-500-normal.woff2)}
+@font-face{font-family:"DM";font-weight:700;src:url(../../../../../../video/hyperframes/checa-marca-v2/assets/fonts/dm-sans-latin-700-normal.woff2)}
+@font-face{font-family:"JM";font-weight:500;src:url(../../../../../../video/hyperframes/checa-marca-v2/assets/fonts/jetbrains-mono-latin-500-normal.woff2)}
+@font-face{font-family:"JM";font-weight:700;src:url(../../../../../../video/hyperframes/checa-marca-v2/assets/fonts/jetbrains-mono-latin-700-normal.woff2)}
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{width:1080px;height:1920px;overflow:hidden;background:#1A1040;font-family:"Pix";font-weight:400;color:#F4F4EF}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#0C0C10;font-family:"DM";font-weight:700;color:#F4F4EF}
 #via{position:absolute;left:0;top:0}
-#g{position:absolute;left:136px;top:912px;width:808px;height:480px}
+#g{position:absolute;left:136px;top:916px;width:808px;height:480px}
 #g>div{position:absolute;left:0;top:0;will-change:transform,opacity}
-svg{shape-rendering:crispEdges;display:block}
-.t{white-space:nowrap;text-shadow:8px 8px 0 #000}
-.pan{background:#1B1447;border:8px solid #F4F4EF;box-shadow:8px 8px 0 #000}
-.card{width:400px;height:520px;background:#F4F4EF;color:#0C0C10;border:8px solid #0C0C10;box-shadow:8px 8px 0 #000}
+.t{white-space:nowrap;font-family:"BG";font-weight:800;letter-spacing:-2px;line-height:1;text-shadow:0 6px 24px rgba(0,0,0,.7)}
+.card{width:400px;height:520px;background:#fff;color:#0C0C10;border-radius:28px;box-shadow:0 18px 44px rgba(0,0,0,.6)}
 .card>*{position:absolute}
-.tile{width:376px;height:136px;display:flex;align-items:center;gap:20px;padding:0 20px;font-size:26px}
-.pop{width:640px;background:#16161C;border:8px solid #3A3A45;box-shadow:8px 8px 0 #000;text-align:center}
-.mini{width:232px;height:264px;background:#16161C;border:8px solid;box-shadow:8px 8px 0 #000;display:flex;align-items:center;justify-content:center}
-#sub{position:absolute;left:0;top:804px;width:1080px;height:120px;z-index:5;display:flex;align-items:center;justify-content:center;font-size:54px;text-transform:uppercase;white-space:nowrap;-webkit-text-stroke:12px #000;paint-order:stroke fill;text-shadow:8px 8px 0 #000}
-#sub b{display:inline-block;margin:0 14px}
-#ej{position:absolute;left:0;top:1400px;width:1080px;text-align:center;font-size:20px;letter-spacing:2px;color:#B9B3E6}
-#camtxt{position:absolute;left:0;top:0;width:1080px;height:864px;background:#24435d;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:44px;line-height:1.6}
-#camtxt span{font-size:18px;color:#B9C7D6}
-#cam i{position:absolute;left:0;top:858px;width:1080px;height:8px;background:#FACC15}
+.hl{border-radius:8px;padding:0 6px;margin:0 -6px}
+.tile{width:376px;height:136px;border-radius:22px;background:#16161C;border:4px solid #FACC15;display:flex;align-items:center;gap:20px;padding:0 26px;font:800 46px "BG";box-shadow:0 12px 30px rgba(0,0,0,.5)}
+.pop{width:640px;border-radius:48px;background:#16161C;border:10px solid #3A3A45;text-align:center;box-shadow:0 26px 60px rgba(0,0,0,.6)}
+.mini{width:232px;height:264px;border-radius:36px;background:#16161C;border:10px solid;display:flex;align-items:center;justify-content:center;box-shadow:0 18px 40px rgba(0,0,0,.55)}
+#sub{position:absolute;left:0;top:804px;width:1080px;height:120px;z-index:5;display:flex;align-items:center;justify-content:center;font:800 82px/1 "BG";letter-spacing:-1px;text-transform:uppercase;white-space:nowrap;-webkit-text-stroke:16px #0C0C10;paint-order:stroke fill;text-shadow:7px 0 #0C0C10,-7px 0 #0C0C10,0 6px #0C0C10}
+#sub b{display:inline-block;margin:0 16px}
+#ej{position:absolute;left:0;top:1404px;width:1080px;text-align:center;font:700 22px "JM";letter-spacing:4px;color:#6F6F7C}
+#camtxt{position:absolute;left:0;top:0;width:1080px;height:864px;background:#24435d;display:flex;flex-direction:column;align-items:center;justify-content:center;font:800 54px "BG"}
+#camtxt span{font:700 24px "JM";letter-spacing:3px;margin-top:10px}
+#cam i{position:absolute;left:0;top:861px;width:1080px;height:6px;background:#FACC15}
 </style></head><body>
 <svg id="via" width="1080" height="1920" viewBox="0 0 1080 1920"></svg>
-<div id="camtxt">TU CAMARA<span>45 % DE LA PANTALLA</span></div>
+<div id="camtxt">TU CÁMARA<span>45 % DE LA PANTALLA</span></div>
 <div id="cam"><i id="li"></i><i id="ld"></i></div>
-<div id="g"></div><div id="sub"></div><div id="ej">NUMEROS DE EJEMPLO</div>
+<div id="g"></div><div id="sub"></div><div id="ej">NÚMEROS DE EJEMPLO</div>
 <script src="palabras.js"></script>
 <script>
-// CHECA · Hooks Virales 001 · estilo Pixel Art (todo en cuadrícula de 8 px). Eduardo a cámara en el 45 % de arriba; gráficos centrados en el 55 % de abajo.
+// CHECA · Hooks Virales 001 · estilo «Asfalto» (identidad de Checa: asfalto, tablero, hueso; el color solo decide). Eduardo a cámara en el 45 % de arriba.
 if(location.search.includes('llave')){const c=document.getElementById('camtxt');c.innerHTML='';c.style.background='#FF00FF'}
 const Y='#FACC15',R='#EF4444',V='#22C55E',H='#F4F4EF',K='#0C0C10',GR='#A3A3AD';
 const P=D.palabras,TOTAL=D.total,norm=w=>w.toLowerCase().replace(/[¿?¡!.,:;]/g,'');
 function W(k){let[w,n]=k.split('#');n=+(n||0);for(const p of P)if(norm(p[0])===w&&n--===0)return p[1];throw new Error('no está la palabra: '+k)}
-const cl=x=>Math.max(0,Math.min(1,x)),eo=x=>1-Math.pow(1-cl(x),3),mix=(a,b,p)=>a+(b-a)*p,A=(t,a,d)=>eo((t-a)/d),q8=x=>Math.round(x/8)*8;
+const cl=x=>Math.max(0,Math.min(1,x)),eo=x=>1-Math.pow(1-cl(x),3),mix=(a,b,p)=>a+(b-a)*p,A=(t,a,d)=>eo((t-a)/d),q8=x=>x;
 const g=document.getElementById('g'),IT=[],FX=[];
 function C(html,ini,fin,o={}){const d=document.createElement('div');d.innerHTML=html;if(o.z)d.style.zIndex=o.z;g.appendChild(d);IT.push({d,ini,fin,o});return d}
-// sprite de pixeles: filas de letras, paleta {letra: color}, u = tamaño del pixel
-function pix(rows,pal,u){let h='';rows.forEach((r,y)=>[...r].forEach((c,x)=>{if(pal[c])h+='<rect x="'+x*u+'" y="'+y*u+'" width="'+u+'" height="'+u+'" fill="'+pal[c]+'"/>'}));
- return '<svg width="'+rows[0].length*u+'" height="'+rows.length*u+'">'+h+'</svg>'}
-const SP={moneda:["..aaaa..",".abbbba.","abcbbbda","abcbbbda","abbbbbda","abbbbdda",".adddda.","..aaaa.."],
- pin:[".aaaaa.","aaabaaa","aabbbaa","aaabaaa",".aaaaa.","..aaa..","..aaa..","...a..."],
- reloj:["..aaaaa..",".a.....a.","a...a...a","a...a...a","a...aaa.a","a.......a","a.......a",".a.....a.","..aaaaa.."],
- bomba:["aaaaa....","a...a.a..","a...a..a.","aaaaa..a.","aaaaa..a.","aaaaaaaa.","aaaaa....","aaaaa....","aaaaaaa.."],
- ojo:["...aaaaa...","..a.....a..",".a..bbb..a.","a...bbb...a",".a..bbb..a.","..a.....a..","...aaaaa..."],
- ok:["........a",".......aa","a.....aa.","aa...aa..",".aa.aa...","..aaa....","...a....."],
- x:["a.....a","aa...aa",".aa.aa.","..aaa..",".aa.aa.","aa...aa","a.....a"],
- luna:["..aaaa..",".aaaaaa.","aaabaaaa","aaaaaaaa","aaaaabaa","aabaaaaa",".aaaaaa.","..aaaa.."],
- nube:["....aaaa....","..aaaaaaaa..",".aaaaaaaaaa.","aaaaaaaaaaaa","bbbbbbbbbbbb"],
- auto:["....ccccccc.....","...cwwcwwwwc....","..cwwwcwwwwwc...",".cccccccccccccc.","cccccccccccccccy","ccKKcccccccKKccc","..KK.......KK..."]};
-const moneda=u=>pix(SP.moneda,{a:'#7A5500',b:Y,c:'#FFF3B0',d:'#D9A80F'},u);
+const ico=(p,s=64,c=Y,w=2.2)=>'<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="'+w+'" stroke-linecap="round" stroke-linejoin="round" style="flex:none;display:block">'+p+'</svg>';
+const IC={km:'<path d="M12 21s-6-6.1-6-10.5a6 6 0 0112 0C18 14.9 12 21 12 21z"/><circle cx="12" cy="10.5" r="2.2"/>',t:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
+ gas:'<path d="M4 21V5a2 2 0 012-2h6a2 2 0 012 2v16M3 21h12M6 8h6M14 11h2a2 2 0 012 2v4a1.5 1.5 0 003 0V8l-3-3"/>',x:'<path d="M5 5l14 14M19 5L5 19"/>',ok:'<path d="M4 12.5l5.5 5.5L20 6.5"/>',
+ ojo:'<path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3" fill="'+Y+'" stroke="'+Y+'"/>'};
+const moneda=s=>'<div style="width:'+s+'px;height:'+s+'px;border-radius:50%;background:'+Y+';border:'+Math.round(s/14)+'px solid #B98206;color:#7A5500;font:800 '+Math.round(s*.6)+'px/'+Math.round(s*.86)+'px \'BG\';text-align:center;box-shadow:0 6px 14px rgba(0,0,0,.5)">$</div>';
 const s2=W('cuando')-.12,s3=W('también')-.12,s4=W('con#1')-.12,s5=W('porque')-.12,s6=W('tu')-.12;
 
 // ── 1 · «¿…algunos viajes te dejan mucho menos dinero del que piensas?»  ACCIÓN: una pila alta de 8 monedas pierde 5.
-C('<div class="t" style="font-size:60px;line-height:1.35">ALGUNOS<br>VIAJES</div>',0,s2+.15,{fx:(t,d)=>{d.style.transform='translate(264px,48px)';d.style.opacity=cl((s2+.15-t)/.15)}});
+C('<div class="t" style="font-size:104px">ALGUNOS<br>VIAJES</div>',0,s2+.15,{fx:(t,d)=>{d.style.transform='translate(250px,24px)';d.style.opacity=cl((s2+.15-t)/.15)}});
 for(let k=0;k<8;k++){const y0=376-k*44,a=W('mucho')+(7-k)*.13;
- C(moneda(11),0,k<3?W('oferta'):a+.7,{z:10-k,fx:(t,d)=>{let x=88,y=y0,o=1,s=1;
+ C(moneda(88),0,k<3?W('oferta'):a+.7,{z:10-k,fx:(t,d)=>{let x=88,y=y0,o=1,s=1;
   if(k>=3){const p=cl((t-a)/.6);x+=q8(-90*p);y+=q8(-90*p+560*p*p);o=1-cl((p-.7)/.3)}
   else{const p=A(t,s2,.5);x=q8(mix(88,64,p));y=q8(mix(y0,120,p));s=mix(1,.6,p);o=1-cl((t-W('oferta')+.25)/.2)}
   d.style.transform='translate('+x+'px,'+y+'px) scale('+s+')';d.style.opacity=o}})}
-C('<div class="t" style="font-size:64px;line-height:1.35"><span style="color:'+R+'">MENOS</span><br>DINERO</div>',W('menos'),s2+.15,{fx:(t,d)=>{const p=A(t,W('menos'),.25);d.style.transform='translate(264px,'+q8(256+24*(1-p))+'px)';d.style.opacity=Math.min(cl((t-W('menos'))/.1),cl((s2+.15-t)/.15))}});
+C('<div class="t" style="font-size:104px"><span style="color:'+R+'">MENOS</span><br>DINERO</div>',W('menos'),s2+.15,{fx:(t,d)=>{const p=A(t,W('menos'),.25);d.style.transform='translate(250px,'+q8(252+24*(1-p))+'px)';d.style.opacity=Math.min(cl((t-W('menos'))/.1),cl((s2+.15-t)/.15))}});
 
 // ── 2 · «Cuando recibes una oferta, no basta con mirar cuánto vas a cobrar.»  ACCIÓN: las monedas se vuelven la oferta; un ojo mira solo el precio.
-const card=C('<div class="card"><div style="left:20px;top:20px;padding:8px 12px;background:#0C0C10;color:#F4F4EF;font-size:22px">VIAJE</div>'
- +'<div id="precio" style="left:12px;top:80px;padding:0 12px;border:8px solid transparent;font-size:96px;line-height:1.3">$85</div>'
- +'<div style="left:28px;top:270px;font-size:22px"><span class="m">6 min</span> · <span class="k">2.1 km</span></div>'
- +'<div style="left:28px;top:330px;font-size:21px"><span class="m">24 min</span> · <span class="k">11.4 km</span></div>'
- +'<div style="left:20px;right:20px;bottom:20px;height:80px;background:#0C0C10;color:#F4F4EF;font-size:28px;line-height:80px;text-align:center">ACEPTAR</div></div>',W('oferta')-.3,s5+.3,{fx:(t,d)=>{
+const card=C('<div class="card"><div style="left:24px;top:22px;padding:6px 18px;border-radius:9px;background:#0C0C10;color:#fff;font-size:26px">Viaje</div>'
+ +'<div id="precio" style="left:12px;top:80px;padding:0 12px;border:6px solid transparent;border-radius:18px;font:800 124px/1.1 \'BG\';letter-spacing:-4px">$85</div>'
+ +'<div style="left:30px;top:252px;font-size:31px">A <span class="hl m">6 min</span> (<span class="hl k">2.1 km</span>)</div>'
+ +'<div style="left:30px;top:316px;font-size:31px">Viaje: <span class="hl m">24 min</span> (<span class="hl k">11.4 km</span>)</div>'
+ +'<div style="left:20px;right:20px;bottom:22px;height:80px;border-radius:14px;background:#0C0C10;color:#fff;font-size:32px;line-height:80px;text-align:center">Aceptar</div></div>',W('oferta')-.3,s5+.3,{fx:(t,d)=>{
   const e=A(t,W('oferta')-.3,.4),m=A(t,s4,.45),f=A(t,s5,.3);let x=24,y=mix(120,8,e),s=mix(.3,.88,e);
   x=mix(x,0,m);y=mix(y,136,m);s=mix(s,.4,m);d.style.transformOrigin='0 0';d.style.transform='translate('+q8(x)+'px,'+q8(y)+'px) scale('+s+')';d.style.opacity=Math.min(cl((t-W('oferta')+.3)/.12),1-f)}});
 const precio=card.querySelector('#precio'),ks=card.querySelectorAll('.k'),ms=card.querySelectorAll('.m');
 FX.push(t=>{const on=t>=W('cuánto')&&t<s3;precio.style.borderColor=on?Y:'transparent';precio.style.background=on?'#FDE98A':'transparent';precio.style.opacity=t>=s3+.3&&t<s4?.35:1;
  ks.forEach(e=>e.style.background=t>=W('kilómetros')?Y:'transparent');ms.forEach(e=>e.style.background=t>=W('tiempo')?Y:'transparent')});
-C(pix(SP.ojo,{a:H,b:Y},14),W('mirar'),s3,{fx:(t,d)=>{const p=A(t,W('mirar'),.3);d.style.transform='translate('+q8(mix(600,416,p))+'px,96px)';d.style.opacity=Math.min(cl((t-W('mirar'))/.1),cl((s3-t)/.12))}});
-C('<div class="t" style="display:flex;align-items:center;gap:24px;font-size:64px;line-height:1.3">'+pix(SP.x,{a:R},12)+'<div>NO<br>BASTA</div></div>',W('no'),s3,{fx:(t,d)=>{const p=A(t,W('no'),.25);d.style.transform='translate(408px,'+q8(256+24*(1-p))+'px)';d.style.opacity=Math.min(cl((t-W('no'))/.1),cl((s3-t)/.12))}});
+C(ico(IC.ojo,150,H,1.8),W('mirar'),s3,{fx:(t,d)=>{const p=A(t,W('mirar'),.3);d.style.transform='translate('+q8(mix(600,404,p))+'px,60px)';d.style.opacity=Math.min(cl((t-W('mirar'))/.1),cl((s3-t)/.12))}});
+C('<div class="t" style="display:flex;align-items:center;gap:16px;font-size:100px">'+ico(IC.x,110,R,3.4)+'<div>NO<br>BASTA</div></div>',W('no'),s3,{fx:(t,d)=>{const p=A(t,W('no'),.25);d.style.transform='translate(392px,'+q8(236+24*(1-p))+'px)';d.style.opacity=Math.min(cl((t-W('no'))/.1),cl((s3-t)/.12))}});
 
 // ── 3 · «También cuentan los kilómetros, el tiempo y la gasolina.»  ACCIÓN: de la oferta salen los tres datos.
-const TY=[8,160,312],TW=['kilómetros','tiempo','gasolina'],TN=['KM','TIEMPO','GASOLINA'],TS=[SP.pin,SP.reloj,SP.bomba],DE=[[220,250],[90,240],[200,400]];
-TW.forEach((w,k)=>{const a=W(w);C('<div class="pan tile">'+pix(TS[k],{a:Y,b:K},8)+TN[k]+'</div>',a,W('checa')+.35,{z:3,fx:(t,d)=>{const p=A(t,a,.35),m=A(t,W('checa')-.1,.4);
+const TY=[8,160,312],TW=['kilómetros','tiempo','gasolina'],TN=['Kilómetros','Tiempo','Gasolina'],TS=[IC.km,IC.t,IC.gas],DE=[[220,250],[90,240],[200,400]];
+TW.forEach((w,k)=>{const a=W(w);C('<div class="tile">'+ico(TS[k])+TN[k]+'</div>',a,W('checa')+.35,{z:3,fx:(t,d)=>{const p=A(t,a,.35),m=A(t,W('checa')-.1,.4);
   let x=mix(DE[k][0],416,p),y=mix(DE[k][1],TY[k],p),s=mix(.2,1,p);x=mix(x,420,m);y=mix(y,200,m);s=mix(s,.25,m);
   d.style.transformOrigin='0 0';d.style.transform='translate('+q8(x)+'px,'+q8(y)+'px) scale('+s+')';d.style.opacity=Math.min(cl((t-a)/.1),1-cl((m-.6)/.4))}})});
 
 // ── 4 · «Con Checa puedes ver datos clave de cada oferta antes de tomar una decisión.»  ACCIÓN: los tres datos se funden en el pop-up de Checa, que da el veredicto.
 // Cuentas con las fórmulas de la app (Parser.kt): $85, 30 min y 13.5 km totales → $170/h y $6.3/km (metas $200/h y $10/km: no cumple ninguna → RECHAZAR); gasolina 13.5 ÷ 12 × 24 = $27 → te quedan $58.
-const pop=C('<div class="pop"><div id="ph" style="padding-top:28px;font-size:40px;letter-spacing:4px;color:'+GR+'">···</div>'
- +'<div style="position:absolute;right:16px;top:16px">'+pix(SP.x,{a:GR},6)+'</div>'
- +'<div style="font-size:128px;line-height:1.35">$58</div>'
- +'<div style="display:flex;justify-content:center;gap:20px;font-size:30px"><span class="me">$170/h</span><span style="color:#55556A">|</span><span class="me">$6.3/km</span></div>'
- +'<div style="padding:26px 0 30px;font-size:24px;color:'+GR+'">30 min (13.5 km) total</div></div>',W('checa')-.05,s5+.5,{z:4,fx:(t,d)=>{
+const pop=C('<div class="pop"><div id="ph" style="padding-top:24px;font:800 54px/1.15 \'BG\';letter-spacing:6px;color:'+GR+'">···</div>'
+ +'<div style="position:absolute;right:24px;top:24px">'+ico(IC.x,40,GR,3)+'</div>'
+ +'<div style="font:800 176px/1.08 \'BG\';letter-spacing:-4px">$58</div>'
+ +'<div style="display:flex;justify-content:center;gap:22px;font:500 42px \'JM\';white-space:nowrap"><span class="me">$170/h</span><span style="color:#55556A">|</span><span class="me">$6.3/km</span></div>'
+ +'<div style="padding:18px 0 28px;font:500 32px \'JM\';color:'+GR+'">30 min (13.5 km) total</div></div>',W('checa')-.05,s5+.5,{z:4,fx:(t,d)=>{
   const a=W('checa')-.05,p=A(t,a,.4),m=A(t,s5,.5),x=mix(176,24,m),y=mix(mix(96,40,p),184,m),s=mix(mix(.3,.96,p),.36,m);
   d.style.transformOrigin=m>0?'0 0':'50% 50%';d.style.transform='translate('+q8(x)+'px,'+q8(y)+'px) scale('+(s+.04*Math.sin(Math.PI*cl((t-W('decisión'))/.35)))+')';d.style.opacity=Math.min(cl((t-a)/.1),1-cl((m-.75)/.25))}});
 const ph=pop.querySelector('#ph'),pp=pop.firstChild,mes=pop.querySelectorAll('.me');
-FX.push(t=>{const dato=t>=W('datos'),dec=t>=W('decisión');mes.forEach(e=>{e.style.color=dato?R:GR;e.textContent=(dato?'X ':'')+e.textContent.replace('X ','')});
- ph.textContent=dec?'RECHAZAR':'···';ph.style.color=dec?R:GR;pp.style.borderColor=dec?R:'#3A3A45'});
+FX.push(t=>{const dato=t>=W('datos'),dec=t>=W('decisión');mes.forEach(e=>{e.style.color=dato?R:GR;e.textContent=(dato?'✕ ':'')+e.textContent.replace('✕ ','')});
+ ph.textContent=dec?'RECHAZAR':'···';ph.style.color=dec?R:GR;pp.style.borderColor=dec?R:'#3A3A45';pp.style.boxShadow=dec?'0 0 90px rgba(239,68,68,.4),0 26px 60px rgba(0,0,0,.6)':''});
 
 // ── 5 · «Porque no se trata de aceptar más viajes. Se trata de elegir mejor.»  ACCIÓN: el pop-up se vuelve una de tres ofertas; las dos malas caen y la buena crece.
 const MX=[24,288,552],MA=[s5+.3,W('más'),W('viajes#1')],el=W('elegir');
-[0,1,2].forEach(k=>C('<div class="mini" style="border-color:'+(k<2?R:V)+'">'+(k<2?pix(SP.x,{a:R},18):pix(SP.ok,{a:V},18))+'</div>',MA[k],k<2?el+.8:s6+.45,{z:k==2?5:2,fx:(t,d)=>{
+[0,1,2].forEach(k=>C('<div class="mini" style="border-color:'+(k<2?R:V)+'">'+(k<2?ico(IC.x,130,R,3.2):ico(IC.ok,140,V,3.2))+'</div>',MA[k],k<2?el+.8:s6+.45,{z:k==2?5:2,fx:(t,d)=>{
   const p=A(t,MA[k],.3),f=cl((t-el-(k*.12))/.6);let x=MX[k],y=184,s=mix(.6,1,p),o=cl((t-MA[k])/.1);
   if(k<2&&t>=el){y+=q8(600*f*f);o=1-cl((f-.6)/.4)}
   if(k==2){const c=A(t,el+.1,.45),z=A(t,s6,.45);x=mix(x,288,c);y=mix(y,168,c);s=mix(s,1.15,c);x=mix(x,8,z);y=mix(y,104,z);s=mix(s,.9,z);o=Math.min(o,1-cl((z-.6)/.4))}
   d.style.transform='translate('+q8(x)+'px,'+q8(y)+'px) scale('+s+')';d.style.opacity=o}}));
-C('<div class="t" style="width:808px;text-align:center;font-size:64px;position:relative">MAS VIAJES<div id="tacha" style="position:absolute;left:76px;top:24px;height:16px;background:'+R+';box-shadow:8px 8px 0 #000"></div></div>',W('más'),el,{fx:(t,d)=>{const p=A(t,W('más'),.25);
-  d.style.transform='translateY('+q8(48+24*(1-p))+'px)';d.style.opacity=Math.min(cl((t-W('más'))/.1),cl((el-t)/.12));d.querySelector('#tacha').style.width=q8(656*cl((t-W('viajes#1')-.2)/.25))+'px'}});
-C('<div class="t" style="width:808px;text-align:center;font-size:64px">ELEGIR <span style="color:'+V+'">MEJOR</span></div>',el,s6+.1,{fx:(t,d)=>{const p=A(t,el,.25);d.style.transform='translateY('+q8(48+24*(1-p))+'px)';d.style.opacity=Math.min(cl((t-el)/.1),cl((s6+.1-t)/.12))}});
+C('<div class="t" style="width:808px;text-align:center;font-size:104px;position:relative">MÁS VIAJES<div id="tacha" style="position:absolute;left:120px;top:48px;height:14px;border-radius:7px;background:'+R+'"></div></div>',W('más'),el,{fx:(t,d)=>{const p=A(t,W('más'),.25);
+  d.style.transform='translateY('+q8(48+24*(1-p))+'px)';d.style.opacity=Math.min(cl((t-W('más'))/.1),cl((el-t)/.12));d.querySelector('#tacha').style.width=q8(568*cl((t-W('viajes#1')-.2)/.25))+'px'}});
+C('<div class="t" style="width:808px;text-align:center;font-size:104px">ELEGIR <span style="color:'+V+'">MEJOR</span></div>',el,s6+.1,{fx:(t,d)=>{const p=A(t,el,.25);d.style.transform='translateY('+q8(48+24*(1-p))+'px)';d.style.opacity=Math.min(cl((t-el)/.1),cl((s6+.1-t)/.12))}});
 
 // ── 6 · «Tu trabajo vale. Asegúrate de que cada viaje también.»  ACCIÓN: la oferta buena se vuelve el semáforo de Checa; se encienden rojo, ámbar y verde con ✓.
 const LUZ=['tu','trabajo','vale'];
-C('<div id="sem"></div>',s6+.2,1e9,{fx:(t,d)=>{const on=k=>t>=W(LUZ[k]),r=on(0)?R:'#4A1E1E',a=on(1)?Y:'#4A3F12',v=on(2)?V:'#123D22';
-  const rows=['.kkkkkkk.','kkkkkkkkk'];[['r'],['a'],['v']].forEach(([c],i)=>{for(let j=0;j<5;j++)rows.push('kk'+(i==2&&on(2)?['vvvvw','vvvww','wvwwv','wwwvv','vwvvv'][j]:c.repeat(5))+'kk');rows.push('kkkkkkkkk')});rows.push('.kkkkkkk.');
-  d.firstChild.innerHTML=pix(rows,{k:'#16161C',r,a,v,w:H},16);const p=A(t,s6+.2,.4);d.style.transform='translate(56px,'+q8(mix(96,48,p))+'px) scale('+mix(.5,1,p)+')';d.style.transformOrigin='50% 50%';d.style.opacity=cl((t-s6-.2)/.15)}});
-C('<div class="t" style="font-size:52px;line-height:1.4">TU TRABAJO<br><span style="color:'+V+'">VALE</span></div>',W('tu'),W('cada#1'),{fx:(t,d)=>{d.style.transform='translate(256px,64px)';d.style.opacity=Math.min(cl((t-W('tu'))/.1),cl((W('cada#1')-t)/.12))}});
-C('<div class="t" style="font-size:52px;line-height:1.4">CADA VIAJE<br><span style="color:'+V+'">TAMBIEN</span></div>',W('cada#1'),1e9,{fx:(t,d)=>{d.style.transform='translate(256px,64px)';d.style.opacity=cl((t-W('cada#1'))/.1)}});
-C('<div class="t" style="font-size:100px;letter-spacing:4px">CHECA</div>',W('cada#1'),1e9,{fx:(t,d)=>{const p=A(t,W('cada#1'),.3);d.style.transform='translate(256px,'+q8(280+24*(1-p))+'px)';d.style.opacity=cl((t-W('cada#1'))/.1)}});
+C('<div style="width:132px;height:372px;border-radius:44px;background:#16161C;border:5px solid #F4F4EF;padding:22px 21px;display:flex;flex-direction:column;gap:22px;box-shadow:0 18px 40px rgba(0,0,0,.55)"><i></i><i></i><i>'+ico(IC.ok,58,'#04210F',3.6)+'</i></div>',s6+.2,1e9,{fx:(t,d)=>{
+  const L=d.firstChild.children,on=k=>t>=W(LUZ[k]),c=[[R,'#4A1E1E'],[Y,'#4A3F12'],[V,'#123D22']];
+  for(let k=0;k<3;k++)L[k].style.cssText='width:80px;height:80px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;background:'+c[k][on(k)?0:1]+';box-shadow:'+(on(k)?'0 0 40px '+c[k][0]:'none');
+  L[2].firstChild.style.opacity=on(2)?1:0;const p=A(t,s6+.2,.4);d.style.transform='translate(48px,'+mix(96,44,p)+'px) scale('+mix(.5,1,p)+')';d.style.opacity=cl((t-s6-.2)/.15)}});
+C('<div class="t" style="font-size:92px">TU TRABAJO<br><span style="color:'+V+'">VALE</span></div>',W('tu'),W('cada#1'),{fx:(t,d)=>{d.style.transform='translate(240px,40px)';d.style.opacity=Math.min(cl((t-W('tu'))/.1),cl((W('cada#1')-t)/.12))}});
+C('<div class="t" style="font-size:92px">CADA VIAJE<br><span style="color:'+V+'">TAMBIÉN</span></div>',W('cada#1'),1e9,{fx:(t,d)=>{d.style.transform='translate(240px,40px)';d.style.opacity=cl((t-W('cada#1'))/.1)}});
+C('<div class="t" style="font-size:150px;letter-spacing:-5px">Checa</div>',W('cada#1'),1e9,{fx:(t,d)=>{const p=A(t,W('cada#1'),.3);d.style.transform='translate(236px,'+q8(262+24*(1-p))+'px)';d.style.opacity=cl((t-W('cada#1'))/.1)}});
 
-// ── fondo: noche en pixel, estrellas que parpadean, luna, nubes moradas, ciudad con ventanas encendidas y un auto que pasa
-const via=document.getElementById('via'),rnd=n=>{const x=Math.sin(n*127.1)*43758.5453;return x-Math.floor(x)};
-const EDI=Array.from({length:11},(_,i)=>({x:i*104-24,w:88+q8(rnd(i)*24),h:192+q8(rnd(i+9)*208),c:i%2?'#120C30':'#0B071F'}));
-function fondo(t){let h='';['#1A1040','#20144C','#271A5A','#2E2068','#352676','#3B2C84'].forEach((c,i)=>h+='<rect y="'+(864+i*136)+'" width="1080" height="400" fill="'+c+'"/>');
- for(let i=0;i<70;i++){const o=.35+.65*Math.abs(Math.sin(t*1.2+i*1.7));h+='<rect x="'+q8(rnd(i)*1080)+'" y="'+(872+q8(rnd(i+50)*640))+'" width="8" height="8" fill="#F4F4EF" opacity="'+(o>.6?1:.35)+'"/>'}
- h+='<g transform="translate(952,888)">'+pix(SP.luna,{a:'#FFF3B0',b:'#D9C777'},14).replace(/<\/?svg[^>]*>/g,'')+'</g>';
- [[0,1420,7,10],[500,1470,5,6],[900,1400,6,12]].forEach(([x,y,v,u])=>h+='<g transform="translate('+(q8((x+t*v)%1300)-160)+','+y+')" opacity=".9">'+pix(SP.nube,{a:'#9B7BE8',b:'#7A5CC9'},u).replace(/<\/?svg[^>]*>/g,'')+'</g>');
- EDI.forEach((e,i)=>{const y=1848-e.h;h+='<rect x="'+e.x+'" y="'+y+'" width="'+e.w+'" height="'+e.h+'" fill="'+e.c+'"/>';
-  for(let yy=y+24;yy<1824;yy+=32)for(let xx=e.x+16;xx<e.x+e.w-16;xx+=24){const r=rnd(xx*3.1+yy*7.3+i);if(r>.42){const par=r>.93&&Math.sin(t*2+xx)>0;h+='<rect x="'+xx+'" y="'+yy+'" width="8" height="16" fill="'+(par?'#7A5500':'#FACC15')+'"/>'}}});
- h+='<rect y="1848" width="1080" height="72" fill="#07050F"/>';for(let k=0;k<8;k++)h+='<rect x="'+(k*160+40)+'" y="1880" width="64" height="8" fill="#55508A"/>';
- h+='<g transform="translate('+(q8((t*170)%1500)-250)+',1800)">'+pix(SP.auto,{c:R,w:'#BFE3FF',K:'#000',y:Y},10).replace(/<\/?svg[^>]*>/g,'')+'</g>';via.innerHTML=h}
+// ── fondo «Asfalto»: la calle de noche; luces del semáforo desenfocadas y carretera con la raya punteada amarilla que avanza
+const via=document.getElementById('via'),BK=[[90,1010,70,R,.5],[1010,1090,56,Y,.45],[70,1330,50,V,.4],[990,1380,74,R,.3],[200,1500,40,Y,.3],[900,940,34,V,.35],[1020,1620,46,V,.25],[60,1700,52,R,.25]];
+function fondo(t){let h='<defs><filter id="bk" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="26"/></filter><linearGradient id="pis" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#16161C"/><stop offset="1" stop-color="#0C0C10"/></linearGradient></defs><rect y="864" width="1080" height="1056" fill="#0C0C10"/><g filter="url(#bk)">';
+ BK.forEach(([x,y,r,c,o],i)=>h+='<circle cx="'+(x+10*Math.sin(t*.5+i))+'" cy="'+(y+8*Math.cos(t*.4+i*2))+'" r="'+r+'" fill="'+c+'" opacity="'+(o*(.75+.25*Math.sin(t*1.3+i*1.9)))+'"/>');
+ h+='</g><path d="M540 1430L-200 1920H1280z" fill="url(#pis)"/><path d="M540 1430L-200 1920M540 1430L1280 1920" stroke="#F4F4EF" stroke-opacity=".14" stroke-width="5" fill="none"/><g fill="#FACC15">';
+ const N=5,v=.5;for(let k=0;k<N;k++){const u=((k+t*v)%N)/N,u2=Math.min(1,u+.45/N),y1=1430+490*u*u,y2=1430+490*u2*u2,w1=4+38*u*u,w2=4+38*u2*u2;h+='<path d="M'+(540-w1/2)+' '+y1+'h'+w1+'L'+(540+w2/2)+' '+y2+'h'+(-w2)+'z"/>'}
+ h+='</g>';via.innerHTML=h}
 
-// La letra de pixel no trae mayúsculas con acento: los rótulos y subtítulos van sin tilde.
 // ── subtítulos (estilo B en pixel): solo se destaca la palabra que suena, en el momento exacto
 const GRU=[];{let c=[];const cierra=()=>{if(c.length)GRU.push(c);c=[]};
- P.forEach(p=>{if(c.length&&(c.length>=3||c.map(q=>q[0]).join(' ').length+p[0].length>13))cierra();c.push(p);if(/[.,?]$/.test(p[0]))cierra()});cierra()}
+ P.forEach(p=>{if(c.length&&(c.length>=3||c.map(q=>q[0]).join(' ').length+p[0].length>15))cierra();c.push(p);if(/[.,?]$/.test(p[0]))cierra()});cierra()}
 const sub=document.getElementById('sub'),CLAVE={dinero:V,gasolina:R,menos:R,checa:V,mejor:V,vale:V,rechazar:R};
 function subt(t){let i=-1;GRU.forEach((c,k)=>{if(t>=c[0][1]-.04)i=k});
  if(i<0||(i===GRU.length-1&&t>GRU[i][GRU[i].length-1][2]+.6)){sub.innerHTML='';return}
  let act=null;GRU[i].forEach(p=>{if(t>=p[1]-.04)act=p});if(act&&t>=act[2]+.05)act=null;
- sub.innerHTML=GRU[i].map(p=>'<b style="color:'+(p===act?(CLAVE[norm(p[0])]||Y):H)+'">'+p[0].replace(/[.,]/g,'').normalize('NFD').replace(/[\u0300-\u036f]/g,'')+'</b>').join('')}
+ sub.innerHTML=GRU[i].map(p=>'<b style="color:'+(p===act?(CLAVE[norm(p[0])]||Y):H)+'">'+p[0].replace(/[.,]/g,'')+'</b>').join('')}
 const ej=document.getElementById('ej');
 // la raya amarilla de la frontera se abre para dejar pasar el subtítulo
 function raya(){const b=sub.children,li=document.getElementById('li'),ld=document.getElementById('ld');if(!b.length){li.style.width='1080px';ld.style.width='0';return}
- const a=b[0].getBoundingClientRect().left-24,z=b[b.length-1].getBoundingClientRect().right+24;li.style.width=q8(Math.max(0,a))+'px';ld.style.left=q8(z)+'px';ld.style.width=Math.max(0,1080-q8(z))+'px'}
+ const a=b[0].getBoundingClientRect().left-24,z=b[b.length-1].getBoundingClientRect().right+24;li.style.width=Math.max(0,a)+'px';ld.style.left=z+'px';ld.style.width=Math.max(0,1080-z)+'px'}
 window.seek=t=>{for(const{d,ini,fin,o}of IT){const on=t>=ini&&t<fin;d.style.display=on?'':'none';if(on)o.fx(t,d)}
  FX.forEach(f=>f(t));subt(t);fondo(t);raya();ej.style.opacity=t>=W('oferta')-.3&&t<s5+.3?1:0};
 window.TOTAL=TOTAL;seek(+(new URLSearchParams(location.search).get('t')||0));
