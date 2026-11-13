@@ -5,7 +5,7 @@
 **Versión:** Marca personal
 
 ### Guion
-Tu coche no avisa cuando le agregas otros cincuenta kilómetros, pero el desgaste sigue ahí. Los servicios, las llantas y las piezas se acercan a su reemplazo. Reserva dinero para mantenimiento: esos recorridos no son gratis. **[Cierre]** ¿Tienes un fondo para tu auto?
+Cada día que sales a manejar, tu coche suma kilómetros y desgaste. La gasolina no es el único gasto: también están las llantas, los frenos y el servicio. Si no apartas dinero para eso, un día te puede tomar por sorpresa. **[Cierre]** ¿Tienes dinero guardado para el cuidado de tu coche?
 
 ### Producción
-Grabar en primera persona. Priorizar opinión, experiencia y conversación con conductores; no convertirlo en un anuncio de Checa.
+Graba detalles del coche y habla a cámara. No uses tomas mientras conduces.
