@@ -98,9 +98,9 @@ const card=C('<div class="card">'
 const precio=card.querySelector('#precio'),ks=card.querySelectorAll('.k'),ms=card.querySelectorAll('.m');
 FX.push(t=>{const a=W('cuánto');precio.style.borderColor=t>=a&&t<s3?Y:'transparent';precio.style.background=t>=a&&t<s3?'rgba(250,204,21,.25)':'transparent';precio.style.opacity=t>=s3+.3?.3:1;
  const on=(els,a)=>els.forEach(e=>{e.style.background=t>=a?Y:'transparent'});on(ks,W('kilómetros'));on(ms,W('tiempo'))});
-C('<div style="padding:14px 30px 18px;border-radius:22px;background:#0C0C10;border:3px solid '+R+';font:800 54px/1 \'Bricolage Grotesque\';white-space:nowrap">NO SOLO <span id="cp" style="color:'+Y+'">cuánto paga</span></div>',W('solo'),s3,96,392,{pop:1})
+C('<div style="width:785px;display:flex;justify-content:center"><div style="padding:14px 30px 18px;border-radius:22px;background:#0C0C10;border:3px solid '+R+';font:800 54px/1 \'Bricolage Grotesque\';white-space:nowrap">NO SOLO<span id="cp" style="color:'+Y+'"> cuánto paga</span></div></div>',W('solo'),s3,0,392,{pop:1})
  .querySelector('#cp').id='cp';
-FX.push(t=>{document.getElementById('cp').style.opacity=t>=W('cuánto')?1:.0});
+FX.push(t=>{document.getElementById('cp').style.display=t>=W('cuánto')?'':'none'}); // el letrero crece con su texto: nunca queda un hueco esperando
 
 // ── 3 · «Ten en cuenta los kilómetros, el tiempo y la gasolina que vas a gastar.»  ACCIÓN: la oferta se aleja y de ella salen los tres datos.
 const RY=[36,180,324],RK=['kilómetros','tiempo','gasolina'],RN=['Kilómetros','Tiempo','Gasolina'],RI=[I.km,I.t,I.gas],DE=[[170,250],[110,205],[170,330]];
@@ -123,14 +123,14 @@ const barra=C('<div style="width:100%;height:100%;border-radius:14px;background:
   const g=A(t,W('pago'),W('alto')+.15-W('pago')),n=[0,1,2].reduce((s,k)=>s+A(t,W(['no#1','siempre','significa'][k]),.3),0),v=A(t,W('quedar'),.3),b=A(t,s5,.45);
   const h=mix(mix(mix(60,BH,g),RES,n/3),88,b),w=mix(BW,360,b),x=mix(BX,212,b),y=mix(BY+BH-h,396,b);
   d.style.left=x+'px';d.style.top=y+'px';d.style.width=w+'px';d.style.height=h+'px';
-  const f=d.firstChild;f.style.background=v>0?V:H;f.style.borderRadius=mix(14,44,b)+'px';f.firstChild.textContent=t>=W('aceptar')?'Aceptar':'';
+  const f=d.firstChild;f.style.background=v>0?V:H;f.style.borderRadius=mix(14,44,b)+'px';f.firstChild.textContent=b>.55?'Aceptar':'';f.firstChild.style.opacity=cl((b-.55)/.3);
   d.style.transform='scale('+(1+.08*Math.sin(Math.PI*cl((t-W('quedar'))/.4))+.08*Math.sin(Math.PI*cl((t-W('aceptar'))/.4)))+')'}});
 C('<div style="width:260px;text-align:right;font:800 64px/.95 \'Bricolage Grotesque\';letter-spacing:-2px">PAGO<br>ALTO</div>',W('pago'),s5,20,176);
 C('<div style="width:270px;font:800 56px/.95 \'Bricolage Grotesque\';letter-spacing:-2px;color:'+V+'">TE<br>QUEDA</div>',W('quedar'),s5,515,340,{pop:1});
 
 // ── 5 · «¿Qué dato tomas en cuenta antes de aceptar?»  ACCIÓN: los íconos vuelan a 4 opciones y lo que quedó se vuelve el botón «Aceptar».
 C('<div style="width:785px;text-align:center;font:800 68px/1 \'Bricolage Grotesque\';letter-spacing:-2px">¿Qué dato tomas?</div>',s5+.05,1e9,0,30);
-['Pago','Kilómetros','Tiempo','Gasolina'].forEach((x,k)=>{const a=k?W('dato')+(k-1)*.2:W('dato')-.2,fin=W('aceptar')+.9;
+['Pago','Kilómetros','Tiempo','Gasolina'].forEach((x,k)=>{const a=k?W('dato')+(k-1)*.2+.28:W('dato')-.2,fin=W('aceptar')+.9;
  C('<div class="chip" style="justify-content:flex-start;padding-left:'+(k?96:28)+'px;gap:16px">'+(k?'':moneda(52,Y))+x+'</div>',a,1e9,22+(k%2)*378,130+(k>>1)*120,{fx:(t,d)=>{const p=A(t,a,.3),on=t>fin&&Math.floor((t-fin)/.5)%4===k;
   d.style.transform='scale('+mix(.8,1,p)+')';d.style.opacity=cl((t-a)/.12);d.firstChild.style.borderColor=on?Y:H}})});
 
