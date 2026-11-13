@@ -14,7 +14,9 @@ body.marco #sub,body.marco #g,body.marco #camtxt,body.marco #bajo{display:none}
 #sub{position:absolute;left:72px;top:789px;width:785px;height:150px;z-index:5;display:flex;align-items:center;justify-content:center;font:800 64px/1 "Bricolage Grotesque";letter-spacing:-1px;white-space:nowrap;text-shadow:0 4px 14px rgba(0,0,0,.6)}
 .pas{background:#0C0C10;border-radius:22px;padding:14px 18px 18px;border:3px solid #FACC15}
 #sub b{font-weight:800;margin:0 9px}
-#bajo{position:absolute;left:0;top:864px;width:1080px;height:1056px;background:#16161C}
+#bajo{position:absolute;left:0;top:864px;width:1080px;height:1056px;background:#16161C;overflow:hidden}
+#luz{position:absolute;left:-136px;top:-150px;width:1200px;height:900px;border-radius:50%;filter:blur(40px)}
+#via{position:absolute;left:0;top:0}
 #g{position:absolute;left:72px;top:912px;width:785px;height:510px;overflow:hidden}
 #g>div{position:absolute;left:0;top:0;will-change:transform,opacity}
 .mono{font:700 26px "JetBrains Mono";letter-spacing:3px;color:#A3A3AD;text-transform:uppercase}
@@ -39,7 +41,8 @@ body.marco #sub,body.marco #g,body.marco #camtxt,body.marco #bajo{display:none}
 <text x="985" y="520" font-family="JetBrains Mono" font-weight="700" font-size="22" fill="#F4F4EF" text-anchor="middle" transform="rotate(90 985 520)">BOTONES DE TIKTOK</text>
 </svg>
 <div id="cam"><i></i></div>
-<div id="bajo"></div>
+<div id="bajo"><div id="luz"></div><svg id="via" width="1080" height="1056" viewBox="0 0 1080 1056">
+<path d="M464 0L-120 1056H1048z" fill="#1C1C24"/><path d="M464 0L-120 1056M464 0L1048 1056" stroke="#F4F4EF" stroke-opacity=".13" stroke-width="5" fill="none"/><g id="rayas" fill="#FACC15" fill-opacity=".30"></g></svg></div>
 <div id="sub"></div>
 <div id="g"></div>
 <script src="palabras.js"></script>
@@ -112,7 +115,7 @@ RK.forEach((w,k)=>{const a=W(w);
 
 // ── 4 · «Un pago alto no siempre significa que te va a quedar más dinero.»  ACCIÓN: el precio se vuelve una barra alta; km, tiempo y gasolina le muerden pedazos; queda un tramo chico.
 const BX=300,BW=185,BY=30,BH=420,SEG=104,RES=BH-3*SEG;
-C('<div style="width:'+BW+'px;height:'+BH+'px;border-radius:18px;border:4px solid '+H+'"></div>',W('pago'),s5+.3,BX,BY,{fx:(t,d)=>{d.style.opacity=Math.min(cl((t-W('alto'))/.2),cl((s5+.3-t)/.25))}});
+C('<div style="width:'+BW+'px;height:'+BH+'px;border-radius:18px;border:4px solid '+H+';background:#16161C"></div>',W('pago'),s5+.3,BX,BY,{fx:(t,d)=>{d.style.opacity=Math.min(cl((t-W('alto'))/.2),cl((s5+.3-t)/.25))}});
 [0,1,2].forEach(k=>C('<div style="width:'+BW+'px;height:4px;background:'+H+'"></div>',W(['no#1','siempre','significa'][k]),s5+.3,BX,BY+(k+1)*SEG-2,{fx:(t,d)=>{d.style.opacity=cl((s5+.3-t)/.25)}}));
 const barra=C('<div style="width:100%;height:100%;border-radius:14px;background:'+H+';display:flex;align-items:center;justify-content:center;font:800 40px \'Bricolage Grotesque\';color:#04210F"><span></span></div>',W('pago'),1e9,0,0,{fx:(t,d)=>{
   const g=A(t,W('pago'),W('alto')+.15-W('pago')),n=[0,1,2].reduce((s,k)=>s+A(t,W(['no#1','siempre','significa'][k]),.3),0),v=A(t,W('quedar'),.3),b=A(t,s5,.45);
@@ -137,9 +140,16 @@ function subt(t){let i=-1;GR.forEach((c,k)=>{if(t>=c[0][1]-.04)i=k});
  if(i<0||(i===GR.length-1&&t>GR[i][GR[i].length-1][2]+.6)){sub.innerHTML='';return}
  sub.innerHTML='<span class="pas">'+GR[i].map(p=>'<b style="color:'+(t>=p[1]-.04&&t<p[2]+.05?Y:H)+'">'+p[0]+'</b>').join('')+'</span>'}
 
+// ── fondo: carretera que avanza (raya punteada de la marca) y luz del semáforo según el bloque
+const rayas=document.getElementById('rayas'),luz=document.getElementById('luz');
+function fondo(t){let h='';const N=7,v=.55;for(let k=0;k<N;k++){const u=((k+t*v)%N)/N,u2=u+.5/N,y1=1056*u*u,y2=1056*Math.min(1,u2*u2),w1=3+26*u*u,w2=3+26*u2*u2;
+  h+='<path d="M'+(464-w1/2)+' '+y1+'h'+w1+'L'+(464+w2/2)+' '+y2+'h'+(-w2)+'z"/>'}rayas.innerHTML=h;
+ const rojo=cl((t-W('no#1'))/.4)*(1-cl((t-W('quedar'))/.4)),verde=cl((t-W('quedar'))/.4);
+ const c=verde>0?[34,197,94]:rojo>0?[239,68,68]:[250,204,21],o=verde>0?.20:rojo>0?.08+.12*rojo:.10;
+ luz.style.background='radial-gradient(closest-side,rgba('+c+','+o+'),rgba('+c+',0))'}
 window.seek=t=>{for(const{d,ini,fin,o}of IT){const on=t>=ini&&t<fin;d.style.display=on?'':'none';if(!on)continue;if(o.fx){o.fx(t,d);continue}
   const p=o.sinEntrada?1:eo((t-ini)/(o.cae?.42:.3)),q=cl((fin-t)/.12);d.style.opacity=Math.min(cl((t-ini)/.12+(o.sinEntrada?1:0)),q);
   d.style.transform=o.cae?'translateY('+(-70*(1-p))+'px) rotate('+(-4*(1-p))+'deg)':o.pop?'scale('+(.8+.2*p+.06*Math.sin(Math.PI*cl((t-ini)/.3)))+')':'translateY('+(22*(1-p))+'px)'}
- FX.forEach(f=>f(t));subt(t)};
+ FX.forEach(f=>f(t));subt(t);fondo(t)};
 window.TOTAL=TOTAL;seek(+(new URLSearchParams(location.search).get('t')||0));
 </script></body></html>
