@@ -11,13 +11,13 @@ body.marco #sub,body.marco #g,body.marco #camtxt,body.marco #bajo{display:none}
 #cam i{position:absolute;left:0;right:0;bottom:0;height:6px;background:#FACC15}
 #camtxt{position:absolute;left:0;top:0;width:1080px;height:864px;background:#24435d;display:flex;flex-direction:column;align-items:center;justify-content:center;font:800 54px "Bricolage Grotesque";color:#F4F4EF}
 #camtxt span{font:700 24px "JetBrains Mono";letter-spacing:3px;margin-top:10px}
-#sub{position:absolute;left:72px;top:789px;width:785px;height:150px;z-index:5;display:flex;align-items:center;justify-content:center;font:800 64px/1 "Bricolage Grotesque";letter-spacing:-1px;white-space:nowrap;text-shadow:0 4px 14px rgba(0,0,0,.6)}
+#sub{position:absolute;left:147px;top:789px;width:785px;height:150px;z-index:5;display:flex;align-items:center;justify-content:center;font:800 64px/1 "Bricolage Grotesque";letter-spacing:-1px;white-space:nowrap;text-shadow:0 4px 14px rgba(0,0,0,.6)}
 .pas{background:#0C0C10;border-radius:22px;padding:14px 18px 18px;border:3px solid #FACC15}
 #sub b{font-weight:800;margin:0 9px}
 #bajo{position:absolute;left:0;top:864px;width:1080px;height:1056px;background:#16161C;overflow:hidden}
-#luz{position:absolute;left:-136px;top:-150px;width:1200px;height:900px;border-radius:50%;filter:blur(40px)}
+#luz{position:absolute;left:-60px;top:-150px;width:1200px;height:900px;border-radius:50%;filter:blur(40px)}
 #via{position:absolute;left:0;top:0}
-#g{position:absolute;left:72px;top:912px;width:785px;height:510px;overflow:hidden}
+#g{position:absolute;left:147px;top:912px;width:785px;height:510px;overflow:hidden}
 #g>div{position:absolute;left:0;top:0;will-change:transform,opacity}
 .mono{font:700 26px "JetBrains Mono";letter-spacing:3px;color:#A3A3AD;text-transform:uppercase}
 .big{font:800 124px/0.95 "Bricolage Grotesque";letter-spacing:-4px;text-align:center}
@@ -42,7 +42,7 @@ body.marco #sub,body.marco #g,body.marco #camtxt,body.marco #bajo{display:none}
 </svg>
 <div id="cam"><i></i></div>
 <div id="bajo"><div id="luz"></div><svg id="via" width="1080" height="1056" viewBox="0 0 1080 1056">
-<path d="M464 0L-120 1056H1048z" fill="#1C1C24"/><path d="M464 0L-120 1056M464 0L1048 1056" stroke="#F4F4EF" stroke-opacity=".13" stroke-width="5" fill="none"/><g id="rayas" fill="#FACC15" fill-opacity=".30"></g></svg></div>
+<path d="M540 0L-44 1056H1124z" fill="#1C1C24"/><path d="M540 0L-44 1056M540 0L1124 1056" stroke="#F4F4EF" stroke-opacity=".13" stroke-width="5" fill="none"/><g id="rayas" fill="#FACC15" fill-opacity=".30"></g></svg></div>
 <div id="sub"></div>
 <div id="g"></div>
 <script src="palabras.js"></script>
@@ -143,7 +143,7 @@ function subt(t){let i=-1;GR.forEach((c,k)=>{if(t>=c[0][1]-.04)i=k});
 // ── fondo: carretera que avanza (raya punteada de la marca) y luz del semáforo según el bloque
 const rayas=document.getElementById('rayas'),luz=document.getElementById('luz');
 function fondo(t){let h='';const N=7,v=.55;for(let k=0;k<N;k++){const u=((k+t*v)%N)/N,u2=u+.5/N,y1=1056*u*u,y2=1056*Math.min(1,u2*u2),w1=3+26*u*u,w2=3+26*u2*u2;
-  h+='<path d="M'+(464-w1/2)+' '+y1+'h'+w1+'L'+(464+w2/2)+' '+y2+'h'+(-w2)+'z"/>'}rayas.innerHTML=h;
+  h+='<path d="M'+(540-w1/2)+' '+y1+'h'+w1+'L'+(540+w2/2)+' '+y2+'h'+(-w2)+'z"/>'}rayas.innerHTML=h;
  const rojo=cl((t-W('no#1'))/.4)*(1-cl((t-W('quedar'))/.4)),verde=cl((t-W('quedar'))/.4);
  const c=verde>0?[34,197,94]:rojo>0?[239,68,68]:[250,204,21],o=verde>0?.20:rojo>0?.08+.12*rojo:.10;
  luz.style.background='radial-gradient(closest-side,rgba('+c+','+o+'),rgba('+c+',0))'}
