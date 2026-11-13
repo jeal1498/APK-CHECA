@@ -7,6 +7,8 @@ Decidido con Eduardo el 13 nov 2026, a partir de `referencia-10-estilos.jpg` (l�
 | **Personal** (`000 Personal`) | **PS2 Style** (09 de la lámina) | Mundo en 3D sencillo de caras planas (low-poly): cielo azul en degradado, nubes facetadas, ciudad de bloques con una cara clara y otra oscura, calle con autos que pasan. Paneles tipo menú de consola: azul marino, borde blanco y sombra sólida. |
 | **CHECA** (`001 Checa`) | **Pixel Art** (02 de la lámina) | Noche morada/azul con estrellas, ciudad con ventanas encendidas, todo en pixel. Semáforo y pop-up en pixel. Se prueba primero en un solo video: el estilo vigente de CHECA sigue siendo el «claro» (10 nov). |
 
+**Personal ya es regla (Eduardo, 13 nov):** todos los videos de `000 Personal` se hacen en PS2 Style con la plantilla `000 Personal/_plantilla-ps2/` (ejemplo: el 001).
+
 Descartado: 08 Knitted Puppet (difícil de lograr bien y lejano a manejar).
 
 ## Reglas que no cambian con el estilo

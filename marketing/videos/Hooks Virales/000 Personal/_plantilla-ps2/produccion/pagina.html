@@ -1,0 +1,176 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:"Bricolage Grotesque";font-weight:800;src:url(../../../../../../video/hyperframes/checa-marca-v2/assets/fonts/bricolage-grotesque-latin-800-normal.woff2)}
+@font-face{font-family:"DM Sans";font-weight:500;src:url(../../../../../../video/hyperframes/checa-marca-v2/assets/fonts/dm-sans-latin-500-normal.woff2)}
+@font-face{font-family:"DM Sans";font-weight:700;src:url(../../../../../../video/hyperframes/checa-marca-v2/assets/fonts/dm-sans-latin-700-normal.woff2)}
+@font-face{font-family:"JetBrains Mono";font-weight:700;src:url(../../../../../../video/hyperframes/checa-marca-v2/assets/fonts/jetbrains-mono-latin-700-normal.woff2)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#0C0C10;font-family:"DM Sans",sans-serif;color:#F4F4EF}
+html.marco,body.marco{background:transparent}
+body.marco #sub,body.marco #g,body.marco #camtxt,body.marco #bajo{display:none}
+#cam{position:absolute;left:0;top:0;width:1080px;height:864px;overflow:hidden}
+#cam i{position:absolute;left:0;width:1080px;bottom:0;height:6px;background:#FACC15}
+#camtxt{position:absolute;left:0;top:0;width:1080px;height:864px;background:#24435d;display:flex;flex-direction:column;align-items:center;justify-content:center;font:800 54px "Bricolage Grotesque";color:#F4F4EF}
+#camtxt span{font:700 24px "JetBrains Mono";letter-spacing:3px;margin-top:10px}
+#sub{position:absolute;left:140px;top:789px;width:785px;height:150px;z-index:5;display:flex;align-items:center;justify-content:center;font:800 64px/1 "Bricolage Grotesque";letter-spacing:-1px;white-space:nowrap;}
+.pas{background:#0C0C10;border-radius:22px;padding:14px 18px 18px;border:3px solid #FACC15}
+.pasb{text-transform:uppercase;font-size:82px;letter-spacing:-1px;-webkit-text-stroke:16px #0C0C10;paint-order:stroke fill;text-shadow:7px 0 #0C0C10,-7px 0 #0C0C10,0 6px #0C0C10}
+.pasb b{margin:0 16px!important}
+#sub b{font-weight:800;margin:0 9px}
+#bajo{position:absolute;left:0;top:864px;width:1080px;height:1056px;background:#16161C;overflow:hidden}
+#luz{position:absolute;left:-60px;top:-150px;width:1200px;height:900px;border-radius:50%;filter:blur(40px)}
+#via{position:absolute;left:0;top:0}
+#g{position:absolute;left:140px;transform:scale(.9);transform-origin:50% 0;top:912px;width:785px;height:510px;overflow:hidden}
+#g>div{position:absolute;left:0;top:0;will-change:transform,opacity}
+.mono{font:700 26px "JetBrains Mono";letter-spacing:3px;color:#A3A3AD;text-transform:uppercase}
+.big{font:800 124px/0.95 "Bricolage Grotesque";letter-spacing:-4px;text-align:center}
+.fila{width:345px;height:124px;border-radius:20px;background:#0C0C10;border:3px solid #FACC15;display:flex;align-items:center;gap:18px;padding:0 22px;font:800 40px "Bricolage Grotesque"}
+.fila svg{flex:none}
+.tile{width:330px;height:250px;border-radius:24px;background:#0C0C10;border:3px solid #3A3A45;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.tile b{font:800 62px/1 "Bricolage Grotesque";letter-spacing:-2px}
+.chip{width:362px;height:104px;border-radius:52px;background:#0C0C10;border:3px solid #F4F4EF;display:flex;align-items:center;justify-content:center;font:800 42px "Bricolage Grotesque"}
+.card{width:400px;height:450px;border-radius:26px;background:#fff;color:#0C0C10;box-shadow:0 18px 40px rgba(0,0,0,.5)}
+.card>*{position:absolute}
+.hl{border-radius:8px;padding:0 6px;margin:0 -6px}
+
+/* ── estilo PS2 (Personal): paneles de menú de consola y sombras sólidas */
+#bajo{background:#3F8FE8}
+#g{color:#fff;text-shadow:3px 3px 0 #0B1E47,-2px -2px 0 #0B1E47,2px -2px 0 #0B1E47,-2px 2px 0 #0B1E47,0 7px 0 #0B1E47}
+.card{text-shadow:none;border-radius:14px;box-shadow:10px 10px 0 #0B1E47;border:4px solid #0B1E47}
+.fila,.chip{background:linear-gradient(#1D4FA8,#12306B);border:4px solid #fff;border-radius:14px;box-shadow:7px 7px 0 #0B1E47}
+.chip{border-radius:14px}
+</style></head><body>
+<div id="camtxt">TU CÁMARA<span>45 % DE LA PANTALLA · 1080 × 864</span></div>
+<svg id="tercios" width="1080" height="864" viewBox="0 0 1080 864" style="position:absolute;left:0;top:0;display:none">
+<g fill="#F4F4EF" opacity=".9"><ellipse cx="540" cy="300" rx="120" ry="150"/><path d="M290 864c0-190 110-290 250-290s250 100 250 290z"/></g>
+<g fill="#0C0C10"><circle cx="495" cy="288" r="13"/><circle cx="585" cy="288" r="13"/></g>
+<g stroke="#FACC15" stroke-width="4" stroke-dasharray="16 12"><path d="M360 0v864M720 0v864M0 288h1080M0 576h1080"/></g>
+<g fill="#FACC15"><circle cx="360" cy="288" r="14"/><circle cx="720" cy="288" r="14"/><circle cx="360" cy="576" r="14"/><circle cx="720" cy="576" r="14"/></g>
+<rect x="890" y="160" width="190" height="704" fill="#EF4444" opacity=".22"/><rect x="0" y="0" width="1080" height="160" fill="#EF4444" opacity=".22"/>
+<text x="735" y="262" font-family="JetBrains Mono" font-weight="700" font-size="26" fill="#FACC15" text-anchor="start">OJOS AQUÍ</text>
+<text x="985" y="520" font-family="JetBrains Mono" font-weight="700" font-size="22" fill="#F4F4EF" text-anchor="middle" transform="rotate(90 985 520)">BOTONES DE TIKTOK</text>
+</svg>
+<div id="cam"><i id="li"></i><i id="ld"></i></div>
+<div id="bajo"><svg id="via" width="1080" height="1056" viewBox="0 0 1080 1056"></svg></div>
+<div id="sub"></div>
+<div id="g"></div>
+<script src="palabras.js"></script>
+<script>
+const Y='#FACC15',R='#EF4444',V='#22C55E',H='#F4F4EF';
+if(location.search.includes('tercios')){document.getElementById('tercios').style.display='';document.getElementById('camtxt').innerHTML=''}
+if(location.search.includes('llave')){const c=document.getElementById('camtxt');c.innerHTML='';c.style.background='#FF00FF'}
+if(location.search.includes('marco'))document.documentElement.className=document.body.className='marco';
+const P=D.palabras,TOTAL=D.total,norm=w=>w.toLowerCase().replace(/[¿?¡!.,:;]/g,'');
+// W('dinero') = segundo en que empieza esa palabra; 'dinero#1' = la segunda vez
+function W(k){let[w,n]=k.split('#');n=+(n||0);for(const p of P)if(norm(p[0])===w&&n--===0)return p[1];throw new Error('no está la palabra: '+k)}
+const cl=x=>Math.max(0,Math.min(1,x)),eo=x=>1-Math.pow(1-cl(x),3);
+const g=document.getElementById('g'),IT=[],FX=[];
+// C(html, ini, fin, x, y, {pop, sinEntrada}) → elemento dentro de la zona de gráficos (785×510)
+function C(html,ini,fin,x,y,o={}){const d=document.createElement('div');d.innerHTML=html;d.style.left=x+'px';d.style.top=y+'px';if(o.z)d.style.zIndex=o.z;g.appendChild(d);IT.push({d,ini,fin,o});return d}
+const svg=(p,c=Y)=>'<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>';
+const I={km:svg('<path d="M12 21s-6-6.1-6-10.5a6 6 0 0112 0C18 14.9 12 21 12 21z"/><circle cx="12" cy="10.5" r="2.2"/>'),
+ t:svg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>'),
+ gas:svg('<path d="M4 21V5a2 2 0 012-2h6a2 2 0 012 2v16M3 21h12M6 8h6M14 11h2a2 2 0 012 2v4a1.5 1.5 0 003 0V8l-3-3"/>')};
+
+// Reglas (Eduardo, 13 nov): una acción clara por bloque, textos de máx. 4 palabras, analogías literales,
+// escala para proporciones, los elementos se transforman de un bloque al siguiente y cada bloque cierra con una imagen clara.
+const mix=(a,b,p)=>a+(b-a)*p,A=(t,a,d)=>eo((t-a)/d);
+const moneda=(s)=>'<svg width="'+s+'" height="'+s+'" viewBox="0 0 100 100"><path d="M30 2h40l28 28v40l-28 28h-40l-28-28v-40z" fill="#B98206"/><path d="M32 8h36l24 24v36l-24 24h-36l-24-24v-36z" fill="#F5C518"/><path d="M32 8h36l24 24L50 50z" fill="#FFE27A"/><path d="M8 68l24 24h36l24-24L50 50z" fill="#D9A80F"/><text x="50" y="69" text-anchor="middle" font-family="Bricolage Grotesque" font-weight="800" font-size="56" fill="#7A5500">$</text></svg>';
+const s2=W('cuando')-.12,s3=W('ten')-.12,s4=W('un')-.12,s5=W('qué')-.12;
+
+// ── 1 · «Puede que estés dejando dinero sin darte cuenta.»  ACCIÓN: de 5 monedas, 3 se caen.
+C('<div class="big" style="font-size:112px;text-align:left">DEJANDO<br><span style="color:'+Y+'">DINERO</span></div>',0,s2+.2,40,34,{sinEntrada:1});
+C('<svg width="150" height="150" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.500S22 12 22 12s-3.6 6.5-10 6.500S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 3l16 18" stroke="'+R+'" stroke-width="2.4"/></svg>',W('sin'),s2+.2,585,60,{pop:1});
+for(let k=0;k<5;k++){const x=40+k*146,y=330;
+ if(k>=2)C('<div style="width:120px;height:120px;border-radius:50%;border:5px dashed #FFFFFF"></div>',W('dejando')+(k-2)*.34,s2+.2,x,y);
+ const a=W('dejando')+(k-2)*.34;
+ C(moneda(120),0,k<2?W('llega'):a+.7,x,y,{fx:(t,d)=>{
+  if(k>=2){const p=cl((t-a)/.6);d.style.transform='translateY('+(260*p*p)+'px) rotate('+(70*p)+'deg)';d.style.opacity=1}
+  else{const p=A(t,s2,.4);d.style.transform='translate('+mix(0,(k?186:332),p)+'px,'+mix(0,-110,p)+'px) scale('+mix(1,.5,p)+')';d.style.opacity=1-cl((t-s2-.3)/.2)}}})}
+
+// ── 2 · «Cuando te llega una oferta, no te fijes solo en cuánto paga.»  ACCIÓN: las monedas se vuelven la oferta; zoom hasta ver solo el precio.
+const card=C('<div class="card">'
+ +'<div style="left:22px;top:20px;padding:5px 16px;border-radius:8px;background:#0C0C10;color:#fff;font:700 22px \'DM Sans\'">Viaje</div>'
+ +'<div class="mono" style="right:22px;top:26px;font-size:17px;letter-spacing:1.500px;color:#8A8678">Oferta de ejemplo</div>'
+ +'<div id="precio" style="left:16px;top:66px;padding:4px 10px;border-radius:16px;border:5px solid transparent;font:800 88px/1 \'Bricolage Grotesque\';letter-spacing:-3px">$85.00</div>'
+ +'<div style="left:34px;top:206px;width:4px;height:84px;background:#0C0C10"></div><div style="left:27px;top:196px;width:18px;height:18px;border-radius:50%;background:#0C0C10"></div><div style="left:27px;top:286px;width:18px;height:18px;border-radius:3px;background:#0C0C10"></div>'
+ +'<div style="left:66px;top:186px;font:700 28px/1.3 \'DM Sans\'">A <span class="hl m">6 min</span> (<span class="hl k">2.1 km</span>)</div>'
+ +'<div style="left:66px;top:274px;font:700 28px/1.3 \'DM Sans\'">Viaje: <span class="hl m">24 min</span> (<span class="hl k">11.4 km</span>)</div>'
+ +'<div style="left:20px;right:20px;bottom:20px;height:74px;border-radius:12px;background:#0C0C10;color:#fff;font:700 28px/74px \'DM Sans\';text-align:center">Aceptar</div></div>',s2+.3,W('pago')+.35,0,0,{fx:(t,d)=>{
+  const e=A(t,s2+.3,.45),z=A(t,W('solo')-.1,.5)*(1-A(t,s3,.5)),l=A(t,s3,.5),b=A(t,s4+.05,W('pago')+.3-s4);
+  let x=mix(192,107,z),y=mix(30,-28,z),s=mix(mix(.2,1,e),1.9,z);if(e<1){x=mix(352,192,e);y=mix(210,30,e)}
+  x=mix(x,20,l);y=mix(y,60,l);s=mix(s,.85,l);
+  x=mix(x,300,b);y=mix(y,250,b);const sx=mix(s,.46,b),sy=mix(s,.3,b);
+  d.style.transformOrigin='0 0';d.style.transform='translate('+x+'px,'+y+'px) scale('+sx+','+sy+')';d.style.opacity=Math.min(cl((t-s2-.3)/.15),1-b)}});
+const precio=card.querySelector('#precio'),ks=card.querySelectorAll('.k'),ms=card.querySelectorAll('.m');
+FX.push(t=>{const a=W('cuánto');precio.style.borderColor=t>=a&&t<s3?Y:'transparent';precio.style.background=t>=a&&t<s3?'rgba(250,204,21,.25)':'transparent';precio.style.opacity=t>=s3+.3?.3:1;
+ const on=(els,a)=>els.forEach(e=>{e.style.background=t>=a?Y:'transparent'});on(ks,W('kilómetros'));on(ms,W('tiempo'))});
+C('<div style="width:785px;display:flex;justify-content:center"><div style="padding:14px 30px 18px;border-radius:22px;background:#12306B;box-shadow:7px 7px 0 #0B1E47;border:4px solid #fff;font:800 54px/1 \'Bricolage Grotesque\';white-space:nowrap">NO SOLO<span id="cp" style="color:'+Y+'"> cuánto paga</span></div></div>',W('solo'),s3,0,392,{pop:1})
+ .querySelector('#cp').id='cp';
+FX.push(t=>{document.getElementById('cp').style.display=t>=W('cuánto')?'':'none'}); // el letrero crece con su texto: nunca queda un hueco esperando
+
+// ── 3 · «Ten en cuenta los kilómetros, el tiempo y la gasolina que vas a gastar.»  ACCIÓN: la oferta se aleja y de ella salen los tres datos.
+const RY=[36,180,324],RK=['kilómetros','tiempo','gasolina'],RN=['Kilómetros','Tiempo','Gasolina'],RI=[I.km,I.t,I.gas],DE=[[170,250],[110,205],[170,330]];
+RK.forEach((w,k)=>{const a=W(w);
+ // marco y nombre de la fila (se van en el bloque 4; el ícono sigue vivo)
+ C('<div class="fila" style="width:365px"><div style="width:56px"></div>'+RN[k]+'</div>',a,s4+.25,400,RY[k],{fx:(t,d)=>{const p=A(t,a,.35);
+  d.style.transformOrigin='0 50%';d.style.transform='translate('+mix(DE[k][0]-400,0,p)+'px,'+mix(DE[k][1]-RY[k]-62,0,p)+'px) scale('+mix(.25,1,p)+')';d.style.opacity=Math.min(cl((t-a)/.12),cl((s4+.25-t)/.2))}});
+ // ícono: fila (3) → muerde la barra (4) → opción del cierre (5)
+ const m=W(['no#1','siempre','significa'][k]),c=W('dato')+k*.2,cx=[400,22,400][k]+24,cy=[130,250,250][k]+22;
+ C(RI[k],a,1e9,0,0,{z:3,fx:(t,d)=>{const p=A(t,a,.35),q=A(t,m-.05,.35),r=A(t,c,.4);
+  let x=mix(DE[k][0],425,p),y=mix(DE[k][1]-28,RY[k]+34,p),s=mix(.25,1,p);
+  x=mix(x,364,q);y=mix(y,54+k*104,q);x=mix(x,cx,r);y=mix(y,cy,r);
+  d.style.transform='translate('+x+'px,'+y+'px) scale('+(s+.25*Math.sin(Math.PI*cl((t-m+.05)/.35)))+')';d.style.opacity=cl((t-a)/.12)}})});
+
+// ── 4 · «Un pago alto no siempre significa que te va a quedar más dinero.»  ACCIÓN: el precio se vuelve una barra alta; km, tiempo y gasolina le muerden pedazos; queda un tramo chico.
+const BX=300,BW=185,BY=30,BH=420,SEG=104,RES=BH-3*SEG;
+C('<div style="width:'+BW+'px;height:'+BH+'px;border-radius:18px;border:5px solid #fff;background:#12306B;box-shadow:10px 10px 0 #0B1E47"></div>',W('pago'),s5+.3,BX,BY,{fx:(t,d)=>{d.style.opacity=Math.min(cl((t-W('alto'))/.2),cl((s5+.3-t)/.25))}});
+[0,1,2].forEach(k=>C('<div style="width:'+BW+'px;height:4px;background:#fff"></div>',W(['no#1','siempre','significa'][k]),s5+.3,BX,BY+(k+1)*SEG-2,{fx:(t,d)=>{d.style.opacity=cl((s5+.3-t)/.25)}}));
+const barra=C('<div style="width:100%;height:100%;border-radius:14px;background:'+H+';display:flex;align-items:center;justify-content:center;font:800 40px \'Bricolage Grotesque\';color:#04210F;text-shadow:none;box-shadow:8px 8px 0 #0B1E47"><span></span></div>',W('pago'),1e9,0,0,{fx:(t,d)=>{
+  const g=A(t,W('pago'),W('alto')+.15-W('pago')),n=[0,1,2].reduce((s,k)=>s+A(t,W(['no#1','siempre','significa'][k]),.3),0),v=A(t,W('quedar'),.3),b=A(t,s5,.45);
+  const h=mix(mix(mix(60,BH,g),RES,n/3),88,b),w=mix(BW,360,b),x=mix(BX,212,b),y=mix(BY+BH-h,396,b);
+  d.style.left=x+'px';d.style.top=y+'px';d.style.width=w+'px';d.style.height=h+'px';
+  const f=d.firstChild;f.style.background=v>0?V:H;f.style.borderRadius=mix(14,44,b)+'px';f.firstChild.textContent=b>.55?'Aceptar':'';f.firstChild.style.opacity=cl((b-.55)/.3);
+  d.style.transform='scale('+(1+.08*Math.sin(Math.PI*cl((t-W('quedar'))/.4))+.08*Math.sin(Math.PI*cl((t-W('aceptar'))/.4)))+')'}});
+C('<div style="width:260px;text-align:right;font:800 64px/.95 \'Bricolage Grotesque\';letter-spacing:-2px">PAGO<br>ALTO</div>',W('pago'),s5,20,176);
+C('<div style="width:270px;font:800 56px/.95 \'Bricolage Grotesque\';letter-spacing:-2px;color:'+V+'">TE<br>QUEDA</div>',W('quedar'),s5,515,340,{pop:1});
+
+// ── 5 · «¿Qué dato tomas en cuenta antes de aceptar?»  ACCIÓN: los íconos vuelan a 4 opciones y lo que quedó se vuelve el botón «Aceptar».
+C('<div style="width:785px;text-align:center;font:800 68px/1 \'Bricolage Grotesque\';letter-spacing:-2px">¿Qué dato tomas?</div>',s5+.05,1e9,0,30);
+['Pago','Kilómetros','Tiempo','Gasolina'].forEach((x,k)=>{const a=k?W('dato')+(k-1)*.2+.28:W('dato')-.2,fin=W('aceptar')+.9;
+ C('<div class="chip" style="justify-content:flex-start;padding-left:'+(k?96:28)+'px;gap:16px">'+(k?'':moneda(52,Y))+x+'</div>',a,1e9,22+(k%2)*378,130+(k>>1)*120,{fx:(t,d)=>{const p=A(t,a,.3),on=t>fin&&Math.floor((t-fin)/.5)%4===k;
+  d.style.transform='scale('+mix(.8,1,p)+')';d.style.opacity=cl((t-a)/.12);d.firstChild.style.borderColor=on?Y:H}})});
+
+// ── subtítulos: máximo 3 palabras o 17 letras, la palabra que suena en amarillo
+const GR=[];{let c=[];const cierra=()=>{if(c.length)GR.push(c);c=[]};
+ P.forEach(p=>{if(c.length&&(c.length>=3||c.map(q=>q[0]).join(' ').length+p[0].length>16))cierra();c.push(p);if(/[.,?]$/.test(p[0]))cierra()});cierra()}
+const sub=document.getElementById('sub');
+// Estilo elegido por Eduardo (B): palabra golpe sin caja; ?sub=a deja la pastilla anterior. Solo se destaca la palabra que suena (mayúsculas, contorno negro, palabras clave con el color del semáforo)
+const SUBB=!location.search.includes('sub=a'),CLAVE={dinero:V,gasolina:R,pago:Y,paga:Y,'kilómetros':Y,tiempo:Y,aceptar:V};
+function subt(t){let i=-1;GR.forEach((c,k)=>{if(t>=c[0][1]-.04)i=k});
+ if(i<0||(i===GR.length-1&&t>GR[i][GR[i].length-1][2]+.6)){sub.innerHTML='';return}
+ if(SUBB){let act=null;GR[i].forEach(p=>{if(t>=p[1]-.04)act=p});if(act&&t>=act[2]+.05)act=null;
+  sub.innerHTML='<span class="pasb">'+GR[i].map(p=>{const on=p===act,k=CLAVE[norm(p[0])],pp=cl((t-p[1]+.04)/.12);
+   return '<b style="display:inline-block;color:'+(on?(k||Y):H)+';transform:scale('+(on?1+.08*Math.sin(Math.PI*Math.min(1,.5+pp/2)):1)+')">'+p[0].replace(/[.,]/g,'')+'</b>'}).join('')+'</span>';return}
+ sub.innerHTML='<span class="pas">'+GR[i].map(p=>'<b style="color:'+(t>=p[1]-.04&&t<p[2]+.05?Y:H)+'">'+p[0]+'</b>').join('')+'</span>'}
+
+// ── fondo estilo PS2 (low-poly): cielo, nubes facetadas, ciudad de bloques y calle con autos que pasan
+const via=document.getElementById('via');
+const nube=(x,y,k)=>'<g transform="translate('+x+','+y+') scale('+k+')"><path d="M0 60L40 10L95 0L150 22L200 60z" fill="#FFFFFF"/><path d="M0 60L40 10L70 60z" fill="#DCEBFA"/><path d="M95 0L150 22L120 60L70 60z" fill="#EEF5FD"/><path d="M150 22L200 60L120 60z" fill="#CFE1F5"/></g>';
+const EDI=[[-20,150,230,'#E8D9B8','#B9A57C'],[120,120,330,'#C9D3DE','#93A1B1'],[232,160,200,'#E2B58F','#B08460'],[385,130,290,'#D9DEE6','#9FAABA'],[505,170,240,'#EFE3C4','#C2B48C'],[668,125,345,'#C6CFDA','#8E9BAC'],[786,150,215,'#E6C3A0','#B5916F'],[930,140,275,'#DCE2EA','#A3AEBD']];
+const auto=(x,y,c,c2,d)=>'<g transform="translate('+x+','+y+') scale('+d+',1)"><path d="M0 44L6 22L40 18L62 0L118 0L140 20L172 24L178 44z" fill="'+c+'"/><path d="M40 18L62 0L118 0L140 20z" fill="'+c2+'"/><path d="M66 5L88 5L88 19L50 19zM94 5L114 5L130 19L94 19z" fill="#BFE3FF"/><path d="M26 44l8-12h14l8 12l-8 10h-14zM122 44l8-12h14l8 12l-8 10h-14z" fill="#22262E"/></g>';
+function fondo(t){let h='<defs><linearGradient id="cielo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3F8FE8"/><stop offset=".75" stop-color="#A9D6FB"/><stop offset="1" stop-color="#D8EEFF"/></linearGradient></defs><rect width="1080" height="1056" fill="url(#cielo)"/>';
+ h+=nube(((60+t*9)%1400)-200,505,1.1)+nube(((760+t*6)%1400)-200,470,.8)+nube(((1150+t*12)%1400)-200,540,.6);
+ EDI.forEach(([x,w,a,c,c2])=>{const y=930-a,f=w*.68;h+='<path d="M'+x+' '+y+'h'+f+'v'+a+'h'+(-f)+'z" fill="'+c+'"/><path d="M'+(x+f)+' '+y+'l'+(w-f)+' 16v'+(a-16)+'h'+(-(w-f))+'z" fill="'+c2+'"/>';
+  for(let yy=y+22;yy<905;yy+=34)for(let xx=x+12;xx<x+f-16;xx+=26)h+='<rect x="'+xx+'" y="'+yy+'" width="12" height="18" fill="#5C7FA8" opacity=".75"/>'});
+ h+='<rect y="930" width="1080" height="126" fill="#4B5059"/><rect y="930" width="1080" height="8" fill="#7C838E"/>';
+ for(let k=0;k<9;k++)h+='<rect x="'+(((k*150-t*40)%1350+1350)%1350-140)+'" y="988" width="80" height="8" fill="#F4F4EF"/>';
+ h+=auto(((t*150)%1500)-250,932,'#E5484D','#B4282D',1)+auto(1400-((t*110+500)%1700),1000,'#F5C518','#C99A06',-1);via.innerHTML=h}
+// la raya amarilla de la frontera se abre para dejar pasar el subtítulo
+function raya(){const p=sub.firstElementChild,r=p&&SUBB?p.getBoundingClientRect():null,li=document.getElementById('li'),ld=document.getElementById('ld');
+ if(!r){li.style.width='1080px';ld.style.width='0';return}li.style.width=Math.max(0,r.left-6)+'px';ld.style.left=(r.right+6)+'px';ld.style.width=Math.max(0,1080-r.right-6)+'px'}
+window.seek=t=>{for(const{d,ini,fin,o}of IT){const on=t>=ini&&t<fin;d.style.display=on?'':'none';if(!on)continue;if(o.fx){o.fx(t,d);continue}
+  const p=o.sinEntrada?1:eo((t-ini)/(o.cae?.42:.3)),q=cl((fin-t)/.12);d.style.opacity=Math.min(cl((t-ini)/.12+(o.sinEntrada?1:0)),q);
+  d.style.transform=o.cae?'translateY('+(-70*(1-p))+'px) rotate('+(-4*(1-p))+'deg)':o.pop?'scale('+(.8+.2*p+.06*Math.sin(Math.PI*cl((t-ini)/.3)))+')':'translateY('+(22*(1-p))+'px)'}
+ FX.forEach(f=>f(t));subt(t);fondo(t);raya()};
+window.TOTAL=TOTAL;seek(+(new URLSearchParams(location.search).get('t')||0));
+</script></body></html>
