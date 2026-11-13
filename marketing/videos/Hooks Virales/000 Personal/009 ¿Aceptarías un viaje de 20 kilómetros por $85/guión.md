@@ -5,7 +5,7 @@
 **Versión:** Marca personal
 
 ### Guion
-Imagínate que te ofrecen ochenta y cinco pesos y tienes que avanzar veinte kilómetros. ¿Te parece suficiente? No olvides el tiempo, el tráfico y si tendrás oportunidad de conseguir otro servicio al terminar. **[Cierre]** Déjame tu respuesta: sí o no.
+Te ofrecen ochenta y cinco pesos por un viaje de veinte kilómetros. ¿Lo aceptas? Antes de decir que sí, piensa en la gasolina, el tráfico y el tiempo que vas a usar. También cuenta si al final quedas en una zona con más viajes. **[Cierre]** Te leo: ¿sí o no?
 
 ### Producción
-Grabar en primera persona. Priorizar opinión, experiencia y conversación con conductores; no convertirlo en un anuncio de Checa.
+A cámara y con el dato de la oferta en pantalla. Si es un caso ficticio, indícalo.
