@@ -1,11 +1,19 @@
-# 001 — ¿Y si te dijera que estás perdiendo dinero cada vez que aceptas un viaje?
+# ¿Y si te dijera que estás perdiendo dinero cada vez que aceptas un viaje?
 
-**Duración estimada:** 20–35 segundos
+**Duración estimada:** 25–35 segundos
 
-**Versión:** Checa
+## Guion
 
-### Guion
-¿Y si cada solicitud que aceptas te estuviera costando más de lo que imaginas? El pago es solo el inicio: también cuentan kilómetros, minutos y combustible. **[Pantalla: Checa]** Revisa los indicadores de la oferta antes de decidir. No se trata de aceptar todo, sino de elegir con más información. **[Cierre]** Conoce Checa.
+¿Y si te dijera que algunos viajes te dejan mucho menos dinero del que piensas?
 
-### Producción
-Mostrar la interfaz real de Checa cuando se mencione. Usar datos de prueba o autorizados; marcar los ejemplos ficticios. No prometer ganancias ni resultados garantizados.
+Cuando recibes una oferta, no basta con mirar cuánto vas a cobrar.
+
+También cuentan los kilómetros, el tiempo y la gasolina.
+
+**[Mostrar Checa en pantalla]**
+
+Con Checa puedes ver datos clave de cada oferta antes de tomar una decisión.
+
+Porque no se trata de aceptar más viajes. Se trata de elegir mejor.
+
+**Cierre:** Tu trabajo vale. Asegúrate de que cada viaje también.
