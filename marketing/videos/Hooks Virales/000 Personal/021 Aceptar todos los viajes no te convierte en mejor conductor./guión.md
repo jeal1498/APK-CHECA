@@ -5,7 +5,7 @@
 **Versión:** Marca personal
 
 ### Guion
-No tienes que decirle que sí a todo para demostrar que eres buen conductor. Tu jornada tiene límites y tus recursos también. Elegir con criterio forma parte de administrar tu trabajo. **[Cierre]** ¿Aceptas casi todo o seleccionas tus servicios?
+Decir que sí a todos los viajes no te hace mejor conductor. También tienes que cuidar tu tiempo, tu gasolina y tu coche. Antes de aceptar, mira si el pago compensa lo que vas a poner. Elegir con calma también es parte del trabajo. **[Cierre]** ¿Tú eliges o aceptas casi todo?
 
 ### Producción
-Grabar en primera persona. Priorizar opinión, experiencia y conversación con conductores; no convertirlo en un anuncio de Checa.
+A cámara y con ejemplos simples. No sugieras que existe una regla única para todos los conductores.
