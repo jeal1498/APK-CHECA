@@ -1,11 +1,17 @@
-# 005 — ¿Cuánto te queda realmente de esos $500 que ganaste hoy?
+# ¿Cuánto te queda realmente de esos $500 que ganaste hoy?
 
-**Duración estimada:** 20–35 segundos
+**Duración estimada:** 25–35 segundos
 
-**Versión:** Checa
+## Guion
 
-### Guion
-Hoy hiciste quinientos pesos. Pero, ¿cuánto de eso terminó siendo tuyo? Resta combustible y considera mantenimiento, llantas y desgaste. **[Mostrar Checa]** Evalúa las ofertas con Checa y lleva un registro honesto de tus gastos diarios. **[Cierre]** No confundas dinero cobrado con dinero disponible.
+Hoy hiciste quinientos pesos. ¡Bien!
 
-### Producción
-Mostrar la interfaz real de Checa cuando se mencione. Usar datos de prueba o autorizados; marcar los ejemplos ficticios. No prometer ganancias ni resultados garantizados.
+Pero hay una pregunta que casi nadie se hace: ¿cuánto te quedó después de trabajar?
+
+Primero resta la gasolina. Después toma en cuenta aceite, llantas, servicio y desgaste.
+
+**[Mostrar cálculo sencillo en pantalla]**
+
+Checa te ayuda a calcular cuánto queda de cada oferta después de gasolina. Los demás gastos también van por tu cuenta.
+
+**Cierre:** No confundas lo que cobras con lo que te queda.
