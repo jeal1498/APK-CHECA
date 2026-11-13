@@ -1,11 +1,17 @@
-# 014 — Hicimos las cuentas que casi ningún conductor hace.
+# Hicimos las cuentas que casi ningún conductor hace.
 
-**Duración estimada:** 20–35 segundos
+**Duración estimada:** 30–40 segundos
 
-**Versión:** Checa
+## Guion
 
-### Guion
-Hoy vamos a hacer las cuentas que muchos dejan para después. Tomamos una oferta y revisamos pago, kilómetros y minutos; luego añadimos combustible y desgaste. **[Mostrar Checa]** La app ayuda a revisar las métricas; completa el análisis con tus gastos reales. **[Cierre]** Guarda este ejercicio.
+Muchos conductores suman lo que cobraron en el día.
 
-### Producción
-Mostrar la interfaz real de Checa cuando se mencione. Usar datos de prueba o autorizados; marcar los ejemplos ficticios. No prometer ganancias ni resultados garantizados.
+Pero hay otra cuenta que también importa: cuánto gastaron para poder cobrarlo.
+
+Gasolina, kilómetros, tiempo y mantenimiento.
+
+**[Mostrar una cuenta de ejemplo ficticia]**
+
+Con Checa puedes ver el gasto estimado de gasolina en cada oferta. Después suma tus otros gastos para saber cuánto te queda.
+
+**Cierre:** Cobrar es una cosa. Ganar es otra.
