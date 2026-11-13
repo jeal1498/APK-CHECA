@@ -5,7 +5,7 @@
 **Versión:** Marca personal
 
 ### Guion
-Diez servicios pueden contar una historia distinta a la que imaginas. Separa cada recorrido y observa cuánto tardaste y qué distancia cubriste. Así podrás identificar qué solicitudes aprovechan mejor tu turno. **[Cierre]** ¿Te gustaría revisar una jornada completa?
+Hacer diez viajes no te dice por sí solo cuánto ganaste. Hay que sumar los pagos, la gasolina, los kilómetros y el tiempo. Tal vez al final veas que los viajes que más pagaron no fueron los que más te dejaron. **[Cierre]** ¿Quieres que hagamos la cuenta con una jornada real?
 
 ### Producción
-Grabar en primera persona. Priorizar opinión, experiencia y conversación con conductores; no convertirlo en un anuncio de Checa.
+No inventes un caso ni digas que analizaste a otro conductor si no ocurrió. Puedes usar tus propios datos, con permiso y sin datos privados.
