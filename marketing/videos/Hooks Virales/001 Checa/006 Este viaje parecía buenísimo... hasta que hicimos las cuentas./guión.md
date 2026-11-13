@@ -1,11 +1,19 @@
-# 006 — Este viaje parecía buenísimo... hasta que hicimos las cuentas.
+# Este viaje parecía buenísimo... hasta que hicimos las cuentas.
 
-**Duración estimada:** 20–35 segundos
+**Duración estimada:** 25–35 segundos
 
-**Versión:** Checa
+## Guion
 
-### Guion
-**[Mostrar oferta ficticia]** Este viaje parecía excelente… hasta que revisamos la distancia y el tiempo. El pago llamaba la atención, pero el recorrido cambiaba la perspectiva. **[Checa en pantalla]** Revisa las métricas de la oferta y valora el trayecto completo. **[Cierre]** ¿Lo habrías aceptado?
+Mira esta oferta. A primera vista parece muy buena.
 
-### Producción
-Mostrar la interfaz real de Checa cuando se mencione. Usar datos de prueba o autorizados; marcar los ejemplos ficticios. No prometer ganancias ni resultados garantizados.
+Pero espera: antes de aceptarla, hay que ver cuántos kilómetros son y cuánto tiempo vas a invertir.
+
+**[Mostrar ejemplo ficticio de una oferta]**
+
+Al sumar la gasolina, el dinero que queda puede ser mucho menor de lo que imaginabas.
+
+**[Mostrar Checa]**
+
+Con Checa puedes ver el cálculo de gasolina y comparar mejor cada oferta.
+
+**Cierre:** No te quedes solo con el monto.
