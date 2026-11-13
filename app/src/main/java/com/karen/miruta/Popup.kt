@@ -191,6 +191,10 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
     }
 
     private fun quitarVista() {
+        // La captura que se está leyendo pudo tomarse con el pop-up aún puesto: su zona se
+        // sigue tapando un momento ([rectTapado]) para que el lector no lea nuestros números.
+        rectCerrado = rect()
+        cerradoEn = android.os.SystemClock.uptimeMillis()
         vista?.let { try { wm.removeView(it) } catch (_: Exception) { } }
         vista = null
         firmaVista = null
@@ -223,8 +227,22 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         val v = vista ?: return null
         val lp = lpActual ?: return null
         val alto = if (v.height > 0) v.height else dp(200)
-        return Rect(lp.x, lp.y, lp.x + lp.width, lp.y + alto)
+        val r = Rect(lp.x, lp.y, lp.x + lp.width, lp.y + alto)
+        // Donde Android lo puso de verdad (barras o recorte de cámara pueden moverlo).
+        if (v.width > 0 && v.height > 0) try {
+            val p = IntArray(2)
+            v.getLocationOnScreen(p)
+            r.union(p[0], p[1], p[0] + v.width, p[1] + v.height)
+        } catch (_: Exception) { }
+        return r
     }
+
+    private var rectCerrado: Rect? = null
+    private var cerradoEn = 0L
+
+    /** Como [rect], pero también la zona de un pop-up recién quitado (2 s): la foto en curso aún lo trae. */
+    fun rectTapado(): Rect? = rect()
+        ?: rectCerrado?.takeIf { android.os.SystemClock.uptimeMillis() - cerradoEn < 2000L }
 
     /**
      * También se usa para la vista previa en Ajustes (sin acción en la ✕).

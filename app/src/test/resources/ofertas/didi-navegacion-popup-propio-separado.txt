@@ -1,0 +1,10 @@
+# Igual, con las métricas del pop-up leídas en dos líneas.
+$ 45
+$660/h
+$53.5/km
+4 min (0.8 km) total
+40
+km/h
+4 min • 755 m
+---
+nada

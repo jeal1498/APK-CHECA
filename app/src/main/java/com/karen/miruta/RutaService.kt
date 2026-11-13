@@ -722,7 +722,7 @@ class RutaService : AccessibilityService() {
     fun popupVisible(app: String?): Boolean = popups[app ?: "?"]?.rect() != null
 
     /** Zonas que tapan los pop-ups visibles. */
-    fun rectsPopups(): List<Rect> = popups.values.mapNotNull { it.rect() }
+    fun rectsPopups(): List<Rect> = popups.values.mapNotNull { it.rectTapado() }
 
     /** Vuelve a pintar los pop-ups visibles con su marca (mejor / 2ª opción). */
     private fun redibujar(nueva: String?) {

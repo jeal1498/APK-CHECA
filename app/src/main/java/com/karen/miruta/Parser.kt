@@ -179,6 +179,9 @@ object Parser {
     // "$6.29/km est." (Uber nuevo): precio por km del resumen.
     private val porKmTexto = Regex("""(\d+(?:[.,]\d{1,2})?)\s?/\s?km""", RegexOption.IGNORE_CASE)
 
+    // "$660/h": la línea de métricas de nuestro pop-up (ni Uber ni DiDi ponen «/h» en la oferta).
+    private val porHoraPropio = Regex("""\d\s?/\s?h\b""", RegexOption.IGNORE_CASE)
+
     // "⚡1.4x", "1.2x", "1,5 x" (tarifa dinámica). No confunde calificaciones como "4.98".
     private val multi = Regex("""(?<![.,$])([1-4](?:[.,]\d{1,2})?)\s?[x×X](?![a-zA-Z0-9])""")
 
@@ -367,7 +370,12 @@ object Parser {
      */
     fun esNavegacion(textos: List<String>, moneda: Moneda = Moneda.MXN): Boolean {
         val r = reglasDe(moneda)
-        if (textos.any { porKmTexto.containsMatchIn(it) || r.aceptarMonto.containsMatchIn(it) }) return false
+        // Nuestro pop-up a la vista («$660/h $53.5/km», 10.76): su «/km» no es el «$/km est.» de
+        // Uber. Antes, con un pop-up leído por el OCR, la navegación volvía a pasar como oferta.
+        val popupPropio = textos.any { porHoraPropio.containsMatchIn(it) }
+        fun kmDeOferta(t: String) = porKmTexto.containsMatchIn(t) && !t.contains("total", ignoreCase = true) &&
+            !(popupPropio && !t.contains("est", ignoreCase = true))
+        if (textos.any { kmDeOferta(it) || r.aceptarMonto.containsMatchIn(it) }) return false
         val claves = HashSet<String>()
         var conParentesis = false
         for (t in textos) {
