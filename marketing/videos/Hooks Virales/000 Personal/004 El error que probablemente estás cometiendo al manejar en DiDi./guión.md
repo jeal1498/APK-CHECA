@@ -5,7 +5,7 @@
 **Versión:** Marca personal
 
 ### Guion
-Hay una costumbre que puede salirte cara: ver el monto, emocionarte y aceptar sin pensar en el recorrido. Antes de tocar la pantalla, pregúntate cuánto vas a conducir y cuánto tiempo te llevará. **[Cierre]** ¿Te ha pasado? Cuéntame.
+Hay algo que te puede salir caro: mirar solo el pago. Antes de aceptar, piensa cuántos kilómetros vas a hacer y cuánto tiempo te va a tomar. Un pago alto no siempre deja más dinero. **[Cierre]** ¿Te ha pasado? Cuéntame.
 
 ### Producción
-Grabar en primera persona. Priorizar opinión, experiencia y conversación con conductores; no convertirlo en un anuncio de Checa.
+A cámara, en tono de conductor a conductor. Habla desde tu punto de vista; no lo conviertas en un anuncio de Checa.
