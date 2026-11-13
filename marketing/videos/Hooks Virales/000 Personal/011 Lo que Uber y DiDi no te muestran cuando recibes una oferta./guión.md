@@ -5,7 +5,7 @@
 **Versión:** Marca personal
 
 ### Guion
-La pantalla te enseña una cifra, pero tú necesitas hacerte otra pregunta: ¿qué tengo que invertir para conseguir ese cobro? Piensa en el trayecto, los minutos y el estado de tu vehículo. **[Cierre]** Compártelo con quien siempre mira únicamente el pago.
+La app te muestra cuánto vas a cobrar. Pero hay datos que tú también debes tomar en cuenta: la gasolina, el tiempo, los kilómetros y dónde vas a terminar. El pago es solo una parte de la cuenta. **[Cierre]** Compártelo con quien solo mira la tarifa.
 
 ### Producción
-Grabar en primera persona. Priorizar opinión, experiencia y conversación con conductores; no convertirlo en un anuncio de Checa.
+Graba una oferta con datos personales ocultos o usa un ejemplo ficticio. No afirmes que las apps ocultan datos que sí muestran.
