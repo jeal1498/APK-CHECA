@@ -5,7 +5,7 @@
 **Versión:** Marca personal
 
 ### Guion
-Te pongo un reto: ¿prefieres cobrar ciento cincuenta o tomar una oportunidad de ochenta? No respondas todavía. Si el primer trayecto consume mucho más combustible y tiempo, la diferencia podría no compensar. **[Cierre]** La cifra más alta no siempre gana.
+¿Qué prefieres: cobrar ciento cincuenta pesos o cobrar ochenta? No elijas todavía. Si el viaje de ciento cincuenta te pide muchos más kilómetros y tiempo, tal vez te deje menos al final. El pago más alto no siempre es la mejor opción. **[Cierre]** ¿Ya te pasó?
 
 ### Producción
-Grabar en primera persona. Priorizar opinión, experiencia y conversación con conductores; no convertirlo en un anuncio de Checa.
+Muestra dos ejemplos con cifras ficticias y haz las cuentas en pantalla. No los presentes como viajes reales.
