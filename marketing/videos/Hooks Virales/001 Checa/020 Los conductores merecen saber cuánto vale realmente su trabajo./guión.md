@@ -1,11 +1,17 @@
-# 020 — Los conductores merecen saber cuánto vale realmente su trabajo.
+# Los conductores merecen saber cuánto vale realmente su trabajo.
 
-**Duración estimada:** 20–35 segundos
+**Duración estimada:** 25–35 segundos
 
-**Versión:** Checa
+## Guion
 
-### Guion
-Quien conduce por plataforma merece saber cuánto vale realmente su trabajo. No solo importa el pago: cuentan los minutos, kilómetros y gastos. **[Mostrar Checa]** Checa ayuda a leer mejor los datos de una oferta y decidir con más contexto. **[Cierre]** Comparte este mensaje.
+Ser conductor es más que subir pasajeros y cobrar viajes.
 
-### Producción
-Mostrar la interfaz real de Checa cuando se mencione. Usar datos de prueba o autorizados; marcar los ejemplos ficticios. No prometer ganancias ni resultados garantizados.
+Pones tu tiempo, tu gasolina y tu coche. Todo eso tiene un costo.
+
+Por eso mereces saber cuánto dinero te queda después de cada oferta.
+
+**[Mostrar Checa]**
+
+Checa te ayuda a ver los datos del viaje y el gasto estimado de gasolina antes de decidir.
+
+**Cierre:** Tu trabajo vale. Asegúrate de que cada viaje también.
