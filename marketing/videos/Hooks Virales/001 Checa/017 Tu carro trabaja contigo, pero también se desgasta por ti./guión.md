@@ -1,11 +1,15 @@
-# 017 — Tu carro trabaja contigo, pero también se desgasta por ti.
+# Tu carro trabaja contigo, pero también se desgasta por ti.
 
-**Duración estimada:** 20–35 segundos
+**Duración estimada:** 25–35 segundos
 
-**Versión:** Checa
+## Guion
 
-### Guion
-Tu auto es tu herramienta de trabajo, pero cada jornada también le pasa factura. Cada kilómetro suma consumo y desgaste. **[Mostrar Checa]** Revisa los datos de las ofertas y compáralos con el costo real de tu vehículo. **[Cierre]** Cuida la herramienta que te da de comer.
+Tu coche te ayuda a ganar dinero, pero cada viaje también suma kilómetros y desgaste.
 
-### Producción
-Mostrar la interfaz real de Checa cuando se mencione. Usar datos de prueba o autorizados; marcar los ejemplos ficticios. No prometer ganancias ni resultados garantizados.
+Hay gastos que no pagas hoy, pero que llegan después: llantas, aceite, frenos y servicio.
+
+**[Mostrar kilómetros en pantalla]**
+
+Checa te ayuda a tomar en cuenta la gasolina de cada oferta. Para saber cuánto te queda de verdad, también debes apartar dinero para el cuidado del coche.
+
+**Cierre:** Tu coche es parte de tu trabajo. Cuídalo y haz bien tus cuentas.
