@@ -143,7 +143,7 @@ const SUBB=location.search.includes('sub=b'),CLAVE={dinero:V,gasolina:R,pago:Y,p
 function subt(t){let i=-1;GR.forEach((c,k)=>{if(t>=c[0][1]-.04)i=k});
  if(i<0||(i===GR.length-1&&t>GR[i][GR[i].length-1][2]+.6)){sub.innerHTML='';return}
  if(SUBB){sub.innerHTML='<span class="pasb">'+GR[i].map(p=>{const on=t>=p[1]-.04&&t<p[2]+.05,k=CLAVE[norm(p[0])],pp=cl((t-p[1]+.04)/.12);
-   return '<b style="display:inline-block;color:'+(on?(k||Y):(t>=p[1]&&k?k:H))+';transform:scale('+(on?1+.14*Math.sin(Math.PI*Math.min(1,.5+pp/2)):1)+')">'+p[0].replace(/[.,]/g,'')+'</b>'}).join('')+'</span>';return}
+   return '<b style="display:inline-block;color:'+(on?(k||Y):H)+';transform:scale('+(on?1+.14*Math.sin(Math.PI*Math.min(1,.5+pp/2)):1)+')">'+p[0].replace(/[.,]/g,'')+'</b>'}).join('')+'</span>';return}
  sub.innerHTML='<span class="pas">'+GR[i].map(p=>'<b style="color:'+(t>=p[1]-.04&&t<p[2]+.05?Y:H)+'">'+p[0]+'</b>').join('')+'</span>'}
 
 // ── fondo: carretera que avanza (raya punteada de la marca) y luz del semáforo según el bloque
