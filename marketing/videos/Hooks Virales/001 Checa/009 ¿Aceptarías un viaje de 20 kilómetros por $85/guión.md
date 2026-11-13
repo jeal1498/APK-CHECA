@@ -1,11 +1,19 @@
-# 009 — ¿Aceptarías un viaje de 20 kilómetros por $85?
+# ¿Aceptarías un viaje de 20 kilómetros por $85?
 
-**Duración estimada:** 20–35 segundos
+**Duración estimada:** 25–35 segundos
 
-**Versión:** Checa
+## Guion
 
-### Guion
-Ochenta y cinco pesos por veinte kilómetros: ¿lo aceptarías? Antes de responder, piensa en el tiempo del recorrido, el regreso y el combustible. **[Mostrar Checa]** Revisa los datos de la oferta y compáralos con tus metas. **[Cierre]** Checa te ayuda a mirar más allá del pago.
+Ochenta y cinco pesos por veinte kilómetros.
 
-### Producción
-Mostrar la interfaz real de Checa cuando se mencione. Usar datos de prueba o autorizados; marcar los ejemplos ficticios. No prometer ganancias ni resultados garantizados.
+¿Tú lo aceptarías?
+
+Antes de decir que sí, piensa en la gasolina, el tiempo y los kilómetros que vas a sumar a tu coche.
+
+**[Mostrar cálculo ficticio en Checa]**
+
+Con Checa puedes ver cuánto se va en gasolina y cuánto queda de esa oferta.
+
+El desgaste y el mantenimiento van aparte.
+
+**Cierre:** No decidas solo por lo que dice la tarifa.
