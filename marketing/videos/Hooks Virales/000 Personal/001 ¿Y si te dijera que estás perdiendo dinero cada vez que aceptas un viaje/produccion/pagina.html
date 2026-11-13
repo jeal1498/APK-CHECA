@@ -30,12 +30,12 @@ body.marco #sub,body.marco #g,body.marco #camtxt,body.marco #bajo{display:none}
 </style></head><body>
 <div id="camtxt">TU CÁMARA<span>45 % DE LA PANTALLA · 1080 × 864</span></div>
 <svg id="tercios" width="1080" height="864" viewBox="0 0 1080 864" style="position:absolute;left:0;top:0;display:none">
-<g fill="#F4F4EF" opacity=".9"><ellipse cx="360" cy="300" rx="120" ry="150"/><path d="M110 864c0-190 110-290 250-290s250 100 250 290z"/></g>
-<g fill="#0C0C10"><circle cx="315" cy="288" r="13"/><circle cx="405" cy="288" r="13"/></g>
+<g fill="#F4F4EF" opacity=".9"><ellipse cx="540" cy="300" rx="120" ry="150"/><path d="M290 864c0-190 110-290 250-290s250 100 250 290z"/></g>
+<g fill="#0C0C10"><circle cx="495" cy="288" r="13"/><circle cx="585" cy="288" r="13"/></g>
 <g stroke="#FACC15" stroke-width="4" stroke-dasharray="16 12"><path d="M360 0v864M720 0v864M0 288h1080M0 576h1080"/></g>
 <g fill="#FACC15"><circle cx="360" cy="288" r="14"/><circle cx="720" cy="288" r="14"/><circle cx="360" cy="576" r="14"/><circle cx="720" cy="576" r="14"/></g>
 <rect x="890" y="160" width="190" height="704" fill="#EF4444" opacity=".22"/><rect x="0" y="0" width="1080" height="160" fill="#EF4444" opacity=".22"/>
-<text x="500" y="262" font-family="JetBrains Mono" font-weight="700" font-size="26" fill="#FACC15" text-anchor="start">OJOS AQUÍ</text>
+<text x="735" y="262" font-family="JetBrains Mono" font-weight="700" font-size="26" fill="#FACC15" text-anchor="start">OJOS AQUÍ</text>
 <text x="985" y="520" font-family="JetBrains Mono" font-weight="700" font-size="22" fill="#F4F4EF" text-anchor="middle" transform="rotate(90 985 520)">BOTONES DE TIKTOK</text>
 </svg>
 <div id="cam"><i></i></div>
@@ -46,6 +46,7 @@ body.marco #sub,body.marco #g,body.marco #camtxt,body.marco #bajo{display:none}
 <script>
 const Y='#FACC15',R='#EF4444',V='#22C55E',H='#F4F4EF';
 if(location.search.includes('tercios')){document.getElementById('tercios').style.display='';document.getElementById('camtxt').innerHTML=''}
+if(location.search.includes('llave')){const c=document.getElementById('camtxt');c.innerHTML='';c.style.background='#FF00FF'}
 if(location.search.includes('marco'))document.documentElement.className=document.body.className='marco';
 const P=D.palabras,TOTAL=D.total,norm=w=>w.toLowerCase().replace(/[¿?¡!.,:;]/g,'');
 // W('dinero') = segundo en que empieza esa palabra; 'dinero#1' = la segunda vez
