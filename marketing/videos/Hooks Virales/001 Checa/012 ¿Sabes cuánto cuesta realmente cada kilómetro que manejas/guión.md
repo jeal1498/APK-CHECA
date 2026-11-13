@@ -1,11 +1,17 @@
-# 012 — ¿Sabes cuánto cuesta realmente cada kilómetro que manejas?
+# ¿Sabes cuánto cuesta realmente cada kilómetro que manejas?
 
-**Duración estimada:** 20–35 segundos
+**Duración estimada:** 25–35 segundos
 
-**Versión:** Checa
+## Guion
 
-### Guion
-¿Sabes cuánto te cuesta recorrer un kilómetro? No es solo gasolina: también hay llantas, aceite, mantenimiento y desgaste. **[Mostrar Checa]** Revisa las métricas de cada oferta y compáralas con tus costos reales. **[Cierre]** Conocer tu costo por kilómetro puede cambiar tus decisiones.
+Cada kilómetro que manejas tiene un costo.
 
-### Producción
-Mostrar la interfaz real de Checa cuando se mencione. Usar datos de prueba o autorizados; marcar los ejemplos ficticios. No prometer ganancias ni resultados garantizados.
+No solo gastas gasolina. También hay aceite, llantas, servicios y desgaste.
+
+Si no sabes cuánto te cuesta usar tu coche, puedes pensar que ganaste más de lo que en verdad te quedó.
+
+**[Mostrar fórmula simple en pantalla]**
+
+Checa calcula el gasto estimado de gasolina por oferta. Tú puedes sumar los demás costos para tener una cuenta más completa.
+
+**Cierre:** Cada kilómetro cuenta.
