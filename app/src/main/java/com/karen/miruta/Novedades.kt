@@ -9,6 +9,9 @@ object Novedades {
     class Version(val codigo: Int, val nombre: String, val puntos: List<String>, val widgets: Boolean = false, val vistaQr: Boolean = false)
 
     val LISTA = listOf(
+        Version(157, "10.77", listOf(
+            "Nuevo: si el pop-up no coincide con la oferta, toca el aviso ⚠ de su esquina y lo revisamos."
+        )),
         Version(156, "10.76", listOf(
             "Ya no salen pop-ups falsos mientras vas por el pasajero o llevas un viaje."
         )),

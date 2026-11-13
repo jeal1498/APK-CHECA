@@ -86,7 +86,7 @@ La revisión ahora también envía: el modelo del teléfono y la versión de And
 
 ## Capturas de pantalla (10.72, por declarar en Play Console)
 - **Declarar:** Fotos y videos → **Fotos**. Recopilados: sí. Compartidos: no. Se procesan: no en el teléfono, se suben. Opcional: sí (se apaga en «Guardar pantallas de ofertas»). Finalidad: **Funcionalidad de la app** y **Análisis**.
-- **Qué se sube:** solo la zona de Uber/DiDi de las ofertas que el lector y el revisor leyeron distinto (tipos `diferencia`, `desacuerdo` y `rescate`), en WebP, a Supabase Storage (almacén privado `capturas`, nombre = id de `errores_lector`). Pueden salir nombre del pasajero o direcciones.
+- **Qué se sube:** solo la zona de Uber/DiDi de las ofertas que el lector y el revisor leyeron distinto (tipos `diferencia`, `desacuerdo` y `rescate`; desde la 10.77 también `reporte`, cuando el conductor toca «Leyó mal» en el pop-up: mismos datos, no hay tipo nuevo que declarar), en WebP, a Supabase Storage (almacén privado `capturas`, nombre = id de `errores_lector`). Pueden salir nombre del pasajero o direcciones.
 - **Retención:** 7 días (`limpiarCapturas` en `confirmar-oferta`). Aviso de una sola vez en la app: «Capturas para mejorar la lectura».
 
 ## Qué NO se declara y por qué

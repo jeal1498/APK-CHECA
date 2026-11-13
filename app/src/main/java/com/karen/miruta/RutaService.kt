@@ -34,6 +34,9 @@ class RutaService : AccessibilityService() {
     /** Un pop-up por app, para que dos ofertas simultáneas no se pisen. */
     private val popups = HashMap<String, Popup>()
     private val activas = LinkedHashMap<String, Pair<Oferta, Rect?>>()
+    /** Lo que leyó el lector para el pop-up de cada app (para el reporte «Leyó mal»). */
+    private class Leido(val app: String, val lineas: List<String>, val lector: String)
+    private val leidas = HashMap<String, Leido>()
     private val ultimaFirma = HashMap<String, Pair<Oferta, Long>>()
     /** Turno de la oferta de cada pop-up: un resultado de zonas solo se aplica a la oferta que lo pidió. */
     private val turnos = Zonas.Turnos()
@@ -420,8 +423,10 @@ class RutaService : AccessibilityService() {
 
         popups.getOrPut(clave) {
             Popup(this, prefs, WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY).also { p ->
+                p.alReportar = { reportarLectura(clave) }
                 p.alCerrar = {
                     activas.remove(clave)
+                    leidas.remove(clave)
                     turnos.quitar(clave)
                     zonasPedidas.remove(clave)
                     tramosVistos.remove(clave)
@@ -442,6 +447,7 @@ class RutaService : AccessibilityService() {
             }
         }
         activas[clave] = oferta to zona
+        leidas[clave] = Leido(app, lineas.orEmpty(), lector)
         val turno = turnos.nuevo(clave)
         tramosVistos.remove(clave)
         sinVer.remove(clave)
@@ -475,6 +481,13 @@ class RutaService : AccessibilityService() {
                 revisarUna(clave, app, lineas, leida, msPopup, lector)
             }
         }
+    }
+
+    /** «Leyó mal» del pop-up de [clave]: manda a revisión lo que se leyó y lo que se mostró. */
+    private fun reportarLectura(clave: String): Boolean {
+        val oferta = activas[clave]?.first ?: return false
+        val l = leidas[clave]
+        return Confirmador.reportar(this, l?.app ?: clave, l?.lineas.orEmpty(), oferta.sinZonas(), prefs.moneda, l?.lector ?: LECTOR_OCR)
     }
 
     private fun revisarUna(clave: String, app: String, lineas: List<String>, leida: Oferta, msPopup: Long, lector: String) {

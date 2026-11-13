@@ -47,6 +47,14 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
     var alCerrar: (() -> Unit)? = null
 
     /**
+     * «Leyó mal» (10.77): el conductor avisa que este pop-up no coincide con la oferta. Devuelve
+     * true si el reporte se pudo mandar. Sin esto (vista previa, sin sesión) el botón no sale.
+     */
+    var alReportar: (() -> Boolean)? = null
+    /** La oferta que ya se reportó: su pop-up muestra ✓ y no se manda dos veces. */
+    private var reportada: Oferta? = null
+
+    /**
      * Muestra la oferta. [zona] es la parte de la pantalla de la app (pantalla dividida);
      * el pop-up se centra sobre ella. [reiniciar] = false conserva el tiempo restante.
      */
@@ -199,6 +207,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         vista = null
         firmaVista = null
         lpActual = null
+        reportada = null
     }
 
     /** Corrige la posición cuando Android ya midió el alto real del pop-up. */
@@ -412,6 +421,38 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         marco.addView(cerrarBtn, FrameLayout.LayoutParams(dp(48), dp(48), Gravity.TOP or Gravity.END).apply {
             topMargin = dp(2); rightMargin = dp(2)
         })
+
+        // «Leyó mal» en la otra esquina: mismo tamaño de toque que la ✕. Un toque manda la lectura
+        // a revisión y el icono cambia a ✓. Es un dibujo (sin texto): el lector no lo confunde.
+        val reportar = alReportar
+        if (interactivo && reportar != null && Cuenta.conectada(ctx)) {
+            val malBtn = ImageView(ctx).apply {
+                setImageDrawable(if (reportada == o) Icono(Icono.OK, Tema.VERDE) else Icono(Icono.ALERTA, Oscuro.TENUE))
+                val lado = dp(48)
+                val chico = dp(6)
+                val resto = maxOf(0, lado - e(12f) - chico)
+                setPadding(chico, chico, resto, resto) // el dibujo queda en la esquina
+                contentDescription = "Leyó mal: reportar esta lectura"
+                setOnClickListener {
+                    if (reportada == o) return@setOnClickListener
+                    val enviado = try { reportar() } catch (_: Exception) { false }
+                    if (enviado) {
+                        reportada = o
+                        setImageDrawable(Icono(Icono.OK, Tema.VERDE))
+                    }
+                    try {
+                        android.widget.Toast.makeText(
+                            ctx.applicationContext,
+                            if (enviado) "Reporte enviado. Gracias: lo revisamos." else "No se pudo enviar el reporte.",
+                            android.widget.Toast.LENGTH_SHORT
+                        ).show()
+                    } catch (_: Exception) { }
+                }
+            }
+            marco.addView(malBtn, FrameLayout.LayoutParams(dp(48), dp(48), Gravity.TOP or Gravity.START).apply {
+                topMargin = dp(2); leftMargin = dp(2)
+            })
+        }
 
         return marco
     }

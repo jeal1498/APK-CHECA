@@ -246,6 +246,43 @@ object Confirmador {
         while (coincidencias.size > COINCIDENCIAS_MAX) coincidencias.removeAt(0)
     }
 
+    // ---------- «Leyó mal» (10.77) ----------
+    // El conductor toca el aviso del pop-up: se guarda el caso (sin IA) con las mismas líneas
+    // cortas de siempre y la captura reciente. Es la única señal que viene de quien vio la oferta.
+    private var ultimoReporte = 0L
+
+    /** Manda el reporte de [o] (lo que mostró el pop-up). false si no hay sesión o se acaba de mandar uno. */
+    fun reportar(ctx: Context, app: String, lineas: List<String>, o: Oferta, moneda: Moneda, lector: String): Boolean {
+        if (!Cuenta.conectada(ctx)) return false
+        val ahora = System.currentTimeMillis()
+        synchronized(this) {
+            if (ahora - ultimoReporte < 2_000L) return false
+            ultimoReporte = ahora
+        }
+        val app0 = ctx.applicationContext
+        val pant = pantalla(app, o)
+        val enviar = filtrar(lineas)
+        return try {
+            hilo.execute {
+                try {
+                    val cuerpo = JSONObject()
+                        .put("modo", "reporte")
+                        .put("app", app)
+                        .put("moneda", moneda.codigo)
+                        .put("version", BuildConfig.VERSION_NAME)
+                        .put("lineas", JSONArray(enviar))
+                        .put("lector", lector)
+                        .put("equipo", equipo())
+                        .put("pantalla", pant ?: JSONObject.NULL)
+                        .put("local", local(o))
+                    val r = JSONObject(Cuenta.revisarOferta(app0, cuerpo.toString()) ?: "{}")
+                    subirCaptura(app0, app, r)
+                } catch (_: Exception) { }
+            }
+            true
+        } catch (_: Exception) { false }
+    }
+
     fun revisar(ctx: Context, app: String, lineas: List<String>, o: Oferta, moneda: Moneda, msPopup: Long, lector: String, otra: Otra? = null, listo: (Oferta) -> Unit) {
         if (!Cuenta.conectada(ctx)) return
         val enviar = filtrar(lineas)

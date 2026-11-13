@@ -16,6 +16,8 @@ const MODELO = REVISOR === "deepseek" ? "deepseek-flash" : "claude-haiku-5-5";
 const CLAVE = REVISOR === "deepseek" ? CLAVE_DEEPSEEK : CLAVE_ANTHROPIC;
 /** Consultas por cuenta al día. */
 const TOPE_DIARIO = 300;
+/** Reportes «Leyó mal» por cuenta en 24 horas. */
+const TOPE_REPORTES = 40;
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -290,10 +292,29 @@ Deno.serve(async (req) => {
   const moneda = String(cuerpo.moneda ?? "MXN").slice(0, 3);
   // De qué lector del teléfono vino (10.55): «ocr» (foto) o «texto» (texto de la app).
   const lector = cuerpo.lector === "texto" || cuerpo.lector === "ocr" ? cuerpo.lector : null;
-  if (lineas.length === 0 || !local) return json({ ok: false, error: "sin_datos" }, 400);
+  if (cuerpo.modo !== "reporte" && (lineas.length === 0 || !local)) return json({ ok: false, error: "sin_datos" }, 400);
   const lectorOtro = cuerpo.lectorOtro === "texto" || cuerpo.lectorOtro === "ocr" ? cuerpo.lectorOtro : null;
   const lineasOtro = modo === "desacuerdo" ? filtrar(cuerpo.lineasOtro) : [];
   const localOtro = modo === "desacuerdo" ? leerLocal(cuerpo.localOtro) : null;
+  // «reporte» (10.77): el conductor tocó «Leyó mal» en el pop-up. Se guarda el caso sin
+  // preguntar a la IA (no cuesta) y se devuelve su número para que el teléfono suba la captura.
+  if (cuerpo.modo === "reporte") {
+    const mostrado = leerLocal(cuerpo.local);
+    if (!mostrado) return json({ ok: false, error: "sin_datos" }, 400);
+    try {
+      const desde = new Date(Date.now() - 86400_000).toISOString();
+      const r = await fetch(
+        `${SUPA}/rest/v1/errores_lector?select=id&usuario=eq.${id}&tipo=eq.reporte&creado=gte.${desde}&limit=${TOPE_REPORTES + 1}`,
+        { headers: headersServicio },
+      );
+      const hoy = await r.json();
+      if (Array.isArray(hoy) && hoy.length > TOPE_REPORTES) return json({ ok: false, error: "tope_reportes" });
+    } catch { /* sin conteo se guarda igual */ }
+    const reporte = await insertarId("errores_lector", {
+      usuario: id, app, moneda, version, lineas, local: mostrado, ia: {}, lector, tipo: "reporte", ...equipo, ...pantalla,
+    });
+    return json({ ok: reporte !== null, caso: reporte });
+  }
   await anotarConteo(id, cuerpo.conteo);
   await anotarConteo(id, cuerpo.conteoAnterior);
   const msPopup = Math.round(Number(cuerpo.msPopup ?? -1));
