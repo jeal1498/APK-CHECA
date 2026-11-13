@@ -5,7 +5,7 @@
 **Versión:** Marca personal
 
 ### Guion
-Quince horas al volante suenan a mucho esfuerzo, pero ¿qué resultado dejan? Compara jornadas, ingresos, costos y descansos. Nunca conviertas la fatiga en un riesgo para ti o para los demás. **[Cierre]** Trabajar mejor también significa saber cuándo parar.
+Quince horas al volante suenan a mucho esfuerzo. Pero, ¿cuánto dinero te queda después de pagar gasolina y otros gastos? Y hay algo más: el cansancio puede poner en riesgo tu vida y la de otros. No vale la pena llegar al límite. **[Cierre]** Saber cuándo parar también es parte del trabajo.
 
 ### Producción
-Grabar en primera persona. Priorizar opinión, experiencia y conversación con conductores; no convertirlo en un anuncio de Checa.
+A cámara, con tono serio. No promuevas jornadas que pongan en riesgo el descanso o la seguridad.
