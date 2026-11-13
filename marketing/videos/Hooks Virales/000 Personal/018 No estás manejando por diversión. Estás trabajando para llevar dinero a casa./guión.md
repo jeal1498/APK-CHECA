@@ -5,7 +5,7 @@
 **Versión:** Marca personal
 
 ### Guion
-Detrás de cada turno hay cuentas que pagar y personas que esperan que regreses. No se trata de presumir cuántas horas aguantas, sino de cuidar tu energía, tu vehículo y el ingreso que necesitas. **[Cierre]** Dedica este mensaje a quien te apoya.
+No sales a manejar solo por pasar el tiempo. Sales porque tienes metas, pagos y gente que cuenta contigo. Por eso tu salud y tu seguridad también importan. No vale la pena ponerlas en juego por hacer un viaje más. **[Cierre]** Cuida de ti. Tu trabajo puede esperar cuando necesitas parar.
 
 ### Producción
-Grabar en primera persona. Priorizar opinión, experiencia y conversación con conductores; no convertirlo en un anuncio de Checa.
+A cámara, con un tono honesto y cercano. No expongas datos privados de tu familia.
