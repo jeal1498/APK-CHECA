@@ -1,11 +1,21 @@
-# 002 — No todos los viajes que pagan $100 pesos son buenos.
+# No todos los viajes que pagan $100 pesos son buenos.
 
-**Duración estimada:** 20–35 segundos
+**Duración estimada:** 25–35 segundos
 
-**Versión:** Checa
+## Guion
 
-### Guion
-**[Pantalla: dos ofertas ficticias]** Ambas pagan cien pesos, pero una exige muchos más kilómetros y minutos. ¿Son igual de convenientes? No necesariamente. **[Checa en pantalla]** Mira las métricas de la solicitud y compáralas antes de aceptar. El monto no cuenta toda la historia. **[Cierre]** Analiza mejor cada oferta con Checa.
+Te voy a mostrar dos viajes que pagan cien pesos.
 
-### Producción
-Mostrar la interfaz real de Checa cuando se mencione. Usar datos de prueba o autorizados; marcar los ejemplos ficticios. No prometer ganancias ni resultados garantizados.
+**[Mostrar dos ofertas ficticias en pantalla]**
+
+El primero te pide más kilómetros y más tiempo.
+
+El segundo paga lo mismo, pero exige mucho menos.
+
+¿Ahora entiendes por qué no debes elegir solo por el monto?
+
+**[Mostrar Checa]**
+
+Con Checa puedes comparar los datos y saber qué oferta te conviene más.
+
+**Cierre:** No aceptes a ciegas.
