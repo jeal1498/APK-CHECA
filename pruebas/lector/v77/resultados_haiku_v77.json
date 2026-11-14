@@ -1,7 +1,7 @@
 {
   "modelo": "haiku-5.5",
   "lista": "capturas 10.77 del almacén capturas (251 ids, ver prompt-v77.md)",
-  "aviso": "Entradas 1211–1380 (lotes finales) con confianza baja y nota REVISAR: al escribirlas mezclé algunos pop-ups de Checa con tarjetas de Uber/DiDi y asigné notas sin verificar contra la imagen. Revisar antes de usar. Entradas 947–1210 leídas directo de la imagen.",
+  "aviso": "Pasada 1 (947–1210) leída directo de la imagen. Entradas 1211–1380 releídas en una segunda pasada (125 capturas, descarga nueva). Las marcadas 'verificar' (ids: 1343, 1344, 1345, 1353, 1360) tienen asignación de tarjeta dudosa y no se usan sin revisar.",
   "resultados": [
     {
       "id": 947,
@@ -1270,8 +1270,8 @@
       "tarifa": 74.58,
       "km": 8.5,
       "minutos": 32,
-      "confianza": "baja",
-      "nota": "REVISAR: Lista 'Centro de viajes' 10:07, primera tarjeta Express Nuevo, 'Tomar viaje'; tramos 1 km/6 min + 7.5 km/26 min"
+      "confianza": "alta",
+      "nota": "Express Nuevo, lista 10:07 (CDMX); tramos 1 km/6 min + 7.5 km/26 min"
     },
     {
       "id": 1212,
@@ -1280,8 +1280,8 @@
       "tarifa": 110.96,
       "km": 19.5,
       "minutos": 41,
-      "confianza": "baja",
-      "nota": "REVISAR: Express Nuevo 9 viajes, 'Tomar viaje' bajo pop-up de Checa $94; tramos 1.2 km/7 min + 18.3 km/34 min"
+      "confianza": "alta",
+      "nota": "Express Nuevo 9 viajes, 10:07 (CDMX); tramos 1.2 km/7 min + 18.3 km/34 min. Pop-up $94 de Checa no cuenta"
     },
     {
       "id": 1213,
@@ -1291,17 +1291,17 @@
       "km": null,
       "minutos": null,
       "confianza": "baja",
-      "nota": "REVISAR: Express Nuevo x tarifa $11 de lluvia/extra; tramos tapados por pop-up de Checa $122"
+      "nota": "Express Nuevo $73.26 con $11 de extra, 10:09 (CDMX); tramos tapados por pop-up de Checa $122"
     },
     {
       "id": 1214,
       "estado": "vigente",
       "es_oferta": true,
-      "tarifa": 171.75,
-      "km": null,
+      "tarifa": null,
+      "km": 23.9,
       "minutos": 67,
       "confianza": "baja",
-      "nota": "REVISAR: Express en lista; primer tramo tapado por pop-up de Checa $127; segundo tramo 1 h 7 min 23.9 km"
+      "nota": "Express 10:09 (CDMX); tarifa tapada; tramo final 1 h 7 min 23.9 km, primer tramo tapado por pop-up de Checa $127"
     },
     {
       "id": 1215,
@@ -1310,8 +1310,8 @@
       "tarifa": 85.77,
       "km": 7.2,
       "minutos": 36,
-      "confianza": "baja",
-      "nota": "REVISAR: UberX, 'Me interesa'; tramos 0.7 km/4 min + 6.5 km/32 min. Pop-up $32 de Checa"
+      "confianza": "alta",
+      "nota": "UberX 10:12 (CDMX), 'Me interesa'; tramos 4 min 0.7 km + 32 min 6.5 km. Pop-up de Checa $32 no cuenta"
     },
     {
       "id": 1216,
@@ -1320,8 +1320,8 @@
       "tarifa": 109.47,
       "km": 10.4,
       "minutos": 29,
-      "confianza": "baja",
-      "nota": "REVISAR: Uber Priority, 'Me interesa', +$12.83 incluido; tramos 1.3 km/5 min + 9.1 km/24 min. Pop-up $91 de Checa"
+      "confianza": "alta",
+      "nota": "Uber Priority 10:12 (CDMX), +$12.83 incluido; tramos 5 min 1.3 km + 24 min 9.1 km. Pop-up de Checa $91 no cuenta"
     },
     {
       "id": 1217,
@@ -1330,8 +1330,8 @@
       "tarifa": 30.07,
       "km": 2.1,
       "minutos": 8,
-      "confianza": "baja",
-      "nota": "REVISAR: Pon Tu Precio 7 puntos, cargando sobre fondo apagado; tramos 128 m/2 min + 2 km/6 min. Pop-up $25 de Checa"
+      "confianza": "media",
+      "nota": "Pon Tu Precio 1.1x, 7 puntos, cargando (CDMX/Tab.); tramos 2 min 128 m + 6 min 2 km. Pop-up ACEPTAR $25 de Checa no cuenta"
     },
     {
       "id": 1218,
@@ -1340,8 +1340,8 @@
       "tarifa": 209.33,
       "km": 21.2,
       "minutos": 52,
-      "confianza": "baja",
-      "nota": "REVISAR: Uber Priority, 'Me interesa', +$20.82 incluido; tramos 1.9 km/14 min + 19.3 km/38 min. Pop-up $142 de Checa"
+      "confianza": "alta",
+      "nota": "Uber Priority, Radar, +$20.82 incluido; tramos 14 min 1.9 km + 38 min 19.3 km. Pop-up RECHAZAR $142 de Checa no cuenta"
     },
     {
       "id": 1219,
@@ -1350,8 +1350,8 @@
       "tarifa": 29.2,
       "km": 2.1,
       "minutos": 6,
-      "confianza": "baja",
-      "nota": "REVISAR: Pon Tu Precio 7 puntos, cargando; tramos 66 m/1 min + 2 km/5 min. Pop-up $25 de Checa"
+      "confianza": "media",
+      "nota": "Pon Tu Precio 1.3x, 7 puntos, cargando; tramos 1 min 66 m + 5 min 2 km. Pop-up RECHAZAR $25 de Checa no cuenta"
     },
     {
       "id": 1220,
@@ -1360,8 +1360,8 @@
       "tarifa": 29.37,
       "km": 1.8,
       "minutos": 8,
-      "confianza": "baja",
-      "nota": "REVISAR: Pon Tu Precio 7 puntos, cargando; tramos 223 m/3 min + 1.6 km/5 min"
+      "confianza": "media",
+      "nota": "Pon Tu Precio 1.3x, 7 puntos, cargando; tramos 3 min 223 m + 5 min 1.6 km. Pop-up de Checa no cuenta"
     },
     {
       "id": 1221,
@@ -1370,18 +1370,18 @@
       "tarifa": 29.92,
       "km": 3.6,
       "minutos": 11,
-      "confianza": "baja",
-      "nota": "REVISAR: Pon Tu Precio 7 puntos, cargando; tramos 1.2 km/5 min + 2.4 km/6 min"
+      "confianza": "media",
+      "nota": "Pon Tu Precio 1.2x, 7 puntos, cargando (13 nov 10:49); tramos 5 min 1.2 km + 6 min 2.4 km"
     },
     {
       "id": 1222,
       "estado": "vigente",
       "es_oferta": true,
       "tarifa": null,
-      "km": null,
+      "km": 8.9,
       "minutos": 16,
       "confianza": "baja",
-      "nota": "REVISAR: Lista 10:53; primera tarjeta Express con tarifa tapada por pop-up de Checa $48; segundo tramo 8.9 km/16 min"
+      "nota": "Centro de viajes 10:53, primera tarjeta con tarifa tapada por pop-up de Checa $48; segundo tramo 16 min 8.9 km"
     },
     {
       "id": 1223,
@@ -1390,8 +1390,8 @@
       "tarifa": 59.9,
       "km": 9.7,
       "minutos": 24,
-      "confianza": "baja",
-      "nota": "REVISAR: Lista 10:53, Pon Tu Precio x1.4; tramos 2.6 km/8 min + 7.1 km/16 min. Pop-up $48 es de Checa"
+      "confianza": "alta",
+      "nota": "Pon Tu Precio Nuevo 1.4x, 10:53 (CDMX); tramos 8 min 2.6 km + 16 min 7.1 km. Pop-up RECHAZAR $48 de Checa no cuenta"
     },
     {
       "id": 1224,
@@ -1400,8 +1400,8 @@
       "tarifa": 63.78,
       "km": 9.8,
       "minutos": 24,
-      "confianza": "baja",
-      "nota": "REVISAR: Pon Tu Precio x1.4, 6 puntos, 'Al precio de Express'; tramos 2.7 km/8 min + 7.1 km/16 min"
+      "confianza": "alta",
+      "nota": "Pon Tu Precio 1.4x, 6 puntos, 'Al precio de Express', 10:53 (CDMX); tramos 8 min 2.7 km + 16 min 7.1 km"
     },
     {
       "id": 1225,
@@ -1410,8 +1410,8 @@
       "tarifa": null,
       "km": null,
       "minutos": null,
-      "confianza": "baja",
-      "nota": "REVISAR: 'Viaje aceptado'"
+      "confianza": "alta",
+      "nota": "'Viaje aceptado' en navegación, 11:02 13 nov"
     },
     {
       "id": 1226,
@@ -1420,8 +1420,8 @@
       "tarifa": 35.96,
       "km": 3.6,
       "minutos": 11,
-      "confianza": "baja",
-      "nota": "REVISAR: Pon Tu Precio 7 puntos, cargando bajo pop-up de Checa $28; tramos 980 m/5 min + 2.6 km/6 min"
+      "confianza": "media",
+      "nota": "Pon Tu Precio 1.2x, 7 puntos, cargando 11:14 13 nov; tramos 5 min 980 m + 6 min 2.6 km. Pop-up CONSIDERAR $28 de Checa no cuenta"
     },
     {
       "id": 1227,
@@ -1430,8 +1430,8 @@
       "tarifa": 27.8,
       "km": 3.0,
       "minutos": 7,
-      "confianza": "baja",
-      "nota": "REVISAR: Pon Tu Precio 7 puntos, cargando bajo pop-up de Checa $21; tramos 1.7 km/4 min + 1.3 km/3 min"
+      "confianza": "media",
+      "nota": "Pon Tu Precio 1.1x, 7 puntos, cargando 11:36 13 nov; tramos 4 min 1.7 km + 3 min 1.3 km. Pop-up CONSIDERAR $21 de Checa no cuenta"
     },
     {
       "id": 1230,
@@ -1440,8 +1440,8 @@
       "tarifa": 43.37,
       "km": 5.9,
       "minutos": 14,
-      "confianza": "baja",
-      "nota": "REVISAR: Lista 11:48, Pon Tu Precio Nuevo x1.4, 'Aceptar $43.37'; tramos 3.2 km/6 min + 2.7 km/8 min"
+      "confianza": "alta",
+      "nota": "Pon Tu Precio Nuevo 1.4x, lista 11:48 13 nov, 'Aceptar $43.37'; tramos 6 min 3.2 km + 8 min 2.7 km"
     },
     {
       "id": 1235,
@@ -1450,8 +1450,8 @@
       "tarifa": 74.93,
       "km": 11.3,
       "minutos": 22,
-      "confianza": "baja",
-      "nota": "REVISAR: Centro de viajes (1) en 'Buscando', Pon Tu Precio x1.3; tramos 4.5 km/10 min + 6.8 km/12 min"
+      "confianza": "media",
+      "nota": "Centro de viajes (1) 12:24 14 nov, Pon Tu Precio x1.3 'Buscando'; tramos 10 min 4.5 km + 12 min 6.8 km"
     },
     {
       "id": 1245,
@@ -1460,8 +1460,8 @@
       "tarifa": null,
       "km": null,
       "minutos": null,
-      "confianza": "baja",
-      "nota": "REVISAR: 'La solicitud de viaje venció' sobre Pon Tu Precio $41.00. Pop-up CONSIDERAR $41 es de Checa"
+      "confianza": "alta",
+      "nota": "'La solicitud de viaje venció' sobre Pon Tu Precio $41.00 5 puntos"
     },
     {
       "id": 1247,
@@ -1470,8 +1470,8 @@
       "tarifa": 51.08,
       "km": 8.6,
       "minutos": 19,
-      "confianza": "baja",
-      "nota": "REVISAR: Pon Tu Precio x1.4, 5 puntos; tramos 3.5 km/8 min + 5.1 km/11 min"
+      "confianza": "alta",
+      "nota": "Pon Tu Precio 1.4x, 5 puntos, mapa 05:05 (nueva/Nuevo); tramos 8 min 3.5 km + 11 min 5.1 km. Pop-up $41 no cuenta"
     },
     {
       "id": 1248,
@@ -1480,8 +1480,8 @@
       "tarifa": 41.0,
       "km": 8.0,
       "minutos": 19,
-      "confianza": "baja",
-      "nota": "REVISAR: Lista 05:05, Pon Tu Precio Nuevo 'Aceptar $41.00'; tramos 3.4 km/7 min + 4.6 km/12 min. Pop-up $41 es de Checa"
+      "confianza": "alta",
+      "nota": "Pon Tu Precio Nuevo 'Aceptar $41.00' lista 05:05; tramos 7 min 3.4 km + 12 min 4.6 km. Pop-up $41 es de Checa"
     },
     {
       "id": 1249,
@@ -1490,8 +1490,8 @@
       "tarifa": 58.38,
       "km": 8.7,
       "minutos": 19,
-      "confianza": "baja",
-      "nota": "REVISAR: Express Nuevo x1.6 en lista 05:05, 'Tomar viaje'; tramos 3.6 km/8 min + 5.1 km/11 min. Tarifa tomada de la captura 1248. Pop-up $107 es de Checa"
+      "confianza": "media",
+      "nota": "Express Nuevo x1.6 lista 05:05; tramos 8 min 3.6 km + 11 min 5.1 km. Pop-up $107 de Checa no cuenta"
     },
     {
       "id": 1250,
@@ -1500,8 +1500,8 @@
       "tarifa": 106.5,
       "km": 14.1,
       "minutos": 32,
-      "confianza": "baja",
-      "nota": "REVISAR: Pon Tu Precio Nuevo x1.4 en lista 05:05; tramos 3.6 km/8 min + 10.5 km/24 min. Pop-up $107 es de Checa"
+      "confianza": "alta",
+      "nota": "Pon Tu Precio Nuevo x1.4 lista 05:05; tramos 8 min 3.6 km + 24 min 10.5 km. Pop-up $107 de Checa no cuenta"
     },
     {
       "id": 1251,
@@ -1510,8 +1510,8 @@
       "tarifa": 106.5,
       "km": 14.1,
       "minutos": 32,
-      "confianza": "baja",
-      "nota": "REVISAR: Pon Tu Precio Nuevo x1.4 en lista 05:05; tramos 3.6 km/8 min + 10.5 km/24 min. Pop-up $107 es de Checa"
+      "confianza": "alta",
+      "nota": "Pon Tu Precio Nuevo 1.4x, Cancún 05:05; tramos 8 min 3.6 km + 24 min 10.5 km. Pop-up $107 no cuenta"
     },
     {
       "id": 1253,
@@ -1520,8 +1520,8 @@
       "tarifa": 106.5,
       "km": 14.1,
       "minutos": 32,
-      "confianza": "baja",
-      "nota": "REVISAR: Misma tarjeta que 1251, lista 'Km al encuentro' con opciones de tarifa"
+      "confianza": "alta",
+      "nota": "Misma tarjeta que 1251, con sugerencias de tarifa $118.25 y $130.00"
     },
     {
       "id": 1254,
@@ -1530,8 +1530,8 @@
       "tarifa": 106.5,
       "km": 14.1,
       "minutos": 32,
-      "confianza": "baja",
-      "nota": "REVISAR: Duplicado de 1253"
+      "confianza": "alta",
+      "nota": "Misma tarjeta que 1251 y 1253, 05:05 Cancún"
     },
     {
       "id": 1255,
@@ -1540,8 +1540,8 @@
       "tarifa": 48.49,
       "km": 7.0,
       "minutos": 18,
-      "confianza": "baja",
-      "nota": "REVISAR: UberX, 'Me interesa'; tramos 4.2 km/10 min + 2.8 km/8 min"
+      "confianza": "alta",
+      "nota": "UberX 'Me interesa' 05:05 Cancún; tramos 10 min 4.2 km + 8 min 2.8 km"
     },
     {
       "id": 1256,
@@ -1550,8 +1550,8 @@
       "tarifa": 89.67,
       "km": 12.3,
       "minutos": 27,
-      "confianza": "baja",
-      "nota": "REVISAR: UberX en vista dividida, recortada; tramos 3.4 km/8 min + 8.9 km/19 min"
+      "confianza": "media",
+      "nota": "UberX 05:05 Cancún, recortada; tramos 8 min 3.4 km + 19 min 8.9 km"
     },
     {
       "id": 1257,
@@ -1560,8 +1560,8 @@
       "tarifa": 36.49,
       "km": 6.5,
       "minutos": 18,
-      "confianza": "baja",
-      "nota": "REVISAR: Pon Tu Precio 5 puntos, 3.71 rating, 7 viajes; tramos 2.4 km/8 min + 4.1 km/10 min. Pop-up $36 es de Checa"
+      "confianza": "alta",
+      "nota": "Pon Tu Precio 5 puntos, 3.71 rating, 7 viajes, 05:07 Cancún; tramos 8 min 2.4 km + 10 min 4.1 km. Pop-up $36 no cuenta"
     },
     {
       "id": 1258,
@@ -1570,8 +1570,8 @@
       "tarifa": 36.49,
       "km": 6.5,
       "minutos": 18,
-      "confianza": "baja",
-      "nota": "REVISAR: Lista 05:07, misma oferta que 1257; pop-up $36 de Checa"
+      "confianza": "alta",
+      "nota": "Misma tarjeta que 1257, lista 05:07, Express Nuevo $37.94 debajo"
     },
     {
       "id": 1259,
@@ -1580,18 +1580,18 @@
       "tarifa": 54.41,
       "km": 7.1,
       "minutos": 19,
-      "confianza": "baja",
-      "nota": "REVISAR: Uber Priority, 'Aceptar', +$9.75 incluido; tramos 0.5 km/2 min + 6.6 km/17 min"
+      "confianza": "alta",
+      "nota": "Uber Priority Exclusivo 05:08, +$9.75 incluido; tramos 2 min 0.5 km + 17 min 6.6 km"
     },
     {
       "id": 1260,
       "estado": "vigente",
       "es_oferta": true,
       "tarifa": 41.0,
-      "km": 3.0,
-      "minutos": 8,
-      "confianza": "baja",
-      "nota": "REVISAR: Pon Tu Precio 5 puntos, con 'Rechazo permitido'; tramos 1.9 km/5 min + 1.1 km/3 min"
+      "km": 8.7,
+      "minutos": 19,
+      "confianza": "media",
+      "nota": "Pon Tu Precio 5 puntos 05:05 Cancún; tramos 7 min 3.4 km + 12 min 4.6 km (pop-up $41 de Checa no cuenta)"
     },
     {
       "id": 1261,
@@ -1600,8 +1600,8 @@
       "tarifa": null,
       "km": null,
       "minutos": null,
-      "confianza": "baja",
-      "nota": "REVISAR: 'Viaje aceptado' en lista 05:08; pop-up ACEPTAR $41 de Checa"
+      "confianza": "alta",
+      "nota": "'Viaje aceptado' 05:08 Cancún, pop-up ACEPTAR $41 de Checa"
     },
     {
       "id": 1263,
@@ -1610,8 +1610,8 @@
       "tarifa": 146.86,
       "km": 25.2,
       "minutos": 38,
-      "confianza": "baja",
-      "nota": "REVISAR: UberX, 'Me interesa'; tramos 4.1 km/9 min + 21.1 km/29 min"
+      "confianza": "alta",
+      "nota": "UberX 05:08 Cancún, 'Me interesa'; tramos 9 min 4.1 km + 29 min 21.1 km"
     },
     {
       "id": 1264,
@@ -1620,28 +1620,28 @@
       "tarifa": 36.49,
       "km": 5.5,
       "minutos": 14,
-      "confianza": "baja",
-      "nota": "REVISAR: Pon Tu Precio 5 puntos, 4.94 rating, 458 viajes; tramos 2.8 km/7 min + 2.7 km/7 min"
+      "confianza": "alta",
+      "nota": "Pon Tu Precio 5 puntos 05:08 Cancún, 4.94 rating; tramos 7 min 2.8 km + 7 min 2.7 km"
     },
     {
       "id": 1265,
       "estado": "vigente",
       "es_oferta": true,
       "tarifa": 53.38,
-      "km": 8.9,
-      "minutos": 27,
-      "confianza": "baja",
-      "nota": "REVISAR: Lista 05:18, Express Nuevo x1.6 'Tomar viaje'; tramos 3.6 km/8 min + 4.1 km/9 min. Tarifa de la primera tarjeta tapada parcialmente"
+      "km": 7.7,
+      "minutos": 17,
+      "confianza": "media",
+      "nota": "Express Nuevo x1.6 en lista 05:18 Cancún (lista 'Km al encuentro'); primera tarjeta tarifa $53.38, tramos 8 min 3.6 km + 9 min 4.1 km"
     },
     {
       "id": 1266,
       "estado": "vigente",
       "es_oferta": true,
       "tarifa": 53.31,
-      "km": 8.9,
+      "km": 9.0,
       "minutos": 21,
-      "confianza": "baja",
-      "nota": "REVISAR: Pon Tu Precio x1.5 en lista 05:19; tramos 2.7 km/7 min + 6.2 km/14 min. Pop-up $42 es de Checa"
+      "confianza": "alta",
+      "nota": "Pon Tu Precio Nuevo x1.5, 05:19 Cancún; tramos 7 min 2.7 km + 14 min 6.2 km. Pop-up RECHAZAR $42 no cuenta"
     },
     {
       "id": 1267,
@@ -1650,8 +1650,8 @@
       "tarifa": 55.33,
       "km": 7.3,
       "minutos": 18,
-      "confianza": "baja",
-      "nota": "REVISAR: UberX Exclusivo, 'Aceptar'; tramos 2.5 km/6 min + 4.8 km/12 min"
+      "confianza": "alta",
+      "nota": "UberX Exclusivo 05:19 Cancún, 'Aceptar'; tramos 6 min 2.5 km + 12 min 4.8 km"
     },
     {
       "id": 1268,
@@ -1660,8 +1660,8 @@
       "tarifa": 54.79,
       "km": 7.6,
       "minutos": 20,
-      "confianza": "baja",
-      "nota": "REVISAR: Uber Priority Exclusivo, 'Aceptar', +$9.75 incluido; tramos 2.8 km/7 min + 4.8 km/13 min"
+      "confianza": "alta",
+      "nota": "Uber Priority Exclusivo 05:21 Cancún, +$9.75 incluido; tramos 7 min 2.8 km + 13 min 4.8 km"
     },
     {
       "id": 1269,
@@ -1670,8 +1670,8 @@
       "tarifa": 55.36,
       "km": 7.4,
       "minutos": 20,
-      "confianza": "baja",
-      "nota": "REVISAR: UberX, 'Me interesa'; tramos 3.5 km/10 min + 3.9 km/10 min"
+      "confianza": "alta",
+      "nota": "UberX 05:49 Cancún, 'Me interesa'; tramos 10 min 3.5 km + 10 min 3.9 km"
     },
     {
       "id": 1270,
@@ -1680,8 +1680,8 @@
       "tarifa": 93.09,
       "km": 11.2,
       "minutos": 27,
-      "confianza": "baja",
-      "nota": "REVISAR: UberX con 'Buscando coincidencias...'; tramos 3 km/... parcialmente tapados: 20 min (8...) + 7 min (3.0 km)"
+      "confianza": "media",
+      "nota": "UberX 05:50 Cancún, 'Buscando coincidencias' (radar 2); tramos 20 min + 7 min 3.0 km, primer tramo tapado en parte"
     },
     {
       "id": 1271,
@@ -1690,8 +1690,8 @@
       "tarifa": 117.44,
       "km": 17.6,
       "minutos": 31,
-      "confianza": "baja",
-      "nota": "REVISAR: UberX, Radar 2; tramos 2.1 km/5 min + 15.5 km/26 min"
+      "confianza": "alta",
+      "nota": "UberX Radar 05:53 Cancún; tramos 5 min 2.1 km + 26 min 15.5 km"
     },
     {
       "id": 1272,
@@ -1700,8 +1700,8 @@
       "tarifa": 59.18,
       "km": 11.1,
       "minutos": 25,
-      "confianza": "baja",
-      "nota": "REVISAR: UberX, 'Me interesa'; tramos 8.3 km/18 min + 2.8 km/7 min"
+      "confianza": "alta",
+      "nota": "UberX 05:54 Cancún; tramos 18 min 8.3 km + 7 min 2.8 km"
     },
     {
       "id": 1273,
@@ -1710,8 +1710,8 @@
       "tarifa": 52.76,
       "km": 7.5,
       "minutos": 20,
-      "confianza": "baja",
-      "nota": "REVISAR: UberX, 'Me interesa'; tramos 3.5 km/10 min + 4.0 km/10 min"
+      "confianza": "alta",
+      "nota": "UberX 05:54 Cancún; tramos 10 min 3.5 km + 10 min 4.0 km"
     },
     {
       "id": 1274,
@@ -1720,8 +1720,8 @@
       "tarifa": 58.96,
       "km": 7.5,
       "minutos": 16,
-      "confianza": "baja",
-      "nota": "REVISAR: Pon Tu Precio/Express en lista 06:06, x1.6; tramos 1.6 km/5 min + 5.9 km/11 min"
+      "confianza": "alta",
+      "nota": "Lista 06:06 La Víctima, 'x1.6' 84 viajes; tramos 5 min 1.6 km + 11 min 5.9 km"
     },
     {
       "id": 1275,
@@ -1730,8 +1730,8 @@
       "tarifa": 62.72,
       "km": 9.6,
       "minutos": 25,
-      "confianza": "baja",
-      "nota": "REVISAR: Express Nuevo, $9 de tarifa extra, 'Tomar viaje'; tramos 2 km/6 min + 7.6 km/19 min"
+      "confianza": "alta",
+      "nota": "Express Nuevo +$9.00 06:06 La Víctima; tramos 6 min 2 km + 19 min 7.6 km"
     },
     {
       "id": 1276,
@@ -1740,8 +1740,8 @@
       "tarifa": 62.72,
       "km": 9.6,
       "minutos": 25,
-      "confianza": "baja",
-      "nota": "REVISAR: Misma tarjeta que 1275, pop-up RECHAZAR $63 de Checa encima"
+      "confianza": "alta",
+      "nota": "Misma tarjeta que 1275, pop-up RECHAZAR $63 de Checa no cuenta"
     },
     {
       "id": 1277,
@@ -1750,8 +1750,8 @@
       "tarifa": 58.96,
       "km": 7.5,
       "minutos": 16,
-      "confianza": "baja",
-      "nota": "REVISAR: Lista 06:06, Express x1.6 'Tomar viaje'; tramos 1.6 km/5 min + 5.9 km/11 min. Pop-up CONSIDERAR $59 de Checa"
+      "confianza": "alta",
+      "nota": "Express x1.6 84 viajes, lista 06:06 La Víctima; tramos 5 min 1.6 km + 11 min 5.9 km. Pop-up CONSIDERAR $59 no cuenta"
     },
     {
       "id": 1278,
@@ -1760,18 +1760,18 @@
       "tarifa": 58.96,
       "km": 7.5,
       "minutos": 16,
-      "confianza": "baja",
-      "nota": "REVISAR: Pantalla de oferta 06:07, $58.96 x1.6 5 puntos; tramos 1.6 km/5 min + 5.9 km/11 min. Pop-up RECHAZAR $59 de Checa"
+      "confianza": "alta",
+      "nota": "Detalle de la misma oferta 06:07, 5 puntos x1.6; tramos 5 min 1.6 km + 11 min 5.9 km. Pop-up RECHAZAR $59 no cuenta"
     },
     {
       "id": 1279,
       "estado": "vigente",
       "es_oferta": true,
-      "tarifa": 36.49,
-      "km": 6.7,
-      "minutos": 16,
-      "confianza": "baja",
-      "nota": "REVISAR: Express 259 viajes, 'Tomar viaje'; tramos 2.1 km/6 min + 4.6 km/10 min"
+      "tarifa": 62.72,
+      "km": 9.6,
+      "minutos": 25,
+      "confianza": "alta",
+      "nota": "Express Nuevo +$9.00, 73 viajes, 06:07; tramos 6 min 2 km + 19 min 7.6 km. Pop-up RECHAZAR $97 no cuenta"
     },
     {
       "id": 1282,
@@ -1780,8 +1780,8 @@
       "tarifa": 36.49,
       "km": 6.7,
       "minutos": 16,
-      "confianza": "baja",
-      "nota": "REVISAR: Misma lista que 1279, Express $36.49; pop-up RECHAZAR $36 de Checa"
+      "confianza": "alta",
+      "nota": "Express 259 viajes, 06:07; tramos 6 min 2.1 km + 10 min 4.6 km. Sin pop-up de Checa en la captura"
     },
     {
       "id": 1283,
@@ -1790,98 +1790,98 @@
       "tarifa": 36.49,
       "km": 6.7,
       "minutos": 16,
-      "confianza": "baja",
-      "nota": "REVISAR: Express $36.49 en lista 06:07; tramos 2.1 km/6 min + 4.6 km/10 min"
+      "confianza": "alta",
+      "nota": "Misma lista que 1282; pop-up CONSIDERAR $59 de Checa no cuenta"
     },
     {
       "id": 1284,
       "estado": "vigente",
       "es_oferta": true,
-      "tarifa": 36.49,
-      "km": 6.7,
+      "tarifa": 58.96,
+      "km": 7.5,
       "minutos": 16,
-      "confianza": "baja",
-      "nota": "REVISAR: Misma lista que 1283"
+      "confianza": "alta",
+      "nota": "Express x1.6 arriba y Express 36.49 debajo, 06:07; tramos 5 min 1.6 km + 11 min 5.9 km. Pop-up RECHAZAR $36 no cuenta"
     },
     {
       "id": 1285,
+      "estado": "vigente",
+      "es_oferta": true,
+      "tarifa": 36.49,
+      "km": 6.7,
+      "minutos": 16,
+      "confianza": "media",
+      "nota": "Express 259 viajes, 'No hay más solicitudes', 06:07; tramos 6 min 2.1 km + 10 min 4.6 km. Pop-up de Checa $36 no cuenta"
+    },
+    {
+      "id": 1287,
       "estado": "vencida",
       "es_oferta": false,
       "tarifa": null,
       "km": null,
       "minutos": null,
-      "confianza": "baja",
-      "nota": "REVISAR: 'Otro conductor aceptó el viaje' sobre tarjeta $41.00 (5 min 1.5 km + 8 min 2.9 km). Pop-up $41 es de Checa"
-    },
-    {
-      "id": 1287,
-      "estado": "vigente",
-      "es_oferta": true,
-      "tarifa": 67.96,
-      "km": 9.6,
-      "minutos": 16,
-      "confianza": "baja",
-      "nota": "REVISAR: Express x1.6 + $9 extra, 'Tomar viaje'; tramos 1.6 km/5 min + 5.9 km/11 min. Pop-up $52 es de Checa"
+      "confianza": "alta",
+      "nota": "'Otro conductor aceptó el viaje' sobre Pon Tu Precio $41.00 (5 min 1.5 km + 8 min 2.9 km). Pop-up RECHAZAR $41 de Checa no cuenta"
     },
     {
       "id": 1288,
       "estado": "vigente",
       "es_oferta": true,
-      "tarifa": 51.55,
-      "km": 7.9,
-      "minutos": 22,
-      "confianza": "baja",
-      "nota": "REVISAR: Express Nuevo x1.3; tramos 2.2 km/6 min + 5.7 km/14 min. Pop-up $36 de Checa"
+      "tarifa": 67.96,
+      "km": 7.5,
+      "minutos": 16,
+      "confianza": "alta",
+      "nota": "Express x1.6 +$9.00, 84 viajes, 06:08; tramos 5 min 1.6 km + 11 min 5.9 km. Pop-up RECHAZAR $52 no cuenta"
     },
     {
       "id": 1289,
       "estado": "vigente",
       "es_oferta": true,
-      "tarifa": 43.78,
-      "km": 7.6,
+      "tarifa": 51.55,
+      "km": 7.9,
       "minutos": 20,
-      "confianza": "baja",
-      "nota": "REVISAR: Express Nuevo x1.2 en lista 06:08; tramos 2.7 km/8 min + 4.9 km/12 min. Pop-up $52 de Checa"
+      "confianza": "alta",
+      "nota": "Express Nuevo x1.3, 278 viajes, 06:08; tramos 6 min 2.2 km + 14 min 5.7 km. Pop-up RECHAZAR $36 no cuenta"
     },
     {
       "id": 1290,
       "estado": "vigente",
       "es_oferta": true,
-      "tarifa": 67.96,
-      "km": 9.6,
-      "minutos": 16,
-      "confianza": "baja",
-      "nota": "REVISAR: Express x1.6 + $9 en lista 06:08; tramos 1.6 km/5 min + 5.9 km/11 min"
+      "tarifa": 43.78,
+      "km": 7.6,
+      "minutos": 20,
+      "confianza": "alta",
+      "nota": "Express Nuevo x1.2, 79 viajes, 06:08; tramos 8 min 2.7 km + 12 min 4.9 km. Pop-up RECHAZAR $52 no cuenta"
     },
     {
       "id": 1291,
       "estado": "vigente",
       "es_oferta": true,
       "tarifa": 67.96,
-      "km": 9.6,
+      "km": 7.5,
       "minutos": 16,
-      "confianza": "baja",
-      "nota": "REVISAR: Misma tarjeta que 1290, pop-up CONSIDERAR $59 de Checa"
+      "confianza": "alta",
+      "nota": "Express x1.6 +$9.00, 06:08; tramos 5 min 1.6 km + 11 min 5.9 km. Pop-up CONSIDERAR $59 no cuenta"
     },
     {
       "id": 1292,
       "estado": "vigente",
       "es_oferta": true,
       "tarifa": 41.0,
-      "km": 9.5,
+      "km": 10.2,
       "minutos": 23,
-      "confianza": "baja",
-      "nota": "REVISAR: Pon Tu Precio con 'Aceptar $41.00' en lista 06:08; tramos 3.8 km/10 min + 5.7 km/13 min. Pop-up $68 de Checa"
+      "confianza": "alta",
+      "nota": "Pon Tu Precio Nuevo, 'Aceptar $41.00', 06:08; tramos 10 min 3.8 km + 13 min 6.4 km. Pop-up CONSIDERAR $68 no cuenta"
     },
     {
       "id": 1293,
       "estado": "vigente",
       "es_oferta": true,
       "tarifa": 41.0,
-      "km": 8.9,
-      "minutos": 27,
-      "confianza": "baja",
-      "nota": "REVISAR: Pon Tu Precio Nuevo, 'Aceptar $41.00' en lista 06:09; tramos 3.8 km/10 min + 6.4 km/13 min. Pop-up RECHAZAR $41 de Checa"
+      "km": 10.2,
+      "minutos": 23,
+      "confianza": "alta",
+      "nota": "Pon Tu Precio Nuevo 5.00, 20 viajes, 06:09; tramos 10 min 3.8 km + 13 min 6.4 km. Pop-up RECHAZAR $41 no cuenta"
     },
     {
       "id": 1294,
@@ -1890,8 +1890,8 @@
       "tarifa": 67.96,
       "km": 7.5,
       "minutos": 16,
-      "confianza": "baja",
-      "nota": "REVISAR: Express x1.6 + $9 en lista 06:09; tramos 1.6 km/5 min + 5.9 km/11 min. Pop-up RECHAZAR $41 de Checa"
+      "confianza": "alta",
+      "nota": "Express x1.6 +$9.00, 84 viajes, 06:09; tramos 5 min 1.6 km + 11 min 5.9 km. Pop-up RECHAZAR $41 no cuenta"
     },
     {
       "id": 1295,
@@ -1900,18 +1900,18 @@
       "tarifa": 67.96,
       "km": 7.5,
       "minutos": 16,
-      "confianza": "baja",
-      "nota": "REVISAR: Express x1.6 + $9 en lista 06:09; tramos 1.6 km/5 min + 5.9 km/11 min. Pop-up ACEPTAR $68 de Checa"
+      "confianza": "alta",
+      "nota": "Misma tarjeta que 1294, 06:09; pop-up ACEPTAR $68 no cuenta"
     },
     {
       "id": 1296,
       "estado": "vigente",
       "es_oferta": true,
       "tarifa": 51.55,
-      "km": 7.9,
+      "km": 9.9,
       "minutos": 21,
-      "confianza": "baja",
-      "nota": "REVISAR: Express x1.3 en lista 06:09; tramos 2.2 km/7 min + 5.7 km/14 min. Pop-up ACEPTAR $98 de Checa"
+      "confianza": "alta",
+      "nota": "Express Nuevo x1.3, 278 viajes, 06:09; tramos 7 min 2.2 km + 14 min 5.7 km. Pop-up ACEPTAR $98 no cuenta"
     },
     {
       "id": 1297,
@@ -1920,8 +1920,8 @@
       "tarifa": 51.55,
       "km": 7.9,
       "minutos": 21,
-      "confianza": "baja",
-      "nota": "REVISAR: Express x1.3 en lista 06:09; tramos 2.2 km/7 min + 5.7 km/14 min. Pop-up RECHAZAR $52 de Checa"
+      "confianza": "alta",
+      "nota": "Express x1.3, 278 viajes, 06:09; tramos 7 min 2.2 km + 14 min 5.7 km"
     },
     {
       "id": 1299,
@@ -1930,8 +1930,8 @@
       "tarifa": 39.68,
       "km": 2.9,
       "minutos": 7,
-      "confianza": "baja",
-      "nota": "REVISAR: Uber 5 puntos, 1.1x, Perfil avanzado; tramos 1.4 km/4 min + 1.5 km/3 min. Pop-up RECHAZAR $52 de Checa"
+      "confianza": "alta",
+      "nota": "Uber 5 puntos x1.1, Perfil avanzado, 202 viajes, 06:09; tramos 4 min 1.4 km + 3 min 1.5 km. Pop-up RECHAZAR $52 no cuenta"
     },
     {
       "id": 1300,
@@ -1940,8 +1940,8 @@
       "tarifa": 39.68,
       "km": 2.9,
       "minutos": 7,
-      "confianza": "baja",
-      "nota": "REVISAR: Misma oferta que 1299, cargando"
+      "confianza": "media",
+      "nota": "Misma oferta que 1299, cargando 06:09"
     },
     {
       "id": 1301,
@@ -1950,28 +1950,28 @@
       "tarifa": null,
       "km": null,
       "minutos": null,
-      "confianza": "baja",
-      "nota": "REVISAR: 'Viaje aceptado' sobre lista 06:09; Pon Tu Precio $41.00 con 3 viajes"
+      "confianza": "alta",
+      "nota": "'Viaje aceptado' sobre Pon Tu Precio $41.00 con 3 viajes, 06:09"
     },
     {
       "id": 1302,
       "estado": "vigente",
       "es_oferta": true,
       "tarifa": 45.08,
-      "km": 3.0,
-      "minutos": 8,
-      "confianza": "baja",
-      "nota": "REVISAR: Express Nuevo $9 en lista 06:18; tramos 1.4 km/4 min + 2 km/6 min"
+      "km": 3.4,
+      "minutos": 10,
+      "confianza": "alta",
+      "nota": "Express Nuevo $9.00, 647 viajes, 06:18; tramos 4 min 1.4 km + 6 min 2 km. Pop-up ACEPTAR $36 no cuenta"
     },
     {
       "id": 1303,
       "estado": "vigente",
       "es_oferta": true,
       "tarifa": 45.08,
-      "km": 3.0,
-      "minutos": 8,
-      "confianza": "baja",
-      "nota": "REVISAR: Express Nuevo $9 en lista 06:18; tramos 1.4 km/4 min + 2 km/6 min. Pop-up ACEPTAR $36 de Checa"
+      "km": 3.4,
+      "minutos": 10,
+      "confianza": "alta",
+      "nota": "Misma tarjeta que 1302, 06:18"
     },
     {
       "id": 1304,
@@ -1980,48 +1980,48 @@
       "tarifa": null,
       "km": null,
       "minutos": null,
-      "confianza": "baja",
-      "nota": "REVISAR: 'Viaje aceptado' sobre lista 06:19, Express Nuevo $45.08"
+      "confianza": "alta",
+      "nota": "'Viaje aceptado' 06:19, sobre Express Nuevo $45.08"
     },
     {
       "id": 1311,
       "estado": "vigente",
       "es_oferta": true,
       "tarifa": 45.49,
-      "km": 10.3,
-      "minutos": 19,
-      "confianza": "baja",
-      "nota": "REVISAR: Express Nuevo $9 en lista 07:17; tramos 615 m/3 min + 4.3 km/8 min"
+      "km": 4.9,
+      "minutos": 11,
+      "confianza": "alta",
+      "nota": "Express Nuevo $9.00, 209 viajes, 07:17; tramos 3 min 615 m + 8 min 4.3 km"
     },
     {
       "id": 1312,
       "estado": "vigente",
       "es_oferta": true,
-      "tarifa": 40.0,
+      "tarifa": 45.49,
       "km": 4.9,
       "minutos": 11,
-      "confianza": "baja",
-      "nota": "REVISAR: Lista 07:17 'Conectando' sobre tarjeta Express $45.49; pop-up CONSIDERAR $40 de Checa. Tarjeta de la lista no es la misma"
+      "confianza": "media",
+      "nota": "Express Nuevo $9.00 (209 viajes) en 'Conectando', 07:17 LALA; tramos 3 min 615 m + 8 min 4.3 km. Pop-up CONSIDERAR $40 no cuenta"
     },
     {
       "id": 1313,
       "estado": "vigente",
       "es_oferta": true,
-      "tarifa": 39.66,
-      "km": 9.0,
-      "minutos": 21,
-      "confianza": "baja",
-      "nota": "REVISAR: Express Nuevo $39.66 en lista 07:17; tramos 2.3 km/7 min + 5.7 km/14 min. Pop-up RECHAZAR $47 de Checa encima"
+      "tarifa": 60.8,
+      "km": 9.4,
+      "minutos": 24,
+      "confianza": "alta",
+      "nota": "Express Nuevo x1.4 (458 viajes), 07:17 LALA; tramos 9 min 3 km + 15 min 6.4 km. Pop-up RECHAZAR $47 no cuenta"
     },
     {
       "id": 1314,
       "estado": "vigente",
       "es_oferta": true,
-      "tarifa": 60.8,
-      "km": 9.4,
-      "minutos": 24,
-      "confianza": "baja",
-      "nota": "REVISAR: Express Nuevo x1.4 en lista 07:17; tramos 3 km/9 min + 6.4 km/15 min. Pop-up CONSIDERAR $188 de Checa"
+      "tarifa": 188.63,
+      "km": 21.7,
+      "minutos": 30,
+      "confianza": "alta",
+      "nota": "Pon Tu Precio Nuevo (184 viajes), 07:17 LALA; tramos 10 min 4.2 km + 20 min 17.5 km. Pop-up CONSIDERAR $188 no cuenta"
     },
     {
       "id": 1315,
@@ -2030,18 +2030,18 @@
       "tarifa": 60.8,
       "km": 9.4,
       "minutos": 24,
-      "confianza": "baja",
-      "nota": "REVISAR: Express Nuevo x1.4 en lista 07:17; tramos 3 km/9 min + 6.4 km/15 min. Pop-up RECHAZAR $41 de Checa"
+      "confianza": "alta",
+      "nota": "Misma tarjeta Express Nuevo x1.4 que 1313, 'No hay más solicitudes', 07:17 LALA. Pop-up RECHAZAR $41 no cuenta"
     },
     {
       "id": 1316,
       "estado": "vigente",
       "es_oferta": true,
       "tarifa": 39.66,
-      "km": 7.6,
+      "km": 8.0,
       "minutos": 21,
-      "confianza": "baja",
-      "nota": "REVISAR: Express en lista 07:17; tramos 2.3 km/7 min + 5.7 km/14 min. Pop-up RECHAZAR $40 de Checa"
+      "confianza": "alta",
+      "nota": "Express Nuevo (205 viajes), 07:17 LALA; tramos 7 min 2.3 km + 14 min 5.7 km. Pop-up RECHAZAR $40 no cuenta"
     },
     {
       "id": 1317,
@@ -2050,18 +2050,18 @@
       "tarifa": 39.66,
       "km": 8.0,
       "minutos": 21,
-      "confianza": "baja",
-      "nota": "REVISAR: Express Nuevo $39.66 en mapa 07:17; tramos 2.3 km/7 min + 5.7 km/14 min"
+      "confianza": "alta",
+      "nota": "Misma tarjeta que 1316 en vista de mapa, 07:17 LALA"
     },
     {
       "id": 1318,
       "estado": "vigente",
       "es_oferta": true,
       "tarifa": 61.07,
-      "km": 17.4,
-      "minutos": 37,
-      "confianza": "baja",
-      "nota": "REVISAR: Express Nuevo x1.6 lista 07:18; tramos 1.6 km/5 min + 6 km/12 min (lista de 768 viajes). Pop-up RECHAZAR $61 de Checa"
+      "km": 7.6,
+      "minutos": 17,
+      "confianza": "alta",
+      "nota": "Express Nuevo x1.6 (768 viajes), lista sin pop-up, 07:18 LALA; tramos 5 min 1.6 km + 12 min 6 km"
     },
     {
       "id": 1319,
@@ -2070,48 +2070,48 @@
       "tarifa": 61.07,
       "km": 7.6,
       "minutos": 17,
-      "confianza": "baja",
-      "nota": "REVISAR: Express Nuevo x1.6 lista 07:19; tramos 1.6 km/5 min + 6 km/12 min. Pop-up RECHAZAR $41 de Checa"
+      "confianza": "alta",
+      "nota": "Express Nuevo x1.6 (768 viajes), 07:19 LALA; tramos 5 min 1.6 km + 12 min 6 km. Pop-up RECHAZAR $61 (37 min 17.4 km total) no cuenta"
     },
     {
       "id": 1321,
       "estado": "vigente",
       "es_oferta": true,
-      "tarifa": 59.8,
-      "km": 10.0,
-      "minutos": 22,
-      "confianza": "baja",
-      "nota": "REVISAR: Express Nuevo x1.2, lista 07:19; tramos 2.6 km/7 min + 7.7 km/15 min"
+      "tarifa": 41.0,
+      "km": 10.4,
+      "minutos": 21,
+      "confianza": "alta",
+      "nota": "Pon Tu Precio Nuevo (663 viajes), 07:19 LALA; tramos 9 min 3.3 km + 12 min 7.1 km. Pop-up RECHAZAR $41 no cuenta"
     },
     {
       "id": 1322,
       "estado": "vigente",
       "es_oferta": true,
-      "tarifa": 48.77,
-      "km": 5.6,
-      "minutos": 15,
-      "confianza": "baja",
-      "nota": "REVISAR: Pon Tu Precio x1.4 lista 07:19; tramos 1.7 km/5 min + 4.4 km/10 min. Pop-up ACEPTAR $49 de Checa"
+      "tarifa": 61.07,
+      "km": 7.6,
+      "minutos": 17,
+      "confianza": "alta",
+      "nota": "Express Nuevo x1.6 (768 viajes), 07:19 LALA; tramos 5 min 1.6 km + 12 min 6 km. Pop-up RECHAZAR $41 no cuenta"
     },
     {
       "id": 1324,
       "estado": "vigente",
       "es_oferta": true,
       "tarifa": 48.77,
-      "km": 5.6,
+      "km": 6.1,
       "minutos": 15,
-      "confianza": "baja",
-      "nota": "REVISAR: Pon Tu Precio x1.4; tramos 1.7 km/5 min + 4.4 km/10 min"
+      "confianza": "alta",
+      "nota": "Pon Tu Precio x1.4 (202 viajes), 07:19 LALA; tramos 5 min 1.7 km + 10 min 4.4 km"
     },
     {
       "id": 1325,
       "estado": "vigente",
       "es_oferta": true,
-      "tarifa": 59.8,
-      "km": 10.0,
-      "minutos": 22,
-      "confianza": "baja",
-      "nota": "REVISAR: Express Nuevo x1.2 lista 07:19, tramos 2.6 km/7 min + 7.7 km/15 min"
+      "tarifa": 48.77,
+      "km": 6.1,
+      "minutos": 15,
+      "confianza": "alta",
+      "nota": "Misma tarjeta que 1324 bajo pop-up ACEPTAR $49 (12 min 4.3 km total, no cuenta), 07:19 LALA"
     },
     {
       "id": 1326,
@@ -2120,8 +2120,8 @@
       "tarifa": 51.97,
       "km": 2.8,
       "minutos": 8,
-      "confianza": "baja",
-      "nota": "REVISAR: Pon Tu Precio 5 puntos, 1.6x, 'Aceptar $51.97'; tramos 684 m/3 min + 2.1 km/5 min"
+      "confianza": "alta",
+      "nota": "Pon Tu Precio 1.6x, 5 puntos, 517 viajes, 07:1x LALA; tramos 3 min 684 m + 5 min 2.1 km. Pop-up ACEPTAR $52 no cuenta"
     },
     {
       "id": 1327,
@@ -2130,8 +2130,8 @@
       "tarifa": 51.97,
       "km": 2.8,
       "minutos": 8,
-      "confianza": "baja",
-      "nota": "REVISAR: Misma oferta que 1326, cargando 'Conectando'. Pop-up ACEPTAR $52 de Checa"
+      "confianza": "media",
+      "nota": "Misma tarjeta que 1326 bajo 'Conectando', 07:19 LALA. Pop-up ACEPTAR $52 no cuenta"
     },
     {
       "id": 1328,
@@ -2139,9 +2139,9 @@
       "es_oferta": true,
       "tarifa": 40.13,
       "km": 7.7,
-      "minutos": 22,
-      "confianza": "baja",
-      "nota": "REVISAR: Express $40.13 en lista 07:20 (367 viajes); tramos 3.5 km/10 min + 4.2 km/9 min. Pop-up RECHAZAR $40 de Checa"
+      "minutos": 19,
+      "confianza": "alta",
+      "nota": "Express $40.13 (367 viajes), 07:20 LALA; tramos 10 min 3.5 km + 9 min 4.2 km. Pop-up RECHAZAR $40 no cuenta"
     },
     {
       "id": 1329,
@@ -2149,9 +2149,9 @@
       "es_oferta": true,
       "tarifa": 47.43,
       "km": 6.8,
-      "minutos": 17,
-      "confianza": "baja",
-      "nota": "REVISAR: Express Nuevo x1.3 en lista 07:20; tramos 2.2 km/7 min + 4.6 km/12 min"
+      "minutos": 19,
+      "confianza": "alta",
+      "nota": "Express Nuevo x1.3 (95 viajes), 07:20 LALA; tramos 7 min 2.2 km + 12 min 4.6 km"
     },
     {
       "id": 1330,
@@ -2159,9 +2159,9 @@
       "es_oferta": true,
       "tarifa": 47.43,
       "km": 6.8,
-      "minutos": 17,
-      "confianza": "baja",
-      "nota": "REVISAR: Misma oferta que 1329, pop-up RECHAZAR $44 de Checa"
+      "minutos": 19,
+      "confianza": "alta",
+      "nota": "Misma tarjeta que 1329 en vista de mapa, 07:20. Pop-up RECHAZAR $44 no cuenta"
     },
     {
       "id": 1332,
@@ -2170,8 +2170,8 @@
       "tarifa": 47.43,
       "km": 6.8,
       "minutos": 19,
-      "confianza": "baja",
-      "nota": "REVISAR: Express x1.3 en lista 07:20; tramos 2.2 km/7 min + 4.6 km/12 min. Pop-up RECHAZAR $47 de Checa, 'Destino en zona bloqueada · Zona 2'"
+      "confianza": "alta",
+      "nota": "Misma tarjeta que 1329, 07:20; tramos 7 min 2.2 km + 12 min 4.6 km. Pop-up RECHAZAR $47 con 'Destino en zona bloqueada · Zona 2' no cuenta"
     },
     {
       "id": 1333,
@@ -2180,88 +2180,88 @@
       "tarifa": 36.08,
       "km": 3.2,
       "minutos": 9,
-      "confianza": "baja",
-      "nota": "REVISAR: Pon Tu Precio 5 puntos, 'Rechazo permitido'; tramos 2.1 km/6 min + 1.1 km/3 min"
+      "confianza": "alta",
+      "nota": "Pon Tu Precio 5 puntos, 300 viajes, 07:26 en mapa; tramos 6 min 2.1 km + 3 min 1.1 km. 'Rechazo permitido'"
     },
     {
       "id": 1334,
       "estado": "vigente",
       "es_oferta": true,
-      "tarifa": 36.08,
-      "km": 3.2,
-      "minutos": 9,
-      "confianza": "baja",
-      "nota": "REVISAR: Misma oferta que 1333"
+      "tarifa": 125.77,
+      "km": 15.0,
+      "minutos": 42,
+      "confianza": "media",
+      "nota": "UberX de fondo $125.77, tramos 6 min 1.0 km + 36 min 14.0 km; 'Estás conectado', 07:02. Pop-up CONSIDERAR $90 no cuenta"
     },
     {
       "id": 1335,
       "estado": "vigente",
       "es_oferta": true,
-      "tarifa": 36.08,
-      "km": 3.2,
-      "minutos": 9,
-      "confianza": "baja",
-      "nota": "REVISAR: Misma oferta que 1333"
+      "tarifa": 169.03,
+      "km": 11.3,
+      "minutos": 34,
+      "confianza": "alta",
+      "nota": "UberX 'Buscando coincidencias', 08:02 Mi Peor Error; tramos 15 min 4.7 km + 19 min 6.6 km, +$14 incluido. Pop-up CONSIDERAR $169 no cuenta"
     },
     {
       "id": 1337,
       "estado": "vigente",
       "es_oferta": true,
-      "tarifa": 125.77,
-      "km": 15.0,
-      "minutos": 42,
-      "confianza": "baja",
-      "nota": "REVISAR: UberX de fondo $125.77 con tramos 1.0 km/6 min + 14.0 km/36 min; pop-up $90 de Checa no cuenta"
+      "tarifa": 98.63,
+      "km": 7.1,
+      "minutos": 20,
+      "confianza": "alta",
+      "nota": "UberX 08:37 'Me interesa', $40.13 Turbo+ incluido; tramos 5 min 1.7 km + 15 min 5.4 km"
     },
     {
       "id": 1341,
       "estado": "vigente",
       "es_oferta": true,
-      "tarifa": 169.03,
-      "km": 11.3,
-      "minutos": 34,
-      "confianza": "baja",
-      "nota": "REVISAR: UberX 'Buscando coincidencias', 34 min (11.3 km) + $14 incluido; tramos 4.7 km/15 min + 6.6 km/19 min. Pop-up $169 de Checa"
+      "tarifa": 41.0,
+      "km": 6.9,
+      "minutos": 21,
+      "confianza": "alta",
+      "nota": "Pon Tu Precio 5 puntos, 316 viajes, 09:17; tramos 5 min 1.4 km + 16 min 5.5 km. Pop-up RECHAZAR $41 no cuenta"
     },
     {
       "id": 1342,
       "estado": "vigente",
       "es_oferta": true,
-      "tarifa": 98.63,
-      "km": 7.1,
-      "minutos": 20,
-      "confianza": "baja",
-      "nota": "REVISAR: UberX, 'Me interesa', $40.13 Turbo+ incluido; tramos 1.7 km/5 min + 5.4 km/15 min"
+      "tarifa": 51.08,
+      "km": 6.2,
+      "minutos": 19,
+      "confianza": "alta",
+      "nota": "Express Nuevo x1.4 (Nuevo), 09:18; tramos 6 min 1.8 km + 13 min 4.4 km"
     },
     {
       "id": 1343,
       "estado": "vigente",
       "es_oferta": true,
-      "tarifa": 41.0,
-      "km": 6.9,
-      "minutos": 21,
+      "tarifa": 54.53,
+      "km": 7.3,
+      "minutos": 20,
       "confianza": "baja",
-      "nota": "REVISAR: Pon Tu Precio 5 puntos, 'Aceptar $41.00'; tramos 1.4 km/5 min + 5.5 km/16 min. Pop-up RECHAZAR $41 de Checa"
+      "nota": "Express x1.4 (415 viajes), 09:18; tramos 6 min 1.9 km + 14 min 5.4 km. Pop-up RECHAZAR $41 no cuenta. Asignación por orden de lectura, verificar"
     },
     {
       "id": 1344,
       "estado": "vigente",
       "es_oferta": true,
       "tarifa": 51.08,
-      "km": 6.2,
+      "km": 7.1,
       "minutos": 19,
       "confianza": "baja",
-      "nota": "REVISAR: Express Nuevo x1.4, 'Nuevo' 5.00; tramos 1.8 km/6 min + 4.4 km/13 min"
+      "nota": "Express Nuevo x1.4 (724 viajes), 09:18; tramos 10 min 3.3 km + 9 min 3.8 km. Pop-up RECHAZAR $41 no cuenta. Asignación por orden de lectura, verificar"
     },
     {
       "id": 1345,
       "estado": "vigente",
       "es_oferta": true,
       "tarifa": 40.13,
-      "km": 6.3,
-      "minutos": 21,
+      "km": 6.5,
+      "minutos": 17,
       "confianza": "baja",
-      "nota": "REVISAR: Express $40.13 (9 viajes) en lista 09:18; tramos 2.3 km/8 min + 4.2 km/9 min. Pop-up RECHAZAR $40 de Checa"
+      "nota": "Express $40.13 (9 viajes), 09:18; tramos 8 min 2.3 km + 9 min 4.2 km. Pop-up RECHAZAR $40 no cuenta. Asignación por orden de lectura, verificar"
     },
     {
       "id": 1347,
@@ -2270,8 +2270,8 @@
       "tarifa": null,
       "km": null,
       "minutos": null,
-      "confianza": "baja",
-      "nota": "REVISAR: Pantalla 'Radar de solicitud de viaje' buscando, $78.16 UberX sin terminar"
+      "confianza": "alta",
+      "nota": "Radar de solicitud de viaje 'Buscando coincidencias', UberX $78.16 de fondo, 09:19"
     },
     {
       "id": 1348,
@@ -2280,8 +2280,8 @@
       "tarifa": null,
       "km": null,
       "minutos": null,
-      "confianza": "baja",
-      "nota": "REVISAR: Pantalla 'Radar de solicitud de viaje' 'Aún no hemos terminado'"
+      "confianza": "alta",
+      "nota": "Radar de solicitud de viaje 'Aún no hemos terminado', 09:19"
     },
     {
       "id": 1349,
@@ -2290,118 +2290,118 @@
       "tarifa": 36.49,
       "km": 4.7,
       "minutos": 14,
-      "confianza": "baja",
-      "nota": "REVISAR: Express Nuevo $36.49 en lista 09:20 (+999 viajes); tramos 2 km/7 min + 2.7 km/7 min"
+      "confianza": "alta",
+      "nota": "Express Nuevo (+999 viajes), 09:20; tramos 7 min 2 km + 7 min 2.7 km"
     },
     {
       "id": 1351,
-      "estado": "aceptada",
+      "estado": "vencida",
       "es_oferta": false,
       "tarifa": null,
       "km": null,
       "minutos": null,
-      "confianza": "baja",
-      "nota": "REVISAR: Lista 09:20 con 'Otro conductor aceptó el viaje' sobre Más Rápido; pop-up ACEPTAR $75 de Checa"
+      "confianza": "alta",
+      "nota": "'Otro conductor aceptó el viaje' sobre Más Rápido Nuevo $50.12, 09:20. Pop-up ACEPTAR $75 no cuenta"
     },
     {
       "id": 1353,
       "estado": "vigente",
       "es_oferta": true,
       "tarifa": 36.49,
-      "km": 4.7,
-      "minutos": 14,
-      "confianza": "baja",
-      "nota": "REVISAR: Misma lista que 1349; pop-up ACEPTAR $75 de Checa"
+      "km": 5.4,
+      "minutos": 16,
+      "confianza": "media",
+      "nota": "Mapa 09:44, tarjeta 5 puntos 285 viajes, $36.49; tramos 7 min 2 km + 9 min 3.4 km. Pop-up RECHAZAR $56 con 'Origen en zona bloqueada' no cuenta. Asignación por orden de lectura, verificar"
     },
     {
       "id": 1355,
-      "estado": "vigente",
-      "es_oferta": true,
-      "tarifa": 36.49,
-      "km": 4.7,
-      "minutos": 14,
-      "confianza": "baja",
-      "nota": "REVISAR: Mapa 09:44 con $56 Checa; tarjeta de $36.49 con 5 puntos, 285 viajes; tramos 2 km/7 min + 3.4 km/9 min. Origen en zona bloqueada"
-    },
-    {
-      "id": 1358,
       "estado": "vigente",
       "es_oferta": true,
       "tarifa": 61.84,
       "km": 2.7,
       "minutos": 8,
       "confianza": "baja",
-      "nota": "REVISAR: Mapa 09:48, 'Centro de viajes (3)' Express $61.84; primer tramo 2.7 km/8 min, segundo tapado"
+      "nota": "Centro de viajes (3) 'Buscando', Express $61.84, tramo 1 de 8 min 2.7 km (tramo 2 tapado)"
+    },
+    {
+      "id": 1358,
+      "estado": "vigente",
+      "es_oferta": true,
+      "tarifa": 37.72,
+      "km": 5.9,
+      "minutos": 16,
+      "confianza": "media",
+      "nota": "Express Nuevo $37.72 (5 viajes), 10:44; tramos 9 min 3.4 km + 7 min 2.5 km. Pop-up RECHAZAR $38 no cuenta"
     },
     {
       "id": 1359,
       "estado": "vigente",
       "es_oferta": true,
-      "tarifa": 37.72,
-      "km": 6.9,
-      "minutos": 16,
-      "confianza": "baja",
-      "nota": "REVISAR: Express Nuevo $37.72 (5 viajes) en lista 10:44; tramos 3.4 km/9 min + 2.5 km/7 min. Pop-up RECHAZAR $38 de Checa"
+      "tarifa": 32.26,
+      "km": 6.6,
+      "minutos": 18,
+      "confianza": "media",
+      "nota": "Centro de viajes (1) Express x1.2, 09:48, botón Conectarse; tramos 11 min 4.2 km + 7 min 2.4 km"
     },
     {
       "id": 1360,
-      "estado": "sin_oferta",
-      "es_oferta": false,
-      "tarifa": null,
-      "km": null,
-      "minutos": null,
+      "estado": "vigente",
+      "es_oferta": true,
+      "tarifa": 63.07,
+      "km": 9.6,
+      "minutos": 22,
       "confianza": "baja",
-      "nota": "REVISAR: Pantalla 9:48 con mapa de calor '$119.29' y tarjeta 'Centro de viajes (1)' con Conectarse; tarifa visible $32.26 x1.2 (ver nota)"
+      "nota": "UberX $63.07, 09:54, pop-up CONSIDERAR $18 no cuenta; tramos 5 min 1.0 km + 17 min 8.6 km. Asignación por orden de lectura, verificar"
     },
     {
       "id": 1361,
       "estado": "vigente",
       "es_oferta": true,
-      "tarifa": 32.26,
-      "km": 4.2,
-      "minutos": 11,
-      "confianza": "baja",
-      "nota": "REVISAR: Express $32.26 x1.2 en 'Centro de viajes (1)', botón Conectarse; tramos 4.2 km/11 min + 2.4 km/7 min"
+      "tarifa": 52.8,
+      "km": 6.7,
+      "minutos": 20,
+      "confianza": "alta",
+      "nota": "Express x1.4 (523 viajes), 11:00; tramos 9 min 2.7 km + 11 min 4 km"
     },
     {
       "id": 1363,
       "estado": "vigente",
       "es_oferta": true,
-      "tarifa": 63.07,
-      "km": 6.6,
-      "minutos": 22,
-      "confianza": "baja",
-      "nota": "REVISAR: UberX buscando coincidencias, $63.07 $6.57/km est.; tramos 1.0 km/5 min + 8.6 km/17 min. Pop-up CONSIDERAR $18 de Checa"
+      "tarifa": 64.12,
+      "km": 8.2,
+      "minutos": 18,
+      "confianza": "alta",
+      "nota": "Express Nuevo x1.7 (164 viajes), 11:01; tramos 9 min 3.3 km + 9 min 4.9 km. Pop-up RECHAZAR $41 no cuenta"
     },
     {
       "id": 1364,
       "estado": "vigente",
       "es_oferta": true,
-      "tarifa": 52.8,
-      "km": 11.7,
-      "minutos": 20,
-      "confianza": "baja",
-      "nota": "REVISAR: Express x1.4 en lista 11:00; tramos 2.7 km/9 min + 4 km/11 min"
+      "tarifa": 28.61,
+      "km": 4.1,
+      "minutos": 13,
+      "confianza": "alta",
+      "nota": "Pon Tu Precio Nuevo x1.2 (+999 viajes), mapa 10:04; tramos 6 min 1.5 km + 7 min 2.6 km. Pop-up RECHAZAR $23 no cuenta"
     },
     {
       "id": 1365,
       "estado": "vigente",
       "es_oferta": true,
-      "tarifa": 64.12,
-      "km": 8.2,
-      "minutos": 18,
-      "confianza": "baja",
-      "nota": "REVISAR: Express Nuevo x1.7 en lista 11:01; tramos 3.3 km/9 min + 4.9 km/9 min. Pop-up RECHAZAR $41 de Checa"
+      "tarifa": 28.61,
+      "km": 4.1,
+      "minutos": 13,
+      "confianza": "alta",
+      "nota": "Misma oferta que 1364 en lista, 10:04. Pop-up RECHAZAR $23 no cuenta"
     },
     {
       "id": 1367,
       "estado": "vigente",
       "es_oferta": true,
-      "tarifa": 28.61,
-      "km": 4.1,
-      "minutos": 13,
-      "confianza": "baja",
-      "nota": "REVISAR: Pon Tu Precio Nuevo x1.2 en lista 10:04; tramos 1.5 km/6 min + 2.6 km/7 min. Pop-up RECHAZAR $23 de Checa"
+      "tarifa": 26.4,
+      "km": 2.4,
+      "minutos": 9,
+      "confianza": "alta",
+      "nota": "Pon Tu Precio 7 puntos, $0.77 de gasolina, 412 viajes, 10:04 en mapa; tramos 3 min 596 m + 6 min 1.8 km"
     },
     {
       "id": 1368,
@@ -2410,8 +2410,8 @@
       "tarifa": 26.4,
       "km": 2.4,
       "minutos": 9,
-      "confianza": "baja",
-      "nota": "REVISAR: Tarjeta de fondo cargando $26.40 (7 puntos); pop-up CONSIDERAR $21 de Checa no cuenta"
+      "confianza": "media",
+      "nota": "Misma oferta que 1367 con tarjeta cargando; pop-up CONSIDERAR $21 no cuenta"
     },
     {
       "id": 1369,
@@ -2420,28 +2420,28 @@
       "tarifa": 23.77,
       "km": 4.7,
       "minutos": 14,
-      "confianza": "baja",
-      "nota": "REVISAR: Pon Tu Precio 'Centro de viajes (2)' 10:08 $23.77; tramos 8 min 2.1 km + 6 min 2.6 km"
+      "confianza": "media",
+      "nota": "Centro de viajes (2) Pon Tu Precio $23.77, 10:08 'Buscando'; tramos 8 min 2.1 km + 6 min 2.6 km"
     },
     {
       "id": 1370,
       "estado": "vigente",
       "es_oferta": true,
       "tarifa": 26.02,
-      "km": 1.7,
+      "km": 1.2,
       "minutos": 5,
-      "confianza": "baja",
-      "nota": "REVISAR: Pon Tu Precio 7 puntos 10:08, $0.39 de tarifa de gasolina; tramos 2 min 309 m + 3 min 856 m"
+      "confianza": "alta",
+      "nota": "Pon Tu Precio 7 puntos, $0.39 de gasolina, 261 viajes, 10:08; tramos 2 min 309 m + 3 min 856 m"
     },
     {
       "id": 1371,
       "estado": "vigente",
       "es_oferta": true,
       "tarifa": 26.02,
-      "km": 1.7,
+      "km": 1.2,
       "minutos": 5,
-      "confianza": "baja",
-      "nota": "REVISAR: Misma oferta que 1370, cargando"
+      "confianza": "alta",
+      "nota": "Misma oferta que 1370 en carga, 10:08"
     },
     {
       "id": 1372,
@@ -2451,7 +2451,7 @@
       "km": 1.9,
       "minutos": 8,
       "confianza": "baja",
-      "nota": "REVISAR: Pon Tu Precio 'Centro de viajes (2)' 10:17 $29.97; tramos 8 min 1.9 km + 8 min 2.2 km (parcial)"
+      "nota": "Centro de viajes (2) Pon Tu Precio $29.97, 10:17 'Buscando'; primer tramo 8 min 1.9 km, segundo parcialmente tapado"
     },
     {
       "id": 1373,
@@ -2460,8 +2460,8 @@
       "tarifa": 26.15,
       "km": 1.6,
       "minutos": 10,
-      "confianza": "baja",
-      "nota": "REVISAR: Pon Tu Precio 7 puntos 10:18, $0.52 gasolina; tramos 3 min 399 m + 7 min 1.2 km"
+      "confianza": "alta",
+      "nota": "Pon Tu Precio 7 puntos, $0.52 de gasolina, 38 viajes, 10:18; tramos 3 min 399 m + 7 min 1.2 km"
     },
     {
       "id": 1376,
@@ -2469,9 +2469,9 @@
       "es_oferta": true,
       "tarifa": 35.04,
       "km": 2.2,
-      "minutos": 8,
-      "confianza": "baja",
-      "nota": "REVISAR: Más Rápido $35.04 10:29; tramos 5 min 1.1 km + 4 min 1.1 km (el de Checa $30 muestra 2.2 km)"
+      "minutos": 9,
+      "confianza": "alta",
+      "nota": "Más Rápido $35.04 (+$8.97 tarifa Más Rápido), 119 viajes, 10:29; tramos 5 min 1.1 km + 4 min 1.1 km. Rechazo permitido"
     },
     {
       "id": 1377,
@@ -2480,8 +2480,8 @@
       "tarifa": 35.04,
       "km": 2.2,
       "minutos": 8,
-      "confianza": "baja",
-      "nota": "REVISAR: Misma oferta que 1376, 10:31"
+      "confianza": "alta",
+      "nota": "Más Rápido $35.04 (+$8.97 tarifa Más Rápido), 119 viajes, 10:31; tramos 4 min 1.1 km + 4 min 1.1 km"
     },
     {
       "id": 1378,
@@ -2490,8 +2490,8 @@
       "tarifa": 35.04,
       "km": 2.2,
       "minutos": 8,
-      "confianza": "baja",
-      "nota": "REVISAR: Misma oferta que 1376, pop-up RECHAZAR $30 de Checa encima"
+      "confianza": "alta",
+      "nota": "Misma oferta que 1377 con 'Viaje aceptado' de fondo; pop-up RECHAZAR $30 (158 min 2.2 km, 'Viaje largo') no cuenta"
     },
     {
       "id": 1379,
@@ -2500,8 +2500,8 @@
       "tarifa": 42.36,
       "km": 6.6,
       "minutos": 20,
-      "confianza": "baja",
-      "nota": "REVISAR: Centro de viajes (2) 10:42, Express $42.36; tramos 7 min 2.1 km + 13 min 4.5 km (parcial)"
+      "confianza": "media",
+      "nota": "Centro de viajes (2) Express $42.36, 10:42 'Viaje direccionado'; tramos 7 min 2.1 km + 13 min 4.5 km"
     },
     {
       "id": 1380,
@@ -2510,18 +2510,18 @@
       "tarifa": 29.75,
       "km": 3.4,
       "minutos": 13,
-      "confianza": "baja",
-      "nota": "REVISAR: Pon Tu Precio 7 puntos 10:43, $1.03 gasolina; tramos 3 min 490 m + 10 min 2.4 km"
+      "confianza": "alta",
+      "nota": "Pon Tu Precio 7 puntos, $1.03 de gasolina, 4 viajes, 10:43; tramos 3 min 490 m + 10 min 2.4 km"
     }
   ],
   "resumen": {
     "leidas": 251,
     "fallidas": 0,
     "por_estado": {
-      "vigente": 228,
-      "aceptada": 6,
-      "sin_oferta": 6,
-      "vencida": 11
+      "vigente": 229,
+      "aceptada": 5,
+      "sin_oferta": 5,
+      "vencida": 12
     }
   }
 }
