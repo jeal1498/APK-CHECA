@@ -171,13 +171,14 @@ object Parser {
 
     // "5min (1.7km)", "A 5 min (1.6 km)", "Viaje: 8 min (3.2 km)", "2min (720m)", "1 h 5 min (40 km)"
     // Uber nuevo (nov 2026): "8 min • 2.2 km", "1 h 20 min • 32.9 km" (sin paréntesis, con viñeta).
+    // El OCR a veces pierde el «)» del final («O8 min (3.5 km», 14 nov): también vale.
     private val tramo = Regex(
-        """(?:(\d+)\s?h(?:rs?|oras?)?\s*)?(\d+)\s?min\s*(?:\(\s*(\d+(?:[.,]\d+)?)\s?(km|m)\s*\)|[^\d(\s]{0,3}\s*(\d+(?:[.,]\d+)?)\s?(km|m)\b)""",
+        """(?:(\d+)\s?h(?:rs?|oras?)?\s*)?(\d+)\s?min\s*(?:\(\s*(\d+(?:[.,]\d+)?)\s?(km|m)\s*\)?|[^\d(\s]{0,3}\s*(\d+(?:[.,]\d+)?)\s?(km|m)\b)""",
         RegexOption.IGNORE_CASE
     )
 
     // "$6.29/km est." (Uber nuevo): precio por km del resumen.
-    private val porKmTexto = Regex("""(\d+(?:[.,]\d{1,2})?)\s?/\s?km""", RegexOption.IGNORE_CASE)
+    private val porKmTexto = Regex("""(\d+(?:[.,]\d{1,2})?)\s?/\s?k[rn]?m""", RegexOption.IGNORE_CASE)
 
     // "$660/h": la línea de métricas de nuestro pop-up (ni Uber ni DiDi ponen «/h» en la oferta).
     private val porHoraPropio = Regex("""\d\s?/\s?h\b""", RegexOption.IGNORE_CASE)
@@ -212,7 +213,7 @@ object Parser {
     // «El pasajero canceló»: aviso, no oferta.
     private val cancelo = Regex("""cancel[oó]\b""", RegexOption.IGNORE_CASE)
     // Uber «$9.65/km est.» en su propia línea: km totales ≈ tarifa ÷ $/km.
-    private val kmEstimado = Regex("""(\d{1,2}[.,]\d{2})\s?/\s?km""", RegexOption.IGNORE_CASE)
+    private val kmEstimado = Regex("""(\d{1,2}[.,]\d{2})\s?/\s?k[rn]?m""", RegexOption.IGNORE_CASE)
 
     private val noDireccion = Regex(
         """(\$|aceptar|considerar|rechazar|adicional|por inicio|incluid|calificaci|viajes|perfil|verificad|exclusivo|priority|/km|/h|me interesa|contraofert|ofrecer|ignorar|omitir|cancelar|ver m[aá]s|punto\(s\)|parada|pasajer|efectivo|tarjeta)""",
@@ -278,6 +279,8 @@ object Parser {
     // el monto de nuestro pop-up va sin centavos, «$67»).
     private val anclaDidi = Regex("""^[^\w$]{0,3}\$\s?(\d{1,5}[.,]\d{2})(?!\d)(.*)$""")
     private val palabra = Regex("""\p{L}{3,}""")
+    // «Ox1.6», «Oxi.3», «ox16»: el ⚡ y el multiplicador de la tarjeta leídos por el OCR.
+    private val multiTarjeta = Regex("""[O0o]?\s?[xX×]\s?[\dIil|.,]+""")
     private val montoSuelto = Regex("""\$\s?(\d{1,5}(?:[.,]\d{2})?)""")
 
     /** Monto de tarjeta de DiDi en [t] (null si es un botón, una contraoferta, un extra o basura). */
@@ -288,7 +291,7 @@ object Parser {
         val resto = m.groupValues[2]
         // Con palabras no es tarifa («$28.70ajes» de «viajes», «$3.23 de tarifa base», «+$62.00 incluido»).
         // Sí valen «$72.80t», «$65.17 v» y el multiplicador «Ox1.6».
-        if (palabra.containsMatchIn(resto)) return null
+        if (palabra.containsMatchIn(multiTarjeta.replace(resto, " "))) return null
         if (resto.contains('/')) return null
         // «$44.00 $45.00 $47.00» son contraofertas; «$45.49 $9.00» es la tarifa con su extra.
         val otros = montoSuelto.findAll(resto).mapNotNull { it.groupValues[1].replace(",", ".").toDoubleOrNull() }
@@ -308,11 +311,13 @@ object Parser {
         if (moneda.codigo != "MXN") return null
         if (textos.any { porKmTexto.containsMatchIn(it) && it.contains("est", ignoreCase = true) }) return null
         val r = reglasDe(moneda)
-        val tr = indicesTramos(textos).toHashSet()
+        // DiDi siempre pone el tramo entre paréntesis; «27 min 12.3 km» sin ellos es el resumen de Uber.
+        val tr = indicesTramos(textos).filter { textos[it].contains('(') || textos[it].contains(')') }.toHashSet()
         if (tr.size < 2) return null
         val primero = tr.minOrNull() ?: return null
-        val anclasAntes = (0 until primero).count { anclaTarjeta(textos[it]) != null }
-        if (tr.size < 3 && anclasAntes < 2) return null
+        // Con una sola tarjeta (2 tramos) solo se elige si arriba hay más de un monto.
+        val unaTarjeta = tr.size < 3
+        if (unaTarjeta && (0 until primero).count { textos[it].contains('$') } < 2) return null
         var i = 0
         while (i + 1 < textos.size) {
             if (i in tr && (i + 1) in tr) {
@@ -320,8 +325,13 @@ object Parser {
                 var j = i - 1
                 while (j >= 0 && j !in tr && anclaTarjeta(textos[j]) == null) j--
                 val ancla = if (j >= 0 && j !in tr) textos[j] else null
+                // Con 2 tramos, un monto liso junto al par puede ser la ganancia del día de DiDi
+                // («$119.29», 14 nov, capturas 1049/1369/1379): solo manda con multiplicador o extra.
+                val fiable = boton != null || (ancla != null && (!unaTarjeta || ancla.trim().let { a ->
+                    anclaDidi.find(a)?.groupValues?.get(2)?.isNotBlank() == true }))
                 // El botón va primero: su monto manda; la línea del monto aporta el multiplicador.
-                if (boton != null || ancla != null) return listOfNotNull(boton, ancla, textos[i], textos[i + 1])
+                if (fiable) return listOfNotNull(boton, ancla, textos[i], textos[i + 1])
+                if (unaTarjeta) return null
                 i += 2
                 continue
             }
@@ -330,7 +340,11 @@ object Parser {
         return null
     }
 
-    fun analizar(textos: List<String>, moneda: Moneda = Moneda.MXN): Oferta? {
+    // «$58,41», «$109,47»: el OCR leyó coma en vez de punto en la tarifa (14 nov, capturas 1035 y 1216).
+    private val comaDecimal = Regex("""^(\s*\$\s?\d{1,4}),(\d{2})\s*$""")
+
+    fun analizar(entrada: List<String>, moneda: Moneda = Moneda.MXN): Oferta? {
+        val textos = if (moneda.codigo == "MXN") entrada.map { comaDecimal.replace(it, "$1.$2") } else entrada
         val tarjeta = tarjetaElegida(textos, moneda) ?: return analizarLineas(textos, moneda)
         // Avisos de toda la pantalla (cancelado, vencido, navegación) mandan sobre la tarjeta.
         if (textos.any { cancelo.containsMatchIn(it) } || esOfertaCaida(textos)) return null
@@ -395,6 +409,18 @@ object Parser {
                 .minByOrNull { Math.abs(it - esperada) }
             if (cerca != null) tarifa = cerca
         }
+        // Uber: si los tramos no dan el «$/km est.» pero el resumen sí, el OCR perdió un punto en un
+        // tramo («5 minl3 km» = 1.3, «14 min •l9 km» = 1.9, «08 km» = 0.8; 14 nov): manda el resumen.
+        if (resumen != null && resPorKm > 0 && tramos >= 2) {
+            val est = tarifa / resPorKm
+            val tol = Math.max(0.3, est * 0.08)
+            if (Math.abs(km - est) > tol && Math.abs(resumen.first - est) <= tol) {
+                km = resumen.first
+                if (Math.abs(min - resumen.second) > 1.5) min = resumen.second
+                val viaje = tramosReales.drop(1).sumOf { it.first }
+                if (Math.abs(recKm / 10 + viaje - km) <= 0.15) recKm /= 10
+            }
+        }
 
         // Una oferta siempre trae 2 tramos (recogida + viaje); con 1 aceptamos también.
         if (tramos == 0) return null
@@ -407,6 +433,13 @@ object Parser {
             val linea = textos.firstOrNull { t -> kmEstimado.containsMatchIn(t) && !tramo.containsMatchIn(corregirMinutos(t)) }
             val p = linea?.let { kmEstimado.find(it)?.groupValues?.get(1)?.replace(",", ".")?.toDoubleOrNull() }
             if (p != null && p >= 2 && p <= 80) {
+                // Si la tarifa no da el $/km pero otro monto sí («$7D» arriba de «$103.51l», 14 nov), manda ese.
+                if (Math.abs(km - tarifa / p) > Math.max(0.3, km * 0.06)) {
+                    textos.filter { !it.contains('/') && !noTarifa.containsMatchIn(it) }
+                        .flatMap { t -> montoSuelto.findAll(t).mapNotNull { it.groupValues[1].replace(",", ".").toDoubleOrNull() }.toList() }
+                        .filter { Math.abs(km - it / p) <= Math.max(0.15, km * 0.03) }
+                        .minByOrNull { Math.abs(km - it / p) }?.let { tarifa = it }
+                }
                 val est = tarifa / p
                 if (Math.abs(km - est) > Math.max(0.3, est * 0.08) && recKm < est) km = est
             }
