@@ -17,6 +17,7 @@ Tres números. Ninguno es opinión.
 | 10.74 | 177 de 235 | 75.3 |
 | 10.76 | 185 de 235 | 78.7 |
 | 10.77 | 185 de 235 | 78.7 (sin cambios en el lector) |
+| 10.79 | 191 de 235 | 81.3 (tarjeta elegida en listas de DiDi) |
 
 Medido aquí con Java 21. En Actions (Java 17) sale un acierto más: `0210-didi.txt` depende de cómo trata `\b` la «ó» de «canceló»; en Android también acierta.
 

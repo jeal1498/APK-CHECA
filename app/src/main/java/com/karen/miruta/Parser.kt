@@ -274,7 +274,70 @@ object Parser {
         return direccionTras(textos, t.last())
     }
 
+    // «$58.96 Ox1.6», «$45.49 $9.00», «$72.80t»: el monto de una tarjeta de DiDi (siempre con centavos;
+    // el monto de nuestro pop-up va sin centavos, «$67»).
+    private val anclaDidi = Regex("""^[^\w$]{0,3}\$\s?(\d{1,5}[.,]\d{2})(?!\d)(.*)$""")
+    private val palabra = Regex("""\p{L}{3,}""")
+    private val montoSuelto = Regex("""\$\s?(\d{1,5}(?:[.,]\d{2})?)""")
+
+    /** Monto de tarjeta de DiDi en [t] (null si es un botón, una contraoferta, un extra o basura). */
+    private fun anclaTarjeta(t: String): Double? {
+        if (noTarifa.containsMatchIn(t) || t.contains("total", ignoreCase = true)) return null
+        val m = anclaDidi.find(t.trim()) ?: return null
+        val v = m.groupValues[1].replace(",", ".").toDoubleOrNull() ?: return null
+        val resto = m.groupValues[2]
+        // Con palabras no es tarifa («$28.70ajes» de «viajes», «$3.23 de tarifa base», «+$62.00 incluido»).
+        // Sí valen «$72.80t», «$65.17 v» y el multiplicador «Ox1.6».
+        if (palabra.containsMatchIn(resto)) return null
+        if (resto.contains('/')) return null
+        // «$44.00 $45.00 $47.00» son contraofertas; «$45.49 $9.00» es la tarifa con su extra.
+        val otros = montoSuelto.findAll(resto).mapNotNull { it.groupValues[1].replace(",", ".").toDoubleOrNull() }
+        if (otros.any { it >= v * 0.3 }) return null
+        return v
+    }
+
+    /**
+     * Pantallas de DiDi con varias tarjetas (Centro de viajes, «Pon tu precio», radar), 14 nov: la
+     * oferta del pop-up es la primera tarjeta completa de arriba abajo: dos tramos seguidos con su
+     * monto justo antes (sin otro tramo en medio) o con «Aceptar $X» justo después (este manda).
+     * Un par sin monto es una tarjeta cortada arriba: se salta. Montos sueltos de arriba (pop-up
+     * propio, tarjeta cortada) y contraofertas no cuentan. Devuelve las líneas de esa tarjeta, o
+     * null si no hace falta elegir (una sola tarjeta) o si es Uber con su resumen «$/km est.».
+     */
+    fun tarjetaElegida(textos: List<String>, moneda: Moneda = Moneda.MXN): List<String>? {
+        if (moneda.codigo != "MXN") return null
+        if (textos.any { porKmTexto.containsMatchIn(it) && it.contains("est", ignoreCase = true) }) return null
+        val r = reglasDe(moneda)
+        val tr = indicesTramos(textos).toHashSet()
+        if (tr.size < 2) return null
+        val primero = tr.minOrNull() ?: return null
+        val anclasAntes = (0 until primero).count { anclaTarjeta(textos[it]) != null }
+        if (tr.size < 3 && anclasAntes < 2) return null
+        var i = 0
+        while (i + 1 < textos.size) {
+            if (i in tr && (i + 1) in tr) {
+                val boton = textos.getOrNull(i + 2)?.takeIf { r.aceptarMonto.containsMatchIn(it) }
+                var j = i - 1
+                while (j >= 0 && j !in tr && anclaTarjeta(textos[j]) == null) j--
+                val ancla = if (j >= 0 && j !in tr) textos[j] else null
+                // El botón va primero: su monto manda; la línea del monto aporta el multiplicador.
+                if (boton != null || ancla != null) return listOfNotNull(boton, ancla, textos[i], textos[i + 1])
+                i += 2
+                continue
+            }
+            i++
+        }
+        return null
+    }
+
     fun analizar(textos: List<String>, moneda: Moneda = Moneda.MXN): Oferta? {
+        val tarjeta = tarjetaElegida(textos, moneda) ?: return analizarLineas(textos, moneda)
+        // Avisos de toda la pantalla (cancelado, vencido, navegación) mandan sobre la tarjeta.
+        if (textos.any { cancelo.containsMatchIn(it) } || esOfertaCaida(textos)) return null
+        return analizarLineas(tarjeta, moneda)
+    }
+
+    private fun analizarLineas(textos: List<String>, moneda: Moneda): Oferta? {
         val r = reglasDe(moneda)
         var tarifa = buscarTarifa(textos, r) ?: return null
         if (textos.any { cancelo.containsMatchIn(it) }) return null
