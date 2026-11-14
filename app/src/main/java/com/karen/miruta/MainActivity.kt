@@ -5244,7 +5244,7 @@ class MainActivity : Activity() {
         val tSw = tarjeta()
         tSw.addView(interruptor(
             "Guardar pantallas de ofertas",
-            "En tu teléfono 7 días. Si Checa duda de una lectura, manda esa captura.",
+            "En tu teléfono 7 días. Manda capturas de lecturas dudosas y hasta 100 de ofertas normales.",
             prefs.diagnostico
         ) { on ->
             prefs.diagnostico = on
@@ -5308,6 +5308,7 @@ class MainActivity : Activity() {
         listOf(
             "Checa guarda la parte de Uber o DiDi donde ve una oferta, en tu teléfono, por 7 días.",
             "Si Checa no entiende una oferta, manda esa captura para mejorar la lectura.",
+            "También manda hasta 100 capturas de ofertas normales (verde, amarillo o rojo) para medir qué tan bien lee.",
             "Puede salir el nombre del pasajero o direcciones. Se borra del servidor a los 7 días.",
             "Puedes apagarlo en Ayuda con la lectura › Guardar pantallas de ofertas."
         ).forEachIndexed { i, s ->

@@ -300,7 +300,7 @@ object Cuenta {
         if (s.getString("correo", null) != correo) {
             e.remove("lic_firma").remove("lic_vence").remove("lic_f").remove("lic_eq").remove("equipos").remove("quitado")
                 .remove("precio_beta").remove("ajustes_hash").remove("perfil_hash")
-                .remove("vc_subidos").remove("vc_borrar")
+                .remove("vc_subidos").remove("vc_borrar").remove("capt_ok")
             Jornada.borrarPrivados(ctx)
             // Los contactos que se pusieron sin cuenta se quedan y se suben; los de otra cuenta, no.
             if (s.getString("correo", null) != null) { e.remove("sos_pend"); Sos.borrarTodo(ctx) }
@@ -321,9 +321,36 @@ object Cuenta {
 
     /** Sube la captura de un caso dudoso (10.72) al almacén privado «capturas»; se borra a los 7 días. */
     fun subirCaptura(ctx: Context, caso: Long, bytes: ByteArray) {
+        subirImagen(ctx, "$caso.webp", bytes)
+    }
+
+    /** Tope de capturas de ofertas normales por conductor, en total (Eduardo, 14 nov). */
+    const val MAX_CAPTURAS_OK = 100
+
+    /**
+     * 10.78: sube la captura de una oferta normal (el pop-up salió verde, amarillo o rojo y la revisión
+     * coincidió), como `ok-<color>-<tarifa>-<km>-<min>-<hora>.webp`. Solo si el conductor vio el aviso y
+     * sin pasar de [MAX_CAPTURAS_OK] por cuenta (el servidor también lo limita). Se borra a los 7 días.
+     */
+    @Synchronized
+    fun subirCapturaOk(ctx: Context, nivel: String, o: Oferta, bytes: ByteArray) {
         try {
-            if (sp(ctx).getString("refresco", null) == null) return
-            val con = URL(URL_BASE + "/storage/v1/object/capturas/$caso.webp").openConnection() as HttpURLConnection
+            if (!Prefs(ctx).diagEnvioVisto) return
+            val s = sp(ctx)
+            val subidas = s.getInt("capt_ok", 0)
+            if (subidas >= MAX_CAPTURAS_OK) return
+            val color = if (nivel == "verde" || nivel == "amarillo" || nivel == "rojo") nivel else "sin"
+            val nombre = "ok-$color-" + String.format(Locale.US, "%.2f-%.1f-%.0f", o.tarifa, o.km, o.min) +
+                "-" + System.currentTimeMillis() + ".webp"
+            if (subirImagen(ctx, nombre, bytes)) s.edit().putInt("capt_ok", subidas + 1).apply()
+        } catch (_: Exception) { }
+    }
+
+    /** POST de una imagen WebP al almacén «capturas»; true si el servidor la aceptó. */
+    private fun subirImagen(ctx: Context, nombre: String, bytes: ByteArray): Boolean {
+        try {
+            if (sp(ctx).getString("refresco", null) == null) return false
+            val con = URL(URL_BASE + "/storage/v1/object/capturas/$nombre").openConnection() as HttpURLConnection
             try {
                 con.requestMethod = "POST"
                 con.connectTimeout = 15_000
@@ -334,9 +361,9 @@ object Cuenta {
                 con.doOutput = true
                 con.setFixedLengthStreamingMode(bytes.size)
                 con.outputStream.use { it.write(bytes) }
-                con.responseCode
+                return con.responseCode in 200..299
             } finally { con.disconnect() }
-        } catch (_: Exception) { }
+        } catch (_: Exception) { return false }
     }
 
     /** Token vigente; si ya venció, lo renueva. */

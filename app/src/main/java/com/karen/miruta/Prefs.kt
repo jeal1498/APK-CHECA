@@ -218,10 +218,10 @@ class Prefs(context: Context) {
         get() = sp.getBoolean("diag", true)
         set(v) { sp.edit().putBoolean("diag", v).apply() }
 
-    /** Ya vio el aviso (10.72) de que las capturas de lecturas dudosas se mandan a revisión. */
+    /** Ya vio el aviso (10.72, ampliado en 10.78 con las capturas de ofertas normales; llave nueva para que todos lo vean otra vez). */
     var diagEnvioVisto: Boolean
-        get() = sp.getBoolean("diagEnvio", false)
-        set(v) { sp.edit().putBoolean("diagEnvio", v).apply() }
+        get() = sp.getBoolean("diagEnvio2", false)
+        set(v) { sp.edit().putBoolean("diagEnvio2", v).apply() }
 
     /** Ya vio el aviso de qué guarda «Guardar pantallas de ofertas». */
     var diagAvisoVisto: Boolean

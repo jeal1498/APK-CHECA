@@ -90,9 +90,15 @@ object Confirmador {
     }
 
     /** Si el servidor guardó un caso (`caso`), manda la captura reciente de esa app para revisarlo. */
-    private fun subirCaptura(ctx: Context, app: String, r: JSONObject) {
+    private fun subirCaptura(ctx: Context, app: String, r: JSONObject, o: Oferta? = null, pant: JSONObject? = null) {
         val caso = r.optLong("caso", 0L)
-        if (caso <= 0L) return
+        if (caso <= 0L) {
+            // 10.78: oferta normal (sin diferencia): captura con tope por conductor y el color del pop-up en el nombre.
+            if (o != null && r.optBoolean("ok")) Guardado.tomarReciente(app)?.let {
+                Cuenta.subirCapturaOk(ctx, pant?.optString("nivel").orEmpty(), o, it)
+            }
+            return
+        }
         Guardado.tomarReciente(app)?.let { Cuenta.subirCaptura(ctx, caso, it) }
     }
 
@@ -326,7 +332,7 @@ object Confirmador {
                     // El servidor respondió (aunque sea sin saldo): ya anotó el conteo del día anterior.
                     if (respuesta != null && conteoAnterior != null) anteriorRecibido(app0, conteoAnterior.getString("dia"))
                     val r = JSONObject(respuesta ?: "{}")
-                    subirCaptura(app0, app, r)
+                    subirCaptura(app0, app, r, o, pant)
                     // Ida y vuelta completa de la revisión, vista desde el teléfono: va en la siguiente.
                     msRevision = android.os.SystemClock.elapsedRealtime() - t0
                     val ia = r.optJSONObject("ia")
