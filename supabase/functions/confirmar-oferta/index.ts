@@ -67,7 +67,7 @@ async function limpiarCapturas() {
   try {
     const l = await fetch(`${SUPA}/storage/v1/object/list/capturas`, {
       method: "POST", headers: headersServicio,
-      body: JSON.stringify({ limit: 100, sortBy: { column: "created_at", order: "asc" } }),
+      body: JSON.stringify({ prefix: "", limit: 100, sortBy: { column: "created_at", order: "asc" } }),
     });
     const lista = await l.json();
     if (!Array.isArray(lista)) return;

@@ -1,0 +1,9 @@
+# Uber: el aviso «Viaje aceptado» sigue a la vista y llega otra oferta con su botón: esa sí se lee.
+Viaje aceptado
+$48.73
+$10.15/km est.
+A 5 min (1.6 km)
+Viaje: 8 min (3.2 km)
+Aceptar
+---
+tarifa=48.73 km=4.8 min=13 recKm=1.6 recMin=5

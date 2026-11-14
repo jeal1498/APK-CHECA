@@ -1,0 +1,8 @@
+# DiDi (captura 843, 10.72): el OCR escribe «solcitud» y parte la frase en dos renglones. No es oferta.
+$28.50
+la solcitud de viaje
+venció
+(10 min 2.4 km) Plaza Altabrisa Tabasco, Real
+(8 min 2.2 km) Mini Todo Del Bosque, Jose
+---
+nada

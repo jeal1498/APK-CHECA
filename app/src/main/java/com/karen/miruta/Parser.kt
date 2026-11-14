@@ -392,14 +392,25 @@ object Parser {
         return claves.size == 1 && !conParentesis
     }
 
-    private val ofertaCaida = Regex("""(?i)(solicitud\s+de\s+viaje\s+venci|solicitud\s+ya\s+no\s+est|ya\s+no\s+est[aá]\s+disponible|viaje\s+aceptado)""")
+    // Tolera lo que el OCR hace con estas frases (capturas 663–1199): «solcitud», «venció» pegado al
+    // monto («$28.5la solcitud de viaje venció») o «disponible» pegado a un tramo («3min (0 disponible»).
+    private val ofertaCaida = Regex("""(?i)(viaje\s*venci|solicitud\s+ya\s+no|ya\s+no\s+est[aá]\s*disp|no\s+est[aá]\s+disponible)""")
+    private val viajeAceptado = Regex("""(?i)viaje\s+aceptado""")
+    private val botonAceptar = Regex("""(?i)^\s*aceptar\b""")
 
     /**
      * Una oferta que ya no está viva (14 nov, revisión de capturas de la 10.77: 22 de 251 pop-ups sobre
      * pantallas así): «La solicitud de viaje venció», «La solicitud ya no está disponible» (el texto apagado
      * de la tarjeta sigue en pantalla) o «Viaje aceptado». No se lee ni se rescata.
+     * El OCR puede partir la frase en dos renglones: también se revisa cada par seguido.
+     * «Viaje aceptado» solo cuenta sin botón «Aceptar» a la vista: si llega otra oferta mientras el
+     * aviso sigue en pantalla, esa oferta sí se lee.
      */
-    fun esOfertaCaida(textos: List<String>): Boolean = textos.any { ofertaCaida.containsMatchIn(it) }
+    fun esOfertaCaida(textos: List<String>): Boolean {
+        val pares = textos.indices.map { i -> if (i + 1 < textos.size) textos[i] + " " + textos[i + 1] else textos[i] }
+        if (pares.any { ofertaCaida.containsMatchIn(it) }) return true
+        return pares.any { viajeAceptado.containsMatchIn(it) } && textos.none { botonAceptar.containsMatchIn(it) }
+    }
 
     /** true si algún texto trae un monto (sin montos no es una oferta: p. ej. la navegación de un viaje). */
     fun tieneMonto(textos: List<String>, moneda: Moneda = Moneda.MXN): Boolean {

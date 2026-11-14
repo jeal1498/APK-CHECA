@@ -321,6 +321,8 @@ object Cuenta {
 
     /** Sube la captura de un caso dudoso (10.72) al almacén privado «capturas»; se borra a los 7 días. */
     fun subirCaptura(ctx: Context, caso: Long, bytes: ByteArray) {
+        // Si lo apagó después de tomar la captura, ya no se manda.
+        if (!Prefs(ctx).diagnostico) return
         subirImagen(ctx, "$caso.webp", bytes)
     }
 
@@ -335,7 +337,8 @@ object Cuenta {
     @Synchronized
     fun subirCapturaOk(ctx: Context, nivel: String, o: Oferta, bytes: ByteArray) {
         try {
-            if (!Prefs(ctx).diagEnvioVisto) return
+            val p = Prefs(ctx)
+            if (!p.diagnostico || !p.diagEnvioVisto) return
             val s = sp(ctx)
             val subidas = s.getInt("capt_ok", 0)
             if (subidas >= MAX_CAPTURAS_OK) return
