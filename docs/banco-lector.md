@@ -50,7 +50,11 @@ Medido aquí con Java 21. En Actions (Java 17) sale un acierto más: `0210-didi.
 - 3: minutos mal.
 - 2: tarifa equivocada.
 
-## Revisión con capturas (pendiente, lunes 16 nov)
+## Qué tarjeta lee el pop-up (decidido con las capturas, 14 nov)
+
+En pantallas de DiDi con varias tarjetas (Centro de viajes, «Pon tu precio», radar), el pop-up lee **la primera tarjeta completa de arriba abajo**: dos tramos seguidos con su monto (con centavos) justo antes, o con «Aceptar $X» justo después (el botón manda). Un par de tramos sin monto es una tarjeta cortada arriba: se salta. No cuentan: montos sin centavos (nuestro pop-up, «$67»), contraofertas («$44.00 $45.00»), extras («$22.90 de tarifa…») ni la ganancia del día («$119.29», arriba del mapa). Código: `Parser.tarjetaElegida`. Casos que no se pueden decidir con las líneas (el OCR pone primero el monto más alto y dos tarjetas quedan con montos lisos, 965 y 1021) y capturas donde la pantalla cambió respecto a las líneas (1319, 1361) no entraron al banco.
+
+## Revisión con capturas (hecha 14 nov con la 10.77; repetir con la 10.79)
 
 **Para qué:** hoy la respuesta correcta de cada caso del banco sale de texto y de juicios, no de la pantalla. Las capturas (desde la 10.72, WebP de la zona de Uber/DiDi) dejan confirmarla viendo la oferta real. El resultado es un banco nuevo y la precisión del lector en los casos dudosos.
 

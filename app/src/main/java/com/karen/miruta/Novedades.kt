@@ -9,6 +9,10 @@ object Novedades {
     class Version(val codigo: Int, val nombre: String, val puntos: List<String>, val widgets: Boolean = false, val vistaQr: Boolean = false)
 
     val LISTA = listOf(
+        Version(159, "10.79", listOf(
+            "En las listas de DiDi con varias ofertas, el pop-up lee la tarjeta correcta: ya no mezcla la tarifa de una con los kilómetros de otra.",
+            "Kilómetros y minutos más exactos en Uber y DiDi."
+        )),
         Version(158, "10.78", listOf(
             "Ya no sale pop-up sobre ofertas que vencieron, que ya no están disponibles o que ya aceptaste.",
             "Checa puede mandar hasta 100 capturas de tus ofertas (verde, amarillo o rojo) para medir mejor la lectura. Lo apagas en Ayuda con la lectura › Guardar pantallas de ofertas."
