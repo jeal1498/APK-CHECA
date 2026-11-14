@@ -1,11 +1,11 @@
 # Reporte de Checa (web + app) · últimos 30 días
 
-Generado: 2026-11-13 20:06 UTC. Cuenta visitas únicas (una por pestaña).
+Generado: 2026-11-14 18:32 UTC. Cuenta visitas únicas (una por pestaña).
 
 ## Resumen
 | visitas | descargas | cuentas_nuevas | pagos | ingresos | licencias_activas |
 | --- | --- | --- | --- | --- | --- |
-| 677 | 260 | 67 | 0 | 0 | 3 |
+| 678 | 260 | 67 | 0 | 0 | 3 |
 
 # App
 
@@ -136,20 +136,20 @@ Sin datos todavía.
 ## Embudo
 | evento | visitas | veces |
 | --- | --- | --- |
-| visita | 677 | 928 |
+| visita | 678 | 927 |
 | descarga | 260 | 292 |
 | clic_descargar | 121 | 132 |
 | descarga_instalar | 69 | 147 |
 | video_play | 66 | 69 |
-| beta_whatsapp | 22 | 26 |
+| beta_whatsapp | 21 | 25 |
 | beta | 20 | 20 |
 | whatsapp_ayuda | 13 | 13 |
 
 ## Por fuente (visitas → descargas)
 | fuente | campana | visitas | descargas |
 | --- | --- | --- | --- |
-| directo |  | 523 | 196 |
-| tiktok |  | 97 | 54 |
+| directo |  | 526 | 196 |
+| tiktok |  | 95 | 54 |
 | tiktok | prueba-en-google-play | 26 | 0 |
 | app | compartir | 17 | 9 |
 | app |  | 5 | 0 |
@@ -164,8 +164,8 @@ Sin datos todavía.
 ## Por dispositivo
 | dispositivo | visitas | descargas |
 | --- | --- | --- |
-| android | 507 | 260 |
-| pc | 113 | 0 |
+| android | 501 | 260 |
+| pc | 120 | 0 |
 | iphone | 58 | 0 |
 
 ## Qué botón lleva a descargar
@@ -187,7 +187,8 @@ Sin datos todavía.
 ## Por día
 | dia | visitas | descargas |
 | --- | --- | --- |
-| 2026-11-13 | 11 | 0 |
+| 2026-11-14 | 2 | 0 |
+| 2026-11-13 | 16 | 0 |
 | 2026-11-12 | 5 | 0 |
 | 2026-11-11 | 7 | 0 |
 | 2026-11-10 | 6 | 0 |
@@ -215,5 +216,4 @@ Sin datos todavía.
 | 2026-10-18 | 115 | 56 |
 | 2026-10-17 | 59 | 45 |
 | 2026-10-16 | 69 | 46 |
-| 2026-10-15 | 125 | 34 |
-| 2026-10-14 | 2 | 0 |
+| 2026-10-15 | 121 | 34 |
