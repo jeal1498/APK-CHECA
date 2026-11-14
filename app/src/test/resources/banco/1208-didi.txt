@@ -1,0 +1,14 @@
+# errores_lector 1208 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$27.45
+$33.22 Ox1.2
+(9 min 3 km) Cafe La Cabaña La Venta, Oropeza, Centro
+(5 min 2.6 km) Socialista 118, Atasta de Serra, Centro
+$38.22
+$35.22
+$37.22
+$35.02 ox1.3
+(10 min 2.7 km) Calle Flor de Verónica 108, Gaviotas Nte.
+(5 min 2.4 km) Psicólogos 121, Gaviotas Nte. Sector
+---
+tarifa=33.22 km=5.6 min=14

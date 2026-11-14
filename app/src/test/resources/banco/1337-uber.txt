@@ -1,0 +1,9 @@
+# errores_lector 1337 · Uber · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$98.63
+20 min •71 km• $13.89/km est.
+$40.13 Turbo+ incluido
+5 min (1.7 km)
+o 15 min (5.4 km)
+---
+tarifa=98.63 km=7.1 min=20

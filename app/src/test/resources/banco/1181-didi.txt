@@ -1,0 +1,8 @@
+# errores_lector 1181 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+(12 min 6 km) Puerta Aragón, Pradera I
+$66.00 Ox1.6
+(7 min 2 km) Dental Vision, Gustavo Diaz
+(20 min 5.5 km) Juan Aldama 4, Nueva
+---
+tarifa=66.0 km=7.5 min=27

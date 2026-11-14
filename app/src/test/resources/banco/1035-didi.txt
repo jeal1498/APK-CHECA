@@ -1,0 +1,10 @@
+# errores_lector 1035 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$58,41
+(6 min 1.6 km) Los Chilacos de
+(19 min 8.2 km) Calle palma
+G $58.41
+$69.20
+$80.00
+---
+tarifa=58.41 km=9.8 min=25

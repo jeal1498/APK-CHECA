@@ -1,0 +1,8 @@
+# errores_lector 1370 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$26.02
+9 $0.39 de tarifa de gasolina
+2 min (309 m)
+3 min (856 m)
+---
+tarifa=26.02 km=1.2 min=5

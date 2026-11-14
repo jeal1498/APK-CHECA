@@ -1,0 +1,8 @@
+# errores_lector 1049 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$21.25
+$299.65
+o (9 min 3.7 km) Pet Center Mx, Villa las Fuentes, Centro
+o (7 min 2.4 km) Súper Sánchez Atasta 5, Atasta de Serra,
+---
+tarifa=21.25 km=6.1 min=16

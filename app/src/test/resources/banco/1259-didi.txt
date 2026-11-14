@@ -1,0 +1,9 @@
+# errores_lector 1259 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$54.41
+19 min •71 km• $766/km est.
++$9.75 incluido para inicio
+2 min (0.5 km)
+D 17 min (6.6 km)
+---
+tarifa=54.41 km=7.1 min=19

@@ -1,0 +1,11 @@
+# errores_lector 1293 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$41
+(10 min 3.8 km) Calle 108,
+(13 min 6.4 km) OXXO
+Aceptar $41.00
+$44.00 $45.00 $47.00
+$67.96 Ox1.6 $9.00
+(5 min 1.6 km) Avenida De Los
+---
+tarifa=41.0 km=10.2 min=23

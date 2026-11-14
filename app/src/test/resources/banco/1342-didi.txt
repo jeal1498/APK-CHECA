@@ -1,0 +1,9 @@
+# errores_lector 1342 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$51.08 Ox1.4
+o (6 min 1.8 km) Calle 46 612,
+(13 min 4.4 km) CONALEP 1
+$47.43 Ox1.3
+(7 min 2.1 km) Calle 48
+---
+tarifa=51.08 km=6.2 min=19

@@ -1,0 +1,10 @@
+# errores_lector 1377 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$35.04
+9 $8.97 de tarifa Más Rápido
+$0.47 de tarifa de gasolina
+4 min (1.1 km)
+4 min (1.1 km)
+Plaza Las Galas, Avenida Francisco Javier Mina 100,
+---
+tarifa=35.04 km=2.2 min=8

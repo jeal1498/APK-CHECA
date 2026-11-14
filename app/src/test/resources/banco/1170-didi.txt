@@ -1,0 +1,16 @@
+# errores_lector 1170 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+1.8X-2.4X
+7 1.7X-2.3X
+4 1.9X-2.5X
+4 1.8X-2.4X
+4 1.7X-2.3X
+4 1.6X-2.2X
+7X-2.3X
+CIU HŹX-1.8X
+1X-1.7X
+$51.33 Ox.6
+(8 min 2.1 km) Sagitario 52, Estrella, Ecatepec
+(11 min 6.3 km) Salón de Fiestas Pétalos Del
+---
+tarifa=51.33 km=8.4 min=19

@@ -1,0 +1,9 @@
+# errores_lector 1182 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$66
+(20 min 5.5 km) Juan Aldama 4, Nueva
+$165.30 Ox16
+(7 min 2.7 km) Hotel San Remo, Suites de
+(48 min 22 km) Amanecer Ranchero &
+---
+tarifa=165.3 km=24.8 min=55

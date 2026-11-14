@@ -1,0 +1,9 @@
+# errores_lector 1235 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$65.17 v
+$ 1.3X-1.9X
+$74.93 Ox1.3
+(10 min 4.5 km) Calle Carrizal Principal, Carrizal, Centro
+(12 min 6.8 km) Salida Centropolis, Plaza Villahermosa,
+---
+tarifa=74.93 km=11.3 min=22

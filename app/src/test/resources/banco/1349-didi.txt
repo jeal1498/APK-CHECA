@@ -1,0 +1,7 @@
+# errores_lector 1349 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$36.49
+o (7 min 2 km) Edificio Bilbao
+o (7 min 2.7 km) Sanborns
+---
+tarifa=36.49 km=4.7 min=14

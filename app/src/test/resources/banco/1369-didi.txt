@@ -1,0 +1,8 @@
+# errores_lector 1369 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$23.77
+$119.29
+o (8 min 2.1 km) black phoenix training, Mayito, Centro
+o (6 min 2.6 km) Aurrera, Centro
+---
+tarifa=23.77 km=4.7 min=14

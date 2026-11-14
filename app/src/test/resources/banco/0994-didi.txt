@@ -1,0 +1,9 @@
+# errores_lector 994 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+(9 min 3.8 km) Avenida Lec
+$61.97 Ox1.6
+(7 min 2.2 km) Calle 42
+(12 min 3.1 km) Colegio
+Aceptar $61.97
+---
+tarifa=61.97 km=5.3 min=19

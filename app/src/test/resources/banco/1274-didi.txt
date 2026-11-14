@@ -1,0 +1,9 @@
+# errores_lector 1274 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$58.96 Ox1.6
+(5 min 1.6 km) Avenida De Los
+(11 min 5.9 km) Zona
+$62.72 Os9.00
+(6 min 2 km) CADI 232
+---
+tarifa=58.96 km=7.5 min=16

@@ -1,0 +1,9 @@
+# errores_lector 1313 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$47.00
+$44.00 $45.00
+$60.80 Ox1.4
+(9 min 3 km) Tabasco 981,
+(15 min 6.4 km) Residencial
+---
+tarifa=60.8 km=9.4 min=24

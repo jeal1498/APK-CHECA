@@ -1,0 +1,10 @@
+# errores_lector 1176 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+(8 min 32 km) Hotel San Remo Suites de
+$178.30 $185.30 $191.30
+$118.21 Ox1.6
+(9 min 3.9 km) Salón Eduardo's, Rinconada
+(34 min 13.2 km) Bosque de Guinea 33,
+Aceptar $118.21
+---
+tarifa=118.21 km=17.1 min=43

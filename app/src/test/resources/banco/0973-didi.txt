@@ -1,0 +1,10 @@
+# errores_lector 973 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$67
+(8 min 2.8 km) ALUVIMAR, 103,
+(17 min 7 km) MINI SUPER
+$72.80t
+(9 min 2.8 km) Calle 50
+(12 min 4.8 km) Calle Rtno.
+---
+tarifa=72.8 km=7.6 min=21

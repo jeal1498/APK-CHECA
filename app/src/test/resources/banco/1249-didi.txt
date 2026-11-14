@@ -1,0 +1,9 @@
+# errores_lector 1249 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+Aceptar $41.00
+$42.00 $43.00 $45.00
+$58.38 Ox1.6
+(8 min 3.6 km) Espacio creativ
+(11 min 5.1 km) Antojitos
+---
+tarifa=58.38 km=8.7 min=19

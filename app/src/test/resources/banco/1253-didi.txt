@@ -1,0 +1,10 @@
+# errores_lector 1253 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$130.00
+(11 min 5.1 km) Antojitos
+$106.50 Ox1.4
+(8 min 3.6 km) Calle Berilio 78,
+(24 min 10.5 km) Calle Santa
+$106.50 $118.25
+---
+tarifa=106.5 km=14.1 min=32

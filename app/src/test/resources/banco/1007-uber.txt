@@ -1,0 +1,10 @@
+# errores_lector 1007 · Uber · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$114.12
+30 min 14.4 km -$7.93/km est.
++$15.86 incluido para inicio
+3 min (1l.7 km)
+o 27 min (12.7 km)
+Blvd. Kukulcan Km. 7, Kukulcan
+---
+tarifa=114.12 km=14.4 min=30

@@ -1,0 +1,10 @@
+# errores_lector 992 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$72.48 Ox1.7
+(9 min 2.7 km) Calle Villa
+(9 min 3.8 km) Avenida Leona
+$76.23 Ox5
+(10 min 4.1 km) Calle 107 26,
+(14 mnin 5 km) Centro
+---
+tarifa=72.48 km=6.5 min=18

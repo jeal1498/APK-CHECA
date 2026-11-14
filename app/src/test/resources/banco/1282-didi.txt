@@ -1,0 +1,9 @@
+# errores_lector 1282 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$36.49
+(6 min 2.1 km) Chancanab 25,
+(10 min 4.6 km) FRUTAS Y
+$58.96 Ox1.6
+(5 min 1.6 km) Avenida De Los
+---
+tarifa=36.49 km=6.7 min=16

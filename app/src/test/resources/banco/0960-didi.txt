@@ -1,0 +1,7 @@
+# errores_lector 960 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$42.64
+2 min (654 m)
+6 min (3.3 km)
+---
+tarifa=42.64 km=3.95 min=8

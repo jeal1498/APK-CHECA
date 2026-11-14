@@ -1,0 +1,8 @@
+# errores_lector 1040 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+l!$67
+$63.96 Ox1.5
+(10 min 4.1 km) El Retiro &
+(11 min 4.5 km) Calle 6 &
+---
+tarifa=63.96 km=8.6 min=21

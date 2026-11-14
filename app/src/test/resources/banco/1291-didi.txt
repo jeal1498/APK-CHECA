@@ -1,0 +1,10 @@
+# errores_lector 1291 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+(13 min 6.4 km) OXXO
+Aceptar $41.00
+$44.00 $45.00 $47.00
+$67.96 Ox1.6 $9.00
+(5 min 1.6 km) Avenida De Los
+(11 min 5.9 km) Zona
+---
+tarifa=67.96 km=7.5 min=16

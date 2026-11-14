@@ -1,0 +1,9 @@
+# errores_lector 1311 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$39.66
+$45.49 $9.00
+(3 min 615 m) Dentpro-dental,
+(8 min 4.3 km) Calle 84 30,
+(7 min 2.3 km) Plaza de Toros
+---
+tarifa=45.49 km=4.9 min=11

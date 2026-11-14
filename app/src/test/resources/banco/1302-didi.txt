@@ -1,0 +1,9 @@
+# errores_lector 1302 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$36.49
+$45.08 s9.00
+(4 min 1.4 km) Ana Spa,
+(6 min 2 km) ADO Terminal
+(5 min 1.4 km) Calle 43 20.
+---
+tarifa=45.08 km=3.4 min=10

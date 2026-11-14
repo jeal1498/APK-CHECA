@@ -1,0 +1,11 @@
+# errores_lector 1324 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+(5 min 1.7 km) SIN NOMBRE
+(10 min 4.4 km) Onora
+Aceptar $48.77
+$52.77 $54.77 $56.77
+$59.80 Ox1.2
+(7 min 2.6 km) Calle Guadalupe
+(15 min 7.7 km) EL Rey de la
+---
+tarifa=48.77 km=6.1 min=15

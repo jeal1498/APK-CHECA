@@ -1,0 +1,10 @@
+# errores_lector 1031 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$42.64
+(10 min 3.1 km) Clínica Morelos,
+(19 min 6 km) Hospital
+Aceptar $49.10
+$50.10 $52.10 $53.10
+6 min 15 km) Calle 20 95
+---
+tarifa=49.1 km=9.1 min=29

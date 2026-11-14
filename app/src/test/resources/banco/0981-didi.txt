@@ -1,0 +1,13 @@
+# errores_lector 981 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$53.53
+(8 min 3 km) Cerrada Madrid,
+(13 min 6.2 km) Instituto
++$9.75Tomarviajea inicio
+o5min (1.9 km)
+EXPSn (4.0 km)
+$67.36 Lopez Portillo, Benito
+9A38 min del destino
+(8 min 2.8 km) ALUVIMAR, 103,
+---
+tarifa=53.53 km=9.2 min=21

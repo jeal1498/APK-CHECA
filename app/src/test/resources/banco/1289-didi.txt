@@ -1,0 +1,9 @@
+# errores_lector 1289 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$51.55 Oxi.3
+(6 min 2.2 km) C. 45 233,
+(14 min 5.7 km) Santander,
+$67.96 Ox1.6 o$9.00
+(5 min 1.6 km) Avenida De Los
+---
+tarifa=51.55 km=7.9 min=20

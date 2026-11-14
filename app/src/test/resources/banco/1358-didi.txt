@@ -1,0 +1,9 @@
+# errores_lector 1358 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$37.72
+$47.00
+$44.00 $45.00
+o (9 min 3.4 km) casa,
+o (7 min 2.5 km) Condominio
+---
+tarifa=37.72 km=5.9 min=16

@@ -1,0 +1,7 @@
+# errores_lector 1034 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$42.64
+(7 min 2.3 km) Comida
+(13 min 5.2 km) Bolsas y Vasos
+---
+tarifa=42.64 km=7.5 min=20

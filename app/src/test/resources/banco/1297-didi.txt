@@ -1,0 +1,9 @@
+# errores_lector 1297 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+4G!!$ 98)
+$51.55 ox1.3
+(7 min 2.2 km) C. 45 233,
+(14 min 5.7 km) Santander,
+$43.78 Ox1.2
+---
+tarifa=51.55 km=7.9 min=21

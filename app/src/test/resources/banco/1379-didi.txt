@@ -1,0 +1,8 @@
+# errores_lector 1379 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$42.36
+$203.17
+o (7 min 2.1 km) Avenida Tabasco 118, Gil y Saenz, Centro
+o (13 min 4.5 km) Plaza Altabrisa Tabasco, Real del Sur,
+---
+tarifa=42.36 km=6.6 min=20

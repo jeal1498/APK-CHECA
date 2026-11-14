@@ -1,0 +1,9 @@
+# errores_lector 989 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$79.23 Ox1.7
+(5 min 1.9 km) Lindavista 3,
+(12 min 4.6 km) Primaria
+$87.48 Ox1.7
+(8 min 2.9 km) Circuito
+---
+tarifa=79.23 km=6.5 min=17

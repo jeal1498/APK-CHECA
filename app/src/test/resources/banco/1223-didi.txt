@@ -1,0 +1,9 @@
+# errores_lector 1223 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$48
+(16 min 8.9 km) ISSSTE Hospital General
+$59.90 Ox1.4
+(8 min 2.6 km) Manuel de La Pena & Calle
+(16 min7.1 km) Lote De Autos "Conteras",
+---
+tarifa=59.9 km=9.7 min=24

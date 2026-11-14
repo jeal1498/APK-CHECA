@@ -1,0 +1,9 @@
+# errores_lector 1363 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+Aceptar $41.00
+$42.00 $43.00 $45.00
+$64.12 ox1.7
+(9 min 3.3 km) Calle 49 N. 271,
+(9 min 4.9 km) Servicio de
+---
+tarifa=64.12 km=8.2 min=18

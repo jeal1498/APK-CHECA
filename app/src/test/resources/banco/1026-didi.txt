@@ -1,0 +1,14 @@
+# errores_lector 1026 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov).
+$29.28
+$60.51 ox1.4
+(12 min5.1 km) Laurel & Andador Grosella, Gaviotas Sur
+o (15 min 6.1 km) Mr Jeff, Gil y Saenz, Centro
+$27.28 Ox1.3
+(7 min 2.4 km) Universidad del Valle de México, Col del
+O (7 min 2.1 km) Rua Carlos & Francisco Segura Pérez,
+Aceptar $27.28
+$30.28
+$31.28
+---
+tarifa=60.51 km=11.2 min=27
