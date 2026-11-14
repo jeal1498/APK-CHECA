@@ -745,20 +745,9 @@ alter table public.coincidencias add column if not exists nivel text;
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values ('capturas', 'capturas', false, 500000, array['image/webp'])
 on conflict (id) do nothing;
--- 10.78: capturas de ofertas normales (`ok-<color>-<tarifa>-<km>-<min>-<hora>.webp`), máximo 100 por conductor
--- guardadas a la vez (además del tope de 100 en total que lleva la app).
-create or replace function public.capturas_ok_usadas() returns integer
-language sql stable security definer set search_path = public, storage as $$
-  select count(*)::int from storage.objects
-  where bucket_id = 'capturas' and name like 'ok-%' and owner_id = auth.uid()::text
-$$;
-revoke all on function public.capturas_ok_usadas() from public;
-grant execute on function public.capturas_ok_usadas() to authenticated;
 drop policy if exists "subir capturas" on storage.objects;
 create policy "subir capturas" on storage.objects
-  for insert to authenticated with check (
-    bucket_id = 'capturas' and (name not like 'ok-%' or public.capturas_ok_usadas() < 100)
-  );
+  for insert to authenticated with check (bucket_id = 'capturas');
 
 -- 10.77: reporte «Leyó mal» del conductor (errores_lector.tipo = 'reporte', sin IA: `ia` va vacío)
 -- y tablero de calidad del lector por versión de la app. Una fila por versión:
