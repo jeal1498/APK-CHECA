@@ -336,6 +336,7 @@ object Parser {
         // Una oferta siempre trae 2 tramos (recogida + viaje); con 1 aceptamos también.
         if (tramos == 0) return null
         if (esNavegacion(textos, moneda)) return null
+        if (esOfertaCaida(textos)) return null
         if (tramos < 2 && textos.count { rango.containsMatchIn(it) } >= 2 &&
             textos.none { r.aceptarMonto.containsMatchIn(it) }) return null
         // Uber: si los km no dan el «$/km est.», el OCR perdió un punto («70 km» = 7.0): manda el $/km.
@@ -390,6 +391,15 @@ object Parser {
         }
         return claves.size == 1 && !conParentesis
     }
+
+    private val ofertaCaida = Regex("""(?i)(solicitud\s+de\s+viaje\s+venci|solicitud\s+ya\s+no\s+est|ya\s+no\s+est[aá]\s+disponible|viaje\s+aceptado)""")
+
+    /**
+     * Una oferta que ya no está viva (14 nov, revisión de capturas de la 10.77: 22 de 251 pop-ups sobre
+     * pantallas así): «La solicitud de viaje venció», «La solicitud ya no está disponible» (el texto apagado
+     * de la tarjeta sigue en pantalla) o «Viaje aceptado». No se lee ni se rescata.
+     */
+    fun esOfertaCaida(textos: List<String>): Boolean = textos.any { ofertaCaida.containsMatchIn(it) }
 
     /** true si algún texto trae un monto (sin montos no es una oferta: p. ej. la navegación de un viaje). */
     fun tieneMonto(textos: List<String>, moneda: Moneda = Moneda.MXN): Boolean {
