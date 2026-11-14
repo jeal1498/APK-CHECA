@@ -814,5 +814,30 @@ insert into public.banco_lector (version, aciertos, total, nota, medido) values
   ('10.72', 175, 235, null, '2026-11-13'),
   ('10.74', 177, 235, 'La navegación ya no es oferta', '2026-11-13'),
   ('10.76', 185, 235, 'Navegación con el pop-up propio a la vista', '2026-11-13'),
-  ('10.77', 185, 235, 'Sin cambios en el lector', '2026-11-13')
+  ('10.77', 185, 235, 'Sin cambios en el lector', '2026-11-13'),
+  ('10.79', 271, 316, 'Banco de 316 con 81 casos de captura; tarjeta elegida en listas de DiDi', '2026-11-14')
 on conflict (version) do update set aciertos = excluded.aciertos, total = excluded.total, nota = excluded.nota, medido = excluded.medido;
+
+-- 10.80: capturas de ofertas normales con sus líneas. Cuando la revisión coincide y el teléfono va a
+-- subir la captura (`capturaOk`), se guarda aquí lo que leyó y la captura se llama `ok-…-n<id>.webp`.
+-- Así un error visto en la imagen se reproduce con las mismas líneas. Solo el servicio la lee.
+create table if not exists public.capturas_ok (
+  id          bigserial primary key,
+  usuario     uuid references auth.users (id) on delete cascade,
+  app         text,
+  moneda      text,
+  version     text,
+  lector      text,
+  lineas      jsonb not null,
+  local       jsonb not null,
+  ia          jsonb not null,
+  telefono    text,
+  android     text,
+  orientacion text,
+  zonas       boolean,
+  tarjetas    integer,
+  nivel       text,
+  creado      timestamptz not null default now()
+);
+alter table public.capturas_ok enable row level security;
+revoke all on public.capturas_ok from anon, authenticated;

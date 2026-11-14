@@ -60,7 +60,7 @@ En pantallas de DiDi con varias tarjetas (Centro de viajes, «Pon tu precio», r
 
 **Para qué:** hoy la respuesta correcta de cada caso del banco sale de texto y de juicios, no de la pantalla. Las capturas (desde la 10.72, WebP de la zona de Uber/DiDi) dejan confirmarla viendo la oferta real. El resultado es un banco nuevo y la precisión del lector en los casos dudosos.
 
-**Desde la 10.78** el almacén también trae capturas de ofertas normales, como `ok-<color>-<tarifa>-<km>-<min>-<hora>.webp` (lo que mostró el pop-up). No se enlazan con `errores_lector`.
+**Desde la 10.78** el almacén también trae capturas de ofertas normales, como `ok-<color>-<tarifa>-<km>-<min>-<hora>.webp` (lo que mostró el pop-up). **Desde la 10.80** terminan en `-n<id>`, que enlaza con la tabla `capturas_ok` (líneas, lectura y pantalla); así también entran al banco.
 
 **Qué se revisa:** todas las capturas de la versión más reciente que haya ese día. Solo existen para casos de `errores_lector` (diferencia, desacuerdo, rescate): no hay de las ofertas donde los lectores coincidieron, así que el número mide casos difíciles, no la precisión en todas las ofertas.
 

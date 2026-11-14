@@ -8,7 +8,7 @@ Lee CLAUDE.md y `docs/banco-lector.md`, y haz `git pull origin main`. Respuestas
 
 Ya están leídas todas las capturas de la versión VERSION (`pruebas/lector/vNN/resultados_haiku_vNN.json`: por captura `id` o `nombre`, `estado` (vigente, vencida, aceptada, sin_oferta), `tarifa`, `km`, `minutos`, `confianza`, `nota`). Hay dos grupos de capturas:
 - **Dudosas** (`<id>.webp`): enlazan con `errores_lector` (mismo id; columnas `lineas`, `local`, `ia`, `tipo`, `version`). Traen las líneas que leyó el teléfono.
-- **Normales** (`ok-<color>-<tarifa>-<km>-<min>-<hora>.webp`, color verde, amarillo o rojo): el nombre dice lo que mostró el pop-up. **No traen líneas**.
+- **Normales** (`ok-<color>-<tarifa>-<km>-<min>-<hora>-n<id>.webp`, color verde, amarillo o rojo): el nombre dice lo que mostró el pop-up. Desde la 10.80, `n<id>` enlaza con la tabla `capturas_ok` (mismas columnas que `errores_lector`: `lineas`, `local`, `ia`, …). Las de la 10.78–10.79 no traen `n<id>` ni líneas.
 
 No uses capturas con confianza «baja» ni las marcadas «verificar». Si la pantalla de la imagen no coincide con las líneas guardadas (la oferta cambió), la captura queda fuera.
 
@@ -23,7 +23,7 @@ Clasifica cada error en una categoría (tarifa de otra tarjeta o de un botón, k
 ## Paso 3: corregir, de la categoría más frecuente a la menos
 Por cada categoría:
 1. Mide antes: `docs/banco/calificar.sh` y `java -jar ~/.cache/checa-banco/banco.jar app/src/test/resources/ofertas /tmp/o.txt`.
-2. Agrega los casos: dudosas → `app/src/test/resources/banco/<id>-<app>.txt` (líneas guardadas, `---`, `tarifa= km= min=` o `nada`), solo si la respuesta se saca de esas líneas, sin duplicados. Normales (sin líneas) → no van al banco; si el error se entiende, escribe un caso en `ofertas/` con las líneas que se ven en la imagen (cortas, sin nombres ni direcciones completas) y di en el comentario que salió de la captura.
+2. Agrega los casos: dudosas → `app/src/test/resources/banco/<id>-<app>.txt` (líneas guardadas, `---`, `tarifa= km= min=` o `nada`), solo si la respuesta se saca de esas líneas, sin duplicados. Normales con `n<id>` → igual que las dudosas, con las líneas de `capturas_ok`. Normales sin `n<id>` → no van al banco; si el error se entiende, escribe un caso en `ofertas/` con las líneas que se ven en la imagen (cortas, sin nombres ni direcciones completas) y di en el comentario que salió de la captura.
 3. Arregla el código: `Parser.kt`, `Tarjetas.kt`, `LectorOcr.kt` o el revisor (`supabase/functions/confirmar-oferta/lector.ts` y su prompt; se despliega solo al subir a `main`, pruébalo con Node antes).
 4. Mide después: el banco no puede bajar en ningún caso que antes acertaba (compara las listas de fallas) y `ofertas/` queda en 100 % salvo la falla conocida con Java 21. Sube `banco/minimo.txt` y anota el marcador.
 5. Commit pequeño directo a `main` y revisa con GitHub MCP que «Compilar flavor play» pase.

@@ -393,5 +393,11 @@ Deno.serve(async (req) => {
       caso = await insertarId("errores_lector", { usuario: id, app, moneda, version, lineas, local, ia, lector, tipo: modo === "rescate" ? "rescate" : "diferencia", ...equipo, ...pantalla });
     }
   }
-  return json({ ok: true, coincide, ia, caso });
+  // 10.80: oferta normal cuya captura va a subir el teléfono: se guardan sus líneas con un número
+  // que va en el nombre de la captura («ok-…-n<id>.webp»).
+  let normal: number | null = null;
+  if (coincide && caso === null && cuerpo.capturaOk === true) {
+    normal = await insertarId("capturas_ok", { usuario: id, app, moneda, version, lector, lineas, local, ia, ...equipo, ...pantalla });
+  }
+  return json({ ok: true, coincide, ia, caso, normal });
 });

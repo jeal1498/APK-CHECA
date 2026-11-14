@@ -335,18 +335,23 @@ object Cuenta {
      * sin pasar de [MAX_CAPTURAS_OK] por cuenta (el servidor también lo limita). Se borra a los 7 días.
      */
     @Synchronized
-    fun subirCapturaOk(ctx: Context, nivel: String, o: Oferta, bytes: ByteArray) {
+    fun subirCapturaOk(ctx: Context, nivel: String, o: Oferta, bytes: ByteArray, normal: Long = 0L) {
         try {
-            val p = Prefs(ctx)
-            if (!p.diagnostico || !p.diagEnvioVisto) return
+            if (!quiereCapturaOk(ctx)) return
             val s = sp(ctx)
             val subidas = s.getInt("capt_ok", 0)
-            if (subidas >= MAX_CAPTURAS_OK) return
             val color = if (nivel == "verde" || nivel == "amarillo" || nivel == "rojo") nivel else "sin"
+            // 10.80: «-n<id>» enlaza la captura con sus líneas en la tabla capturas_ok.
             val nombre = "ok-$color-" + String.format(Locale.US, "%.2f-%.1f-%.0f", o.tarifa, o.km, o.min) +
-                "-" + System.currentTimeMillis() + ".webp"
+                "-" + System.currentTimeMillis() + (if (normal > 0L) "-n$normal" else "") + ".webp"
             if (subirImagen(ctx, nombre, bytes)) s.edit().putInt("capt_ok", subidas + 1).apply()
         } catch (_: Exception) { }
+    }
+
+    /** true si la próxima oferta normal puede mandar su captura (encendido, aviso visto, bajo el tope). */
+    fun quiereCapturaOk(ctx: Context): Boolean {
+        val p = Prefs(ctx)
+        return p.diagnostico && p.diagEnvioVisto && sp(ctx).getInt("capt_ok", 0) < MAX_CAPTURAS_OK
     }
 
     /** POST de una imagen WebP al almacén «capturas»; true si el servidor la aceptó. */

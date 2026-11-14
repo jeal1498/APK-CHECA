@@ -95,7 +95,7 @@ object Confirmador {
         if (caso <= 0L) {
             // 10.78: oferta normal (sin diferencia): captura con tope por conductor y el color del pop-up en el nombre.
             if (o != null && r.optBoolean("ok")) Guardado.tomarReciente(app)?.let {
-                Cuenta.subirCapturaOk(ctx, pant?.optString("nivel").orEmpty(), o, it)
+                Cuenta.subirCapturaOk(ctx, pant?.optString("nivel").orEmpty(), o, it, r.optLong("normal", 0L))
             }
             return
         }
@@ -318,6 +318,8 @@ object Confirmador {
                         .put("pantalla", pant ?: JSONObject.NULL)
                         .put("msRevisionAnterior", msRevision)
                         .put("local", local(o))
+                    // 10.80: si va a subir la captura de esta oferta, el servidor guarda sus líneas.
+                    if (otra == null && Cuenta.quiereCapturaOk(app0)) cuerpo.put("capturaOk", true)
                     if (otra != null) {
                         cuerpo.put("modo", "desacuerdo")
                             .put("lectorOtro", otra.lector)

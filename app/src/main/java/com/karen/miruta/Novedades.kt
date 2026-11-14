@@ -9,6 +9,9 @@ object Novedades {
     class Version(val codigo: Int, val nombre: String, val puntos: List<String>, val widgets: Boolean = false, val vistaQr: Boolean = false)
 
     val LISTA = listOf(
+        Version(160, "10.80", listOf(
+            "Las capturas de ofertas que mandas para mejorar la lectura ahora sirven para corregir errores con más precisión."
+        )),
         Version(159, "10.79", listOf(
             "En las listas de DiDi con varias ofertas, el pop-up lee la tarjeta correcta: ya no mezcla la tarifa de una con los kilómetros de otra.",
             "Kilómetros y minutos más exactos en Uber y DiDi."
