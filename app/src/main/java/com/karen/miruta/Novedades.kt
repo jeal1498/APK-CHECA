@@ -9,6 +9,9 @@ object Novedades {
     class Version(val codigo: Int, val nombre: String, val puntos: List<String>, val widgets: Boolean = false, val vistaQr: Boolean = false)
 
     val LISTA = listOf(
+        Version(158, "10.78", listOf(
+            "Checa puede mandar hasta 100 capturas de tus ofertas (verde, amarillo o rojo) para medir mejor la lectura. Lo apagas en Ayuda con la lectura › Guardar pantallas de ofertas."
+        )),
         Version(157, "10.77", listOf(
             "Nuevo: si el pop-up no coincide con la oferta, toca el aviso ⚠ de su esquina y lo revisamos."
         )),
