@@ -56,6 +56,8 @@ En pantallas de DiDi con varias tarjetas (Centro de viajes, «Pon tu precio», r
 
 ## Revisión con capturas (hecha 14 nov con la 10.77; repetir con la 10.79)
 
+**Después de leer las imágenes:** usar el prompt de `docs/banco/prompt-correccion.md` (medir, agrupar errores, corregir de más a menos frecuente, cerrar versión).
+
 **Para qué:** hoy la respuesta correcta de cada caso del banco sale de texto y de juicios, no de la pantalla. Las capturas (desde la 10.72, WebP de la zona de Uber/DiDi) dejan confirmarla viendo la oferta real. El resultado es un banco nuevo y la precisión del lector en los casos dudosos.
 
 **Desde la 10.78** el almacén también trae capturas de ofertas normales, como `ok-<color>-<tarifa>-<km>-<min>-<hora>.webp` (lo que mostró el pop-up). No se enlazan con `errores_lector`.
