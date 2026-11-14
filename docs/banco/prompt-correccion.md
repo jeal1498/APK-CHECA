@@ -10,10 +10,10 @@ Ya están leídas todas las capturas de la versión VERSION (`pruebas/lector/vNN
 - **Dudosas** (`<id>.webp`): enlazan con `errores_lector` (mismo id; columnas `lineas`, `local`, `ia`, `tipo`, `version`). Traen las líneas que leyó el teléfono.
 - **Normales** (`ok-<color>-<tarifa>-<km>-<min>-<hora>-n<id>.webp`, color verde, amarillo o rojo): el nombre dice lo que mostró el pop-up. Desde la 10.80, `n<id>` enlaza con la tabla `capturas_ok` (mismas columnas que `errores_lector`: `lineas`, `local`, `ia`, …). Las de la 10.78–10.79 no traen `n<id>` ni líneas.
 
-No uses capturas con confianza «baja» ni las marcadas «verificar». Si la pantalla de la imagen no coincide con las líneas guardadas (la oferta cambió), la captura queda fuera.
+Deben estar leídas **todas** las capturas de la 10.77 a la 10.80 (dudosas y normales); si falta alguna, léela antes de seguir. No uses capturas con confianza «baja» ni las marcadas «verificar». Si la pantalla de la imagen no coincide con las líneas guardadas (la oferta cambió), la captura queda fuera.
 
 ## Paso 1: medir (sin tocar código)
-1. Normales: compara lo que dice el nombre con lo que leyó Haiku. Saca el % de aciertos en tarifa, km y minutos, por color y en total, y cuántas eran ofertas vencidas, aceptadas o sin oferta (pop-up que no debía salir). Tolerancias de `Banco.kt`.
+1. Normales: compara lo que dice el nombre con lo que leyó Haiku. Cada una queda como acierto, error (tarifa, km o minutos) o **falso positivo** (no era oferta, estaba vencida o tomada, o era otra tarjeta); los falsos positivos se corrigen primero. Saca el % de aciertos en tarifa, km y minutos, por color y en total, y cuántas eran ofertas vencidas, aceptadas o sin oferta (pop-up que no debía salir). Tolerancias de `Banco.kt`.
 2. Dudosas: lo mismo, y quién acertó (lector, revisión de IA, los dos, ninguno, «no era oferta»).
 3. Anota los dos números en el marcador de `docs/banco-lector.md` como «Calle VERSION» (no se mezclan con el banco).
 
