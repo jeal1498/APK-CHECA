@@ -1,0 +1,12 @@
+# errores_lector 1219 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov). Minutos con el ícono del tramo leído como dígito.
+$32.20
+1.4 km
+$29.20 13%
+9 $2.00 de tarifa de dia feriado
+91min (66 m)
+95min (2 km)
+$31.20
+$33.20
+---
+tarifa=29.2 km=2.1 min=6

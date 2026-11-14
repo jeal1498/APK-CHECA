@@ -19,12 +19,12 @@ Tres números. Ninguno es opinión.
 | 10.77 | 185 de 235 | 78.7 (sin cambios en el lector) |
 | 10.79 | 192 de 235 | 81.7 (tarjeta elegida en listas de DiDi, resumen de Uber) |
 
-**Banco de 306 (desde la 10.79, 14 nov):** se sumaron 71 casos de la revisión de capturas de la 10.77 (Haiku 5.5 sobre la imagen; sin duplicados, sin confianza baja, solo los que se deducen de las líneas guardadas).
+**Banco de 316 (desde la 10.79, 14 nov):** se sumaron 81 casos de la revisión de capturas de la 10.77 (Haiku 5.5 sobre la imagen; sin duplicados, sin confianza baja, solo los que se deducen de las líneas guardadas).
 
 | Versión | Aciertos | % |
 |---|---|---|
-| 10.78 (lector de cf46798) | 214 de 306 | 69.9 |
-| 10.79 | 262 de 306 | 85.6 |
+| 10.78 (lector de cf46798) | 214 de 316 | 67.7 |
+| 10.79 | 271 de 316 | 85.8 |
 
 Medido aquí con Java 21. En Actions (Java 17) sale un acierto más: `0210-didi.txt` depende de cómo trata `\b` la «ó» de «canceló»; en Android también acierta.
 

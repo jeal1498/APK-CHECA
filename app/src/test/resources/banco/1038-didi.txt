@@ -1,0 +1,7 @@
+# errores_lector 1038 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov). Minutos con el ícono del tramo leído como dígito.
+$25.87
+62 min (323 m)
+410 min (2.5 km)
+---
+tarifa=25.87 km=2.8 min=12

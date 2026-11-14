@@ -1,0 +1,8 @@
+# errores_lector 995 · DiDi · 10.77 · diferencia
+# Respuesta confirmada con la captura (Haiku 5.5, revisión de la 10.77, 14 nov). Minutos con el ícono del tramo leído como dígito.
+A S99.20 *13x
+9 $22.90 de tarifa Más Répido
+65min (1.4 km)
+019 min (5.1 km)
+---
+tarifa=99.2 km=6.5 min=24

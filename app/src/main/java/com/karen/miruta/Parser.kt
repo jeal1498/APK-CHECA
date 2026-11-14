@@ -143,7 +143,7 @@ object Parser {
                 montoGrande = Regex("""^\s*(?:$num\s?(?:$sim)|$pre\s?$num)\s*$""")
             }
             aceptarMonto = Regex("""^\s*aceptar\s*$pre\s?$num""", RegexOption.IGNORE_CASE)
-            montoMulti = Regex("""^\s*$pre\s?$num\s+\S?\s?[1-4](?:[.,]\d{1,2})?\s?[x×X]\s*$""")
+            montoMulti = Regex("""^\s*$pre\s?$num\s*\S?\s?[1-4](?:[.,]\d{1,2})?\s?[x×X]\s*$""")
             lineaPopup = Regex("""(?:$sim)\s?\d+(?:[.,]\d)?\s?/\s?h""", RegexOption.IGNORE_CASE)
         }
 
@@ -167,7 +167,7 @@ object Parser {
     /** true si el texto es solo un monto (la tarifa grande del OCR). */
     fun esMontoSolo(t: String, m: Moneda = Moneda.MXN): Boolean = reglasDe(m).montoGrande.matches(t)
 
-    private val noTarifa = Regex("""(adicional|/km|/h|aceptar|considerar|rechazar|por inicio|propina|ganancia|hoy|semana|saldo|quedan|gasolina|netos|meta\s)""", RegexOption.IGNORE_CASE)
+    private val noTarifa = Regex("""(adicional|de\s+tarifa|/km|/h|aceptar|considerar|rechazar|por inicio|propina|ganancia|hoy|semana|saldo|quedan|gasolina|netos|meta\s)""", RegexOption.IGNORE_CASE)
 
     // "5min (1.7km)", "A 5 min (1.6 km)", "Viaje: 8 min (3.2 km)", "2min (720m)", "1 h 5 min (40 km)"
     // Uber nuevo (nov 2026): "8 min • 2.2 km", "1 h 20 min • 32.9 km" (sin paréntesis, con viñeta).
@@ -343,6 +343,21 @@ object Parser {
     // «$58,41», «$109,47»: el OCR leyó coma en vez de punto en la tarifa (14 nov, capturas 1035 y 1216).
     private val comaDecimal = Regex("""^(\s*\$\s?\d{1,4}),(\d{2})\s*$""")
 
+    /**
+     * DiDi (14 nov, capturas de la 10.77): el ícono verde o naranja del tramo se lee como un dígito
+     * pegado a los minutos («92min (654 m)» = 2 min, «410 min (2.5 km)» = 10 min, «46min (2.4 km)» = 6).
+     * Solo si empieza en 4, 6 o 9 y la velocidad es imposible (menos de 4 km/h) y sin ese dígito no.
+     */
+    private fun sinIcono(minutos: String, km: Double): Double? {
+        if (minutos.length < 2 || minutos[0] !in "469" || km <= 0) return null
+        val mi = minutos.toDoubleOrNull() ?: return null
+        val m1 = minutos.substring(1).toDoubleOrNull() ?: return null
+        if (m1 < 1) return null
+        val v0 = km * 60 / mi
+        val v1 = km * 60 / m1
+        return if (v0 < 4 && v1 <= 90 && (v1 >= 4 || m1 <= 3)) m1 else null
+    }
+
     fun analizar(entrada: List<String>, moneda: Moneda = Moneda.MXN): Oferta? {
         val textos = if (moneda.codigo == "MXN") entrada.map { comaDecimal.replace(it, "$1.$2") } else entrada
         val tarjeta = tarjetaElegida(textos, moneda) ?: return analizarLineas(textos, moneda)
@@ -360,6 +375,8 @@ object Parser {
         val lista = ArrayList<Triple<Double, Double, Boolean>>()
         var resPorKm = 0.0
         val vistos = HashSet<String>()
+        // Uber trae su «$/km est.»; el ícono del tramo leído como dígito es cosa de DiDi.
+        val esDidi = textos.none { porKmTexto.containsMatchIn(it) && it.contains("est", ignoreCase = true) }
         for (t in textos) {
             // "42 min (14.9 km) total" es un resumen (nuestro pop-up u otra app): no sumar.
             if (t.contains("total", ignoreCase = true)) continue
@@ -377,7 +394,7 @@ object Parser {
                 val esMetros = unidad.equals("m", ignoreCase = true) &&
                     !numero.contains('.') && !numero.contains(',') && d >= 30
                 val tramoKm = if (esMetros) d / 1000.0 else d
-                val tramoMin = h * 60.0 + mi
+                val tramoMin = if (h == 0.0 && esDidi) sinIcono(m.groupValues[2], tramoKm) ?: mi else h * 60.0 + mi
                 val resumen = porKm != null
                 if (resumen && porKm != null) resPorKm = porKm
                 lista.add(Triple(tramoKm, tramoMin, resumen))
@@ -490,14 +507,15 @@ object Parser {
 
     // Tolera lo que el OCR hace con estas frases (capturas 663–1199): «solcitud», «venció» pegado al
     // monto («$28.5la solcitud de viaje venció») o «disponible» pegado a un tramo («3min (0 disponible»).
-    private val ofertaCaida = Regex("""(?i)(viaje\s*venci|solicitud\s+ya\s+no|ya\s+no\s+est[aá]\s*disp|no\s+est[aá]\s+disponible)""")
+    private val ofertaCaida = Regex("""(?i)(viaje\s*venci|solicitud\s+ya\s+no|ya\s+no\s+est[aá]\s*disp|no\s+est[aá]\s+disponible|toma\s+por\s+terceros|otro\s+conductor\s+acept)""")
     private val viajeAceptado = Regex("""(?i)viaje\s+aceptado""")
     private val botonAceptar = Regex("""(?i)^\s*aceptar\b""")
 
     /**
      * Una oferta que ya no está viva (14 nov, revisión de capturas de la 10.77: 22 de 251 pop-ups sobre
      * pantallas así): «La solicitud de viaje venció», «La solicitud ya no está disponible» (el texto apagado
-     * de la tarjeta sigue en pantalla) o «Viaje aceptado». No se lee ni se rescata.
+     * de la tarjeta sigue en pantalla), «La solicitud se toma por terceros», «Otro conductor aceptó el viaje»
+     * o «Viaje aceptado». No se lee ni se rescata.
      * El OCR puede partir la frase en dos renglones: también se revisa cada par seguido.
      * «Viaje aceptado» solo cuenta sin botón «Aceptar» a la vista: si llega otra oferta mientras el
      * aviso sigue en pantalla, esa oferta sí se lee.
