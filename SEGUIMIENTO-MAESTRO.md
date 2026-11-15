@@ -49,7 +49,7 @@ L1–L4 **no sustituyen ni reordenan** el plan maestro E0–E7. Son cambios téc
 
 | Línea | Objetivo | Estado |
 |---|---|---|
-| **L1** | Corregir lectura Uber usando `tarifa ÷ $/km est.` con validaciones. | Preparada en rama local; revisión pendiente. No fusionada ni publicada. |
+| **L1** | Corregir lectura Uber usando `tarifa ÷ $/km est.` con validaciones. | **No aprobado para integración.** Revisión cruzada L1.1/L1.2 completada; los +7 casos provienen de etiquetas, no del parser. Etiquetas sin captura original; pruebas Android pendientes. Rama/commits intactos, sin push ni merge. |
 | **L2** | Vincular cada imagen al fotograma exacto de su lectura. | No iniciada. Depende de la instrumentación y de la evidencia histórica según el plan técnico. |
 | **L3** | Deduplicar sin descartar ofertas nuevas legítimas. | No iniciada. |
 | **L4** | Manejar DiDi con varias tarjetas: si no se identifica inequívocamente la tarjeta del botón «Aceptar», mostrar «Varias ofertas detectadas» sin semáforo, alerta, historial ni revisión; nunca mezclar tarjetas. | No iniciada. |
@@ -68,7 +68,7 @@ Estos commits fueron reportados como existentes **solo en el contenedor local de
 |---|---|---|---|
 | E1–E2 | `trabajo/e1-e2-esquema` | `2d46e07` | Pendiente |
 | E5 | `trabajo/e5-reproduccion` | `a5b4ac8` | Infraestructura revisada; integración/cierre pendiente |
-| L1 | `trabajo/l1-uber-est` | `251a8e6`, `37db333` | Pendiente |
+| L1 | `trabajo/l1-uber-est` | `251a8e6`, `37db333` | Revisión completada; **no aprobado para integración**. Sin cambios durante la revisión; mantener local e intacto. |
 | E4 | `trabajo/e4-veredictos` | `652b5eb` | Pendiente |
 
 No subir estas ramas ni abrir PRs hasta recibir autorización expresa y comprobar los efectos de workflows. No fusionar nada a `main` sin autorización.
@@ -107,6 +107,16 @@ Antes de que E3 llegue a producción deben estar aprobados el plan de datos, la 
 ## Registro de progreso y decisiones
 
 Añadir una entrada nueva al principio de esta sección por cada revisión o cambio. Registrar hechos comprobados y separar claramente lo reportado por Claude de lo verificado de forma independiente.
+
+### 2026-11-15 — Revisión cruzada L1.1/L1.2: no aprobado para integración
+- Sonnet reportó cuatro combinaciones sobre el banco de 316 casos: main/main = 277/316; main/etiquetas L1 = 284/316; parser L1/etiquetas L1 = 284/316; parser L1/etiquetas main = 277/316.
+- La diferencia de +7 se atribuye a L1.1 (cambios de etiquetas). L1.2 (Parser.kt) no cambió el resultado en esos 316 casos. Esto no demuestra que el parser sea correcto en Android ni que las etiquetas nuevas sean verdad de referencia.
+- Se reportaron 11 etiquetas modificadas; ninguna cuenta con captura original. La consistencia aritmética tarifa ÷ estimado es evidencia auxiliar, no sustituto de la verificación visual independiente.
+- Sonnet reportó cero regresiones entre los 277 casos previamente acertados y dos mejoras adicionales en una muestra de 20 casos extra. Persisten cuatro casos sin lectura.
+- Riesgos pendientes: interpretación de miles (por ejemplo, `$1,234/km est.` puede convertirse en 2.34), OCR real, NBSP, confusión de caracteres, punto decimal perdido, latencia, ofertas superiores a 10 km y DiDi en pantalla dividida. No se completaron pruebas en teléfono.
+- La revisión se realizó sin modificar código ni ramas. Los commits locales reportados siguen siendo `251a8e6` y `37db333`; no se verificó que estén en GitHub.
+- **Decisión:** L1 no aprobado para integración, push, PR, merge ni publicación. Conservar rama y commits intactos. No continuar corrigiendo L1 ni reetiquetar casos sin autorización específica. L1 permanece experimental y separado del orden maestro E0–E7.
+- **Prioridad vigente:** E0.1. No adelantar E1–E7 ni L1; esperar los artefactos sanitizados del respaldo para revisión.
 
 ### 2026-11-15 — Se fija el orden maestro y el estado de E5
 - Se confirma como orden obligatorio: E0 → E1 → E2 → E3 → E4 → E5 → E6 → E7.
