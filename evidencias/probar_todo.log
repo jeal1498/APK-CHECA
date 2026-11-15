@@ -1,0 +1,37 @@
+
+=== E0 respaldo (servidor simulado)
+Ran 64 tests in 47.716s
+
+OK
+
+=== E1–E7 Postgres local
+Ran 78 tests in 65.294s
+
+OK
+
+=== E2 contrato y manejador (Node)
+# pass 34
+# fail 0
+
+=== E3 núcleo Kotlin (JVM)
+15 ok, 0 fallan
+
+=== E3 TrazaAndroid contra stubs
+TrazaAndroid.kt compila contra stubs (sin errores)
+
+=== E3 guardia del lector
+ok    app/src/main/java/com/karen/miruta/Parser.kt
+ok    app/src/main/java/com/karen/miruta/Tarjetas.kt
+ok    app/src/main/java/com/karen/miruta/Moneda.kt
+
+=== Banco del lector
+ACIERTOS 271 de 316 (85.8 %)
+
+=== E6–E7 página (Playwright)
+# pass 8
+# fail 0
+
+=== D5 mensajes de commit de esta entrega
+6 commits revisados, 0 hallazgos.
+
+TODO OK

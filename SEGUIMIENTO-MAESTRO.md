@@ -1,6 +1,6 @@
 # Seguimiento maestro de Checa
 
-**Última actualización:** 15 de noviembre de 2026 (E0.1 preparado, sin respaldo real)  
+**Última actualización:** 15 de noviembre de 2026 (E0–E7 implementados y probados en local; ninguno cerrado; ver `EXPEDIENTE-E0-E7.md`)  
 **Repositorio:** `jeal1498/APK-CHECA`  
 **Propósito:** mantener el objetivo, el orden de ejecución, las decisiones y la evidencia de cada entrega en un único lugar. Actualizar este archivo cada vez que se revise o cierre una entrega.
 
@@ -24,14 +24,14 @@ El orden de ejecución y aceptación es **E0 → E1 → E2 → E3 → E4 → E5 
 
 | Entrega | Resultado que debe quedar | Estado al 15-11-2026 |
 |---|---|---|
-| **E0** | Banco histórico 10.77 respaldado y comprobado. | **En preparación (probado localmente con servidor simulado; revisión pendiente).** Scripts e instrucciones listos en la rama local `trabajo/e0-respaldo`, sin push. El respaldo real NO se ha ejecutado: faltan respaldo con la llave del propietario, verificación, dos copias cifradas y restauración de prueba desde la copia B. **Urgente:** las capturas de la 10.77 empiezan a expirar el 20-11-2026. |
-| **E1** | Migraciones y esquema de auditoría preparados. | Preparación reportada en rama local de Claude; pendiente de revisión y aceptación. No está en GitHub ni aplicada. |
-| **E2** | Servidor compatible con los nuevos registros. | Contrato TypeScript y pruebas preparados en la misma rama local de E1; aún no conectado a `index.ts`, pendiente de revisión. |
-| **E3** | Android 10.81 con trazabilidad completa. | No iniciado. Requiere definir y aprobar tratamiento de datos, redacción, retención y revisión del aviso de privacidad antes de producción. |
-| **E4** | Veredictos humanos e IA. | Preparación reportada en rama local; pendiente de revisión. La traducción de 309 veredictos no equivale a validación caso por caso. |
-| **E5** | Reproducción histórica y pruebas automáticas. | Infraestructura revisada y aprobada como mecanismo de regresión, no como prueba de precisión real en Android. La integración y aceptación formal dentro del orden maestro siguen pendientes hasta completar E3 y E4. |
-| **E6** | Checa Admin MVP. | No iniciado. |
-| **E7** | Dashboard completo y métricas confiables. | No iniciado. |
+| **E0** | Banco histórico 10.77 respaldado y comprobado. | **Probado localmente (E0.2); abierto.** D1–D5 corregidos (64 pruebas, 16/16 mutaciones). Solo lectura: 251/251 ids requeridos vivos y 21 ids 10.77 más (2026-11-15T21:16Z). Falta el respaldo real, dos copias cifradas y la restauración de B (propietario). **Expiran desde el 20-11-2026.** |
+| **E1** | Migraciones y esquema de auditoría preparados. | **Probado localmente (Postgres 16); revisión pendiente.** `auditoria/sql/001` (+ reversión). No aplicado en Supabase. |
+| **E2** | Servidor compatible con los nuevos registros. | **Probado localmente; revisión pendiente.** `002` + `supabase/functions/registrar-lectura` (contrato v1). No desplegado; `confirmar-oferta` sin cambios. |
+| **E3** | Android 10.81 con trazabilidad completa. | **Implementado; núcleo probado en JVM; Android sin compilar ni probar en teléfono.** Apagado por defecto. Lector sin cambios (guardia). Falta CI Android, teléfonos y aviso de privacidad. |
+| **E4** | Veredictos humanos e IA. | **Probado localmente; sin etiquetas humanas (bloqueo del propietario).** `003`, `auditoria/etiquetado/`. Banco: 0 humanos, 45 circulares. |
+| **E5** | Reproducción histórica y pruebas automáticas. | **Probado localmente; evaluación ciega ejecutada contra etiquetas heredadas.** Determinista, reconcilia con `Banco.kt`, 5/5 mutaciones del lector. |
+| **E6** | Checa Admin MVP. | **Probado localmente (SQL + Playwright simulado); no desplegado.** `004`, `admin/`. |
+| **E7** | Dashboard completo y métricas confiables. | **Probado localmente; no desplegado.** `005`; métricas recalculadas en Python coinciden. |
 
 ### Condiciones de cierre por entrega
 
@@ -107,6 +107,15 @@ Antes de que E3 llegue a producción deben estar aprobados el plan de datos, la 
 ## Registro de progreso y decisiones
 
 Añadir una entrada nueva al principio de esta sección por cada revisión o cambio. Registrar hechos comprobados y separar claramente lo reportado por Claude de lo verificado de forma independiente.
+
+### 2026-11-15 — E0.2 a E7: implementados y probados en local (ninguno cerrado)
+- **Estado anterior:** E0.1 preparado con D1–D5 detectados; E1–E7 sin código en GitHub (las ramas locales reportadas no existen).
+- **Trabajo realizado:** E0.2 (D1–D5 con regresiones); E1 esquema `auditoria`; E2 `registrar-lectura`; E3 trazabilidad 10.81 apagada; E4 veredictos y etiquetado humano; E5 reproducción y evaluación ciega; E6 Admin; E7 métricas. Rama local `claude/checa-e0-e7-complete-z2iimn`, commits `b4fdedf`…`751e7fa` (+ expediente). Sin push.
+- **Evidencia y pruebas:** 199 pruebas OK (`herramientas/probar_todo.sh`, `evidencias/`); consulta de solo lectura a Supabase para comparar ids (sin descargar nada).
+- **Limitaciones / riesgos:** Postgres 16 (no 17); sin SDK Android ni teléfono; sin etiquetas humanas; banco contaminado y con 45 casos circulares; un merge a `main` dispararía `build.yml` (release directo), `play-compilar.yml` y `supabase.yml`.
+- **Decisión del propietario:** pendiente (respaldo E0, push, aplicar migraciones, privacidad de E3, etiquetado humano).
+- **Siguiente paso autorizado:** ninguno; entrega a auditoría independiente con `EXPEDIENTE-E0-E7.md`.
+- **Cambios en producción / main / Supabase:** ninguno (solo una consulta `select` de ids y conteos).
 
 ### 2026-11-15 — E0.1: procedimiento de respaldo preparado y probado localmente (sin respaldo real)
 - **Estado anterior:** E0.1 pendiente; se hablaba de «scripts existentes».
