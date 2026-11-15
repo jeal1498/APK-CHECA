@@ -1,0 +1,27 @@
+test_anon_y_authenticated_no_acceden (test_migraciones.Migraciones.test_anon_y_authenticated_no_acceden) ... ok
+test_cascada_al_borrar_usuario (test_migraciones.Migraciones.test_cascada_al_borrar_usuario) ... ok
+test_contrato_ts_y_base_coinciden_en_cada_caso (test_migraciones.Migraciones.test_contrato_ts_y_base_coinciden_en_cada_caso) ... ok
+test_esquema_sql_se_puede_reaplicar_despues (test_migraciones.Migraciones.test_esquema_sql_se_puede_reaplicar_despues) ... ok
+test_expira_a_los_30_dias (test_migraciones.Migraciones.test_expira_a_los_30_dias) ... ok
+test_indices_esperados (test_migraciones.Migraciones.test_indices_esperados) ... ok
+test_lote_mixto_guarda_lo_valido (test_migraciones.Migraciones.test_lote_mixto_guarda_lo_valido) ... ok
+test_lote_vacio_o_grande_se_rechaza (test_migraciones.Migraciones.test_lote_vacio_o_grande_se_rechaza) ... ok
+test_migraciones_repetidas_no_fallan_ni_cambian_datos_previos (test_migraciones.Migraciones.test_migraciones_repetidas_no_fallan_ni_cambian_datos_previos) ... ok
+test_mismo_id_con_otro_contenido_es_conflicto_y_no_sobrescribe (test_migraciones.Migraciones.test_mismo_id_con_otro_contenido_es_conflicto_y_no_sobrescribe) ... ok
+test_mismo_id_de_otro_usuario_es_conflicto (test_migraciones.Migraciones.test_mismo_id_de_otro_usuario_es_conflicto) ... ok
+test_muestras_de_android_pasan_contrato_y_base (test_migraciones.Migraciones.test_muestras_de_android_pasan_contrato_y_base) ... ok
+test_oferta_valida_se_guarda (test_migraciones.Migraciones.test_oferta_valida_se_guarda) ... ok
+test_purga_no_esta_programada (test_migraciones.Migraciones.test_purga_no_esta_programada) ... ok
+test_purga_solo_lo_vencido (test_migraciones.Migraciones.test_purga_solo_lo_vencido) ... ok
+test_reintento_identico_es_repetido_y_no_duplica (test_migraciones.Migraciones.test_reintento_identico_es_repetido_y_no_duplica) ... ok
+test_restricciones_rechazan_datos_inconsistentes (test_migraciones.Migraciones.test_restricciones_rechazan_datos_inconsistentes) ... ok
+test_reversion_y_vuelta_a_aplicar (test_migraciones.Migraciones.test_reversion_y_vuelta_a_aplicar) ... ok
+test_service_role_no_lee_tablas_directamente_solo_por_funcion (test_migraciones.Migraciones.test_service_role_no_lee_tablas_directamente_solo_por_funcion) ... ok
+test_usuario_nulo_se_rechaza (test_migraciones.Migraciones.test_usuario_nulo_se_rechaza) ... ok
+test_varias_y_abstencion_sin_semaforo_si_se_guardan (test_migraciones.Migraciones.test_varias_y_abstencion_sin_semaforo_si_se_guardan) ... ok
+
+----------------------------------------------------------------------
+Ran 21 tests in 6.460s
+
+OK
+exit=0
