@@ -1,0 +1,6 @@
+# sintético: regla de plausibilidad ($/km > 80 no es oferta; Parser.plausible/analizar)
+$900.00
+1 min (0.5 km)
+2 min (0.6 km)
+---
+nada

@@ -38,7 +38,7 @@ def proporcion(k, n):
             "suficiente": n >= MIN_N}
 
 
-def categoria(pred, ref):
+def categoria(pred, ref, tol=None):
     """pred: {'resultado': 'oferta'|'nada'|'varias'|'abstencion', tarifa, km, min}; ref: {'clase', tarifa, km, min} o None."""
     if not ref or ref.get("clase") not in ("oferta", "no_oferta"):
         return "sin_referencia", []
@@ -49,17 +49,17 @@ def categoria(pred, ref):
         return ("falso_positivo", []) if r == "oferta" else ("verdadero_negativo", [])
     if r != "oferta":
         return "falso_negativo", []
-    malos = [c for c, t in TOL.items() if pred.get(c) is None or ref.get(c) is None or abs(float(pred[c]) - float(ref[c])) > t + 1e-9]
+    malos = [c for c, t in (tol or TOL).items() if pred.get(c) is None or ref.get(c) is None or abs(float(pred[c]) - float(ref[c])) > t + 1e-9]
     return ("acierto", []) if not malos else ("error_datos", malos)
 
 
-def resumir(pares):
+def resumir(pares, tol=None):
     """pares: lista de (caso, app, pred, ref). Devuelve métricas globales y por app."""
     def bloque(lista):
         c = {k: 0 for k in CATEGORIAS}
-        campos = {k: 0 for k in TOL}
+        campos = {k: 0 for k in (tol or TOL)}
         for _, _, p, r in lista:
-            cat, malos = categoria(p, r)
+            cat, malos = categoria(p, r, tol)
             c[cat] += 1
             for m in malos:
                 campos[m] += 1
@@ -76,7 +76,8 @@ def resumir(pares):
             "abstenciones": proporcion(c["abstencion"], evaluables),
         }
     apps = sorted({a for _, a, _, _ in pares})
-    return {"total": bloque(pares), "por_app": {a: bloque([x for x in pares if x[1] == a]) for a in apps}, "min_n": MIN_N}
+    return {"total": bloque(pares), "por_app": {a: bloque([x for x in pares if x[1] == a]) for a in apps}, "min_n": MIN_N,
+            "tolerancias": tol or TOL}
 
 
 def kappa(a, b):

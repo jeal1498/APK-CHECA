@@ -1,0 +1,1199 @@
+{
+  "aviso": "Etiquetas HEREDADAS (IA / lector / líneas), no humanas: esto es acuerdo con esas etiquetas, no exactitud.",
+  "fallas": [
+    "0010-uber",
+    "0012-uber",
+    "0035-uber",
+    "0044-uber",
+    "0055-uber",
+    "0056-uber",
+    "0063-uber",
+    "0064-uber",
+    "0068-uber",
+    "0069-uber",
+    "0073-uber",
+    "0079-uber",
+    "0096-uber",
+    "0099-uber",
+    "0105-uber",
+    "0111-uber",
+    "0114-uber",
+    "0116-uber",
+    "0117-uber",
+    "0121-uber",
+    "0125-uber",
+    "0129-uber",
+    "0130-uber",
+    "0132-uber",
+    "0137-uber",
+    "0141-uber",
+    "0142-uber",
+    "0164-uber",
+    "0210-didi",
+    "0230-didi",
+    "0249-uber",
+    "0258-didi",
+    "0293-uber",
+    "0295-uber",
+    "0296-uber",
+    "0297-uber",
+    "0300-uber",
+    "0304-uber",
+    "0305-uber",
+    "0309-uber",
+    "0887-didi",
+    "0896-didi",
+    "0901-uber",
+    "0995-didi",
+    "1377-didi",
+    "of_didi-pasajero-cancelo"
+  ],
+  "por_app": {
+    "didi": {
+      "acuerdo_banco": {
+        "ic95": [
+          0.9152,
+          0.9774
+        ],
+        "k": 173,
+        "n": 181,
+        "suficiente": true,
+        "valor": 0.9558
+      },
+      "categorias": {
+        "abstenciones": {
+          "ic95": [
+            0.0,
+            0.0208
+          ],
+          "k": 0,
+          "n": 181,
+          "suficiente": true,
+          "valor": 0.0
+        },
+        "conteos": {
+          "abstencion": 0,
+          "acierto": 146,
+          "error_datos": 3,
+          "falso_negativo": 1,
+          "falso_positivo": 4,
+          "sin_referencia": 0,
+          "verdadero_negativo": 27
+        },
+        "errores_por_campo": {
+          "km": 3,
+          "min": 2,
+          "tarifa": 0
+        },
+        "evaluables": 181,
+        "exactitud": {
+          "ic95": [
+            0.9152,
+            0.9774
+          ],
+          "k": 173,
+          "n": 181,
+          "suficiente": true,
+          "valor": 0.9558
+        },
+        "precision_ofertas": {
+          "ic95": [
+            0.9086,
+            0.9777
+          ],
+          "k": 146,
+          "n": 153,
+          "suficiente": true,
+          "valor": 0.9542
+        },
+        "tasa_fn": {
+          "ic95": [
+            0.0012,
+            0.0368
+          ],
+          "k": 1,
+          "n": 150,
+          "suficiente": true,
+          "valor": 0.0067
+        },
+        "tasa_fp": {
+          "ic95": [
+            0.0513,
+            0.2885
+          ],
+          "k": 4,
+          "n": 31,
+          "suficiente": true,
+          "valor": 0.129
+        }
+      },
+      "n": 181
+    },
+    "otra": {
+      "acuerdo_banco": {
+        "ic95": [
+          0.7225,
+          1.0
+        ],
+        "k": 10,
+        "n": 10,
+        "suficiente": false,
+        "valor": 1.0
+      },
+      "categorias": {
+        "abstenciones": {
+          "ic95": [
+            0.0,
+            0.2775
+          ],
+          "k": 0,
+          "n": 10,
+          "suficiente": false,
+          "valor": 0.0
+        },
+        "conteos": {
+          "abstencion": 0,
+          "acierto": 5,
+          "error_datos": 0,
+          "falso_negativo": 0,
+          "falso_positivo": 0,
+          "sin_referencia": 0,
+          "verdadero_negativo": 5
+        },
+        "errores_por_campo": {
+          "km": 0,
+          "min": 0,
+          "tarifa": 0
+        },
+        "evaluables": 10,
+        "exactitud": {
+          "ic95": [
+            0.7225,
+            1.0
+          ],
+          "k": 10,
+          "n": 10,
+          "suficiente": false,
+          "valor": 1.0
+        },
+        "precision_ofertas": {
+          "ic95": [
+            0.5655,
+            1.0
+          ],
+          "k": 5,
+          "n": 5,
+          "suficiente": false,
+          "valor": 1.0
+        },
+        "tasa_fn": {
+          "ic95": [
+            0.0,
+            0.4345
+          ],
+          "k": 0,
+          "n": 5,
+          "suficiente": false,
+          "valor": 0.0
+        },
+        "tasa_fp": {
+          "ic95": [
+            0.0,
+            0.4345
+          ],
+          "k": 0,
+          "n": 5,
+          "suficiente": false,
+          "valor": 0.0
+        }
+      },
+      "n": 10
+    },
+    "uber": {
+      "acuerdo_banco": {
+        "ic95": [
+          0.7145,
+          0.8366
+        ],
+        "k": 136,
+        "n": 174,
+        "suficiente": true,
+        "valor": 0.7816
+      },
+      "categorias": {
+        "abstenciones": {
+          "ic95": [
+            0.0,
+            0.0216
+          ],
+          "k": 0,
+          "n": 174,
+          "suficiente": true,
+          "valor": 0.0
+        },
+        "conteos": {
+          "abstencion": 0,
+          "acierto": 111,
+          "error_datos": 14,
+          "falso_negativo": 23,
+          "falso_positivo": 1,
+          "sin_referencia": 0,
+          "verdadero_negativo": 25
+        },
+        "errores_por_campo": {
+          "km": 10,
+          "min": 11,
+          "tarifa": 1
+        },
+        "evaluables": 174,
+        "exactitud": {
+          "ic95": [
+            0.7145,
+            0.8366
+          ],
+          "k": 136,
+          "n": 174,
+          "suficiente": true,
+          "valor": 0.7816
+        },
+        "precision_ofertas": {
+          "ic95": [
+            0.8128,
+            0.9265
+          ],
+          "k": 111,
+          "n": 126,
+          "suficiente": true,
+          "valor": 0.881
+        },
+        "tasa_fn": {
+          "ic95": [
+            0.1058,
+            0.2224
+          ],
+          "k": 23,
+          "n": 148,
+          "suficiente": true,
+          "valor": 0.1554
+        },
+        "tasa_fp": {
+          "ic95": [
+            0.0068,
+            0.1889
+          ],
+          "k": 1,
+          "n": 26,
+          "suficiente": false,
+          "valor": 0.0385
+        }
+      },
+      "n": 174
+    }
+  },
+  "por_corpus": {
+    "banco": {
+      "acuerdo_banco": {
+        "ic95": [
+          0.8148,
+          0.8918
+        ],
+        "k": 271,
+        "n": 316,
+        "suficiente": true,
+        "valor": 0.8576
+      },
+      "categorias": {
+        "abstenciones": {
+          "ic95": [
+            0.0,
+            0.012
+          ],
+          "k": 0,
+          "n": 316,
+          "suficiente": true,
+          "valor": 0.0
+        },
+        "conteos": {
+          "abstencion": 0,
+          "acierto": 233,
+          "error_datos": 17,
+          "falso_negativo": 24,
+          "falso_positivo": 4,
+          "sin_referencia": 0,
+          "verdadero_negativo": 38
+        },
+        "errores_por_campo": {
+          "km": 13,
+          "min": 13,
+          "tarifa": 1
+        },
+        "evaluables": 316,
+        "exactitud": {
+          "ic95": [
+            0.8148,
+            0.8918
+          ],
+          "k": 271,
+          "n": 316,
+          "suficiente": true,
+          "valor": 0.8576
+        },
+        "precision_ofertas": {
+          "ic95": [
+            0.8769,
+            0.9453
+          ],
+          "k": 233,
+          "n": 254,
+          "suficiente": true,
+          "valor": 0.9173
+        },
+        "tasa_fn": {
+          "ic95": [
+            0.0596,
+            0.127
+          ],
+          "k": 24,
+          "n": 274,
+          "suficiente": true,
+          "valor": 0.0876
+        },
+        "tasa_fp": {
+          "ic95": [
+            0.0377,
+            0.2207
+          ],
+          "k": 4,
+          "n": 42,
+          "suficiente": true,
+          "valor": 0.0952
+        }
+      },
+      "n": 316
+    },
+    "of": {
+      "acuerdo_banco": {
+        "ic95": [
+          0.8843,
+          0.9961
+        ],
+        "k": 44,
+        "n": 45,
+        "suficiente": true,
+        "valor": 0.9778
+      },
+      "categorias": {
+        "abstenciones": {
+          "ic95": [
+            0.0,
+            0.0787
+          ],
+          "k": 0,
+          "n": 45,
+          "suficiente": true,
+          "valor": 0.0
+        },
+        "conteos": {
+          "abstencion": 0,
+          "acierto": 28,
+          "error_datos": 0,
+          "falso_negativo": 0,
+          "falso_positivo": 1,
+          "sin_referencia": 0,
+          "verdadero_negativo": 16
+        },
+        "errores_por_campo": {
+          "km": 0,
+          "min": 0,
+          "tarifa": 0
+        },
+        "evaluables": 45,
+        "exactitud": {
+          "ic95": [
+            0.8843,
+            0.9961
+          ],
+          "k": 44,
+          "n": 45,
+          "suficiente": true,
+          "valor": 0.9778
+        },
+        "precision_ofertas": {
+          "ic95": [
+            0.8282,
+            0.9939
+          ],
+          "k": 28,
+          "n": 29,
+          "suficiente": false,
+          "valor": 0.9655
+        },
+        "tasa_fn": {
+          "ic95": [
+            0.0,
+            0.1206
+          ],
+          "k": 0,
+          "n": 28,
+          "suficiente": false,
+          "valor": 0.0
+        },
+        "tasa_fp": {
+          "ic95": [
+            0.0105,
+            0.2698
+          ],
+          "k": 1,
+          "n": 17,
+          "suficiente": false,
+          "valor": 0.0588
+        }
+      },
+      "n": 45
+    },
+    "sint": {
+      "acuerdo_banco": {
+        "ic95": [
+          0.5101,
+          1.0
+        ],
+        "k": 4,
+        "n": 4,
+        "suficiente": false,
+        "valor": 1.0
+      },
+      "categorias": {
+        "abstenciones": {
+          "ic95": [
+            0.0,
+            0.4899
+          ],
+          "k": 0,
+          "n": 4,
+          "suficiente": false,
+          "valor": 0.0
+        },
+        "conteos": {
+          "abstencion": 0,
+          "acierto": 1,
+          "error_datos": 0,
+          "falso_negativo": 0,
+          "falso_positivo": 0,
+          "sin_referencia": 0,
+          "verdadero_negativo": 3
+        },
+        "errores_por_campo": {
+          "km": 0,
+          "min": 0,
+          "tarifa": 0
+        },
+        "evaluables": 4,
+        "exactitud": {
+          "ic95": [
+            0.5101,
+            1.0
+          ],
+          "k": 4,
+          "n": 4,
+          "suficiente": false,
+          "valor": 1.0
+        },
+        "precision_ofertas": {
+          "ic95": [
+            0.2065,
+            1.0
+          ],
+          "k": 1,
+          "n": 1,
+          "suficiente": false,
+          "valor": 1.0
+        },
+        "tasa_fn": {
+          "ic95": [
+            0.0,
+            0.7935
+          ],
+          "k": 0,
+          "n": 1,
+          "suficiente": false,
+          "valor": 0.0
+        },
+        "tasa_fp": {
+          "ic95": [
+            0.0,
+            0.5615
+          ],
+          "k": 0,
+          "n": 3,
+          "suficiente": false,
+          "valor": 0.0
+        }
+      },
+      "n": 4
+    }
+  },
+  "por_origen": {
+    "captura_haiku_10_77": {
+      "acuerdo_banco": {
+        "ic95": [
+          0.9144,
+          0.9932
+        ],
+        "k": 79,
+        "n": 81,
+        "suficiente": true,
+        "valor": 0.9753
+      },
+      "categorias": {
+        "abstenciones": {
+          "ic95": [
+            0.0,
+            0.0453
+          ],
+          "k": 0,
+          "n": 81,
+          "suficiente": true,
+          "valor": 0.0
+        },
+        "conteos": {
+          "abstencion": 0,
+          "acierto": 79,
+          "error_datos": 1,
+          "falso_negativo": 1,
+          "falso_positivo": 0,
+          "sin_referencia": 0,
+          "verdadero_negativo": 0
+        },
+        "errores_por_campo": {
+          "km": 1,
+          "min": 1,
+          "tarifa": 0
+        },
+        "evaluables": 81,
+        "exactitud": {
+          "ic95": [
+            0.9144,
+            0.9932
+          ],
+          "k": 79,
+          "n": 81,
+          "suficiente": true,
+          "valor": 0.9753
+        },
+        "precision_ofertas": {
+          "ic95": [
+            0.9325,
+            0.9978
+          ],
+          "k": 79,
+          "n": 80,
+          "suficiente": true,
+          "valor": 0.9875
+        },
+        "tasa_fn": {
+          "ic95": [
+            0.0022,
+            0.0667
+          ],
+          "k": 1,
+          "n": 81,
+          "suficiente": true,
+          "valor": 0.0123
+        },
+        "tasa_fp": {
+          "ic95": null,
+          "k": 0,
+          "n": 0,
+          "suficiente": false,
+          "valor": null
+        }
+      },
+      "n": 81
+    },
+    "lector_propio_ia_mal": {
+      "acuerdo_banco": {
+        "ic95": [
+          0.7122,
+          0.9225
+        ],
+        "k": 38,
+        "n": 45,
+        "suficiente": true,
+        "valor": 0.8444
+      },
+      "categorias": {
+        "abstenciones": {
+          "ic95": [
+            0.0,
+            0.0787
+          ],
+          "k": 0,
+          "n": 45,
+          "suficiente": true,
+          "valor": 0.0
+        },
+        "conteos": {
+          "abstencion": 0,
+          "acierto": 38,
+          "error_datos": 1,
+          "falso_negativo": 6,
+          "falso_positivo": 0,
+          "sin_referencia": 0,
+          "verdadero_negativo": 0
+        },
+        "errores_por_campo": {
+          "km": 1,
+          "min": 0,
+          "tarifa": 0
+        },
+        "evaluables": 45,
+        "exactitud": {
+          "ic95": [
+            0.7122,
+            0.9225
+          ],
+          "k": 38,
+          "n": 45,
+          "suficiente": true,
+          "valor": 0.8444
+        },
+        "precision_ofertas": {
+          "ic95": [
+            0.8682,
+            0.9955
+          ],
+          "k": 38,
+          "n": 39,
+          "suficiente": true,
+          "valor": 0.9744
+        },
+        "tasa_fn": {
+          "ic95": [
+            0.0626,
+            0.2618
+          ],
+          "k": 6,
+          "n": 45,
+          "suficiente": true,
+          "valor": 0.1333
+        },
+        "tasa_fp": {
+          "ic95": null,
+          "k": 0,
+          "n": 0,
+          "suficiente": false,
+          "valor": null
+        }
+      },
+      "n": 45
+    },
+    "lineas_revision_manual": {
+      "acuerdo_banco": {
+        "ic95": [
+          0.4974,
+          0.9182
+        ],
+        "k": 10,
+        "n": 13,
+        "suficiente": false,
+        "valor": 0.7692
+      },
+      "categorias": {
+        "abstenciones": {
+          "ic95": [
+            0.0,
+            0.2281
+          ],
+          "k": 0,
+          "n": 13,
+          "suficiente": false,
+          "valor": 0.0
+        },
+        "conteos": {
+          "abstencion": 0,
+          "acierto": 5,
+          "error_datos": 2,
+          "falso_negativo": 0,
+          "falso_positivo": 1,
+          "sin_referencia": 0,
+          "verdadero_negativo": 5
+        },
+        "errores_por_campo": {
+          "km": 2,
+          "min": 2,
+          "tarifa": 0
+        },
+        "evaluables": 13,
+        "exactitud": {
+          "ic95": [
+            0.4974,
+            0.9182
+          ],
+          "k": 10,
+          "n": 13,
+          "suficiente": false,
+          "valor": 0.7692
+        },
+        "precision_ofertas": {
+          "ic95": [
+            0.3057,
+            0.8632
+          ],
+          "k": 5,
+          "n": 8,
+          "suficiente": false,
+          "valor": 0.625
+        },
+        "tasa_fn": {
+          "ic95": [
+            0.0,
+            0.3543
+          ],
+          "k": 0,
+          "n": 7,
+          "suficiente": false,
+          "valor": 0.0
+        },
+        "tasa_fp": {
+          "ic95": [
+            0.0301,
+            0.5635
+          ],
+          "k": 1,
+          "n": 6,
+          "suficiente": false,
+          "valor": 0.1667
+        }
+      },
+      "n": 13
+    },
+    "pruebas_ofertas": {
+      "acuerdo_banco": {
+        "ic95": [
+          0.8843,
+          0.9961
+        ],
+        "k": 44,
+        "n": 45,
+        "suficiente": true,
+        "valor": 0.9778
+      },
+      "categorias": {
+        "abstenciones": {
+          "ic95": [
+            0.0,
+            0.0787
+          ],
+          "k": 0,
+          "n": 45,
+          "suficiente": true,
+          "valor": 0.0
+        },
+        "conteos": {
+          "abstencion": 0,
+          "acierto": 28,
+          "error_datos": 0,
+          "falso_negativo": 0,
+          "falso_positivo": 1,
+          "sin_referencia": 0,
+          "verdadero_negativo": 16
+        },
+        "errores_por_campo": {
+          "km": 0,
+          "min": 0,
+          "tarifa": 0
+        },
+        "evaluables": 45,
+        "exactitud": {
+          "ic95": [
+            0.8843,
+            0.9961
+          ],
+          "k": 44,
+          "n": 45,
+          "suficiente": true,
+          "valor": 0.9778
+        },
+        "precision_ofertas": {
+          "ic95": [
+            0.8282,
+            0.9939
+          ],
+          "k": 28,
+          "n": 29,
+          "suficiente": false,
+          "valor": 0.9655
+        },
+        "tasa_fn": {
+          "ic95": [
+            0.0,
+            0.1206
+          ],
+          "k": 0,
+          "n": 28,
+          "suficiente": false,
+          "valor": 0.0
+        },
+        "tasa_fp": {
+          "ic95": [
+            0.0105,
+            0.2698
+          ],
+          "k": 1,
+          "n": 17,
+          "suficiente": false,
+          "valor": 0.0588
+        }
+      },
+      "n": 45
+    },
+    "revision_ia_ia_bien": {
+      "acuerdo_banco": {
+        "ic95": [
+          0.7497,
+          0.8641
+        ],
+        "k": 144,
+        "n": 177,
+        "suficiente": true,
+        "valor": 0.8136
+      },
+      "categorias": {
+        "abstenciones": {
+          "ic95": [
+            0.0,
+            0.0212
+          ],
+          "k": 0,
+          "n": 177,
+          "suficiente": true,
+          "valor": 0.0
+        },
+        "conteos": {
+          "abstencion": 0,
+          "acierto": 111,
+          "error_datos": 13,
+          "falso_negativo": 17,
+          "falso_positivo": 3,
+          "sin_referencia": 0,
+          "verdadero_negativo": 33
+        },
+        "errores_por_campo": {
+          "km": 9,
+          "min": 10,
+          "tarifa": 1
+        },
+        "evaluables": 177,
+        "exactitud": {
+          "ic95": [
+            0.7497,
+            0.8641
+          ],
+          "k": 144,
+          "n": 177,
+          "suficiente": true,
+          "valor": 0.8136
+        },
+        "precision_ofertas": {
+          "ic95": [
+            0.8051,
+            0.9209
+          ],
+          "k": 111,
+          "n": 127,
+          "suficiente": true,
+          "valor": 0.874
+        },
+        "tasa_fn": {
+          "ic95": [
+            0.0767,
+            0.1846
+          ],
+          "k": 17,
+          "n": 141,
+          "suficiente": true,
+          "valor": 0.1206
+        },
+        "tasa_fp": {
+          "ic95": [
+            0.0287,
+            0.2183
+          ],
+          "k": 3,
+          "n": 36,
+          "suficiente": true,
+          "valor": 0.0833
+        }
+      },
+      "n": 177
+    },
+    "sintetico_regla": {
+      "acuerdo_banco": {
+        "ic95": [
+          0.5101,
+          1.0
+        ],
+        "k": 4,
+        "n": 4,
+        "suficiente": false,
+        "valor": 1.0
+      },
+      "categorias": {
+        "abstenciones": {
+          "ic95": [
+            0.0,
+            0.4899
+          ],
+          "k": 0,
+          "n": 4,
+          "suficiente": false,
+          "valor": 0.0
+        },
+        "conteos": {
+          "abstencion": 0,
+          "acierto": 1,
+          "error_datos": 0,
+          "falso_negativo": 0,
+          "falso_positivo": 0,
+          "sin_referencia": 0,
+          "verdadero_negativo": 3
+        },
+        "errores_por_campo": {
+          "km": 0,
+          "min": 0,
+          "tarifa": 0
+        },
+        "evaluables": 4,
+        "exactitud": {
+          "ic95": [
+            0.5101,
+            1.0
+          ],
+          "k": 4,
+          "n": 4,
+          "suficiente": false,
+          "valor": 1.0
+        },
+        "precision_ofertas": {
+          "ic95": [
+            0.2065,
+            1.0
+          ],
+          "k": 1,
+          "n": 1,
+          "suficiente": false,
+          "valor": 1.0
+        },
+        "tasa_fn": {
+          "ic95": [
+            0.0,
+            0.7935
+          ],
+          "k": 0,
+          "n": 1,
+          "suficiente": false,
+          "valor": 0.0
+        },
+        "tasa_fp": {
+          "ic95": [
+            0.0,
+            0.5615
+          ],
+          "k": 0,
+          "n": 3,
+          "suficiente": false,
+          "valor": 0.0
+        }
+      },
+      "n": 4
+    }
+  },
+  "registro": {
+    "pasos": [
+      {
+        "etiquetas_sha256": "68bc474b13a92e98270f11f390e73cb6f9fa63d793bff030db62b4b7894dc5fd",
+        "n": 365,
+        "paso": "sellar",
+        "utc": "2026-11-15T21:46:47Z"
+      },
+      {
+        "corrida": {
+          "entradas_sha256": "ce506cbe946e1641f2e2f13e061f5cf67840c91f95ee490c52c696bfe02091ed",
+          "fuentes_sha256": {
+            "Moneda": "4a68ed308ec2e954c8d37e9cdf6586e13b5a5afa85720b0dc2022f634548810b",
+            "Parser": "9d201d23824828df9e77e659ae322a9d30c0ebd68abd6c9ecca1ecf76cb5181e",
+            "Tarjetas": "faf07be8f812ff83e078bcd68ecdff81b36cf1b9798dacf8485ede215391705a"
+          },
+          "java": "openjdk version \"21.0.12.1\" 2026-08-18",
+          "kotlinc": "1.9.24",
+          "n_entradas": 365,
+          "predicciones_sha256": "9534b19e2a8920bf7256ee9ac5b67311611f90b8f5eb0dacd5eda201d164d4ff",
+          "ref": "actual"
+        },
+        "paso": "comprometer",
+        "predicciones_sha256": "9534b19e2a8920bf7256ee9ac5b67311611f90b8f5eb0dacd5eda201d164d4ff",
+        "utc": "2026-11-15T21:47:00Z"
+      }
+    ]
+  },
+  "sin_circulares": {
+    "acuerdo_banco": {
+      "ic95": [
+        0.8377,
+        0.9096
+      ],
+      "k": 281,
+      "n": 320,
+      "suficiente": true,
+      "valor": 0.8781
+    },
+    "categorias": {
+      "abstenciones": {
+        "ic95": [
+          0.0,
+          0.0119
+        ],
+        "k": 0,
+        "n": 320,
+        "suficiente": true,
+        "valor": 0.0
+      },
+      "conteos": {
+        "abstencion": 0,
+        "acierto": 224,
+        "error_datos": 16,
+        "falso_negativo": 18,
+        "falso_positivo": 5,
+        "sin_referencia": 0,
+        "verdadero_negativo": 57
+      },
+      "errores_por_campo": {
+        "km": 12,
+        "min": 13,
+        "tarifa": 1
+      },
+      "evaluables": 320,
+      "exactitud": {
+        "ic95": [
+          0.8377,
+          0.9096
+        ],
+        "k": 281,
+        "n": 320,
+        "suficiente": true,
+        "valor": 0.8781
+      },
+      "precision_ofertas": {
+        "ic95": [
+          0.8725,
+          0.9433
+        ],
+        "k": 224,
+        "n": 245,
+        "suficiente": true,
+        "valor": 0.9143
+      },
+      "tasa_fn": {
+        "ic95": [
+          0.0446,
+          0.1076
+        ],
+        "k": 18,
+        "n": 258,
+        "suficiente": true,
+        "valor": 0.0698
+      },
+      "tasa_fp": {
+        "ic95": [
+          0.0349,
+          0.1753
+        ],
+        "k": 5,
+        "n": 62,
+        "suficiente": true,
+        "valor": 0.0806
+      }
+    },
+    "n": 320
+  },
+  "total": {
+    "acuerdo_banco": {
+      "ic95": [
+        0.836,
+        0.9042
+      ],
+      "k": 319,
+      "n": 365,
+      "suficiente": true,
+      "valor": 0.874
+    },
+    "categorias": {
+      "abstenciones": {
+        "ic95": [
+          0.0,
+          0.0104
+        ],
+        "k": 0,
+        "n": 365,
+        "suficiente": true,
+        "valor": 0.0
+      },
+      "conteos": {
+        "abstencion": 0,
+        "acierto": 262,
+        "error_datos": 17,
+        "falso_negativo": 24,
+        "falso_positivo": 5,
+        "sin_referencia": 0,
+        "verdadero_negativo": 57
+      },
+      "errores_por_campo": {
+        "km": 13,
+        "min": 13,
+        "tarifa": 1
+      },
+      "evaluables": 365,
+      "exactitud": {
+        "ic95": [
+          0.836,
+          0.9042
+        ],
+        "k": 319,
+        "n": 365,
+        "suficiente": true,
+        "valor": 0.874
+      },
+      "precision_ofertas": {
+        "ic95": [
+          0.8855,
+          0.9483
+        ],
+        "k": 262,
+        "n": 284,
+        "suficiente": true,
+        "valor": 0.9225
+      },
+      "tasa_fn": {
+        "ic95": [
+          0.0538,
+          0.1151
+        ],
+        "k": 24,
+        "n": 303,
+        "suficiente": true,
+        "valor": 0.0792
+      },
+      "tasa_fp": {
+        "ic95": [
+          0.0349,
+          0.1753
+        ],
+        "k": 5,
+        "n": 62,
+        "suficiente": true,
+        "valor": 0.0806
+      }
+    },
+    "n": 365
+  }
+}
