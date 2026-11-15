@@ -1,0 +1,5 @@
+ 177  revision_ia_ia_bien
+  81  captura_haiku_10_77
+  45  lector_propio_ia_mal
+  13  lineas_revision_manual
+316 casos; humano verificado: 0; circulares: 45

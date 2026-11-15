@@ -1,0 +1,32 @@
+test_cascada_desde_la_lectura_si_borra (test_e4_veredictos.E4.test_cascada_desde_la_lectura_si_borra) ... ok
+test_desacuerdo_humano_no_se_fuerza (test_e4_veredictos.E4.test_desacuerdo_humano_no_se_fuerza) ... ok
+test_humano_valida_solo_con_captura_y_guia (test_e4_veredictos.E4.test_humano_valida_solo_con_captura_y_guia) ... ok
+test_ia_y_heredado_no_pueden_validar (test_e4_veredictos.E4.test_ia_y_heredado_no_pueden_validar) ... ok
+test_importacion_idempotente_y_reversible (test_e4_veredictos.E4.test_importacion_idempotente_y_reversible) ... ok
+test_importacion_marca_heredado_y_no_toca_el_original (test_e4_veredictos.E4.test_importacion_marca_heredado_y_no_toca_el_original) ... ok
+test_importacion_traduce_segun_el_veredicto (test_e4_veredictos.E4.test_importacion_traduce_segun_el_veredicto) ... ok
+test_mismo_revisor_no_repite_sin_sustituir (test_e4_veredictos.E4.test_mismo_revisor_no_repite_sin_sustituir) ... ok
+test_no_se_editan_ni_se_borran (test_e4_veredictos.E4.test_no_se_editan_ni_se_borran) ... ok
+test_permisos (test_e4_veredictos.E4.test_permisos) ... ok
+test_precedencia_humano_sobre_ia (test_e4_veredictos.E4.test_precedencia_humano_sobre_ia) ... ok
+test_propuesto_o_descartado_no_es_referencia (test_e4_veredictos.E4.test_propuesto_o_descartado_no_es_referencia) ... ok
+test_un_solo_objetivo_y_datos_coherentes (test_e4_veredictos.E4.test_un_solo_objetivo_y_datos_coherentes) ... ok
+test_hoja_ciega_determinista_y_solo_con_captura (test_e4_etiquetado.TestHoja.test_hoja_ciega_determinista_y_solo_con_captura) ... ok
+test_revisor_con_nombre_o_correo_se_rechaza (test_e4_etiquetado.TestHoja.test_revisor_con_nombre_o_correo_se_rechaza) ... ok
+test_acuerdo_total (test_e4_etiquetado.TestImportar.test_acuerdo_total) ... ok
+test_desacuerdos_se_separan_no_se_promedian (test_e4_etiquetado.TestImportar.test_desacuerdos_se_separan_no_se_promedian) ... ok
+test_filas_invalidas_se_reportan (test_e4_etiquetado.TestImportar.test_filas_invalidas_se_reportan) ... ok
+test_sql_generado_entra_a_la_base_con_precedencia (test_e4_etiquetado.TestImportar.test_sql_generado_entra_a_la_base_con_precedencia) ... ok
+test_un_solo_revisor_no_basta (test_e4_etiquetado.TestImportar.test_un_solo_revisor_no_basta) ... ok
+test_categorias (test_e4_etiquetado.TestMetricas.test_categorias) ... ok
+test_kappa (test_e4_etiquetado.TestMetricas.test_kappa) ... ok
+test_resumen_denominadores (test_e4_etiquetado.TestMetricas.test_resumen_denominadores) ... ok
+test_wilson_y_suficiencia (test_e4_etiquetado.TestMetricas.test_wilson_y_suficiencia) ... ok
+test_banco_completo_sin_verdad_humana (test_e4_etiquetado.TestOrigen.test_banco_completo_sin_verdad_humana) ... ok
+test_csv_versionado_coincide (test_e4_etiquetado.TestOrigen.test_csv_versionado_coincide) ... ok
+
+----------------------------------------------------------------------
+Ran 26 tests in 6.198s
+
+OK
+exit=0
