@@ -138,26 +138,30 @@ L1–L4 son correcciones del lector. No sustituyen ni reordenan las entregas mae
 - **L3:** deduplicar sin ocultar ofertas nuevas legítimas; reconocer cambios relevantes, reapariciones y ofertas simultáneas.
 - **L4 DiDi multi-tarjeta:** si no se puede asociar inequívocamente la tarjeta al botón «Aceptar», mostrar «Varias ofertas detectadas» sin semáforo, alerta, historial ni revisión. Nunca mezclar datos entre tarjetas. El banco debe representar el resultado esperado `varias`.
 
-### Último resultado de revisión L1 conocido
+### Resultado y decisión de revisión L1.1/L1.2 — 15 de noviembre de 2026
 
-Sonnet reportó que terminó la revisión L1.1–L1.2 sin modificar código ni ramas. Resultado reportado:
+La revisión cruzada se reportó como realizada sin modificar código ni ramas. Los resultados informados para el banco de 316 casos son:
 
-- Banco de 316 casos:
-  - lector main / etiquetas main: 277/316;
-  - lector main / etiquetas L1: 284/316;
-  - lector L1 / etiquetas L1: 284/316;
-  - lector L1 / etiquetas main: 277/316.
-- Por tanto, el aumento de 7 casos se atribuye a cambios de etiquetas (L1.1), no a Parser.kt (L1.2): el parser produjo cero diferencias en esos 316 casos.
-- Se reportaron 11 cambios de etiquetas, pero ninguno tiene captura original; la justificación principal es consistencia aritmética con tarifa ÷ estimado. Esto no basta por sí solo para convertir las etiquetas en verdad de referencia.
-- Se reportaron 0 regresiones en los 277 casos previamente acertados y 2 mejoras en 20 casos extra.
-- Persisten cuatro casos sin lectura y defectos/limitaciones adicionales.
-- No hay pruebas en teléfono; siguen pendientes comportamiento con OCR real, latencia, NBSP, pantalla dividida y otros escenarios.
-- Se informó un defecto menor: un estimado con separador de miles, como `$1,234/km est.`, puede interpretarse como 2.34.
-- El informe está basado en evidencia que debe inspeccionarse: el diff completo y el patch de Parser.kt fueron reportados en un directorio temporal local de Claude. No asumir que ChatGPT tiene acceso a esos archivos por conocer su ruta.
+| Parser | Etiquetas | Resultado |
+|---|---|---:|
+| main | main | 277/316 |
+| main | L1 | 284/316 |
+| L1 | L1 | 284/316 |
+| L1 | main | 277/316 |
 
-**Decisión vigente comunicada al propietario:** L1 no está aprobado para integración. Mantener ramas y commits intactos, sin push, merge ni cambios adicionales. Registrar L1 como trabajo experimental pendiente. No avanzar L1 mientras se respeta el orden E0–E7. La prioridad inmediata sigue siendo E0.1.
+**Interpretación:** los siete casos adicionales dependen de las etiquetas L1.1, no del cambio de parser L1.2. Parser.kt produjo cero diferencias en los 316 casos de esta comparación. Esto no prueba exactitud en Android ni valida por sí solo las etiquetas.
 
-Al revisar una nueva respuesta de Sonnet, comprobar si existe una decisión posterior del propietario que modifique este estado.
+Hallazgos y límites reportados:
+- Se modificaron 11 etiquetas. Ninguna tiene captura original disponible; la justificación principal es la consistencia aritmética entre tarifa y `$ / km est.`. Esa consistencia no es evidencia independiente suficiente para fijar verdad de referencia.
+- Se reportaron cero regresiones entre los 277 casos previamente acertados y dos mejoras en 20 casos extra.
+- Persisten cuatro casos sin lectura.
+- Se detectó un riesgo de parsing de miles: `$1,234/km est.` puede interpretarse como 2.34.
+- Faltan pruebas en Android real: OCR, NBSP, confusión I/l/1, punto decimal perdido, latencia, ofertas mayores de 10 km y DiDi con pantalla dividida.
+- El diff completo y el patch fueron reportados en un directorio temporal local de Claude; no se consideran evidencia inspeccionada por ChatGPT hasta que se entreguen de forma accesible.
+
+**Decisión:** L1 **no está aprobado para integración**. No hacer push, PR, merge, publicación ni cambios adicionales. Conservar intactos la rama local `trabajo/l1-uber-est` y los commits reportados `251a8e6` y `37db333`. El resultado permanece experimental. No continuar L1 ni alterar etiquetas sin autorización específica del propietario.
+
+**Prioridad operativa:** E0.1 sigue pendiente y es el siguiente trabajo autorizado. L1 no altera ni reordena E0–E7. Antes de una nueva revisión, comprobar si el propietario emitió una autorización posterior que cambie esta decisión.
 
 ## 7. Seguridad y límites no negociables
 
