@@ -1,0 +1,25 @@
+test_anon_no_puede_llamar (test_e6_admin.E6.test_anon_no_puede_llamar) ... ok
+test_cada_consulta_queda_en_bitacora_y_no_se_altera (test_e6_admin.E6.test_cada_consulta_queda_en_bitacora_y_no_se_altera) ... ok
+test_errores_filtros_y_sin_datos_personales (test_e6_admin.E6.test_errores_filtros_y_sin_datos_personales) ... ok
+test_inicio_cuadra_con_las_tablas (test_e6_admin.E6.test_inicio_cuadra_con_las_tablas) ... ok
+test_inyeccion_en_filtros_no_hace_nada (test_e6_admin.E6.test_inyeccion_en_filtros_no_hace_nada) ... ok
+test_lector_no_da_veredictos_revisor_si (test_e6_admin.E6.test_lector_no_da_veredictos_revisor_si) ... ok
+test_limites_de_filtros (test_e6_admin.E6.test_limites_de_filtros) ... ok
+test_no_admin_es_denegado_y_queda_en_bitacora (test_e6_admin.E6.test_no_admin_es_denegado_y_queda_en_bitacora) ... ok
+test_no_admin_no_lee_tablas_directo (test_e6_admin.E6.test_no_admin_no_lee_tablas_directo) ... ok
+test_ofertas_filtros_y_paginacion (test_e6_admin.E6.test_ofertas_filtros_y_paginacion) ... ok
+test_reversion (test_e6_admin.E6.test_reversion) ... ok
+test_acceso_y_bitacora (test_e7_metricas.E7.test_acceso_y_bitacora) ... ok
+test_definiciones_completas (test_e7_metricas.E7.test_definiciones_completas) ... ok
+test_ia_no_cuenta_como_referencia (test_e7_metricas.E7.test_ia_no_cuenta_como_referencia) ... ok
+test_recall_no_medible_y_acuerdo_ia_separado (test_e7_metricas.E7.test_recall_no_medible_y_acuerdo_ia_separado) ... ok
+test_reconciliacion_total_y_por_app (test_e7_metricas.E7.test_reconciliacion_total_y_por_app) ... ok
+test_reversion (test_e7_metricas.E7.test_reversion) ... ok
+test_segmentos_pequenos_marcados (test_e7_metricas.E7.test_segmentos_pequenos_marcados) ... ok
+test_sin_datos_no_inventa_valores (test_e7_metricas.E7.test_sin_datos_no_inventa_valores) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 4.932s
+
+OK
+exit=0

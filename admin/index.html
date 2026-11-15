@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; connect-src https://gqsadclvftkzwrihfipz.supabase.co; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Checa Admin</title>
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<header><strong>Checa Admin</strong> <span id="quien"></span> <button id="salir" hidden>Salir</button></header>
+<div id="aviso" role="alert" hidden></div>
+<main id="raiz">
+  <section id="entrar">
+    <p>Acceso solo para administradores autorizados. Cada consulta queda registrada.</p>
+    <button id="btn-entrar">Entrar con Google</button>
+  </section>
+</main>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
