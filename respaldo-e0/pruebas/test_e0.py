@@ -435,8 +435,8 @@ class TestEntrega(Base):
         self.assertEqual({c["id"] for c in r["checks"] if c["estado"] == "fallo"}, {"E05b"})
 
 
-class TestCopias(Base):
-    """Ciclo completo con age (clave) y gpg (frase en archivo); todo con datos simulados."""
+class MontajeCopias(Base):
+    """Montaje común: ciclo completo con age (clave) y gpg (frase en archivo); todo con datos simulados."""
 
     def setUp(self):
         super().setUp()
@@ -465,6 +465,7 @@ class TestCopias(Base):
                           "--identidad", self.ident, "--ref-objetos", self.ro, "--ref-tablas", self.rt, "--salida", salida)
         return cod, salida
 
+class TestCopias(MontajeCopias):
     def test_tar_determinista(self):
         otro = os.path.join(self.tmp, "r2.tar")
         with contextlib.redirect_stderr(io.StringIO()):
@@ -564,6 +565,167 @@ class TestCopias(Base):
         with self.assertRaises(SystemExit):
             evidencia_copias._extraer_seguro(mal, os.path.join(self.tmp, "dest"))
         self.assertFalse(os.path.exists(os.path.join(self.tmp, "escapa.txt")))
+
+
+class TestDefectosE01(MontajeCopias):
+    """Regresiones de los defectos D1–D5 detectados en la revisión de E0.1."""
+
+    def _registrar(self, a, b, rb, salida=None):
+        salida = salida or os.path.join(self.tmp, "ev.json")
+        with contextlib.redirect_stderr(io.StringIO()):
+            cod = self.ev("registrar", "--copia-a", a, "--copia-b", b, "--medio-a", "disco USB casa", "--medio-b", "nube cuenta aparte",
+                          "--restauracion-b", rb, "--confirmo-conservar", "--salida", salida)
+        return cod, json.load(open(salida))
+
+    # D1 ------------------------------------------------------------------
+    def test_d1_misma_copia_copiada_byte_a_byte_es_incompleta(self):
+        b = self.cifrar(os.path.join(self.tmp, "B.age"))
+        a = os.path.join(self.tmp, "A.age"); shutil.copy(b, a)  # mismo cifrado copiado: no son dos cifrados
+        _, rb = self.restaurar(b)
+        cod, ev = self._registrar(a, b, rb)
+        self.assertEqual(cod, 1)
+        self.assertFalse(ev["cifrados_distintos"])
+        self.assertEqual(ev["resultado"], "INCOMPLETA")
+
+    def test_d1_mismo_archivo_dos_veces_es_incompleta(self):
+        b = self.cifrar(os.path.join(self.tmp, "B.age"))
+        _, rb = self.restaurar(b)
+        cod, ev = self._registrar(b, b, rb)
+        self.assertEqual(cod, 1)
+        self.assertFalse(ev["archivos_distintos"])
+        self.assertEqual(ev["resultado"], "INCOMPLETA")
+
+    def test_d1_enlace_duro_no_cuenta_como_otra_copia(self):
+        b = self.cifrar(os.path.join(self.tmp, "B.age"))
+        a = os.path.join(self.tmp, "A.age"); os.link(b, a)
+        _, rb = self.restaurar(b)
+        cod, ev = self._registrar(a, b, rb)
+        self.assertEqual(cod, 1)
+        self.assertFalse(ev["archivos_distintos"])
+
+    def test_d1_verificar_entrega_falla_si_la_evidencia_dice_completa_con_cifrados_iguales(self):
+        a, b = self.cifrar(os.path.join(self.tmp, "A.age")), self.cifrar(os.path.join(self.tmp, "B.age"))
+        _, rb = self.restaurar(b)
+        entrega = os.path.join(self.tmp, "entrega"); os.makedirs(entrega)
+        cod, ev = self._registrar(a, b, rb, os.path.join(entrega, "EVIDENCIA-COPIAS.json"))
+        self.assertEqual(cod, 0)
+        for n in ("resumen.json", "manifiesto.csv", "VERIFICACION.json"):
+            shutil.copy(os.path.join(self.dir(), n), entrega)
+        ev["copias"]["A"]["sha256"] = ev["copias"]["B"]["sha256"]  # manipulada a mano para que diga COMPLETA
+        ev["cifrados_distintos"] = False
+        open(os.path.join(entrega, "EVIDENCIA-COPIAS.json"), "wb").write(comun.json_estable(ev))
+        r = verificar_entrega.verificar_entrega(entrega, self.ids)
+        self.assertEqual(r["resultado"], "FALLO")
+        self.assertIn("C08", {c["id"] for c in r["checks"] if c["estado"] == "fallo"})
+
+    # D2 ------------------------------------------------------------------
+    def test_d2_requerido_sin_fila_en_errores_lector_es_incompleto(self):
+        self.sim.tablas["errores_lector"] = [r for r in self.sim.tablas["errores_lector"] if r["id"] != REQ[0]]
+        cod, err = self.correr(salida="d2a")
+        self.assertEqual(cod, 2)
+        res = json.load(open(os.path.join(self.dir("d2a"), "resumen.json")))
+        self.assertEqual(res["resultado_respaldo"], "INCOMPLETO")
+        self.assertEqual(res["requeridos"]["sin_fila_en_errores_lector"], [REQ[0]])
+        self.assertTrue(any("sin fila" in m for m in res["motivos_incompleto"]))
+
+    def test_d2_requerido_con_version_distinta_es_incompleto(self):
+        for r in self.sim.tablas["errores_lector"]:
+            if r["id"] == REQ[1]:
+                r["version"] = "10.79"
+        cod, _ = self.correr(salida="d2b")
+        self.assertEqual(cod, 2)
+        res = json.load(open(os.path.join(self.dir("d2b"), "resumen.json")))
+        self.assertEqual(res["resultado_respaldo"], "INCOMPLETO")
+        self.assertEqual(res["requeridos"]["version_distinta_de_10_77"], [REQ[1]])
+        self.assertEqual(verificar.verificar(self.dir("d2b"))["resultado"], "FALLO")
+
+    # D3 ------------------------------------------------------------------
+    def _copia_scripts(self):
+        d = os.path.join(self.tmp, "scripts")
+        shutil.copytree(os.path.dirname(AQUI), d, ignore=shutil.ignore_patterns("__pycache__", "pruebas"))
+        return d
+
+    def test_d3_huellas_fijadas_coinciden_con_el_repo(self):
+        actual, dif = comun.comprobar_scripts(os.path.dirname(AQUI))
+        self.assertEqual(dif, [])
+        self.assertEqual(set(actual), set(comun.SCRIPTS))
+
+    def test_d3_script_alterado_se_detecta(self):
+        d = self._copia_scripts()
+        with open(os.path.join(d, "verificar.py"), "a") as f:
+            f.write("\n# alterado\n")
+        self.assertEqual(comun.comprobar_scripts(d)[1], ["verificar.py"])
+
+    def test_d3_script_faltante_es_error_no_se_omite(self):
+        d = self._copia_scripts()
+        os.remove(os.path.join(d, "referencia.sql"))
+        with self.assertRaises(comun.ScriptsAlterados):
+            comun.hash_scripts(d)
+
+    def test_d3_huellas_fijadas_incompletas_o_mal_formadas(self):
+        d = self._copia_scripts()
+        p = os.path.join(d, comun.ARCHIVO_HUELLAS)
+        lineas = open(p).read().splitlines()
+        open(p, "w").write("\n".join(lineas[1:]) + "\n")
+        with self.assertRaises(comun.ScriptsAlterados):
+            comun.leer_huellas_fijadas(d)
+        open(p, "w").write("no-es-hash  comun.py\n")
+        with self.assertRaises(comun.ScriptsAlterados):
+            comun.leer_huellas_fijadas(d)
+
+    def test_d3_respaldar_no_corre_con_scripts_alterados(self):
+        d = self._copia_scripts()
+        with open(os.path.join(d, "respaldar.py"), "a") as f:
+            f.write("\n# alterado\n")
+        env = dict(os.environ, SUPABASE_SERVICE_ROLE_KEY=CLAVE)
+        n0 = len(self.sim.log)
+        p = subprocess.run([sys.executable, os.path.join(d, "respaldar.py"), "--url", self.sim.url, "--permitir-local",
+                            "--solo-listar", "--ids-requeridos", self.ids], capture_output=True, text=True, env=env)
+        self.assertEqual(p.returncode, 1)
+        self.assertIn("Integridad de scripts", p.stderr)
+        self.assertEqual(len(self.sim.log), n0)  # no llegó a hacer ninguna petición
+
+    def test_d3_entrega_con_huellas_de_scripts_distintas_falla(self):
+        a, b = self.cifrar(os.path.join(self.tmp, "A.age")), self.cifrar(os.path.join(self.tmp, "B.age"))
+        _, rb = self.restaurar(b)
+        entrega = os.path.join(self.tmp, "entrega"); os.makedirs(entrega)
+        self._registrar(a, b, rb, os.path.join(entrega, "EVIDENCIA-COPIAS.json"))
+        for n in ("manifiesto.csv", "VERIFICACION.json"):
+            shutil.copy(os.path.join(self.dir(), n), entrega)
+        res = json.load(open(os.path.join(self.dir(), "resumen.json")))
+        res["scripts_sha256"].pop("verificar.py")  # artefacto sin una huella: antes se ignoraba
+        open(os.path.join(entrega, "resumen.json"), "wb").write(comun.json_estable(res))
+        r = verificar_entrega.verificar_entrega(entrega, self.ids)
+        self.assertIn("E12b", {c["id"] for c in r["checks"] if c["estado"] == "fallo"})
+
+    def test_d3_verificar_falla_si_el_resumen_trae_otra_huella(self):
+        res_p = os.path.join(self.dir(), "resumen.json")
+        res = json.load(open(res_p))
+        res["scripts_sha256"]["respaldar.py"] = "0" * 64
+        crudo = comun.json_estable(res)
+        open(res_p, "wb").write(crudo)
+        v = self.verif()
+        self.assertIn("V11b", {c["id"] for c in v["checks"] if c["estado"] == "fallo"})
+
+    # D4 ------------------------------------------------------------------
+    def test_d4_readme_declara_el_numero_real_de_pruebas(self):
+        import re as _re
+        total = unittest.defaultTestLoader.discover(AQUI).countTestCases()
+        txt = open(os.path.join(os.path.dirname(AQUI), "README.md"), encoding="utf-8").read()
+        m = _re.search(r"— (\d+) pruebas contra un servidor", txt)
+        self.assertIsNotNone(m)
+        self.assertEqual(int(m.group(1)), total)
+
+    # D5 ------------------------------------------------------------------
+    def test_d5_revisor_de_mensajes_detecta_url_de_sesion(self):
+        h = os.path.join(os.path.dirname(os.path.dirname(AQUI)), "herramientas")
+        if not os.path.isfile(os.path.join(h, "revisar_mensajes.py")):
+            self.skipTest("copia aislada sin herramientas/ (p. ej. en pruebas de mutación)")
+        sys.path.insert(0, h)
+        import revisar_mensajes
+        self.assertTrue(revisar_mensajes.hallazgos("x\nClaude-Session: https://claude.ai/code/session_01ABCdef\n"))
+        self.assertTrue(revisar_mensajes.hallazgos("token eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIn0.x"))
+        self.assertEqual(revisar_mensajes.hallazgos("E0: corrige D1\n\nCo-Authored-By: Claude <noreply@anthropic.com>\n"), [])
 
 
 if __name__ == "__main__":

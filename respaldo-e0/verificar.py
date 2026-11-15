@@ -189,13 +189,15 @@ def verificar(carpeta, ref_objetos=None, ref_tablas=None):
         c.ok("V10c", f"Contraste md5 con el eTag del servidor: {em.get('comprobados', 0)} comprobadas, 0 discrepancias (best-effort).")
 
     # V11 versión de los scripts
-    actual = comun.hash_scripts(AQUI)
-    reg = resumen.get("scripts_sha256", {})
-    difieren = [k for k in ("comun.py", "respaldar.py") if k in reg and reg[k] != actual.get(k)]
-    if difieren:
-        c.aviso("V11", f"Los scripts actuales difieren de los que hicieron el respaldo: {difieren}.")
-    else:
-        c.ok("V11", "comun.py y respaldar.py coinciden con los usados en el respaldo.")
+    try:
+        actual, dif_local = comun.comprobar_scripts(AQUI)
+        prob = comun.huellas_registradas_validas(resumen.get("scripts_sha256"), AQUI)
+    except comun.ScriptsAlterados as e:
+        actual, dif_local, prob = {}, ["(ilegible)"], [str(e)]
+    c.cond("V11", not dif_local, "Los scripts de esta verificación coinciden con SCRIPTS.sha256.",
+           f"Los scripts de esta verificación no coinciden con SCRIPTS.sha256: {dif_local}.")
+    c.cond("V11b", not prob, "El respaldo se hizo con todos los scripts fijados en SCRIPTS.sha256.",
+           f"Huellas de scripts del respaldo no válidas: {prob}.")
 
     ref = _referencia(c, caps, cap_pares, resumen, ref_objetos, ref_tablas, h_lis, ids_tabla, versiones)
     return {

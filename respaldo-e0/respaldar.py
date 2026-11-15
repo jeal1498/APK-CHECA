@@ -234,6 +234,12 @@ def main(argv=None):
     a = ap.parse_args(argv)
     clave = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
     try:
+        try:
+            _, dif = comun.comprobar_scripts(AQUI)
+        except comun.ScriptsAlterados as e:
+            raise ErrorRespaldo(f"Integridad de scripts: {e}.")
+        if dif:
+            raise ErrorRespaldo(f"Integridad de scripts: {dif} no coinciden con SCRIPTS.sha256. No se ejecuta.")
         validar_clave(clave)
         base = validar_url(a.url, a.permitir_local)
         requeridos = comun.leer_ids(a.ids_requeridos)
@@ -346,7 +352,16 @@ def _ejecutar(cli, a, requeridos):
 
     datos_man = comun.escribir_manifiesto(manifiesto)
     escribir(os.path.join(a.salida, "manifiesto.csv"), datos_man)
-    if faltantes or fallidos:
+    motivos = []
+    if faltantes:
+        motivos.append(f"{len(faltantes)} ids requeridos sin captura")
+    if fallidos:
+        motivos.append(f"{len(fallidos)} capturas fallidas")
+    if sin_fila:
+        motivos.append(f"{len(sin_fila)} ids requeridos sin fila en errores_lector")
+    if version_distinta:
+        motivos.append(f"{len(version_distinta)} ids requeridos con versión distinta de {comun.VERSION_BANCO}")
+    if motivos:  # D2: antes sin_fila y version_distinta no entraban en la decisión
         resultado = "INCOMPLETO"
     elif desaparecidos:
         resultado = "COMPLETO_CON_ADVERTENCIAS"
@@ -368,10 +383,14 @@ def _ejecutar(cli, a, requeridos):
                        "faltantes": faltantes, "sin_fila_en_errores_lector": sin_fila, "version_distinta_de_10_77": version_distinta},
         "manifiesto_sha256": comun.sha256_bytes(datos_man),
         "resultado_respaldo": resultado,
+        "motivos_incompleto": motivos,
+        "scripts_integros": True,
     }
     escribir(os.path.join(a.salida, "resumen.json"), comun.json_estable(resumen))
     print(f"Resultado: {resultado}. {len(descargados)} capturas, "
           f"{sum(v['filas'] for v in tablas_res.values())} filas de tablas.", file=sys.stderr)
+    for m in motivos:
+        print("INCOMPLETO:", m, file=sys.stderr)
     if faltantes:
         print(f"FALTAN {len(faltantes)} ids requeridos: {faltantes[:20]}", file=sys.stderr)
     return {"COMPLETO": 0, "COMPLETO_CON_ADVERTENCIAS": 0, "INCOMPLETO": 2}[resultado]

@@ -85,4 +85,14 @@ Yo corro `python3 verificar_entrega.py --dir <entrega>` y te devuelvo el resulta
 - **No** valida: que las capturas sean las «correctas» para el banco; que no hayan cambiado entre el listado y la consulta SQL (si hubo actividad, aparece como advertencia); la independencia física de los medios ni que conserves las copias (son declaraciones tuyas); RLS ni permisos reales de Supabase.
 
 ## Pruebas del procedimiento (para el revisor)
-`cd respaldo-e0 && python3 -m unittest discover -s pruebas -v` — 44 pruebas contra un servidor **simulado** (no Supabase real).
+`cd respaldo-e0 && python3 -m unittest discover -s pruebas -v` — 64 pruebas contra un servidor **simulado** (no Supabase real). El número lo comprueba `test_d4_readme_declara_el_numero_real_de_pruebas` (D4: antes decía 44 y había 49).
+
+## Integridad de los scripts (D3)
+`SCRIPTS.sha256` fija el sha256 de los 7 archivos del procedimiento. Compruébalo antes de nada: `sha256sum -c SCRIPTS.sha256` (en Windows: `certutil -hashfile ARCHIVO SHA256`). `respaldar.py` se niega a correr si algún archivo no coincide o falta; `verificar.py` (V11/V11b), `verificar_entrega.py` (E12/E12b/E12c/C09) y `evidencia_copias.py` exigen que cada artefacto traiga las huellas de los 7 y que sean las fijadas. Si cambias un script, hay que volver a fijar `SCRIPTS.sha256` en un commit revisado.
+
+## Defectos corregidos tras la revisión de E0.1
+- **D1:** `registrar` solo da `COMPLETA` si A y B son cifrados distintos (sha256 distinto) y archivos distintos (no el mismo ni un enlace duro); `verificar_entrega` C08 lo exige.
+- **D2:** `respaldar.py` da `INCOMPLETO` también si un id requerido no tiene fila en `errores_lector` o su versión no es 10.77 (`motivos_incompleto`).
+- **D3:** ver arriba.
+- **D4:** conteo real de pruebas comprobado por una prueba.
+- **D5:** los commits `e6a05ec` y `5abadea` (ya en `origin/trabajo/e0-respaldo`) llevan una URL de sesión en el mensaje; no se reescribe el historial. Desde ahora `herramientas/revisar_mensajes.py` revisa los mensajes (también como hook `commit-msg`).

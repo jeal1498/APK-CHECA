@@ -127,14 +127,63 @@ def json_estable(obj):
     return (json.dumps(obj, ensure_ascii=False, indent=2, sort_keys=True) + "\n").encode("utf-8")
 
 
+SCRIPTS = ("comun.py", "respaldar.py", "verificar.py", "evidencia_copias.py", "verificar_entrega.py", "referencia.sql",
+           "ids_requeridos_10.77.txt")
+ARCHIVO_HUELLAS = "SCRIPTS.sha256"
+
+
+class ScriptsAlterados(Exception):
+    pass
+
+
 def hash_scripts(carpeta):
-    """sha256 de los scripts del procedimiento (para atar la evidencia a la versión auditada)."""
+    """sha256 de TODOS los scripts del procedimiento. Si falta uno, error (antes se omitía en silencio: D3)."""
     res = {}
-    for n in ("comun.py", "respaldar.py", "verificar.py", "evidencia_copias.py", "verificar_entrega.py", "referencia.sql"):
+    for n in SCRIPTS:
         p = os.path.join(carpeta, n)
-        if os.path.exists(p):
-            res[n] = sha256_archivo(p)
+        if not os.path.isfile(p):
+            raise ScriptsAlterados(f"falta el script {n}")
+        res[n] = sha256_archivo(p)
     return res
+
+
+def leer_huellas_fijadas(carpeta):
+    """Lee SCRIPTS.sha256 (formato de sha256sum: «<hash>  <archivo>»). Debe cubrir exactamente SCRIPTS."""
+    p = os.path.join(carpeta, ARCHIVO_HUELLAS)
+    if not os.path.isfile(p):
+        raise ScriptsAlterados(f"falta {ARCHIVO_HUELLAS}")
+    fij = {}
+    with open(p, encoding="utf-8") as f:
+        for linea in f:
+            t = linea.strip()
+            if not t or t.startswith("#"):
+                continue
+            m = re.fullmatch(r"([0-9a-f]{64}) [ *]?(\S+)", t)
+            if not m:
+                raise ScriptsAlterados(f"línea inválida en {ARCHIVO_HUELLAS}: {t!r}")
+            if m.group(2) in fij:
+                raise ScriptsAlterados(f"{m.group(2)} repetido en {ARCHIVO_HUELLAS}")
+            fij[m.group(2)] = m.group(1)
+    if set(fij) != set(SCRIPTS):
+        raise ScriptsAlterados(f"{ARCHIVO_HUELLAS} no cubre exactamente los scripts: {sorted(set(fij) ^ set(SCRIPTS))}")
+    return fij
+
+
+def comprobar_scripts(carpeta):
+    """Devuelve (huellas_actuales, lista_de_diferencias) contra SCRIPTS.sha256. Lanza ScriptsAlterados si faltan archivos."""
+    actual, fij = hash_scripts(carpeta), leer_huellas_fijadas(carpeta)
+    return actual, sorted(n for n in SCRIPTS if actual[n] != fij[n])
+
+
+def huellas_registradas_validas(registradas, carpeta):
+    """Compara las huellas que trae un artefacto (resumen/verificación/evidencia) con las fijadas.
+    Devuelve la lista de problemas (vacía = ok). Exige que el artefacto traiga todos los scripts."""
+    fij = leer_huellas_fijadas(carpeta)
+    if not isinstance(registradas, dict):
+        return ["el artefacto no trae scripts_sha256"]
+    faltan = [n for n in SCRIPTS if n not in registradas]
+    dif = [n for n in SCRIPTS if n in registradas and registradas[n] != fij[n]]
+    return [f"sin huella: {n}" for n in faltan] + [f"distinto del fijado: {n}" for n in dif]
 
 
 def sin_trazas_de_secretos(texto):

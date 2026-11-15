@@ -164,6 +164,8 @@ def registrar(args):
                             "cifrada_detectada": fmt != "desconocido", "medio_declarado": medio.strip()}
     a, b = ev["copias"]["A"], ev["copias"]["B"]
     ev["cifrados_distintos"] = a["sha256"] != b["sha256"]
+    # D1: el mismo archivo (o un enlace duro) pasado dos veces no son dos copias.
+    ev["archivos_distintos"] = not os.path.samefile(args.copia_a, args.copia_b)
     ev["medios_declarados_distintos"] = bool(a["medio_declarado"]) and bool(b["medio_declarado"]) and a["medio_declarado"].lower() != b["medio_declarado"].lower()
     rb = json.load(open(args.restauracion_b, encoding="utf-8"))
     ev["restauracion_b"] = rb
@@ -173,8 +175,11 @@ def registrar(args):
         ev["restauracion_a"] = ra
         ev["restauracion_a_corresponde_a_copia_a"] = ra.get("etiqueta_copia") == "A" and ra.get("copia_sha256") == a["sha256"]
     ev["declaraciones_del_propietario"] = {"conserva_ambas_copias": bool(args.confirmo_conservar), "texto": "Declaración del propietario; no verificable por script."}
-    ev["scripts_sha256"] = comun.hash_scripts(os.path.dirname(os.path.abspath(__file__)))
+    aqui = os.path.dirname(os.path.abspath(__file__))
+    ev["scripts_sha256"], dif = comun.comprobar_scripts(aqui)
+    ev["scripts_integros"] = not dif
     ev["resultado"] = ("COMPLETA" if all([a["cifrada_detectada"], b["cifrada_detectada"], ev["medios_declarados_distintos"],
+                                          ev["cifrados_distintos"], ev["archivos_distintos"], ev["scripts_integros"],
                                           ev["restauracion_b_corresponde_a_copia_b"], rb.get("restauracion_ok") is True,
                                           args.confirmo_conservar]) else "INCOMPLETA")
     with open(args.salida, "wb") as f:

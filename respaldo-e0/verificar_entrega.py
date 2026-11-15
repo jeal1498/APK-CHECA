@@ -88,9 +88,15 @@ def verificar_entrega(carpeta, ids_path, minimo_objetos=0):
     cond("E10", refok, "La verificación incluyó la consulta de referencia SQL.", "No hay referencia SQL en VERIFICACION.json: no se cumple el criterio de conteos/huella del mismo momento.")
     ts = (res.get("generado_utc"), ver.get("verificado_utc"), ver.get("referencia", {}).get("consultado_utc"))
     add("E11", "ok", f"Informativo: respaldo generado {ts[0]}, verificado {ts[1]}, referencia SQL consultada {ts[2]}. Revisar que estén separados por minutos, no horas.")
-    actual = comun.hash_scripts(AQUI)
-    dif = [k for k, v in res.get("scripts_sha256", {}).items() if k in ("comun.py", "respaldar.py") and actual.get(k) != v]
-    add("E12", "ok" if not dif else "advertencia", "El respaldo se hizo con los scripts auditados (mismo sha256)." if not dif else f"Scripts distintos de los auditados: {dif}")
+    try:
+        _, dif_local = comun.comprobar_scripts(AQUI)
+        p_res = comun.huellas_registradas_validas(res.get("scripts_sha256"), AQUI)
+        p_ver = comun.huellas_registradas_validas(ver.get("scripts_sha256"), AQUI)
+    except comun.ScriptsAlterados as e:
+        dif_local, p_res, p_ver = [str(e)], [], []
+    cond("E12", not dif_local, "verificar_entrega corre con los scripts fijados en SCRIPTS.sha256.", f"Scripts locales alterados: {dif_local}")
+    cond("E12b", not p_res, "resumen.json: respaldo hecho con todos los scripts fijados.", f"resumen.json: {p_res}")
+    cond("E12c", not p_ver, "VERIFICACION.json: verificación hecha con todos los scripts fijados.", f"VERIFICACION.json: {p_ver}")
     cond("E13", res.get("solo_lectura") is True and res.get("proyecto_ref") == comun.PROYECTO_REF, "Declara solo lectura y el proyecto esperado.", "No declara solo lectura o el proyecto no es el esperado.")
     ruta_ev = os.path.join(carpeta, "EVIDENCIA-COPIAS.json")
     if not os.path.isfile(ruta_ev):
@@ -112,7 +118,11 @@ def verificar_entrega(carpeta, ids_path, minimo_objetos=0):
         cond("C06", vb.get("huellas", {}).get("listado") == h1 and vb.get("huellas", {}).get("objetos") == h2 and vb.get("conteos", {}).get("capturas") == len(caps),
              "Huellas y conteo de lo restaurado = los del manifiesto entregado.", "Huellas/conteo de lo restaurado ≠ manifiesto entregado.")
         cond("C07", ev.get("declaraciones_del_propietario", {}).get("conserva_ambas_copias") is True, "El propietario declara conservar ambas copias (declaración).", "Falta la declaración de conservar las copias.")
-        add("C08", "ok", f"Informativo: copias {'cifradas por separado' if ev.get('cifrados_distintos') else 'idénticas (mismo cifrado copiado)'}; la independencia física es declarada, no comprobable.")
+        cond("C08", ev.get("cifrados_distintos") is True and c.get("A", {}).get("sha256") != c.get("B", {}).get("sha256") and ev.get("archivos_distintos") is True,
+             "A y B son cifrados distintos (sha256 distinto, archivos distintos); la independencia física es declarada, no comprobable.",
+             "A y B no son cifrados distintos (mismo sha256 o mismo archivo): no hay dos copias cifradas independientes.")
+        p_ev = comun.huellas_registradas_validas(ev.get("scripts_sha256"), AQUI)
+        cond("C09", not p_ev, "EVIDENCIA-COPIAS.json: generada con los scripts fijados.", f"EVIDENCIA-COPIAS.json: {p_ev}")
     estado = "FALLO" if any(c["estado"] == "fallo" for c in chk) else ("APROBADO_CON_ADVERTENCIAS" if any(c["estado"] == "advertencia" for c in chk) else "APROBADO")
     return {"resultado": estado, "checks": chk}
 
