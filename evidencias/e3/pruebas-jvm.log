@@ -1,0 +1,16 @@
+ok   TrazaTest.appCorta
+ok   TrazaTest.capturaExactaMarcaVinculo
+ok   TrazaTest.coherenciaComoElServidor
+ok   TrazaTest.colaAcotadaDescartaLosMasViejos
+ok   TrazaTest.colaPersisteYSobreviveReinicio
+ok   TrazaTest.colaRechazaEventoRaro
+ok   TrazaTest.colaToleraArchivoDanado
+ok   TrazaTest.huellaDeLineasEsEstable
+ok   TrazaTest.jsonEscapaTexto
+ok   TrazaTest.loteRespetaTopes
+ok   TrazaTest.ofertaValidaSerializa
+ok   TrazaTest.redaccionSoloDatosDeOferta
+ok   TrazaTest.reintentoCreceYTieneTope
+ok   TrazaTest.respuestasDelServidor
+ok   GuardiaParserTest.lectorSinCambios
+15 ok, 0 fallan

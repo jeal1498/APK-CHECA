@@ -213,6 +213,14 @@ class Prefs(context: Context) {
         get() = sp.getInt("vol", 100)
         set(v) { sp.edit().putInt("vol", v).apply() }
 
+    /**
+     * 10.81 (E3): registro técnico de lecturas (qué leyó, qué decidió y por qué; sin direcciones ni nombres).
+     * Apagado por defecto: encenderlo en producción requiere aprobar el aviso de privacidad.
+     */
+    var trazabilidad: Boolean
+        get() = sp.getBoolean("traza", false)
+        set(v) { sp.edit().putBoolean("traza", v).apply() }
+
     var diagnostico: Boolean
         // Empieza encendido en los dos canales (Eduardo, 12 nov) para revisar lecturas; sigue siendo opcional.
         get() = sp.getBoolean("diag", true)

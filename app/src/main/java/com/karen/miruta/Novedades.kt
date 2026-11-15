@@ -9,6 +9,9 @@ object Novedades {
     class Version(val codigo: Int, val nombre: String, val puntos: List<String>, val widgets: Boolean = false, val vistaQr: Boolean = false)
 
     val LISTA = listOf(
+        Version(161, "10.81", listOf(
+            "Nuevo interruptor de prueba en Ayuda con la lectura: «Registro técnico de lecturas». Viene apagado y no cambia el pop-up."
+        )),
         Version(160, "10.80", listOf(
             "Las capturas de ofertas que mandas para mejorar la lectura ahora sirven para corregir errores con más precisión."
         )),

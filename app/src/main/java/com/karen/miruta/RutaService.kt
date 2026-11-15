@@ -390,7 +390,9 @@ class RutaService : AccessibilityService() {
         prefs.ultimaOferta = System.currentTimeMillis()
         // La misma oferta que ya está en el pop-up de la otra app (la foto, sin zonas, puede
         // confundir de qué app es): no sale otro pop-up.
-        if (activas.any { (k, par) -> k != clave && parecida(par.first, oferta) }) return
+        if (activas.any { (k, par) -> k != clave && parecida(par.first, oferta) }) {
+            trazar(app, lector, lineas, msLectura, "duplicada", "otra_app"); return
+        }
         // Con el pop-up encima, el lector ve la oferta tapada y lee otros montos.
         // Si los tramos son los mismos (o se perdió uno), es la misma oferta: no se toca.
         activas[clave]?.first?.let { a ->
@@ -401,7 +403,10 @@ class RutaService : AccessibilityService() {
             fun cerca(km: Double, min: Double) = Math.abs(km - oferta.km) < 0.15 && Math.abs(min - oferta.min) < 1.1
             val tramoTapado = a.recogidaMin > 0 && oferta.recogidaMin == 0.0 &&
                 (cerca(a.viajeKm, a.viajeMin) || cerca(a.recogidaKm, a.recogidaMin))
-            if (mismosTramos || tramoTapado) { revisarZonaSiFalta(clave, lineas); return }
+            if (mismosTramos || tramoTapado) {
+                trazar(app, lector, lineas, msLectura, "duplicada", if (mismosTramos) "popup_activo" else "tramo_tapado")
+                revisarZonaSiFalta(clave, lineas); return
+            }
         }
         // La misma oferta (con pequeñas variaciones del OCR) no vuelve a salir mientras siga en
         // pantalla: cada vez que se ve de nuevo se renueva el plazo de 60 s. Así, al cerrar el
@@ -413,6 +418,7 @@ class RutaService : AccessibilityService() {
                 ultimaFirma[clave] = o to ahora
                 zonaFirma[clave] = zona
                 sinVerFirma[clave] = 0
+                trazar(app, lector, lineas, msLectura, "duplicada", "misma_oferta_60s")
                 revisarZonaSiFalta(clave, lineas)
                 return
             }
@@ -455,6 +461,7 @@ class RutaService : AccessibilityService() {
 
         val nivel = oferta.nivel(prefs)
         alertas?.avisar(nivel)
+        trazar(app, lector, lineas, msLectura, "oferta", if (oferta === leida) null else "corregida_revision", oferta, nivel)
         Historial.registrar(this, oferta, app, nivel)
         Confirmador.contarOferta(this)
         if (lineas != null) revisarZona(clave, turno, lineas)
@@ -481,6 +488,22 @@ class RutaService : AccessibilityService() {
                 revisarUna(clave, app, lineas, leida, msPopup, lector)
             }
         }
+    }
+
+    /**
+     * 10.81 (E3): deja constancia del resultado de una lectura (apagado por defecto). No cambia nada de lo
+     * que se muestra: solo copia datos al hilo de la traza. El fotograma es el que el OCR está procesando
+     * en este mismo callback; si no hay (llamada sin fotograma), con el lector de foto no se anota.
+     */
+    private fun trazar(app: String, lector: String, lineas: List<String>?, msLectura: Long, resultado: String,
+                       motivo: String?, oferta: Oferta? = null, nivel: Int? = null) {
+        try {
+            if (!TrazaAndroid.activa(this)) return
+            val fot: Pair<String, Long>? = if (lector == LECTOR_OCR) (TrazaAndroid.fotograma ?: return) else null
+            val color = when (nivel) { null -> null; Oferta.VERDE -> "verde"; Oferta.AMARILLO -> "amarillo"; else -> "rojo" }
+            TrazaAndroid.anotar(this, app, lector, fot, resultado, motivo, oferta, color, prefs.moneda.codigo,
+                lineas.orEmpty(), msLectura, if (horizontal()) "horizontal" else "vertical")
+        } catch (_: Throwable) { }
     }
 
     /** «Leyó mal» del pop-up de [clave]: manda a revisión lo que se leyó y lo que se mostró. */

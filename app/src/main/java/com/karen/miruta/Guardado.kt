@@ -94,7 +94,7 @@ object Guardado {
      * Guarda una oferta vista (antes, [esNueva]). [recorte] es una copia propia de la zona de la app
      * (o null si no hay foto); se comprime y recicla en segundo plano.
      */
-    fun guardar(ctx: Context, app: String?, leida: Boolean, texto: String, recorte: Bitmap?) {
+    fun guardar(ctx: Context, app: String?, leida: Boolean, texto: String, recorte: Bitmap?, fotograma: String? = null) {
         val app2 = nombreApp(app)
         val ahora = System.currentTimeMillis()
         val appCtx = ctx.applicationContext
@@ -104,7 +104,10 @@ object Guardado {
                 val base = SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US).format(Date(ahora)) +
                     "-$app2-" + if (leida) "leida" else "noleida"
                 if (recorte != null) {
-                    aWebp(recorte)?.let { synchronized(reciente) { reciente[app2] = ahora to it } }
+                    aWebp(recorte)?.let {
+                        synchronized(reciente) { reciente[app2] = ahora to it }
+                        TrazaAndroid.anotarCaptura(fotograma, it)  // 10.81 (E3): mismos bytes que se subirían
+                    }
                     FileOutputStream(File(dir, "$base.jpg")).use { recorte.compress(Bitmap.CompressFormat.JPEG, 70, it) }
                     recorte.recycle()
                 }
