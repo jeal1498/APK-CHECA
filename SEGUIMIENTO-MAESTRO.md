@@ -1,6 +1,6 @@
 # Seguimiento maestro de Checa
 
-**Última actualización:** 15 de noviembre de 2026  
+**Última actualización:** 15 de noviembre de 2026 (E0.1 preparado, sin respaldo real)  
 **Repositorio:** `jeal1498/APK-CHECA`  
 **Propósito:** mantener el objetivo, el orden de ejecución, las decisiones y la evidencia de cada entrega en un único lugar. Actualizar este archivo cada vez que se revise o cierre una entrega.
 
@@ -24,7 +24,7 @@ El orden de ejecución y aceptación es **E0 → E1 → E2 → E3 → E4 → E5 
 
 | Entrega | Resultado que debe quedar | Estado al 15-11-2026 |
 |---|---|---|
-| **E0** | Banco histórico 10.77 respaldado y comprobado. | **Pendiente y urgente.** E0.1 aún no se ejecuta; falta respaldo local, verificación, dos copias cifradas y prueba de restauración de la copia B. |
+| **E0** | Banco histórico 10.77 respaldado y comprobado. | **En preparación (probado localmente con servidor simulado; revisión pendiente).** Scripts e instrucciones listos en la rama local `trabajo/e0-respaldo`, sin push. El respaldo real NO se ha ejecutado: faltan respaldo con la llave del propietario, verificación, dos copias cifradas y restauración de prueba desde la copia B. **Urgente:** las capturas de la 10.77 empiezan a expirar el 20-11-2026. |
 | **E1** | Migraciones y esquema de auditoría preparados. | Preparación reportada en rama local de Claude; pendiente de revisión y aceptación. No está en GitHub ni aplicada. |
 | **E2** | Servidor compatible con los nuevos registros. | Contrato TypeScript y pruebas preparados en la misma rama local de E1; aún no conectado a `index.ts`, pendiente de revisión. |
 | **E3** | Android 10.81 con trazabilidad completa. | No iniciado. Requiere definir y aprobar tratamiento de datos, redacción, retención y revisión del aviso de privacidad antes de producción. |
@@ -107,6 +107,16 @@ Antes de que E3 llegue a producción deben estar aprobados el plan de datos, la 
 ## Registro de progreso y decisiones
 
 Añadir una entrada nueva al principio de esta sección por cada revisión o cambio. Registrar hechos comprobados y separar claramente lo reportado por Claude de lo verificado de forma independiente.
+
+### 2026-11-15 — E0.1: procedimiento de respaldo preparado y probado localmente (sin respaldo real)
+- **Estado anterior:** E0.1 pendiente; se hablaba de «scripts existentes».
+- **Hallazgo:** no existe ningún script de respaldo en `main`, en `docs/seguimiento-maestro` ni en el contenedor de esta sesión; las ramas `trabajo/*` citadas en este archivo tampoco existen aquí. No hubo nada que auditar: se escribió el procedimiento desde cero (`respaldo-e0/`). El único método previo documentado (`docs/banco-lector.md` §2: función temporal desplegada con `SERVICE_ROLE`) contradice los límites de E0 y no se usó.
+- **Trabajo realizado:** `respaldar.py` (solo lectura, host fijo, sin redirecciones, llave solo por variable de entorno), `verificar.py` (offline), `referencia.sql` (huellas independientes del script), `evidencia_copias.py` (tar determinista, restauración desde la copia B, registro), `verificar_entrega.py` (revisión de los artefactos sanitizados), `README.md` (pasos para el propietario) y 49 pruebas contra un servidor simulado.
+- **Evidencia y pruebas:** `python3 -m unittest discover -s pruebas` → 49 OK (Python 3.13, age 1.1.1, gpg 2.4.4). `referencia.sql` ejecutada en PostgreSQL 16 local con tablas simuladas: sus huellas coinciden con las de Python. 7 mutaciones del código (redirecciones, WebP, sha256, ids requeridos, llave anon, paginación, ligado a la copia B): 2 sobrevivieron al principio, se reforzaron esas 2 pruebas y las 7 quedaron detectadas. Detalle en `ENTREGA-E0-REVISION.md`.
+- **Limitaciones / riesgos:** nada se probó contra Supabase real (formato de listado, código HTTP de objeto inexistente, eTag, límites del SQL Editor son supuestos); la independencia física de las copias y su conservación son declaraciones del propietario; el contenido de las capturas no se valida; si hay actividad entre el respaldo y la consulta SQL aparecerán advertencias.
+- **Decisión del propietario:** pendiente (autorizar push de la rama para que pueda bajar los scripts, y el cuarto artefacto `EVIDENCIA-COPIAS.json`).
+- **Siguiente paso autorizado:** ninguno nuevo. El propietario ejecuta el README en su equipo y entrega los artefactos sanitizados. E0 sigue **abierto**.
+- **Cambios en producción / main / Supabase:** ninguno. Rama local `trabajo/e0-respaldo`, sin push.
 
 ### 2026-11-15 — Revisión cruzada L1.1/L1.2: no aprobado para integración
 - Sonnet reportó cuatro combinaciones sobre el banco de 316 casos: main/main = 277/316; main/etiquetas L1 = 284/316; parser L1/etiquetas L1 = 284/316; parser L1/etiquetas main = 277/316.
