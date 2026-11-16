@@ -11,7 +11,7 @@ Rama local `auditoria/cierre-plan-e`, creada sobre `7dc25b95c2cacaa763a85c059464
 ### 0.1 Estado por etapa
 | Etapa | Estado | Qué está verificado | Qué impide cerrarla |
 |---|---|---|---|
-| **E0** | **BLOQUEADA** | procedimiento E0.3: 84 pruebas (servidor simulado), mutaciones en `evidencias/cierre/e0-mutaciones.log` | no existe respaldo real, ni copias, ni restauración, ni inventario reconciliado (`respaldo-e0/INVENTARIO.md`) |
+| **E0** | **BLOQUEADA** | procedimiento E0.3: 86 pruebas (servidor simulado); 28 mutaciones: 27 detectadas y 1 equivalente (`evidencias/cierre/pruebas/e0-mutaciones*.log`) | no existe respaldo real, ni copias, ni restauración, ni inventario reconciliado (`respaldo-e0/INVENTARIO.md`) |
 | **E1** | ABIERTA | migraciones 001–005 idempotentes y reversibles en PostgreSQL **16.15 y 17.12 locales**; `public` intacto | sin validación en Supabase (roles, PostgREST, privilegios del proyecto); puerta de E0 |
 | **E2** | ABIERTA | contrato v1 y manejador (34 pruebas Node), coherencia TS ↔ SQL caso por caso | función sin ejecutar en Deno ni desplegar; puerta de E0 |
 | **E3** | ABIERTA (parte bloqueada) | núcleo Kotlin en JVM (17 pruebas), redacción por lista blanca sobre 1,983 líneas reales, lector sin cambios | **sin compilación Android real**, sin teléfono, sin aviso de privacidad aprobado |
@@ -57,13 +57,13 @@ Rama local `auditoria/cierre-plan-e`, creada sobre `7dc25b95c2cacaa763a85c059464
 ### 0.4 Pruebas (inventario reconciliado: `evidencias/cierre/INVENTARIO-PRUEBAS.md`)
 | Suite | Tipo | 15-nov | Ahora | Entorno |
 |---|---|---|---|---|
-| E0 `respaldo-e0/pruebas` | unitarias e integración contra servidor **simulado** | 64 | **84** | Python, age, gpg |
+| E0 `respaldo-e0/pruebas` | unitarias e integración contra servidor **simulado** | 64 | **86** | Python, age, gpg |
 | `auditoria/pruebas/test_*.py` | integración en PostgreSQL **local** | 78 | **89** (mismas 89 en 16 y en 17) | PG 16.15 y 17.12 |
 | `e2/registrar.test.ts` | unitarias (dependencias simuladas) | 34 | **34** | Node 22 |
 | Kotlin (`TrazaTest`, `GuardiaParserTest`) | unitarias en JVM, **no Android** | 15 | **17** | Kotlin 1.9.24, Java 21 |
 | `e6/admin_ui.test.js` | funcionales con cliente **simulado** | 8 | **9** | Playwright/Chromium |
-| **Total de pruebas únicas** | | 199 | **233** | |
-| Mutaciones E0 | mutación | 16 | **27** | |
+| **Total de pruebas únicas** | | 199 | **235** | |
+| Mutaciones E0 | mutación | 16 (todas detectadas) | **28**: 27 detectadas, 1 equivalente (M18: no cambia el comportamiento) | la corrida completa (27) se hizo con 84 pruebas; M18 y M18b se repitieron con las 86 |
 | Mutaciones del lector (E5) | mutación | 5 | **5** | |
 | Compilación `TrazaAndroid` contra stubs | compilación (no SDK) | 1 | 1 | |
 | Banco del lector | medición | 271/316 | 271/316 | |

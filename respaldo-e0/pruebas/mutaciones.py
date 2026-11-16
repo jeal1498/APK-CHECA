@@ -4,6 +4,10 @@ mutación no se detecte solo por la huella) y corre la suite. Una mutación debe
 Uso: python3 pruebas/mutaciones.py [DIR_respaldo-e0]   (no modifica el original). Sale con 1 si alguna sobrevive."""
 import hashlib, os, re, shutil, subprocess, sys, tempfile
 AQUI = os.path.dirname(os.path.abspath(__file__))
+# Opcional: --solo M18,M19 para repetir solo algunas mutaciones.
+SOLO = None
+if "--solo" in sys.argv:
+    i = sys.argv.index("--solo"); SOLO = set(sys.argv[i + 1].split(",")); del sys.argv[i:i + 2]
 BASE = sys.argv[1] if len(sys.argv) > 1 else os.path.dirname(AQUI)
 sys.path.insert(0, BASE)
 import comun  # noqa: E402
@@ -26,6 +30,7 @@ M = [
  ("M16 D3 E12b siempre ok", "verificar_entrega.py", 'cond("E12b", not p_res,', 'cond("E12b", True,'),
  ("M17 H1 verificar acepta rutas inseguras", "verificar.py", "        except comun.RutaInsegura as e:\n            inseguras.append(str(e))", "        except comun.RutaInsegura as e:\n            pass"),
  ("M18 H1 nombre_seguro acepta ..", "comun.py", 'if p in ("", ".", "..") or', 'if p in ("", ".") or'),
+ ("M18b H1 nombre_seguro sin reglas de punto ni «..»", "comun.py", 'if p in ("", ".", "..") or not _RE_COMPONENTE.match(p) or p.endswith((" ", ".")) or p.startswith(" "):', 'if p == "" or not _RE_COMPONENTE.match(p):'),
  ("M19 H1 ruta_en no comprueba la ruta real (enlaces)", "comun.py", "    if os.path.realpath(p) != p or not p.startswith(raiz + os.sep):", "    if False:"),
  ("M20 H2 empaquetar sin verificar", "evidencia_copias.py", '    if v["resultado"] == "FALLO":\n        raise SystemExit("ERROR: el respaldo no verifica', '    if False:\n        raise SystemExit("ERROR: el respaldo no verifica'),
  ("M21 H3 COMPLETA sin comprobar A", "evidencia_copias.py", '                                          ev["copia_a_comprobada"], ev["versiones_coherentes"],', '                                          True, ev["versiones_coherentes"],'),
@@ -50,15 +55,22 @@ t, d = copia(); code, out = suite(d); shutil.rmtree(t)
 print(f"BASE sin mutar: {'OK' if code == 0 else 'FALLA'}", flush=True)
 if code:
     print(out[-2000:]); sys.exit(2)
+# Mutaciones EQUIVALENTES conocidas: no cambian el comportamiento, así que ninguna prueba puede detectarlas.
+# M18: quitar «..» de la lista no cambia nada porque la misma condición rechaza todo componente que termina en punto.
+EQUIVALENTES = {"M18"}
 sobreviven = 0
+if SOLO:
+    M = [m for m in M if m[0].split()[0] in SOLO]
 for nombre, f, o, n in M:
     t, d = copia()
     p = os.path.join(d, f); s = open(p, encoding="utf-8").read(); assert s.count(o) == 1, (nombre, s.count(o))
     open(p, "w", encoding="utf-8").write(s.replace(o, n, 1)); fijar(d)
     code, out = suite(d)
     fallan = re.findall(r"^(?:FAIL|ERROR): (\S+)", out, flags=re.M)
-    sobreviven += code == 0
-    print(f"{nombre}: {'DETECTADA' if code else 'SOBREVIVE'}; fallan {len(fallan)}: {fallan[:3]}", flush=True)
+    equiv = nombre.split()[0] in EQUIVALENTES
+    sobreviven += code == 0 and not equiv
+    print(f"{nombre}: {'DETECTADA' if code else ('EQUIVALENTE (no detectable; ver comentario)' if equiv else 'SOBREVIVE')}; fallan {len(fallan)}: {fallan[:3]}", flush=True)
     shutil.rmtree(t)
-print(f"{len(M)} mutaciones, {len(M) - sobreviven} detectadas, {sobreviven} sobreviven.")
+eq = sum(1 for m in M if m[0].split()[0] in EQUIVALENTES)
+print(f"{len(M)} mutaciones: {len(M) - sobreviven - eq} detectadas, {eq} equivalentes, {sobreviven} sobreviven.")
 sys.exit(1 if sobreviven else 0)

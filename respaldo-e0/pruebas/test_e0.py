@@ -790,6 +790,23 @@ class TestAuditoriaCierre(MontajeCopias):
             comun.ruta_en(self.dir(), "capturas/dir/x.webp", "captura")
         self.assertTrue(comun.ruta_en(self.dir(), "capturas/101.webp", "captura").endswith("101.webp"))
 
+    def test_h1_nombre_seguro_rechaza_cada_forma_peligrosa_por_si_solo(self):
+        """Sin carpeta de por medio (como en verificar_entrega, que solo tiene el manifiesto)."""
+        for nombre in ("..", "../x.webp", "capturas/../x.webp", "capturas/..", ".", "capturas/./x.webp", "", "/abs.webp", "capturas//x.webp",
+                       "capturas\\x.webp", "C:/x.webp", "capturas/x\x00.webp", "capturas/con.webp", "capturas/x.webp ", "capturas/ñ.webp"):
+            with self.subTest(nombre), self.assertRaises(comun.RutaInsegura):
+                comun.nombre_seguro(nombre)
+
+    def test_h1_entrega_con_ruta_peligrosa_en_el_manifiesto_falla(self):
+        entrega = os.path.join(self.tmp, "entrega"); os.makedirs(entrega)
+        for n in ("resumen.json", "manifiesto.csv", "VERIFICACION.json"):
+            shutil.copy(os.path.join(self.dir(), n), entrega)
+        man_p = os.path.join(entrega, "manifiesto.csv")
+        filas = comun.leer_manifiesto(man_p) + [{"tipo": "captura", "nombre": "capturas/../../fuera.webp", "bytes": 5, "sha256": "a" * 64, "origen": "otro"}]
+        open(man_p, "wb").write(comun.escribir_manifiesto(filas))
+        r = verificar_entrega.verificar_entrega(entrega, self.ids)
+        self.assertIn("E03b", {c["id"] for c in r["checks"] if c["estado"] == "fallo"})
+
     def test_h1_tipo_y_ubicacion_coherentes(self):
         for tipo, nombre in (("tabla", "tablas/otra.jsonl"), ("captura", "tablas/errores_lector.jsonl2"), ("lista", "otra.txt"), ("raro", "capturas/x.webp")):
             with self.assertRaises(comun.RutaInsegura):

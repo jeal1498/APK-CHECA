@@ -24,7 +24,7 @@ El orden de ejecución y aceptación es **E0 → E1 → E2 → E3 → E4 → E5 
 
 | Entrega | Resultado que debe quedar | Estado al 15-11-2026 |
 |---|---|---|
-| **E0** | Banco histórico 10.77 respaldado y comprobado. | **BLOQUEADA.** Procedimiento E0.3 (D1–D5 y H1–H8 corregidos; 84 pruebas con servidor simulado). **No existe respaldo real**, ni copias, ni restauración, ni inventario reconciliado (`respaldo-e0/INVENTARIO.md`). Lo ejecuta el propietario. **Las capturas expiran desde el 20-11-2026.** |
+| **E0** | Banco histórico 10.77 respaldado y comprobado. | **BLOQUEADA.** Procedimiento E0.3 (D1–D5 y H1–H8 corregidos; 86 pruebas con servidor simulado). **No existe respaldo real**, ni copias, ni restauración, ni inventario reconciliado (`respaldo-e0/INVENTARIO.md`). Lo ejecuta el propietario. **Las capturas expiran desde el 20-11-2026.** |
 | **E1** | Migraciones y esquema de auditoría preparados. | **Abierta.** `auditoria/sql/001` (+ reversión) probado en PostgreSQL 16.15 y 17.12 locales. No aplicado ni validado en Supabase. No avanza hasta aceptar E0. |
 | **E2** | Servidor compatible con los nuevos registros. | **Abierta.** `002` + `registrar-lectura` (contrato v1 con lista blanca de líneas). Probado en local; sin Deno ni despliegue. |
 | **E3** | Android 10.81 con trazabilidad completa. | **Abierta.** Núcleo probado en JVM (17 pruebas); redacción corregida (ya no salen direcciones). **Sin compilación Android real, sin teléfono, sin aviso de privacidad.** Apagado por defecto. |
@@ -111,7 +111,7 @@ Añadir una entrada nueva al principio de esta sección por cada revisión o cam
 ### 2026-11-16 — Auditoría de cierre del plan E: BLOQUEADO en E0
 - **Estado anterior:** E0–E7 «implementados y probados en local» (commit `7dc25b9`, pausado para revisión).
 - **Trabajo realizado:** recuperación verificada del bundle (commit y árbol exactos); auditoría de E0–E7; 17 defectos corregidos con regresión (H1–H8 en E0; A1–A7 en E1–E7; logs completos). Los más graves: `verificar.py`/`empaquetar` leían o empaquetaban archivos de fuera del respaldo; la copia A nunca se comprobaba; **la redacción de E3 dejaba salir direcciones**; un revisor podía valer por dos. Rama local `auditoria/cierre-plan-e`. Sin push.
-- **Evidencia y pruebas:** 233 pruebas únicas OK (84 E0, 89 SQL/Python en PostgreSQL 16.15 **y** 17.12, 34 Node, 17 Kotlin/JVM, 9 Playwright); mutaciones E0 y 5/5 del lector; logs completos en `evidencias/cierre/pruebas/`; auditoría estática de seguridad sin hallazgos críticos en el cambio.
+- **Evidencia y pruebas:** 235 pruebas únicas OK (86 E0, 89 SQL/Python en PostgreSQL 16.15 **y** 17.12, 34 Node, 17 Kotlin/JVM, 9 Playwright); mutaciones E0 y 5/5 del lector; logs completos en `evidencias/cierre/pruebas/`; auditoría estática de seguridad sin hallazgos críticos en el cambio.
 - **Limitaciones / riesgos:** sin respaldo real; sin compilación Android (aceptar licencias del SDK fue denegado); sin Supabase real; 0 etiquetas humanas; hallazgo X1: en producción ya se envían líneas de DiDi con dirección (`Confirmador.filtrar`); un merge a `main` publicaría un release (`auditoria/WORKFLOWS.md`).
 - **Decisión del propietario:** pendiente. Lista única de acciones externas en `EXPEDIENTE-E0-E7.md` § 0.5.
 - **Siguiente paso autorizado:** ninguno nuevo. Prioridad: el propietario ejecuta E0.
