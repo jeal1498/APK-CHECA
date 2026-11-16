@@ -40,6 +40,7 @@ class E4(unittest.TestCase):
     def humano(self, objetivo, autor, clase="oferta", tarifa=50, km=5, min_=12, estado="validado", ev=H, guia="1.0", **k):
         cols = {"caso_banco": None, "error_lector_id": None, "lectura_id": None}
         cols.update(objetivo)
+        k = {x: y for x, y in k.items() if y is not None}
         datos = dict(cols, fuente="humano", autor=autor, clase=clase, tarifa=tarifa if clase == "oferta" else None,
                      km=km if clase == "oferta" else None, min=min_ if clase == "oferta" else None, estado=estado,
                      evidencia_sha256=ev, guia_version=guia, **k)
@@ -134,6 +135,26 @@ class E4(unittest.TestCase):
         self.humano({"caso_banco": "0006-uber"}, "rev1", tarifa=50)
         self.humano({"caso_banco": "0006-uber"}, "rev2", tarifa=60)
         self.assertEqual(self.vigente("caso_banco='0006-uber'"), "conflicto_humano|2|-|-")
+
+    def test_a3_un_mismo_revisor_no_suma_dos_votos(self):
+        i = self.humano({"caso_banco": "0012-uber"}, "rev1")
+        self.humano({"caso_banco": "0012-uber"}, "rev1", sustituye=i)
+        self.humano({"caso_banco": "0012-uber"}, "rev1", sustituye=i)  # dos sustitutos del mismo veredicto
+        self.assertEqual(self.vigente("caso_banco='0012-uber'").split("|")[:2], ["referencia_humana", "1"])
+
+    def test_a3_tolerancias_de_la_guia(self):
+        self.humano({"caso_banco": "0013-uber"}, "rev1", km=5.00, min_=12.0)
+        self.humano({"caso_banco": "0013-uber"}, "rev2", km=5.04, min_=12.4)
+        self.assertEqual(self.vigente("caso_banco='0013-uber'"), "referencia_doble|2|oferta|50.00")
+        self.humano({"caso_banco": "0015-uber"}, "rev1", km=5.00)
+        self.humano({"caso_banco": "0015-uber"}, "rev2", km=5.10)
+        self.assertEqual(self.vigente("caso_banco='0015-uber'"), "conflicto_humano|2|-|-")
+        self.humano({"caso_banco": "0017-uber"}, "rev1", tarjeta=1)
+        self.humano({"caso_banco": "0017-uber"}, "rev2", tarjeta=2)
+        self.assertEqual(self.vigente("caso_banco='0017-uber'").split("|")[0], "conflicto_humano")
+        self.humano({"caso_banco": "0020-uber"}, "rev1", clase="varias")
+        self.humano({"caso_banco": "0020-uber"}, "rev2", clase="no_oferta")
+        self.assertEqual(self.vigente("caso_banco='0020-uber'").split("|")[0], "conflicto_humano")
 
     def test_propuesto_o_descartado_no_es_referencia(self):
         self.humano({"caso_banco": "0010-uber"}, "rev1", estado="propuesto")

@@ -85,6 +85,10 @@ class E7(unittest.TestCase):
                            f" values ('{e['id']}', 'humano', '{autor}', '1.0', '{v[0]}', {vals}, 'validado', '{'e' * 64}');")
             cls.refs[e["id"]] = (a, b)
         cls.pg.sql("\n".join(sql))
+        e1 = ofertas[46]   # un solo revisor: no es referencia, no entra en la precisión
+        cls.uno = e1["id"]
+        cls.pg.sql("insert into auditoria.veredictos (lectura_id, fuente, autor, guia_version, clase, estado, evidencia_sha256) values "
+                   f"('{e1['id']}', 'humano', 'rev_a', '1.0', 'no_oferta', 'validado', '{'e' * 64}');")
         cls.pg.sql("insert into auditoria.veredictos (lectura_id, fuente, autor, clase) values "
                    f"('{ofertas[45]['id']}', 'ia', 'claude-haiku-5-5', 'no_oferta');")  # IA: no cuenta como referencia
 
@@ -123,7 +127,8 @@ class E7(unittest.TestCase):
         return {"lecturas": (len(ev), len(ev)), "ofertas_mostradas": (len(ofe), len(ev)), "duplicadas": (dup, len(ofe) + dup),
                 "abstenciones": (absn, len(ofe) + absn), "captura_exacta": (sum(e["captura_vinculo"] == "exacto" for e in ofe), len(ofe)),
                 "ms_popup_p50": (None, len(lat), redondear(pct(lat, 0.5))), "ms_popup_p90": (None, len(lat), redondear(pct(lat, 0.9))),
-                "reintentos": (rei, len(ev)), "con_referencia_humana": (conref, len(ofe)), "precision_humana": (ok, conref),
+                "reintentos": (rei, len(ev)), "con_referencia_humana": (conref, len(ofe)),
+                "con_un_solo_revisor": (sum(e["id"] == self.uno for e in ofe), len(ofe)), "precision_humana": (ok, conref),
                 "falsos_positivos_humana": (fp, conref), "mezcla_tarjetas_humana": (mez, conref), "conflictos_humanos": (conf, len(ofe))}
 
     def comprobar(self, app=None):

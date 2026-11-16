@@ -156,3 +156,12 @@ test("la página no trae llaves ni secretos", () => {
   }
   assert.match(fs.readFileSync(path.join(ADMIN, "index.html"), "utf8"), /Content-Security-Policy/);
 });
+
+test("A6: la biblioteca externa va con versión fija, archivo real y huella SRI", () => {
+  const js = fs.readFileSync(path.join(ADMIN, "app.js"), "utf8");
+  assert.match(js, /supabase-js@2\.45\.4\/dist\/umd\/supabase\.js"/);
+  assert.match(js, /sc\.integrity = "sha384-[A-Za-z0-9+/]{64}"/);
+  assert.doesNotMatch(js, /supabase\.min\.js/);
+  const codigo = js.split("\n").filter((l) => !l.trim().startsWith("//")).join("\n");   // sin los comentarios
+  assert.doesNotMatch(codigo + fs.readFileSync(path.join(ADMIN, "index.html"), "utf8"), /innerHTML|document\.write|eval\(|localStorage|sessionStorage/);
+});

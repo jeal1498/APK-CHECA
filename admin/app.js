@@ -192,7 +192,10 @@
   document.addEventListener("DOMContentLoaded", function () {
     if (window.CHECA_CLIENTE) { iniciar(window.CHECA_CLIENTE); return; }
     var sc = document.createElement("script");
-    sc.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js";
+    // Archivo real del paquete npm (no el «.min.js» que el CDN genera al vuelo) con su huella SRI:
+    // si el CDN sirviera otra cosa, el navegador no la ejecuta. Huella calculada del tarball de npm 2.45.4.
+    sc.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js";
+    sc.integrity = "sha384-0w2KAL2YHP6wKOkUDzkCDGgVvfmHnj02DHeQ6XcHOgTfFsGyonKOpShMH1x6nk9o";
     sc.crossOrigin = "anonymous";
     sc.onload = function () { iniciar(window.supabase.createClient(window.CHECA_CONFIG.url, window.CHECA_CONFIG.anon)); };
     sc.onerror = function () { aviso("No se pudo cargar la biblioteca de Supabase."); };

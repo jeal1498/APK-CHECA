@@ -125,7 +125,28 @@ class E6(unittest.TestCase):
         for err, s in casos.items():
             with self.subTest(err):
                 self.assertEqual(self.rpc(ADM, s), {"error": err})
-        self.assertEqual(self.q("select count(*) from auditoria.acciones_admin where resultado='invalido'"), str(len(casos)))
+        # Las negativas/inválidos se anotan una vez por minuto por persona y acción (A5): 3 acciones distintas.
+        self.assertEqual(self.q("select count(*) from auditoria.acciones_admin where resultado='invalido'"), "3")
+
+    def test_a5_un_conductor_no_puede_inflar_la_bitacora(self):
+        for _ in range(25):
+            self.assertEqual(self.rpc(NAD, f"public.admin_ofertas({R})"), {"error": "no_autorizado"})
+        self.assertEqual(self.q("select count(*) from auditoria.acciones_admin"), "1")
+        self.q("update pg_trigger set tgenabled = 'D' where tgname = 'acciones_admin_solo_agregar'")
+        self.q("update auditoria.acciones_admin set creado = now() - interval '2 minutes'")
+        self.q("update pg_trigger set tgenabled = 'O' where tgname = 'acciones_admin_solo_agregar'")
+        self.rpc(NAD, f"public.admin_ofertas({R})")
+        self.assertEqual(self.q("select count(*) from auditoria.acciones_admin"), "2")  # pasado el minuto vuelve a anotarse
+        for _ in range(3):  # las consultas correctas se anotan siempre
+            self.rpc(ADM, f"public.admin_ofertas({R})")
+        self.assertEqual(self.q("select count(*) from auditoria.acciones_admin where resultado='ok'"), "3")
+
+    def test_a3_un_solo_revisor_no_se_muestra_como_referencia(self):
+        e = self.evs[2]["id"]
+        self.rpc(REV, f"public.admin_veredicto('lectura', '{e}', 'oferta', 120.5, 10.2, 25, null, 'alta', '{'d' * 64}')")
+        r = self.rpc(ADM, f"public.admin_ofertas({R}, estado_veredicto => 'referencia_humana')")
+        self.assertEqual(r["total"], 1)
+        self.assertIsNone(r["filas"][0]["referencia"])
 
     def test_inyeccion_en_filtros_no_hace_nada(self):
         r = self.rpc(ADM, f"public.admin_ofertas({R}, app => $$didi' or '1'='1$$)")

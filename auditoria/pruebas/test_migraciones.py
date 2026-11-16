@@ -42,7 +42,7 @@ def evento(**k):
          "ts_fotograma": "2026-11-15T10:00:00Z", "ts_evento": "2026-11-15T10:00:01Z", "resultado": "oferta",
          "tarifa": 120.5, "km": 10.2, "min": 25, "rec_km": 1.5, "rec_min": 5, "moneda": "MXN", "nivel": "verde",
          "tarjetas": 1, "ms_lectura": 420, "ms_popup": 650, "lineas_sha256": "a" * 64,
-         "lineas_redactadas": ["$120.50", "5 min (1.5 km)"], "orientacion": "vertical",
+         "lineas_redactadas": ["$120.50", "5 min ( 1.5 km )"], "orientacion": "vertical",
          "etapas": [{"etapa": "captura", "estado": "ok", "ms": 30}, {"etapa": "parser", "estado": "ok", "ms": 2}]}
     e.update(k)
     return {x: v for x, v in e.items() if v is not None}
@@ -218,6 +218,19 @@ class Migraciones(unittest.TestCase):
         self.assertEqual(self.registrar([e], u=U2)[0]["estado"], "conflicto")
         self.assertEqual(self.q("select usuario from auditoria.lecturas").strip(), U1)
 
+    def test_a1_fila_previa_sin_recepcion_no_es_invalido(self):
+        """Carrera entre dos envíos: la lectura ya existe cuando el segundo intenta insertarla."""
+        self.subir("001_auditoria", "002_registrar")
+        e = evento()
+        self.registrar([e])
+        self.q("delete from auditoria.recepciones")  # estado intermedio que ve el segundo envío
+        r = self.registrar([e])[0]
+        self.assertEqual(r["estado"], "conflicto")   # no hay huella con qué comparar: nunca «guardado» ni sobrescritura
+        self.assertEqual(self.q("select count(*) from auditoria.lecturas").strip(), "1")
+        # Otra restricción única (mismo fotograma y app con otra oferta) sí es inválido, no conflicto.
+        otro = evento(fotograma_id=e["fotograma_id"])
+        self.assertEqual(self.registrar([otro])[0]["estado"], "invalido")
+
     def test_lote_mixto_guarda_lo_valido(self):
         self.subir("001_auditoria", "002_registrar")
         r = self.registrar([evento(), evento(app="x"), evento()])
@@ -253,7 +266,7 @@ class Migraciones(unittest.TestCase):
     # ---------- E3: lo que serializa Traza.kt lo aceptan el contrato TS y la base ----------
     def test_muestras_de_android_pasan_contrato_y_base(self):
         import subprocess
-        ruta = os.path.join(RAIZ, "evidencias", "e3", "muestras_kotlin.json")
+        ruta = os.path.join(RAIZ, "evidencias", "cierre", "e3", "muestras_kotlin.json")
         out = subprocess.run(["node", "--experimental-strip-types", "--no-warnings", os.path.join(RAIZ, "auditoria", "pruebas", "e2", "validar_archivo.ts"), ruta],
                              capture_output=True, text=True, check=True).stdout
         self.assertEqual([x for x in json.loads(out) if x["error"]], [])

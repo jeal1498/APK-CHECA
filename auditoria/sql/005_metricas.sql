@@ -24,10 +24,11 @@ insert into auditoria.metricas_def (clave, grupo, nombre, formula, poblacion, fu
  ('ms_popup_p50', 'operacion', 'Latencia del pop-up p50 (ms)', 'percentil 50 de ms_popup', 'ofertas con ms_popup', 'auditoria.lecturas', 'sin ms_popup'),
  ('ms_popup_p90', 'operacion', 'Latencia del pop-up p90 (ms)', 'percentil 90 de ms_popup', 'ofertas con ms_popup', 'auditoria.lecturas', 'sin ms_popup'),
  ('reintentos', 'operacion', 'Reintentos de envío recibidos', 'sum(intentos - 1)', 'eventos de la ventana', 'auditoria.recepciones', null),
- ('con_referencia_humana', 'calidad_humana', 'Ofertas con referencia humana', 'ofertas con veredicto referencia_humana/doble / ofertas', 'ofertas mostradas', 'auditoria.veredicto_vigente', null),
- ('precision_humana', 'calidad_humana', 'Precisión de pop-ups (humana)', 'pop-ups correctos / pop-ups con referencia humana', 'ofertas con referencia humana', 'lecturas × veredicto_vigente', 'sin referencia, conflicto_humano, ilegible, cambio_pantalla'),
- ('falsos_positivos_humana', 'calidad_humana', 'Pop-ups sobre algo que no era oferta', 'referencia no_oferta / pop-ups con referencia humana', 'ofertas con referencia humana', 'lecturas × veredicto_vigente', 'igual que precision_humana'),
- ('mezcla_tarjetas_humana', 'calidad_humana', 'Pop-ups de una oferta con varias tarjetas', 'referencia varias / pop-ups con referencia humana', 'ofertas con referencia humana', 'lecturas × veredicto_vigente', 'igual que precision_humana'),
+ ('con_referencia_humana', 'calidad_humana', 'Ofertas con referencia humana doble', 'ofertas con veredicto referencia_doble / ofertas', 'ofertas mostradas', 'auditoria.veredicto_vigente', 'un solo revisor no es referencia'),
+ ('con_un_solo_revisor', 'calidad_humana', 'Ofertas con un solo revisor (aún no son referencia)', 'ofertas con veredicto referencia_humana / ofertas', 'ofertas mostradas', 'auditoria.veredicto_vigente', null),
+ ('precision_humana', 'calidad_humana', 'Precisión de pop-ups (referencia humana doble)', 'pop-ups correctos / pop-ups con referencia doble', 'ofertas con referencia doble', 'lecturas × veredicto_vigente', 'sin referencia, un solo revisor, conflicto_humano, ilegible, cambio_pantalla'),
+ ('falsos_positivos_humana', 'calidad_humana', 'Pop-ups sobre algo que no era oferta', 'referencia no_oferta / pop-ups con referencia doble', 'ofertas con referencia doble', 'lecturas × veredicto_vigente', 'igual que precision_humana'),
+ ('mezcla_tarjetas_humana', 'calidad_humana', 'Pop-ups de una oferta con varias tarjetas', 'referencia varias / pop-ups con referencia doble', 'ofertas con referencia doble', 'lecturas × veredicto_vigente', 'igual que precision_humana'),
  ('recall', 'calidad_humana', 'Ofertas reales que el lector no mostró', 'NO MEDIBLE con telemetría', 'requiere ofertas reales sin pop-up registradas', '—', 'los eventos no registran ofertas no vistas'),
  ('conflictos_humanos', 'calidad_humana', 'Casos con desacuerdo humano', 'count(estado = conflicto_humano)', 'veredictos vigentes de lecturas de la ventana', 'auditoria.veredicto_vigente', null),
  ('acuerdo_ia_lector', 'acuerdo_ia', 'Acuerdo IA/lector (NO es exactitud)', 'coincide / revisadas', 'revisiones ok, sin rescates', 'public.revisiones', 'rescates'),
@@ -59,7 +60,7 @@ revoke all on function auditoria.ventana(timestamptz, timestamptz, text, text) f
 create or replace function auditoria.metricas(desde timestamptz, hasta timestamptz, p_app text default null, p_version text default null)
 returns jsonb language plpgsql stable security definer set search_path = auditoria, public, pg_temp as $$
 declare r jsonb := '[]'; ofe int; dup int; abs_ int; exa int; tot int; rei int; p50 numeric; p90 numeric; nlat int;
-        conref int; ok_ int; fp int; mez int; conf int; rev int; coi int; b record;
+        conref int; ok_ int; fp int; mez int; conf int; rev int; coi int; uno int; b record;
 begin
   select count(*), count(*) filter (where resultado = 'oferta'), count(*) filter (where resultado = 'duplicada'),
          count(*) filter (where resultado in ('abstencion', 'varias')), count(*) filter (where resultado = 'oferta' and captura_vinculo = 'exacto')
@@ -73,7 +74,9 @@ begin
          count(*) filter (where v.clase = 'no_oferta'), count(*) filter (where v.clase = 'varias')
     into conref, ok_, fp, mez
     from auditoria.ventana(desde, hasta, p_app, p_version) l join veredicto_vigente v on v.lectura_id = l.id
-   where l.resultado = 'oferta' and v.estado in ('referencia_humana', 'referencia_doble') and v.clase in ('oferta', 'no_oferta', 'varias');
+   where l.resultado = 'oferta' and v.estado = 'referencia_doble' and v.clase in ('oferta', 'no_oferta', 'varias');
+  select count(*) into uno from auditoria.ventana(desde, hasta, p_app, p_version) l join veredicto_vigente v on v.lectura_id = l.id
+   where l.resultado = 'oferta' and v.estado = 'referencia_humana';
   select count(*) into conf from auditoria.ventana(desde, hasta, p_app, p_version) l join veredicto_vigente v on v.lectura_id = l.id where v.estado = 'conflicto_humano';
   select count(*) filter (where ok and modo <> 'rescate'), count(*) filter (where ok and modo <> 'rescate' and coincide)
     into rev, coi from public.revisiones x where x.creado >= desde and x.creado < hasta
@@ -90,6 +93,7 @@ begin
     fila_metrica('ms_popup_p90', null, nlat, round(p90::numeric, 0)),
     fila_metrica('reintentos', rei, tot, rei),
     fila_metrica('con_referencia_humana', conref, ofe),
+    fila_metrica('con_un_solo_revisor', uno, ofe),
     fila_metrica('precision_humana', ok_, conref),
     fila_metrica('falsos_positivos_humana', fp, conref),
     fila_metrica('mezcla_tarjetas_humana', mez, conref),

@@ -43,10 +43,16 @@ $$ select left(md5(coalesce(u::text, '')), 8) $$;
 create or replace function auditoria.rol_actual() returns text language sql stable security definer
 set search_path = auditoria, pg_temp as $$ select rol from auditoria.administradores where usuario = auth.uid() $$;
 
+-- Las negativas y los filtros inválidos se anotan como mucho una vez por minuto por persona y acción: cualquier
+-- cuenta de conductor puede llamar a estas funciones y no debe poder inflar la bitácora. (Auditoría de cierre, A5.)
 create or replace function auditoria.anotar(accion text, objeto text, filtros jsonb, filas integer, resultado text) returns void
 language sql security definer set search_path = auditoria, pg_temp as $$
   insert into auditoria.acciones_admin (admin, accion, objeto, filtros, filas, resultado)
-  values (auditoria.seudonimo(auth.uid()), accion, objeto, filtros, filas, resultado);
+  select auditoria.seudonimo(auth.uid()), anotar.accion, anotar.objeto, anotar.filtros, anotar.filas, anotar.resultado
+  where anotar.resultado = 'ok' or not exists (
+    select 1 from auditoria.acciones_admin a
+    where a.admin = auditoria.seudonimo(auth.uid()) and a.accion = anotar.accion and a.resultado = anotar.resultado
+      and a.creado > now() - interval '1 minute');
 $$;
 
 -- Valida filtros comunes. Devuelve null si están bien o el código de error.
@@ -110,7 +116,7 @@ begin
            jsonb_build_object('tarifa', e.local->'tarifa', 'km', e.local->'km', 'min', e.local->'min') as lector_lectura,
            jsonb_build_object('oferta', e.ia->'oferta', 'tarifa', e.ia->'tarifa', 'km', e.ia->'km', 'min', e.ia->'min') as ia_lectura,
            coalesce(v.estado, 'sin_veredicto') as estado_veredicto,
-           case when v.estado in ('referencia_humana', 'referencia_doble')
+           case when v.estado = 'referencia_doble'
                 then jsonb_build_object('clase', v.clase, 'tarifa', v.tarifa, 'km', v.km, 'min', v.min) end as referencia,
            exists (select 1 from storage.objects o where o.bucket_id = 'capturas' and o.name = e.id::text || '.webp') as tiene_captura
     from public.errores_lector e left join veredicto_vigente v on v.error_lector_id = e.id
@@ -144,7 +150,7 @@ begin
     select l.id, l.ts_evento, l.app, l.version_app, l.version_parser, l.lector, l.resultado, l.motivo, l.tarifa, l.km, l.min,
            l.nivel, l.captura_vinculo, l.ms_popup, auditoria.seudonimo(l.usuario) as conductor,
            coalesce(v.estado, 'sin_veredicto') as estado_veredicto,
-           case when v.estado in ('referencia_humana', 'referencia_doble')
+           case when v.estado = 'referencia_doble'
                 then jsonb_build_object('clase', v.clase, 'tarifa', v.tarifa, 'km', v.km, 'min', v.min) end as referencia,
            (select jsonb_agg(jsonb_build_object('etapa', e.etapa, 'estado', e.estado, 'ms', e.ms, 'motivo', e.motivo) order by e.orden)
               from etapas e where e.lectura_id = l.id) as etapas
@@ -196,7 +202,7 @@ language plpgsql security definer set search_path = auditoria, pg_temp as $$
 declare r jsonb;
 begin
   if auditoria.rol_actual() is null then perform auditoria.anotar('bitacora', null, null, 0, 'denegado'); return '{"error":"no_autorizado"}'; end if;
-  if pagina < 1 or pagina > 1000 then return '{"error":"pagina"}'; end if;
+  if pagina is null or pagina < 1 or pagina > 1000 then return '{"error":"pagina"}'; end if;
   select coalesce(jsonb_agg(to_jsonb(a) order by a.id desc), '[]') into r
     from (select * from acciones_admin order by id desc offset (pagina - 1) * 50 limit 50) a;
   perform auditoria.anotar('bitacora', null, jsonb_build_object('pagina', pagina), jsonb_array_length(r), 'ok');

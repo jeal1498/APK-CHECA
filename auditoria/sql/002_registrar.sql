@@ -45,9 +45,22 @@ begin
       end loop;
       insert into auditoria.recepciones (lectura_id, payload_sha256) values (idv, huella);
       res := res || jsonb_build_object('id', idv, 'estado', 'guardado');
-    exception when others then
-      -- Subtransacción revertida: nada parcial queda guardado. El código SQL ayuda a diagnosticar sin datos.
-      res := res || jsonb_build_object('id', ev->>'id', 'estado', 'invalido', 'error', sqlstate);
+    exception
+      when unique_violation then
+        -- Dos envíos del mismo evento a la vez (o una fila previa sin recepción): no es «inválido». Se decide con
+        -- lo que quedó guardado: mismo contenido y dueño = repetido; si no, conflicto. (Auditoría de cierre, A1.)
+        select usuario into dueno from auditoria.lecturas where id = idv;
+        select * into previa from auditoria.recepciones where lectura_id = idv;
+        if found and previa.payload_sha256 = huella and dueno is not distinct from u then
+          res := res || jsonb_build_object('id', idv, 'estado', 'repetido');
+        elsif not found and dueno is null then
+          res := res || jsonb_build_object('id', ev->>'id', 'estado', 'invalido', 'error', sqlstate);  -- otra restricción única
+        else
+          res := res || jsonb_build_object('id', idv, 'estado', 'conflicto');
+        end if;
+      when others then
+        -- Subtransacción revertida: nada parcial queda guardado. El código SQL ayuda a diagnosticar sin datos.
+        res := res || jsonb_build_object('id', ev->>'id', 'estado', 'invalido', 'error', sqlstate);
     end;
   end loop;
   return res;

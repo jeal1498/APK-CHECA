@@ -63,20 +63,29 @@ create trigger veredicto_inmutable before update or delete on auditoria.veredict
   for each row execute function auditoria.veredicto_inmutable();
 
 -- Veredicto vigente por objetivo, con precedencia explícita:
---   1. humanos validados que coinciden (≥ 1)            → 'referencia_humana' (≥ 2 que coinciden: 'referencia_doble')
---   2. humanos validados que NO coinciden entre sí      → 'conflicto_humano' (no se fuerza una clase)
---   3. sin humano validado, con IA                       → 'solo_ia'
---   4. solo heredado                                     → 'heredado_no_revisado'
--- Los sustituidos y descartados no cuentan.
+--   1. ≥ 2 revisores humanos DISTINTOS validados que coinciden → 'referencia_doble' (la única que usan las métricas)
+--   2. 1 revisor humano validado                               → 'referencia_humana' (una sola persona: aún no es referencia)
+--   3. humanos validados que NO coinciden                      → 'conflicto_humano' (no se fuerza una clase)
+--   4. sin humano validado, con IA                             → 'solo_ia'
+--   5. solo heredado                                           → 'heredado_no_revisado'
+-- De cada autor cuenta solo su veredicto más reciente no descartado ni sustituido (una persona no puede sumar
+-- dos votos). «Coinciden» = misma clase y tarjeta y, si es oferta, tarifa ±0.01, km ±0.05, min ±0.5: las
+-- tolerancias de la guía de etiquetado (auditoria/etiquetado/metricas.py TOL). Los datos de la referencia son
+-- los del veredicto validado más antiguo. (Auditoría de cierre, A3.)
 create or replace view auditoria.veredicto_vigente with (security_invoker = on) as
-with v as (
+with v0 as (
   select x.*, coalesce(x.lectura_id::text, 'e' || x.error_lector_id::text, 'b' || x.caso_banco) as objetivo
   from auditoria.veredictos x
   where x.estado <> 'descartado' and not exists (select 1 from auditoria.veredictos s where s.sustituye = x.id)
+), v as (
+  select distinct on (objetivo, fuente, autor) * from v0 order by objetivo, fuente, autor, id desc
 ), h as (
   select objetivo, count(*) as n_humanos,
-         count(distinct (clase, tarifa, km, min, tarjeta)) as distintos,
-         min(clase) as clase, min(tarifa) as tarifa, min(km) as km, min(min) as min, min(tarjeta) as tarjeta
+         (count(distinct clase) = 1 and count(distinct coalesce(tarjeta, 0)) = 1
+          and coalesce(max(tarifa) - min(tarifa), 0) <= 0.01 and coalesce(max(km) - min(km), 0) <= 0.05
+          and coalesce(max(min) - min(min), 0) <= 0.5) as coinciden,
+         (array_agg(clase order by id))[1] as clase, (array_agg(tarifa order by id))[1] as tarifa,
+         (array_agg(km order by id))[1] as km, (array_agg(min order by id))[1] as min, (array_agg(tarjeta order by id))[1] as tarjeta
   from v where fuente = 'humano' and estado = 'validado' group by objetivo
 ), o as (
   select objetivo, bool_or(fuente = 'ia') as hay_ia, bool_or(fuente = 'heredado') as hay_heredado,
@@ -84,16 +93,17 @@ with v as (
   from v group by objetivo
 )
 select o.objetivo, o.lectura_id, o.error_lector_id, o.caso_banco,
-       case when h.n_humanos > 0 and h.distintos = 1 then case when h.n_humanos >= 2 then 'referencia_doble' else 'referencia_humana' end
-            when h.n_humanos > 0 then 'conflicto_humano'
+       case when h.n_humanos >= 2 and h.coinciden then 'referencia_doble'
+            when h.n_humanos = 1 then 'referencia_humana'
+            when h.n_humanos > 1 then 'conflicto_humano'
             when o.hay_ia then 'solo_ia'
             else 'heredado_no_revisado' end as estado,
        coalesce(h.n_humanos, 0) as n_humanos,
-       case when h.distintos = 1 then h.clase end as clase,
-       case when h.distintos = 1 then h.tarifa end as tarifa,
-       case when h.distintos = 1 then h.km end as km,
-       case when h.distintos = 1 then h.min end as min,
-       case when h.distintos = 1 then h.tarjeta end as tarjeta
+       case when h.coinciden then h.clase end as clase,
+       case when h.coinciden then h.tarifa end as tarifa,
+       case when h.coinciden then h.km end as km,
+       case when h.coinciden then h.min end as min,
+       case when h.coinciden then h.tarjeta end as tarjeta
 from o left join h using (objetivo);
 revoke all on auditoria.veredicto_vigente from public, anon, authenticated;
 
