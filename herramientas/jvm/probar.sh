@@ -8,8 +8,10 @@ kc="${XDG_CACHE_HOME:-$HOME/.cache}/checa-banco/kotlinc/bin/kotlinc"
 m="$raiz/app/src/main/java/com/karen/miruta"; t="$raiz/app/src/test/java/com/karen/miruta"
 out=$(mktemp -d)
 "$kc" "$m/Parser.kt" "$m/Moneda.kt" "$m/Tarjetas.kt" "$m/Traza.kt" "$raiz/docs/banco/Stub.kt" \
-  "$t/TrazaTest.kt" "$raiz/herramientas/jvm/Muestras.kt" "$raiz/herramientas/jvm/Medir.kt" "$t/GuardiaParserTest.kt" "$raiz/herramientas/jvm/junit_mini.kt" "$raiz/herramientas/jvm/Ejecutor.kt" \
+  "$t/TrazaTest.kt" "$raiz/herramientas/jvm/Muestras.kt" "$raiz/herramientas/jvm/Medir.kt" "$raiz/herramientas/jvm/RedactarCorpus.kt" "$t/GuardiaParserTest.kt" "$raiz/herramientas/jvm/junit_mini.kt" "$raiz/herramientas/jvm/Ejecutor.kt" \
   -include-runtime -d "$out/t.jar" 2>&1 | grep -E "error:|warning: unre" || true
+cd "$raiz"
 java -Dstdout.encoding=UTF-8 -Dfile.encoding=UTF-8 -cp "$out/t.jar" EjecutorKt com.karen.miruta.TrazaTest com.karen.miruta.GuardiaParserTest 2>&1 | grep -v "^Picked up"
 if [ "${1:-}" = "--muestras" ]; then java -Dstdout.encoding=UTF-8 -Dfile.encoding=UTF-8 -cp "$out/t.jar" com.karen.miruta.MuestrasKt > "$2"; echo "muestras: $2"; fi
 if [ "${1:-}" = "--medir" ] || [ "${3:-}" = "--medir" ]; then java -Dstdout.encoding=UTF-8 -cp "$out/t.jar" com.karen.miruta.MedirKt; fi
+for i in 1 2 3 4 5; do if [ "${!i:-}" = "--corpus" ]; then j=$((i+1)); java -Dstdout.encoding=UTF-8 -Dfile.encoding=UTF-8 -cp "$out/t.jar" com.karen.miruta.RedactarCorpusKt "$raiz/app/src/test/resources/banco" "$raiz/app/src/test/resources/ofertas" 2>/dev/null > "${!j}"; echo "corpus redactado: ${!j}"; fi; done

@@ -53,7 +53,7 @@ const CAMPOS: Record<string, { regla: Regla; requerido?: boolean }> = {
   ms_popup: { regla: num(0, 600001, true) },
   lineas_sha256: { regla: texto(64, SHA) },
   lineas_redactadas: {
-    regla: (v) => (Array.isArray(v) && v.length <= 30 && v.every((l) => typeof l === "string" && l.length <= 60 && !pareceDato(l)) ? null : "lineas"),
+    regla: (v) => (Array.isArray(v) && v.length <= 30 && v.every((l) => typeof l === "string" && l.length <= 60 && lineaRedactada(l)) ? null : "lineas"),
   },
   telefono: { regla: texto(64) },
   android: { regla: texto(8) },
@@ -74,10 +74,18 @@ const CAMPOS: Record<string, { regla: Regla; requerido?: boolean }> = {
   },
 };
 
-/** Defensa en profundidad: el teléfono ya redacta; si llega algo con forma de correo, teléfono o URL se rechaza. */
-export function pareceDato(l: string): boolean {
-  return /[^\s@]+@[^\s@]+\.[a-z]{2,}/i.test(l) || /\d[\d\s-]{8,}\d/.test(l.replace(/[$.,]/g, "")) && !/\d+(\.\d+)?\s*(km|min|m)\b/i.test(l) ||
-    /https?:\/\//i.test(l);
+// Lista blanca de la redacción: la MISMA gramática que Redaccion.PIEZA en Traza.kt (Android). Una línea solo se
+// acepta si es una secuencia de piezas permitidas separadas por un espacio: montos, número + min/km/m/h/x, «/km»,
+// signos y unas pocas palabras fijas. Una dirección, un nombre, un correo, una URL o un número suelto no caben.
+const PALABRAS = "min|km|m|h|est|viaje|a|de|por|inicio|incluido|adicionales|adicional|aceptar|total|tarifa";
+const FIN = "(?![\\p{L}\\d])";
+const PIEZA = `[+-]?[$€£] ?\\d[\\d.,]{0,11}|/ ?(?:km|h)${FIN}|(?<![\\p{L}\\d.,])\\d{1,5}(?:[.,]\\d{1,3})? ?(?:min|km|m|h|x)${FIN}|[()⚡·:+]|(?<![\\p{L}\\d])(?:${PALABRAS})${FIN}`;
+const LINEA_REDACTADA = new RegExp(`^(?:${PIEZA})(?: (?:${PIEZA}))*$`, "iu");
+const CON_DATO = new RegExp(`[$€£] ?\\d|\\d ?(?:min|km|m|h|x)${FIN}`, "iu");
+
+/** true si la línea cumple la lista blanca y trae al menos un dato. */
+export function lineaRedactada(l: string): boolean {
+  return LINEA_REDACTADA.test(l) && CON_DATO.test(l);
 }
 
 /** Valida un evento. Devuelve el código del primer error o null. */

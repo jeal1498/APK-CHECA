@@ -45,11 +45,12 @@ test("campos desconocidos se rechazan", () => {
   assert.match(validarEvento(evento({ etapas: [{ etapa: "ocr", estado: "ok", texto: "x" }] }))!, /etapas/);
 });
 
-test("líneas con correo, teléfono o URL se rechazan (redacción en profundidad)", () => {
-  for (const l of ["juan@correo.com", "Tel 55 1234 5678", "https://x.y/z"]) {
+test("líneas: solo pasa la lista blanca de la redacción (sin direcciones, nombres, correos, URL ni números sueltos)", () => {
+  for (const l of ["juan@correo.com", "Tel 55 1234 5678", "https://x.y/z", "(4 min 1.4 km) Ana Spa,", "o (6 min 1.8 km) Calle 46 612,",
+    "0.9 km Heroles", "Calle 46 612", "$50 Juan", "5 de Mayo 233", "( 9 min 3 km ) Cabaña", "37min (13.2km)", "$10.15/km est.", "Aceptar", "", " $5", "$5  $6"]) {
     assert.match(validarEvento(evento({ lineas_redactadas: ["$50.00", l] }))!, /lineas/, l);
   }
-  for (const l of ["$151.34", "37min (13.2km)", "A 5 min (1.6 km)", "⚡1.4x", "$10.15/km est."]) {
+  for (const l of ["$151.34", "37min ( 13.2km )", "A 5 min ( 1.6 km )", "⚡ 1.4x", "$10.15 /km est", "+$9.75 por inicio", "Viaje : 8 min ( 3.2 km )", "( 4 min 1.4 km )", "0.9 km", "$ 5"]) {
     assert.equal(validarEvento(evento({ lineas_redactadas: [l] })), null, l);
   }
 });

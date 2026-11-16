@@ -96,7 +96,7 @@ object Traza {
                 j.d("tarifa", it.tarifa, 2).d("km", it.km, 2).d("min", it.min, 1)
                 if (it.recogidaKm > 0) j.d("rec_km", it.recogidaKm, 2)
                 if (it.recogidaMin > 0) j.d("rec_min", it.recogidaMin, 1)
-                if (it.multiplicador >= 1.0) j.d("multi", it.multiplicador, 2)
+                if (it.multiplicador >= 1.0 && it.multiplicador < 20.0) j.d("multi", it.multiplicador, 2)
             }
             j.s("moneda", moneda).s("nivel", nivel).n("tarjetas", tarjetas?.toLong())
                 .n("ms_lectura", msLectura?.coerceIn(0, 600_000)).n("ms_popup", msPopup?.coerceIn(0, 600_000))
@@ -154,32 +154,38 @@ object Traza {
 }
 
 /**
- * Redacción antes de guardar o mandar: solo quedan líneas con forma de dato de la oferta (montos, tramos,
- * $/km, multiplicador). Todo lo demás (direcciones, nombres, calificaciones, avisos) se quita. Además se
- * quita cualquier línea con forma de correo, URL o número largo (teléfono), aunque tenga un monto.
+ * Redacción antes de guardar o mandar, por LISTA BLANCA: de cada línea solo sobreviven las piezas con forma de
+ * dato de la oferta (montos, número + min/km/m/h, multiplicador, «/km», y unas pocas palabras fijas). Todo lo
+ * demás se quita, también dentro de la línea: en DiDi la dirección viene pegada al tramo
+ * («(4 min 1.4 km) Calle 46 612,» → «( 4 min 1.4 km )»). Los números sueltos (número de casa) tampoco pasan.
+ * La misma gramática la exige el servidor (contrato.ts, LINEA_REDACTADA): si cambia aquí, cambia allá.
  */
 object Redaccion {
-    private val dato = listOf(
-        Regex("""[$€£]\s?\d"""),                                         // monto
-        Regex("""\d+\s*min""", RegexOption.IGNORE_CASE),                 // tramo / minutos
-        Regex("""\d+(?:[.,]\d+)?\s*(?:km|m)\b""", RegexOption.IGNORE_CASE),
-        Regex("""\d+(?:[.,]\d+)?\s*[xX]\b"""),                          // multiplicador 1.4x
-    )
-    private val prohibido = listOf(
-        Regex("""[^\s@]+@[^\s@]+\.[A-Za-z]{2,}"""),
-        Regex("""https?://""", RegexOption.IGNORE_CASE),
-        Regex("""\d[\d\s-]{8,}\d"""),
-    )
+    const val PALABRAS = "min|km|m|h|est|viaje|a|de|por|inicio|incluido|adicionales|adicional|aceptar|total|tarifa"
+    /** Piezas permitidas, en orden de prioridad. */
+    // Límites de palabra explícitos con \p{L}: «\b» de Java no cuenta ñ ni acentos como letra («Cabaña» dejaba «a»).
+    private const val FIN = """(?![\p{L}\d])"""
+    const val PIEZA = """[+-]?[$€£] ?\d[\d.,]{0,11}|/ ?(?:km|h)""" + FIN + """|(?<![\p{L}\d.,])\d{1,5}(?:[.,]\d{1,3})? ?(?:min|km|m|h|x)""" + FIN +
+        """|[()⚡·:+]|(?<![\p{L}\d])(?:""" + PALABRAS + """)""" + FIN
+    private val pieza = Regex(PIEZA, RegexOption.IGNORE_CASE)
+    private val dato = Regex("""[$€£] ?\d|\d ?(?:min|km|m|h|x)""" + FIN, RegexOption.IGNORE_CASE)
 
-    fun permitida(l: String): Boolean {
-        val t = l.trim()
-        if (t.isEmpty() || t.length > 60) return false
-        if (dato.none { it.containsMatchIn(t) }) return false
-        val sinMontos = t.replace(Regex("""[$€£]\s?\d[\d.,]*""")) { "M" }.replace(Regex("""\d+[.,]\d+""")) { "0" }
-        return prohibido.none { it.containsMatchIn(sinMontos) }
+    /** La línea reducida a sus piezas permitidas, o null si no queda ningún dato. */
+    fun redactarLinea(l: String): String? {
+        val sb = StringBuilder()
+        for (m in pieza.findAll(l.trim().take(200))) {
+            val p = m.value.trim()
+            // Kotlin iguala «ı» (sin punto) con «i» al ignorar mayúsculas y el servidor no: fuera letras no ASCII.
+            if (p.any { it.isLetter() && it !in 'a'..'z' && it !in 'A'..'Z' }) continue
+            if (sb.length + p.length + 1 > 60) break   // nunca se corta una pieza a la mitad
+            if (sb.isNotEmpty()) sb.append(' ')
+            sb.append(p)
+        }
+        val t = sb.toString()
+        return if (t.isNotEmpty() && dato.containsMatchIn(t)) t else null
     }
 
-    fun redactar(lineas: List<String>): List<String> = lineas.asSequence().map { it.trim() }.filter(::permitida).take(30).toList()
+    fun redactar(lineas: List<String>): List<String> = lineas.asSequence().mapNotNull(::redactarLinea).take(30).toList()
 }
 
 /** Espera creciente con un poco de azar (sin martillar al servidor). [azar] en 0..1 (inyectable en pruebas). */

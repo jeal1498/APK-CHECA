@@ -11,7 +11,7 @@ export function evento(k: Record<string, unknown> = {}): Record<string, unknown>
     id: uuid(), contrato: 1, app: "didi", version_app: "10.81", version_parser: "10.79", lector: "ocr",
     fotograma_id: uuid(), captura_vinculo: "sin_captura", ts_fotograma: "2026-11-15T10:00:00Z", ts_evento: "2026-11-15T10:00:01Z",
     resultado: "oferta", tarifa: 120.5, km: 10.2, min: 25, rec_km: 1.5, rec_min: 5, moneda: "MXN", nivel: "verde", tarjetas: 1,
-    ms_lectura: 420, ms_popup: 650, lineas_sha256: "a".repeat(64), lineas_redactadas: ["$120.50", "5 min (1.5 km)"],
+    ms_lectura: 420, ms_popup: 650, lineas_sha256: "a".repeat(64), lineas_redactadas: ["$120.50", "5 min ( 1.5 km )"],
     orientacion: "vertical", etapas: [{ etapa: "captura", estado: "ok", ms: 30 }, { etapa: "parser", estado: "ok", ms: 2 }],
     ...k,
   };

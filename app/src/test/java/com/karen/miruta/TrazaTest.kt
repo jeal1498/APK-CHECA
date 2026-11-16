@@ -58,14 +58,39 @@ class TrazaTest {
     }
 
     @Test fun redaccionSoloDatosDeOferta() {
-        val entrada = listOf(
-            "$151.34", "5min (1.7km)", "37min (13.2km)", "⚡1.4x", "$10.15/km est.", "+$9.75 por inicio",
-            "Av. Insurgentes Sur 1602, Col. Crédito Constructor", "Juan Pérez ★4.92", "Tel 55 1234 5678 $50",
-            "juan@correo.com $10", "https://x.y/$5", "Aceptar", "")
-        val r = Redaccion.redactar(entrada)
-        assertEquals(listOf("$151.34", "5min (1.7km)", "37min (13.2km)", "⚡1.4x", "$10.15/km est.", "+$9.75 por inicio"), r)
+        val casos = listOf(
+            "$151.34" to "$151.34", "5min (1.7km)" to "5min ( 1.7km )", "37min (13.2km)" to "37min ( 13.2km )",
+            "⚡1.4x" to "⚡ 1.4x", "$10.15/km est." to "$10.15 /km est", "+$9.75 por inicio" to "+$9.75 por inicio",
+            "A 5 min (1.6 km)" to "A 5 min ( 1.6 km )", "Viaje: 8 min (3.2 km)" to "Viaje : 8 min ( 3.2 km )",
+            // DiDi: la dirección viene en la misma línea que el tramo (hallazgo de la auditoría de cierre).
+            "(4 min 1.4 km) Ana Spa," to "( 4 min 1.4 km )",
+            "o (6 min 1.8 km) Calle 46 612," to "( 6 min 1.8 km )",
+            "(9 min 3 km) Cafe La Cabaña La Venta, Oropeza, Centro" to "( 9 min 3 km )",
+            "0.9 km Heroles" to "0.9 km",
+            "(9 mın 2.3 Km)" to "( 2.3 Km )",   // «ı» sin punto del OCR: esa pieza no pasa (el servidor no la aceptaría)
+            "Tel 55 1234 5678 $50" to "$50", "juan@correo.com $10" to "$10",
+            "Av. Insurgentes Sur 1602, Col. Crédito Constructor" to null, "Calle 46 612," to null,
+            "Juan Pérez ★4.92" to null, "https://x.y/z" to null, "Aceptar" to null, "" to null, "5 de Mayo 233" to null)
+        for ((entrada, esperado) in casos) assertEquals(entrada, esperado, Redaccion.redactarLinea(entrada))
         assertEquals(30, Redaccion.redactar(List(40) { "$$it.00" }).size)
-        assertFalse(Redaccion.permitida("$" + "1".repeat(70)))
+        assertTrue(Redaccion.redactarLinea("$" + "1".repeat(70))!!.length <= 60)
+    }
+
+    @Test fun redaccionNoDejaPalabrasNiNumerosSueltos() {
+        val permitidas = Redaccion.PALABRAS.split("|").toSet() + "x"
+        val sucias = listOf("(11 min 5.1 km) Antojitos Doña Mary 24", "(20 min 5.5 km) Juan Aldama 4, Nueva", "$65 adicionales por realizar 13 solicitud ...",
+            "3 min EO 0.9 km", "lh8 min 21.7 km", "R Haz 4 viajes para obtener $65 adicionales", "(16 min 8.9 km) ISSSTE Hospital General")
+        for (l in sucias) {
+            val r = Redaccion.redactarLinea(l) ?: continue
+            for (w in Regex("[A-Za-zÁÉÍÓÚÑáéíóúñ]+").findAll(r)) assertTrue("«${w.value}» en «$r»", w.value.lowercase() in permitidas)
+            val sinPiezas = r.replace(Regex("""[+-]?[$€£] ?\d[\d.,]*|\d+(?:[.,]\d+)? ?(?:min|km|m|h|x)""", RegexOption.IGNORE_CASE)) { "" }
+            assertFalse("número suelto en «$r»", sinPiezas.any(Char::isDigit))
+        }
+    }
+
+    @Test fun multiplicadorFueraDeRangoNoSeManda() {
+        assertFalse(evento(o = oferta().copy(multiplicador = 25.0)).aJson().contains("\"multi\""))
+        assertTrue(evento(o = oferta().copy(multiplicador = 19.9)).aJson().contains("\"multi\":19.9"))
     }
 
     @Test fun huellaDeLineasEsEstable() {
