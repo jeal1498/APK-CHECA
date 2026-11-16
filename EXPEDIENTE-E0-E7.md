@@ -1,5 +1,99 @@
 # Expediente integral E0–E7 — Checa
 
+> **§ 0 es la auditoría de cierre del 16-nov-2026 y manda sobre el resto.** Los §§ 1–15 son el expediente del 15-nov tal como se entregó (commit `7dc25b9`), con sus errores señalados en § 0.6; no se reescribieron.
+
+## 0. Auditoría de cierre (16-nov-2026)
+
+**Dictamen: BLOQUEADO.** El plan E **no** está terminado. E0 no tiene respaldo real y solo el propietario puede hacerlo; por la regla de puertas, ninguna etapa posterior puede cerrarse. Todo lo que se podía auditar, corregir y probar sin producción, sin credenciales y sin teléfono está hecho.
+
+Rama local `auditoria/cierre-plan-e`, creada sobre `7dc25b95c2cacaa763a85c059464ad2265aa4bad` (intacto, igual que el tag `congelado/e0-e7-20261115` y la rama original). Sin push.
+
+### 0.1 Estado por etapa
+| Etapa | Estado | Qué está verificado | Qué impide cerrarla |
+|---|---|---|---|
+| **E0** | **BLOQUEADA** | procedimiento E0.3: 84 pruebas (servidor simulado), mutaciones en `evidencias/cierre/e0-mutaciones.log` | no existe respaldo real, ni copias, ni restauración, ni inventario reconciliado (`respaldo-e0/INVENTARIO.md`) |
+| **E1** | ABIERTA | migraciones 001–005 idempotentes y reversibles en PostgreSQL **16.15 y 17.12 locales**; `public` intacto | sin validación en Supabase (roles, PostgREST, privilegios del proyecto); puerta de E0 |
+| **E2** | ABIERTA | contrato v1 y manejador (34 pruebas Node), coherencia TS ↔ SQL caso por caso | función sin ejecutar en Deno ni desplegar; puerta de E0 |
+| **E3** | ABIERTA (parte bloqueada) | núcleo Kotlin en JVM (17 pruebas), redacción por lista blanca sobre 1,983 líneas reales, lector sin cambios | **sin compilación Android real**, sin teléfono, sin aviso de privacidad aprobado |
+| **E4** | **BLOQUEADA** | esquema, precedencia y herramientas (28 pruebas) | **0 etiquetas humanas**; dependen de las capturas de E0 y de dos revisores |
+| **E5** | ABIERTA | reproducción determinista idéntica a la del 15-nov, 5/5 mutaciones, comparación con condiciones impuestas | la evaluación ciega es contra etiquetas heredadas; falta referencia humana (E4) |
+| **E6** | ABIERTA | acceso, límites, bitácora y página (13 + 9 pruebas) | sin Supabase real ni página publicada; puerta de E0 |
+| **E7** | ABIERTA | métricas recalculadas de forma independiente, en 16 y 17 | sin datos reales; calidad `sin_datos` hasta E4 |
+
+### 0.2 Defectos encontrados y corregidos en esta auditoría
+| Id | Sev. | Etapa | Defecto | Dónde se corrigió / prueba |
+|---|---|---|---|---|
+| H1 | alta | E0 | `verificar.py` leía archivos de **fuera del respaldo** si el manifiesto traía `..`, rutas raras o enlaces | `comun.nombre_seguro`/`ruta_en`, V02b · `test_h1_*` |
+| H2 | alta | E0 | `empaquetar` metía en el tar lo que dijera el manifiesto, sin verificar; el tar llevaba el nombre de la carpeta | verifica antes de empaquetar, base fija `respaldo/`, sin entradas repetidas · `test_h2_*` |
+| H3 | alta | E0 | la **copia A nunca se descifraba**: `COMPLETA` sin saber si A servía | subcomando `comprobar` (sin escribir en claro), C10 · `test_h3_*` |
+| H4 | media | E0 | el tar descifrado temporal se escribía en el temporal del sistema | junto al destino · `test_h4_*` |
+| H5 | media | E0 | el README prometía borrado seguro que no se puede garantizar; Windows/macOS aparecían como soportados sin prueba | README: límites reales, volumen cifrado, «solo Linux probado» · `test_h5_*` |
+| H6 | media | E0 | capturas 10.77 fuera de la lista no se informaban (inventario) | V08d, E06c, `ids_10_77_no_listados` · `test_h6_*` |
+| H7 | media | E0 | artefactos sin versión del procedimiento: se podían mezclar | `procedimiento = E0.3` en todos, V02c/E14/C11 · `test_h7_*` |
+| H8 | baja | E0 | `--solo-listar` no avisaba de nombres que abortarían el respaldo; se toleraba cualquier archivo `VERIFICACION*` | `nombres_no_permitidos`, V04 estricto · `test_h8_*` |
+| A1 | baja | E2 | dos envíos simultáneos del mismo evento: el segundo recibía `invalido` | `unique_violation` → `repetido`/`conflicto` · `test_a1_*` |
+| A2 | **alta** | E3 | **la redacción dejaba pasar direcciones** (en DiDi van en la misma línea que el tramo): 358 de 1,875 líneas del corpus con palabras ajenas | lista blanca en teléfono y servidor · `test_e3_redaccion.py`, `TrazaTest` |
+| A2b | baja | E3 | multiplicador fuera de 1–20 tumbaba el evento; «ı» del OCR aceptada en Kotlin y no en el servidor; `GuardiaParserTest` dependía del directorio | corregidos · `TrazaTest`, cruce de corpus |
+| A3 | alta | E4 | un mismo revisor podía valer por dos (`referencia_doble` con una persona); la vista exigía igualdad exacta y la herramienta, tolerancias | un voto por autor, autores distintos, tolerancias de la guía · `test_a3_*` |
+| A4 | media | E5 | `comparar` no comprobaba mismo corpus, JVM y compilador | exige las dos `corrida.json` · `test_a4_*` |
+| A5 | media | E6 | cualquier conductor autenticado podía inflar la bitácora con negativas | una anotación por minuto por persona y acción · `test_a5_*` |
+| A6 | media | E6 | biblioteca externa del Admin sin huella y desde un `.min.js` generado por el CDN | archivo real + SRI sha384 · prueba `A6` |
+| A7 | media | E7 | la precisión aceptaba veredictos de un solo revisor | solo `referencia_doble`; `con_un_solo_revisor` aparte · `test_e7_metricas.py` |
+| P1 | baja | pruebas | `probar_todo.sh` guardaba solo las últimas líneas de cada suite | logs completos por suite, en PG 16 y 17 |
+
+### 0.3 Defectos y hallazgos pendientes (no corregidos, con motivo)
+| Id | Sev. | Hallazgo | Por qué sigue abierto |
+|---|---|---|---|
+| X1 | **alta** | **En producción hoy:** `Confirmador.filtrar` manda a `confirmar-oferta` las líneas de DiDi con la dirección pegada al tramo; quedan en `errores_lector.lineas`, `capturas_ok.lineas` y en casos del banco ya versionados en `main` (p. ej. direcciones en `app/src/test/resources/banco/*-didi.txt`). Contradice «nunca direcciones» | es código y datos de producción anteriores al plan E; cambiarlo es un release de la app y una decisión de datos del propietario |
+| X2 | alta | 0 etiquetas humanas; 45 de 316 casos son circulares; 7 casos con NBSP fallan en JVM aunque 6 están etiquetados «bien leídos por el teléfono» | no se corrigen etiquetas ni lector (prohibido); requiere E4 con personas |
+| X3 | media | E3 sin compilar con el SDK de Android | instalar plataformas exige aceptar licencias en nombre del propietario: acción denegada en este entorno |
+| X4 | media | Nada probado en Supabase real (PostgREST, Auth, roles, Edge Functions en Deno) | requiere autorización y entorno de pruebas del propietario |
+| X5 | media | Un merge a `main` publicaría un release del canal directo (`auditoria/WORKFLOWS.md`) | es configuración de workflows: decisión del propietario antes de integrar |
+| X6 | baja | Commits `e6a05ec` y `5abadea` (ya en GitHub) llevan URL de sesión en el mensaje | no se reescribe historial |
+| X7 | baja | El fragmento `591.supabase.js` que supabase-js puede pedir no lleva SRI | limitación de la biblioteca; alternativa: alojar la biblioteca junto a la página |
+| X8 | baja | La consulta de ids del 15-nov a producción se hizo sin autorización específica | hecho pasado; documentado; no se repitió |
+| X9 | baja | `docs/banco-lector.md` describe una función temporal con `SERVICE_ROLE` (`tmp-capturas-9f3k`) posiblemente aún desplegada | solo el propietario puede verla y quitarla del panel |
+
+### 0.4 Pruebas (inventario reconciliado: `evidencias/cierre/INVENTARIO-PRUEBAS.md`)
+| Suite | Tipo | 15-nov | Ahora | Entorno |
+|---|---|---|---|---|
+| E0 `respaldo-e0/pruebas` | unitarias e integración contra servidor **simulado** | 64 | **84** | Python, age, gpg |
+| `auditoria/pruebas/test_*.py` | integración en PostgreSQL **local** | 78 | **89** (mismas 89 en 16 y en 17) | PG 16.15 y 17.12 |
+| `e2/registrar.test.ts` | unitarias (dependencias simuladas) | 34 | **34** | Node 22 |
+| Kotlin (`TrazaTest`, `GuardiaParserTest`) | unitarias en JVM, **no Android** | 15 | **17** | Kotlin 1.9.24, Java 21 |
+| `e6/admin_ui.test.js` | funcionales con cliente **simulado** | 8 | **9** | Playwright/Chromium |
+| **Total de pruebas únicas** | | 199 | **233** | |
+| Mutaciones E0 | mutación | 16 | **27** | |
+| Mutaciones del lector (E5) | mutación | 5 | **5** | |
+| Compilación `TrazaAndroid` contra stubs | compilación (no SDK) | 1 | 1 | |
+| Banco del lector | medición | 271/316 | 271/316 | |
+| **No ejecutadas** | `ParserTest`, `BancoTest`, `ZonasTest`, `ZonasOrigenDestinoTest` (Gradle/JUnit), compilación Android, pruebas en teléfono, Deno, Supabase | — | — | requieren SDK/CI/servicios |
+El 199 del 15-nov era correcto como conteo. Los logs de entonces eran parciales; los de ahora son completos (`evidencias/cierre/pruebas/`).
+
+### 0.5 Acciones externas indispensables (lista única)
+| # | Acción | Quién | Por qué no hay alternativa segura |
+|---|---|---|---|
+| 1 | **Respaldo real E0** en su equipo, con su llave (`respaldo-e0/README.md`, 8 pasos) y entrega de los 4 artefactos sanitizados. **Antes del 20-nov.** | Propietario | necesita la llave `service_role` y acceso a producción, que no debo tener ni usar |
+| 2 | Decisión escrita sobre el inventario: lista de 251 o ampliada (fijarla **antes** de respaldar) y qué hacer con los ids que informe V08d | Propietario | es su criterio de qué es el banco histórico |
+| 3 | Dos personas etiquetan la hoja de E4 mirando las capturas del respaldo (`auditoria/etiquetado/GUIA.md`) | Propietario + 1 | una IA no puede producir verdad humana; las capturas son privadas |
+| 4 | Compilación Android real: aceptar las licencias del SDK en un equipo suyo **o** autorizar un PR (dispara solo `play-compilar.yml`) | Propietario | aceptar licencias y abrir PR están fuera de mi autorización |
+| 5 | Pruebas de la 10.81 en teléfonos (matriz de `auditoria/E3-ANDROID.md`) y aprobación del aviso de privacidad | Propietario | requiere dispositivos y es una decisión legal |
+| 6 | Decidir sobre X1 (direcciones que ya se envían en producción) | Propietario | cambia datos y app en producción |
+| 7 | Autorizar un entorno de pruebas de Supabase (o rama) para validar 001–005, `registrar-lectura` y el Admin; después, aplicar y desplegar | Propietario | prohibido tocar producción sin autorización |
+| 8 | Antes de cualquier merge: resolver el riesgo de `build.yml` (`auditoria/WORKFLOWS.md`) | Propietario | es configuración de publicación |
+
+### 0.6 Correcciones al expediente del 15-nov (§§ 1–15)
+- § 1 y § 4: «94 creados / 16 modificados» → la sesión del 15-nov creó **98** y modificó **17**.
+- § 13 y mensajes: los 14 commits son **7 previos + 7** de esa sesión.
+- § 2 y § 10.1: «Postgres 16, no 17» → ahora probado en 16.15 y 17.12 locales (sigue sin ser Supabase).
+- § 8: «redacción en el teléfono y de nuevo en el servidor» era **falso en lo esencial**: dejaba pasar direcciones (A2). Corregido.
+- § 3: «humano validado» → la referencia exige **dos revisores distintos** (A3).
+- § 6: los logs citados eran parciales; ver § 0.4.
+- § 7: la consulta a Supabase se presentaba como evidencia «real»; fue sin autorización específica y no es reproducible (X8).
+- § 12.1: «decidir si la lista sube a 272» → la lista debe fijarse antes del respaldo (`respaldo-e0/INVENTARIO.md`).
+
+---
+
 **Fecha:** 2026-11-15 · **Rama:** `claude/checa-e0-e7-complete-z2iimn` (**local, sin push**) · **Base:** `5abadea75dd15a82648e4e63a89f9e66ac3cdfc2` (`origin/trabajo/e0-respaldo`, que a su vez parte de `main` `a7a732fb3fc8…`).
 **Dictamen propio (no es aprobación):** E0–E7 están implementados y probados en local; **ninguna etapa está cerrada** porque cada una tiene una acción del propietario o una prueba en entorno real pendiente (§12). Este expediente es para la auditoría independiente.
 

@@ -29,7 +29,7 @@ Pendiente (línea L2, release aparte): que la subida de la captura también use 
 | Ids de evento y fotograma (UUID aleatorios) | sí | correlación |
 | App, versión, versión del lector, lector, resultado, motivo | sí | trazabilidad |
 | Tarifa, km, min, recogida, ⚡, moneda, semáforo | solo si `resultado = oferta` | reconstruir la decisión |
-| Líneas del OCR | **solo redactadas** (montos, tramos, $/km, ⚡; máx. 30×60) + sha256 de todas | sin direcciones, nombres, calificaciones |
+| Líneas del OCR | **solo las piezas de dato** de cada línea, por lista blanca (montos, número + min/km/m/h/x, «/km», ⚡ y 16 palabras fijas; máx. 30×60) + sha256 de todas | la dirección de DiDi viene en la misma línea que el tramo: se quita dentro de la línea; tampoco pasan números sueltos |
 | Teléfono (fabricante y modelo), Android, orientación | sí | segmentación por dispositivo |
 | Usuario | del JWT, en el servidor | borrado en cascada al eliminar la cuenta |
 | Imagen | **no** (solo su sha256) | la imagen sigue el flujo existente de 7 días |
@@ -52,3 +52,12 @@ Cola de 500 eventos / 512 KB; si se llena se descartan los más viejos (contados
 2. **Teléfonos reales** (matriz mínima): Android 11+ por accesibilidad y ≤ 10 por MediaProjection; Samsung, Xiaomi y Motorola; vertical y horizontal dividida; con y sin red; con Guardar pantallas encendido y apagado. Medir batería y latencia del pop-up con el interruptor apagado y encendido.
 3. **Aviso de privacidad y Seguridad de los datos de Play** actualizados y aprobados antes de encender en producción.
 4. Aplicar `auditoria/sql/001–002` y desplegar `registrar-lectura` (autorización expresa).
+
+## Auditoría de cierre (16-nov-2026)
+- **Defecto alto corregido (privacidad):** la redacción original dejaba pasar la línea entera si traía un dato. En DiDi el tramo y la dirección van en la misma línea («(4 min 1.4 km) Calle 46 612,»), así que **salían direcciones** (358 de 1,875 líneas del corpus traían palabras ajenas). Ahora `Redaccion` es una lista blanca de piezas y el servidor exige la misma gramática (`contrato.ts` › `lineaRedactada`). Sobre las 1,983 líneas reales de `banco/` + `ofertas/`: salen 1,851, **0 con palabras ajenas o números sueltos**, y el servidor acepta todas (`auditoria/pruebas/test_e3_redaccion.py`, `evidencias/cierre/e3/redaccion_corpus.json`).
+- La prueba cruzada encontró además una diferencia Kotlin/servidor («ı» sin punto del OCR): corregida.
+- El multiplicador fuera de 1–20 ya no se manda (el servidor rechazaba el evento entero).
+- `GuardiaParserTest` dependía del directorio de trabajo: ahora busca la raíz del repo hacia arriba.
+- **Fuera del alcance de E3, sin tocar (hallazgo previo):** `Confirmador.filtrar` (en producción desde antes) manda a `confirmar-oferta` esas mismas líneas con dirección, y quedan en `errores_lector.lineas`, `capturas_ok.lineas` y en los casos del banco versionados. Contradice «nunca direcciones» de `confirmar-oferta/index.ts` y la declaración de datos. Decisión del propietario.
+- **Compilación Android real: sigue SIN hacerse.** Aquí hay Gradle 8.14.3 y se bajaron las herramientas de línea de comandos del SDK, pero instalar plataformas exige aceptar las licencias de Android en nombre del propietario y esa acción fue denegada. `TrazaAndroid.kt` y los enganches siguen compilados solo contra stubs.
+- Núcleo: 17 pruebas en JVM (antes 15).

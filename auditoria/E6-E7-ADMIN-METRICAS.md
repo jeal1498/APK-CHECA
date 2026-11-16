@@ -43,3 +43,10 @@ Estados: `sin_datos` (n = 0, valor nulo), `insuficiente` (n < 30), `suficiente`,
 2. La página no se publicó; necesita la llave anon en `config.js`, el SRI de supabase-js y un lugar de alojamiento aprobado.
 3. Acceso a las imágenes desde el Admin (requiere política de privacidad y diseño aparte).
 4. Con cero etiquetas humanas, todas las métricas de calidad saldrán `sin_datos` hasta completar E4.
+
+## Auditoría de cierre (16-nov-2026)
+- **A5:** las llamadas denegadas o con filtros inválidos se anotan como mucho una vez por minuto por persona y acción (un conductor autenticado no puede inflar la bitácora). Las consultas correctas se anotan siempre.
+- **A6:** supabase-js se carga del archivo real del paquete (`dist/umd/supabase.js`, 2.45.4) con SRI `sha384-0w2KAL2Y…nk9o`, calculada del tarball de npm. El paquete trae además un fragmento (`591.supabase.js`) que la biblioteca puede pedir por su cuenta: queda cubierto por la CSP (mismo origen jsDelivr) pero **sin** SRI. No se probó contra el CDN real.
+- **A3/A7:** el Admin solo muestra «referencia humana» cuando hay doble revisión, y `precision_humana`, `falsos_positivos_humana` y `mezcla_tarjetas_humana` usan solo `referencia_doble`. Nueva métrica `con_un_solo_revisor`.
+- **Manipulación por datos incompletos:** un segmento sin datos da `sin_datos` (nunca 0 % ni 100 %); con n < 30, `insuficiente`; la precisión excluye de forma explícita conflictos, ilegibles y cambios de pantalla, lo que la **sesga al alza** si los casos difíciles se dejan sin resolver: por eso se muestran al lado `con_referencia_humana`, `con_un_solo_revisor` y `conflictos_humanos`. Un revisor deshonesto puede sesgar su mitad; la doble revisión es el único control.
+- Pruebas en PostgreSQL 16 y 17. La página sigue probada solo con cliente simulado.

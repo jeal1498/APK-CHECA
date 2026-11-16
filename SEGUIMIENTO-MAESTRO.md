@@ -1,6 +1,6 @@
 # Seguimiento maestro de Checa
 
-**Última actualización:** 15 de noviembre de 2026 (E0–E7 implementados y probados en local; ninguno cerrado; ver `EXPEDIENTE-E0-E7.md`)  
+**Última actualización:** 16 de noviembre de 2026 (auditoría de cierre: plan E **BLOQUEADO** en E0; ver `EXPEDIENTE-E0-E7.md` § 0)  
 **Repositorio:** `jeal1498/APK-CHECA`  
 **Propósito:** mantener el objetivo, el orden de ejecución, las decisiones y la evidencia de cada entrega en un único lugar. Actualizar este archivo cada vez que se revise o cierre una entrega.
 
@@ -24,14 +24,14 @@ El orden de ejecución y aceptación es **E0 → E1 → E2 → E3 → E4 → E5 
 
 | Entrega | Resultado que debe quedar | Estado al 15-11-2026 |
 |---|---|---|
-| **E0** | Banco histórico 10.77 respaldado y comprobado. | **Probado localmente (E0.2); abierto.** D1–D5 corregidos (64 pruebas, 16/16 mutaciones). Solo lectura: 251/251 ids requeridos vivos y 21 ids 10.77 más (2026-11-15T21:16Z). Falta el respaldo real, dos copias cifradas y la restauración de B (propietario). **Expiran desde el 20-11-2026.** |
-| **E1** | Migraciones y esquema de auditoría preparados. | **Probado localmente (Postgres 16); revisión pendiente.** `auditoria/sql/001` (+ reversión). No aplicado en Supabase. |
-| **E2** | Servidor compatible con los nuevos registros. | **Probado localmente; revisión pendiente.** `002` + `supabase/functions/registrar-lectura` (contrato v1). No desplegado; `confirmar-oferta` sin cambios. |
-| **E3** | Android 10.81 con trazabilidad completa. | **Implementado; núcleo probado en JVM; Android sin compilar ni probar en teléfono.** Apagado por defecto. Lector sin cambios (guardia). Falta CI Android, teléfonos y aviso de privacidad. |
-| **E4** | Veredictos humanos e IA. | **Probado localmente; sin etiquetas humanas (bloqueo del propietario).** `003`, `auditoria/etiquetado/`. Banco: 0 humanos, 45 circulares. |
-| **E5** | Reproducción histórica y pruebas automáticas. | **Probado localmente; evaluación ciega ejecutada contra etiquetas heredadas.** Determinista, reconcilia con `Banco.kt`, 5/5 mutaciones del lector. |
-| **E6** | Checa Admin MVP. | **Probado localmente (SQL + Playwright simulado); no desplegado.** `004`, `admin/`. |
-| **E7** | Dashboard completo y métricas confiables. | **Probado localmente; no desplegado.** `005`; métricas recalculadas en Python coinciden. |
+| **E0** | Banco histórico 10.77 respaldado y comprobado. | **BLOQUEADA.** Procedimiento E0.3 (D1–D5 y H1–H8 corregidos; 84 pruebas con servidor simulado). **No existe respaldo real**, ni copias, ni restauración, ni inventario reconciliado (`respaldo-e0/INVENTARIO.md`). Lo ejecuta el propietario. **Las capturas expiran desde el 20-11-2026.** |
+| **E1** | Migraciones y esquema de auditoría preparados. | **Abierta.** `auditoria/sql/001` (+ reversión) probado en PostgreSQL 16.15 y 17.12 locales. No aplicado ni validado en Supabase. No avanza hasta aceptar E0. |
+| **E2** | Servidor compatible con los nuevos registros. | **Abierta.** `002` + `registrar-lectura` (contrato v1 con lista blanca de líneas). Probado en local; sin Deno ni despliegue. |
+| **E3** | Android 10.81 con trazabilidad completa. | **Abierta.** Núcleo probado en JVM (17 pruebas); redacción corregida (ya no salen direcciones). **Sin compilación Android real, sin teléfono, sin aviso de privacidad.** Apagado por defecto. |
+| **E4** | Veredictos humanos e IA. | **BLOQUEADA.** Esquema y herramientas probados; **0 etiquetas humanas** (necesita las capturas de E0 y dos revisores). Banco: 0 humanos, 45 circulares. |
+| **E5** | Reproducción histórica y pruebas automáticas. | **Abierta.** Reproducción determinista y evaluación ciega re-ejecutadas (319/365 contra etiquetas **heredadas**); 5/5 mutaciones. Sin referencia humana no mide precisión. |
+| **E6** | Checa Admin MVP. | **Abierta.** `004` + `admin/` probados en local (cliente simulado). No desplegado. |
+| **E7** | Dashboard completo y métricas confiables. | **Abierta.** `005` probado en 16 y 17; métricas recalculadas de forma independiente. Sin datos reales. |
 
 ### Condiciones de cierre por entrega
 
@@ -107,6 +107,15 @@ Antes de que E3 llegue a producción deben estar aprobados el plan de datos, la 
 ## Registro de progreso y decisiones
 
 Añadir una entrada nueva al principio de esta sección por cada revisión o cambio. Registrar hechos comprobados y separar claramente lo reportado por Claude de lo verificado de forma independiente.
+
+### 2026-11-16 — Auditoría de cierre del plan E: BLOQUEADO en E0
+- **Estado anterior:** E0–E7 «implementados y probados en local» (commit `7dc25b9`, pausado para revisión).
+- **Trabajo realizado:** recuperación verificada del bundle (commit y árbol exactos); auditoría de E0–E7; 17 defectos corregidos con regresión (H1–H8 en E0; A1–A7 en E1–E7; logs completos). Los más graves: `verificar.py`/`empaquetar` leían o empaquetaban archivos de fuera del respaldo; la copia A nunca se comprobaba; **la redacción de E3 dejaba salir direcciones**; un revisor podía valer por dos. Rama local `auditoria/cierre-plan-e`. Sin push.
+- **Evidencia y pruebas:** 233 pruebas únicas OK (84 E0, 89 SQL/Python en PostgreSQL 16.15 **y** 17.12, 34 Node, 17 Kotlin/JVM, 9 Playwright); mutaciones E0 y 5/5 del lector; logs completos en `evidencias/cierre/pruebas/`; auditoría estática de seguridad sin hallazgos críticos en el cambio.
+- **Limitaciones / riesgos:** sin respaldo real; sin compilación Android (aceptar licencias del SDK fue denegado); sin Supabase real; 0 etiquetas humanas; hallazgo X1: en producción ya se envían líneas de DiDi con dirección (`Confirmador.filtrar`); un merge a `main` publicaría un release (`auditoria/WORKFLOWS.md`).
+- **Decisión del propietario:** pendiente. Lista única de acciones externas en `EXPEDIENTE-E0-E7.md` § 0.5.
+- **Siguiente paso autorizado:** ninguno nuevo. Prioridad: el propietario ejecuta E0.
+- **Cambios en producción / main / Supabase:** ninguno. No se consultó Supabase en esta auditoría.
 
 ### 2026-11-15 — E0.2 a E7: implementados y probados en local (ninguno cerrado)
 - **Estado anterior:** E0.1 preparado con D1–D5 detectados; E1–E7 sin código en GitHub (las ramas locales reportadas no existen).

@@ -129,6 +129,14 @@ Aunque parte de la infraestructura de E5 recibió revisión favorable como mecan
 
 No iniciados según el último estado conocido. No implementar antes de que llegue su turno.
 
+### Actualización del 16-nov-2026 (auditoría de cierre; no sustituye el texto anterior)
+
+Estado comprobado por ejecución en la rama local `auditoria/cierre-plan-e` (detalle en `EXPEDIENTE-E0-E7.md` § 0):
+- Las ramas `trabajo/e1-e2-esquema`, `trabajo/e4-veredictos`, `trabajo/e5-reproduccion` y `trabajo/l1-uber-est` citadas arriba **no existen** en GitHub ni en el entorno de trabajo. E1–E7 se rehicieron y viven en `auditoria/`, `supabase/functions/registrar-lectura/`, `app/` (E3) y `admin/`.
+- **E0 sigue BLOQUEADA**: no hay respaldo real. El procedimiento es E0.3 (corrige D1–D5 y H1–H8). Además de los tres artefactos de arriba se entrega `EVIDENCIA-COPIAS.json` (autorizado en la revisión de E0.1). Inventario sin reconciliar: `respaldo-e0/INVENTARIO.md`.
+- E1–E2: probadas en PostgreSQL **16 y 17 locales**; eso no valida Supabase. E3: núcleo probado en JVM; **sin compilación Android real ni teléfono**. E4: **0 etiquetas humanas**; el banco de 316 es heredado (45 casos circulares). E5: el 277/316 de arriba venía de normalizar NBSP en el corredor; con el lector tal cual son 271/316 (7 casos con NBSP, ver `auditoria/E5-REPRODUCCION.md`). E6–E7: implementadas y probadas solo en local con cliente simulado.
+- Al revisar: exigir los logs completos de `herramientas/probar_todo.sh` y el inventario de pruebas; no aceptar «acuerdo con el banco» como precisión; comprobar los riesgos de `auditoria/WORKFLOWS.md` antes de cualquier push, PR o merge.
+
 ## 6. Línea complementaria L1–L4: separada del orden E0–E7
 
 L1–L4 son correcciones del lector. No sustituyen ni reordenan las entregas maestras. Mantenerlas separadas de la instrumentación E3 y no integrarlas automáticamente.

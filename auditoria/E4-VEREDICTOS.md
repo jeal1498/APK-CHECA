@@ -18,7 +18,7 @@ Consecuencia: «271/316 (85.8 %)» es **acuerdo con etiquetas heredadas**, no ex
 ## Modelo (`sql/003_veredictos.sql`)
 - `auditoria.veredictos`: `fuente` = `humano` / `ia` / `heredado`; `autor` (seudónimo o modelo), `revisor_version`, `guia_version`, `evidencia_sha256` (la captura que se miró), `confianza`, `estado`.
 - Reglas en la base: solo un **humano** puede dejar un veredicto `validado`, y solo con captura (`evidencia_sha256`) y guía; IA y heredado nunca se validan; un veredicto no se edita ni se borra (se agrega otro con `sustituye`).
-- **Precedencia** (`auditoria.veredicto_vigente`): humanos validados que coinciden → `referencia_humana` / `referencia_doble`; que no coinciden → `conflicto_humano` (no se fuerza); sin humano → `solo_ia`; solo heredado → `heredado_no_revisado`.
+- **Precedencia** (`auditoria.veredicto_vigente`, corregida en la auditoría de cierre): ≥ 2 revisores humanos **distintos** validados que coinciden (tolerancias de la guía) → `referencia_doble`, la única que usan las métricas; un solo revisor → `referencia_humana` (todavía no es referencia); que no coinciden → `conflicto_humano` (no se fuerza); sin humano → `solo_ia`; solo heredado → `heredado_no_revisado`. De cada autor cuenta solo su último veredicto.
 - **Importación** de `errores_lector.veredicto` como `heredado` (`origen_migracion = '003'`), idempotente y reversible; la tabla original no se toca (probado con md5 de `public`).
 - El resultado del lector vive en `auditoria.lecturas` (o `errores_lector.local`); nunca en `veredictos`.
 
