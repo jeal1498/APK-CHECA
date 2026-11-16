@@ -68,7 +68,7 @@ class TestOrigen(Base):
 
 class TestHoja(Base):
     def test_sin_respaldo_e0_basta_una_carpeta_de_capturas(self):
-        """E0 se descartó (16-nov): la hoja y la importación funcionan con la carpeta de capturas de la revisión."""
+        """Sin respaldo E0 la hoja y la importación funcionan con la carpeta de capturas de la revisión."""
         cap = os.path.join(self.tmp, "capturas"); os.makedirs(cap)
         ids = [int(c["caso"][:4]) for c in self.casos][:40]
         for i in ids:

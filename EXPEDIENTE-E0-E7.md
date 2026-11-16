@@ -4,16 +4,16 @@
 
 ## 0. Auditoría de cierre (16-nov-2026)
 
-**Dictamen: BLOQUEADO** (actualizado el 16-nov tras la decisión del propietario). El plan E **no** está terminado. E0 ya no bloquea: el propietario **descartó el respaldo** («Descarta el respaldo, para el 20 de noviembre ya habremos hecho la revisión y corrección») y delegó las demás decisiones con el objetivo de cerrar el plan. Lo que sigue impidiendo el cierre son tres cosas que no puedo hacer en este entorno: la compilación Android real (aceptar las licencias del SDK fue denegado dos veces), las etiquetas humanas de E4 y la validación en Supabase.
+**Dictamen: BLOQUEADO.** El plan E **no** está terminado. **E0 sigue PENDIENTE**: su aceptación requiere evidencia de un respaldo real que solo el propietario puede producir, y por la regla de puertas ninguna etapa posterior puede cerrarse antes. Además faltan la compilación Android real, las etiquetas humanas de E4 y la validación en Supabase. Todo lo que se podía auditar, corregir y probar sin producción, sin credenciales y sin teléfono está hecho.
 
 Rama local `auditoria/cierre-plan-e`, creada sobre `7dc25b95c2cacaa763a85c059464ad2265aa4bad` (intacto, igual que el tag `congelado/e0-e7-20261115` y la rama original). Sin push.
 
-### 0.0 Decisiones tomadas (16-nov, por delegación del propietario)
+### 0.0 Decisiones técnicas tomadas por delegación (16-nov)
 | # | Decisión | Motivo |
 |---|---|---|
-| D-E0 | **E0 DESCARTADA por el propietario**, no aprobada. El procedimiento E0.3 queda en el repo, sin uso, por si se quiere un respaldo después | instrucción explícita del propietario; la revisión del banco con capturas (lunes 16, ver `CLAUDE.md`) se hará antes de que expiren el 20-nov |
-| D-PUERTA | La puerta E0 → E1 se considera levantada por esa decisión | sin respaldo que esperar, mantenerla bloquearía todo el plan sin beneficio |
-| D-E4 | El etiquetado humano ya no depende del respaldo: `etiquetado.py` acepta la carpeta de capturas que se baja para la revisión del banco y calcula el sha256 de lo que el revisor mira | era la única dependencia real de E4 con E0 |
+| ~~D-E0~~ | **Retirada.** El 16-nov registré E0 como «descartada» a partir del mensaje «Descarta el respaldo…». El propietario lo corrigió el mismo día: **E0 continúa pendiente** y se acepta solo con evidencia de respaldo real | instrucción explícita posterior del propietario |
+| ~~D-PUERTA~~ | **Retirada.** La puerta E0 → E1 sigue vigente | consecuencia de lo anterior |
+| D-E4 | El etiquetado humano puede hacerse **también** sin el respaldo: `etiquetado.py` acepta la carpeta de capturas que se baja para la revisión del banco y calcula el sha256 de lo que el revisor mira | permite empezar E4 con las capturas de la revisión del banco; no sustituye a E0 |
 | D-REF | Las lecturas de Haiku sobre las capturas de esa revisión se registran como `fuente = 'ia'`; **no** son referencia humana | regla del plan: la IA nunca se convierte en verdad humana |
 | D-BUILD | `build.yml` ignora `admin/`, `auditoria/`, `evidencias/`, `herramientas/`, `respaldo-e0/`, `paquete-revision-e0/` y los `.md` de la raíz | sin esto, integrar la rama publicaría un release del canal directo (cerrado el 15-nov). Comprobado: ningún archivo del cambio queda fuera de `paths-ignore` |
 | D-X1 | Las direcciones que hoy manda `Confirmador.filtrar` en producción **no** se corrigen en esta rama; van a una línea aparte | el revisor del servidor necesita frases como «La solicitud de viaje venció» que la lista blanca de E3 quita; mezclarlo cambiaría lo que ve la IA y la calidad de la revisión del lunes. Diseño propuesto en § 0.3 |
@@ -22,7 +22,7 @@ Rama local `auditoria/cierre-plan-e`, creada sobre `7dc25b95c2cacaa763a85c059464
 ### 0.1 Estado por etapa
 | Etapa | Estado | Qué está verificado | Qué impide cerrarla |
 |---|---|---|---|
-| **E0** | **DESCARTADA (decisión del propietario)** | procedimiento E0.3: 86 pruebas (servidor simulado); 28 mutaciones: 27 detectadas y 1 equivalente (`evidencias/cierre/pruebas/e0-mutaciones*.log`) | — (no se respaldó nada; si se quiere en el futuro, `respaldo-e0/README.md` sirve tal cual) |
+| **E0** | **PENDIENTE (bloqueada)** | procedimiento E0.3: 86 pruebas (servidor simulado); 28 mutaciones: 27 detectadas y 1 equivalente (`evidencias/cierre/pruebas/e0-mutaciones*.log`) | respaldo real, dos copias cifradas, restauración desde B, comprobación de A, inventario reconciliado y conservación (`respaldo-e0/README.md`, `respaldo-e0/INVENTARIO.md`). Las capturas de la 10.77 empiezan a expirar el 20-nov |
 | **E1** | ABIERTA | migraciones 001–005 idempotentes y reversibles en PostgreSQL **16.15 y 17.12 locales**; `public` intacto | validación en Supabase (roles, PostgREST, privilegios del proyecto) |
 | **E2** | ABIERTA | contrato v1 y manejador (34 pruebas Node), coherencia TS ↔ SQL caso por caso | ejecutar en Deno/Supabase |
 | **E3** | **BLOQUEADA** en su parte Android | núcleo Kotlin en JVM (17 pruebas), redacción por lista blanca sobre 1,983 líneas reales, lector sin cambios | **compilación Android real** (licencias del SDK), teléfono, aviso de privacidad |
@@ -84,10 +84,7 @@ El 199 del 15-nov era correcto como conteo (198 de esas pruebas siguen con el mi
 ### 0.5 Acciones externas indispensables (lista única)
 | # | Acción | Quién | Por qué no hay alternativa segura |
 |---|---|---|---|
-Actualizada el 16-nov tras las decisiones de § 0.0 (el respaldo, el inventario, X1 y `build.yml` ya no están aquí).
-
-| # | Acción | Quién | Por qué no hay alternativa segura |
-|---|---|---|---|
+| 0 | **Respaldo real E0** en su equipo, con su llave (`respaldo-e0/README.md`, 8 pasos), y entrega de `resumen.json`, `manifiesto.csv`, `VERIFICACION.json` y `EVIDENCIA-COPIAS.json`. Fijar antes la lista de ids (251 o ampliada). **Antes del 20-nov** | Propietario | necesita la llave `service_role` y acceso a producción, que no debo tener ni usar |
 | 1 | **Compilación Android real.** La forma más corta: autorizar un push de esta rama y un PR hacia `main` (solo dispara `play-compilar.yml`: compila, corre JUnit y deja un APK de prueba; no publica nada). Alternativa: aceptar las licencias del SDK en un equipo propio | Propietario | aceptar licencias en su nombre fue denegado dos veces; push y PR no están autorizados |
 | 2 | **Dos personas etiquetan** una hoja de E4 durante la revisión del banco: `python3 auditoria/etiquetado/etiquetado.py hoja --manifiesto <carpeta de capturas> --n 120 --salida <dir>` y luego `importar` (`auditoria/etiquetado/GUIA.md`). Antes del 20-nov, mientras existan las capturas | Propietario + 1 persona | una IA no puede producir verdad humana |
 | 3 | Probar la 10.81 en teléfonos (matriz de `auditoria/E3-ANDROID.md`) y aprobar el aviso de privacidad / Seguridad de los datos | Propietario | requiere dispositivos y es una decisión legal |

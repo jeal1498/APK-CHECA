@@ -35,7 +35,7 @@ def capturas_de_manifiesto(ruta):
     """{id_enlace(int): (nombre_relativo, sha256)} de las capturas dudosas («<id>.webp»).
     `ruta` puede ser el manifiesto.csv de un respaldo E0 **o** una carpeta con las capturas (p. ej. las que se bajan
     para la revisión del banco): en ese caso el sha256 se calcula aquí, de los bytes que el revisor va a mirar.
-    (E0 se descartó por decisión del propietario el 16-nov: el etiquetado ya no depende del respaldo.)"""
+    (Así E4 puede empezar con las capturas de la revisión del banco, sin esperar al respaldo E0.)"""
     out = {}
     if os.path.isdir(ruta):
         import hashlib
