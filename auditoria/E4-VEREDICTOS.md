@@ -41,3 +41,8 @@ Consecuencia: «271/316 (85.8 %)» es **acuerdo con etiquetas heredadas**, no ex
 1. Ejecutar el respaldo E0 (las capturas 10.77 expiran desde el **20-nov**; sin respaldo no hay qué etiquetar).
 2. Dos personas etiquetan la hoja (`etiquetado.py hoja --manifiesto <respaldo>/manifiesto.csv`), por separado.
 3. Correr `importar` y compartir solo `acuerdo.json`, `referencia_humana.csv` y `conflictos.csv` (sin imágenes).
+
+## Decisiones del 16-nov (E0 descartada)
+- `etiquetado.py hoja|importar --manifiesto` acepta la **carpeta de capturas** «<id>.webp» que se baja para la revisión del banco; calcula el sha256 de cada imagen y la importación rechaza una fila si la captura cambió después de etiquetar (`test_sin_respaldo_e0_basta_una_carpeta_de_capturas`).
+- Lo que lea Haiku sobre esas capturas se registra como `fuente = 'ia'` con `revisor_version` (modelo y prompt). **No** cuenta como referencia: `veredicto_vigente` lo deja en `solo_ia`.
+- La muestra humana mínima recomendada: 120 casos con semilla fija, dos revisores; con menos de 30 por segmento las métricas salen `insuficiente`.

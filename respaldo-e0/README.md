@@ -1,9 +1,11 @@
 # E0.3 — Respaldo histórico 10.77: instrucciones para Eduardo
 
+> **DESCARTADO por decisión del propietario (16-nov-2026).** No se va a ejecutar para la 10.77. El procedimiento queda probado y disponible por si se quiere un respaldo más adelante (cambiaría la versión del banco y la lista de ids).
+
 Todo se ejecuta **en tu equipo**, con **tu** llave. Nunca me mandes la llave, ni imágenes, ni la carpeta del respaldo.
 Los scripts solo **leen** Supabase (no hay ningún borrado ni escritura en el código).
 
-**Urgente:** las capturas de la 10.77 empiezan a borrarse solas el **20 nov**. Haz los pasos 1–6 antes.
+Las capturas de la 10.77 empiezan a borrarse solas el **20 nov**.
 
 ## Sistemas
 - **Probado: solo Linux** (Python 3.13, age 1.1.1, gpg 2.4.4). 

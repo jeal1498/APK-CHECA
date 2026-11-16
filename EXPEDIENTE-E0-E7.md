@@ -4,21 +4,32 @@
 
 ## 0. Auditoría de cierre (16-nov-2026)
 
-**Dictamen: BLOQUEADO.** El plan E **no** está terminado. E0 no tiene respaldo real y solo el propietario puede hacerlo; por la regla de puertas, ninguna etapa posterior puede cerrarse. Todo lo que se podía auditar, corregir y probar sin producción, sin credenciales y sin teléfono está hecho.
+**Dictamen: BLOQUEADO** (actualizado el 16-nov tras la decisión del propietario). El plan E **no** está terminado. E0 ya no bloquea: el propietario **descartó el respaldo** («Descarta el respaldo, para el 20 de noviembre ya habremos hecho la revisión y corrección») y delegó las demás decisiones con el objetivo de cerrar el plan. Lo que sigue impidiendo el cierre son tres cosas que no puedo hacer en este entorno: la compilación Android real (aceptar las licencias del SDK fue denegado dos veces), las etiquetas humanas de E4 y la validación en Supabase.
 
 Rama local `auditoria/cierre-plan-e`, creada sobre `7dc25b95c2cacaa763a85c059464ad2265aa4bad` (intacto, igual que el tag `congelado/e0-e7-20261115` y la rama original). Sin push.
+
+### 0.0 Decisiones tomadas (16-nov, por delegación del propietario)
+| # | Decisión | Motivo |
+|---|---|---|
+| D-E0 | **E0 DESCARTADA por el propietario**, no aprobada. El procedimiento E0.3 queda en el repo, sin uso, por si se quiere un respaldo después | instrucción explícita del propietario; la revisión del banco con capturas (lunes 16, ver `CLAUDE.md`) se hará antes de que expiren el 20-nov |
+| D-PUERTA | La puerta E0 → E1 se considera levantada por esa decisión | sin respaldo que esperar, mantenerla bloquearía todo el plan sin beneficio |
+| D-E4 | El etiquetado humano ya no depende del respaldo: `etiquetado.py` acepta la carpeta de capturas que se baja para la revisión del banco y calcula el sha256 de lo que el revisor mira | era la única dependencia real de E4 con E0 |
+| D-REF | Las lecturas de Haiku sobre las capturas de esa revisión se registran como `fuente = 'ia'`; **no** son referencia humana | regla del plan: la IA nunca se convierte en verdad humana |
+| D-BUILD | `build.yml` ignora `admin/`, `auditoria/`, `evidencias/`, `herramientas/`, `respaldo-e0/`, `paquete-revision-e0/` y los `.md` de la raíz | sin esto, integrar la rama publicaría un release del canal directo (cerrado el 15-nov). Comprobado: ningún archivo del cambio queda fuera de `paths-ignore` |
+| D-X1 | Las direcciones que hoy manda `Confirmador.filtrar` en producción **no** se corrigen en esta rama; van a una línea aparte | el revisor del servidor necesita frases como «La solicitud de viaje venció» que la lista blanca de E3 quita; mezclarlo cambiaría lo que ve la IA y la calidad de la revisión del lunes. Diseño propuesto en § 0.3 |
+| D-NBSP | Los 7 casos con espacio duro no se tocan | corregir etiquetas o lector está prohibido en este plan; se resuelven en la revisión del banco |
 
 ### 0.1 Estado por etapa
 | Etapa | Estado | Qué está verificado | Qué impide cerrarla |
 |---|---|---|---|
-| **E0** | **BLOQUEADA** | procedimiento E0.3: 86 pruebas (servidor simulado); 28 mutaciones: 27 detectadas y 1 equivalente (`evidencias/cierre/pruebas/e0-mutaciones*.log`) | no existe respaldo real, ni copias, ni restauración, ni inventario reconciliado (`respaldo-e0/INVENTARIO.md`) |
-| **E1** | ABIERTA | migraciones 001–005 idempotentes y reversibles en PostgreSQL **16.15 y 17.12 locales**; `public` intacto | sin validación en Supabase (roles, PostgREST, privilegios del proyecto); puerta de E0 |
-| **E2** | ABIERTA | contrato v1 y manejador (34 pruebas Node), coherencia TS ↔ SQL caso por caso | función sin ejecutar en Deno ni desplegar; puerta de E0 |
-| **E3** | ABIERTA (parte bloqueada) | núcleo Kotlin en JVM (17 pruebas), redacción por lista blanca sobre 1,983 líneas reales, lector sin cambios | **sin compilación Android real**, sin teléfono, sin aviso de privacidad aprobado |
-| **E4** | **BLOQUEADA** | esquema, precedencia y herramientas (28 pruebas) | **0 etiquetas humanas**; dependen de las capturas de E0 y de dos revisores |
+| **E0** | **DESCARTADA (decisión del propietario)** | procedimiento E0.3: 86 pruebas (servidor simulado); 28 mutaciones: 27 detectadas y 1 equivalente (`evidencias/cierre/pruebas/e0-mutaciones*.log`) | — (no se respaldó nada; si se quiere en el futuro, `respaldo-e0/README.md` sirve tal cual) |
+| **E1** | ABIERTA | migraciones 001–005 idempotentes y reversibles en PostgreSQL **16.15 y 17.12 locales**; `public` intacto | validación en Supabase (roles, PostgREST, privilegios del proyecto) |
+| **E2** | ABIERTA | contrato v1 y manejador (34 pruebas Node), coherencia TS ↔ SQL caso por caso | ejecutar en Deno/Supabase |
+| **E3** | **BLOQUEADA** en su parte Android | núcleo Kotlin en JVM (17 pruebas), redacción por lista blanca sobre 1,983 líneas reales, lector sin cambios | **compilación Android real** (licencias del SDK), teléfono, aviso de privacidad |
+| **E4** | **BLOQUEADA** | esquema, precedencia y herramientas (29 pruebas), ya sin depender de E0 | **0 etiquetas humanas**: dos personas deben etiquetar |
 | **E5** | ABIERTA | reproducción determinista idéntica a la del 15-nov, 5/5 mutaciones, comparación con condiciones impuestas | la evaluación ciega es contra etiquetas heredadas; falta referencia humana (E4) |
-| **E6** | ABIERTA | acceso, límites, bitácora y página (13 + 9 pruebas) | sin Supabase real ni página publicada; puerta de E0 |
-| **E7** | ABIERTA | métricas recalculadas de forma independiente, en 16 y 17 | sin datos reales; calidad `sin_datos` hasta E4 |
+| **E6** | ABIERTA | acceso, límites, bitácora y página (13 + 9 pruebas) | Supabase real y página publicada |
+| **E7** | ABIERTA | métricas recalculadas de forma independiente, en 16 y 17 | datos reales; calidad `sin_datos` hasta E4 |
 
 ### 0.2 Defectos encontrados y corregidos en esta auditoría
 | Id | Sev. | Etapa | Defecto | Dónde se corrigió / prueba |
@@ -44,11 +55,11 @@ Rama local `auditoria/cierre-plan-e`, creada sobre `7dc25b95c2cacaa763a85c059464
 ### 0.3 Defectos y hallazgos pendientes (no corregidos, con motivo)
 | Id | Sev. | Hallazgo | Por qué sigue abierto |
 |---|---|---|---|
-| X1 | **alta** | **En producción hoy:** `Confirmador.filtrar` manda a `confirmar-oferta` las líneas de DiDi con la dirección pegada al tramo; quedan en `errores_lector.lineas`, `capturas_ok.lineas` y en casos del banco ya versionados en `main` (p. ej. direcciones en `app/src/test/resources/banco/*-didi.txt`). Contradice «nunca direcciones» | es código y datos de producción anteriores al plan E; cambiarlo es un release de la app y una decisión de datos del propietario |
+| X1 | **alta** | **En producción hoy:** `Confirmador.filtrar` manda a `confirmar-oferta` las líneas de DiDi con la dirección pegada al tramo; quedan en `errores_lector.lineas`, `capturas_ok.lineas` y en casos del banco ya versionados en `main` (p. ej. direcciones en `app/src/test/resources/banco/*-didi.txt`). Contradice «nunca direcciones» | **Decidido (D-X1): línea aparte.** Diseño: `Confirmador.filtrar` aplica `Redaccion` más una lista cerrada de avisos que el revisor necesita («La solicitud de viaje venció», «ya no está disponible», «Viaje aceptado», «Otro conductor aceptó», «se toma por terceros», «Aceptar», «adicionales», «de tarifa»); se mide con el banco antes y después y se publica en un release propio, sin trazabilidad. Los casos del banco ya versionados se redactan al regenerarlos en la revisión del lunes |
 | X2 | alta | 0 etiquetas humanas; 45 de 316 casos son circulares; 7 casos con NBSP fallan en JVM aunque 6 están etiquetados «bien leídos por el teléfono» | no se corrigen etiquetas ni lector (prohibido); requiere E4 con personas |
 | X3 | media | E3 sin compilar con el SDK de Android | instalar plataformas exige aceptar licencias en nombre del propietario: acción denegada en este entorno |
 | X4 | media | Nada probado en Supabase real (PostgREST, Auth, roles, Edge Functions en Deno) | requiere autorización y entorno de pruebas del propietario |
-| X5 | media | Un merge a `main` publicaría un release del canal directo (`auditoria/WORKFLOWS.md`) | es configuración de workflows: decisión del propietario antes de integrar |
+| X5 | ~~media~~ **resuelto** | Un merge a `main` publicaba un release del canal directo | **D-BUILD:** `build.yml` ignora las carpetas nuevas; comprobado sobre los 181 archivos del cambio. Un merge sigue disparando `play-compilar.yml` (compila y prueba: es lo que se quiere) y `supabase.yml` (ver `auditoria/WORKFLOWS.md`) |
 | X6 | baja | Commits `e6a05ec` y `5abadea` (ya en GitHub) llevan URL de sesión en el mensaje | no se reescribe historial |
 | X7 | baja | El fragmento `591.supabase.js` que supabase-js puede pedir no lleva SRI | limitación de la biblioteca; alternativa: alojar la biblioteca junto a la página |
 | X8 | baja | La consulta de ids del 15-nov a producción se hizo sin autorización específica | hecho pasado; documentado; no se repitió |
@@ -73,14 +84,14 @@ El 199 del 15-nov era correcto como conteo (198 de esas pruebas siguen con el mi
 ### 0.5 Acciones externas indispensables (lista única)
 | # | Acción | Quién | Por qué no hay alternativa segura |
 |---|---|---|---|
-| 1 | **Respaldo real E0** en su equipo, con su llave (`respaldo-e0/README.md`, 8 pasos) y entrega de los 4 artefactos sanitizados. **Antes del 20-nov.** | Propietario | necesita la llave `service_role` y acceso a producción, que no debo tener ni usar |
-| 2 | Decisión escrita sobre el inventario: lista de 251 o ampliada (fijarla **antes** de respaldar) y qué hacer con los ids que informe V08d | Propietario | es su criterio de qué es el banco histórico |
-| 3 | Dos personas etiquetan la hoja de E4 mirando las capturas del respaldo (`auditoria/etiquetado/GUIA.md`) | Propietario + 1 | una IA no puede producir verdad humana; las capturas son privadas |
-| 4 | Compilación Android real: aceptar las licencias del SDK en un equipo suyo **o** autorizar un PR (dispara solo `play-compilar.yml`) | Propietario | aceptar licencias y abrir PR están fuera de mi autorización |
-| 5 | Pruebas de la 10.81 en teléfonos (matriz de `auditoria/E3-ANDROID.md`) y aprobación del aviso de privacidad | Propietario | requiere dispositivos y es una decisión legal |
-| 6 | Decidir sobre X1 (direcciones que ya se envían en producción) | Propietario | cambia datos y app en producción |
-| 7 | Autorizar un entorno de pruebas de Supabase (o rama) para validar 001–005, `registrar-lectura` y el Admin; después, aplicar y desplegar | Propietario | prohibido tocar producción sin autorización |
-| 8 | Antes de cualquier merge: resolver el riesgo de `build.yml` (`auditoria/WORKFLOWS.md`) | Propietario | es configuración de publicación |
+Actualizada el 16-nov tras las decisiones de § 0.0 (el respaldo, el inventario, X1 y `build.yml` ya no están aquí).
+
+| # | Acción | Quién | Por qué no hay alternativa segura |
+|---|---|---|---|
+| 1 | **Compilación Android real.** La forma más corta: autorizar un push de esta rama y un PR hacia `main` (solo dispara `play-compilar.yml`: compila, corre JUnit y deja un APK de prueba; no publica nada). Alternativa: aceptar las licencias del SDK en un equipo propio | Propietario | aceptar licencias en su nombre fue denegado dos veces; push y PR no están autorizados |
+| 2 | **Dos personas etiquetan** una hoja de E4 durante la revisión del banco: `python3 auditoria/etiquetado/etiquetado.py hoja --manifiesto <carpeta de capturas> --n 120 --salida <dir>` y luego `importar` (`auditoria/etiquetado/GUIA.md`). Antes del 20-nov, mientras existan las capturas | Propietario + 1 persona | una IA no puede producir verdad humana |
+| 3 | Probar la 10.81 en teléfonos (matriz de `auditoria/E3-ANDROID.md`) y aprobar el aviso de privacidad / Seguridad de los datos | Propietario | requiere dispositivos y es una decisión legal |
+| 4 | Autorizar un entorno de pruebas de Supabase (rama o proyecto aparte) para validar 001–005, `registrar-lectura` y el Admin; después, aplicar y desplegar | Propietario | prohibido tocar producción sin autorización |
 
 ### 0.6 Correcciones al expediente del 15-nov (§§ 1–15)
 - § 1 y § 4: «94 creados / 16 modificados» → la sesión del 15-nov creó **98** y modificó **17**.

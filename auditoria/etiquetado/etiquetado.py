@@ -7,10 +7,10 @@
             mide el acuerdo (por campo y kappa de la clase), separa referencia y conflictos y genera el SQL de
             auditoria.veredictos (fuente 'humano', estado 'validado'). No aplica nada.
 
-Las capturas NO están en el repo: se leen del respaldo E0 en el equipo del propietario (fuera de git).
-Ver GUIA.md. Uso:
-  python3 etiquetado.py hoja --manifiesto RESPALDO/manifiesto.csv --n 120 --semilla 20261115 --salida DIR
-  python3 etiquetado.py importar --manifiesto RESPALDO/manifiesto.csv --hoja A.csv --hoja B.csv --salida DIR
+Las capturas NO están en el repo. `--manifiesto` acepta el manifiesto.csv de un respaldo **o** la carpeta con las
+capturas «<id>.webp» que se bajan para la revisión del banco (fuera de git). Ver GUIA.md. Uso:
+  python3 etiquetado.py hoja --manifiesto CARPETA_CAPTURAS --n 120 --semilla 20261115 --salida DIR
+  python3 etiquetado.py importar --manifiesto CARPETA_CAPTURAS --hoja A.csv --hoja B.csv --salida DIR
 """
 import argparse
 import csv
@@ -32,8 +32,19 @@ RE_REVISOR = re.compile(r"^[a-z0-9_]{2,32}$")
 
 
 def capturas_de_manifiesto(ruta):
-    """{id_enlace(int): (nombre_relativo, sha256)} de las capturas dudosas («<id>.webp») del respaldo."""
+    """{id_enlace(int): (nombre_relativo, sha256)} de las capturas dudosas («<id>.webp»).
+    `ruta` puede ser el manifiesto.csv de un respaldo E0 **o** una carpeta con las capturas (p. ej. las que se bajan
+    para la revisión del banco): en ese caso el sha256 se calcula aquí, de los bytes que el revisor va a mirar.
+    (E0 se descartó por decisión del propietario el 16-nov: el etiquetado ya no depende del respaldo.)"""
     out = {}
+    if os.path.isdir(ruta):
+        import hashlib
+        for n in sorted(os.listdir(ruta)):
+            m = re.fullmatch(r"(\d+)\.webp", n)
+            p = os.path.join(ruta, n)
+            if m and os.path.isfile(p) and not os.path.islink(p):
+                out[int(m.group(1))] = (n, hashlib.sha256(open(p, "rb").read()).hexdigest())
+        return out
     with open(ruta, encoding="utf-8", newline="") as f:
         for r in csv.DictReader(f):
             if r.get("tipo") == "captura" and r.get("origen") == "dudosa" and r.get("id_enlace"):

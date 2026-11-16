@@ -67,6 +67,34 @@ class TestOrigen(Base):
 
 
 class TestHoja(Base):
+    def test_sin_respaldo_e0_basta_una_carpeta_de_capturas(self):
+        """E0 se descartó (16-nov): la hoja y la importación funcionan con la carpeta de capturas de la revisión."""
+        cap = os.path.join(self.tmp, "capturas"); os.makedirs(cap)
+        ids = [int(c["caso"][:4]) for c in self.casos][:40]
+        for i in ids:
+            open(os.path.join(cap, f"{i}.webp"), "wb").write(b"RIFF\x00\x00\x00\x00WEBP" + str(i).encode())
+        open(os.path.join(cap, "ok-verde-1-2-3-4.webp"), "wb").write(b"x")   # las normales no entran
+        os.symlink(os.path.join(cap, f"{ids[0]}.webp"), os.path.join(cap, "99999.webp"))  # un enlace no cuenta
+        caps = etiquetado.capturas_de_manifiesto(cap)
+        self.assertEqual(sorted(caps), sorted(ids))
+        import hashlib
+        self.assertEqual(caps[ids[0]][1], hashlib.sha256(open(os.path.join(cap, f"{ids[0]}.webp"), "rb").read()).hexdigest())
+        d = os.path.join(self.tmp, "hc")
+        self.correr("hoja", "--manifiesto", cap, "--n", "20", "--salida", d)
+        filas = list(csv.DictReader(open(os.path.join(d, "hoja-revisor_a.csv"))))
+        self.assertTrue(filas and all(int(r["caso"][:4]) in ids for r in filas))
+        llenar = lambda rev: self.llenar(d, rev, lambda r: {"clase": "no_oferta"})
+        out = os.path.join(self.tmp, "oc")
+        self.correr("importar", "--manifiesto", cap, "--hoja", llenar("revisor_a"), "--hoja", llenar("revisor_b"), "--salida", out)
+        self.assertEqual(json.load(open(os.path.join(out, "acuerdo.json")))["casos_comunes"], len(filas))
+        # Si la captura cambia después de etiquetar, la fila deja de valer.
+        open(os.path.join(cap, f"{filas[0]['caso'][:4].lstrip('0')}.webp"), "ab").write(b"!")
+        out2 = os.path.join(self.tmp, "oc2")
+        self.correr("importar", "--manifiesto", cap, "--hoja", llenar("revisor_a"), "--hoja", llenar("revisor_b"), "--salida", out2)
+        ac = json.load(open(os.path.join(out2, "acuerdo.json")))
+        self.assertEqual(ac["casos_comunes"], len(filas) - 1)
+        self.assertIn("captura_no_coincide_con_manifiesto", {e["error"] for e in ac["errores_de_hoja"]})
+
     def test_hoja_ciega_determinista_y_solo_con_captura(self):
         d1, d2 = self.hoja(semilla=7), self.hoja(semilla=7)
         a = open(os.path.join(d1, "hoja-revisor_a.csv")).read()

@@ -1,6 +1,6 @@
 # Seguimiento maestro de Checa
 
-**Última actualización:** 16 de noviembre de 2026 (auditoría de cierre: plan E **BLOQUEADO** en E0; ver `EXPEDIENTE-E0-E7.md` § 0)  
+**Última actualización:** 16 de noviembre de 2026 (E0 **descartada por el propietario**; plan E **BLOQUEADO** por compilación Android, etiquetas humanas y Supabase; ver `EXPEDIENTE-E0-E7.md` § 0)  
 **Repositorio:** `jeal1498/APK-CHECA`  
 **Propósito:** mantener el objetivo, el orden de ejecución, las decisiones y la evidencia de cada entrega en un único lugar. Actualizar este archivo cada vez que se revise o cierre una entrega.
 
@@ -24,11 +24,11 @@ El orden de ejecución y aceptación es **E0 → E1 → E2 → E3 → E4 → E5 
 
 | Entrega | Resultado que debe quedar | Estado al 15-11-2026 |
 |---|---|---|
-| **E0** | Banco histórico 10.77 respaldado y comprobado. | **BLOQUEADA.** Procedimiento E0.3 (D1–D5 y H1–H8 corregidos; 86 pruebas con servidor simulado). **No existe respaldo real**, ni copias, ni restauración, ni inventario reconciliado (`respaldo-e0/INVENTARIO.md`). Lo ejecuta el propietario. **Las capturas expiran desde el 20-11-2026.** |
+| **E0** | Banco histórico 10.77 respaldado y comprobado. | **DESCARTADA por decisión del propietario (16-11-2026).** No se respaldó nada. El procedimiento E0.3 (D1–D5 y H1–H8 corregidos; 86 pruebas con servidor simulado) queda en `respaldo-e0/` sin uso. La revisión del banco con capturas se hace antes de que expiren (20-11). |
 | **E1** | Migraciones y esquema de auditoría preparados. | **Abierta.** `auditoria/sql/001` (+ reversión) probado en PostgreSQL 16.15 y 17.12 locales. No aplicado ni validado en Supabase. No avanza hasta aceptar E0. |
 | **E2** | Servidor compatible con los nuevos registros. | **Abierta.** `002` + `registrar-lectura` (contrato v1 con lista blanca de líneas). Probado en local; sin Deno ni despliegue. |
-| **E3** | Android 10.81 con trazabilidad completa. | **Abierta.** Núcleo probado en JVM (17 pruebas); redacción corregida (ya no salen direcciones). **Sin compilación Android real, sin teléfono, sin aviso de privacidad.** Apagado por defecto. |
-| **E4** | Veredictos humanos e IA. | **BLOQUEADA.** Esquema y herramientas probados; **0 etiquetas humanas** (necesita las capturas de E0 y dos revisores). Banco: 0 humanos, 45 circulares. |
+| **E3** | Android 10.81 con trazabilidad completa. | **Bloqueada en su parte Android.** Núcleo probado en JVM (17 pruebas); redacción corregida (ya no salen direcciones). **Sin compilación Android real** (licencias del SDK denegadas), sin teléfono, sin aviso de privacidad. Apagado por defecto. |
+| **E4** | Veredictos humanos e IA. | **BLOQUEADA.** Esquema y herramientas probados; ya no dependen de E0 (aceptan la carpeta de capturas de la revisión). **0 etiquetas humanas**: dos personas deben etiquetar. Banco: 0 humanos, 45 circulares. |
 | **E5** | Reproducción histórica y pruebas automáticas. | **Abierta.** Reproducción determinista y evaluación ciega re-ejecutadas (319/365 contra etiquetas **heredadas**); 5/5 mutaciones. Sin referencia humana no mide precisión. |
 | **E6** | Checa Admin MVP. | **Abierta.** `004` + `admin/` probados en local (cliente simulado). No desplegado. |
 | **E7** | Dashboard completo y métricas confiables. | **Abierta.** `005` probado en 16 y 17; métricas recalculadas de forma independiente. Sin datos reales. |
@@ -107,6 +107,13 @@ Antes de que E3 llegue a producción deben estar aprobados el plan de datos, la 
 ## Registro de progreso y decisiones
 
 Añadir una entrada nueva al principio de esta sección por cada revisión o cambio. Registrar hechos comprobados y separar claramente lo reportado por Claude de lo verificado de forma independiente.
+
+### 2026-11-16 — Decisión del propietario: E0 descartada; decisiones delegadas
+- **Decisión del propietario (literal):** «Descarta el respaldo, para el 20 de noviembre ya habremos hecho la revisión y corrección. Toma las demás decisiones con el objetivo de lograr el objetivo que se dio.»
+- **Efecto:** E0 = **DESCARTADA** (no aprobada); la puerta E0 → E1 se levanta por esa decisión.
+- **Decisiones tomadas por delegación** (detalle y motivos en `EXPEDIENTE-E0-E7.md` § 0.0): E4 deja de depender del respaldo (`etiquetado.py` con carpeta de capturas); lo que lea Haiku en la revisión del banco entra como `fuente = 'ia'`, nunca como referencia humana; `build.yml` ignora las carpetas nuevas para que integrar no publique un release; las direcciones que ya manda `Confirmador.filtrar` se corrigen en una línea aparte (diseño en § 0.3, X1); los 7 casos con NBSP se resuelven en la revisión del banco.
+- **No se pudo:** compilar Android (aceptar licencias del SDK, denegado de nuevo). Sin push, PR, merge, migraciones ni despliegues.
+- **Siguiente paso:** acciones de § 0.5 (compilación Android vía PR, etiquetado humano, teléfonos, Supabase de pruebas).
 
 ### 2026-11-16 — Auditoría de cierre del plan E: BLOQUEADO en E0
 - **Estado anterior:** E0–E7 «implementados y probados en local» (commit `7dc25b9`, pausado para revisión).

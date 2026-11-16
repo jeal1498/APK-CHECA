@@ -1,4 +1,6 @@
-# E0 — Reconciliación del inventario (estado al 16-nov-2026): **NO reconciliado**
+# E0 — Reconciliación del inventario: **no aplica** (E0 descartada por el propietario el 16-nov-2026)
+
+Se conserva el análisis para que conste por qué nunca se reconcilió y qué haría falta si se retoma.
 
 ## Qué hay como evidencia
 | Fuente | Qué dice | Valor como evidencia |
