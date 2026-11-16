@@ -13,6 +13,7 @@ Rama local `auditoria/cierre-plan-e`, creada sobre `7dc25b95c2cacaa763a85c059464
 |---|---|---|
 | ~~D-E0~~ | **Retirada.** El 16-nov registré E0 como «descartada» a partir del mensaje «Descarta el respaldo…». El propietario lo corrigió el mismo día: **E0 continúa pendiente** y se acepta solo con evidencia de respaldo real | instrucción explícita posterior del propietario |
 | ~~D-PUERTA~~ | **Retirada.** La puerta E0 → E1 sigue vigente | consecuencia de lo anterior |
+| **D-E0b** | **E0 CERRADA por decisión del propietario** («E0 márcalo como listo», 16-nov). Se registra como cierre por decisión, **no** como aprobación con evidencia: no hubo respaldo, copias ni restauración. La puerta E0 → E1 se levanta | instrucción explícita y posterior del propietario; sustituye a la anterior «E0 continúa pendiente» |
 | D-E4 | El etiquetado humano puede hacerse **también** sin el respaldo: `etiquetado.py` acepta la carpeta de capturas que se baja para la revisión del banco y calcula el sha256 de lo que el revisor mira | permite empezar E4 con las capturas de la revisión del banco; no sustituye a E0 |
 | D-REF | Las lecturas de Haiku sobre las capturas de esa revisión se registran como `fuente = 'ia'`; **no** son referencia humana | regla del plan: la IA nunca se convierte en verdad humana |
 | D-BUILD | `build.yml` ignora `admin/`, `auditoria/`, `evidencias/`, `herramientas/`, `respaldo-e0/`, `paquete-revision-e0/` y los `.md` de la raíz | sin esto, integrar la rama publicaría un release del canal directo (cerrado el 15-nov). Comprobado: ningún archivo del cambio queda fuera de `paths-ignore` |
@@ -22,10 +23,10 @@ Rama local `auditoria/cierre-plan-e`, creada sobre `7dc25b95c2cacaa763a85c059464
 ### 0.1 Estado por etapa
 | Etapa | Estado | Qué está verificado | Qué impide cerrarla |
 |---|---|---|---|
-| **E0** | **PENDIENTE (bloqueada)** | procedimiento E0.3: 86 pruebas (servidor simulado); 28 mutaciones: 27 detectadas y 1 equivalente (`evidencias/cierre/pruebas/e0-mutaciones*.log`) | respaldo real, dos copias cifradas, restauración desde B, comprobación de A, inventario reconciliado y conservación (`respaldo-e0/README.md`, `respaldo-e0/INVENTARIO.md`). Las capturas de la 10.77 empiezan a expirar el 20-nov |
+| **E0** | **CERRADA por decisión del propietario** (sin respaldo) | procedimiento E0.3: 86 pruebas (servidor simulado); 28 mutaciones: 27 detectadas y 1 equivalente | nada pendiente por decisión del propietario. **Criterios no verificados:** respaldo real, copias, restauración, inventario. Si se quiere respaldo más adelante, `respaldo-e0/README.md` sirve tal cual |
 | **E1** | ABIERTA | migraciones 001–005 idempotentes y reversibles en PostgreSQL **16.15 y 17.12 locales**; `public` intacto | validación en Supabase (roles, PostgREST, privilegios del proyecto) |
 | **E2** | ABIERTA | contrato v1 y manejador (34 pruebas Node), coherencia TS ↔ SQL caso por caso | ejecutar en Deno/Supabase |
-| **E3** | **BLOQUEADA** en su parte Android | núcleo Kotlin en JVM (17 pruebas), redacción por lista blanca sobre 1,983 líneas reales, lector sin cambios | **compilación Android real** (licencias del SDK), teléfono, aviso de privacidad |
+| **E3** | ABIERTA | núcleo Kotlin en JVM (17 pruebas); **compilación Android real y JUnit OK** (corrida 158 de `play-compilar.yml` sobre `c61b62c`, APK firmado `checa-play-apk-firmado-prueba-158`); redacción por lista blanca; lector sin cambios | pruebas en teléfono (matriz de `auditoria/E3-ANDROID.md`) y aviso de privacidad aprobado |
 | **E4** | **BLOQUEADA** | esquema, precedencia y herramientas (29 pruebas), ya sin depender de E0 | **0 etiquetas humanas**: dos personas deben etiquetar |
 | **E5** | ABIERTA | reproducción determinista idéntica a la del 15-nov, 5/5 mutaciones, comparación con condiciones impuestas | la evaluación ciega es contra etiquetas heredadas; falta referencia humana (E4) |
 | **E6** | ABIERTA | acceso, límites, bitácora y página (13 + 9 pruebas) | Supabase real y página publicada |
@@ -84,8 +85,8 @@ El 199 del 15-nov era correcto como conteo (198 de esas pruebas siguen con el mi
 ### 0.5 Acciones externas indispensables (lista única)
 | # | Acción | Quién | Por qué no hay alternativa segura |
 |---|---|---|---|
-| 0 | **Respaldo real E0** en su equipo, con su llave (`respaldo-e0/README.md`, 8 pasos), y entrega de `resumen.json`, `manifiesto.csv`, `VERIFICACION.json` y `EVIDENCIA-COPIAS.json`. Fijar antes la lista de ids (251 o ampliada). **Antes del 20-nov** | Propietario | necesita la llave `service_role` y acceso a producción, que no debo tener ni usar |
-| 1 | **Compilación Android real.** La forma más corta: autorizar un push de esta rama y un PR hacia `main` (solo dispara `play-compilar.yml`: compila, corre JUnit y deja un APK de prueba; no publica nada). Alternativa: aceptar las licencias del SDK en un equipo propio | Propietario | aceptar licencias en su nombre fue denegado dos veces; push y PR no están autorizados |
+| 0 | ~~Respaldo real E0~~ **No se hará:** E0 cerrada por decisión del propietario | — | — |
+| 1 | ~~Compilación Android real~~ **Hecha** (corrida 158, PR #7 en borrador) | — | — |
 | 2 | **Dos personas etiquetan** una hoja de E4 durante la revisión del banco: `python3 auditoria/etiquetado/etiquetado.py hoja --manifiesto <carpeta de capturas> --n 120 --salida <dir>` y luego `importar` (`auditoria/etiquetado/GUIA.md`). Antes del 20-nov, mientras existan las capturas | Propietario + 1 persona | una IA no puede producir verdad humana |
 | 3 | Probar la 10.81 en teléfonos (matriz de `auditoria/E3-ANDROID.md`) y aprobar el aviso de privacidad / Seguridad de los datos | Propietario | requiere dispositivos y es una decisión legal |
 | 4 | Autorizar un entorno de pruebas de Supabase (rama o proyecto aparte) para validar 001–005, `registrar-lectura` y el Admin; después, aplicar y desplegar | Propietario | prohibido tocar producción sin autorización |

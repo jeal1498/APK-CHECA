@@ -1,6 +1,6 @@
 # Seguimiento maestro de Checa
 
-**Última actualización:** 16 de noviembre de 2026 (auditoría de cierre: plan E **BLOQUEADO**; **E0 pendiente** de respaldo real; ver `EXPEDIENTE-E0-E7.md` § 0)  
+**Última actualización:** 16 de noviembre de 2026 (E0 **cerrada por decisión del propietario, sin respaldo**; compilación Android OK; plan E **BLOQUEADO** por teléfonos, etiquetas humanas y Supabase; ver `EXPEDIENTE-E0-E7.md` § 0)  
 **Repositorio:** `jeal1498/APK-CHECA`  
 **Propósito:** mantener el objetivo, el orden de ejecución, las decisiones y la evidencia de cada entrega en un único lugar. Actualizar este archivo cada vez que se revise o cierre una entrega.
 
@@ -24,10 +24,10 @@ El orden de ejecución y aceptación es **E0 → E1 → E2 → E3 → E4 → E5 
 
 | Entrega | Resultado que debe quedar | Estado al 15-11-2026 |
 |---|---|---|
-| **E0** | Banco histórico 10.77 respaldado y comprobado. | **PENDIENTE (bloqueada).** Procedimiento E0.3 (D1–D5 y H1–H8 corregidos; 86 pruebas con servidor simulado). **No existe respaldo real**, ni copias, ni restauración, ni inventario reconciliado (`respaldo-e0/INVENTARIO.md`). Lo ejecuta el propietario. **Las capturas expiran desde el 20-11-2026.** |
+| **E0** | Banco histórico 10.77 respaldado y comprobado. | **CERRADA por decisión del propietario (16-11-2026), sin respaldo real.** Los criterios de aceptación (respaldo, copias, restauración, inventario) **no se verificaron**; el propietario asume el riesgo. Procedimiento E0.3 disponible en `respaldo-e0/`. |
 | **E1** | Migraciones y esquema de auditoría preparados. | **Abierta.** `auditoria/sql/001` (+ reversión) probado en PostgreSQL 16.15 y 17.12 locales. No aplicado ni validado en Supabase. No avanza hasta aceptar E0. |
 | **E2** | Servidor compatible con los nuevos registros. | **Abierta.** `002` + `registrar-lectura` (contrato v1 con lista blanca de líneas). Probado en local; sin Deno ni despliegue. |
-| **E3** | Android 10.81 con trazabilidad completa. | **Bloqueada en su parte Android.** Núcleo probado en JVM (17 pruebas); redacción corregida (ya no salen direcciones). **Sin compilación Android real** (licencias del SDK denegadas), sin teléfono, sin aviso de privacidad. Apagado por defecto. |
+| **E3** | Android 10.81 con trazabilidad completa. | **Abierta.** Núcleo en JVM (17 pruebas) y **compilación Android real + JUnit OK** (corrida 158, PR #7). Falta teléfono y aviso de privacidad. Apagado por defecto. |
 | **E4** | Veredictos humanos e IA. | **BLOQUEADA.** Esquema y herramientas probados; el etiquetado puede usar también la carpeta de capturas de la revisión del banco. **0 etiquetas humanas**: dos personas deben etiquetar. Banco: 0 humanos, 45 circulares. |
 | **E5** | Reproducción histórica y pruebas automáticas. | **Abierta.** Reproducción determinista y evaluación ciega re-ejecutadas (319/365 contra etiquetas **heredadas**); 5/5 mutaciones. Sin referencia humana no mide precisión. |
 | **E6** | Checa Admin MVP. | **Abierta.** `004` + `admin/` probados en local (cliente simulado). No desplegado. |
@@ -107,6 +107,11 @@ Antes de que E3 llegue a producción deben estar aprobados el plan de datos, la 
 ## Registro de progreso y decisiones
 
 Añadir una entrada nueva al principio de esta sección por cada revisión o cambio. Registrar hechos comprobados y separar claramente lo reportado por Claude de lo verificado de forma independiente.
+
+### 2026-11-16 — E0 cerrada por decisión del propietario; compilación Android OK
+- **Decisión del propietario (literal):** «E0 márcalo como listo». Se registra como **cierre por decisión, sin respaldo real**: no hay evidencia de respaldo, copias ni restauración, y no se presenta como aprobada con evidencia. La puerta E0 → E1 se levanta.
+- **Compilación Android:** push autorizado de la rama y PR #7 en borrador; `play-compilar.yml` (corrida 158) compiló el flavor play, corrió JUnit y publicó el APK firmado de prueba. Ningún otro workflow se disparó.
+- **Siguiente paso:** teléfonos y aviso de privacidad (E3), etiquetado humano (E4) y Supabase de pruebas (E1, E2, E6, E7).
 
 ### 2026-11-16 — Corrección: E0 sigue pendiente; decisiones técnicas delegadas
 - **Corrección del propietario:** «no registres E0 como descartada por decisión mía. E0 continúa pendiente y su aceptación requiere evidencia de respaldo real.» Se retira el registro anterior de E0 «descartada» (hecho a partir del mensaje «Descarta el respaldo…») y la puerta E0 → E1 **sigue vigente**.

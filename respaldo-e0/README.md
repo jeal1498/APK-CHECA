@@ -1,5 +1,7 @@
 # E0.3 — Respaldo histórico 10.77: instrucciones para Eduardo
 
+> **E0 cerrada por decisión del propietario (16-nov-2026) sin ejecutar este respaldo.** El procedimiento queda probado y disponible.
+
 Todo se ejecuta **en tu equipo**, con **tu** llave. Nunca me mandes la llave, ni imágenes, ni la carpeta del respaldo.
 Los scripts solo **leen** Supabase (no hay ningún borrado ni escritura en el código).
 
