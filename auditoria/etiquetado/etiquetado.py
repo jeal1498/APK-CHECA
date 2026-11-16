@@ -211,6 +211,77 @@ def importar(a):
     return 0
 
 
+def importar_revision(a):
+    """Una persona revisó propuestas de la IA en revisar.html (aprobar / corregir / rechazar).
+    Resultado: referencia «IA revisada por persona» (no es doble revisión humana a ciegas). Las filas de control que
+    la persona aprobó sin detectar la alteración se EXCLUYEN y se reportan: miden si la revisión fue real."""
+    caps = capturas_de_manifiesto(a.manifiesto)
+    filas = list(csv.DictReader(open(a.hoja, encoding="utf-8", newline="")))
+    if not filas or "decision" not in filas[0]:
+        raise SystemExit("La hoja no viene de revisar.html (falta la columna «decision»).")
+    revs = {r.get("revisor") for r in filas}
+    if len(revs) != 1:
+        raise SystemExit(f"Una hoja de revisión debe ser de una sola persona; hay {sorted(revs)}.")
+    cuenta = {"aprobado": 0, "corregido": 0, "rechazado": 0, "pendiente": 0}
+    ctl = {"total": 0, "detectados": 0, "no_detectados": []}
+    validas, ia, errores = [], [], []
+    for i, r in enumerate(filas, 2):
+        d = r.get("decision", "pendiente")
+        cuenta[d] = cuenta.get(d, 0) + 1
+        try:
+            propuesta = json.loads(r.get("propuesta_ia") or "{}")
+        except ValueError:
+            propuesta = {}
+        cap = caps.get(int(r["caso"][:4])) if re.fullmatch(r"\d{4}-(uber|didi|otra)?", r.get("caso", "")) else None
+        if propuesta and cap and cap[0] == r.get("captura") and cap[1] == r.get("captura_sha256"):
+            ia.append((r["caso"][:4], propuesta, cap[1]))
+        if r.get("control") == "si":
+            ctl["total"] += 1
+            if d == "aprobado":
+                ctl["no_detectados"].append(r["captura"])
+                continue                      # aprobó una propuesta alterada: esta fila no vale
+            ctl["detectados"] += 1
+        if d not in ("aprobado", "corregido"):
+            continue
+        fila, err = validar_fila(r, caps)
+        if err:
+            errores.append({"linea": i, "error": err})
+            continue
+        fila["decision"] = d
+        validas.append(fila)
+    rev = revs.pop()
+    os.makedirs(a.salida, exist_ok=True)
+    with open(os.path.join(a.salida, "veredictos_revision.sql"), "w", encoding="utf-8") as f:
+        f.write("-- Revisión de propuestas IA por una persona (revisar.html). Aplicar solo con autorización.\n"
+                "-- Persona: fuente 'humano', revisor_version 'revision_propuesta_ia' (UN revisor: queda en 'referencia_humana',\n"
+                "-- no en 'referencia_doble'). IA: fuente 'ia', estado 'propuesto'.\n")
+        for x in validas:
+            f.write("insert into auditoria.veredictos (error_lector_id, fuente, autor, revisor_version, guia_version, clase, tarifa, km, min, "
+                    "tarjeta, confianza, estado, evidencia_sha256, nota) values (" + ", ".join(sql_lit(v) for v in (
+                        int(x["caso"][:4]), "humano", x["revisor"], "revision_propuesta_ia:" + x["decision"], GUIA_VERSION, x["clase"],
+                        x["tarifa"], x["km"], x["min"], x["tarjeta"], x["confianza"], "validado", x["sha"], x["nota"] or None)) + ");\n")
+        for idl, p, sha in ia:
+            clase = p.get("clase") if p.get("clase") in CLASES else "ilegible"
+            of = clase == "oferta" and all(isinstance(p.get(k), (int, float)) and p.get(k) > 0 for k in ("tarifa", "km", "min"))
+            clase = clase if clase != "oferta" or of else "ilegible"
+            f.write("insert into auditoria.veredictos (error_lector_id, fuente, autor, revisor_version, clase, tarifa, km, min, confianza, estado, evidencia_sha256) values ("
+                    + ", ".join(sql_lit(v) for v in (int(idl), "ia", "claude-opus", "prompt-opus-v1", clase,
+                                                      p.get("tarifa") if of else None, p.get("km") if of else None, p.get("min") if of else None,
+                                                      p.get("confianza") if p.get("confianza") in ("alta", "media", "baja") else "media", "propuesto", sha)) + ");\n")
+    res = {"metodo": "revision_propuesta_ia", "revisor": rev, "filas": len(filas), "decisiones": cuenta,
+           # Acuerdo IA–persona solo en filas SIN control (en las de control lo mostrado no era lo que dijo la IA).
+           "acuerdo_ia_persona": metricas.proporcion(sum(1 for r in filas if r.get("control") != "si" and r.get("decision") == "aprobado"),
+                                                     sum(1 for r in filas if r.get("control") != "si" and r.get("decision") in ("aprobado", "corregido", "rechazado"))),
+           "controles": {"total": ctl["total"], "detectados": ctl["detectados"], "no_detectados": ctl["no_detectados"]},
+           "revision_confiable": ctl["total"] > 0 and not ctl["no_detectados"],
+           "validas": len(validas), "errores_de_hoja": errores,
+           "aviso": "Propuesta de IA revisada por UNA persona: no es doble revisión humana a ciegas."}
+    with open(os.path.join(a.salida, "revision.json"), "w", encoding="utf-8") as f:
+        json.dump(res, f, ensure_ascii=False, indent=2)
+    print(f"{rev}: {cuenta}; controles detectados {ctl['detectados']}/{ctl['total']}; válidas {len(validas)}; errores {len(errores)}")
+    return 0
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -224,7 +295,13 @@ def main(argv=None):
     i.add_argument("--manifiesto", required=True)
     i.add_argument("--hoja", action="append", required=True)
     i.add_argument("--salida", required=True)
+    r = sub.add_parser("importar-revision")
+    r.add_argument("--manifiesto", required=True)
+    r.add_argument("--hoja", required=True)
+    r.add_argument("--salida", required=True)
     a = ap.parse_args(argv)
+    if a.cmd == "importar-revision":
+        return importar_revision(a)
     if a.cmd == "hoja":
         a.revisor = a.revisor or ["revisor_a", "revisor_b"]
         return hoja(a)

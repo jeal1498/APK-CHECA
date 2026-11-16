@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src blob:; connect-src 'none'; form-action 'none'">
+<title>Checa · Revisión de propuestas IA</title>
+<style>
+:root{--f:#0C0C10;--t:#16161C;--x:#F4F4EF;--d:#9a9aa3;--v:#22C55E;--a:#FACC15;--r:#EF4444;--b:#2a2a33}
+@media (prefers-color-scheme: light){:root{--f:#F4F4EF;--t:#fff;--x:#0C0C10;--d:#555;--b:#ddd}}
+*{box-sizing:border-box}body{margin:0;background:var(--f);color:var(--x);font:15px/1.4 system-ui,sans-serif}
+header,main{padding:12px 16px;max-width:1100px;margin:0 auto}
+.caja{background:var(--t);border:1px solid var(--b);border-radius:12px;padding:12px;margin-bottom:12px}
+.fila{display:flex;gap:8px;flex-wrap:wrap;align-items:end}
+label{display:flex;flex-direction:column;font-size:12px;color:var(--d);gap:4px}
+input,select,button,textarea{font:inherit;color:var(--x);background:var(--f);border:1px solid var(--b);border-radius:8px;padding:8px;min-height:40px}
+button{cursor:pointer}button.pri{border-color:var(--v)}
+#visor{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:12px}
+@media (max-width:800px){#visor{grid-template-columns:1fr}}
+#img{width:100%;max-height:78vh;object-fit:contain;background:#000;border-radius:8px}
+.clases{display:flex;flex-wrap:wrap;gap:6px}.clases label{flex-direction:row;align-items:center;color:var(--x);font-size:14px;border:1px solid var(--b);border-radius:8px;padding:6px 8px}
+#aviso{color:var(--r)}.tenue{color:var(--d);font-size:13px}
+</style>
+</head>
+<body>
+<header>
+  <h1 style="font-size:20px;margin:0 0 4px">Checa · Revisar propuestas de la IA (guía v1.0)</h1>
+  <div class="tenue">Ves la captura y lo que propuso la IA. Si está bien: <b>Aprobar</b>. Si algo está mal: corrígelo y <b>Aprobar</b>. Si no se puede saber: <b>Rechazar</b>. Algunas propuestas están alteradas a propósito para comprobar la revisión. Nada sale de tu navegador.</div>
+</header>
+<main>
+  <div class="caja" id="inicio">
+    <div class="fila">
+      <label>Tu seudónimo<input id="rev" placeholder="lalo"></label>
+      <label>Carpeta con las capturas<input id="carpeta" type="file" webkitdirectory multiple></label>
+      <label>…o los archivos<input id="archivos" type="file" accept=".webp" multiple></label>
+    </div>
+    <label style="margin-top:8px">Pega aquí todas las respuestas JSON de la IA (una o varias tandas)<textarea id="json" rows="6" style="width:100%"></textarea></label>
+    <p><button id="empezar" class="pri">Empezar</button></p>
+    <p id="aviso"></p>
+  </div>
+  <div id="visor" hidden>
+    <div class="caja"><img id="img" alt="captura"><div class="tenue" id="nombre"></div></div>
+    <div class="caja">
+      <div class="tenue" id="avance"></div>
+      <p><b>Propuesta (edítala si algo está mal)</b></p>
+      <div class="clases" id="clases"></div>
+      <div class="fila">
+        <label>App<select id="app"><option value="">—</option><option value="didi">DiDi</option><option value="uber">Uber</option></select></label>
+        <label>Tarjeta<input id="tarjeta" type="number" min="1" max="20" style="width:90px"></label>
+      </div>
+      <div class="fila">
+        <label>Tarifa<input id="tarifa" inputmode="decimal" style="width:110px"></label>
+        <label>km<input id="km" inputmode="decimal" style="width:90px"></label>
+        <label>min<input id="min" inputmode="decimal" style="width:90px"></label>
+      </div>
+      <div class="fila">
+        <label>Confianza<select id="confianza"><option>alta</option><option>media</option><option>baja</option></select></label>
+        <label style="flex:1">Nota<input id="nota" maxlength="280"></label>
+      </div>
+      <p class="tenue" id="estado"></p>
+      <p id="error" style="color:var(--r)"></p>
+      <div class="fila">
+        <button id="ant">‹ Anterior</button>
+        <button id="rechazar">Rechazar</button>
+        <button id="aprobar" class="pri">Aprobar ›</button>
+      </div>
+      <hr style="border-color:var(--b)">
+      <div class="fila"><button id="exportar" class="pri">Exportar CSV</button><span class="tenue" id="hechas"></span></div>
+    </div>
+  </div>
+</main>
+<script>
+"use strict";
+var CLASES=[["oferta","Oferta"],["no_oferta","No es oferta"],["varias","Varias"],["ilegible","Ilegible"],["cambio_pantalla","Cambió la pantalla"]];
+var GUIA="1.0", lista=[], i=0, dec={}, controles={};
+function $(id){return document.getElementById(id)}
+// sha256 propio (no depende de crypto.subtle, que no siempre existe al abrir el archivo desde el disco)
+function sha256(buf){var K=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+ var b=new Uint8Array(buf),l=b.length,n=((l+9+63)>>6)<<6,m=new Uint8Array(n);m.set(b);m[l]=0x80;var dv=new DataView(m.buffer);dv.setUint32(n-4,(l*8)>>>0);dv.setUint32(n-8,Math.floor(l/0x20000000));
+ var H=[0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19],w=new Uint32Array(64);
+ for(var o=0;o<n;o+=64){for(var t=0;t<16;t++)w[t]=dv.getUint32(o+t*4);for(t=16;t<64;t++){var x=w[t-15],y=w[t-2];var s0=((x>>>7)|(x<<25))^((x>>>18)|(x<<14))^(x>>>3),s1=((y>>>17)|(y<<15))^((y>>>19)|(y<<13))^(y>>>10);w[t]=(w[t-16]+s0+w[t-7]+s1)>>>0}
+  var a=H[0],c=H[1],d=H[2],e=H[3],f=H[4],g=H[5],h=H[6],k=H[7];
+  for(t=0;t<64;t++){var S1=((f>>>6)|(f<<26))^((f>>>11)|(f<<21))^((f>>>25)|(f<<7)),ch=(f&g)^(~f&h),T1=(k+S1+ch+K[t]+w[t])>>>0,S0=((a>>>2)|(a<<30))^((a>>>13)|(a<<19))^((a>>>22)|(a<<10)),mj=(a&c)^(a&d)^(c&d),T2=(S0+mj)>>>0;k=h;h=g;g=f;f=(e+T1)>>>0;e=d;d=c;c=a;a=(T1+T2)>>>0}
+  H=[(H[0]+a)>>>0,(H[1]+c)>>>0,(H[2]+d)>>>0,(H[3]+e)>>>0,(H[4]+f)>>>0,(H[5]+g)>>>0,(H[6]+h)>>>0,(H[7]+k)>>>0]}
+ return H.map(function(v){return("00000000"+v.toString(16)).slice(-8)}).join("")}
+// Orden determinista: el mismo para las dos personas (depende solo del id).
+function orden(id){var h=2166136261;var s="checa-e4-20261115-"+id;for(var j=0;j<s.length;j++){h^=s.charCodeAt(j);h=Math.imul(h,16777619)>>>0}return h}
+
+function guardar(){try{localStorage.setItem("checa-rev-"+$("rev").value,JSON.stringify({dec:dec,controles:controles}))}catch(e){}}
+function cargarGuardado(){try{var o=JSON.parse(localStorage.getItem("checa-rev-"+$("rev").value)||"{}");dec=o.dec||{};controles=o.controles||{}}catch(e){dec={};controles={}}}
+CLASES.forEach(function(c){var l=document.createElement("label");var r=document.createElement("input");r.type="radio";r.name="clase";r.value=c[0];l.appendChild(r);l.appendChild(document.createTextNode(" "+c[1]));$("clases").appendChild(l)});
+function leerPropuestas(t){var out=[];t=(t||"").trim();if(!t)return out;
+  try{var x=JSON.parse(t);return Array.isArray(x)?x:[x]}catch(e){}
+  (t.match(/\[[\s\S]*?\](?=\s*(\[|$))/g)||[]).forEach(function(b){try{out=out.concat(JSON.parse(b))}catch(e){}});
+  if(!out.length)t.split(/\n/).forEach(function(l){try{var o=JSON.parse(l);if(o&&o.captura)out.push(o)}catch(e){}});return out}
+function azar(){try{var a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]/4294967296}catch(e){return Math.random()}}
+// Controles: ~10 % (mínimo 5) de las propuestas se alteran a propósito; se eligen al azar y se guardan.
+function alterar(p){var q=JSON.parse(JSON.stringify(p));
+  if(q.clase==="oferta"&&q.tarifa){var t=Math.floor(azar()*3);
+    if(t===0){q.tarifa=Math.round(q.tarifa*1.27*100)/100;return[q,"tarifa"]}
+    if(t===1&&q.km){q.km=Math.round((q.km+2.5)*100)/100;return[q,"km"]}
+    q.min=(q.min||0)+7;return[q,"min"]}
+  q.app=q.app==="uber"?"didi":"uber";return[q,"app"]}
+function n(v){return v===null||v===undefined||v===""?"":String(v)}
+$("empezar").onclick=async function(){$("aviso").textContent="";
+  if(!/^[a-z0-9_]{2,32}$/.test($("rev").value)){$("aviso").textContent="Pon tu seudónimo (minúsculas, números o _).";return}
+  var files=$("carpeta").files.length?$("carpeta").files:$("archivos").files;
+  var props={};leerPropuestas($("json").value).forEach(function(p){if(p&&typeof p.captura==="string")props[p.captura]=p});
+  var fs=Array.prototype.filter.call(files,function(f){return /^\d{1,4}\.webp$/.test(f.name)&&props[f.name]});
+  if(!fs.length){$("aviso").textContent="No hay capturas «<id>.webp» con propuesta: revisa la carpeta y el JSON pegado.";return}
+  fs.sort(function(a,b){return orden(a.name)-orden(b.name)});cargarGuardado();
+  lista=[];for(var f of fs){var buf=await f.arrayBuffer();lista.push({id:parseInt(f.name,10),nombre:f.name,sha:sha256(buf),url:URL.createObjectURL(f),ia:props[f.name]})}
+  if(!Object.keys(controles).length){var k=Math.max(5,Math.round(lista.length*0.1)),idx=lista.map(function(_,j){return j});
+    for(var j=idx.length-1;j>0;j--){var r=Math.floor(azar()*(j+1));var tmp=idx[j];idx[j]=idx[r];idx[r]=tmp}
+    idx.slice(0,Math.min(k,lista.length)).forEach(function(j){var a=alterar(lista[j].ia);controles[lista[j].nombre]={mostrado:a[0],campo:a[1]}});guardar()}
+  var sin=Array.prototype.filter.call(files,function(f){return /^\d{1,4}\.webp$/.test(f.name)&&!props[f.name]}).length;
+  if(sin)$("aviso").textContent=sin+" capturas sin propuesta de la IA: no se muestran.";
+  i=0;$("inicio").hidden=true;$("visor").hidden=false;mostrar()};
+function mostrada(c){return controles[c.nombre]?controles[c.nombre].mostrado:c.ia}
+function mostrar(){var c=lista[i],d=dec[c.nombre],p=d&&d.valores?d.valores:mostrada(c);$("img").src=c.url;$("nombre").textContent=c.nombre+" · sha256 "+c.sha.slice(0,12)+"…";
+  $("avance").textContent="Captura "+(i+1)+" de "+lista.length;document.querySelectorAll("input[name=clase]").forEach(function(x){x.checked=x.value===p.clase});
+  $("app").value=p.app||"";$("tarjeta").value=n(p.tarjeta);$("tarifa").value=n(p.tarifa);$("km").value=n(p.km);$("min").value=n(p.min);$("confianza").value=p.confianza||"media";$("nota").value=p.nota||"";
+  $("estado").textContent=d?("Ya revisada: "+d.decision):"";$("error").textContent="";
+  $("hechas").textContent=lista.filter(function(x){return dec[x.nombre]}).length+" de "+lista.length+" revisadas"}
+function num(v){v=(v||"").trim().replace(",",".");if(!v)return null;var x=Number(v);return isFinite(x)&&x>0?x:NaN}
+function leer(){var cl=document.querySelector("input[name=clase]:checked");if(!cl)return["Elige qué es."];if(!$("app").value)return["Elige la app."];
+  var t=num($("tarifa").value),k=num($("km").value),m=num($("min").value);if([t,k,m].some(function(x){return x!==null&&isNaN(x)}))return["Tarifa, km y min deben ser números mayores que 0."];
+  if(cl.value==="oferta"&&(t===null||k===null||m===null))return["Una oferta necesita tarifa, km y min."];if(cl.value!=="oferta"&&(t!==null||k!==null||m!==null))return["Solo una oferta lleva tarifa, km y min: déjalos vacíos."];
+  var tj=($("tarjeta").value||"").trim();if(tj&&!/^([1-9]|1\d|20)$/.test(tj))return["Tarjeta: número del 1 al 20."];
+  return[null,{clase:cl.value,app:$("app").value,tarjeta:tj?Number(tj):null,tarifa:t,km:k,min:m,confianza:$("confianza").value,nota:$("nota").value.replace(/[\r\n]/g," ").slice(0,280)}]}
+function igual(a,b){return["clase","app","tarifa","km","min"].every(function(f){return n(a[f])===n(b[f])})&&n(a.tarjeta)===n(b.tarjeta)}
+function siguiente(){if(i<lista.length-1){i++;mostrar()}else{fin()}}
+$("aprobar").onclick=function(){var r=leer();if(r[0]){$("error").textContent=r[0];return}var c=lista[i];
+  dec[c.nombre]={decision:igual(r[1],mostrada(c))?"aprobado":"corregido",valores:r[1]};guardar();siguiente()};
+$("rechazar").onclick=function(){var c=lista[i];dec[c.nombre]={decision:"rechazado",valores:null};guardar();siguiente()};
+$("ant").onclick=function(){if(i>0){i--;mostrar()}};
+function fin(){var cs=Object.keys(controles),det=cs.filter(function(k){return dec[k]&&dec[k].decision!=="aprobado"}).length;
+  $("hechas").textContent="Terminaste. Controles detectados: "+det+" de "+cs.length+". Exporta el CSV."}
+function celda(v){v=String(v==null?"":v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
+$("exportar").onclick=function(){var cab=["caso","captura","captura_sha256","revisor","guia_version","clase","tarifa","km","min","tarjeta","confianza","nota","metodo","decision","control","control_campo","propuesta_ia","propuesta_mostrada"];
+  var filas=[cab];lista.forEach(function(c){var d=dec[c.nombre],v=d&&d.valores,ap=(v&&v.app)||c.ia.app||"";var caso=("0000"+c.id).slice(-4)+"-"+ap;var ct=controles[c.nombre];
+    filas.push([caso,c.nombre,c.sha,$("rev").value,GUIA,v?v.clase:"",v?n(v.tarifa):"",v?n(v.km):"",v?n(v.min):"",v?n(v.tarjeta):"",v?v.confianza:"",v?v.nota:"",
+      "revision_propuesta_ia",d?d.decision:"pendiente",ct?"si":"no",ct?ct.campo:"",JSON.stringify(c.ia),JSON.stringify(mostrada(c))])});
+  var csv=filas.map(function(f){return f.map(celda).join(",")}).join("\n")+"\n";var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="revision-"+$("rev").value+".csv";a.click()};
+document.addEventListener("keydown",function(e){if(e.key==="Enter"&&!$("visor").hidden&&e.target.tagName!=="TEXTAREA"){e.preventDefault();$("aprobar").click()}});
+</script>
+</body>
+</html>

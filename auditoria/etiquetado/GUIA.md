@@ -8,6 +8,13 @@
 5. Al terminar, «Exportar CSV» → `etiquetas-<seudónimo>.csv`. La otra persona hace lo mismo **por separado**, con la misma carpeta y el mismo número.
 6. Junta los dos CSV y corre `python3 auditoria/etiquetado/etiquetado.py importar --manifiesto <carpeta> --hoja etiquetas-a.csv --hoja etiquetas-b.csv --salida <dir>` (o pásamelos: solo traen números, sin imágenes).
 
+## Variante: revisar propuestas de la IA (`revisar.html`)
+Decidido por el propietario el 16-nov para ir más rápido. Opus propone las etiquetas (`PROMPT-OPUS.md`) y una persona aprueba, corrige o rechaza cada una en `revisar.html`.
+- Un ~10 % (mínimo 5) de las propuestas se **alteran a propósito** sin avisar: si se aprueban, la revisión no es confiable y esas filas no cuentan.
+- Se importa con `etiquetado.py importar-revision --manifiesto <carpeta> --hoja revision-<seudónimo>.csv --salida <dir>`.
+- Queda registrado como **«propuesta IA revisada por una persona»** (`revisor_version = revision_propuesta_ia`): un solo revisor da `referencia_humana`, **no** `referencia_doble`. Pesa menos que la doble revisión a ciegas y así se informa.
+- Las capturas se envían a un proveedor de IA (Anthropic): autorizado por el propietario el 16-nov.
+
 Para quien revisa capturas. Una fila de la hoja = una captura. **Solo mira la imagen**: la hoja no trae lo que leyó Checa ni la IA, a propósito.
 
 ## Qué anotar
