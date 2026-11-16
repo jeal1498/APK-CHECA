@@ -27,8 +27,11 @@ for nombre, o, n in MUT:
     out = os.path.join(sal, nombre.split()[0])
     subprocess.run([os.path.join(AQUI, "reproducir.sh"), d, ent, out], check=True, capture_output=True)
     r = subprocess.run([sys.executable, os.path.join(AQUI, "evaluar.py"), "comparar", "--base", base, "--candidata",
-                        os.path.join(out, "predicciones.jsonl"), "--etiquetas", etq, "--salida", os.path.join(out, "comparacion.json")],
+                        os.path.join(out, "predicciones.jsonl"), "--etiquetas", etq, "--salida", os.path.join(out, "comparacion.json"),
+                        "--corrida-base", os.path.join(os.path.dirname(base), "corrida.json"), "--corrida-candidata", os.path.join(out, "corrida.json")],
                        capture_output=True, text=True)
+    if r.returncode not in (0, 1):   # 2+ = la comparación no fue válida: no cuenta como detección
+        print(f"{nombre}: ERROR — {r.stderr.strip()[-300:]}", flush=True); sys.exit(3)
     sobrevive += r.returncode == 0
     print(f"{nombre}: {'DETECTADA' if r.returncode else 'SOBREVIVE'} — {r.stdout.strip()}", flush=True)
     shutil.rmtree(d)

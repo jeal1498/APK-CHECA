@@ -87,13 +87,38 @@ class Protocolo(unittest.TestCase):
         with self.assertRaises(SystemExit):
             correr("sellar", "--etiquetas", self.et, "--registro", self.reg)
 
+    def _corrida(self, pred, nombre, **k):
+        c = {"entradas_sha256": "e" * 64, "n_entradas": 2, "java": "21", "kotlinc": "1.9.24", "predicciones_sha256": evaluar.sha(pred), "ref": nombre}
+        c.update(k)
+        ruta = os.path.join(self.t, nombre + ".corrida.json")
+        json.dump(c, open(ruta, "w"))
+        return ruta
+
     def test_comparar_detecta_regresion_y_mejora(self):
         cand = self.escribir_pred([{"caso": "a", "resultado": "nada"}, {"caso": "b", "resultado": "nada"}], os.path.join(self.t, "c.jsonl"))
+        cb, cc = self._corrida(self.pr, "base"), self._corrida(cand, "cand")
         sal = os.path.join(self.t, "cmp.json")
-        self.assertEqual(correr("comparar", "--base", self.pr, "--candidata", cand, "--etiquetas", self.et, "--salida", sal), 1)
-        self.assertEqual(json.load(open(sal))["regresiones"], ["a"])
-        self.assertEqual(correr("comparar", "--base", cand, "--candidata", self.pr, "--etiquetas", self.et, "--salida", sal), 0)
+        self.assertEqual(correr("comparar", "--base", self.pr, "--candidata", cand, "--etiquetas", self.et, "--salida", sal,
+                                "--corrida-base", cb, "--corrida-candidata", cc), 1)
+        d = json.load(open(sal))
+        self.assertEqual(d["regresiones"], ["a"])
+        self.assertEqual(d["condiciones"]["entradas_sha256"], "e" * 64)
+        self.assertEqual(correr("comparar", "--base", cand, "--candidata", self.pr, "--etiquetas", self.et, "--salida", sal,
+                                "--corrida-base", cc, "--corrida-candidata", cb), 0)
         self.assertEqual(json.load(open(sal))["mejoras"], ["a"])
+
+    def test_a4_comparar_exige_mismo_corpus_y_condiciones(self):
+        cand = self.escribir_pred([{"caso": "a", "resultado": "nada"}, {"caso": "b", "resultado": "nada"}], os.path.join(self.t, "c.jsonl"))
+        cb = self._corrida(self.pr, "base")
+        with self.assertRaises(SystemExit):   # sin corridas no se compara
+            correr("comparar", "--base", self.pr, "--candidata", cand, "--etiquetas", self.et)
+        for nombre, k in (("otro_corpus", {"entradas_sha256": "f" * 64}), ("otra_jvm", {"java": "17"}), ("otro_kotlin", {"kotlinc": "2.0"}),
+                          ("otras_predicciones", {"predicciones_sha256": "0" * 64}), ("menos_casos", {"n_entradas": 1})):
+            with self.subTest(nombre):
+                with self.assertRaises(SystemExit) as e:
+                    correr("comparar", "--base", self.pr, "--candidata", cand, "--etiquetas", self.et,
+                           "--corrida-base", cb, "--corrida-candidata", self._corrida(cand, nombre, **k))
+                self.assertIn("NO válida", str(e.exception))
 
     def test_tolerancias_del_banco(self):
         e = {"clase": "oferta", "tarifa": 50, "km": 5, "min": 12, "recKm": 1}

@@ -168,7 +168,25 @@ def revelar(etiquetas, predicciones, registro, salida):
 
 
 # ---------------------------------------------------------------- regresión
-def comparar(base, cand, etiquetas, protegidos=None, salida=None):
+def mismas_condiciones(base, cand, corrida_base, corrida_cand):
+    """Base y candidata deben haberse corrido sobre EXACTAMENTE las mismas entradas y con la misma JVM y
+    compilador; y cada archivo de predicciones debe ser el de su corrida. Devuelve la lista de diferencias."""
+    cb, cc = (json.load(open(x, encoding="utf-8")) for x in (corrida_base, corrida_cand))
+    dif = [k for k in ("entradas_sha256", "n_entradas", "java", "kotlinc") if cb.get(k) != cc.get(k) or cb.get(k) is None]
+    if cb.get("predicciones_sha256") != sha(base):
+        dif.append("predicciones de la base ≠ su corrida")
+    if cc.get("predicciones_sha256") != sha(cand):
+        dif.append("predicciones de la candidata ≠ su corrida")
+    return dif, cb, cc
+
+
+def comparar(base, cand, etiquetas, protegidos=None, salida=None, corrida_base=None, corrida_cand=None):
+    if not corrida_base or not corrida_cand:
+        raise SystemExit("Faltan --corrida-base y --corrida-candidata (corrida.json de cada una): sin ellas no se puede "
+                         "demostrar que se comparó el mismo corpus en las mismas condiciones.")
+    dif, cb, cc = mismas_condiciones(base, cand, corrida_base, corrida_cand)
+    if dif:
+        raise SystemExit(f"Comparación NO válida: base y candidata difieren en {dif}.")
     b, c = {p["caso"]: p for p in leer_jsonl(base)}, {p["caso"]: p for p in leer_jsonl(cand)}
     e = {x["caso"]: x for x in leer_jsonl(etiquetas)}
     if set(b) != set(c):
@@ -188,7 +206,10 @@ def comparar(base, cand, etiquetas, protegidos=None, salida=None):
     r = {"casos": len(b), "cambian_salida": cambios, "regresiones": reg, "mejoras": mej,
          "aciertos_base": sum(acierta_banco(b[k], e[k]["esperado"]) for k in b if k in e),
          "aciertos_candidata": sum(acierta_banco(c[k], e[k]["esperado"]) for k in c if k in e),
-         "protegidos_rotos": rotos_prot}
+         "protegidos_rotos": rotos_prot,
+         "condiciones": {"entradas_sha256": cb["entradas_sha256"], "n_entradas": cb["n_entradas"], "java": cb["java"], "kotlinc": cb["kotlinc"],
+                         "base": {"ref": cb.get("ref"), "fuentes_sha256": cb.get("fuentes_sha256"), "predicciones_sha256": cb["predicciones_sha256"]},
+                         "candidata": {"ref": cc.get("ref"), "fuentes_sha256": cc.get("fuentes_sha256"), "predicciones_sha256": cc["predicciones_sha256"]}}}
     if salida:
         with open(salida, "w", encoding="utf-8") as f:
             json.dump(r, f, ensure_ascii=False, indent=2)
@@ -204,7 +225,7 @@ def main(argv=None):
     x = s.add_parser("sellar"); x.add_argument("--etiquetas", required=True); x.add_argument("--registro", required=True)
     x = s.add_parser("comprometer"); x.add_argument("--predicciones", required=True); x.add_argument("--corrida", required=True); x.add_argument("--registro", required=True)
     x = s.add_parser("revelar"); x.add_argument("--etiquetas", required=True); x.add_argument("--predicciones", required=True); x.add_argument("--registro", required=True); x.add_argument("--salida", required=True)
-    x = s.add_parser("comparar"); x.add_argument("--base", required=True); x.add_argument("--candidata", required=True); x.add_argument("--etiquetas", required=True); x.add_argument("--protegidos"); x.add_argument("--salida")
+    x = s.add_parser("comparar"); x.add_argument("--base", required=True); x.add_argument("--candidata", required=True); x.add_argument("--etiquetas", required=True); x.add_argument("--protegidos"); x.add_argument("--salida"); x.add_argument("--corrida-base"); x.add_argument("--corrida-candidata")
     a = ap.parse_args(argv)
     if a.cmd == "preparar":
         corpus = []
@@ -219,7 +240,7 @@ def main(argv=None):
         return comprometer(a.predicciones, a.corrida, a.registro)
     if a.cmd == "revelar":
         return revelar(a.etiquetas, a.predicciones, a.registro, a.salida)
-    return comparar(a.base, a.candidata, a.etiquetas, a.protegidos, a.salida)
+    return comparar(a.base, a.candidata, a.etiquetas, a.protegidos, a.salida, a.corrida_base, a.corrida_candidata)
 
 
 if __name__ == "__main__":
