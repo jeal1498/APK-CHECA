@@ -1,6 +1,6 @@
 # E0 respaldo (servidor SIMULADO)
 # $ cd respaldo-e0 && python3 -W ignore -m unittest discover -s pruebas -v
-# inicio 2026-11-16T05:46:35Z
+# inicio 2026-11-16T06:03:29Z
 test_h1_enlace_a_otro_archivo_del_mismo_respaldo_tambien_se_rechaza (test_e0.TestAuditoriaCierre.test_h1_enlace_a_otro_archivo_del_mismo_respaldo_tambien_se_rechaza) ... ok
 test_h1_enlace_simbolico_dentro_del_respaldo_se_rechaza (test_e0.TestAuditoriaCierre.test_h1_enlace_simbolico_dentro_del_respaldo_se_rechaza) ... ok
 test_h1_entrega_con_ruta_peligrosa_en_el_manifiesto_falla (test_e0.TestAuditoriaCierre.test_h1_entrega_con_ruta_peligrosa_en_el_manifiesto_falla) ... ok
@@ -93,7 +93,7 @@ test_solo_lectura_y_rutas_permitidas (test_e0.TestRespaldo.test_solo_lectura_y_r
 test_solo_listar_no_escribe_nada (test_e0.TestRespaldo.test_solo_listar_no_escribe_nada) ... ok
 
 ----------------------------------------------------------------------
-Ran 86 tests in 58.598s
+Ran 86 tests in 58.668s
 
 OK
-# exit=0 fin 2026-11-16T05:47:33Z
+# exit=0 fin 2026-11-16T06:04:28Z

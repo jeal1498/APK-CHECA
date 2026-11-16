@@ -69,17 +69,17 @@ Rama local `auditoria/cierre-plan-e`, creada sobre `7dc25b95c2cacaa763a85c059464
 | Suite | Tipo | 15-nov | Ahora | Entorno |
 |---|---|---|---|---|
 | E0 `respaldo-e0/pruebas` | unitarias e integración contra servidor **simulado** | 64 | **86** | Python, age, gpg |
-| `auditoria/pruebas/test_*.py` | integración en PostgreSQL **local** | 78 | **89** (mismas 89 en 16 y en 17) | PG 16.15 y 17.12 |
+| `auditoria/pruebas/test_*.py` | integración en PostgreSQL **local** | 78 | **90** (mismas 90 en 16 y en 17) | PG 16.15 y 17.12 |
 | `e2/registrar.test.ts` | unitarias (dependencias simuladas) | 34 | **34** | Node 22 |
 | Kotlin (`TrazaTest`, `GuardiaParserTest`) | unitarias en JVM, **no Android** | 15 | **17** | Kotlin 1.9.24, Java 21 |
 | `e6/admin_ui.test.js` | funcionales con cliente **simulado** | 8 | **9** | Playwright/Chromium |
-| **Total de pruebas únicas** | | 199 | **235** | |
+| **Total de pruebas únicas** | | 199 | **236** | |
 | Mutaciones E0 | mutación | 16 (todas detectadas) | **28**: 27 detectadas, 1 equivalente (M18: no cambia el comportamiento) | la corrida completa (27) se hizo con 84 pruebas; M18 y M18b se repitieron con las 86 |
 | Mutaciones del lector (E5) | mutación | 5 | **5** | |
 | Compilación `TrazaAndroid` contra stubs | compilación (no SDK) | 1 | 1 | |
 | Banco del lector | medición | 271/316 | 271/316 | |
 | **No ejecutadas** | `ParserTest`, `BancoTest`, `ZonasTest`, `ZonasOrigenDestinoTest` (Gradle/JUnit), compilación Android, pruebas en teléfono, Deno, Supabase | — | — | requieren SDK/CI/servicios |
-El 199 del 15-nov era correcto como conteo (198 de esas pruebas siguen con el mismo nombre, 1 se sustituyó por una más estricta y hay 37 nuevas). Los logs de entonces eran parciales; los de ahora son completos: `evidencias/cierre/pruebas/`, ejecutados sobre el commit `9d05fd98dc35db4c8b4e6fb6e6da7809bc9de1fc`. El commit siguiente solo agrega esos logs, el inventario y los informes de seguridad (ningún cambio de código ni de pruebas).
+El 199 del 15-nov era correcto como conteo (198 de esas pruebas siguen con el mismo nombre, 1 se sustituyó por una más estricta y hay 38 nuevas). Los logs de entonces eran parciales; los de ahora son completos: `evidencias/cierre/pruebas/`, ejecutados sobre el commit `779d0923f98089e82a37ee9b2c9cd7f57d62668c`. El commit siguiente solo agrega esos logs, el inventario y los informes de seguridad (ningún cambio de código ni de pruebas).
 
 ### 0.5 Acciones externas indispensables (lista única)
 | # | Acción | Quién | Por qué no hay alternativa segura |

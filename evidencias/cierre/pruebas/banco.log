@@ -1,6 +1,6 @@
 # Banco del lector (Banco.kt en JVM)
 # $ docs/banco/calificar.sh 2>&1 | grep -v '^Picked up' && cat ~/.cache/checa-banco/fallas.txt
-# inicio 2026-11-16T05:50:00Z
+# inicio 2026-11-16T06:06:52Z
 ACIERTOS 271 de 316 (85.8 %)
 Fallas: /root/.cache/checa-banco/fallas.txt
 0010-uber.txt: no leyó la oferta
@@ -47,4 +47,4 @@ Fallas: /root/.cache/checa-banco/fallas.txt
 0896-didi.txt: km esperado 4.6, leído 2.3
 0901-uber.txt: km esperado 5.7, leído 4.4
 0995-didi.txt: no leyó la oferta
-1377-didi.txt: km esperado 2.2, leído 1.1# exit=0 fin 2026-11-16T05:50:08Z
+1377-didi.txt: km esperado 2.2, leído 1.1# exit=0 fin 2026-11-16T06:06:59Z

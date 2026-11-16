@@ -1,6 +1,6 @@
 # E1–E7 SQL/Python en PostgreSQL 17 LOCAL (stubs de Supabase)
 # $ cd auditoria/pruebas && PG_BIN=/usr/lib/postgresql/17/bin python3 -W ignore -c 'import pg_local; p = pg_local.Pg(); print("servidor:", p.version()); p.cerrar()' && PG_BIN=/usr/lib/postgresql/17/bin python3 -W ignore -m unittest discover -p 'test_*.py' -v
-# inicio 2026-11-16T05:48:33Z
+# inicio 2026-11-16T06:05:28Z
 servidor: 17.12 (Ubuntu 17.12-1.pgdg24.04+1)
 test_funciones_security_definer_fijan_search_path (test_cadena_migraciones.Cadena.test_funciones_security_definer_fijan_search_path) ... ok
 test_subir_bajar_subir (test_cadena_migraciones.Cadena.test_subir_bajar_subir) ... ok
@@ -12,6 +12,8 @@ El corpus original SÍ trae direcciones pegadas al tramo; en lo redactado no que
 test_ninguna_linea_redactada_trae_palabras_ajenas_ni_numeros_sueltos (test_e3_redaccion.Redaccion.test_ninguna_linea_redactada_trae_palabras_ajenas_ni_numeros_sueltos) ... ok
 test_hoja_ciega_determinista_y_solo_con_captura (test_e4_etiquetado.TestHoja.test_hoja_ciega_determinista_y_solo_con_captura) ... ok
 test_revisor_con_nombre_o_correo_se_rechaza (test_e4_etiquetado.TestHoja.test_revisor_con_nombre_o_correo_se_rechaza) ... ok
+test_sin_respaldo_e0_basta_una_carpeta_de_capturas (test_e4_etiquetado.TestHoja.test_sin_respaldo_e0_basta_una_carpeta_de_capturas)
+E0 se descartó (16-nov): la hoja y la importación funcionan con la carpeta de capturas de la revisión. ... ok
 test_acuerdo_total (test_e4_etiquetado.TestImportar.test_acuerdo_total) ... ok
 test_desacuerdos_se_separan_no_se_promedian (test_e4_etiquetado.TestImportar.test_desacuerdos_se_separan_no_se_promedian) ... ok
 test_filas_invalidas_se_reportan (test_e4_etiquetado.TestImportar.test_filas_invalidas_se_reportan) ... ok
@@ -96,7 +98,7 @@ test_usuario_nulo_se_rechaza (test_migraciones.Migraciones.test_usuario_nulo_se_
 test_varias_y_abstencion_sin_semaforo_si_se_guardan (test_migraciones.Migraciones.test_varias_y_abstencion_sin_semaforo_si_se_guardan) ... ok
 
 ----------------------------------------------------------------------
-Ran 89 tests in 65.383s
+Ran 90 tests in 62.249s
 
 OK
-# exit=0 fin 2026-11-16T05:49:41Z
+# exit=0 fin 2026-11-16T06:06:31Z

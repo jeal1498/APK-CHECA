@@ -1,6 +1,6 @@
 # E3 núcleo Kotlin en JVM (no Android)
 # $ herramientas/jvm/probar.sh 2>&1 | grep -v '^Picked up'
-# inicio 2026-11-16T05:49:41Z
+# inicio 2026-11-16T06:06:31Z
 ok   TrazaTest.appCorta
 ok   TrazaTest.capturaExactaMarcaVinculo
 ok   TrazaTest.coherenciaComoElServidor
@@ -19,4 +19,4 @@ ok   TrazaTest.reintentoCreceYTieneTope
 ok   TrazaTest.respuestasDelServidor
 ok   GuardiaParserTest.lectorSinCambios
 17 ok, 0 fallan
-# exit=0 fin 2026-11-16T05:49:51Z
+# exit=0 fin 2026-11-16T06:06:42Z

@@ -1,24 +1,24 @@
 # Inventario reconciliado de pruebas — ejecución definitiva
 
-Reconstruido de los logs completos (commit: 9d05fd98dc35db4c8b4e6fb6e6da7809bc9de1fc), no del código: cada nombre es una prueba que se ejecutó.
+Reconstruido de los logs completos (commit: 779d0923f98089e82a37ee9b2c9cd7f57d62668c), no del código: cada nombre es una prueba que se ejecutó.
 
 | Suite | Tipo | Nombres en el log | Únicos | Repetidos | «Ran N» del ejecutor | Omitidas | Resultado |
 |---|---|---|---|---|---|---|---|
 | E0 respaldo-e0/pruebas | unittest · integración contra servidor SIMULADO | 86 | 86 | 0 | 86 | 0 | OK |
-| auditoria/pruebas en PostgreSQL 16 | unittest · integración en Postgres LOCAL con stubs de Supabase | 89 | 89 | 0 | 89 | 0 | OK |
-| auditoria/pruebas en PostgreSQL 17 | las mismas pruebas en otro motor | 89 | 89 | 0 | 89 | 0 | OK |
+| auditoria/pruebas en PostgreSQL 16 | unittest · integración en Postgres LOCAL con stubs de Supabase | 90 | 90 | 0 | 90 | 0 | OK |
+| auditoria/pruebas en PostgreSQL 17 | las mismas pruebas en otro motor | 90 | 90 | 0 | 90 | 0 | OK |
 | E2 registrar.test.ts | node:test · unitarias con dependencias simuladas | 34 | 34 | 0 | 34 | 0 | OK |
 | E3 Kotlin en JVM | sustituto mínimo de JUnit · unitarias, NO Android | 17 | 17 | 0 | 17 | 0 | OK |
 | E6–E7 admin_ui.test.js | node:test + Playwright · cliente Supabase SIMULADO | 9 | 9 | 0 | 9 | 0 | OK |
 
-**Pruebas únicas: 235.** Las de `auditoria/pruebas` se cuentan una vez aunque corren en dos motores (mismos nombres en 16 y 17: sí).
+**Pruebas únicas: 236.** Las de `auditoria/pruebas` se cuentan una vez aunque corren en dos motores (mismos nombres en 16 y 17: sí).
 
 ## Comparación con el inventario anterior (199 nombres)
 
 - Siguen ejecutándose con el mismo nombre: **198**
 - Ya no existen con ese nombre: **1**
   - `líneas con correo, teléfono o URL se rechazan (redacción en profundidad)`
-- Nuevas: **37**
+- Nuevas: **38**
   - `A6: la biblioteca externa va con versión fija, archivo real y huella SRI`
   - `TrazaTest.multiplicadorFueraDeRangoNoSeManda`
   - `TrazaTest.redaccionNoDejaPalabrasNiNumerosSueltos`
@@ -50,6 +50,7 @@ Reconstruido de los logs completos (commit: 9d05fd98dc35db4c8b4e6fb6e6da7809bc9d
   - `test_e3_redaccion.Redaccion.test_la_evidencia_versionada_es_la_que_produce_el_codigo`
   - `test_e3_redaccion.Redaccion.test_las_direcciones_del_corpus_no_sobreviven`
   - `test_e3_redaccion.Redaccion.test_ninguna_linea_redactada_trae_palabras_ajenas_ni_numeros_sueltos`
+  - `test_e4_etiquetado.TestHoja.test_sin_respaldo_e0_basta_una_carpeta_de_capturas`
   - `test_e4_veredictos.E4.test_a3_tolerancias_de_la_guia`
   - `test_e4_veredictos.E4.test_a3_un_mismo_revisor_no_suma_dos_votos`
   - `test_e5_reproduccion.Protocolo.test_a4_comparar_exige_mismo_corpus_y_condiciones`
@@ -147,7 +148,7 @@ Reconstruido de los logs completos (commit: 9d05fd98dc35db4c8b4e6fb6e6da7809bc9d
 - test_e0.TestRespaldo.test_solo_lectura_y_rutas_permitidas
 - test_e0.TestRespaldo.test_solo_listar_no_escribe_nada
 
-### auditoria/pruebas en PostgreSQL 16 (89)
+### auditoria/pruebas en PostgreSQL 16 (90)
 - test_cadena_migraciones.Cadena.test_funciones_security_definer_fijan_search_path
 - test_cadena_migraciones.Cadena.test_subir_bajar_subir
 - test_e3_redaccion.Redaccion.test_cubre_todo_el_corpus
@@ -157,6 +158,7 @@ Reconstruido de los logs completos (commit: 9d05fd98dc35db4c8b4e6fb6e6da7809bc9d
 - test_e3_redaccion.Redaccion.test_ninguna_linea_redactada_trae_palabras_ajenas_ni_numeros_sueltos
 - test_e4_etiquetado.TestHoja.test_hoja_ciega_determinista_y_solo_con_captura
 - test_e4_etiquetado.TestHoja.test_revisor_con_nombre_o_correo_se_rechaza
+- test_e4_etiquetado.TestHoja.test_sin_respaldo_e0_basta_una_carpeta_de_capturas
 - test_e4_etiquetado.TestImportar.test_acuerdo_total
 - test_e4_etiquetado.TestImportar.test_desacuerdos_se_separan_no_se_promedian
 - test_e4_etiquetado.TestImportar.test_filas_invalidas_se_reportan

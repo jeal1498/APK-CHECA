@@ -1,11 +1,11 @@
-e0-respaldo.log        OK     E0 respaldo (servidor SIMULADO) | Ran 86 tests in 58.598s 
-auditoria-pg16.log     OK     E1–E7 SQL/Python en PostgreSQL 16 LOCAL (stubs de Supabase) | Ran 89 tests in 57.959s 
-auditoria-pg17.log     OK     E1–E7 SQL/Python en PostgreSQL 17 LOCAL (stubs de Supabase) | Ran 89 tests in 65.383s 
+e0-respaldo.log        OK     E0 respaldo (servidor SIMULADO) | Ran 86 tests in 58.668s 
+auditoria-pg16.log     OK     E1–E7 SQL/Python en PostgreSQL 16 LOCAL (stubs de Supabase) | Ran 90 tests in 59.233s 
+auditoria-pg17.log     OK     E1–E7 SQL/Python en PostgreSQL 17 LOCAL (stubs de Supabase) | Ran 90 tests in 62.249s 
 e2-node.log            OK     E2 contrato y manejador (Node, dependencias simuladas) | # pass 34 
 e3-jvm.log             OK     E3 núcleo Kotlin en JVM (no Android) | 17 ok, 0 fallan 
 e3-stubs.log           OK     E3 TrazaAndroid compila contra STUBS (no es el SDK) | 
 e3-guardia.log         OK     E3 guardia: el lector no cambió | 
 banco.log              OK     Banco del lector (Banco.kt en JVM) | ACIERTOS 271 de 316 (85.8 %) 
 e6-e7-ui.log           OK     E6–E7 página con Playwright (cliente SIMULADO) | # pass 9 
-mensajes.log           OK     D5 mensajes de commit desde 5abadea | 13 commits revisados, 0 hallazgos. 
+mensajes.log           OK     D5 mensajes de commit desde 5abadea | 16 commits revisados, 0 hallazgos. 
 TODO OK — logs en /tmp/claude-0/-home-user-APK-CHECA/3925db54-b552-513d-ab1e-a330d9010f8a/scratchpad/cierre/03-logs/definitiva
