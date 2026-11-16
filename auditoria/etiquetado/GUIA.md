@@ -1,5 +1,13 @@
 # Guía de etiquetado humano · versión 1.0
 
+## Cómo se hace (página `etiquetar.html`)
+1. Baja las capturas «<id>.webp» a una carpeta de tu computadora (Supabase → Storage → `capturas`). No las subas a ningún otro lado: traen datos de pasajeros.
+2. Abre `auditoria/etiquetado/etiquetar.html` en Chrome o Edge (doble clic; funciona sin internet).
+3. Escribe tu seudónimo (p. ej. `lalo`), deja «Cuántas capturas» en 120 y elige la carpeta.
+4. Por cada imagen: qué es, la app y, si es oferta, tarifa, km y min. «Guardar y siguiente» o Enter. Se guarda en tu navegador por si cierras.
+5. Al terminar, «Exportar CSV» → `etiquetas-<seudónimo>.csv`. La otra persona hace lo mismo **por separado**, con la misma carpeta y el mismo número.
+6. Junta los dos CSV y corre `python3 auditoria/etiquetado/etiquetado.py importar --manifiesto <carpeta> --hoja etiquetas-a.csv --hoja etiquetas-b.csv --salida <dir>` (o pásamelos: solo traen números, sin imágenes).
+
 Para quien revisa capturas. Una fila de la hoja = una captura. **Solo mira la imagen**: la hoja no trae lo que leyó Checa ni la IA, a propósito.
 
 ## Qué anotar

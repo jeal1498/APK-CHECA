@@ -30,5 +30,6 @@ paso e3-stubs.log "E3 TrazaAndroid compila contra STUBS (no es el SDK)" "herrami
 paso e3-guardia.log "E3 guardia: el lector no cambió" "python3 herramientas/guardia_parser.py"
 paso banco.log "Banco del lector (Banco.kt en JVM)" "docs/banco/calificar.sh 2>&1 | grep -v '^Picked up' && cat ~/.cache/checa-banco/fallas.txt"
 paso e6-e7-ui.log "E6–E7 página con Playwright (cliente SIMULADO)" "NODE_PATH=\$(npm root -g) node --test auditoria/pruebas/e6/admin_ui.test.js"
+paso e4-etiquetar-ui.log "E4 página de etiquetado (Playwright, archivos sintéticos)" "NODE_PATH=\$(npm root -g) node --test auditoria/pruebas/e6/etiquetar_ui.test.js"
 paso mensajes.log "D5 mensajes de commit desde 5abadea" "python3 herramientas/revisar_mensajes.py 5abadea75dd15a82648e4e63a89f9e66ac3cdfc2..HEAD"
 echo; [ $mal = 0 ] && echo "TODO OK — logs en $logs" | tee -a "$resumen" || echo "HAY FALLAS — logs en $logs" | tee -a "$resumen"; exit $mal
