@@ -24,6 +24,17 @@ M = [
  ("M14 D3 V11b siempre ok", "verificar.py", 'c.cond("V11b", not prob,', 'c.cond("V11b", True,'),
  ("M15 D3 script faltante se omite", "comun.py", '            raise ScriptsAlterados(f"falta el script {n}")', '            continue'),
  ("M16 D3 E12b siempre ok", "verificar_entrega.py", 'cond("E12b", not p_res,', 'cond("E12b", True,'),
+ ("M17 H1 verificar acepta rutas inseguras", "verificar.py", "        except comun.RutaInsegura as e:\n            inseguras.append(str(e))", "        except comun.RutaInsegura as e:\n            pass"),
+ ("M18 H1 nombre_seguro acepta ..", "comun.py", 'if p in ("", ".", "..") or', 'if p in ("", ".") or'),
+ ("M19 H1 ruta_en no comprueba la ruta real (enlaces)", "comun.py", "    if os.path.realpath(p) != p or not p.startswith(raiz + os.sep):", "    if False:"),
+ ("M20 H2 empaquetar sin verificar", "evidencia_copias.py", '    if v["resultado"] == "FALLO":\n        raise SystemExit("ERROR: el respaldo no verifica', '    if False:\n        raise SystemExit("ERROR: el respaldo no verifica'),
+ ("M21 H3 COMPLETA sin comprobar A", "evidencia_copias.py", '                                          ev["copia_a_comprobada"], ev["versiones_coherentes"],', '                                          True, ev["versiones_coherentes"],'),
+ ("M22 H3 comprobación A no ligada al archivo A", "evidencia_copias.py", 'ra.get("etiqueta_copia") == "A" and ra.get("copia_sha256") == a["sha256"] \\', 'ra.get("etiqueta_copia") == "A" \\'),
+ ("M23 H7 versiones no se comparan", "evidencia_copias.py", '                                          ev["copia_a_comprobada"], ev["versiones_coherentes"],', '                                          ev["copia_a_comprobada"], True,'),
+ ("M24 H7 V02c siempre ok", "verificar.py", 'c.cond("V02c", resumen.get("procedimiento") == comun.VERSION_PROCEDIMIENTO,', 'c.cond("V02c", True,'),
+ ("M25 H6 no informa ids fuera de lista", "verificar.py", "    if no_listados:\n        c.aviso", "    if False:\n        c.aviso"),
+ ("M26 H8 tolera archivos VERIFICACION*", "verificar.py", 'rel != "VERIFICACION.json":', 'not rel.startswith("VERIFICACION"):'),
+ ("M27 H2 tar acepta entradas repetidas", "evidencia_copias.py", "            if m.name in vistos:", "            if False:"),
 ]
 def fijar(d):
     with open(os.path.join(d, "SCRIPTS.sha256"), "w") as f:

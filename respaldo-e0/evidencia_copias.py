@@ -52,21 +52,28 @@ def empaquetar(carpeta, salida):
     _fuera_de_repo(salida)
     if os.path.exists(salida):
         raise SystemExit("ERROR: el archivo de salida ya existe.")
+    # Solo se empaqueta un respaldo que verifica: así el manifiesto no puede meter archivos de fuera (rutas
+    # con «..», absolutas o enlaces → V02b) ni empaquetarse algo alterado (V01, V03, V04).
+    v = verificar.verificar(carpeta)
+    if v["resultado"] == "FALLO":
+        raise SystemExit("ERROR: el respaldo no verifica (" + ", ".join(c["id"] for c in v["checks"] if c["estado"] == "fallo")
+                         + "). No se empaqueta.")
     man = comun.leer_manifiesto(os.path.join(carpeta, "manifiesto.csv"))
-    res = json.load(open(os.path.join(carpeta, "resumen.json"), encoding="utf-8"))
-    base = os.path.basename(os.path.normpath(carpeta))
-    rutas = ["manifiesto.csv", "resumen.json"] + sorted(f["nombre"] for f in man)
-    if os.path.exists(os.path.join(carpeta, "VERIFICACION.json")):
+    with open(os.path.join(carpeta, "resumen.json"), encoding="utf-8") as f:
+        res = json.load(f)
+    base = "respaldo"  # nombre fijo dentro del tar: no revela ni depende del nombre de tu carpeta
+    rutas = ["manifiesto.csv", "resumen.json"] + sorted(comun.nombre_seguro(f["nombre"], f["tipo"]) for f in man)
+    if os.path.isfile(os.path.join(carpeta, "VERIFICACION.json")) and not os.path.islink(os.path.join(carpeta, "VERIFICACION.json")):
         rutas.append("VERIFICACION.json")
     fd = os.open(salida, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
     with os.fdopen(fd, "wb") as f, tarfile.open(fileobj=f, mode="w", format=tarfile.PAX_FORMAT) as tar:
         for rel in sorted(set(rutas)):
-            p = os.path.join(carpeta, *rel.split("/"))
+            p = comun.ruta_en(carpeta, rel)
             ti = tarfile.TarInfo(f"{base}/{rel}")
             ti.size, ti.mtime, ti.mode, ti.uid, ti.gid, ti.uname, ti.gname = os.path.getsize(p), 0, 0o600, 0, 0, "", ""
             with open(p, "rb") as g:
                 tar.addfile(ti, g)
-    info = {"esquema": comun.ESQUEMA, "empaquetado_utc": ahora(), "tar_sha256": comun.sha256_archivo(salida),
+    info = {"esquema": comun.ESQUEMA, "procedimiento": comun.VERSION_PROCEDIMIENTO, "empaquetado_utc": ahora(), "tar_sha256": comun.sha256_archivo(salida),
             "tar_bytes": os.path.getsize(salida), "archivos": len(set(rutas)), "manifiesto_sha256": res["manifiesto_sha256"]}
     with open(salida + ".empaquetado.json", "wb") as f:
         f.write(comun.json_estable(info))
@@ -85,11 +92,16 @@ def _descifrar(ruta, formato, identidad, frase_archivo, destino_tar):
         raise SystemExit(f"ERROR: no está instalado «{cmd[0]}».")
     import hashlib
     h, total = hashlib.sha256(), 0
-    with open(destino_tar, "wb") as f:
+    f = open(destino_tar, "wb") if destino_tar else None  # sin destino: solo se calcula el hash (nada en claro en disco)
+    try:
         for bloque in iter(lambda: p.stdout.read(1 << 20), b""):
-            f.write(bloque)
+            if f:
+                f.write(bloque)
             h.update(bloque)
             total += len(bloque)
+    finally:
+        if f:
+            f.close()
     if p.wait() != 0:
         raise SystemExit("ERROR: el descifrado falló (¿clave o frase incorrecta, o archivo dañado?).")
     return h.hexdigest(), total
@@ -98,9 +110,12 @@ def _descifrar(ruta, formato, identidad, frase_archivo, destino_tar):
 def _extraer_seguro(tar_ruta, destino):
     os.makedirs(destino, mode=0o700)
     raiz = os.path.realpath(destino)
-    n = 0
+    n, vistos = 0, set()
     with tarfile.open(tar_ruta, "r:") as tar:
         for m in tar.getmembers():
+            if m.name in vistos:
+                raise SystemExit(f"ERROR: entrada repetida en el tar: {m.name!r}")
+            vistos.add(m.name)
             objetivo = os.path.realpath(os.path.join(raiz, m.name))
             if m.name.startswith("/") or ".." in m.name.split("/") or not (objetivo == raiz or objetivo.startswith(raiz + os.sep)):
                 raise SystemExit(f"ERROR: entrada insegura en el tar: {m.name!r}")
@@ -124,9 +139,12 @@ def restaurar(copia, etiqueta, destino, empaquetado, identidad, frase_archivo, r
     formato = formato_cifrado(copia)
     if formato == "desconocido":
         raise SystemExit("ERROR: el archivo no parece cifrado con age ni gpg.")
-    info = json.load(open(empaquetado, encoding="utf-8"))
+    with open(empaquetado, encoding="utf-8") as f:
+        info = json.load(f)
     copia_sha, copia_bytes = comun.sha256_archivo(copia), os.path.getsize(copia)
-    tmp = tempfile.mkdtemp(prefix="e0-restaurar-")
+    # El tar descifrado (en claro) se escribe junto al destino, no en el temporal del sistema: queda en el
+    # mismo volumen privado que elegiste y no en /tmp.
+    tmp = tempfile.mkdtemp(prefix=".e0-restaurar-", dir=os.path.dirname(os.path.abspath(destino)) or ".")
     tar_tmp = os.path.join(tmp, "descifrado.tar")
     try:
         sha_tar, bytes_tar = _descifrar(copia, formato, identidad, frase_archivo, tar_tmp)
@@ -141,19 +159,38 @@ def restaurar(copia, etiqueta, destino, empaquetado, identidad, frase_archivo, r
     if len(tops) != 1:
         raise SystemExit("ERROR: el tar debe contener una sola carpeta de respaldo.")
     v = verificar.verificar(os.path.join(destino, tops[0]), ref_objetos, ref_tablas)
-    r = {"esquema": comun.ESQUEMA, "restaurado_utc": ahora(), "etiqueta_copia": etiqueta, "copia_sha256": copia_sha, "copia_bytes": copia_bytes,
+    r = {"esquema": comun.ESQUEMA, "procedimiento": comun.VERSION_PROCEDIMIENTO, "restaurado_utc": ahora(), "etiqueta_copia": etiqueta, "copia_sha256": copia_sha, "copia_bytes": copia_bytes,
          "formato_cifrado": formato, "tar_descifrado_sha256": sha_tar, "tar_esperado_sha256": info["tar_sha256"],
          "tar_coincide": sha_tar == info["tar_sha256"] and bytes_tar == info["tar_bytes"], "archivos_extraidos": n,
          "verificacion": {k: v[k] for k in ("resultado", "manifiesto_sha256", "resumen_sha256", "conteos", "huellas")},
          "fallos": [c["id"] for c in v["checks"] if c["estado"] == "fallo"],
          "manifiesto_original_sha256": info["manifiesto_sha256"],
          "manifiesto_coincide_con_original": v["manifiesto_sha256"] == info["manifiesto_sha256"],
-         "original_alterado": False, "nota": "La restauración se hizo en carpeta nueva; el original solo se lee para empaquetar."}
+         "nota": "La restauración se hizo en carpeta nueva; este programa no abre la carpeta original."}
     r["restauracion_ok"] = r["tar_coincide"] and r["manifiesto_coincide_con_original"] and v["resultado"] in ("APROBADO", "APROBADO_CON_ADVERTENCIAS")
     with open(salida_json, "wb") as f:
         f.write(comun.json_estable(r))
     print(f"Restauración {etiqueta}: {'OK' if r['restauracion_ok'] else 'FALLÓ'} (tar_coincide={r['tar_coincide']}, verificación={v['resultado']})", file=sys.stderr)
     return 0 if r["restauracion_ok"] else 1
+
+
+def comprobar(copia, etiqueta, empaquetado, identidad, frase_archivo, salida_json):
+    """Descifra una copia SOLO para calcular el sha256 del tar (no escribe nada en claro) y lo compara con el
+    anotado al empaquetar. Sirve para demostrar que la copia A también contiene el respaldo."""
+    formato = formato_cifrado(copia)
+    if formato == "desconocido":
+        raise SystemExit("ERROR: el archivo no parece cifrado con age ni gpg.")
+    with open(empaquetado, encoding="utf-8") as f:
+        info = json.load(f)
+    sha_tar, bytes_tar = _descifrar(copia, formato, identidad, frase_archivo, None)
+    r = {"esquema": comun.ESQUEMA, "procedimiento": comun.VERSION_PROCEDIMIENTO, "comprobado_utc": ahora(), "etiqueta_copia": etiqueta,
+         "copia_sha256": comun.sha256_archivo(copia), "copia_bytes": os.path.getsize(copia), "formato_cifrado": formato,
+         "tar_descifrado_sha256": sha_tar, "tar_esperado_sha256": info["tar_sha256"],
+         "tar_coincide": sha_tar == info["tar_sha256"] and bytes_tar == info["tar_bytes"]}
+    with open(salida_json, "wb") as f:
+        f.write(comun.json_estable(r))
+    print(f"Comprobación {etiqueta}: {'OK' if r['tar_coincide'] else 'FALLÓ'}", file=sys.stderr)
+    return 0 if r["tar_coincide"] else 1
 
 
 def registrar(args):
@@ -167,19 +204,28 @@ def registrar(args):
     # D1: el mismo archivo (o un enlace duro) pasado dos veces no son dos copias.
     ev["archivos_distintos"] = not os.path.samefile(args.copia_a, args.copia_b)
     ev["medios_declarados_distintos"] = bool(a["medio_declarado"]) and bool(b["medio_declarado"]) and a["medio_declarado"].lower() != b["medio_declarado"].lower()
-    rb = json.load(open(args.restauracion_b, encoding="utf-8"))
+    with open(args.restauracion_b, encoding="utf-8") as f:
+        rb = json.load(f)
     ev["restauracion_b"] = rb
     ev["restauracion_b_corresponde_a_copia_b"] = rb.get("etiqueta_copia") == "B" and rb.get("copia_sha256") == b["sha256"]
-    if args.restauracion_a:
-        ra = json.load(open(args.restauracion_a, encoding="utf-8"))
-        ev["restauracion_a"] = ra
-        ev["restauracion_a_corresponde_a_copia_a"] = ra.get("etiqueta_copia") == "A" and ra.get("copia_sha256") == a["sha256"]
+    # La copia A también debe demostrarse: descifrada da el MISMO tar que B (restauración completa o «comprobar»).
+    ruta_a = args.restauracion_a or args.comprobacion_a
+    ra = None
+    if ruta_a:
+        with open(ruta_a, encoding="utf-8") as f:
+            ra = json.load(f)
+        ev["comprobacion_a"] = ra
+    ev["copia_a_comprobada"] = bool(ra) and ra.get("etiqueta_copia") == "A" and ra.get("copia_sha256") == a["sha256"] \
+        and ra.get("tar_coincide") is True and ra.get("tar_descifrado_sha256") == rb.get("tar_descifrado_sha256")
+    ev["procedimiento"] = comun.VERSION_PROCEDIMIENTO
+    ev["versiones_coherentes"] = rb.get("procedimiento") == comun.VERSION_PROCEDIMIENTO and (ra or {}).get("procedimiento") == comun.VERSION_PROCEDIMIENTO
     ev["declaraciones_del_propietario"] = {"conserva_ambas_copias": bool(args.confirmo_conservar), "texto": "Declaración del propietario; no verificable por script."}
     aqui = os.path.dirname(os.path.abspath(__file__))
     ev["scripts_sha256"], dif = comun.comprobar_scripts(aqui)
     ev["scripts_integros"] = not dif
     ev["resultado"] = ("COMPLETA" if all([a["cifrada_detectada"], b["cifrada_detectada"], ev["medios_declarados_distintos"],
                                           ev["cifrados_distintos"], ev["archivos_distintos"], ev["scripts_integros"],
+                                          ev["copia_a_comprobada"], ev["versiones_coherentes"],
                                           ev["restauracion_b_corresponde_a_copia_b"], rb.get("restauracion_ok") is True,
                                           args.confirmo_conservar]) else "INCOMPLETA")
     with open(args.salida, "wb") as f:
@@ -204,13 +250,21 @@ def main(argv=None):
     r.add_argument("--ref-objetos")
     r.add_argument("--ref-tablas")
     r.add_argument("--salida", required=True)
+    k = sub.add_parser("comprobar")
+    k.add_argument("--copia", required=True)
+    k.add_argument("--etiqueta", required=True, choices=["A", "B"])
+    k.add_argument("--empaquetado", required=True)
+    k.add_argument("--identidad")
+    k.add_argument("--frase-archivo")
+    k.add_argument("--salida", required=True)
     g = sub.add_parser("registrar")
     g.add_argument("--copia-a", required=True)
     g.add_argument("--copia-b", required=True)
     g.add_argument("--medio-a", required=True, help="texto libre sin datos sensibles, p. ej. «disco USB en casa»")
     g.add_argument("--medio-b", required=True)
     g.add_argument("--restauracion-b", required=True)
-    g.add_argument("--restauracion-a")
+    g.add_argument("--restauracion-a", help="RESTAURACION-A.json (restauración completa de A)")
+    g.add_argument("--comprobacion-a", help="COMPROBACION-A.json (de «comprobar»); hace falta una de las dos")
     g.add_argument("--confirmo-conservar", action="store_true")
     g.add_argument("--salida", default="EVIDENCIA-COPIAS.json")
     a = ap.parse_args(argv)
@@ -218,6 +272,8 @@ def main(argv=None):
         return empaquetar(a.dir, a.salida)
     if a.cmd == "restaurar":
         return restaurar(a.copia, a.etiqueta, a.destino, a.empaquetado, a.identidad, a.frase_archivo, a.ref_objetos, a.ref_tablas, a.salida)
+    if a.cmd == "comprobar":
+        return comprobar(a.copia, a.etiqueta, a.empaquetado, a.identidad, a.frase_archivo, a.salida)
     return registrar(a)
 
 

@@ -97,6 +97,19 @@ def verificar_entrega(carpeta, ids_path, minimo_objetos=0):
     cond("E12", not dif_local, "verificar_entrega corre con los scripts fijados en SCRIPTS.sha256.", f"Scripts locales alterados: {dif_local}")
     cond("E12b", not p_res, "resumen.json: respaldo hecho con todos los scripts fijados.", f"resumen.json: {p_res}")
     cond("E12c", not p_ver, "VERIFICACION.json: verificación hecha con todos los scripts fijados.", f"VERIFICACION.json: {p_ver}")
+    cond("E14", res.get("procedimiento") == ver.get("procedimiento") == comun.VERSION_PROCEDIMIENTO,
+         f"Respaldo y verificación son del procedimiento {comun.VERSION_PROCEDIMIENTO}.",
+         f"Versiones del procedimiento: respaldo {res.get('procedimiento')!r}, verificación {ver.get('procedimiento')!r}, revisor {comun.VERSION_PROCEDIMIENTO}.")
+    nl = ver.get("ids_10_77_no_listados")
+    add("E06c", "ok" if nl == [] else "advertencia", "Inventario reconciliado: no hay capturas 10.77 fuera de la lista." if nl == [] else
+        f"Inventario SIN reconciliar: {len(nl) if isinstance(nl, list) else '?'} capturas 10.77 respaldadas fuera de la lista de requeridos: {nl}. El propietario debe decidir la lista.")
+    rutas_mal = []
+    for f in man:
+        try:
+            comun.nombre_seguro(f["nombre"], f["tipo"])
+        except comun.RutaInsegura as e:
+            rutas_mal.append(str(e))
+    cond("E03b", not rutas_mal, "Rutas del manifiesto seguras.", f"Rutas inseguras en el manifiesto: {rutas_mal[:3]}")
     cond("E13", res.get("solo_lectura") is True and res.get("proyecto_ref") == comun.PROYECTO_REF, "Declara solo lectura y el proyecto esperado.", "No declara solo lectura o el proyecto no es el esperado.")
     ruta_ev = os.path.join(carpeta, "EVIDENCIA-COPIAS.json")
     if not os.path.isfile(ruta_ev):
@@ -121,6 +134,13 @@ def verificar_entrega(carpeta, ids_path, minimo_objetos=0):
         cond("C08", ev.get("cifrados_distintos") is True and c.get("A", {}).get("sha256") != c.get("B", {}).get("sha256") and ev.get("archivos_distintos") is True,
              "A y B son cifrados distintos (sha256 distinto, archivos distintos); la independencia física es declarada, no comprobable.",
              "A y B no son cifrados distintos (mismo sha256 o mismo archivo): no hay dos copias cifradas independientes.")
+        cond("C10", ev.get("copia_a_comprobada") is True and ev.get("comprobacion_a", {}).get("copia_sha256") == c.get("A", {}).get("sha256")
+             and ev.get("comprobacion_a", {}).get("tar_descifrado_sha256") == rb.get("tar_descifrado_sha256"),
+             "La copia A se descifró y contiene el mismo tar que B.", "No hay prueba de que la copia A contenga el respaldo.")
+        vers = {res.get("procedimiento"), ver.get("procedimiento"), ev.get("procedimiento"), rb.get("procedimiento"),
+                ev.get("comprobacion_a", {}).get("procedimiento")}
+        cond("C11", vers == {comun.VERSION_PROCEDIMIENTO}, f"Todos los artefactos son del procedimiento {comun.VERSION_PROCEDIMIENTO}.",
+             f"Artefactos de versiones distintas del procedimiento: {sorted(str(v) for v in vers)}.")
         p_ev = comun.huellas_registradas_validas(ev.get("scripts_sha256"), AQUI)
         cond("C09", not p_ev, "EVIDENCIA-COPIAS.json: generada con los scripts fijados.", f"EVIDENCIA-COPIAS.json: {p_ev}")
     estado = "FALLO" if any(c["estado"] == "fallo" for c in chk) else ("APROBADO_CON_ADVERTENCIAS" if any(c["estado"] == "advertencia" for c in chk) else "APROBADO")

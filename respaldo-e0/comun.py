@@ -12,6 +12,9 @@ import os
 import re
 
 ESQUEMA = 1
+# Versión del procedimiento: la llevan TODOS los artefactos (resumen, verificación, empaquetado, restauración,
+# evidencia). Artefactos de versiones distintas no se mezclan (auditoría de cierre, H7).
+VERSION_PROCEDIMIENTO = "E0.3"
 BUCKET = "capturas"
 PROYECTO_REF = "gqsadclvftkzwrihfipz"
 VERSION_BANCO = "10.77"
@@ -26,6 +29,50 @@ RE_SECRETOS = re.compile(
     r"AGE-SECRET-KEY-|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}|"
     r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})"
 )
+
+
+class RutaInsegura(ValueError):
+    pass
+
+
+_RE_COMPONENTE = re.compile(r"^[A-Za-z0-9._ ()+,=@-]+$")
+_RESERVADOS_WINDOWS = {"con", "prn", "aux", "nul"} | {f"com{i}" for i in range(1, 10)} | {f"lpt{i}" for i in range(1, 10)}
+
+
+def nombre_seguro(rel, tipo=None):
+    """Valida un nombre relativo del manifiesto (auditoría de cierre, H1/H2). Lanza RutaInsegura.
+    Solo «/» como separador; sin «..», «.», vacíos, absolutos, «\\», «:», NUL ni nombres reservados de Windows.
+    Con `tipo`, además exige la ubicación que corresponde a ese tipo de fila."""
+    if not isinstance(rel, str) or not rel or len(rel) > 300:
+        raise RutaInsegura(f"nombre vacío o demasiado largo: {rel!r}")
+    partes = rel.split("/")
+    for p in partes:
+        if p in ("", ".", "..") or not _RE_COMPONENTE.match(p) or p.endswith((" ", ".")) or p.startswith(" "):
+            raise RutaInsegura(f"componente no permitido en {rel!r}")
+        if p.split(".")[0].lower() in _RESERVADOS_WINDOWS:
+            raise RutaInsegura(f"nombre reservado en {rel!r}")
+    if tipo == "captura" and (partes[0] != "capturas" or len(partes) < 2):
+        raise RutaInsegura(f"una captura debe estar en capturas/: {rel!r}")
+    if tipo == "tabla" and rel not in tuple(f"tablas/{t}.jsonl" for t in TABLAS):
+        raise RutaInsegura(f"tabla no esperada: {rel!r}")
+    if tipo == "lista" and rel != "ids_requeridos.txt":
+        raise RutaInsegura(f"lista no esperada: {rel!r}")
+    if tipo is not None and tipo not in ("captura", "tabla", "lista"):
+        raise RutaInsegura(f"tipo de fila desconocido: {tipo!r}")
+    return rel
+
+
+def ruta_en(carpeta, rel, tipo=None):
+    """Ruta absoluta de `rel` DENTRO de `carpeta`. Rechaza enlaces simbólicos en cualquier tramo y todo lo
+    que al resolverse quede fuera de la carpeta (una sola comprobación: la ruta real debe ser la esperada)."""
+    nombre_seguro(rel, tipo)
+    raiz = os.path.realpath(carpeta)
+    p = os.path.join(raiz, *rel.split("/"))
+    # realpath resuelve cualquier enlace del camino: si la ruta real no es exactamente la esperada, hay un
+    # enlace simbólico (aunque apunte dentro) o la ruta sale de la carpeta.
+    if os.path.realpath(p) != p or not p.startswith(raiz + os.sep):
+        raise RutaInsegura(f"{rel!r} es un enlace simbólico o sale de la carpeta del respaldo")
+    return p
 
 
 def sha256_bytes(b):

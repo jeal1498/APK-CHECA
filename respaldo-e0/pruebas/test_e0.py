@@ -457,6 +457,12 @@ class MontajeCopias(Base):
         subprocess.run(["age", "-r", self.pub, "-o", destino, self.tar], check=True)
         return destino
 
+    def comprobar(self, copia, et="A", emp=None):
+        salida = os.path.join(self.tmp, f"COMPROBACION-{et}.json")
+        with contextlib.redirect_stderr(io.StringIO()):
+            cod = self.ev("comprobar", "--copia", copia, "--etiqueta", et, "--empaquetado", emp or self.emp, "--identidad", self.ident, "--salida", salida)
+        return cod, salida
+
     def restaurar(self, copia, et="B", destino=None, emp=None):
         destino = destino or os.path.join(self.tmp, "rest" + et)
         salida = os.path.join(self.tmp, f"RESTAURACION-{et}.json")
@@ -477,11 +483,13 @@ class TestCopias(MontajeCopias):
         self.assertNotEqual(comun.sha256_archivo(a), comun.sha256_archivo(b))  # cifrados por separado
         cod, rb = self.restaurar(b)
         self.assertEqual(cod, 0)
+        cod, ca = self.comprobar(a)
+        self.assertEqual(cod, 0)
         ev_json = os.path.join(self.tmp, "entrega", "EVIDENCIA-COPIAS.json")
         os.makedirs(os.path.dirname(ev_json))
         with contextlib.redirect_stderr(io.StringIO()):
             self.assertEqual(self.ev("registrar", "--copia-a", a, "--copia-b", b, "--medio-a", "disco USB casa", "--medio-b", "nube cuenta aparte",
-                                     "--restauracion-b", rb, "--confirmo-conservar", "--salida", ev_json), 0)
+                                     "--restauracion-b", rb, "--comprobacion-a", ca, "--confirmo-conservar", "--salida", ev_json), 0)
         for n in ("resumen.json", "manifiesto.csv", "VERIFICACION.json"):
             shutil.copy(os.path.join(self.dir(), n), os.path.dirname(ev_json))
         r = verificar_entrega.verificar_entrega(os.path.dirname(ev_json), self.ids)
@@ -570,11 +578,17 @@ class TestCopias(MontajeCopias):
 class TestDefectosE01(MontajeCopias):
     """Regresiones de los defectos D1–D5 detectados en la revisión de E0.1."""
 
-    def _registrar(self, a, b, rb, salida=None):
+    def _registrar(self, a, b, rb, salida=None, con_a=True):
         salida = salida or os.path.join(self.tmp, "ev.json")
+        extra = []
+        if con_a:
+            try:
+                extra = ["--comprobacion-a", self.comprobar(a)[1]]
+            except SystemExit:
+                extra = []
         with contextlib.redirect_stderr(io.StringIO()):
             cod = self.ev("registrar", "--copia-a", a, "--copia-b", b, "--medio-a", "disco USB casa", "--medio-b", "nube cuenta aparte",
-                          "--restauracion-b", rb, "--confirmo-conservar", "--salida", salida)
+                          "--restauracion-b", rb, "--confirmo-conservar", "--salida", salida, *extra)
         return cod, json.load(open(salida))
 
     # D1 ------------------------------------------------------------------
@@ -726,6 +740,206 @@ class TestDefectosE01(MontajeCopias):
         self.assertTrue(revisar_mensajes.hallazgos("x\nClaude-Session: https://claude.ai/code/session_01ABCdef\n"))
         self.assertTrue(revisar_mensajes.hallazgos("token eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIn0.x"))
         self.assertEqual(revisar_mensajes.hallazgos("E0: corrige D1\n\nCo-Authored-By: Claude <noreply@anthropic.com>\n"), [])
+
+
+class TestAuditoriaCierre(MontajeCopias):
+    """Regresiones de los hallazgos de la auditoría de cierre (H1–H8)."""
+
+    def _manifiesto_con(self, fila, quitar=None):
+        """Agrega una fila al manifiesto y reajusta el sha256 en resumen.json (como haría quien lo manipula)."""
+        man_p, res_p = os.path.join(self.dir(), "manifiesto.csv"), os.path.join(self.dir(), "resumen.json")
+        filas = comun.leer_manifiesto(man_p) + [fila]
+        datos = comun.escribir_manifiesto(filas)
+        open(man_p, "wb").write(datos)
+        res = json.load(open(res_p)); res["manifiesto_sha256"] = comun.sha256_bytes(datos)
+        open(res_p, "wb").write(comun.json_estable(res))
+
+    def _secreto_fuera(self):
+        p = os.path.join(self.tmp, "secreto.txt")
+        open(p, "wb").write(b"NO-DEBE-SALIR")
+        return p
+
+    # H1: verificar no lee nada fuera del respaldo
+    def test_h1_manifiesto_con_ruta_fuera_no_se_lee(self):
+        fuera = self._secreto_fuera()
+        for nombre in ("../secreto.txt", "capturas/../../secreto.txt", "/etc/hostname", "capturas\\..\\x.webp", "capturas/./x.webp", "capturas//x.webp", "C:/x.webp", "capturas/nul.webp"):
+            with self.subTest(nombre):
+                shutil.copy(os.path.join(self.dir(), "manifiesto.csv"), os.path.join(self.tmp, "man.bak"))
+                shutil.copy(os.path.join(self.dir(), "resumen.json"), os.path.join(self.tmp, "res.bak"))
+                self._manifiesto_con({"tipo": "captura", "nombre": nombre, "bytes": os.path.getsize(fuera), "sha256": comun.sha256_archivo(fuera), "origen": "otro"})
+                v = self.verif()
+                self.assertEqual(v["resultado"], "FALLO")
+                self.assertIn("V02b", {c["id"] for c in v["checks"] if c["estado"] == "fallo"})
+                self.assertNotIn("V03", {c["id"] for c in v["checks"]})  # se detuvo antes de leer archivos
+                shutil.copy(os.path.join(self.tmp, "man.bak"), os.path.join(self.dir(), "manifiesto.csv"))
+                shutil.copy(os.path.join(self.tmp, "res.bak"), os.path.join(self.dir(), "resumen.json"))
+
+    def test_h1_enlace_simbolico_dentro_del_respaldo_se_rechaza(self):
+        fuera = self._secreto_fuera()
+        os.symlink(fuera, os.path.join(self.dir(), "capturas", "enlace.webp"))
+        self._manifiesto_con({"tipo": "captura", "nombre": "capturas/enlace.webp", "bytes": os.path.getsize(fuera), "sha256": comun.sha256_archivo(fuera), "origen": "otro"})
+        self.assertIn("V02b", {c["id"] for c in self.verif()["checks"] if c["estado"] == "fallo"})
+
+    def test_h1_enlace_a_otro_archivo_del_mismo_respaldo_tambien_se_rechaza(self):
+        os.symlink(os.path.join(self.dir(), "capturas", "101.webp"), os.path.join(self.dir(), "capturas", "dentro.webp"))
+        with self.assertRaises(comun.RutaInsegura):
+            comun.ruta_en(self.dir(), "capturas/dentro.webp", "captura")
+        os.makedirs(os.path.join(self.tmp, "otra"))
+        os.symlink(os.path.join(self.tmp, "otra"), os.path.join(self.dir(), "capturas", "dir"))  # carpeta enlazada
+        with self.assertRaises(comun.RutaInsegura):
+            comun.ruta_en(self.dir(), "capturas/dir/x.webp", "captura")
+        self.assertTrue(comun.ruta_en(self.dir(), "capturas/101.webp", "captura").endswith("101.webp"))
+
+    def test_h1_tipo_y_ubicacion_coherentes(self):
+        for tipo, nombre in (("tabla", "tablas/otra.jsonl"), ("captura", "tablas/errores_lector.jsonl2"), ("lista", "otra.txt"), ("raro", "capturas/x.webp")):
+            with self.assertRaises(comun.RutaInsegura):
+                comun.nombre_seguro(nombre, tipo)
+        self.assertEqual(comun.nombre_seguro("capturas/sub/ok-verde-50.00-5.0-12-1030-n1.webp", "captura"), "capturas/sub/ok-verde-50.00-5.0-12-1030-n1.webp")
+
+    # H2: empaquetar no mete archivos de fuera ni empaqueta algo que no verifica
+    def test_h2_empaquetar_rechaza_manifiesto_con_ruta_fuera(self):
+        fuera = self._secreto_fuera()
+        self._manifiesto_con({"tipo": "captura", "nombre": "../secreto.txt", "bytes": os.path.getsize(fuera), "sha256": comun.sha256_archivo(fuera), "origen": "otro"})
+        otro = os.path.join(self.tmp, "x.tar")
+        with self.assertRaises(SystemExit), contextlib.redirect_stderr(io.StringIO()):
+            self.ev("empaquetar", "--dir", self.dir(), "--salida", otro)
+        self.assertFalse(os.path.exists(otro))
+
+    def test_h2_empaquetar_rechaza_respaldo_alterado(self):
+        cap = os.path.join(self.dir(), "capturas", "101.webp")
+        open(cap, "ab").write(b"x")
+        otro = os.path.join(self.tmp, "x.tar")
+        with self.assertRaises(SystemExit), contextlib.redirect_stderr(io.StringIO()):
+            self.ev("empaquetar", "--dir", self.dir(), "--salida", otro)
+        self.assertFalse(os.path.exists(otro))
+
+    def test_h2_tar_no_contiene_rutas_ni_nombre_de_carpeta(self):
+        import tarfile
+        with tarfile.open(self.tar) as t:
+            nombres = t.getnames()
+        self.assertTrue(all(n.startswith("respaldo/") and ".." not in n.split("/") for n in nombres))
+        self.assertNotIn(os.path.basename(self.dir()) + "/", "".join(nombres))
+
+    def test_h2_tar_con_entrada_repetida_se_rechaza(self):
+        import tarfile
+        mal = os.path.join(self.tmp, "rep.tar")
+        with tarfile.open(mal, "w") as t:
+            for _ in range(2):
+                ti = tarfile.TarInfo("respaldo/a.txt"); ti.size = 1; t.addfile(ti, io.BytesIO(b"x"))
+        with self.assertRaises(SystemExit):
+            evidencia_copias._extraer_seguro(mal, os.path.join(self.tmp, "dest2"))
+
+    # H3: la copia A también se demuestra
+    def test_h3_sin_comprobar_la_copia_a_es_incompleta(self):
+        a, b = self.cifrar(os.path.join(self.tmp, "A.age")), self.cifrar(os.path.join(self.tmp, "B.age"))
+        _, rb = self.restaurar(b)
+        ev = os.path.join(self.tmp, "ev.json")
+        with contextlib.redirect_stderr(io.StringIO()):
+            cod = self.ev("registrar", "--copia-a", a, "--copia-b", b, "--medio-a", "x", "--medio-b", "y", "--restauracion-b", rb, "--confirmo-conservar", "--salida", ev)
+        self.assertEqual(cod, 1)
+        self.assertFalse(json.load(open(ev))["copia_a_comprobada"])
+
+    def test_h3_copia_a_con_otro_contenido_es_incompleta(self):
+        b = self.cifrar(os.path.join(self.tmp, "B.age"))
+        basura = os.path.join(self.tmp, "basura.bin"); open(basura, "wb").write(b"no es el respaldo" * 100)
+        a = os.path.join(self.tmp, "A.age")
+        subprocess.run(["age", "-r", self.pub, "-o", a, basura], check=True)
+        _, rb = self.restaurar(b)
+        cod, ca = self.comprobar(a)
+        self.assertEqual(cod, 1)
+        ev = os.path.join(self.tmp, "ev.json")
+        with contextlib.redirect_stderr(io.StringIO()):
+            cod = self.ev("registrar", "--copia-a", a, "--copia-b", b, "--medio-a", "x", "--medio-b", "y", "--restauracion-b", rb, "--comprobacion-a", ca, "--confirmo-conservar", "--salida", ev)
+        self.assertEqual(cod, 1)
+        self.assertEqual(json.load(open(ev))["resultado"], "INCOMPLETA")
+
+    def test_h3_comprobacion_de_otro_archivo_no_vale_para_a(self):
+        a, b = self.cifrar(os.path.join(self.tmp, "A.age")), self.cifrar(os.path.join(self.tmp, "B.age"))
+        _, rb = self.restaurar(b)
+        _, cb = self.comprobar(b, "A")  # se comprobó el archivo B y se etiquetó como A
+        ev = os.path.join(self.tmp, "ev.json")
+        with contextlib.redirect_stderr(io.StringIO()):
+            cod = self.ev("registrar", "--copia-a", a, "--copia-b", b, "--medio-a", "x", "--medio-b", "y", "--restauracion-b", rb, "--comprobacion-a", cb, "--confirmo-conservar", "--salida", ev)
+        self.assertEqual(cod, 1)
+
+    def test_h3_comprobar_no_deja_nada_en_claro(self):
+        a = self.cifrar(os.path.join(self.tmp, "A.age"))
+        antes = set(os.listdir(self.tmp)) | set(os.listdir(tempfile.gettempdir()))
+        self.assertEqual(self.comprobar(a)[0], 0)
+        nuevos = (set(os.listdir(self.tmp)) | set(os.listdir(tempfile.gettempdir()))) - antes
+        self.assertEqual(nuevos, {"COMPROBACION-A.json"})
+
+    # H4: el tar descifrado temporal no va al temporal del sistema
+    def test_h4_restaurar_no_usa_el_temporal_del_sistema(self):
+        b = self.cifrar(os.path.join(self.tmp, "B.age"))
+        visto = {}
+        original = evidencia_copias._extraer_seguro
+        def espia(tar_ruta, destino):
+            visto["tar"] = tar_ruta
+            return original(tar_ruta, destino)
+        evidencia_copias._extraer_seguro = espia
+        self.addCleanup(setattr, evidencia_copias, "_extraer_seguro", original)
+        dest = os.path.join(self.tmp, "privado", "restB"); os.makedirs(os.path.dirname(dest))
+        self.assertEqual(self.restaurar(b, destino=dest)[0], 0)
+        self.assertEqual(os.path.dirname(os.path.dirname(visto["tar"])), os.path.dirname(dest))
+        self.assertFalse(os.path.exists(visto["tar"]))  # se quitó al terminar
+        self.assertEqual(os.listdir(os.path.dirname(dest)), ["restB"])
+
+    # H5: el README no promete borrado seguro
+    def test_h5_readme_no_promete_borrado_seguro(self):
+        txt = open(os.path.join(os.path.dirname(AQUI), "README.md"), encoding="utf-8").read()
+        self.assertIn("no garantiza", txt)
+        self.assertIn("volumen cifrado", txt)
+        for orden in ("rm -P", "cipher /w"):
+            self.assertNotIn(orden, txt)
+
+    # H6: inventario — capturas 10.77 fuera de la lista se informan, no se ocultan
+    def test_h6_capturas_10_77_no_listadas_se_informan(self):
+        self.sim.objetos["2001.webp"] = webp("2001")
+        self.sim.tablas["errores_lector"].append({"id": 2001, "version": "10.77", "usuario": "aaaaaaaa-0000-4000-8000-000000000003", "lineas": []})
+        self.assertEqual(self.correr(salida="h6")[0], 0)
+        v = verificar.verificar(self.dir("h6"))
+        self.assertEqual(v["ids_10_77_no_listados"], [2001])
+        self.assertIn("V08d", {c["id"] for c in v["checks"] if c["estado"] == "advertencia"})
+        self.assertEqual(v["resultado"], "APROBADO_CON_ADVERTENCIAS")
+        self.assertEqual(self.verif()["ids_10_77_no_listados"], [])
+
+    # H7: versiones coherentes
+    def test_h7_todos_los_artefactos_llevan_la_misma_version(self):
+        a, b = self.cifrar(os.path.join(self.tmp, "A.age")), self.cifrar(os.path.join(self.tmp, "B.age"))
+        _, rb = self.restaurar(b); _, ca = self.comprobar(a)
+        for ruta in (os.path.join(self.dir(), "resumen.json"), os.path.join(self.dir(), "VERIFICACION.json"), self.emp, rb, ca):
+            self.assertEqual(json.load(open(ruta))["procedimiento"], comun.VERSION_PROCEDIMIENTO, ruta)
+        self.assertIn(comun.VERSION_PROCEDIMIENTO, open(os.path.join(os.path.dirname(AQUI), "README.md"), encoding="utf-8").read().splitlines()[0])
+
+    def test_h7_respaldo_de_otra_version_no_verifica(self):
+        res_p = os.path.join(self.dir(), "resumen.json")
+        res = json.load(open(res_p)); res["procedimiento"] = "E0.1"
+        open(res_p, "wb").write(comun.json_estable(res))
+        self.assertIn("V02c", {c["id"] for c in self.verif()["checks"] if c["estado"] == "fallo"})
+
+    def test_h7_restauracion_de_otra_version_es_incompleta(self):
+        a, b = self.cifrar(os.path.join(self.tmp, "A.age")), self.cifrar(os.path.join(self.tmp, "B.age"))
+        _, rb = self.restaurar(b); _, ca = self.comprobar(a)
+        d = json.load(open(rb)); d["procedimiento"] = "E0.2"; json.dump(d, open(rb, "w"))
+        ev = os.path.join(self.tmp, "ev.json")
+        with contextlib.redirect_stderr(io.StringIO()):
+            cod = self.ev("registrar", "--copia-a", a, "--copia-b", b, "--medio-a", "x", "--medio-b", "y", "--restauracion-b", rb, "--comprobacion-a", ca, "--confirmo-conservar", "--salida", ev)
+        self.assertEqual(cod, 1)
+        self.assertFalse(json.load(open(ev))["versiones_coherentes"])
+
+    # H8: solo-listar avisa de nombres que detendrían el respaldo; archivo suelto no se tolera por prefijo
+    def test_h8_solo_listar_avisa_nombres_no_permitidos(self):
+        self.sim.objetos["raro nombre?.webp"] = webp("r")
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(io.StringIO()):
+            cod = respaldar.main(["--url", self.sim.url, "--permitir-local", "--espera", "0.01", "--ids-requeridos", self.ids, "--solo-listar"])
+        self.assertEqual(cod, 2)
+        self.assertEqual(json.loads(out.getvalue())["nombres_no_permitidos"], 1)
+
+    def test_h8_archivo_extra_con_prefijo_verificacion_ya_no_se_tolera(self):
+        open(os.path.join(self.dir(), "VERIFICACION-copia.json"), "w").write("{}")
+        self.assertIn("V04", {c["id"] for c in self.verif()["checks"] if c["estado"] == "fallo"})
 
 
 if __name__ == "__main__":

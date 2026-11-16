@@ -263,12 +263,20 @@ def _ejecutar(cli, a, requeridos):
     print(f"Listado: {len(lista0)} objetos.", file=sys.stderr)
     if a.solo_listar:
         faltan = [i for i in requeridos if f"{i}.webp" not in lista0]
+        raros = 0
+        for n in lista0:
+            try:
+                comun.nombre_seguro("capturas/" + n, "captura")
+            except comun.RutaInsegura:
+                raros += 1
+        if raros:
+            print(f"AVISO: {raros} objetos con nombre no permitido; el respaldo real se detendría. Avisa antes de seguir.", file=sys.stderr)
         print(json.dumps({
-            "objetos": len(lista0),
+            "objetos": len(lista0), "nombres_no_permitidos": raros,
             "errores_lector_filas": leer_tabla(cli, "errores_lector", True),
             "capturas_ok_filas": leer_tabla(cli, "capturas_ok", True),
             "requeridos": len(requeridos), "requeridos_ausentes": len(faltan)}, indent=2))
-        return 0 if not faltan else 2
+        return 0 if not faltan and not raros else 2
 
     os.makedirs(os.path.join(a.salida, "capturas"), mode=0o700, exist_ok=True)
     os.makedirs(os.path.join(a.salida, "tablas"), mode=0o700, exist_ok=True)
@@ -293,8 +301,12 @@ def _ejecutar(cli, a, requeridos):
     version_de = {t: {f["id"]: f.get("version") for f in filas_por_tabla[t]} for t in comun.TABLAS}
     descargados, fallidos, desaparecidos, etag_ok, etag_mal = {}, [], [], [], []
     for n, (nombre, meta) in enumerate(sorted(lista0.items()), 1):
-        ruta = os.path.join(a.salida, "capturas", nombre)
-        if os.path.realpath(ruta) != os.path.join(os.path.realpath(os.path.join(a.salida, "capturas")), nombre):
+        ruta = os.path.join(a.salida, "capturas", *nombre.split("/"))
+        try:
+            comun.nombre_seguro("capturas/" + nombre, "captura")
+        except comun.RutaInsegura:
+            raise ErrorRespaldo(f"Nombre de objeto inseguro: {nombre!r}")
+        if nombre.endswith(".part") or os.path.realpath(ruta) != os.path.join(os.path.realpath(os.path.join(a.salida, "capturas")), *nombre.split("/")):
             raise ErrorRespaldo(f"Nombre de objeto inseguro: {nombre!r}")
         os.makedirs(os.path.dirname(ruta), exist_ok=True)
         parcial = ruta + ".part"
@@ -368,7 +380,7 @@ def _ejecutar(cli, a, requeridos):
     else:
         resultado = "COMPLETO"
     resumen = {
-        "esquema": comun.ESQUEMA, "generado_utc": ahora(), "proyecto_ref": comun.PROYECTO_REF, "bucket": comun.BUCKET,
+        "esquema": comun.ESQUEMA, "procedimiento": comun.VERSION_PROCEDIMIENTO, "generado_utc": ahora(), "proyecto_ref": comun.PROYECTO_REF, "bucket": comun.BUCKET,
         "solo_lectura": True, "peticiones": cli.peticiones, "scripts_sha256": comun.hash_scripts(AQUI),
         "listado": {"t0_utc": t0, "t1_utc": t1, "objetos_t0": len(lista0), "objetos_t1": len(lista1),
                     "agregados_durante": agregados, "quitados_durante": quitados, "tamano_cambiado_durante": cambiados},

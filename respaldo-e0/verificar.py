@@ -75,10 +75,25 @@ def verificar(carpeta, ref_objetos=None, ref_tablas=None):
     nombres = [f["nombre"] for f in filas]
     c.cond("V02", len(nombres) == len(set(nombres)), "Sin nombres repetidos en el manifiesto.", "Nombres repetidos en el manifiesto.")
 
+    # V02b rutas del manifiesto: ninguna puede salir del respaldo ni ser un enlace (no se lee nada de fuera).
+    inseguras = []
+    for f in filas:
+        try:
+            comun.ruta_en(carpeta, f["nombre"], f["tipo"])
+        except comun.RutaInsegura as e:
+            inseguras.append(str(e))
+    c.cond("V02b", not inseguras, "Todas las rutas del manifiesto quedan dentro del respaldo y no son enlaces.",
+           f"{len(inseguras)} rutas inseguras en el manifiesto (primeras: {inseguras[:3]}). No se leyó ningún archivo.")
+    if inseguras:
+        return {"resultado": c.resultado(), "checks": c.lista}
+    c.cond("V02c", resumen.get("procedimiento") == comun.VERSION_PROCEDIMIENTO,
+           f"El respaldo es del procedimiento {comun.VERSION_PROCEDIMIENTO}.",
+           f"El respaldo dice procedimiento {resumen.get('procedimiento')!r}; estos scripts son {comun.VERSION_PROCEDIMIENTO}.")
+
     # V03 archivos del manifiesto: existen, tamaño, sha256
     malos, sha_real = [], {}
     for f in filas:
-        ruta = os.path.join(carpeta, *f["nombre"].split("/"))
+        ruta = comun.ruta_en(carpeta, f["nombre"], f["tipo"])
         if not os.path.isfile(ruta):
             malos.append((f["nombre"], "falta"))
             continue
@@ -92,10 +107,11 @@ def verificar(carpeta, ref_objetos=None, ref_tablas=None):
     # V04 archivos de más
     previstos = set(nombres) | set(SOLO_RAIZ)
     extra = []
-    for raiz, _, archivos in os.walk(carpeta):
-        for a in archivos:
+    for raiz, dirs, archivos in os.walk(carpeta):
+        for a in archivos + [d for d in dirs if os.path.islink(os.path.join(raiz, d))]:
             rel = os.path.relpath(os.path.join(raiz, a), carpeta).replace(os.sep, "/")
-            if rel not in previstos and not rel.startswith("VERIFICACION"):
+            # Solo se tolera VERIFICACION.json en la raíz (lo escribe este mismo programa).
+            if rel not in previstos and rel != "VERIFICACION.json":
                 extra.append(rel)
     c.cond("V04", not extra, "No hay archivos fuera del manifiesto.", f"Archivos que no están en el manifiesto: {extra[:5]}.")
 
@@ -103,7 +119,7 @@ def verificar(carpeta, ref_objetos=None, ref_tablas=None):
     caps = [f for f in filas if f["tipo"] == "captura"]
     no_webp = []
     for f in caps:
-        ruta = os.path.join(carpeta, *f["nombre"].split("/"))
+        ruta = comun.ruta_en(carpeta, f["nombre"], f["tipo"])
         if os.path.isfile(ruta):
             with open(ruta, "rb") as h:
                 if not comun.es_webp(h.read(12)):
@@ -158,9 +174,23 @@ def verificar(carpeta, ref_objetos=None, ref_tablas=None):
     c.cond("V08c", not sin_fila and not distinta, f"Los {len(req)} ids requeridos tienen fila en errores_lector con versión {comun.VERSION_BANCO}.",
            f"Ids sin fila: {sin_fila[:10]}; con versión distinta de {comun.VERSION_BANCO}: {distinta[:10]}.")
 
+    # V08d reconciliación del inventario: capturas dudosas cuya fila es 10.77 y que NO están en la lista de
+    # requeridos. No se excluyen ni se dan por buenas: se informan para que el propietario decida la lista.
+    def _id(f):
+        return int(f["id_enlace"]) if str(f.get("id_enlace", "")).isdigit() else None
+    no_listados = sorted(_id(f) for f in caps if f["origen"] == "dudosa" and _id(f) is not None
+                         and el.get(_id(f)) == comun.VERSION_BANCO and _id(f) not in set(req))
+    if no_listados:
+        c.aviso("V08d", f"{len(no_listados)} capturas {comun.VERSION_BANCO} respaldadas que no están en la lista de requeridos "
+                        f"(inventario sin reconciliar: decidir si la lista se amplía).", ids=no_listados)
+    else:
+        c.ok("V08d", f"No hay capturas {comun.VERSION_BANCO} fuera de la lista de requeridos.")
+
     # V09 enlaces captura ↔ fila
-    sin_enlace = [f["nombre"] for f in caps if f["origen"] in ("dudosa", "normal_n") and
-                  int(f["id_enlace"]) not in ids_tabla.get("errores_lector" if f["origen"] == "dudosa" else "capturas_ok", set())]
+    mal_id = [f["nombre"] for f in caps if f["origen"] in ("dudosa", "normal_n") and _id(f) is None]
+    c.cond("V09a", not mal_id, "Las capturas enlazables traen id numérico.", f"Capturas con id_enlace inválido: {mal_id[:5]}.")
+    sin_enlace = [f["nombre"] for f in caps if f["origen"] in ("dudosa", "normal_n") and _id(f) is not None and
+                  _id(f) not in ids_tabla.get("errores_lector" if f["origen"] == "dudosa" else "capturas_ok", set())]
     if sin_enlace:
         c.aviso("V09", f"{len(sin_enlace)} capturas sin fila enlazada (¿fila borrada?).", ejemplos=sin_enlace[:5])
     else:
@@ -201,7 +231,7 @@ def verificar(carpeta, ref_objetos=None, ref_tablas=None):
 
     ref = _referencia(c, caps, cap_pares, resumen, ref_objetos, ref_tablas, h_lis, ids_tabla, versiones)
     return {
-        "esquema": comun.ESQUEMA, "verificado_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "esquema": comun.ESQUEMA, "procedimiento": comun.VERSION_PROCEDIMIENTO, "ids_10_77_no_listados": no_listados, "verificado_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "resultado": c.resultado(), "manifiesto_sha256": man_sha, "resumen_sha256": comun.sha256_bytes(crudo_res),
         "conteos": {"capturas": len(caps), "filas_errores_lector": len(ids_tabla.get("errores_lector", ())),
                     "filas_capturas_ok": len(ids_tabla.get("capturas_ok", ())), "ids_requeridos": len(req),
