@@ -4,7 +4,7 @@
 
 ## 0. Auditoría de cierre (16-nov-2026)
 
-**Dictamen: BLOQUEADO.** El plan E **no** está terminado. **E0 sigue PENDIENTE**: su aceptación requiere evidencia de un respaldo real que solo el propietario puede producir, y por la regla de puertas ninguna etapa posterior puede cerrarse antes. Además faltan la compilación Android real, las etiquetas humanas de E4 y la validación en Supabase. Todo lo que se podía auditar, corregir y probar sin producción, sin credenciales y sin teléfono está hecho.
+**Dictamen: BLOQUEADO.** El plan E **no** está listo para implementar. **E0 está CERRADA por decisión del propietario (16-nov), sin respaldo real**: sus criterios de aceptación no se verificaron y el propietario asume el riesgo (las capturas 10.77 expiran desde el 20-nov y no habrá copia). La compilación Android real **pasó** (corrida 158 de `play-compilar.yml`). Faltan: pruebas en teléfono y aviso de privacidad (E3), etiquetas humanas (E4) y validación en Supabase (E1, E2, E6, E7).
 
 Rama local `auditoria/cierre-plan-e`, creada sobre `7dc25b95c2cacaa763a85c059464ad2265aa4bad` (intacto, igual que el tag `congelado/e0-e7-20261115` y la rama original). Sin push.
 
