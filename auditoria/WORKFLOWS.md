@@ -17,7 +17,7 @@ Leído de los 7 archivos de `.github/workflows/` en este commit (idénticos a `m
 |---|---|
 | Push de la rama (no es `main`) | **Nada.** Ningún workflow escucha otras ramas |
 | PR hacia `main` | **`play-compilar.yml`** (toca `app/**`): compila y prueba; con los secretos del repo firma y sube un APK de prueba como artefacto. No publica nada |
-| Merge o push a `main` | **`build.yml` → release del canal directo con la 10.81 + push a la web** (hay rutas fuera de `paths-ignore`: `admin/`, `auditoria/`, `evidencias/`, `herramientas/`, `respaldo-e0/`, `paquete-revision-e0/` y los `.md` de la raíz). **`play-compilar.yml`** (`app/**`). **`supabase.yml`** (por `supabase/functions/registrar-lectura/**`): vuelve a ejecutar `esquema.sql` (sin cambios) y redepliega las 4 funciones nombradas (sin cambios); **no** despliega `registrar-lectura` ni aplica `auditoria/sql/*` |
+| Merge o push a `main` | **Ya no dispara `build.yml`** (decisión D-BUILD del 16-nov: sus `paths-ignore` cubren las carpetas nuevas; comprobado sobre los 181 archivos del cambio). Antes de ese cambio: **`build.yml` → release del canal directo con la 10.81 + push a la web** (hay rutas fuera de `paths-ignore`: `admin/`, `auditoria/`, `evidencias/`, `herramientas/`, `respaldo-e0/`, `paquete-revision-e0/` y los `.md` de la raíz). **`play-compilar.yml`** (`app/**`). **`supabase.yml`** (por `supabase/functions/registrar-lectura/**`): vuelve a ejecutar `esquema.sql` (sin cambios) y redepliega las 4 funciones nombradas (sin cambios); **no** despliega `registrar-lectura` ni aplica `auditoria/sql/*` |
 
 ## Riesgos y cómo evitarlos (decisión del propietario)
 1. **Release involuntario del canal directo** (y actualización ofrecida a sus usuarios; ese canal cerró el 15-nov-2026). Opciones: integrar por partes dejando fuera `app/`; o agregar las carpetas nuevas a `paths-ignore` de `build.yml` en un commit previo y revisado; o deshabilitar `build.yml` antes del merge.
@@ -25,3 +25,9 @@ Leído de los 7 archivos de `.github/workflows/` en este commit (idénticos a `m
 3. **`supabase.yml` re-ejecuta todo `esquema.sql`:** es idempotente y no cambió, pero es una ejecución en producción; conviene integrar `supabase/functions/registrar-lectura` aparte y con autorización.
 4. La rama `trabajo/e0-respaldo`, ya en GitHub, tiene el mismo riesgo 1 si se fusiona (toca `respaldo-e0/` y `.md` de la raíz).
 5. Los pushes que hacen los propios workflows con `GITHUB_TOKEN` no disparan otros workflows; `publicar-apk.yml` usa `CHECA_WEB_TOKEN` sobre **otro** repositorio (sus workflows no se revisaron: fuera de alcance).
+
+## Cambio D-BUILD (16-nov-2026)
+`build.yml` agrega a `paths-ignore`: `admin/**`, `auditoria/**`, `evidencias/**`, `herramientas/**`, `respaldo-e0/**`, `paquete-revision-e0/**` y `*.md` (solo la raíz: en GitHub `*` no cruza `/`). El propio `build.yml` ya estaba en su lista, así que este cambio tampoco lo dispara. Un merge de la rama dispara entonces solo:
+- `play-compilar.yml`: compilación Android real y JUnit (`TrazaTest`, `GuardiaParserTest`, `ParserTest`, `BancoTest`…), APK de prueba como artefacto. Es la validación que falta a E3.
+- `supabase.yml`: re-ejecuta `supabase/esquema.sql` (sin cambios) y redepliega las 4 funciones nombradas (sin cambios). Para evitar incluso eso, integrar `supabase/functions/registrar-lectura/` en un merge aparte.
+Para revertir: quitar esas 7 entradas.
