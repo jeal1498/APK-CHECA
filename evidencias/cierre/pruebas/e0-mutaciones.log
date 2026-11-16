@@ -1,0 +1,40 @@
+# scripts mutados: copia de respaldo-e0 con SCRIPTS.sha256:
+ab2e1f71e8bd4965b64d88482492826c82cee7ea88cc9c412c0c35d008243b3b  comun.py
+3f3bf7e1fb47cfaf460216b7b39a00a927c54ceaab681b67e04e300045ea60f6  respaldar.py
+d51054c94bc337a754271a4851c0dec572147f06c1478316984ea0b24a9de8e9  verificar.py
+505543603f6914f6ccad7e24fa881cb995152e9357c21f9daecb75fe1534cf4a  evidencia_copias.py
+717ec1fa29619ae0a1f381b63ea190b60e52d55247a0b2e19c5a627523342fa5  verificar_entrega.py
+5f735369b606ed02e1227ca24c93466702830e1116825400aff19bb81e9827b5  referencia.sql
+01716729bc89932369230c6aca7187a779a35a58b6b808dda82ea18d8b3e679c  ids_requeridos_10.77.txt
+# inicio 2026-11-16T00:54:15Z
+BASE sin mutar: OK
+M1 sigue redirecciones: DETECTADA; fallan 1: ['test_redireccion_no_reenvia_la_llave']
+M2 no valida WebP: DETECTADA; fallan 1: ['test_html_con_200_se_rechaza']
+M3 no compara sha256 en verificar: DETECTADA; fallan 1: ['test_byte_alterado']
+M4 ids requeridos siempre presentes (entrega): DETECTADA; fallan 1: ['test_lista_de_ids_del_repo_con_un_id_que_el_respaldo_no_tiene']
+M5 acepta llave anon: DETECTADA; fallan 1: ['test_rechaza_url_ajena_clave_anon_y_sin_clave']
+M6 listado sin paginar: DETECTADA; fallan 68: ['test_h1_enlace_a_otro_archivo_del_mismo_respaldo_tambien_se_rechaza', 'test_h1_enlace_simbolico_dentro_del_respaldo_se_rechaza', 'test_h1_manifiesto_con_ruta_fuera_no_se_lee']
+M7 restauración no ligada a B: DETECTADA; fallan 1: ['test_restauracion_etiquetada_B_pero_hecha_con_otro_archivo']
+M8 D1 COMPLETA sin exigir cifrados distintos: DETECTADA; fallan 1: ['test_d1_misma_copia_copiada_byte_a_byte_es_incompleta']
+M9 D1 mismo archivo cuenta como dos: DETECTADA; fallan 2: ['test_d1_enlace_duro_no_cuenta_como_otra_copia', 'test_d1_mismo_archivo_dos_veces_es_incompleta']
+M10 D1 C08 de la entrega siempre ok: DETECTADA; fallan 1: ['test_d1_verificar_entrega_falla_si_la_evidencia_dice_completa_con_cifrados_iguales']
+M11 D2 sin fila no cuenta: DETECTADA; fallan 1: ['test_d2_requerido_sin_fila_en_errores_lector_es_incompleto']
+M12 D2 versión distinta no cuenta: DETECTADA; fallan 1: ['test_d2_requerido_con_version_distinta_es_incompleto']
+M13 D3 respaldar ignora la integridad: DETECTADA; fallan 1: ['test_d3_respaldar_no_corre_con_scripts_alterados']
+M14 D3 V11b siempre ok: DETECTADA; fallan 1: ['test_d3_verificar_falla_si_el_resumen_trae_otra_huella']
+M15 D3 script faltante se omite: DETECTADA; fallan 1: ['test_d3_script_faltante_es_error_no_se_omite']
+M16 D3 E12b siempre ok: DETECTADA; fallan 1: ['test_d3_entrega_con_huellas_de_scripts_distintas_falla']
+M17 H1 verificar acepta rutas inseguras: DETECTADA; fallan 11: ['test_h1_enlace_simbolico_dentro_del_respaldo_se_rechaza', 'test_h1_manifiesto_con_ruta_fuera_no_se_lee', 'test_h1_manifiesto_con_ruta_fuera_no_se_lee']
+M18 H1 nombre_seguro acepta ..: SOBREVIVE; fallan 0: []
+M19 H1 ruta_en no comprueba la ruta real (enlaces): DETECTADA; fallan 2: ['test_h1_enlace_a_otro_archivo_del_mismo_respaldo_tambien_se_rechaza', 'test_h1_enlace_simbolico_dentro_del_respaldo_se_rechaza']
+M20 H2 empaquetar sin verificar: DETECTADA; fallan 2: ['test_h2_empaquetar_rechaza_manifiesto_con_ruta_fuera', 'test_h2_empaquetar_rechaza_respaldo_alterado']
+M21 H3 COMPLETA sin comprobar A: DETECTADA; fallan 2: ['test_h3_comprobacion_de_otro_archivo_no_vale_para_a', 'test_h3_copia_a_con_otro_contenido_es_incompleta']
+M22 H3 comprobación A no ligada al archivo A: DETECTADA; fallan 1: ['test_h3_comprobacion_de_otro_archivo_no_vale_para_a']
+M23 H7 versiones no se comparan: DETECTADA; fallan 1: ['test_h7_restauracion_de_otra_version_es_incompleta']
+M24 H7 V02c siempre ok: DETECTADA; fallan 1: ['test_h7_respaldo_de_otra_version_no_verifica']
+M25 H6 no informa ids fuera de lista: DETECTADA; fallan 1: ['test_h6_capturas_10_77_no_listadas_se_informan']
+M26 H8 tolera archivos VERIFICACION*: DETECTADA; fallan 1: ['test_h8_archivo_extra_con_prefijo_verificacion_ya_no_se_tolera']
+M27 H2 tar acepta entradas repetidas: DETECTADA; fallan 1: ['test_h2_tar_con_entrada_repetida_se_rechaza']
+27 mutaciones, 26 detectadas, 1 sobreviven.
+exit=1
+# fin 2026-11-16T01:24:17Z

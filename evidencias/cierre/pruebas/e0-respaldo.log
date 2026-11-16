@@ -1,0 +1,99 @@
+# E0 respaldo (servidor SIMULADO)
+# $ cd respaldo-e0 && python3 -W ignore -m unittest discover -s pruebas -v
+# inicio 2026-11-16T05:46:35Z
+test_h1_enlace_a_otro_archivo_del_mismo_respaldo_tambien_se_rechaza (test_e0.TestAuditoriaCierre.test_h1_enlace_a_otro_archivo_del_mismo_respaldo_tambien_se_rechaza) ... ok
+test_h1_enlace_simbolico_dentro_del_respaldo_se_rechaza (test_e0.TestAuditoriaCierre.test_h1_enlace_simbolico_dentro_del_respaldo_se_rechaza) ... ok
+test_h1_entrega_con_ruta_peligrosa_en_el_manifiesto_falla (test_e0.TestAuditoriaCierre.test_h1_entrega_con_ruta_peligrosa_en_el_manifiesto_falla) ... ok
+test_h1_manifiesto_con_ruta_fuera_no_se_lee (test_e0.TestAuditoriaCierre.test_h1_manifiesto_con_ruta_fuera_no_se_lee) ... ok
+test_h1_nombre_seguro_rechaza_cada_forma_peligrosa_por_si_solo (test_e0.TestAuditoriaCierre.test_h1_nombre_seguro_rechaza_cada_forma_peligrosa_por_si_solo)
+Sin carpeta de por medio (como en verificar_entrega, que solo tiene el manifiesto). ... ok
+test_h1_tipo_y_ubicacion_coherentes (test_e0.TestAuditoriaCierre.test_h1_tipo_y_ubicacion_coherentes) ... ok
+test_h2_empaquetar_rechaza_manifiesto_con_ruta_fuera (test_e0.TestAuditoriaCierre.test_h2_empaquetar_rechaza_manifiesto_con_ruta_fuera) ... ok
+test_h2_empaquetar_rechaza_respaldo_alterado (test_e0.TestAuditoriaCierre.test_h2_empaquetar_rechaza_respaldo_alterado) ... ok
+test_h2_tar_con_entrada_repetida_se_rechaza (test_e0.TestAuditoriaCierre.test_h2_tar_con_entrada_repetida_se_rechaza) ... ok
+test_h2_tar_no_contiene_rutas_ni_nombre_de_carpeta (test_e0.TestAuditoriaCierre.test_h2_tar_no_contiene_rutas_ni_nombre_de_carpeta) ... ok
+test_h3_comprobacion_de_otro_archivo_no_vale_para_a (test_e0.TestAuditoriaCierre.test_h3_comprobacion_de_otro_archivo_no_vale_para_a) ... ok
+test_h3_comprobar_no_deja_nada_en_claro (test_e0.TestAuditoriaCierre.test_h3_comprobar_no_deja_nada_en_claro) ... ok
+test_h3_copia_a_con_otro_contenido_es_incompleta (test_e0.TestAuditoriaCierre.test_h3_copia_a_con_otro_contenido_es_incompleta) ... ok
+test_h3_sin_comprobar_la_copia_a_es_incompleta (test_e0.TestAuditoriaCierre.test_h3_sin_comprobar_la_copia_a_es_incompleta) ... ok
+test_h4_restaurar_no_usa_el_temporal_del_sistema (test_e0.TestAuditoriaCierre.test_h4_restaurar_no_usa_el_temporal_del_sistema) ... ok
+test_h5_readme_no_promete_borrado_seguro (test_e0.TestAuditoriaCierre.test_h5_readme_no_promete_borrado_seguro) ... ok
+test_h6_capturas_10_77_no_listadas_se_informan (test_e0.TestAuditoriaCierre.test_h6_capturas_10_77_no_listadas_se_informan) ... ok
+test_h7_respaldo_de_otra_version_no_verifica (test_e0.TestAuditoriaCierre.test_h7_respaldo_de_otra_version_no_verifica) ... ok
+test_h7_restauracion_de_otra_version_es_incompleta (test_e0.TestAuditoriaCierre.test_h7_restauracion_de_otra_version_es_incompleta) ... ok
+test_h7_todos_los_artefactos_llevan_la_misma_version (test_e0.TestAuditoriaCierre.test_h7_todos_los_artefactos_llevan_la_misma_version) ... ok
+test_h8_archivo_extra_con_prefijo_verificacion_ya_no_se_tolera (test_e0.TestAuditoriaCierre.test_h8_archivo_extra_con_prefijo_verificacion_ya_no_se_tolera) ... ok
+test_h8_solo_listar_avisa_nombres_no_permitidos (test_e0.TestAuditoriaCierre.test_h8_solo_listar_avisa_nombres_no_permitidos) ... ok
+test_archivo_sin_cifrar_se_rechaza (test_e0.TestCopias.test_archivo_sin_cifrar_se_rechaza) ... ok
+test_ciclo_completo_y_revision_de_entrega (test_e0.TestCopias.test_ciclo_completo_y_revision_de_entrega) ... ok
+test_copia_dañada_no_restaura (test_e0.TestCopias.test_copia_dañada_no_restaura) ... age: error: failed to decrypt and authenticate payload chunk
+age: report unexpected or unhelpful errors at https://filippo.io/age/report
+ok
+test_gpg_con_frase_en_archivo (test_e0.TestCopias.test_gpg_con_frase_en_archivo) ... ok
+test_registrar_incompleta_si_medios_iguales_o_sin_confirmar (test_e0.TestCopias.test_registrar_incompleta_si_medios_iguales_o_sin_confirmar) ... ok
+test_restauracion_de_otra_copia_no_vale_para_b (test_e0.TestCopias.test_restauracion_de_otra_copia_no_vale_para_b) ... ok
+test_restauracion_etiquetada_B_pero_hecha_con_otro_archivo (test_e0.TestCopias.test_restauracion_etiquetada_B_pero_hecha_con_otro_archivo) ... ok
+test_sin_evidencia_queda_pendiente (test_e0.TestCopias.test_sin_evidencia_queda_pendiente) ... ok
+test_tar_determinista (test_e0.TestCopias.test_tar_determinista) ... ok
+test_tar_distinto_al_empaquetado_se_detecta (test_e0.TestCopias.test_tar_distinto_al_empaquetado_se_detecta) ... ok
+test_tar_malicioso_no_escribe_fuera (test_e0.TestCopias.test_tar_malicioso_no_escribe_fuera) ... ok
+test_d1_enlace_duro_no_cuenta_como_otra_copia (test_e0.TestDefectosE01.test_d1_enlace_duro_no_cuenta_como_otra_copia) ... ok
+test_d1_misma_copia_copiada_byte_a_byte_es_incompleta (test_e0.TestDefectosE01.test_d1_misma_copia_copiada_byte_a_byte_es_incompleta) ... ok
+test_d1_mismo_archivo_dos_veces_es_incompleta (test_e0.TestDefectosE01.test_d1_mismo_archivo_dos_veces_es_incompleta) ... ok
+test_d1_verificar_entrega_falla_si_la_evidencia_dice_completa_con_cifrados_iguales (test_e0.TestDefectosE01.test_d1_verificar_entrega_falla_si_la_evidencia_dice_completa_con_cifrados_iguales) ... ok
+test_d2_requerido_con_version_distinta_es_incompleto (test_e0.TestDefectosE01.test_d2_requerido_con_version_distinta_es_incompleto) ... ok
+test_d2_requerido_sin_fila_en_errores_lector_es_incompleto (test_e0.TestDefectosE01.test_d2_requerido_sin_fila_en_errores_lector_es_incompleto) ... ok
+test_d3_entrega_con_huellas_de_scripts_distintas_falla (test_e0.TestDefectosE01.test_d3_entrega_con_huellas_de_scripts_distintas_falla) ... ok
+test_d3_huellas_fijadas_coinciden_con_el_repo (test_e0.TestDefectosE01.test_d3_huellas_fijadas_coinciden_con_el_repo) ... ok
+test_d3_huellas_fijadas_incompletas_o_mal_formadas (test_e0.TestDefectosE01.test_d3_huellas_fijadas_incompletas_o_mal_formadas) ... ok
+test_d3_respaldar_no_corre_con_scripts_alterados (test_e0.TestDefectosE01.test_d3_respaldar_no_corre_con_scripts_alterados) ... ok
+test_d3_script_alterado_se_detecta (test_e0.TestDefectosE01.test_d3_script_alterado_se_detecta) ... ok
+test_d3_script_faltante_es_error_no_se_omite (test_e0.TestDefectosE01.test_d3_script_faltante_es_error_no_se_omite) ... ok
+test_d3_verificar_falla_si_el_resumen_trae_otra_huella (test_e0.TestDefectosE01.test_d3_verificar_falla_si_el_resumen_trae_otra_huella) ... ok
+test_d4_readme_declara_el_numero_real_de_pruebas (test_e0.TestDefectosE01.test_d4_readme_declara_el_numero_real_de_pruebas) ... ok
+test_d5_revisor_de_mensajes_detecta_url_de_sesion (test_e0.TestDefectosE01.test_d5_revisor_de_mensajes_detecta_url_de_sesion) ... ok
+test_artefactos_sanitizados_contienen_solo_lo_permitido (test_e0.TestEntrega.test_artefactos_sanitizados_contienen_solo_lo_permitido) ... ok
+test_entrega_sin_referencia_no_cierra (test_e0.TestEntrega.test_entrega_sin_referencia_no_cierra) ... ok
+test_lista_de_ids_del_repo_con_un_id_que_el_respaldo_no_tiene (test_e0.TestEntrega.test_lista_de_ids_del_repo_con_un_id_que_el_respaldo_no_tiene) ... ok
+test_minimo_de_objetos (test_e0.TestEntrega.test_minimo_de_objetos) ... ok
+test_verificar_entrega_acepta_y_detecta_manipulacion (test_e0.TestEntrega.test_verificar_entrega_acepta_y_detecta_manipulacion) ... ok
+test_archivo_borrado (test_e0.TestMutaciones.test_archivo_borrado) ... ok
+test_archivo_extra (test_e0.TestMutaciones.test_archivo_extra) ... ok
+test_byte_alterado (test_e0.TestMutaciones.test_byte_alterado) ... ok
+test_contenido_reemplazado_por_html (test_e0.TestMutaciones.test_contenido_reemplazado_por_html) ... ok
+test_lista_de_ids_alterada (test_e0.TestMutaciones.test_lista_de_ids_alterada) ... ok
+test_manifiesto_editado (test_e0.TestMutaciones.test_manifiesto_editado) ... ok
+test_resumen_con_huella_cambiada (test_e0.TestMutaciones.test_resumen_con_huella_cambiada) ... ok
+test_tabla_alterada (test_e0.TestMutaciones.test_tabla_alterada) ... ok
+test_version_requerida_cambiada_en_la_tabla_y_todo_reajustado (test_e0.TestMutaciones.test_version_requerida_cambiada_en_la_tabla_y_todo_reajustado)
+Un atacante coherente (reescribe tabla, manifiesto y resumen) aún falla por la versión 10.77. ... ok
+test_actividad_posterior_es_advertencia_no_fallo (test_e0.TestReferencia.test_actividad_posterior_es_advertencia_no_fallo) ... ok
+test_huella_de_ids_distinta_con_mismo_conteo_falla (test_e0.TestReferencia.test_huella_de_ids_distinta_con_mismo_conteo_falla) ... ok
+test_mas_filas_en_referencia_que_en_respaldo_falla (test_e0.TestReferencia.test_mas_filas_en_referencia_que_en_respaldo_falla) ... ok
+test_objeto_de_la_referencia_ausente_en_el_respaldo (test_e0.TestReferencia.test_objeto_de_la_referencia_ausente_en_el_respaldo) ... ok
+test_referencia_coincide (test_e0.TestReferencia.test_referencia_coincide) ... ok
+test_tamano_distinto_y_huella_distinta (test_e0.TestReferencia.test_tamano_distinto_y_huella_distinta) ... ok
+test_camino_feliz (test_e0.TestRespaldo.test_camino_feliz) ... ok
+test_clave_incorrecta_401 (test_e0.TestRespaldo.test_clave_incorrecta_401) ... ok
+test_descarga_truncada_aborta_y_no_deja_resumen_falso (test_e0.TestRespaldo.test_descarga_truncada_aborta_y_no_deja_resumen_falso) ... ok
+test_etag_md5_coincide_o_se_avisa (test_e0.TestRespaldo.test_etag_md5_coincide_o_se_avisa) ... ok
+test_html_con_200_se_rechaza (test_e0.TestRespaldo.test_html_con_200_se_rechaza) ... ok
+test_la_llave_no_aparece_en_ninguna_salida (test_e0.TestRespaldo.test_la_llave_no_aparece_en_ninguna_salida) ... ok
+test_no_requerido_que_desaparece_es_advertencia (test_e0.TestRespaldo.test_no_requerido_que_desaparece_es_advertencia) ... ok
+test_nombre_de_objeto_con_ruta_peligrosa (test_e0.TestRespaldo.test_nombre_de_objeto_con_ruta_peligrosa) ... ok
+test_objeto_inexistente_con_http_400_como_hace_supabase (test_e0.TestRespaldo.test_objeto_inexistente_con_http_400_como_hace_supabase) ... ok
+test_paginacion_y_carpetas (test_e0.TestRespaldo.test_paginacion_y_carpetas) ... ok
+test_rechaza_url_ajena_clave_anon_y_sin_clave (test_e0.TestRespaldo.test_rechaza_url_ajena_clave_anon_y_sin_clave) ... ok
+test_redireccion_no_reenvia_la_llave (test_e0.TestRespaldo.test_redireccion_no_reenvia_la_llave) ... ok
+test_reintenta_ante_500 (test_e0.TestRespaldo.test_reintenta_ante_500) ... ok
+test_requerido_ausente_es_incompleto (test_e0.TestRespaldo.test_requerido_ausente_es_incompleto) ... ok
+test_requerido_que_desaparece_durante_la_descarga (test_e0.TestRespaldo.test_requerido_que_desaparece_durante_la_descarga) ... ok
+test_salida_dentro_de_un_repo_o_no_vacia_se_rechaza (test_e0.TestRespaldo.test_salida_dentro_de_un_repo_o_no_vacia_se_rechaza) ... ok
+test_solo_lectura_y_rutas_permitidas (test_e0.TestRespaldo.test_solo_lectura_y_rutas_permitidas) ... ok
+test_solo_listar_no_escribe_nada (test_e0.TestRespaldo.test_solo_listar_no_escribe_nada) ... ok
+
+----------------------------------------------------------------------
+Ran 86 tests in 58.598s
+
+OK
+# exit=0 fin 2026-11-16T05:47:33Z

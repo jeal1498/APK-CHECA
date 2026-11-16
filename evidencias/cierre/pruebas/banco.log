@@ -1,0 +1,50 @@
+# Banco del lector (Banco.kt en JVM)
+# $ docs/banco/calificar.sh 2>&1 | grep -v '^Picked up' && cat ~/.cache/checa-banco/fallas.txt
+# inicio 2026-11-16T05:50:00Z
+ACIERTOS 271 de 316 (85.8 %)
+Fallas: /root/.cache/checa-banco/fallas.txt
+0010-uber.txt: no leyó la oferta
+0012-uber.txt: no leyó la oferta
+0035-uber.txt: no leyó la oferta
+0044-uber.txt: no leyó la oferta
+0055-uber.txt: km esperado 35.1, leído 36.405152224824356
+0056-uber.txt: km esperado 38.1, leído 36.4
+0063-uber.txt: no leyó la oferta
+0064-uber.txt: km esperado 28.2, leído 29.8
+0068-uber.txt: no leyó la oferta
+0069-uber.txt: min esperado 38, leído 68.0
+0073-uber.txt: min esperado 28, leído 68.0
+0079-uber.txt: no leyó la oferta
+0096-uber.txt: no leyó la oferta
+0099-uber.txt: no leyó la oferta
+0105-uber.txt: no leyó la oferta
+0111-uber.txt: no leyó la oferta
+0114-uber.txt: km esperado 15.1, leído 17.9
+0116-uber.txt: km esperado 29.9, leído 2.9
+0117-uber.txt: no leyó la oferta
+0121-uber.txt: no leyó la oferta
+0125-uber.txt: km esperado 5.6, leído 7.709999999999999
+0129-uber.txt: tarifa esperado 52, leído 42.67
+0130-uber.txt: km esperado 4.1, leído 5.3
+0132-uber.txt: no leyó la oferta
+0137-uber.txt: min esperado 72, leído 84.0
+0141-uber.txt: esperaba nada y leyó 28.56, 7.0 km, 5.0 min
+0142-uber.txt: km esperado 6.7, leído 6.3
+0164-uber.txt: no leyó la oferta
+0210-didi.txt: esperaba nada y leyó 172.97, 18.8 km, 64.0 min
+0230-didi.txt: km esperado 7.3, leído 9.8
+0249-uber.txt: no leyó la oferta
+0258-didi.txt: esperaba nada y leyó 44.9, 7.1 km, 21.0 min
+0293-uber.txt: no leyó la oferta
+0295-uber.txt: km esperado 3.9, leído 1.3
+0296-uber.txt: no leyó la oferta
+0297-uber.txt: no leyó la oferta
+0300-uber.txt: no leyó la oferta
+0304-uber.txt: no leyó la oferta
+0305-uber.txt: no leyó la oferta
+0309-uber.txt: no leyó la oferta
+0887-didi.txt: esperaba nada y leyó 45.0, 5.4 km, 24.0 min
+0896-didi.txt: km esperado 4.6, leído 2.3
+0901-uber.txt: km esperado 5.7, leído 4.4
+0995-didi.txt: no leyó la oferta
+1377-didi.txt: km esperado 2.2, leído 1.1# exit=0 fin 2026-11-16T05:50:08Z

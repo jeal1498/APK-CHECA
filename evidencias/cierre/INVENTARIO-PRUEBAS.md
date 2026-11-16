@@ -1,0 +1,305 @@
+# Inventario reconciliado de pruebas — ejecución definitiva
+
+Reconstruido de los logs completos (commit: 9d05fd98dc35db4c8b4e6fb6e6da7809bc9de1fc), no del código: cada nombre es una prueba que se ejecutó.
+
+| Suite | Tipo | Nombres en el log | Únicos | Repetidos | «Ran N» del ejecutor | Omitidas | Resultado |
+|---|---|---|---|---|---|---|---|
+| E0 respaldo-e0/pruebas | unittest · integración contra servidor SIMULADO | 86 | 86 | 0 | 86 | 0 | OK |
+| auditoria/pruebas en PostgreSQL 16 | unittest · integración en Postgres LOCAL con stubs de Supabase | 89 | 89 | 0 | 89 | 0 | OK |
+| auditoria/pruebas en PostgreSQL 17 | las mismas pruebas en otro motor | 89 | 89 | 0 | 89 | 0 | OK |
+| E2 registrar.test.ts | node:test · unitarias con dependencias simuladas | 34 | 34 | 0 | 34 | 0 | OK |
+| E3 Kotlin en JVM | sustituto mínimo de JUnit · unitarias, NO Android | 17 | 17 | 0 | 17 | 0 | OK |
+| E6–E7 admin_ui.test.js | node:test + Playwright · cliente Supabase SIMULADO | 9 | 9 | 0 | 9 | 0 | OK |
+
+**Pruebas únicas: 235.** Las de `auditoria/pruebas` se cuentan una vez aunque corren en dos motores (mismos nombres en 16 y 17: sí).
+
+## Comparación con el inventario anterior (199 nombres)
+
+- Siguen ejecutándose con el mismo nombre: **198**
+- Ya no existen con ese nombre: **1**
+  - `líneas con correo, teléfono o URL se rechazan (redacción en profundidad)`
+- Nuevas: **37**
+  - `A6: la biblioteca externa va con versión fija, archivo real y huella SRI`
+  - `TrazaTest.multiplicadorFueraDeRangoNoSeManda`
+  - `TrazaTest.redaccionNoDejaPalabrasNiNumerosSueltos`
+  - `líneas: solo pasa la lista blanca de la redacción (sin direcciones, nombres, correos, URL ni números sueltos)`
+  - `test_e0.TestAuditoriaCierre.test_h1_enlace_a_otro_archivo_del_mismo_respaldo_tambien_se_rechaza`
+  - `test_e0.TestAuditoriaCierre.test_h1_enlace_simbolico_dentro_del_respaldo_se_rechaza`
+  - `test_e0.TestAuditoriaCierre.test_h1_entrega_con_ruta_peligrosa_en_el_manifiesto_falla`
+  - `test_e0.TestAuditoriaCierre.test_h1_manifiesto_con_ruta_fuera_no_se_lee`
+  - `test_e0.TestAuditoriaCierre.test_h1_nombre_seguro_rechaza_cada_forma_peligrosa_por_si_solo`
+  - `test_e0.TestAuditoriaCierre.test_h1_tipo_y_ubicacion_coherentes`
+  - `test_e0.TestAuditoriaCierre.test_h2_empaquetar_rechaza_manifiesto_con_ruta_fuera`
+  - `test_e0.TestAuditoriaCierre.test_h2_empaquetar_rechaza_respaldo_alterado`
+  - `test_e0.TestAuditoriaCierre.test_h2_tar_con_entrada_repetida_se_rechaza`
+  - `test_e0.TestAuditoriaCierre.test_h2_tar_no_contiene_rutas_ni_nombre_de_carpeta`
+  - `test_e0.TestAuditoriaCierre.test_h3_comprobacion_de_otro_archivo_no_vale_para_a`
+  - `test_e0.TestAuditoriaCierre.test_h3_comprobar_no_deja_nada_en_claro`
+  - `test_e0.TestAuditoriaCierre.test_h3_copia_a_con_otro_contenido_es_incompleta`
+  - `test_e0.TestAuditoriaCierre.test_h3_sin_comprobar_la_copia_a_es_incompleta`
+  - `test_e0.TestAuditoriaCierre.test_h4_restaurar_no_usa_el_temporal_del_sistema`
+  - `test_e0.TestAuditoriaCierre.test_h5_readme_no_promete_borrado_seguro`
+  - `test_e0.TestAuditoriaCierre.test_h6_capturas_10_77_no_listadas_se_informan`
+  - `test_e0.TestAuditoriaCierre.test_h7_respaldo_de_otra_version_no_verifica`
+  - `test_e0.TestAuditoriaCierre.test_h7_restauracion_de_otra_version_es_incompleta`
+  - `test_e0.TestAuditoriaCierre.test_h7_todos_los_artefactos_llevan_la_misma_version`
+  - `test_e0.TestAuditoriaCierre.test_h8_archivo_extra_con_prefijo_verificacion_ya_no_se_tolera`
+  - `test_e0.TestAuditoriaCierre.test_h8_solo_listar_avisa_nombres_no_permitidos`
+  - `test_e3_redaccion.Redaccion.test_cubre_todo_el_corpus`
+  - `test_e3_redaccion.Redaccion.test_el_servidor_acepta_todas_las_lineas_redactadas`
+  - `test_e3_redaccion.Redaccion.test_la_evidencia_versionada_es_la_que_produce_el_codigo`
+  - `test_e3_redaccion.Redaccion.test_las_direcciones_del_corpus_no_sobreviven`
+  - `test_e3_redaccion.Redaccion.test_ninguna_linea_redactada_trae_palabras_ajenas_ni_numeros_sueltos`
+  - `test_e4_veredictos.E4.test_a3_tolerancias_de_la_guia`
+  - `test_e4_veredictos.E4.test_a3_un_mismo_revisor_no_suma_dos_votos`
+  - `test_e5_reproduccion.Protocolo.test_a4_comparar_exige_mismo_corpus_y_condiciones`
+  - `test_e6_admin.E6.test_a3_un_solo_revisor_no_se_muestra_como_referencia`
+  - `test_e6_admin.E6.test_a5_un_conductor_no_puede_inflar_la_bitacora`
+  - `test_migraciones.Migraciones.test_a1_fila_previa_sin_recepcion_no_es_invalido`
+
+## Lista completa por suite
+
+### E0 respaldo-e0/pruebas (86)
+- test_e0.TestAuditoriaCierre.test_h1_enlace_a_otro_archivo_del_mismo_respaldo_tambien_se_rechaza
+- test_e0.TestAuditoriaCierre.test_h1_enlace_simbolico_dentro_del_respaldo_se_rechaza
+- test_e0.TestAuditoriaCierre.test_h1_entrega_con_ruta_peligrosa_en_el_manifiesto_falla
+- test_e0.TestAuditoriaCierre.test_h1_manifiesto_con_ruta_fuera_no_se_lee
+- test_e0.TestAuditoriaCierre.test_h1_nombre_seguro_rechaza_cada_forma_peligrosa_por_si_solo
+- test_e0.TestAuditoriaCierre.test_h1_tipo_y_ubicacion_coherentes
+- test_e0.TestAuditoriaCierre.test_h2_empaquetar_rechaza_manifiesto_con_ruta_fuera
+- test_e0.TestAuditoriaCierre.test_h2_empaquetar_rechaza_respaldo_alterado
+- test_e0.TestAuditoriaCierre.test_h2_tar_con_entrada_repetida_se_rechaza
+- test_e0.TestAuditoriaCierre.test_h2_tar_no_contiene_rutas_ni_nombre_de_carpeta
+- test_e0.TestAuditoriaCierre.test_h3_comprobacion_de_otro_archivo_no_vale_para_a
+- test_e0.TestAuditoriaCierre.test_h3_comprobar_no_deja_nada_en_claro
+- test_e0.TestAuditoriaCierre.test_h3_copia_a_con_otro_contenido_es_incompleta
+- test_e0.TestAuditoriaCierre.test_h3_sin_comprobar_la_copia_a_es_incompleta
+- test_e0.TestAuditoriaCierre.test_h4_restaurar_no_usa_el_temporal_del_sistema
+- test_e0.TestAuditoriaCierre.test_h5_readme_no_promete_borrado_seguro
+- test_e0.TestAuditoriaCierre.test_h6_capturas_10_77_no_listadas_se_informan
+- test_e0.TestAuditoriaCierre.test_h7_respaldo_de_otra_version_no_verifica
+- test_e0.TestAuditoriaCierre.test_h7_restauracion_de_otra_version_es_incompleta
+- test_e0.TestAuditoriaCierre.test_h7_todos_los_artefactos_llevan_la_misma_version
+- test_e0.TestAuditoriaCierre.test_h8_archivo_extra_con_prefijo_verificacion_ya_no_se_tolera
+- test_e0.TestAuditoriaCierre.test_h8_solo_listar_avisa_nombres_no_permitidos
+- test_e0.TestCopias.test_archivo_sin_cifrar_se_rechaza
+- test_e0.TestCopias.test_ciclo_completo_y_revision_de_entrega
+- test_e0.TestCopias.test_copia_dañada_no_restaura
+- test_e0.TestCopias.test_gpg_con_frase_en_archivo
+- test_e0.TestCopias.test_registrar_incompleta_si_medios_iguales_o_sin_confirmar
+- test_e0.TestCopias.test_restauracion_de_otra_copia_no_vale_para_b
+- test_e0.TestCopias.test_restauracion_etiquetada_B_pero_hecha_con_otro_archivo
+- test_e0.TestCopias.test_sin_evidencia_queda_pendiente
+- test_e0.TestCopias.test_tar_determinista
+- test_e0.TestCopias.test_tar_distinto_al_empaquetado_se_detecta
+- test_e0.TestCopias.test_tar_malicioso_no_escribe_fuera
+- test_e0.TestDefectosE01.test_d1_enlace_duro_no_cuenta_como_otra_copia
+- test_e0.TestDefectosE01.test_d1_misma_copia_copiada_byte_a_byte_es_incompleta
+- test_e0.TestDefectosE01.test_d1_mismo_archivo_dos_veces_es_incompleta
+- test_e0.TestDefectosE01.test_d1_verificar_entrega_falla_si_la_evidencia_dice_completa_con_cifrados_iguales
+- test_e0.TestDefectosE01.test_d2_requerido_con_version_distinta_es_incompleto
+- test_e0.TestDefectosE01.test_d2_requerido_sin_fila_en_errores_lector_es_incompleto
+- test_e0.TestDefectosE01.test_d3_entrega_con_huellas_de_scripts_distintas_falla
+- test_e0.TestDefectosE01.test_d3_huellas_fijadas_coinciden_con_el_repo
+- test_e0.TestDefectosE01.test_d3_huellas_fijadas_incompletas_o_mal_formadas
+- test_e0.TestDefectosE01.test_d3_respaldar_no_corre_con_scripts_alterados
+- test_e0.TestDefectosE01.test_d3_script_alterado_se_detecta
+- test_e0.TestDefectosE01.test_d3_script_faltante_es_error_no_se_omite
+- test_e0.TestDefectosE01.test_d3_verificar_falla_si_el_resumen_trae_otra_huella
+- test_e0.TestDefectosE01.test_d4_readme_declara_el_numero_real_de_pruebas
+- test_e0.TestDefectosE01.test_d5_revisor_de_mensajes_detecta_url_de_sesion
+- test_e0.TestEntrega.test_artefactos_sanitizados_contienen_solo_lo_permitido
+- test_e0.TestEntrega.test_entrega_sin_referencia_no_cierra
+- test_e0.TestEntrega.test_lista_de_ids_del_repo_con_un_id_que_el_respaldo_no_tiene
+- test_e0.TestEntrega.test_minimo_de_objetos
+- test_e0.TestEntrega.test_verificar_entrega_acepta_y_detecta_manipulacion
+- test_e0.TestMutaciones.test_archivo_borrado
+- test_e0.TestMutaciones.test_archivo_extra
+- test_e0.TestMutaciones.test_byte_alterado
+- test_e0.TestMutaciones.test_contenido_reemplazado_por_html
+- test_e0.TestMutaciones.test_lista_de_ids_alterada
+- test_e0.TestMutaciones.test_manifiesto_editado
+- test_e0.TestMutaciones.test_resumen_con_huella_cambiada
+- test_e0.TestMutaciones.test_tabla_alterada
+- test_e0.TestMutaciones.test_version_requerida_cambiada_en_la_tabla_y_todo_reajustado
+- test_e0.TestReferencia.test_actividad_posterior_es_advertencia_no_fallo
+- test_e0.TestReferencia.test_huella_de_ids_distinta_con_mismo_conteo_falla
+- test_e0.TestReferencia.test_mas_filas_en_referencia_que_en_respaldo_falla
+- test_e0.TestReferencia.test_objeto_de_la_referencia_ausente_en_el_respaldo
+- test_e0.TestReferencia.test_referencia_coincide
+- test_e0.TestReferencia.test_tamano_distinto_y_huella_distinta
+- test_e0.TestRespaldo.test_camino_feliz
+- test_e0.TestRespaldo.test_clave_incorrecta_401
+- test_e0.TestRespaldo.test_descarga_truncada_aborta_y_no_deja_resumen_falso
+- test_e0.TestRespaldo.test_etag_md5_coincide_o_se_avisa
+- test_e0.TestRespaldo.test_html_con_200_se_rechaza
+- test_e0.TestRespaldo.test_la_llave_no_aparece_en_ninguna_salida
+- test_e0.TestRespaldo.test_no_requerido_que_desaparece_es_advertencia
+- test_e0.TestRespaldo.test_nombre_de_objeto_con_ruta_peligrosa
+- test_e0.TestRespaldo.test_objeto_inexistente_con_http_400_como_hace_supabase
+- test_e0.TestRespaldo.test_paginacion_y_carpetas
+- test_e0.TestRespaldo.test_rechaza_url_ajena_clave_anon_y_sin_clave
+- test_e0.TestRespaldo.test_redireccion_no_reenvia_la_llave
+- test_e0.TestRespaldo.test_reintenta_ante_500
+- test_e0.TestRespaldo.test_requerido_ausente_es_incompleto
+- test_e0.TestRespaldo.test_requerido_que_desaparece_durante_la_descarga
+- test_e0.TestRespaldo.test_salida_dentro_de_un_repo_o_no_vacia_se_rechaza
+- test_e0.TestRespaldo.test_solo_lectura_y_rutas_permitidas
+- test_e0.TestRespaldo.test_solo_listar_no_escribe_nada
+
+### auditoria/pruebas en PostgreSQL 16 (89)
+- test_cadena_migraciones.Cadena.test_funciones_security_definer_fijan_search_path
+- test_cadena_migraciones.Cadena.test_subir_bajar_subir
+- test_e3_redaccion.Redaccion.test_cubre_todo_el_corpus
+- test_e3_redaccion.Redaccion.test_el_servidor_acepta_todas_las_lineas_redactadas
+- test_e3_redaccion.Redaccion.test_la_evidencia_versionada_es_la_que_produce_el_codigo
+- test_e3_redaccion.Redaccion.test_las_direcciones_del_corpus_no_sobreviven
+- test_e3_redaccion.Redaccion.test_ninguna_linea_redactada_trae_palabras_ajenas_ni_numeros_sueltos
+- test_e4_etiquetado.TestHoja.test_hoja_ciega_determinista_y_solo_con_captura
+- test_e4_etiquetado.TestHoja.test_revisor_con_nombre_o_correo_se_rechaza
+- test_e4_etiquetado.TestImportar.test_acuerdo_total
+- test_e4_etiquetado.TestImportar.test_desacuerdos_se_separan_no_se_promedian
+- test_e4_etiquetado.TestImportar.test_filas_invalidas_se_reportan
+- test_e4_etiquetado.TestImportar.test_sql_generado_entra_a_la_base_con_precedencia
+- test_e4_etiquetado.TestImportar.test_un_solo_revisor_no_basta
+- test_e4_etiquetado.TestMetricas.test_categorias
+- test_e4_etiquetado.TestMetricas.test_kappa
+- test_e4_etiquetado.TestMetricas.test_resumen_denominadores
+- test_e4_etiquetado.TestMetricas.test_wilson_y_suficiencia
+- test_e4_etiquetado.TestOrigen.test_banco_completo_sin_verdad_humana
+- test_e4_etiquetado.TestOrigen.test_csv_versionado_coincide
+- test_e4_veredictos.E4.test_a3_tolerancias_de_la_guia
+- test_e4_veredictos.E4.test_a3_un_mismo_revisor_no_suma_dos_votos
+- test_e4_veredictos.E4.test_cascada_desde_la_lectura_si_borra
+- test_e4_veredictos.E4.test_desacuerdo_humano_no_se_fuerza
+- test_e4_veredictos.E4.test_humano_valida_solo_con_captura_y_guia
+- test_e4_veredictos.E4.test_ia_y_heredado_no_pueden_validar
+- test_e4_veredictos.E4.test_importacion_idempotente_y_reversible
+- test_e4_veredictos.E4.test_importacion_marca_heredado_y_no_toca_el_original
+- test_e4_veredictos.E4.test_importacion_traduce_segun_el_veredicto
+- test_e4_veredictos.E4.test_mismo_revisor_no_repite_sin_sustituir
+- test_e4_veredictos.E4.test_no_se_editan_ni_se_borran
+- test_e4_veredictos.E4.test_permisos
+- test_e4_veredictos.E4.test_precedencia_humano_sobre_ia
+- test_e4_veredictos.E4.test_propuesto_o_descartado_no_es_referencia
+- test_e4_veredictos.E4.test_un_solo_objetivo_y_datos_coherentes
+- test_e5_reproduccion.Protocolo.test_a4_comparar_exige_mismo_corpus_y_condiciones
+- test_e5_reproduccion.Protocolo.test_comparar_detecta_regresion_y_mejora
+- test_e5_reproduccion.Protocolo.test_comprometer_sin_sellar_falla
+- test_e5_reproduccion.Protocolo.test_etiquetas_cambiadas_despues_de_sellar
+- test_e5_reproduccion.Protocolo.test_orden_completo
+- test_e5_reproduccion.Protocolo.test_predicciones_cambiadas_despues_de_comprometer
+- test_e5_reproduccion.Protocolo.test_registro_no_se_reutiliza
+- test_e5_reproduccion.Protocolo.test_revelar_sin_comprometer_falla
+- test_e5_reproduccion.Protocolo.test_tolerancias_del_banco
+- test_e5_reproduccion.Reproduccion.test_determinista_y_rechaza_entradas_con_respuesta
+- test_e5_reproduccion.Reproduccion.test_evidencia_versionada_reconcilia_con_banco
+- test_e6_admin.E6.test_a3_un_solo_revisor_no_se_muestra_como_referencia
+- test_e6_admin.E6.test_a5_un_conductor_no_puede_inflar_la_bitacora
+- test_e6_admin.E6.test_anon_no_puede_llamar
+- test_e6_admin.E6.test_cada_consulta_queda_en_bitacora_y_no_se_altera
+- test_e6_admin.E6.test_errores_filtros_y_sin_datos_personales
+- test_e6_admin.E6.test_inicio_cuadra_con_las_tablas
+- test_e6_admin.E6.test_inyeccion_en_filtros_no_hace_nada
+- test_e6_admin.E6.test_lector_no_da_veredictos_revisor_si
+- test_e6_admin.E6.test_limites_de_filtros
+- test_e6_admin.E6.test_no_admin_es_denegado_y_queda_en_bitacora
+- test_e6_admin.E6.test_no_admin_no_lee_tablas_directo
+- test_e6_admin.E6.test_ofertas_filtros_y_paginacion
+- test_e6_admin.E6.test_reversion
+- test_e7_metricas.E7.test_acceso_y_bitacora
+- test_e7_metricas.E7.test_definiciones_completas
+- test_e7_metricas.E7.test_ia_no_cuenta_como_referencia
+- test_e7_metricas.E7.test_recall_no_medible_y_acuerdo_ia_separado
+- test_e7_metricas.E7.test_reconciliacion_total_y_por_app
+- test_e7_metricas.E7.test_reversion
+- test_e7_metricas.E7.test_segmentos_pequenos_marcados
+- test_e7_metricas.E7.test_sin_datos_no_inventa_valores
+- test_migraciones.Migraciones.test_a1_fila_previa_sin_recepcion_no_es_invalido
+- test_migraciones.Migraciones.test_anon_y_authenticated_no_acceden
+- test_migraciones.Migraciones.test_cascada_al_borrar_usuario
+- test_migraciones.Migraciones.test_contrato_ts_y_base_coinciden_en_cada_caso
+- test_migraciones.Migraciones.test_esquema_sql_se_puede_reaplicar_despues
+- test_migraciones.Migraciones.test_expira_a_los_30_dias
+- test_migraciones.Migraciones.test_indices_esperados
+- test_migraciones.Migraciones.test_lote_mixto_guarda_lo_valido
+- test_migraciones.Migraciones.test_lote_vacio_o_grande_se_rechaza
+- test_migraciones.Migraciones.test_migraciones_repetidas_no_fallan_ni_cambian_datos_previos
+- test_migraciones.Migraciones.test_mismo_id_con_otro_contenido_es_conflicto_y_no_sobrescribe
+- test_migraciones.Migraciones.test_mismo_id_de_otro_usuario_es_conflicto
+- test_migraciones.Migraciones.test_muestras_de_android_pasan_contrato_y_base
+- test_migraciones.Migraciones.test_oferta_valida_se_guarda
+- test_migraciones.Migraciones.test_purga_no_esta_programada
+- test_migraciones.Migraciones.test_purga_solo_lo_vencido
+- test_migraciones.Migraciones.test_reintento_identico_es_repetido_y_no_duplica
+- test_migraciones.Migraciones.test_restricciones_rechazan_datos_inconsistentes
+- test_migraciones.Migraciones.test_reversion_y_vuelta_a_aplicar
+- test_migraciones.Migraciones.test_service_role_no_lee_tablas_directamente_solo_por_funcion
+- test_migraciones.Migraciones.test_usuario_nulo_se_rechaza
+- test_migraciones.Migraciones.test_varias_y_abstencion_sin_semaforo_si_se_guardan
+
+### E2 registrar.test.ts (34)
+- campos desconocidos se rechazan
+- coherencia: 31 líneas
+- coherencia: abstención
+- coherencia: app desconocida
+- coherencia: contrato 2
+- coherencia: etapa desconocida
+- coherencia: exacto con sha
+- coherencia: exacto sin sha
+- coherencia: fotograma futuro
+- coherencia: multiplicador
+- coherencia: multiplicador < 1
+- coherencia: no_oferta sin semáforo
+- coherencia: ocr sin fotograma
+- coherencia: oferta completa
+- coherencia: oferta km 0
+- coherencia: oferta sin semáforo
+- coherencia: oferta sin tarifa
+- coherencia: semáforo sin oferta
+- coherencia: sha mal
+- coherencia: tarifa negativa
+- coherencia: texto sin fotograma
+- coherencia: varias con datos
+- coherencia: varias sin datos
+- compatibilidad: confirmar-oferta no se modificó (las apps anteriores siguen igual)
+- lote: forma y límites
+- lote: id repetido dentro del mismo lote
+- líneas: solo pasa la lista blanca de la redacción (sin direcciones, nombres, correos, URL ni números sueltos)
+- manejador: auth caída → 503 reintentar
+- manejador: base caída → 503 reintentar, sin confirmar nada
+- manejador: cuerpo grande por Content-Length → 413
+- manejador: guarda, reintento idempotente y conflicto
+- manejador: lote mixto, solo los válidos llegan a la base
+- manejador: método, sesión, desactivado
+- manejador: todo inválido no llama a la base
+
+### E3 Kotlin en JVM (17)
+- GuardiaParserTest.lectorSinCambios
+- TrazaTest.appCorta
+- TrazaTest.capturaExactaMarcaVinculo
+- TrazaTest.coherenciaComoElServidor
+- TrazaTest.colaAcotadaDescartaLosMasViejos
+- TrazaTest.colaPersisteYSobreviveReinicio
+- TrazaTest.colaRechazaEventoRaro
+- TrazaTest.colaToleraArchivoDanado
+- TrazaTest.huellaDeLineasEsEstable
+- TrazaTest.jsonEscapaTexto
+- TrazaTest.loteRespetaTopes
+- TrazaTest.multiplicadorFueraDeRangoNoSeManda
+- TrazaTest.ofertaValidaSerializa
+- TrazaTest.redaccionNoDejaPalabrasNiNumerosSueltos
+- TrazaTest.redaccionSoloDatosDeOferta
+- TrazaTest.reintentoCreceYTieneTope
+- TrazaTest.respuestasDelServidor
+
+### E6–E7 admin_ui.test.js (9)
+- A6: la biblioteca externa va con versión fija, archivo real y huella SRI
+- en un teléfono (390 px) no hay desplazamiento horizontal de la página
+- errores: los filtros llegan a la función
+- inicio muestra los números y las alertas
+- la página no trae llaves ni secretos
+- métricas: insuficiente, sin datos y no medible se ven; el acuerdo IA va aparte
+- no autorizado, error del servidor y red caída se avisan sin romper la página
+- ofertas: paginación y datos pintados como texto (sin inyección)
+- sin sesión: solo el botón de entrar, ninguna consulta

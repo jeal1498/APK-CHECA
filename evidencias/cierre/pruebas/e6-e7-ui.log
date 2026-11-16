@@ -1,0 +1,68 @@
+# E6–E7 página con Playwright (cliente SIMULADO)
+# $ NODE_PATH=$(npm root -g) node --test auditoria/pruebas/e6/admin_ui.test.js
+# inicio 2026-11-16T05:50:08Z
+TAP version 13
+# Subtest: sin sesión: solo el botón de entrar, ninguna consulta
+ok 1 - sin sesión: solo el botón de entrar, ninguna consulta
+  ---
+  duration_ms: 695.254909
+  type: 'test'
+  ...
+# Subtest: inicio muestra los números y las alertas
+ok 2 - inicio muestra los números y las alertas
+  ---
+  duration_ms: 126.839469
+  type: 'test'
+  ...
+# Subtest: errores: los filtros llegan a la función
+ok 3 - errores: los filtros llegan a la función
+  ---
+  duration_ms: 196.848129
+  type: 'test'
+  ...
+# Subtest: ofertas: paginación y datos pintados como texto (sin inyección)
+ok 4 - ofertas: paginación y datos pintados como texto (sin inyección)
+  ---
+  duration_ms: 224.893283
+  type: 'test'
+  ...
+# Subtest: métricas: insuficiente, sin datos y no medible se ven; el acuerdo IA va aparte
+ok 5 - métricas: insuficiente, sin datos y no medible se ven; el acuerdo IA va aparte
+  ---
+  duration_ms: 144.511486
+  type: 'test'
+  ...
+# Subtest: no autorizado, error del servidor y red caída se avisan sin romper la página
+ok 6 - no autorizado, error del servidor y red caída se avisan sin romper la página
+  ---
+  duration_ms: 264.318945
+  type: 'test'
+  ...
+# Subtest: en un teléfono (390 px) no hay desplazamiento horizontal de la página
+ok 7 - en un teléfono (390 px) no hay desplazamiento horizontal de la página
+  ---
+  duration_ms: 83.046982
+  type: 'test'
+  ...
+# Subtest: la página no trae llaves ni secretos
+ok 8 - la página no trae llaves ni secretos
+  ---
+  duration_ms: 0.601961
+  type: 'test'
+  ...
+# Subtest: A6: la biblioteca externa va con versión fija, archivo real y huella SRI
+ok 9 - A6: la biblioteca externa va con versión fija, archivo real y huella SRI
+  ---
+  duration_ms: 0.62032
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2067.871426
+# exit=0 fin 2026-11-16T05:50:10Z
