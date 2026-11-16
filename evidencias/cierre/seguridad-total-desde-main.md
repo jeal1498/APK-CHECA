@@ -1,6 +1,6 @@
 # Auditoría estática de seguridad
 
-Base `a7a732fb3fc8` → `779d0923f980` · 181 archivos revisados (171 creados, 10 modificados, 0 eliminados).
+Base `a7a732fb3fc8` → `d5548f569f8a` · 181 archivos revisados (171 creados, 10 modificados, 0 eliminados).
 
 ## Hallazgos críticos
 - Ninguno.
@@ -19,16 +19,16 @@ Base `a7a732fb3fc8` → `779d0923f980` · 181 archivos revisados (171 creados, 1
 - https://ejemplo.supabase.co — en: evidencias, paquete-revision-e0, respaldo-e0
 - https://evil.com — en: evidencias, paquete-revision-e0, respaldo-e0
 - https://filippo.io — en: evidencias, paquete-revision-e0
-- https://gqsadclvftkzwrihfipz.supabase.co — en: ENTREGA-E0-REVISION.md, admin, app, paquete-revision-e0
-- https://jeal1498.github.io — en: app
-- https://wa.me — en: app, docs
+- https://gqsadclvftkzwrihfipz.supabase.co — en: ENTREGA-E0-REVISION.md, admin, app, evidencias, paquete-revision-e0
+- https://jeal1498.github.io — en: app, evidencias
+- https://wa.me — en: app, docs, evidencias
 - https://x.y — en: app, auditoria, evidencias
 
 ## Correos presentes
 - correo@x.com — 4 archivo(s)
 - juan@correo.com — 3 archivo(s)
 - noreply@anthropic.com — 2 archivo(s)
-- this@MainActivity.handler — 1 archivo(s)
+- this@MainActivity.handler — 2 archivo(s)
 
 ## Cambios en Gradle (dependencias y versión)
     -        versionCode = 160

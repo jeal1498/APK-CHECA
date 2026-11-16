@@ -1,59 +1,59 @@
 # E6–E7 página con Playwright (cliente SIMULADO)
 # $ NODE_PATH=$(npm root -g) node --test auditoria/pruebas/e6/admin_ui.test.js
-# inicio 2026-11-16T06:06:59Z
+# inicio 2026-11-16T09:54:26Z
 TAP version 13
 # Subtest: sin sesión: solo el botón de entrar, ninguna consulta
 ok 1 - sin sesión: solo el botón de entrar, ninguna consulta
   ---
-  duration_ms: 497.144962
+  duration_ms: 1074.383277
   type: 'test'
   ...
 # Subtest: inicio muestra los números y las alertas
 ok 2 - inicio muestra los números y las alertas
   ---
-  duration_ms: 117.492768
+  duration_ms: 177.14277
   type: 'test'
   ...
 # Subtest: errores: los filtros llegan a la función
 ok 3 - errores: los filtros llegan a la función
   ---
-  duration_ms: 186.496048
+  duration_ms: 257.862019
   type: 'test'
   ...
 # Subtest: ofertas: paginación y datos pintados como texto (sin inyección)
 ok 4 - ofertas: paginación y datos pintados como texto (sin inyección)
   ---
-  duration_ms: 211.253988
+  duration_ms: 247.695769
   type: 'test'
   ...
 # Subtest: métricas: insuficiente, sin datos y no medible se ven; el acuerdo IA va aparte
 ok 5 - métricas: insuficiente, sin datos y no medible se ven; el acuerdo IA va aparte
   ---
-  duration_ms: 163.175234
+  duration_ms: 165.791237
   type: 'test'
   ...
 # Subtest: no autorizado, error del servidor y red caída se avisan sin romper la página
 ok 6 - no autorizado, error del servidor y red caída se avisan sin romper la página
   ---
-  duration_ms: 260.276657
+  duration_ms: 412.479017
   type: 'test'
   ...
 # Subtest: en un teléfono (390 px) no hay desplazamiento horizontal de la página
 ok 7 - en un teléfono (390 px) no hay desplazamiento horizontal de la página
   ---
-  duration_ms: 90.025952
+  duration_ms: 132.043976
   type: 'test'
   ...
 # Subtest: la página no trae llaves ni secretos
 ok 8 - la página no trae llaves ni secretos
   ---
-  duration_ms: 0.725136
+  duration_ms: 1.211305
   type: 'test'
   ...
 # Subtest: A6: la biblioteca externa va con versión fija, archivo real y huella SRI
 ok 9 - A6: la biblioteca externa va con versión fija, archivo real y huella SRI
   ---
-  duration_ms: 0.527547
+  duration_ms: 0.90724
   type: 'test'
   ...
 1..9
@@ -64,5 +64,5 @@ ok 9 - A6: la biblioteca externa va con versión fija, archivo real y huella SRI
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 1831.035811
-# exit=0 fin 2026-11-16T06:07:01Z
+# duration_ms 2877.444068
+# exit=0 fin 2026-11-16T09:54:29Z

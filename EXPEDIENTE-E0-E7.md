@@ -79,7 +79,7 @@ Rama local `auditoria/cierre-plan-e`, creada sobre `7dc25b95c2cacaa763a85c059464
 | Compilación `TrazaAndroid` contra stubs | compilación (no SDK) | 1 | 1 | |
 | Banco del lector | medición | 271/316 | 271/316 | |
 | **No ejecutadas** | `ParserTest`, `BancoTest`, `ZonasTest`, `ZonasOrigenDestinoTest` (Gradle/JUnit), compilación Android, pruebas en teléfono, Deno, Supabase | — | — | requieren SDK/CI/servicios |
-El 199 del 15-nov era correcto como conteo (198 de esas pruebas siguen con el mismo nombre, 1 se sustituyó por una más estricta y hay 38 nuevas). Los logs de entonces eran parciales; los de ahora son completos: `evidencias/cierre/pruebas/`, ejecutados sobre el commit `779d0923f98089e82a37ee9b2c9cd7f57d62668c`. El commit siguiente solo agrega esos logs, el inventario y los informes de seguridad (ningún cambio de código ni de pruebas).
+El 199 del 15-nov era correcto como conteo (198 de esas pruebas siguen con el mismo nombre, 1 se sustituyó por una más estricta y hay 38 nuevas). Los logs de entonces eran parciales; los de ahora son completos: `evidencias/cierre/pruebas/`, ejecutados sobre el commit `d5548f569f8aac828fa50c3d9c31e6bcc1cfef6d`. El commit siguiente solo agrega esos logs, el inventario y los informes de seguridad (ningún cambio de código ni de pruebas).
 
 ### 0.5 Acciones externas indispensables (lista única)
 | # | Acción | Quién | Por qué no hay alternativa segura |

@@ -1,6 +1,6 @@
 # Inventario reconciliado de pruebas — ejecución definitiva
 
-Reconstruido de los logs completos (commit: 779d0923f98089e82a37ee9b2c9cd7f57d62668c), no del código: cada nombre es una prueba que se ejecutó.
+Reconstruido de los logs completos (commit: d5548f569f8aac828fa50c3d9c31e6bcc1cfef6d), no del código: cada nombre es una prueba que se ejecutó.
 
 | Suite | Tipo | Nombres en el log | Únicos | Repetidos | «Ran N» del ejecutor | Omitidas | Resultado |
 |---|---|---|---|---|---|---|---|
