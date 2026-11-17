@@ -52,3 +52,6 @@ Dos revisores (`lalo` y `pp`) etiquetaron a ciegas las mismas 66 capturas de la 
 
 ### Resolución (17-nov-2026)
 Se resolvieron las 26 discrepancias (la 1365, oferta tarjeta 2, la decidió el propietario) con `resolver.html` (seudónimo `concenso`, método registrado `tercera_persona`; falta confirmar si fue consenso de los dos o una tercera persona). Referencia final: **66 de 66** (40 doble ciego + 26 adjudicadas, método tercera persona confirmado). Archivos en `evidencias/etiquetado/20261117/final/`. Las adjudicadas no cuentan como doble ciego.
+
+### Cierre de la medición (17-nov-2026)
+Lector contra la referencia humana (solo 19 de 66 casos con líneas locales; n < 30, insuficiente): 16 aciertos, 3 fallas. Arregladas 1377 (tramos idénticos seguidos) y 1324 (tarjeta cortada arriba); banco 272/316. 1300 (tarjeta atenuada con círculo de carga) no se puede detectar desde el texto: limitación conocida. Sin probar en teléfono ni en CI de Android. Los otros 47 casos requieren las líneas de `errores_lector` (producción o rama de pruebas de Supabase, sin crear). Evidencia: `evidencias/medicion/lector_vs_humano_20261117.json`.
