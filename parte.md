@@ -62,6 +62,8 @@
 - Borrar la función `tmp-capturas-9f3k` de Supabase (sin verificación de sesión; no la creó esta sesión).
 - E6/E7 pendientes: alertas guardadas con estado e historial, imagen de la captura en el expediente, banco de evaluación protegido y comparación sobre casos comunes, umbrales y destinatarios editables, costos con datos reales.
 - Probar la 10.82 en teléfono (trazabilidad, enlace por fotograma) y subir al repo el resultado.
+- Con ≥ 30 ofertas con captura (10.82): bajar capturas, etiquetar (lalo y pp a ciegas, tercera persona resuelve), medir en el Admin y corregir lo más frecuente. Capturas se borran a los 7 días.
+- Etiquetado a futuro (propuesto, Eduardo dijo «Ok»): primera tanda con 3 personas; luego IA propone y una persona confirma (`revisar.html`); solo casos dudosos; ~30 por versión. Falta su «sí» para el filtro «casos que necesitan revisión humana» en el Admin.
 
 ## ✗ No tocar
 - Publicar en Play Console sin su autorización.
