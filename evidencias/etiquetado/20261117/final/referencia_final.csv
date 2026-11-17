@@ -49,6 +49,7 @@ caso,clase,app,tarifa,km,min,tarjeta,origen,metodo_resolucion
 1361,oferta,didi,52.8,6.7,20,1,adjudicada,tercera_persona
 1363,oferta,didi,64.12,8.2,18,,doble_ciego,
 1364,oferta,didi,28.61,4.1,13,,doble_ciego,
+1365,oferta,didi,28.61,4.1,13,2,adjudicada,tercera_persona
 1367,oferta,didi,26.4,2.4,9,,doble_ciego,
 1368,no_oferta,didi,,,,,doble_ciego,
 1369,oferta,didi,23.77,4.7,14,,doble_ciego,

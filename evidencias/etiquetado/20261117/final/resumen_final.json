@@ -5,17 +5,15 @@
   ],
   "comparados": 66,
   "doble_ciego": 40,
-  "adjudicadas": 25,
-  "pendientes": [
-    "1365"
-  ],
-  "referencia_final": 65,
+  "adjudicadas": 26,
+  "pendientes": [],
+  "referencia_final": 66,
   "adjudicadas_por_metodo": {
     "consenso": 0,
-    "tercera_persona": 25
+    "tercera_persona": 26
   },
   "adjudicadas_a_favor_de": {
-    "otro": 8,
+    "otro": 9,
     "lalo": 5,
     "pp": 12
   },
