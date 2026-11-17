@@ -377,14 +377,20 @@ object Parser {
         val vistos = HashSet<String>()
         // Uber trae su «$/km est.»; el ícono del tramo leído como dígito es cosa de DiDi.
         val esDidi = textos.none { porKmTexto.containsMatchIn(it) && it.contains("est", ignoreCase = true) }
-        for (t in textos) {
+        for ((idx, t) in textos.withIndex()) {
             // "42 min (14.9 km) total" es un resumen (nuestro pop-up u otra app): no sumar.
             if (t.contains("total", ignoreCase = true)) continue
             // Uber nuevo: "50 min • 16.4 km • $6.29/km est." es el resumen del viaje completo.
             val porKm = porKmTexto.find(t)?.groupValues?.get(1)?.replace(",", ".")?.toDoubleOrNull()
             for (m in tramo.findAll(corregirMinutos(t))) {
                 // Evita contar dos veces el mismo tramo si un contenedor repite el texto.
-                if (!vistos.add(m.value.replace(" ", "").lowercase())) continue
+                if (!vistos.add(m.value.replace(" ", "").lowercase())) {
+                    // Recogida y viaje idénticos (p. ej. 4 min (1.1 km) dos veces, líneas seguidas, dos tramos en
+                    // total): son dos tramos de verdad (referencia humana 1377). Con 3+ líneas iguales es contenedor.
+                    val iguales = textos.count { it == t }
+                    val seguida = idx > 0 && textos[idx - 1] == t
+                    if (!(iguales == 2 && seguida && lista.size == 1)) continue
+                }
                 val h = m.groupValues[1].toDoubleOrNull() ?: 0.0
                 val mi = m.groupValues[2].toDoubleOrNull() ?: 0.0
                 val numero = m.groupValues[3].ifEmpty { m.groupValues[5] }
