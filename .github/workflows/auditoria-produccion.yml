@@ -1,0 +1,45 @@
+name: Auditoría en producción (manual)
+
+# Aplica en Supabase el esquema `auditoria` (001–006), enciende la recepción de lecturas y despliega registrar-lectura.
+# Solo se ejecuta a mano («Run workflow»). Los scripts son aditivos e idempotentes; cada uno tiene su .down.sql en auditoria/sql/.
+# Requiere que supabase.yml ya haya aplicado supabase/esquema.sql (columna fotograma_id) en este mismo main.
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: supabase
+  cancel-in-progress: false
+
+jobs:
+  aplicar:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      PROYECTO: gqsadclvftkzwrihfipz
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Esquema auditoria (001–006, en orden)
+        run: |
+          set -euo pipefail
+          for n in 001_auditoria 002_registrar 003_veredictos 004_admin 005_metricas 006_centro; do
+            echo "== $n"
+            jq -n --rawfile q "auditoria/sql/$n.sql" '{query: $q}' > consulta.json
+            curl -sS --fail-with-body -X POST "https://api.supabase.com/v1/projects/$PROYECTO/database/query" \
+              -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" -H "Content-Type: application/json" -d @consulta.json
+            echo
+          done
+      - name: Versión del esquema aplicada
+        run: |
+          set -euo pipefail
+          jq -n '{query: "select version, descripcion from auditoria.version_esquema order by version"}' > consulta.json
+          curl -sS --fail-with-body -X POST "https://api.supabase.com/v1/projects/$PROYECTO/database/query" \
+            -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" -H "Content-Type: application/json" -d @consulta.json
+      - name: Encender recepción y desplegar registrar-lectura
+        run: |
+          set -euo pipefail
+          supabase secrets set --yes --project-ref "$PROYECTO" "AUDITORIA_ACTIVA=1"
+          # Conserva la verificación JWT: el teléfono manda su sesión; el handler la valida además.
+          supabase functions deploy registrar-lectura --yes --project-ref "$PROYECTO" --use-api

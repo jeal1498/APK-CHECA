@@ -1,5 +1,5 @@
-// registrar-lectura (E2, PREPARADA — NO DESPLEGADA). Recibe eventos de trazabilidad del teléfono (10.81+).
-// No está en supabase.yml: desplegarla requiere autorización expresa y aplicar antes auditoria/sql/001 y 002.
+// registrar-lectura (E2). Recibe eventos de trazabilidad del teléfono (10.81+).
+// Se despliega a mano con .github/workflows/auditoria-produccion.yml (aplica antes auditoria/sql/001–006).
 // Interruptor: secreto AUDITORIA_ACTIVA = "1"; sin él responde 503 desactivado (el teléfono no reintenta).
 // No toca confirmar-oferta: las versiones anteriores de la app siguen igual.
 import { crearManejador } from "./manejador.ts";
