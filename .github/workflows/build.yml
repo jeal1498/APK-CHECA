@@ -3,7 +3,7 @@ name: Compilar APK
 on:
   push:
     branches: [main]
-    paths-ignore: ["pedidos/**", "pruebas/**", "reportes/**", "marketing/**", "clientes.md", "CLAUDE.md", "supabase/**", "docs/**", "video/**", ".claude/**", ".github/workflows/supabase.yml", ".github/workflows/reporte-web.yml", ".github/workflows/build.yml", ".github/workflows/play-compilar.yml", ".github/workflows/play-aab-firmado.yml", "app/**", ".gitignore", "build.gradle.kts", "settings.gradle.kts", "gradle.properties", "admin/**", "auditoria/**", "evidencias/**", "herramientas/**", "respaldo-e0/**", "paquete-revision-e0/**", "*.md"]
+    paths-ignore: ["pedidos/**", "pruebas/**", "reportes/**", "marketing/**", "clientes.md", "CLAUDE.md", "supabase/**", "docs/**", "video/**", ".claude/**", ".github/workflows/supabase.yml", ".github/workflows/reporte-web.yml", ".github/workflows/build.yml", ".github/workflows/play-compilar.yml", ".github/workflows/play-aab-firmado.yml", ".github/workflows/auditoria-produccion.yml", "app/**", ".gitignore", "build.gradle.kts", "settings.gradle.kts", "gradle.properties", "admin/**", "auditoria/**", "evidencias/**", "herramientas/**", "respaldo-e0/**", "paquete-revision-e0/**", "*.md"]
   workflow_dispatch:
 
 permissions:
