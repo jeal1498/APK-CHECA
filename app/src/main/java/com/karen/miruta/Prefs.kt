@@ -215,10 +215,10 @@ class Prefs(context: Context) {
 
     /**
      * 10.81 (E3): registro técnico de lecturas (qué leyó, qué decidió y por qué; sin direcciones ni nombres).
-     * Apagado por defecto: encenderlo en producción requiere aprobar el aviso de privacidad.
+     * Encendido por defecto (decisión del propietario, 17-nov-2026); el aviso de privacidad sigue pendiente.
      */
     var trazabilidad: Boolean
-        get() = sp.getBoolean("traza", false)
+        get() = sp.getBoolean("traza", true)
         set(v) { sp.edit().putBoolean("traza", v).apply() }
 
     var diagnostico: Boolean
