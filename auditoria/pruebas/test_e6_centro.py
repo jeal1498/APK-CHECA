@@ -78,6 +78,17 @@ class Centro(unittest.TestCase):
         self.assertTrue(any(a["titulo"].startswith("La revisión con IA no tiene saldo") for a in s["atencion"]))
         self.assertIsNone(s["procesamiento"]["pendientes"])
 
+    def test_tope_diario_no_es_falla_del_servicio(self):
+        """4872 de 4874 «fallas» reales eran el tope diario por conductor (límite deliberado): no cuentan como falla."""
+        self.q("delete from public.fallas_ia")
+        self.q("update public.revisiones set creado='2026-11-14T12:00:00Z', ok=true, coincide=true")
+        self.q("insert into public.revisiones (usuario, app, version, ok, error, creado) select '%s','Uber','10.80',false,'tope_diario','2026-11-14T12:00:00Z' from generate_series(1,200)" % U1)
+        s = self.rpc(ADM, f"public.admin_salud({R})")
+        c = {x["clave"]: x for x in s["componentes"]}["revision_ia"]
+        self.assertEqual(c["estado"], "operativo")
+        self.assertEqual(c["k"], 0)
+        self.assertEqual(c["tope_diario"], 200)
+
     def test_salud_sin_datos_no_es_verde(self):
         s = self.rpc(ADM, "public.admin_salud('2025-01-01'::timestamptz, '2025-02-01'::timestamptz)")
         self.assertNotEqual(s["estado_general"], "verde")

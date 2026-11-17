@@ -73,7 +73,8 @@ begin
   select count(*), count(*) filter (where e.estado in ('fallo', 'timeout')) into p_n, p_f from etapas e join lecturas l on l.id = e.lectura_id
     where e.etapa = 'parser' and l.ts_evento >= desde and l.ts_evento < hasta;
   select count(*), count(*) filter (where ok), count(*) filter (where ok and coincide), percentile_cont(0.5) within group (order by ms_ia)
-    into rv_n, rv_ok, rv_coi, rv_ms from public.revisiones where creado >= desde and creado < hasta and modo <> 'rescate';
+    into rv_n, rv_ok, rv_coi, rv_ms from public.revisiones where creado >= desde and creado < hasta and modo <> 'rescate'
+      and coalesce(error, '') <> 'tope_diario';   -- el tope diario por conductor es un límite deliberado, no una falla del servicio
   select coalesce(sum(n), 0), coalesce(sum(n) filter (where tipo = 'http_402'), 0) into fa, fa402 from public.fallas_ia
     where dia >= desde::date and dia < hasta::date + 1;
   select count(*) into conf from veredicto_vigente where estado = 'conflicto_humano';
@@ -109,8 +110,9 @@ begin
     jsonb_build_object('clave', 'revision_ia', 'nombre', 'Revisión con IA (confirmar-oferta)',
       'estado', case when fa402 > 0 then 'fuera_de_servicio' when rv_n < 30 then 'sin_datos'
                      when (rv_n - rv_ok)::numeric / rv_n < 0.05 then 'operativo' when (rv_n - rv_ok)::numeric / rv_n < 0.15 then 'degradado' else 'fuera_de_servicio' end,
-      'ultima_comprobacion', (select max(creado) from public.revisiones), 'comprobacion', 'revisiones fallidas / revisiones; http_402 = sin saldo',
-      'k', rv_n - rv_ok, 'n', rv_n, 'ms', round(rv_ms, 0), 'ultimo_error', (select max(ultima) from public.fallas_ia where dia >= desde::date),
+      'ultima_comprobacion', (select max(creado) from public.revisiones), 'comprobacion', 'revisiones fallidas (sin contar el tope diario) / revisiones; http_402 = sin saldo',
+      'k', rv_n - rv_ok, 'n', rv_n, 'ms', round(rv_ms, 0),
+      'tope_diario', (select count(*) from public.revisiones where creado >= desde and creado < hasta and error = 'tope_diario'), 'ultimo_error', (select max(ultima) from public.fallas_ia where dia >= desde::date),
       'depende_de', jsonb_build_array('api')),
     jsonb_build_object('clave', 'almacenamiento', 'nombre', 'Almacenamiento de capturas',
       'estado', 'operativo', 'ultima_comprobacion', now(), 'comprobacion', 'el bucket capturas respondió al contarlo', 'objetos', ncola, 'bytes', nobj,
