@@ -148,6 +148,13 @@ def iguales(x, y):
     return x["clase"] != "oferta" or all(abs(x[c] - y[c]) <= t + 1e-9 for c, t in metricas.TOL.items())
 
 
+def txt(v):
+    """Número sin «.0» sobrante (50.0 → 50); vacío si no hay valor."""
+    if v is None or v == "":
+        return ""
+    return str(int(v)) if float(v).is_integer() else repr(float(v))
+
+
 def sql_lit(v):
     if v is None:
         return "null"
@@ -156,7 +163,7 @@ def sql_lit(v):
     return "'" + str(v).replace("'", "''") + "'"
 
 
-def importar(a):
+def _pares(a):
     """Empareja a los dos revisores por el ID de la captura (no por «id-app»: si uno marca DiDi y el otro Uber es un
     desacuerdo en el campo app, no dos casos distintos). Con --sin-capturas no hace falta la carpeta de imágenes: cada
     hoja trae el sha256 que su navegador calculó de la imagen, y los dos revisores deben traer el MISMO."""
@@ -187,6 +194,11 @@ def importar(a):
     ref, conf = [], []
     for c in comunes:
         (ref if iguales(A[c], B[c]) else conf).append(c)
+    return revs, A, B, comunes, ref, conf, errores
+
+
+def importar(a):
+    revs, A, B, comunes, ref, conf, errores = _pares(a)
     acuerdo = {"revisores": revs, "casos_comunes": len(comunes), "solo_uno": len(set(A) ^ set(B)),
                "acuerdo_total": metricas.proporcion(len(ref), len(comunes)),
                "kappa_clase": metricas.kappa([A[c]["clase"] for c in comunes], [B[c]["clase"] for c in comunes]),
@@ -201,12 +213,12 @@ def importar(a):
         w.writerow(["caso", "clase", "app", "tarifa", "km", "min", "tarjeta", "n_revisores"])
         for c in ref:
             x = A[c]
-            w.writerow([f"{c:04d}", x["clase"], x["app"], x["tarifa"] or "", x["km"] or "", x["min"] or "", x["tarjeta"] or "", 2])
+            w.writerow([f"{c:04d}", x["clase"], x["app"], txt(x["tarifa"]), txt(x["km"]), txt(x["min"]), txt(x["tarjeta"]), 2])
     with open(os.path.join(a.salida, "conflictos.csv"), "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f, lineterminator="\n")
         w.writerow(["caso"] + [f"{r}_{k}" for r in revs for k in ("clase", "app", "tarifa", "km", "min", "tarjeta")])
         for c in conf:
-            w.writerow([f"{c:04d}"] + [X[c][k] for X in (A, B) for k in ("clase", "app", "tarifa", "km", "min", "tarjeta")])
+            w.writerow([f"{c:04d}"] + [txt(X[c][k]) if k in ("tarifa", "km", "min", "tarjeta") else X[c][k] for X in (A, B) for k in ("clase", "app", "tarifa", "km", "min", "tarjeta")])
     with open(os.path.join(a.salida, "veredictos_humanos.sql"), "w", encoding="utf-8") as f:
         f.write("-- Veredictos humanos validados (generado por etiquetado.py importar). Aplicar solo con autorización.\n")
         for X in (A, B):
@@ -220,6 +232,77 @@ def importar(a):
         json.dump(acuerdo, f, ensure_ascii=False, indent=2)
     print(f"Comunes {len(comunes)}: referencia {len(ref)}, conflictos {len(conf)}; kappa clase {acuerdo['kappa_clase']}; "
           f"filas con error {len(errores)}")
+    return 0
+
+
+def importar_resolucion(a):
+    """Resuelve las discrepancias entre dos revisores (resolver.html: consenso o tercera persona).
+    Referencia final = coincidencias a ciegas («doble_ciego») + discrepancias resueltas («adjudicada»). La adjudicada
+    NO es doble revisión a ciegas y así queda marcada. Las discrepancias sin resolver se reportan y quedan fuera."""
+    revs, A, B, comunes, ref, conf, errores = _pares(a)
+    caps = None if a.sin_capturas else capturas_de_manifiesto(a.manifiesto)
+    resol, malas = {}, []
+    with open(a.resolucion, encoding="utf-8", newline="") as f:
+        for i, r in enumerate(csv.DictReader(f), 2):
+            if not (r.get("clase") or "").strip():
+                continue
+            fila, err = validar_fila(r, caps)
+            if not err and fila["revisor"] in revs:
+                err = "resolvedor_es_uno_de_los_revisores"      # su voto original se pisaría
+            if not err and fila["id"] not in conf:
+                err = "no_era_una_discrepancia"
+            if not err and fila["sha"] != A[fila["id"]]["sha"]:
+                err = "captura_distinta"
+            if not err and fila["id"] in resol:
+                err = "resolucion_repetida"
+            if not err and r.get("metodo") not in ("consenso", "tercera_persona"):
+                err = "metodo"
+            if err:
+                malas.append({"linea": i, "error": err})
+                continue
+            fila["metodo"] = r["metodo"]
+            fila["eligio"] = r.get("eligio", "")
+            resol[fila["id"]] = fila
+    pendientes = sorted(c for c in conf if c not in resol)
+    resolvedores = {x["revisor"] for x in resol.values()}
+    if len(resolvedores) > 1:
+        raise SystemExit(f"Todas las resoluciones deben ser de un mismo resolvedor; hay {sorted(resolvedores)}.")
+    os.makedirs(a.salida, exist_ok=True)
+    final = [(c, A[c], "doble_ciego", 2, "") for c in ref] + [(c, resol[c], "adjudicada", 3, resol[c]["metodo"]) for c in sorted(resol)]
+    final.sort(key=lambda t: t[0])
+    with open(os.path.join(a.salida, "referencia_final.csv"), "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f, lineterminator="\n")
+        w.writerow(["caso", "clase", "app", "tarifa", "km", "min", "tarjeta", "origen", "metodo_resolucion"])
+        for c, x, origen, _, met in final:
+            w.writerow([f"{c:04d}", x["clase"], x["app"], txt(x["tarifa"]), txt(x["km"]), txt(x["min"]), txt(x["tarjeta"]), origen, met])
+    with open(os.path.join(a.salida, "veredictos_final.sql"), "w", encoding="utf-8") as f:
+        f.write("-- Referencia final de E4 (generado por etiquetado.py importar-resolucion). Aplicar solo con autorización.\n"
+                "-- Cada caso lleva los votos a ciegas de los dos revisores; las discrepancias resueltas añaden una adjudicación.\n")
+        cols = ("error_lector_id, fuente, autor, revisor_version, guia_version, clase, tarifa, km, min, tarjeta, confianza, estado, "
+                "evidencia_sha256, nota")
+        for X in (A, B):
+            for c in sorted(set(ref) | set(resol)):
+                x = X[c]
+                f.write(f"insert into auditoria.veredictos ({cols}) values (" + ", ".join(sql_lit(v) for v in (
+                    c, "humano", x["revisor"], "doble_ciego", GUIA_VERSION, x["clase"], x["tarifa"], x["km"], x["min"], x["tarjeta"],
+                    x["confianza"], "validado", x["sha"], x["nota"] or None)) + ");\n")
+        for c in sorted(resol):
+            x = resol[c]
+            f.write(f"insert into auditoria.veredictos ({cols}) values (" + ", ".join(sql_lit(v) for v in (
+                c, "humano", x["revisor"], "adjudicacion:" + x["metodo"], GUIA_VERSION, x["clase"], x["tarifa"], x["km"], x["min"],
+                x["tarjeta"], x["confianza"], "validado", x["sha"], x["nota"] or None)) + ");\n")
+    elegido = {}
+    for x in resol.values():
+        elegido[x["eligio"] or "otro"] = elegido.get(x["eligio"] or "otro", 0) + 1
+    res = {"revisores": revs, "comparados": len(comunes), "doble_ciego": len(ref), "adjudicadas": len(resol),
+           "pendientes": [f"{c:04d}" for c in pendientes], "referencia_final": len(final),
+           "adjudicadas_por_metodo": {m: sum(1 for x in resol.values() if x["metodo"] == m) for m in ("consenso", "tercera_persona")},
+           "adjudicadas_a_favor_de": elegido, "errores_de_resolucion": malas, "errores_de_hoja": errores,
+           "aviso": "Las adjudicadas no son doble revisión humana a ciegas: se mide aparte el acuerdo a ciegas (acuerdo.json)."}
+    with open(os.path.join(a.salida, "resumen_final.json"), "w", encoding="utf-8") as f:
+        json.dump(res, f, ensure_ascii=False, indent=2)
+    print(f"Referencia final {len(final)} de {len(comunes)}: doble ciego {len(ref)}, adjudicadas {len(resol)}, "
+          f"pendientes {len(pendientes)}, errores de resolución {len(malas)}")
     return 0
 
 
@@ -308,11 +391,21 @@ def main(argv=None):
     i.add_argument("--sin-capturas", action="store_true", help="no hay carpeta aquí: se confía en el sha256 que trae cada hoja y se exige que coincida entre los dos revisores")
     i.add_argument("--hoja", action="append", required=True)
     i.add_argument("--salida", required=True)
+    z = sub.add_parser("importar-resolucion")
+    z.add_argument("--manifiesto")
+    z.add_argument("--sin-capturas", action="store_true")
+    z.add_argument("--hoja", action="append", required=True)
+    z.add_argument("--resolucion", required=True)
+    z.add_argument("--salida", required=True)
     r = sub.add_parser("importar-revision")
     r.add_argument("--manifiesto", required=True)
     r.add_argument("--hoja", required=True)
     r.add_argument("--salida", required=True)
     a = ap.parse_args(argv)
+    if a.cmd == "importar-resolucion":
+        if not a.sin_capturas and not a.manifiesto:
+            raise SystemExit("Falta --manifiesto (o usa --sin-capturas).")
+        return importar_resolucion(a)
     if a.cmd == "importar-revision":
         return importar_revision(a)
     if a.cmd == "importar" and not a.sin_capturas and not a.manifiesto:

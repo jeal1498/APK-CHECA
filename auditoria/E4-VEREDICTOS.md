@@ -18,7 +18,7 @@ Consecuencia: «271/316 (85.8 %)» es **acuerdo con etiquetas heredadas**, no ex
 ## Modelo (`sql/003_veredictos.sql`)
 - `auditoria.veredictos`: `fuente` = `humano` / `ia` / `heredado`; `autor` (seudónimo o modelo), `revisor_version`, `guia_version`, `evidencia_sha256` (la captura que se miró), `confianza`, `estado`.
 - Reglas en la base: solo un **humano** puede dejar un veredicto `validado`, y solo con captura (`evidencia_sha256`) y guía; IA y heredado nunca se validan; un veredicto no se edita ni se borra (se agrega otro con `sustituye`).
-- **Precedencia** (`auditoria.veredicto_vigente`, corregida en la auditoría de cierre): ≥ 2 revisores humanos **distintos** validados que coinciden (tolerancias de la guía) → `referencia_doble`, la única que usan las métricas; un solo revisor → `referencia_humana` (todavía no es referencia); que no coinciden → `conflicto_humano` (no se fuerza); sin humano → `solo_ia`; solo heredado → `heredado_no_revisado`. De cada autor cuenta solo su último veredicto.
+- **Precedencia** (`auditoria.veredicto_vigente`, corregida en la auditoría de cierre; el 17-nov se agregó `referencia_adjudicada`: una discrepancia resuelta por consenso o por una tercera persona cuenta como referencia, sin pasar por doble ciega y con los datos de la adjudicación): ≥ 2 revisores humanos **distintos** validados que coinciden (tolerancias de la guía) → `referencia_doble`, la única que usan las métricas; un solo revisor → `referencia_humana` (todavía no es referencia); que no coinciden → `conflicto_humano` (no se fuerza); sin humano → `solo_ia`; solo heredado → `heredado_no_revisado`. De cada autor cuenta solo su último veredicto.
 - **Importación** de `errores_lector.veredicto` como `heredado` (`origen_migracion = '003'`), idempotente y reversible; la tabla original no se toca (probado con md5 de `public`).
 - El resultado del lector vive en `auditoria.lecturas` (o `errores_lector.local`); nunca en `veredictos`.
 
@@ -46,3 +46,6 @@ Consecuencia: «271/316 (85.8 %)» es **acuerdo con etiquetas heredadas**, no ex
 - `etiquetado.py hoja|importar --manifiesto` acepta la **carpeta de capturas** «<id>.webp» que se baja para la revisión del banco; calcula el sha256 de cada imagen y la importación rechaza una fila si la captura cambió después de etiquetar (`test_sin_respaldo_e0_basta_una_carpeta_de_capturas`).
 - Lo que lea Haiku sobre esas capturas se registra como `fuente = 'ia'` con `revisor_version` (modelo y prompt). **No** cuenta como referencia: `veredicto_vigente` lo deja en `solo_ia`.
 - La muestra humana mínima recomendada: 120 casos con semilla fija, dos revisores; con menos de 30 por segmento las métricas salen `insuficiente`.
+
+## Primera doble revisión real (17-nov-2026)
+Dos revisores (`lalo` y `pp`) etiquetaron a ciegas las mismas 66 capturas de la 10.77 (`evidencias/etiquetado/20261117/`): **66 comparadas, 40 coinciden (61 %)**, 26 discrepan; acuerdo en la clase 83 % (kappa 0.68), en tarifa 97 %, en km y min 84 %. 5 de las 26 son solo «tarjeta vacía contra 1» (convención poco clara, corregida en la guía). Pendiente: resolver las 26 (`resolver.html`). Hasta entonces la referencia son las 40 coincidencias.

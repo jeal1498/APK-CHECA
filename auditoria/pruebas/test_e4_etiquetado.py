@@ -219,6 +219,56 @@ class TestImportar(Base):
                          {"referencia_doble": ref, "conflicto_humano": conf})
 
 
+class TestResolucion(Base):
+    """importar-resolucion: la referencia final y su SQL entran a la base con los estados correctos."""
+    CAB = "caso,captura,captura_sha256,revisor,guia_version,clase,tarifa,km,min,tarjeta,confianza,nota"
+
+    def _fila(self, id_, rev, c, app="didi", t="", k="", m="", tj="", sha=None, metodo=None, eligio=None):
+        sha = sha or f"{id_:064x}"
+        f = f"{id_}-{app},{id_}.webp,{sha},{rev},1.0,{c},{t},{k},{m},{tj},alta,"
+        return f + (f",{metodo},{eligio}" if metodo else "")
+
+    def _escribir(self, nombre, filas, cab=None):
+        ruta = os.path.join(self.tmp, nombre)
+        open(ruta, "w").write((cab or self.CAB) + "\n" + "\n".join(filas) + "\n")
+        return ruta
+
+    def test_referencia_final_en_la_base(self):
+        a = self._escribir("a.csv", [self._fila(1001, "lalo", "oferta", t=50, k=5, m=12), self._fila(1003, "lalo", "oferta", t=40, k=7.7, m=19),
+                                     self._fila(1004, "lalo", "varias"), self._fila(1007, "lalo", "no_oferta")])
+        b = self._escribir("b.csv", [self._fila(1001, "pp", "oferta", t=50, k=5, m=12), self._fila(1003, "pp", "oferta", t=40, k=7.2, m=19),
+                                     self._fila(1004, "pp", "oferta", t=55, k=6, m=15), self._fila(1007, "pp", "oferta", t=9, k=1, m=2)])
+        res = self._escribir("r.csv", [self._fila(1003, "consenso", "oferta", t=40, k=7.7, m=19, metodo="consenso", eligio="lalo"),
+                                       self._fila(1004, "consenso", "oferta", t=55, k=6, m=15, metodo="consenso", eligio="pp")],
+                             self.CAB + ",metodo,eligio")
+        out = os.path.join(self.tmp, "fin")
+        self.correr("importar-resolucion", "--sin-capturas", "--hoja", a, "--hoja", b, "--resolucion", res, "--salida", out)
+        r = json.load(open(os.path.join(out, "resumen_final.json")))
+        self.assertEqual((r["doble_ciego"], r["adjudicadas"], r["pendientes"], r["referencia_final"]), (1, 2, ["1007"], 3))
+        pg = pg_local.Pg(); self.addCleanup(pg.cerrar)
+        pg.archivo(ESQUEMA); pg.sql(LEGADO)
+        for n in ("001_auditoria", "002_registrar", "003_veredictos"):
+            pg.archivo(mig(n))
+        pg.archivo(os.path.join(out, "veredictos_final.sql"))
+        est = dict(l.split("|") for l in pg.sql("select error_lector_id, estado from auditoria.veredicto_vigente "
+                                                  "where error_lector_id in (1001,1003,1004,1007) order by 1").split())
+        self.assertEqual(est, {"1001": "referencia_doble", "1003": "referencia_adjudicada", "1004": "referencia_adjudicada"})   # 1007 pendiente: no entra
+        self.assertEqual(pg.sql("select km from auditoria.veredicto_vigente where error_lector_id = 1003").strip(), "7.70")       # vale la adjudicación
+        self.assertEqual(pg.sql("select clase from auditoria.veredicto_vigente where error_lector_id = 1004").strip(), "oferta")
+
+    def test_resolucion_con_otra_imagen_o_metodo_invalido_se_rechaza(self):
+        a = self._escribir("a2.csv", [self._fila(1003, "lalo", "oferta", t=40, k=7.7, m=19)])
+        b = self._escribir("b2.csv", [self._fila(1003, "pp", "oferta", t=40, k=7.2, m=19)])
+        res = self._escribir("r2.csv", [self._fila(1003, "consenso", "oferta", t=40, k=7.7, m=19, sha="f" * 64, metodo="consenso", eligio="lalo"),
+                                        self._fila(1003, "consenso", "oferta", t=40, k=7.7, m=19, metodo="azar", eligio="lalo")],
+                             self.CAB + ",metodo,eligio")
+        out = os.path.join(self.tmp, "fin2")
+        self.correr("importar-resolucion", "--sin-capturas", "--hoja", a, "--hoja", b, "--resolucion", res, "--salida", out)
+        r = json.load(open(os.path.join(out, "resumen_final.json")))
+        self.assertEqual(sorted(e["error"] for e in r["errores_de_resolucion"]), ["captura_distinta", "metodo"])
+        self.assertEqual((r["adjudicadas"], r["pendientes"]), (0, ["1003"]))
+
+
 class TestMetricas(unittest.TestCase):
     def test_categorias(self):
         of = {"clase": "oferta", "tarifa": 50, "km": 5, "min": 12}

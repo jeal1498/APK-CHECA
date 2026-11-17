@@ -1,0 +1,52 @@
+{
+  "revisores": [
+    "lalo",
+    "pp"
+  ],
+  "casos_comunes": 66,
+  "solo_uno": 0,
+  "acuerdo_total": {
+    "k": 40,
+    "n": 66,
+    "valor": 0.6061,
+    "ic95": [
+      0.4855,
+      0.715
+    ],
+    "suficiente": true
+  },
+  "kappa_clase": 0.6759,
+  "acuerdo_por_campo": {
+    "tarifa": {
+      "k": 37,
+      "n": 38,
+      "valor": 0.9737,
+      "ic95": [
+        0.865,
+        0.9953
+      ],
+      "suficiente": true
+    },
+    "km": {
+      "k": 32,
+      "n": 38,
+      "valor": 0.8421,
+      "ic95": [
+        0.6958,
+        0.9256
+      ],
+      "suficiente": true
+    },
+    "min": {
+      "k": 32,
+      "n": 38,
+      "valor": 0.8421,
+      "ic95": [
+        0.6958,
+        0.9256
+      ],
+      "suficiente": true
+    }
+  },
+  "errores_de_hoja": []
+}

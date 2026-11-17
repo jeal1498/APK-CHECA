@@ -86,7 +86,7 @@ begin
                   from (select version_app, app, count(*) n from lecturas where ts_evento >= desde and ts_evento < hasta group by 1, 2) x), '[]'),
     'errores_lector', (select count(*) from public.errores_lector where creado >= desde and creado < hasta),
     'errores_sin_veredicto_humano', (select count(*) from public.errores_lector e where e.creado >= desde and e.creado < hasta
-        and not exists (select 1 from veredicto_vigente v where v.error_lector_id = e.id and v.estado in ('referencia_humana', 'referencia_doble'))),
+        and not exists (select 1 from veredicto_vigente v where v.error_lector_id = e.id and v.estado in ('referencia_humana', 'referencia_doble', 'referencia_adjudicada'))),
     'fallas_ia', (select coalesce(sum(n), 0) from public.fallas_ia where dia >= desde::date and dia < hasta::date + 1),
     'alertas', (select coalesce(jsonb_agg(a), '[]'::jsonb) from (
         select 'sin_recepciones_24h' a where (select max(recibido) from lecturas) < now() - interval '24 hours'
@@ -109,14 +109,14 @@ begin
   if auditoria.rol_actual() is null then perform auditoria.anotar('errores', null, f, 0, 'denegado'); return '{"error":"no_autorizado"}'; end if;
   err := auditoria.filtros_invalidos(desde, hasta, pagina, por_pagina);
   if err is null and estado_veredicto is not null and estado_veredicto not in
-     ('referencia_humana', 'referencia_doble', 'conflicto_humano', 'solo_ia', 'heredado_no_revisado', 'sin_veredicto') then err := 'estado_veredicto'; end if;
+     ('referencia_humana', 'referencia_doble', 'referencia_adjudicada', 'conflicto_humano', 'solo_ia', 'heredado_no_revisado', 'sin_veredicto') then err := 'estado_veredicto'; end if;
   if err is not null then perform auditoria.anotar('errores', null, f, 0, 'invalido'); return jsonb_build_object('error', err); end if;
   with base as (
     select e.id, e.creado, e.app, e.version, e.tipo, e.lector,
            jsonb_build_object('tarifa', e.local->'tarifa', 'km', e.local->'km', 'min', e.local->'min') as lector_lectura,
            jsonb_build_object('oferta', e.ia->'oferta', 'tarifa', e.ia->'tarifa', 'km', e.ia->'km', 'min', e.ia->'min') as ia_lectura,
            coalesce(v.estado, 'sin_veredicto') as estado_veredicto,
-           case when v.estado = 'referencia_doble'
+           case when v.estado in ('referencia_doble', 'referencia_adjudicada')
                 then jsonb_build_object('clase', v.clase, 'tarifa', v.tarifa, 'km', v.km, 'min', v.min) end as referencia,
            exists (select 1 from storage.objects o where o.bucket_id = 'capturas' and o.name = e.id::text || '.webp') as tiene_captura
     from public.errores_lector e left join veredicto_vigente v on v.error_lector_id = e.id
@@ -150,7 +150,7 @@ begin
     select l.id, l.ts_evento, l.app, l.version_app, l.version_parser, l.lector, l.resultado, l.motivo, l.tarifa, l.km, l.min,
            l.nivel, l.captura_vinculo, l.ms_popup, auditoria.seudonimo(l.usuario) as conductor,
            coalesce(v.estado, 'sin_veredicto') as estado_veredicto,
-           case when v.estado = 'referencia_doble'
+           case when v.estado in ('referencia_doble', 'referencia_adjudicada')
                 then jsonb_build_object('clase', v.clase, 'tarifa', v.tarifa, 'km', v.km, 'min', v.min) end as referencia,
            (select jsonb_agg(jsonb_build_object('etapa', e.etapa, 'estado', e.estado, 'ms', e.ms, 'motivo', e.motivo) order by e.orden)
               from etapas e where e.lectura_id = l.id) as etapas

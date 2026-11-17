@@ -156,6 +156,26 @@ class E4(unittest.TestCase):
         self.humano({"caso_banco": "0020-uber"}, "rev2", clase="no_oferta")
         self.assertEqual(self.vigente("caso_banco='0020-uber'").split("|")[0], "conflicto_humano")
 
+    def test_adjudicacion_resuelve_un_conflicto_y_no_es_doble_ciega(self):
+        self.humano({"caso_banco": "0022-uber"}, "rev1", km=5.0)
+        self.humano({"caso_banco": "0022-uber"}, "rev2", km=6.0)
+        self.assertEqual(self.vigente("caso_banco='0022-uber'").split("|")[0], "conflicto_humano")
+        self.humano({"caso_banco": "0022-uber"}, "consenso", km=5.5, revisor_version="adjudicacion:consenso")
+        self.assertEqual(self.vigente("caso_banco='0022-uber'"), "referencia_adjudicada|2|oferta|50.00")
+        self.assertEqual(self.q("select km from auditoria.veredicto_vigente where caso_banco='0022-uber'"), "5.50")   # valen los datos de la adjudicación
+
+    def test_adjudicacion_sin_validar_o_de_ia_no_cuenta(self):
+        self.humano({"caso_banco": "0024-uber"}, "rev1", km=5.0)
+        self.humano({"caso_banco": "0024-uber"}, "rev2", km=6.0)
+        self.humano({"caso_banco": "0024-uber"}, "consenso", km=5.5, estado="propuesto", ev=None, revisor_version="adjudicacion:consenso")
+        self.assertEqual(self.vigente("caso_banco='0024-uber'").split("|")[0], "conflicto_humano")
+        with self.assertRaises(pg_local.ErrorSQL):   # la IA nunca queda validada, tampoco como adjudicadora
+            self.q("insert into auditoria.veredictos (caso_banco, fuente, autor, revisor_version, clase, estado) values ('0024-uber','ia','m','adjudicacion:x','no_oferta','validado')")
+
+    def test_adjudicacion_sin_conflicto_previo_tambien_es_referencia(self):
+        self.humano({"caso_banco": "0026-uber"}, "consenso", revisor_version="adjudicacion:tercera_persona")
+        self.assertEqual(self.vigente("caso_banco='0026-uber'").split("|")[0], "referencia_adjudicada")
+
     def test_propuesto_o_descartado_no_es_referencia(self):
         self.humano({"caso_banco": "0010-uber"}, "rev1", estado="propuesto")
         self.assertEqual(self.vigente("caso_banco='0010-uber'").split("|")[0], "heredado_no_revisado")

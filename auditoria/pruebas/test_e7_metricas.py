@@ -83,7 +83,13 @@ class E7(unittest.TestCase):
                 vals = ", ".join("null" if x is None else repr(x) for x in v[1:])
                 sql.append(f"insert into auditoria.veredictos (lectura_id, fuente, autor, guia_version, clase, tarifa, km, min, estado, evidencia_sha256)"
                            f" values ('{e['id']}', 'humano', '{autor}', '1.0', '{v[0]}', {vals}, 'validado', '{'e' * 64}');")
-            cls.refs[e["id"]] = (a, b)
+            # Dos de los cuatro conflictos se resuelven por adjudicación (consenso): cuentan como referencia con el valor de «a».
+            adj = k % 10 == 2 and k < 20
+            if adj:
+                vals = ", ".join("null" if x is None else repr(x) for x in a[1:])
+                sql.append(f"insert into auditoria.veredictos (lectura_id, fuente, autor, revisor_version, guia_version, clase, tarifa, km, min, estado, evidencia_sha256)"
+                           f" values ('{e['id']}', 'humano', 'consenso', 'adjudicacion:consenso', '1.0', '{a[0]}', {vals}, 'validado', '{'e' * 64}');")
+            cls.refs[e["id"]] = (a, b, adj)
         cls.pg.sql("\n".join(sql))
         e1 = ofertas[46]   # un solo revisor: no es referencia, no entra en la precisión
         cls.uno = e1["id"]
@@ -112,8 +118,8 @@ class E7(unittest.TestCase):
         for e in ofe:
             if e["id"] not in self.refs:
                 continue
-            a, b = self.refs[e["id"]]
-            if a != b:
+            a, b, adj = self.refs[e["id"]]
+            if a != b and not adj:
                 conf += 1
                 continue
             conref += 1

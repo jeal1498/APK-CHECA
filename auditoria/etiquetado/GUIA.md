@@ -24,11 +24,13 @@ Para quien revisa capturas. Una fila de la hoja = una captura. **Solo mira la im
 | `tarifa` | el monto grande que paga **esa** oferta (el del botón «Aceptar» en DiDi). Con centavos: `151.34` |
 | `km` | suma de los dos tramos (recogida + viaje). `720 m` = `0.72` |
 | `min` | suma de los dos tramos en minutos |
-| `tarjeta` | solo si hay varias tarjetas: cuál es la del botón (1 = la de arriba) |
+| `tarjeta` | solo si la pantalla es una **lista** de tarjetas (p. ej. «Centro de viajes»): el número de la tarjeta que etiquetas, **contando también las cortadas de arriba** (1 = la de más arriba), aunque sea la 1. Vacío si la pantalla muestra una sola oferta |
+| `app` | la de la **tarjeta**, no la del botón flotante «Uber →» / «DiDi →» que sirve para cambiar de app en pantalla dividida |
 | `confianza` | `alta` si se lee sin dudas; `media`; `baja` si adivinas algo |
 | `nota` | breve, sin direcciones ni nombres |
 
 ## Reglas
+0. **Una oferta que se ve completa cuenta como oferta aunque el conductor esté desconectado** (botón «Conectarse», `1359`): lo que importa es que se vea la tarjeta con su precio y sus dos tramos, no que el botón diga «Aceptar». Regla corregida el 17-nov (antes pedía el botón de aceptar).
 1. **No es oferta** (`no_oferta`): «Viaje aceptado», «La solicitud de viaje venció», «La solicitud ya no está disponible», «se toma por terceros», «Otro conductor aceptó», navegación de un viaje en curso, mapa de calor, pantallas sin botón de aceptar.
 2. **Varias** (`varias`): hay más de una tarjeta y no puedes saber cuál es la del botón «Aceptar». No mezcles datos de tarjetas distintas. Si sí sabes cuál es, `oferta` + `tarjeta`.
 3. **No sumes** bonos («$9.00 adicionales», «+$9.75 por inicio»). En Uber, `+$62.00 incluido` ya va dentro de la tarifa.
@@ -50,3 +52,9 @@ Para quien revisa capturas. Una fila de la hoja = una captura. **Solo mira la im
 
 ## Qué NO es verdad humana
 Las respuestas del banco actual (316) salieron de juicios de IA, del propio lector o de leer líneas (ver `banco_origen.csv`): **ninguna** es referencia humana. Tampoco lo es «la IA y el lector coinciden».
+
+## Resolver las discrepancias (`resolver.html`)
+1. `etiquetado.py importar` genera `conflictos.csv` con lo que puso cada revisor.
+2. Abre `resolver.html`: seudónimo de quien resuelve (**distinto** de los dos revisores), cómo se resuelve (**consenso** de los dos juntos o **tercera persona**), `conflictos.csv` y la carpeta de capturas. Por cada una ves la imagen, las dos respuestas (en amarillo lo que difiere) y eliges «Usar la de …» o corriges. «Saltar» la deja pendiente.
+3. Exporta `resolucion-<seudónimo>.csv` y corre `etiquetado.py importar-resolucion --sin-capturas --hoja a.csv --hoja b.csv --resolucion resolucion-….csv --salida <dir>`.
+4. Resultado: `referencia_final.csv` con el **origen** de cada caso: `doble_ciego` (los dos coincidieron por separado) o `adjudicada` (se resolvió una discrepancia). Una adjudicada **cuenta como referencia pero no como doble revisión a ciegas**; el acuerdo entre revisores se informa aparte y solo con los casos a ciegas. Las pendientes quedan fuera.

@@ -63,7 +63,9 @@ create trigger veredicto_inmutable before update or delete on auditoria.veredict
   for each row execute function auditoria.veredicto_inmutable();
 
 -- Veredicto vigente por objetivo, con precedencia explícita:
---   1. ≥ 2 revisores humanos DISTINTOS validados que coinciden → 'referencia_doble' (la única que usan las métricas)
+--   0. adjudicación humana validada (revisor_version 'adjudicacion…')  → 'referencia_adjudicada': un conflicto entre
+--      revisores resuelto por consenso o por una tercera persona. Cuenta como referencia, pero NO como doble revisión a ciegas.
+--   1. ≥ 2 revisores humanos DISTINTOS validados que coinciden → 'referencia_doble'
 --   2. 1 revisor humano validado                               → 'referencia_humana' (una sola persona: aún no es referencia)
 --   3. humanos validados que NO coinciden                      → 'conflicto_humano' (no se fuerza una clase)
 --   4. sin humano validado, con IA                             → 'solo_ia'
@@ -79,6 +81,10 @@ with v0 as (
   where x.estado <> 'descartado' and not exists (select 1 from auditoria.veredictos s where s.sustituye = x.id)
 ), v as (
   select distinct on (objetivo, fuente, autor) * from v0 order by objetivo, fuente, autor, id desc
+), adj as (
+  select distinct on (objetivo) objetivo, clase, tarifa, km, min, tarjeta
+  from v where fuente = 'humano' and estado = 'validado' and revisor_version like 'adjudicacion%'
+  order by objetivo, id desc
 ), h as (
   select objetivo, count(*) as n_humanos,
          (count(distinct clase) = 1 and count(distinct coalesce(tarjeta, 0)) = 1
@@ -86,25 +92,26 @@ with v0 as (
           and coalesce(max(min) - min(min), 0) <= 0.5) as coinciden,
          (array_agg(clase order by id))[1] as clase, (array_agg(tarifa order by id))[1] as tarifa,
          (array_agg(km order by id))[1] as km, (array_agg(min order by id))[1] as min, (array_agg(tarjeta order by id))[1] as tarjeta
-  from v where fuente = 'humano' and estado = 'validado' group by objetivo
+  from v where fuente = 'humano' and estado = 'validado' and coalesce(revisor_version, '') not like 'adjudicacion%' group by objetivo
 ), o as (
   select objetivo, bool_or(fuente = 'ia') as hay_ia, bool_or(fuente = 'heredado') as hay_heredado,
          min(lectura_id::text)::uuid as lectura_id, min(error_lector_id) as error_lector_id, min(caso_banco) as caso_banco
   from v group by objetivo
 )
 select o.objetivo, o.lectura_id, o.error_lector_id, o.caso_banco,
-       case when h.n_humanos >= 2 and h.coinciden then 'referencia_doble'
+       case when adj.objetivo is not null then 'referencia_adjudicada'
+            when h.n_humanos >= 2 and h.coinciden then 'referencia_doble'
             when h.n_humanos = 1 then 'referencia_humana'
             when h.n_humanos > 1 then 'conflicto_humano'
             when o.hay_ia then 'solo_ia'
             else 'heredado_no_revisado' end as estado,
        coalesce(h.n_humanos, 0) as n_humanos,
-       case when h.coinciden then h.clase end as clase,
-       case when h.coinciden then h.tarifa end as tarifa,
-       case when h.coinciden then h.km end as km,
-       case when h.coinciden then h.min end as min,
-       case when h.coinciden then h.tarjeta end as tarjeta
-from o left join h using (objetivo);
+       case when adj.objetivo is not null then adj.clase when h.coinciden then h.clase end as clase,
+       case when adj.objetivo is not null then adj.tarifa when h.coinciden then h.tarifa end as tarifa,
+       case when adj.objetivo is not null then adj.km when h.coinciden then h.km end as km,
+       case when adj.objetivo is not null then adj.min when h.coinciden then h.min end as min,
+       case when adj.objetivo is not null then adj.tarjeta when h.coinciden then h.tarjeta end as tarjeta
+from o left join h using (objetivo) left join adj using (objetivo);
 revoke all on auditoria.veredicto_vigente from public, anon, authenticated;
 
 -- Importación de lo heredado (idempotente, reversible). La tabla original NO se toca.
