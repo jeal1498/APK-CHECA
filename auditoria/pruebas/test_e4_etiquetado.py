@@ -139,6 +139,56 @@ class TestImportar(Base):
         self.assertLess(ac["acuerdo_por_campo"]["tarifa"]["valor"], 1.0)
         self.assertEqual(ac["acuerdo_por_campo"]["km"]["valor"], 1.0)
 
+    def _hojas(self, cambio_b=lambda r: {}, sha_b=None):
+        d = self.hoja()
+        base = lambda r: {"clase": "oferta", "tarifa": "50.00", "km": "5.0", "min": "12", "confianza": "alta"}
+        a = self.llenar(d, "revisor_a", base)
+        b = self.llenar(d, "revisor_b", lambda r: {**base(r), **cambio_b(r)})
+        return d, a, b
+
+    def test_app_distinta_entre_revisores_es_desacuerdo_no_casos_distintos(self):
+        """Antes se emparejaba por «id-app»: si uno marcaba DiDi y otro Uber, no se comparaban."""
+        d, a, b = self._hojas()
+        # cambia el sufijo de app en el caso del revisor B (así lo exporta la página según la app elegida)
+        filas = list(csv.DictReader(open(b)))
+        for r in filas:
+            r["caso"] = r["caso"][:4] + ("-didi" if r["caso"].endswith("uber") else "-uber")   # la app contraria
+        with open(b, "w", newline="") as g:
+            w = csv.DictWriter(g, fieldnames=etiquetado.CAMPOS_HOJA, lineterminator="\n"); w.writeheader(); w.writerows(filas)
+        out = os.path.join(self.tmp, "oapp")
+        self.correr("importar", "--manifiesto", self.man, "--hoja", a, "--hoja", b, "--salida", out)
+        ac = json.load(open(os.path.join(out, "acuerdo.json")))
+        self.assertEqual(ac["solo_uno"], 0)
+        self.assertEqual(ac["casos_comunes"], len(filas))          # se compararon todos
+        self.assertEqual(ac["acuerdo_total"]["k"], 0)               # y todos discrepan en la app
+        self.assertEqual(len(list(csv.DictReader(open(os.path.join(out, "conflictos.csv"))))), len(filas))
+
+    def test_importar_sin_carpeta_de_capturas(self):
+        d, a, b = self._hojas()
+        out = os.path.join(self.tmp, "osin")
+        self.correr("importar", "--sin-capturas", "--hoja", a, "--hoja", b, "--salida", out)
+        ac = json.load(open(os.path.join(out, "acuerdo.json")))
+        self.assertEqual(ac["acuerdo_total"]["valor"], 1.0)
+        self.assertEqual(ac["errores_de_hoja"], [])
+        with self.assertRaises(SystemExit):   # sin carpeta y sin la opción: se niega
+            self.correr("importar", "--hoja", a, "--hoja", b, "--salida", os.path.join(self.tmp, "ox"))
+
+    def test_sin_carpeta_exige_el_mismo_sha_entre_revisores_y_forma_valida(self):
+        d, a, b = self._hojas()
+        filas = list(csv.DictReader(open(b)))
+        filas[0]["captura_sha256"] = "f" * 64            # B vio «otra» imagen con el mismo nombre
+        filas[1]["captura_sha256"] = "xyz"               # sha con forma inválida
+        filas[2]["captura"] = "9999.webp"                # nombre que no corresponde al id
+        with open(b, "w", newline="") as g:
+            w = csv.DictWriter(g, fieldnames=etiquetado.CAMPOS_HOJA, lineterminator="\n"); w.writeheader(); w.writerows(filas)
+        out = os.path.join(self.tmp, "osha")
+        self.correr("importar", "--sin-capturas", "--hoja", a, "--hoja", b, "--salida", out)
+        ac = json.load(open(os.path.join(out, "acuerdo.json")))
+        errs = {e["error"] for e in ac["errores_de_hoja"]}
+        self.assertIn("captura_distinta_entre_revisores", errs)
+        self.assertEqual(sum(e["error"] == "captura_invalida" for e in ac["errores_de_hoja"]), 2)
+        self.assertEqual(ac["casos_comunes"], len(filas) - 3)
+
     def test_filas_invalidas_se_reportan(self):
         d = self.hoja()
         a = self.llenar(d, "revisor_a", lambda r: {"clase": "oferta", "tarifa": "50", "km": "", "min": "12"})
@@ -162,7 +212,7 @@ class TestImportar(Base):
             pg.archivo(mig(n))
         pg.archivo(os.path.join(out, "veredictos_humanos.sql"))
         est = dict(l.split("|")[::-1] for l in pg.sql(
-            "select estado, count(*) from auditoria.veredicto_vigente where caso_banco is not null group by 1").split())
+            "select estado, count(*) from auditoria.veredicto_vigente where error_lector_id is not null and estado <> 'heredado_no_revisado' group by 1").split())
         ref = len(list(csv.DictReader(open(os.path.join(out, "referencia_humana.csv")))))
         conf = len(list(csv.DictReader(open(os.path.join(out, "conflictos.csv")))))
         self.assertEqual({k: int(v) for k, v in {v: k for k, v in est.items()}.items()},
