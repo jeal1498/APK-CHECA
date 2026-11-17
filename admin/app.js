@@ -229,6 +229,10 @@
       el("div", { clase: "tarjeta" }, [el("strong", { texto: "Veredicto heredado" }), el("div", { texto: txt(e.veredicto_heredado) }), el("div", { clase: "detalle", texto: "no es verdad humana" })])]));
     c.appendChild(el("h2", { texto: "Evidencia original" }));
     c.appendChild(el("div", { clase: "detalle", id: "evidencia", texto: "Captura: " + (e.evidencia.captura ? "existe" : "no existe") + " (" + e.evidencia.captura_acceso + ") · líneas guardadas: " + e.evidencia.lineas_guardadas + " (no se muestran: traen direcciones)" }));
+    var en = e.enlace;
+    c.appendChild(el("div", { clase: "detalle", id: "enlace", texto: en
+      ? "Enlace: fotograma " + en.fotograma_id + " → lectura " + en.lectura_id + " · captura " + en.captura_vinculo + " · huella sha256 " + txt(en.captura_sha256)
+      : "Sin enlace por fotograma (caso anterior a la 10.82 o sin lectura registrada): no se puede comprobar la huella." }));
     c.appendChild(el("h2", { texto: "Relacionados" }));
     c.appendChild(el("div", { clase: "enlaces" }, [enlace("Versión " + e.version + " (" + e.relacionados.misma_version + " errores)", "versiones"), enlace("Conductor " + e.conductor + " (" + e.relacionados.mismo_conductor + ")", "dispositivos"),
       enlace("Auditoría IA", "ia")]));

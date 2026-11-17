@@ -59,7 +59,8 @@ function clienteSimulado(escenario) {
     admin_error: { id: 9001, creado: "2026-11-14T12:00:00Z", app: "DiDi", version: "10.77", tipo: "diferencia", conductor: "abcd1234", clasificacion: "interpretacion_tarifa",
       evidencia: { lineas_guardadas: 4, captura: true, captura_acceso: "solo por la consola de Supabase (restringida)" }, lector: { tarifa: 50, km: 5, min: 12 }, ia: { tarifa: 55, km: 5, min: 12 },
       veredicto_heredado: "ia_bien", veredicto_humano: { estado: "heredado_no_revisado" }, estado_seguimiento: "nuevo", historial: [],
-      relacionados: { misma_version: 3, mismo_conductor: 2 } },
+      relacionados: { misma_version: 3, mismo_conductor: 2 },
+      enlace: { fotograma_id: "f0", lectura_id: "l0", resultado: "oferta", captura_vinculo: "exacto", captura_sha256: "ab12" + "0".repeat(60) } },
     admin_seguimiento: { id: 1 },
     admin_ofertas: (a) => ({ total: 120, pagina: a.pagina, por_pagina: 50, filas: ofertas }),
     admin_metricas: { metricas: [
@@ -177,6 +178,7 @@ test("errores: filtros, expediente enlazado y seguimiento (solo revisor)", async
   await p.waitForSelector("#exp-titulo");
   assert.match(await p.textContent("#comparar"), /Lector.*Veredicto humano/s);
   assert.match(await p.textContent("#evidencia"), /no se muestran: traen direcciones/);
+  assert.match(await p.textContent("#enlace"), /huella sha256 ab12/);
   await p.selectOption("#s-estado", "causa_identificada"); await p.selectOption("#s-causa", "ocr");
   await p.click("#s-guardar");
   await p.waitForFunction(() => window.__llamadas.some((l) => l[0] === "admin_seguimiento"));

@@ -100,6 +100,22 @@ class Centro(unittest.TestCase):
             self.q("update auditoria.seguimiento_errores set estado = 'cerrado'")
         self.assertEqual(self.rpc(ADM, "public.admin_error(999999)"), {"error": "no_existe"})
 
+    def test_enlace_linea_captura_huella(self):
+        """El caso se une a su lectura por el fotograma y trae la huella de la captura que miró el lector."""
+        sha = "e" * 64
+        fot = self.evs[0]["fotograma_id"]
+        self.q(f"update auditoria.lecturas set captura_sha256='{sha}', captura_vinculo='exacto' where fotograma_id='{fot}'")
+        self.q(f"update public.errores_lector set fotograma_id='{fot}' where id=(select min(id) from public.errores_lector)")
+        eid = int(self.q("select min(id) from public.errores_lector"))
+        e = self.rpc(ADM, f"public.admin_error({eid})")
+        self.assertEqual(e["enlace"]["captura_sha256"], sha)
+        self.assertEqual(e["enlace"]["fotograma_id"], fot)
+        # un caso sin fotograma (anterior a la 10.82) no inventa enlace
+        otro = int(self.q("select max(id) from public.errores_lector"))
+        self.assertIsNone(self.rpc(ADM, f"public.admin_error({otro})")["enlace"])
+        with self.assertRaises(pg_local.ErrorSQL):
+            self.como(ADM, "select * from auditoria.enlace_capturas")
+
     def test_versiones_dispositivos_ia_costos_config(self):
         v = self.rpc(ADM, f"public.admin_versiones({R})")
         self.assertEqual(sum(x["lecturas"] for x in v["versiones"]), 12)

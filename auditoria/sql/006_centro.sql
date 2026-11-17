@@ -34,6 +34,20 @@ begin
 end $$;
 revoke all on function auditoria.guardia(text, jsonb, timestamptz, timestamptz) from public, anon, authenticated;
 
+-- Enlace caso ↔ lectura ↔ captura por el fotograma exacto (10.82). La huella sha256 viene de la lectura (la calculó el
+-- teléfono sobre los mismos bytes que subió); Storage solo guarda un md5, así que la comprobación de la huella se hace
+-- bajando la imagen (herramientas/verificar_enlace_capturas.py). Sin fotograma (casos anteriores) no hay enlace.
+create or replace view auditoria.enlace_capturas with (security_invoker = on) as
+select 'error_lector'::text as caso_tipo, e.id as caso_id, e.fotograma_id, l.id as lectura_id, l.resultado, l.captura_vinculo, l.captura_sha256,
+       e.id::text || '.webp' as objeto
+from public.errores_lector e join auditoria.lecturas l on l.fotograma_id = e.fotograma_id and l.usuario = e.usuario
+where e.fotograma_id is not null
+union all
+select 'captura_ok', c.id, c.fotograma_id, l.id, l.resultado, l.captura_vinculo, l.captura_sha256, '%-n' || c.id::text || '.webp'
+from public.capturas_ok c join auditoria.lecturas l on l.fotograma_id = c.fotograma_id and l.usuario = c.usuario
+where c.fotograma_id is not null;
+revoke all on auditoria.enlace_capturas from public, anon, authenticated;
+
 -- ---------- 01 Inicio: salud de Checa ----------
 -- Componentes con el estado que SE PUEDE comprobar con datos reales; el resto se marca «sin_comprobar».
 -- Reglas (documentadas en auditoria/E6-E7-CENTRO.md): recepción ≤ 24 h operativa, ≤ 72 h degradada, más = fuera de servicio;
@@ -207,6 +221,9 @@ begin
     'id', e.id, 'creado', e.creado, 'app', e.app, 'version', e.version, 'tipo', e.tipo, 'conductor', auditoria.seudonimo(e.usuario),
     'clasificacion', auditoria.clasificar_error(e.tipo, e.local, e.ia),
     -- Evidencia original (lo que se guardó) separada de lo interpretado después; sin líneas crudas (traen direcciones).
+    'enlace', (select jsonb_build_object('lectura_id', k.lectura_id, 'resultado', k.resultado, 'captura_vinculo', k.captura_vinculo, 'captura_sha256', k.captura_sha256,
+                 'fotograma_id', k.fotograma_id) from auditoria.enlace_capturas k where k.caso_tipo = 'error_lector' and k.caso_id = e.id
+                 order by (k.resultado = 'oferta') desc, k.lectura_id limit 1),
     'evidencia', jsonb_build_object('lineas_guardadas', jsonb_array_length(e.lineas), 'captura', exists (select 1 from storage.objects o
                   where o.bucket_id = 'capturas' and o.name = e.id::text || '.webp'), 'captura_acceso', 'solo por la consola de Supabase (restringida)'),
     'lector', e.local, 'ia', e.ia, 'veredicto_heredado', e.veredicto,

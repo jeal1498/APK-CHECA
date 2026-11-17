@@ -138,6 +138,7 @@ object Confirmador {
         }
         val app0 = ctx.applicationContext
         val pant = pantalla(app, null)
+        val fot = TrazaAndroid.fotograma?.first   // 10.82: el fotograma exacto que se leyó (enlaza líneas, captura y huella)
         try {
             hilo.execute {
                 var oferta: Oferta? = null
@@ -149,6 +150,7 @@ object Confirmador {
                         .put("lector", lector)
                         .put("equipo", equipo())
                         .put("pantalla", pant ?: JSONObject.NULL)
+                        .put("fotograma", fot ?: JSONObject.NULL)
                     val lote = tomarCoincidencias()
                     if (lote.isNotEmpty()) cuerpo.put("coincidencias", JSONArray(lote))
                         .put("conteo", conteo)
@@ -267,6 +269,7 @@ object Confirmador {
         }
         val app0 = ctx.applicationContext
         val pant = pantalla(app, o)
+        val fot = TrazaAndroid.fotograma?.first   // 10.82: el fotograma exacto que se leyó (enlaza líneas, captura y huella)
         val enviar = filtrar(lineas)
         return try {
             hilo.execute {
@@ -280,6 +283,7 @@ object Confirmador {
                         .put("lector", lector)
                         .put("equipo", equipo())
                         .put("pantalla", pant ?: JSONObject.NULL)
+                        .put("fotograma", fot ?: JSONObject.NULL)
                         .put("local", local(o))
                     val r = JSONObject(Cuenta.revisarOferta(app0, cuerpo.toString()) ?: "{}")
                     subirCaptura(app0, app, r)
@@ -299,6 +303,7 @@ object Confirmador {
         }
         val app0 = ctx.applicationContext
         val pant = pantalla(app, o)
+        val fot = TrazaAndroid.fotograma?.first   // 10.82: el fotograma exacto que se leyó (enlaza líneas, captura y huella)
         try {
             hilo.execute {
                 var nueva: Oferta? = null
@@ -316,6 +321,7 @@ object Confirmador {
                         .put("lector", lector)
                         .put("equipo", equipo())
                         .put("pantalla", pant ?: JSONObject.NULL)
+                        .put("fotograma", fot ?: JSONObject.NULL)
                         .put("msRevisionAnterior", msRevision)
                         .put("local", local(o))
                     // 10.80: si va a subir la captura de esta oferta, el servidor guarda sus líneas.

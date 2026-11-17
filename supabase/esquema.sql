@@ -841,3 +841,11 @@ create table if not exists public.capturas_ok (
 );
 alter table public.capturas_ok enable row level security;
 revoke all on public.capturas_ok from anon, authenticated;
+
+-- 10.82 (E3, línea L2): el fotograma exacto que leyó el teléfono. Enlaza el caso (líneas), su captura y la lectura de
+-- auditoria.lecturas (que guarda la huella sha256 de esa captura). Nullable: los casos anteriores no lo tienen.
+alter table public.errores_lector add column if not exists fotograma_id uuid;
+alter table public.capturas_ok add column if not exists fotograma_id uuid;
+alter table public.revisiones add column if not exists fotograma_id uuid;
+create index if not exists errores_lector_fotograma on public.errores_lector (fotograma_id) where fotograma_id is not null;
+create index if not exists capturas_ok_fotograma on public.capturas_ok (fotograma_id) where fotograma_id is not null;
