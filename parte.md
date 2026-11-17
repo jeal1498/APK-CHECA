@@ -1,4 +1,4 @@
-# PARTE · 13 nov 2026
+# PARTE · 17 nov 2026
 
 ## ✓ Decidido
 - Imagen de novedades para testers hecha (7 tarjetas, marca v2) y publicada en el grupo.
@@ -39,6 +39,11 @@
 - Análisis estático del APK de Ruta Rentable hecho (13 nov): captura cada 1–1.4 s y OCR, sin leer el texto por accesibilidad; no resta gasolina. Informe fuera del repo; no se copió código ni patrones.
 - 10.75 en `main` (compila, corrida 146): una oferta igual que vuelve a llegar sí avisa (la memoria se borra al salir de pantalla), menos OCR con la oferta ya leída y «Tarifa base dinámica» como señal de DiDi. La tarifa por altura de letra ya existía.
 - 10.76 en `main` (compila, corrida 148, https://github.com/jeal1498/APK-CHECA/actions/runs/43371008469): la navegación de DiDi ya no pasa como oferta cuando el OCR lee nuestro pop-up; la zona de un pop-up recién cerrado se tapa 2 s. Tres casos de prueba nuevos.
+- Plan E en `main` (PR #7, 17 nov): trazabilidad de lecturas **encendida por defecto** (10.82), esquema `auditoria` 001–006 aplicado en Supabase, `registrar-lectura` desplegada (`AUDITORIA_ACTIVA=1`) y workflow manual `auditoria-produccion.yml`. Sin release del canal directo.
+- Enlace línea ↔ captura ↔ huella por fotograma (`fotograma_id`, solo capturas nuevas) y verificador `herramientas/verificar_enlace_capturas.py`.
+- Referencia humana de 66 capturas (lalo, pp, tercera persona): 40 a ciegas + 26 adjudicadas. El lector arregló 1377 y 1324 (banco 272 de 316); 1300 (tarjeta atenuada con círculo de carga) no se detecta por texto.
+- Checa Admin (7 módulos, teléfono y tableta) publicado en `https://jeal1498.github.io/PWA-Checa-Multimedia/admin-checa-7e3a91/`; Eduardo (`lalolopezxd@gmail.com`) dado de alta como revisor; entró desde su celular (17 nov).
+- Salud de Checa: el tope diario de la revisión con IA no cuenta como falla (4872 de 4874 «fallas» eran `tope_diario`); aplicado en producción (commit `82b84f5`).
 
 ## … Falta
 - **16 nov (lunes):** ejecutar `docs/plan-lunes-16-nov.md`. Arranca con «Estado de la revisión»; luego función `ver-capturas` (enlaces temporales), clasificar las capturas, corregir los 3 patrones más frecuentes (10.73) y medir el lunes 23. Si hay menos de 30 capturas, esperar al miércoles.
@@ -52,6 +57,11 @@
 - Fase 7 (Play Billing) antes del 1 feb 2027: necesita su «adelante» y una cuenta de Google admitida a su nombre.
 - Eduardo: probar la 10.76 yendo por un pasajero en DiDi; si sale pop-up, mandar la **primera** captura guardada (la de antes del pop-up). No se confirmó qué sacó el primero.
 - Tester con 10.72 (pop-up en navegación): que actualice; el arreglo aún no está en Play (falta AAB de la 10.76, con su autorización).
+- Instalar la APK 10.82 («Compilar flavor play» en `main`) y usarla ~30 ofertas con «Guardar pantallas»; luego etiquetar esas capturas (lalo, pp, tercera persona) y medir al lector.
+- **Aviso de privacidad y «Seguridad de los datos» de Play** por la trazabilidad (encendida por defecto): sin eso no publicar la 10.82 a otros conductores.
+- Borrar la función `tmp-capturas-9f3k` de Supabase (sin verificación de sesión; no la creó esta sesión).
+- E6/E7 pendientes: alertas guardadas con estado e historial, imagen de la captura en el expediente, banco de evaluación protegido y comparación sobre casos comunes, umbrales y destinatarios editables, costos con datos reales.
+- Probar la 10.82 en teléfono (trazabilidad, enlace por fotograma) y subir al repo el resultado.
 
 ## ✗ No tocar
 - Publicar en Play Console sin su autorización.
@@ -59,3 +69,4 @@
 - Logos de Uber/DiDi, ciudad o país en el material de marca.
 - Subir el PNG de novedades al repo.
 - Secretos y llaves de firma en Git.
+- Fusionar o publicar a Play la 10.82 sin el aviso de privacidad listo.
