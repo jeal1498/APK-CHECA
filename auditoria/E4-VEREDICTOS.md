@@ -49,3 +49,6 @@ Consecuencia: «271/316 (85.8 %)» es **acuerdo con etiquetas heredadas**, no ex
 
 ## Primera doble revisión real (17-nov-2026)
 Dos revisores (`lalo` y `pp`) etiquetaron a ciegas las mismas 66 capturas de la 10.77 (`evidencias/etiquetado/20261117/`): **66 comparadas, 40 coinciden (61 %)**, 26 discrepan; acuerdo en la clase 83 % (kappa 0.68), en tarifa 97 %, en km y min 84 %. 5 de las 26 son solo «tarjeta vacía contra 1» (convención poco clara, corregida en la guía). Pendiente: resolver las 26 (`resolver.html`). Hasta entonces la referencia son las 40 coincidencias.
+
+### Resolución (17-nov-2026)
+Se resolvieron 25 de 26 discrepancias con `resolver.html` (seudónimo `concenso`, método registrado `tercera_persona`; falta confirmar si fue consenso de los dos o una tercera persona). Referencia final: **65 de 66** (40 doble ciego + 25 adjudicadas); pendiente el caso 1365 (lalo: oferta 28.61/4.1/13; pp: varias). Archivos en `evidencias/etiquetado/20261117/final/`. Las adjudicadas no cuentan como doble ciego.
