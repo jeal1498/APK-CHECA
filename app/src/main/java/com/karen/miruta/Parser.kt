@@ -330,6 +330,10 @@ object Parser {
                 val fiable = boton != null || (ancla != null && (!unaTarjeta || ancla.trim().let { a ->
                     anclaDidi.find(a)?.groupValues?.get(2)?.isNotBlank() == true }))
                 // El botón va primero: su monto manda; la línea del monto aporta el multiplicador.
+                // Tarjeta cortada arriba (su monto no se ve, solo el botón «Aceptar $X») y más abajo hay otra
+                // tarjeta completa con su monto: la completa es la oferta (referencia humana, caso 1324).
+                val cortada = boton != null && ancla == null && !unaTarjeta
+                if (cortada && tarjetaCompletaDespues(textos, tr, i + 2)) { i += 2; continue }
                 if (fiable) return listOfNotNull(boton, ancla, textos[i], textos[i + 1])
                 if (unaTarjeta) return null
                 i += 2
@@ -338,6 +342,14 @@ object Parser {
             i++
         }
         return null
+    }
+
+    /** ¿Hay, después de `desde`, un par de tramos con su monto justo antes (tarjeta completa)? */
+    private fun tarjetaCompletaDespues(textos: List<String>, tr: Set<Int>, desde: Int): Boolean {
+        for (k in desde until textos.size - 1) {
+            if (k in tr && (k + 1) in tr && k > 0 && (k - 1) !in tr && anclaTarjeta(textos[k - 1]) != null) return true
+        }
+        return false
     }
 
     // «$58,41», «$109,47»: el OCR leyó coma en vez de punto en la tarifa (14 nov, capturas 1035 y 1216).

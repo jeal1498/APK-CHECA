@@ -8,4 +8,4 @@ $59.80 Ox1.2
 (7 min 2.6 km) Calle Guadalupe
 (15 min 7.7 km) EL Rey de la
 ---
-tarifa=48.77 km=6.1 min=15
+tarifa=59.8 km=10.3 min=22
