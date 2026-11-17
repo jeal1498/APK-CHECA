@@ -5,8 +5,9 @@
   "use strict";
   var cli = null, yo = null, vista = "inicio", param = null, pag = { errores: 1, ofertas: 1 }, F = {}, dias = 7;
   var SVG = "http://www.w3.org/2000/svg";
-  var MODULOS = [["inicio", "Inicio · Salud"], ["errores", "Errores"], ["ofertas", "Ofertas"], ["versiones", "Versiones"],
-                 ["dispositivos", "Conductores y dispositivos"], ["ia", "Auditoría IA"], ["config", "Configuración"]];
+  // [id, nombre completo, nombre corto para la barra inferior del teléfono]
+  var MODULOS = [["inicio", "Inicio · Salud", "Salud"], ["errores", "Errores", "Errores"], ["ofertas", "Ofertas", "Ofertas"], ["versiones", "Versiones", "Versiones"],
+                 ["dispositivos", "Conductores y dispositivos", "Equipos"], ["ia", "Auditoría IA", "IA"], ["config", "Configuración", "Ajustes"]];
   var ESTADO = { operativo: "ok", degradado: "aviso", fuera_de_servicio: "mal", sin_comprobar: "nd", sin_datos: "nd", no_aplicable: "nd",
                  verde: "ok", amarillo: "aviso", amarillo_parcial: "aviso", rojo: "mal", gris: "nd" };
   var TEXTO = { operativo: "Operativo", degradado: "Degradado", fuera_de_servicio: "Fuera de servicio", sin_comprobar: "Sin comprobar",
@@ -70,7 +71,7 @@
     if (!filas.length) return el("div", { clase: "vacio", texto: vacio || "Sin datos en este periodo (no es lo mismo que cero errores)." });
     var t = el("table", {}, [el("thead", {}, [el("tr", {}, cols.map(function (c) { return el("th", { texto: c[0] }); }))]),
       el("tbody", {}, filas.map(function (f) { return el("tr", {}, cols.map(function (c) {
-        var v = c[1](f); return el("td", {}, [v instanceof Node ? v : document.createTextNode(txt(v))]); })); }))]);
+        var v = c[1](f); return el("td", { "data-label": c[0] }, [v instanceof Node ? v : document.createTextNode(txt(v))]); })); }))]);
     return el("div", { clase: "tabla" }, [t]);
   }
   function paginas(clave, d) {
@@ -393,7 +394,8 @@
     var raiz = document.getElementById("raiz");
     raiz.textContent = "";
     var nav = el("nav", { id: "menu", "aria-label": "Módulos" }, MODULOS.map(function (m) {
-      return el("button", { id: "t-" + m[0], "aria-selected": String(m[0] === vista), texto: m[1], onclick: function () { ir(m[0]); } }); }));
+      return el("button", { id: "t-" + m[0], "aria-selected": String(m[0] === vista), "aria-label": m[1], onclick: function () { ir(m[0]); } },
+        [el("span", { clase: "largo", texto: m[1] }), el("span", { clase: "corto", texto: m[2] })]); }));
     var c = el("section", { id: "vista-" + vista, clase: "contenido" });
     raiz.appendChild(nav); raiz.appendChild(c);
     await VISTAS[vista](c);

@@ -260,6 +260,41 @@ test("en un teléfono (390 px) no hay desplazamiento horizontal de la página", 
   await p.close();
 });
 
+test("teléfono: barra inferior, objetivos táctiles de 44 px y tablas como tarjetas", async () => {
+  const { p } = await abrir("ok", 390);
+  await p.waitForSelector("#inicio");
+  const caja = await p.locator("#menu").boundingBox();
+  assert.equal(caja.y + caja.height >= 800 - 2, true, "la barra de módulos va abajo");
+  assert.equal(await p.locator("#menu .corto").first().isVisible(), true);
+  assert.equal(await p.evaluate(() => { const m = document.querySelector("#menu"); return m.scrollWidth <= m.clientWidth; }), true, "las 7 pestañas caben sin desplazar");
+  assert.equal(await p.locator("#menu .largo").first().isVisible(), false);
+  for (const sel of ["#menu button", ".periodo button"]) {
+    for (const b of await p.locator(sel).all()) assert.equal((await b.boundingBox()).height >= 44, true, sel);
+  }
+  await p.click("#t-errores"); await p.waitForSelector("#vista-errores table");
+  assert.equal(await p.evaluate(() => getComputedStyle(document.querySelector("#vista-errores tr:last-child")).display), "block");
+  assert.equal(await p.evaluate(() => document.querySelector("#vista-errores td").dataset.label.length > 0), true);
+  assert.equal(await p.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
+  assert.equal(await p.evaluate(() => parseFloat(getComputedStyle(document.querySelector("#f-version")).fontSize) >= 16), true);   // sin zoom al enfocar
+  await p.close();
+});
+
+test("tableta (820 px vertical y 1180 px horizontal): sin desbordes y con barra lateral", async () => {
+  for (const ancho of [820, 1180]) {
+    const { p } = await abrir("ok", ancho);
+    await p.waitForSelector("#inicio");
+    assert.equal(await p.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, "inicio " + ancho);
+    for (const m of ["versiones", "ofertas", "config"]) {
+      await p.click("#t-" + m); await p.waitForSelector("#vista-" + m);
+      assert.equal(await p.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), true, m + " " + ancho);
+    }
+    const caja = await p.locator("#menu").boundingBox();
+    assert.equal(caja.x, 0); assert.equal(caja.width < 260, true);
+    assert.equal(await p.locator("#menu .largo").first().isVisible(), true);
+    await p.close();
+  }
+});
+
 test("la página no trae llaves ni secretos", () => {
   for (const f of ["index.html", "app.js", "config.js", "estilo.css"]) {
     const t = fs.readFileSync(path.join(ADMIN, f), "utf8");

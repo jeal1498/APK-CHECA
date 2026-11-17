@@ -55,10 +55,49 @@ tr:hover td { background:var(--panel); }
 #aviso { margin:12px 16px; padding:10px 12px; border:1px solid var(--rojo); border-radius:8px; color:var(--rojo); }
 .paginas { display:flex; gap:8px; align-items:center; margin-top:8px; }
 #entrar { padding:40px 16px; grid-column:1 / -1; }
-@media (max-width: 760px) {
-  #raiz { grid-template-columns:1fr; }
-  nav { flex-direction:row; overflow-x:auto; border-right:0; border-bottom:1px solid var(--borde); position:sticky; top:53px; z-index:4; }
-  nav button { white-space:nowrap; }
-  .contenido { padding:12px 16px 40px; }
+nav .corto { display:none; }
+/* Tableta (vertical y horizontal): barra lateral compacta, 2–3 columnas, controles táctiles. */
+@media (min-width: 761px) and (max-width: 1100px) {
+  #raiz { grid-template-columns:168px 1fr; }
+  .tarjetas { grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); }
+  .graficas { grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); }
+  .contenido { padding:14px 16px 32px; }
 }
+@media (hover: none) and (pointer: coarse), (max-width: 1100px) {
+  button, input, select { min-height:44px; }
+  nav button { min-height:48px; }
+  th, td { padding:10px 12px; }
+  .periodo button { min-width:72px; }
+}
+/* Teléfono: barra de pestañas inferior (al alcance del pulgar), tablas como tarjetas, filtros a todo el ancho. */
+@media (max-width: 760px) {
+  body { font-size:15px; padding-bottom:calc(64px + env(safe-area-inset-bottom)); }
+  header { padding-top:calc(10px + env(safe-area-inset-top)); }
+  #raiz { display:block; }
+  nav { position:fixed; left:0; right:0; bottom:0; top:auto; z-index:10; flex-direction:row; justify-content:space-between; gap:0; padding:4px 4px calc(4px + env(safe-area-inset-bottom));
+        border-right:0; border-top:1px solid var(--borde); border-bottom:0; overflow-x:auto; }
+  nav button { flex:1 1 0; min-width:0; min-height:52px; padding:6px 2px; text-align:center; font-size:11px; border-radius:10px; overflow:hidden; text-overflow:ellipsis; }
+  nav button[aria-selected="true"] { box-shadow:inset 0 3px 0 var(--verde); }
+  nav .largo { display:none; } nav .corto { display:inline; }
+  .contenido { padding:12px 14px 24px; }
+  h1 { font-size:20px; }
+  input, select { font-size:16px; }
+  .filtros { display:grid; grid-template-columns:1fr 1fr; }
+  .filtros label, .filtros button { width:100%; } .filtros input, .filtros select { width:100%; }
+  .tarjetas { grid-template-columns:1fr 1fr; gap:8px; }
+  .tarjeta .valor { font-size:22px; }
+  .graficas { grid-template-columns:1fr; }
+  .periodo { width:100%; } .periodo button { flex:1; }
+  .encabezado { flex-direction:column; }
+  .paginas { justify-content:space-between; }
+  /* Tablas → una tarjeta por fila, con la etiqueta de cada dato. */
+  .tabla { border:0; background:transparent; overflow:visible; }
+  table, thead, tbody, tr, td { display:block; width:100%; }
+  thead { position:absolute; left:-9999px; }
+  tr { background:var(--tablero); border:1px solid var(--borde); border-radius:12px; margin-bottom:8px; padding:6px 0; }
+  td { border:0; white-space:normal; display:flex; justify-content:space-between; gap:12px; padding:5px 12px; text-align:right; word-break:break-word; }
+  td::before { content:attr(data-label); color:var(--tenue); font-size:12px; text-align:left; flex:0 0 38%; }
+  tr:hover td { background:transparent; }
+}
+@media (max-width: 380px) { .tarjetas { grid-template-columns:1fr; } }
 @media (prefers-reduced-motion: reduce) { .tarjeta, .skeleton { animation:none; } }
