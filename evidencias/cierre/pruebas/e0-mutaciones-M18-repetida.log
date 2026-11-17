@@ -1,0 +1,14 @@
+# Repetición de M18 tras agregar test_h1_nombre_seguro_rechaza_cada_forma_peligrosa_por_si_solo y test_h1_entrega_con_ruta_peligrosa_en_el_manifiesto_falla
+# (los 7 scripts no cambiaron: SCRIPTS.sha256 idéntico al de la corrida completa)
+# SCRIPTS.sha256 OK
+# inicio 2026-11-16T05:41:04Z
+BASE sin mutar: OK
+M18 H1 nombre_seguro acepta ..: SOBREVIVE; fallan 0: []
+1 mutaciones, 0 detectadas, 1 sobreviven.
+exit=1
+# inicio 2026-11-16T05:43:19Z
+BASE sin mutar: OK
+M18 H1 nombre_seguro acepta ..: EQUIVALENTE (no detectable; ver comentario); fallan 0: []
+M18b H1 nombre_seguro sin reglas de punto ni «..»: DETECTADA; fallan 8: ['test_h1_entrega_con_ruta_peligrosa_en_el_manifiesto_falla', 'test_h1_nombre_seguro_rechaza_cada_forma_peligrosa_por_si_solo', 'test_h1_nombre_seguro_rechaza_cada_forma_peligrosa_por_si_solo']
+2 mutaciones: 1 detectadas, 1 equivalentes, 0 sobreviven.
+exit=0

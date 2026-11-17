@@ -1,0 +1,7 @@
+# sintético: oferta caída («La solicitud de viaje venció») no es oferta
+$151.34
+5min (1.7km)
+37min (13.2km)
+La solicitud de viaje venció
+---
+nada

@@ -1,0 +1,1 @@
+TrazaAndroid.kt compila contra stubs (sin errores)

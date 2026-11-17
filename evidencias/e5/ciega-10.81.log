@@ -1,0 +1,6 @@
+365 casos: entradas/ (ciegas) y etiquetas.jsonl
+Etiquetas selladas: 68bc474b13a92e98270f11f390e73cb6f9fa63d793bff030db62b4b7894dc5fd
+365 casos ? /home/user/APK-CHECA/evidencias/e5/ciega-10.81/corrida/predicciones.jsonl
+{"ref": "actual", "n_entradas": 365, "predicciones_sha256": "9534b19e2a8920bf7256ee9ac5b67311611f90b8f5eb0dacd5eda201d164d4ff"}
+Predicciones comprometidas: 9534b19e2a8920bf7256ee9ac5b67311611f90b8f5eb0dacd5eda201d164d4ff
+Acuerdo con etiquetas heredadas: 319/365 (0.874); sin circulares: 281/320

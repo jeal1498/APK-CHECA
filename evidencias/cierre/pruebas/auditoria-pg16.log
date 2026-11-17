@@ -1,0 +1,104 @@
+# E1–E7 SQL/Python en PostgreSQL 16 LOCAL (stubs de Supabase)
+# $ cd auditoria/pruebas && PG_BIN=/usr/lib/postgresql/16/bin python3 -W ignore -c 'import pg_local; p = pg_local.Pg(); print("servidor:", p.version()); p.cerrar()' && PG_BIN=/usr/lib/postgresql/16/bin python3 -W ignore -m unittest discover -p 'test_*.py' -v
+# inicio 2026-11-16T09:51:08Z
+servidor: 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)
+test_funciones_security_definer_fijan_search_path (test_cadena_migraciones.Cadena.test_funciones_security_definer_fijan_search_path) ... ok
+test_subir_bajar_subir (test_cadena_migraciones.Cadena.test_subir_bajar_subir) ... ok
+test_cubre_todo_el_corpus (test_e3_redaccion.Redaccion.test_cubre_todo_el_corpus) ... ok
+test_el_servidor_acepta_todas_las_lineas_redactadas (test_e3_redaccion.Redaccion.test_el_servidor_acepta_todas_las_lineas_redactadas) ... ok
+test_la_evidencia_versionada_es_la_que_produce_el_codigo (test_e3_redaccion.Redaccion.test_la_evidencia_versionada_es_la_que_produce_el_codigo) ... ok
+test_las_direcciones_del_corpus_no_sobreviven (test_e3_redaccion.Redaccion.test_las_direcciones_del_corpus_no_sobreviven)
+El corpus original SÍ trae direcciones pegadas al tramo; en lo redactado no queda ninguna. ... ok
+test_ninguna_linea_redactada_trae_palabras_ajenas_ni_numeros_sueltos (test_e3_redaccion.Redaccion.test_ninguna_linea_redactada_trae_palabras_ajenas_ni_numeros_sueltos) ... ok
+test_hoja_ciega_determinista_y_solo_con_captura (test_e4_etiquetado.TestHoja.test_hoja_ciega_determinista_y_solo_con_captura) ... ok
+test_revisor_con_nombre_o_correo_se_rechaza (test_e4_etiquetado.TestHoja.test_revisor_con_nombre_o_correo_se_rechaza) ... ok
+test_sin_respaldo_e0_basta_una_carpeta_de_capturas (test_e4_etiquetado.TestHoja.test_sin_respaldo_e0_basta_una_carpeta_de_capturas)
+Sin respaldo E0 la hoja y la importación funcionan con la carpeta de capturas de la revisión. ... ok
+test_acuerdo_total (test_e4_etiquetado.TestImportar.test_acuerdo_total) ... ok
+test_desacuerdos_se_separan_no_se_promedian (test_e4_etiquetado.TestImportar.test_desacuerdos_se_separan_no_se_promedian) ... ok
+test_filas_invalidas_se_reportan (test_e4_etiquetado.TestImportar.test_filas_invalidas_se_reportan) ... ok
+test_sql_generado_entra_a_la_base_con_precedencia (test_e4_etiquetado.TestImportar.test_sql_generado_entra_a_la_base_con_precedencia) ... ok
+test_un_solo_revisor_no_basta (test_e4_etiquetado.TestImportar.test_un_solo_revisor_no_basta) ... ok
+test_categorias (test_e4_etiquetado.TestMetricas.test_categorias) ... ok
+test_kappa (test_e4_etiquetado.TestMetricas.test_kappa) ... ok
+test_resumen_denominadores (test_e4_etiquetado.TestMetricas.test_resumen_denominadores) ... ok
+test_wilson_y_suficiencia (test_e4_etiquetado.TestMetricas.test_wilson_y_suficiencia) ... ok
+test_banco_completo_sin_verdad_humana (test_e4_etiquetado.TestOrigen.test_banco_completo_sin_verdad_humana) ... ok
+test_csv_versionado_coincide (test_e4_etiquetado.TestOrigen.test_csv_versionado_coincide) ... ok
+test_a3_tolerancias_de_la_guia (test_e4_veredictos.E4.test_a3_tolerancias_de_la_guia) ... ok
+test_a3_un_mismo_revisor_no_suma_dos_votos (test_e4_veredictos.E4.test_a3_un_mismo_revisor_no_suma_dos_votos) ... ok
+test_cascada_desde_la_lectura_si_borra (test_e4_veredictos.E4.test_cascada_desde_la_lectura_si_borra) ... ok
+test_desacuerdo_humano_no_se_fuerza (test_e4_veredictos.E4.test_desacuerdo_humano_no_se_fuerza) ... ok
+test_humano_valida_solo_con_captura_y_guia (test_e4_veredictos.E4.test_humano_valida_solo_con_captura_y_guia) ... ok
+test_ia_y_heredado_no_pueden_validar (test_e4_veredictos.E4.test_ia_y_heredado_no_pueden_validar) ... ok
+test_importacion_idempotente_y_reversible (test_e4_veredictos.E4.test_importacion_idempotente_y_reversible) ... ok
+test_importacion_marca_heredado_y_no_toca_el_original (test_e4_veredictos.E4.test_importacion_marca_heredado_y_no_toca_el_original) ... ok
+test_importacion_traduce_segun_el_veredicto (test_e4_veredictos.E4.test_importacion_traduce_segun_el_veredicto) ... ok
+test_mismo_revisor_no_repite_sin_sustituir (test_e4_veredictos.E4.test_mismo_revisor_no_repite_sin_sustituir) ... ok
+test_no_se_editan_ni_se_borran (test_e4_veredictos.E4.test_no_se_editan_ni_se_borran) ... ok
+test_permisos (test_e4_veredictos.E4.test_permisos) ... ok
+test_precedencia_humano_sobre_ia (test_e4_veredictos.E4.test_precedencia_humano_sobre_ia) ... ok
+test_propuesto_o_descartado_no_es_referencia (test_e4_veredictos.E4.test_propuesto_o_descartado_no_es_referencia) ... ok
+test_un_solo_objetivo_y_datos_coherentes (test_e4_veredictos.E4.test_un_solo_objetivo_y_datos_coherentes) ... ok
+test_a4_comparar_exige_mismo_corpus_y_condiciones (test_e5_reproduccion.Protocolo.test_a4_comparar_exige_mismo_corpus_y_condiciones) ... ok
+test_comparar_detecta_regresion_y_mejora (test_e5_reproduccion.Protocolo.test_comparar_detecta_regresion_y_mejora) ... ok
+test_comprometer_sin_sellar_falla (test_e5_reproduccion.Protocolo.test_comprometer_sin_sellar_falla) ... ok
+test_etiquetas_cambiadas_despues_de_sellar (test_e5_reproduccion.Protocolo.test_etiquetas_cambiadas_despues_de_sellar) ... ok
+test_orden_completo (test_e5_reproduccion.Protocolo.test_orden_completo) ... ok
+test_predicciones_cambiadas_despues_de_comprometer (test_e5_reproduccion.Protocolo.test_predicciones_cambiadas_despues_de_comprometer) ... ok
+test_registro_no_se_reutiliza (test_e5_reproduccion.Protocolo.test_registro_no_se_reutiliza) ... ok
+test_revelar_sin_comprometer_falla (test_e5_reproduccion.Protocolo.test_revelar_sin_comprometer_falla) ... ok
+test_tolerancias_del_banco (test_e5_reproduccion.Protocolo.test_tolerancias_del_banco) ... ok
+test_determinista_y_rechaza_entradas_con_respuesta (test_e5_reproduccion.Reproduccion.test_determinista_y_rechaza_entradas_con_respuesta) ... ok
+test_evidencia_versionada_reconcilia_con_banco (test_e5_reproduccion.Reproduccion.test_evidencia_versionada_reconcilia_con_banco)
+El informe versionado de la evaluación ciega coincide con lo que da Banco.kt (271 de 316). ... ok
+test_a3_un_solo_revisor_no_se_muestra_como_referencia (test_e6_admin.E6.test_a3_un_solo_revisor_no_se_muestra_como_referencia) ... ok
+test_a5_un_conductor_no_puede_inflar_la_bitacora (test_e6_admin.E6.test_a5_un_conductor_no_puede_inflar_la_bitacora) ... ok
+test_anon_no_puede_llamar (test_e6_admin.E6.test_anon_no_puede_llamar) ... ok
+test_cada_consulta_queda_en_bitacora_y_no_se_altera (test_e6_admin.E6.test_cada_consulta_queda_en_bitacora_y_no_se_altera) ... ok
+test_errores_filtros_y_sin_datos_personales (test_e6_admin.E6.test_errores_filtros_y_sin_datos_personales) ... ok
+test_inicio_cuadra_con_las_tablas (test_e6_admin.E6.test_inicio_cuadra_con_las_tablas) ... ok
+test_inyeccion_en_filtros_no_hace_nada (test_e6_admin.E6.test_inyeccion_en_filtros_no_hace_nada) ... ok
+test_lector_no_da_veredictos_revisor_si (test_e6_admin.E6.test_lector_no_da_veredictos_revisor_si) ... ok
+test_limites_de_filtros (test_e6_admin.E6.test_limites_de_filtros) ... ok
+test_no_admin_es_denegado_y_queda_en_bitacora (test_e6_admin.E6.test_no_admin_es_denegado_y_queda_en_bitacora) ... ok
+test_no_admin_no_lee_tablas_directo (test_e6_admin.E6.test_no_admin_no_lee_tablas_directo) ... ok
+test_ofertas_filtros_y_paginacion (test_e6_admin.E6.test_ofertas_filtros_y_paginacion) ... ok
+test_reversion (test_e6_admin.E6.test_reversion) ... ok
+test_acceso_y_bitacora (test_e7_metricas.E7.test_acceso_y_bitacora) ... ok
+test_definiciones_completas (test_e7_metricas.E7.test_definiciones_completas) ... ok
+test_ia_no_cuenta_como_referencia (test_e7_metricas.E7.test_ia_no_cuenta_como_referencia) ... ok
+test_recall_no_medible_y_acuerdo_ia_separado (test_e7_metricas.E7.test_recall_no_medible_y_acuerdo_ia_separado) ... ok
+test_reconciliacion_total_y_por_app (test_e7_metricas.E7.test_reconciliacion_total_y_por_app) ... ok
+test_reversion (test_e7_metricas.E7.test_reversion) ... ok
+test_segmentos_pequenos_marcados (test_e7_metricas.E7.test_segmentos_pequenos_marcados) ... ok
+test_sin_datos_no_inventa_valores (test_e7_metricas.E7.test_sin_datos_no_inventa_valores) ... ok
+test_a1_fila_previa_sin_recepcion_no_es_invalido (test_migraciones.Migraciones.test_a1_fila_previa_sin_recepcion_no_es_invalido)
+Carrera entre dos envíos: la lectura ya existe cuando el segundo intenta insertarla. ... ok
+test_anon_y_authenticated_no_acceden (test_migraciones.Migraciones.test_anon_y_authenticated_no_acceden) ... ok
+test_cascada_al_borrar_usuario (test_migraciones.Migraciones.test_cascada_al_borrar_usuario) ... ok
+test_contrato_ts_y_base_coinciden_en_cada_caso (test_migraciones.Migraciones.test_contrato_ts_y_base_coinciden_en_cada_caso) ... ok
+test_esquema_sql_se_puede_reaplicar_despues (test_migraciones.Migraciones.test_esquema_sql_se_puede_reaplicar_despues) ... ok
+test_expira_a_los_30_dias (test_migraciones.Migraciones.test_expira_a_los_30_dias) ... ok
+test_indices_esperados (test_migraciones.Migraciones.test_indices_esperados) ... ok
+test_lote_mixto_guarda_lo_valido (test_migraciones.Migraciones.test_lote_mixto_guarda_lo_valido) ... ok
+test_lote_vacio_o_grande_se_rechaza (test_migraciones.Migraciones.test_lote_vacio_o_grande_se_rechaza) ... ok
+test_migraciones_repetidas_no_fallan_ni_cambian_datos_previos (test_migraciones.Migraciones.test_migraciones_repetidas_no_fallan_ni_cambian_datos_previos) ... ok
+test_mismo_id_con_otro_contenido_es_conflicto_y_no_sobrescribe (test_migraciones.Migraciones.test_mismo_id_con_otro_contenido_es_conflicto_y_no_sobrescribe) ... ok
+test_mismo_id_de_otro_usuario_es_conflicto (test_migraciones.Migraciones.test_mismo_id_de_otro_usuario_es_conflicto) ... ok
+test_muestras_de_android_pasan_contrato_y_base (test_migraciones.Migraciones.test_muestras_de_android_pasan_contrato_y_base) ... ok
+test_oferta_valida_se_guarda (test_migraciones.Migraciones.test_oferta_valida_se_guarda) ... ok
+test_purga_no_esta_programada (test_migraciones.Migraciones.test_purga_no_esta_programada) ... ok
+test_purga_solo_lo_vencido (test_migraciones.Migraciones.test_purga_solo_lo_vencido) ... ok
+test_reintento_identico_es_repetido_y_no_duplica (test_migraciones.Migraciones.test_reintento_identico_es_repetido_y_no_duplica) ... ok
+test_restricciones_rechazan_datos_inconsistentes (test_migraciones.Migraciones.test_restricciones_rechazan_datos_inconsistentes) ... ok
+test_reversion_y_vuelta_a_aplicar (test_migraciones.Migraciones.test_reversion_y_vuelta_a_aplicar) ... ok
+test_service_role_no_lee_tablas_directamente_solo_por_funcion (test_migraciones.Migraciones.test_service_role_no_lee_tablas_directamente_solo_por_funcion) ... ok
+test_usuario_nulo_se_rechaza (test_migraciones.Migraciones.test_usuario_nulo_se_rechaza) ... ok
+test_varias_y_abstencion_sin_semaforo_si_se_guardan (test_migraciones.Migraciones.test_varias_y_abstencion_sin_semaforo_si_se_guardan) ... ok
+
+----------------------------------------------------------------------
+Ran 90 tests in 78.917s
+
+OK
+# exit=0 fin 2026-11-16T09:52:29Z

@@ -1,0 +1,7 @@
+L1 km sin la recogida: DETECTADA — 365 casos: 215 cambian, 187 regresiones, 0 mejoras (319 → 132)
+L2 minutos solo del primer tramo: DETECTADA — 365 casos: 271 cambian, 257 regresiones, 0 mejoras (319 → 62)
+L3 sin detectar ofertas caídas: DETECTADA — 365 casos: 5 cambian, 5 regresiones, 0 mejoras (319 → 314)
+L4 sin tope de $/km plausible: DETECTADA — 365 casos: 5 cambian, 3 regresiones, 0 mejoras (319 → 316)
+L5 resumen no corrige km: DETECTADA — 365 casos: 4 cambian, 4 regresiones, 0 mejoras (319 → 315)
+5 mutaciones, 5 detectadas
+exit=0

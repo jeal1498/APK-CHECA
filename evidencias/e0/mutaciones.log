@@ -1,0 +1,19 @@
+BASE sin mutar: OK
+M1 sigue redirecciones: DETECTADA; fallan 1: ['test_redireccion_no_reenvia_la_llave']
+M2 no valida WebP: DETECTADA; fallan 1: ['test_html_con_200_se_rechaza']
+M3 no compara sha256 en verificar: DETECTADA; fallan 1: ['test_byte_alterado']
+M4 ids requeridos siempre presentes (entrega): DETECTADA; fallan 1: ['test_lista_de_ids_del_repo_con_un_id_que_el_respaldo_no_tiene']
+M5 acepta llave anon: DETECTADA; fallan 1: ['test_rechaza_url_ajena_clave_anon_y_sin_clave']
+M6 listado sin paginar: DETECTADA; fallan 48: ['test_archivo_sin_cifrar_se_rechaza', 'test_ciclo_completo_y_revision_de_entrega', 'test_copia_dañada_no_restaura']
+M7 restauración no ligada a B: DETECTADA; fallan 1: ['test_restauracion_etiquetada_B_pero_hecha_con_otro_archivo']
+M8 D1 COMPLETA sin exigir cifrados distintos: DETECTADA; fallan 1: ['test_d1_misma_copia_copiada_byte_a_byte_es_incompleta']
+M9 D1 mismo archivo cuenta como dos: DETECTADA; fallan 2: ['test_d1_enlace_duro_no_cuenta_como_otra_copia', 'test_d1_mismo_archivo_dos_veces_es_incompleta']
+M10 D1 C08 de la entrega siempre ok: DETECTADA; fallan 1: ['test_d1_verificar_entrega_falla_si_la_evidencia_dice_completa_con_cifrados_iguales']
+M11 D2 sin fila no cuenta: DETECTADA; fallan 1: ['test_d2_requerido_sin_fila_en_errores_lector_es_incompleto']
+M12 D2 versión distinta no cuenta: DETECTADA; fallan 1: ['test_d2_requerido_con_version_distinta_es_incompleto']
+M13 D3 respaldar ignora la integridad: DETECTADA; fallan 1: ['test_d3_respaldar_no_corre_con_scripts_alterados']
+M14 D3 V11b siempre ok: DETECTADA; fallan 1: ['test_d3_verificar_falla_si_el_resumen_trae_otra_huella']
+M15 D3 script faltante se omite: DETECTADA; fallan 1: ['test_d3_script_faltante_es_error_no_se_omite']
+M16 D3 E12b siempre ok: DETECTADA; fallan 1: ['test_d3_entrega_con_huellas_de_scripts_distintas_falla']
+16 mutaciones, 16 detectadas, 0 sobreviven.
+exit=0

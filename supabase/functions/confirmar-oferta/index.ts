@@ -207,6 +207,12 @@ function leerPantalla(v: unknown): Record<string, unknown> {
   };
 }
 
+// Fotograma exacto que se leyó (10.82): enlaza el caso con su lectura y con la huella de su captura. Solo un UUID.
+function leerFotograma(v: unknown): { fotograma_id: string | null } {
+  const t = typeof v === "string" ? v : "";
+  return { fotograma_id: /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(t) ? t.toLowerCase() : null };
+}
+
 // Ofertas donde el texto y la foto del teléfono leyeron lo mismo (10.57): se anotan sin IA.
 async function anotarCoincidencias(id: string, version: string, equipo: Equipo, v: unknown) {
   if (!Array.isArray(v) || v.length === 0) return;
@@ -278,6 +284,7 @@ Deno.serve(async (req) => {
   const version = String(cuerpo.version ?? "").slice(0, 12);
   const equipo = leerEquipo(cuerpo.equipo);
   const pantalla = leerPantalla(cuerpo.pantalla);
+  const foto = leerFotograma(cuerpo.fotograma);
   await anotarCoincidencias(id, version, equipo, cuerpo.coincidencias);
   // Solo coincidencias (lote de 10 sin otra revisión pendiente): no hay nada que preguntar.
   if (cuerpo.modo === "coincidencias") return json({ ok: true });
@@ -311,7 +318,7 @@ Deno.serve(async (req) => {
       if (Array.isArray(hoy) && hoy.length > TOPE_REPORTES) return json({ ok: false, error: "tope_reportes" });
     } catch { /* sin conteo se guarda igual */ }
     const reporte = await insertarId("errores_lector", {
-      usuario: id, app, moneda, version, lineas, local: mostrado, ia: {}, lector, tipo: "reporte", ...equipo, ...pantalla,
+      usuario: id, app, moneda, version, lineas, local: mostrado, ia: {}, lector, tipo: "reporte", ...equipo, ...pantalla, ...foto,
     });
     return json({ ok: reporte !== null, caso: reporte });
   }
@@ -326,7 +333,7 @@ Deno.serve(async (req) => {
     ms_revision_anterior: Number.isFinite(msRevisionAnterior) ? msRevisionAnterior : null,
     imagenes: 0, reintentos: 0,
     ms_foto: Number.isFinite(Number(cuerpo.msFoto)) && Number(cuerpo.msFoto) >= 0 ? Math.round(Number(cuerpo.msFoto)) : null,
-    ...equipo, ...pantalla,
+    ...equipo, ...pantalla, ...foto,
   };
 
   // Tope diario por cuenta (cuenta también las que fallan).
@@ -385,19 +392,19 @@ Deno.serve(async (req) => {
     caso = await insertarId("errores_lector", {
       usuario: id, app, moneda, version, lineas: [...lineas, "---", ...lineasOtro], local, ia, lector,
       lector_otro: lectorOtro, local_otro: localOtro, acerto, tipo: "desacuerdo",
-      ms_texto: registro.ms_popup, ms_foto: registro.ms_foto, ...equipo, ...pantalla,
+      ms_texto: registro.ms_popup, ms_foto: registro.ms_foto, ...equipo, ...pantalla, ...foto,
     });
   } else if (!coincide) {
     // En el rescate solo se guarda si el revisor sí vio una oferta (si no, no hay nada que aprender).
     if (modo === "revision" || ia.oferta) {
-      caso = await insertarId("errores_lector", { usuario: id, app, moneda, version, lineas, local, ia, lector, tipo: modo === "rescate" ? "rescate" : "diferencia", ...equipo, ...pantalla });
+      caso = await insertarId("errores_lector", { usuario: id, app, moneda, version, lineas, local, ia, lector, tipo: modo === "rescate" ? "rescate" : "diferencia", ...equipo, ...pantalla, ...foto });
     }
   }
   // 10.80: oferta normal cuya captura va a subir el teléfono: se guardan sus líneas con un número
   // que va en el nombre de la captura («ok-…-n<id>.webp»).
   let normal: number | null = null;
   if (coincide && caso === null && cuerpo.capturaOk === true) {
-    normal = await insertarId("capturas_ok", { usuario: id, app, moneda, version, lector, lineas, local, ia, ...equipo, ...pantalla });
+    normal = await insertarId("capturas_ok", { usuario: id, app, moneda, version, lector, lineas, local, ia, ...equipo, ...pantalla, ...foto });
   }
   return json({ ok: true, coincide, ia, caso, normal });
 });

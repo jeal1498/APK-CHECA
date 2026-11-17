@@ -84,12 +84,17 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
         huellaOcr = hu
         ocupado = true
         inicioCaptura = android.os.SystemClock.elapsedRealtime()
+        // 10.81 (E3): id del fotograma, fijado aquí y llevado a su propio callback (no «la última imagen»).
+        val fotograma = Traza.nuevoId() to System.currentTimeMillis()
         val turno = ++turnoOcr
         try {
             ocr.process(InputImage.fromBitmap(bmp, 0))
                 .addOnSuccessListener { resultado ->
                     // Un error al analizar no debe dejar el lector trabado.
-                    try { if (!cerrado) analizar(resultado, bmp) } catch (_: Throwable) { }
+                    try {
+                        TrazaAndroid.fotograma = fotograma
+                        if (!cerrado) analizar(resultado, bmp)
+                    } catch (_: Throwable) { } finally { TrazaAndroid.fotograma = null }
                 }
                 .addOnCompleteListener {
                     bmpActual = null
@@ -228,7 +233,7 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
                 val recorte = if (b == null) null else Guardado.recortar(b, zona?.let {
                     Rect((it.left / escX).toInt(), (it.top / escY).toInt(), (it.right / escX).toInt(), (it.bottom / escY).toInt())
                 })
-                Guardado.guardar(ctx, app, oferta != null, texto, recorte)
+                Guardado.guardar(ctx, app, oferta != null, texto, recorte, TrazaAndroid.fotograma?.first)
             }
         }
         val servicio = RutaService.instancia ?: return

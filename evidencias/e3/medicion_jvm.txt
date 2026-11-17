@@ -1,0 +1,4 @@
+muestras: evidencias/e3/muestras_kotlin.json
+Por evento (armar + redactar + huella + JSON + encolar con cola llena de 500 y reescritura): 881.3 µs
+Por evento con la cola casi vacía (caso normal con red): 41.3 µs
+Tamaño medio de un evento: 564 bytes; cola: 500 eventos

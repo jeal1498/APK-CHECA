@@ -319,6 +319,12 @@ object Cuenta {
         else pedir("POST", "/functions/v1/confirmar-oferta", token(ctx), cuerpo)
     } catch (_: Exception) { null }
 
+    /** 10.81 (E3): manda un lote de trazas. (código HTTP, cuerpo), o null sin sesión o sin red. */
+    fun enviarTrazas(ctx: Context, cuerpo: String): Pair<Int, String>? = try {
+        if (sp(ctx).getString("refresco", null) == null) null
+        else 200 to pedir("POST", "/functions/v1/registrar-lectura", token(ctx), cuerpo)
+    } catch (e: HttpError) { e.codigo to e.cuerpo } catch (_: Exception) { null }
+
     /** Sube la captura de un caso dudoso (10.72) al almacén privado «capturas»; se borra a los 7 días. */
     fun subirCaptura(ctx: Context, caso: Long, bytes: ByteArray) {
         // Si lo apagó después de tomar la captura, ya no se manda.

@@ -1,0 +1,13 @@
+{
+  "entradas_sha256": "ce506cbe946e1641f2e2f13e061f5cf67840c91f95ee490c52c696bfe02091ed",
+  "fuentes_sha256": {
+    "Moneda": "4a68ed308ec2e954c8d37e9cdf6586e13b5a5afa85720b0dc2022f634548810b",
+    "Parser": "7fffa76a48bcd1ce13c7af9bba5d350546da3b0a8e0ad7c5ea0f9db066d177b3",
+    "Tarjetas": "faf07be8f812ff83e078bcd68ecdff81b36cf1b9798dacf8485ede215391705a"
+  },
+  "java": "openjdk version \"21.0.12.1\" 2026-08-18",
+  "kotlinc": "1.9.24",
+  "n_entradas": 365,
+  "predicciones_sha256": "df8bd953291c6b086f3d238d7c76f6ea09419d0a9b180c66ce978933d005b9d3",
+  "ref": "cf46798"
+}

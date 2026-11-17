@@ -1,0 +1,11 @@
+# Paquete de revisión E0.1 (para ChatGPT)
+- **Commit revisado (intacto):** `e6a05ec0b00ecd9ee5e6aa957e21579daa566d43` · **base:** `bedfa2483cdd433cd94d91188865ddf418b21e90` · rama **local** `trabajo/e0-respaldo`, **sin push**.
+- `respaldo-e0/` = copia exacta del commit (verificada con `diff -r` contra `git archive`). Scripts y pruebas **no modificados**.
+- `ENTREGA-E0-REVISION.md`, `ENTREGA-E0.patch` (`git diff bedfa24..e6a05ec`).
+- `logs/entorno.txt` (versiones y SHAs), `logs/49-pruebas-verbose.log` (49 OK, exit 0, ejecutado sobre el árbol extraído del commit), `logs/mutaciones.log` (7 mutaciones: todas DETECTADAS; M4 y M7 además muestran que sobreviven sin su prueba de refuerzo), `logs/punto6-grep.txt`.
+- `ejecutar_mutaciones.py` (reproduce `mutaciones.log`: `python3 ejecutar_mutaciones.py <dir respaldo-e0>`).
+- Punto 5: `IDS-FUENTE.md` + `comparar_ids.py`. Punto 6: `REVISION-PUNTO-6.md`.
+- Punto 4: `EVIDENCIA-COPIAS.json` autorizado como 4.º artefacto. Lo genera `evidencia_copias.py registrar`; contiene sha256/tamaño/formato de cifrado de A y B, medios declarados, `cifrados_distintos`, resultado de restauración desde B (tar coincide, verificación, manifiesto = original), declaración de conservación; sin rutas, llaves ni nombres de archivo (probado en `TestCopias`).
+- Límite: la independencia física de A y B es **declaración** del propietario, no comprobable por script.
+- Reproducir: `cd respaldo-e0 && python3 -W ignore -m unittest discover -s pruebas -v`.
+- Sin respaldo real; sin acceso a Supabase; sin secretos; E1 no iniciado.

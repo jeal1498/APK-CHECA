@@ -1,0 +1,7 @@
+# E3 guardia: el lector no cambió
+# $ python3 herramientas/guardia_parser.py
+# inicio 2026-11-16T09:54:16Z
+ok    app/src/main/java/com/karen/miruta/Parser.kt
+ok    app/src/main/java/com/karen/miruta/Tarjetas.kt
+ok    app/src/main/java/com/karen/miruta/Moneda.kt
+# exit=0 fin 2026-11-16T09:54:16Z

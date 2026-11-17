@@ -1,0 +1,5 @@
+# E3 TrazaAndroid compila contra STUBS (no es el SDK)
+# $ herramientas/jvm/compilar_traza_android.sh 2>&1 | grep -v '^Picked up'
+# inicio 2026-11-16T09:54:04Z
+TrazaAndroid.kt compila contra stubs (sin errores)
+# exit=0 fin 2026-11-16T09:54:16Z

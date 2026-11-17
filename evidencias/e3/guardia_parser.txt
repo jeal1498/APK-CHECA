@@ -1,0 +1,3 @@
+ok    app/src/main/java/com/karen/miruta/Parser.kt
+ok    app/src/main/java/com/karen/miruta/Tarjetas.kt
+ok    app/src/main/java/com/karen/miruta/Moneda.kt

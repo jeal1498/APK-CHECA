@@ -1,0 +1,3 @@
+## grep sobre scripts y SQL (sin coincidencias de escritura esperadas)
+paquete-revision-e0/respaldo-e0/respaldar.py:8:    /storage/v1/object/list/... (listar). No existe ningún DELETE, PUT, PATCH ni POST de escritura.
+(fin)

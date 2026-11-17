@@ -1,0 +1,23 @@
+{
+  "revisores": [
+    "lalo",
+    "pp"
+  ],
+  "comparados": 66,
+  "doble_ciego": 40,
+  "adjudicadas": 26,
+  "pendientes": [],
+  "referencia_final": 66,
+  "adjudicadas_por_metodo": {
+    "consenso": 0,
+    "tercera_persona": 26
+  },
+  "adjudicadas_a_favor_de": {
+    "otro": 9,
+    "lalo": 5,
+    "pp": 12
+  },
+  "errores_de_resolucion": [],
+  "errores_de_hoja": [],
+  "aviso": "Las adjudicadas no son doble revisión humana a ciegas: se mide aparte el acuerdo a ciegas (acuerdo.json)."
+}

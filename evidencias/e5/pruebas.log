@@ -1,0 +1,17 @@
+test_comparar_detecta_regresion_y_mejora (test_e5_reproduccion.Protocolo.test_comparar_detecta_regresion_y_mejora) ... ok
+test_comprometer_sin_sellar_falla (test_e5_reproduccion.Protocolo.test_comprometer_sin_sellar_falla) ... ok
+test_etiquetas_cambiadas_despues_de_sellar (test_e5_reproduccion.Protocolo.test_etiquetas_cambiadas_despues_de_sellar) ... ok
+test_orden_completo (test_e5_reproduccion.Protocolo.test_orden_completo) ... ok
+test_predicciones_cambiadas_despues_de_comprometer (test_e5_reproduccion.Protocolo.test_predicciones_cambiadas_despues_de_comprometer) ... ok
+test_registro_no_se_reutiliza (test_e5_reproduccion.Protocolo.test_registro_no_se_reutiliza) ... ok
+test_revelar_sin_comprometer_falla (test_e5_reproduccion.Protocolo.test_revelar_sin_comprometer_falla) ... ok
+test_tolerancias_del_banco (test_e5_reproduccion.Protocolo.test_tolerancias_del_banco) ... ok
+test_determinista_y_rechaza_entradas_con_respuesta (test_e5_reproduccion.Reproduccion.test_determinista_y_rechaza_entradas_con_respuesta) ... ok
+test_evidencia_versionada_reconcilia_con_banco (test_e5_reproduccion.Reproduccion.test_evidencia_versionada_reconcilia_con_banco)
+El informe versionado de la evaluación ciega coincide con lo que da Banco.kt (271 de 316). ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 36.854s
+
+OK
+exit=0

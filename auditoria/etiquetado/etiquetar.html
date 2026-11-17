@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src blob:; connect-src 'none'; form-action 'none'">
+<title>Checa · Etiquetado humano</title>
+<style>
+:root{--f:#0C0C10;--t:#16161C;--x:#F4F4EF;--d:#9a9aa3;--v:#22C55E;--a:#FACC15;--r:#EF4444;--b:#2a2a33}
+@media (prefers-color-scheme: light){:root{--f:#F4F4EF;--t:#fff;--x:#0C0C10;--d:#555;--b:#ddd}}
+*{box-sizing:border-box}body{margin:0;background:var(--f);color:var(--x);font:15px/1.4 system-ui,sans-serif}
+header,main{padding:12px 16px;max-width:1100px;margin:0 auto}
+.caja{background:var(--t);border:1px solid var(--b);border-radius:12px;padding:12px;margin-bottom:12px}
+.fila{display:flex;gap:8px;flex-wrap:wrap;align-items:end}
+label{display:flex;flex-direction:column;font-size:12px;color:var(--d);gap:4px}
+input,select,button,textarea{font:inherit;color:var(--x);background:var(--f);border:1px solid var(--b);border-radius:8px;padding:8px;min-height:40px}
+button{cursor:pointer}button.pri{border-color:var(--v)}
+#visor{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:12px}
+@media (max-width:800px){#visor{grid-template-columns:1fr}}
+#img{width:100%;max-height:78vh;object-fit:contain;background:#000;border-radius:8px}
+.clases{display:flex;flex-wrap:wrap;gap:6px}.clases label{flex-direction:row;align-items:center;color:var(--x);font-size:14px;border:1px solid var(--b);border-radius:8px;padding:6px 8px}
+#aviso{color:var(--r)}.tenue{color:var(--d);font-size:13px}
+</style>
+</head>
+<body>
+<header>
+  <h1 style="font-size:20px;margin:0 0 4px">Checa · Etiquetado humano (guía v1.0)</h1>
+  <div class="tenue">Todo ocurre en tu navegador: las imágenes no se suben a ningún lado. Al final exportas un CSV.</div>
+</header>
+<main>
+  <div class="caja" id="inicio">
+    <div class="fila">
+      <label>Tu seudónimo (minúsculas, sin nombre ni correo)<input id="rev" placeholder="lalo" pattern="[a-z0-9_]{2,32}"></label>
+      <label>Cuántas capturas<input id="n" type="number" value="120" min="10" max="400"></label>
+      <label>Carpeta con las capturas «&lt;id&gt;.webp»<input id="carpeta" type="file" webkitdirectory multiple></label>
+      <label>…o elige los archivos<input id="archivos" type="file" accept=".webp" multiple></label>
+    </div>
+    <p class="tenue">Las dos personas deben usar la <b>misma carpeta</b> y el <b>mismo número</b>: verán las mismas capturas, en el mismo orden, y no se ven entre sí.</p>
+    <p id="aviso"></p>
+  </div>
+
+  <div id="visor" hidden>
+    <div class="caja"><img id="img" alt="captura"><div class="tenue" id="nombre"></div></div>
+    <div class="caja">
+      <div class="tenue" id="avance"></div>
+      <p><b>¿Qué es?</b></p>
+      <div class="clases" id="clases"></div>
+      <p class="tenue">«No es oferta»: Viaje aceptado, La solicitud venció, Ya no está disponible, Otro conductor aceptó, navegación, mapa de calor. «Varias»: hay más de una tarjeta y no sabes cuál es la del botón Aceptar.</p>
+      <div class="fila">
+        <label>App<select id="app"><option value="">—</option><option value="didi">DiDi</option><option value="uber">Uber</option></select></label>
+        <label>Tarjeta (si hay varias)<input id="tarjeta" type="number" min="1" max="20" style="width:90px"></label>
+      </div>
+      <div class="fila" id="datos">
+        <label>Tarifa (lo que paga esa oferta)<input id="tarifa" inputmode="decimal" style="width:110px"></label>
+        <label>km (recogida + viaje)<input id="km" inputmode="decimal" style="width:90px"></label>
+        <label>min (recogida + viaje)<input id="min" inputmode="decimal" style="width:90px"></label>
+      </div>
+      <p class="tenue">No sumes bonos («adicionales», «por inicio»). 720 m = 0.72 km.</p>
+      <div class="fila">
+        <label>Confianza<select id="confianza"><option>alta</option><option selected>media</option><option>baja</option></select></label>
+        <label style="flex:1">Nota (sin direcciones ni nombres)<input id="nota" maxlength="280"></label>
+      </div>
+      <p id="error" style="color:var(--r)"></p>
+      <div class="fila">
+        <button id="ant">‹ Anterior</button>
+        <button id="sig" class="pri">Guardar y siguiente ›</button>
+      </div>
+      <hr style="border-color:var(--b)">
+      <div class="fila"><button id="exportar" class="pri">Exportar CSV</button><span class="tenue" id="hechas"></span></div>
+    </div>
+  </div>
+</main>
+<script>
+"use strict";
+var CLASES=[["oferta","Oferta"],["no_oferta","No es oferta"],["varias","Varias"],["ilegible","Ilegible"],["cambio_pantalla","Cambió la pantalla"]];
+var GUIA="1.0", lista=[], i=0, resp={};
+function $(id){return document.getElementById(id)}
+// sha256 propio (no depende de crypto.subtle, que no siempre existe al abrir el archivo desde el disco)
+function sha256(buf){var K=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+ var b=new Uint8Array(buf),l=b.length,n=((l+9+63)>>6)<<6,m=new Uint8Array(n);m.set(b);m[l]=0x80;var dv=new DataView(m.buffer);dv.setUint32(n-4,(l*8)>>>0);dv.setUint32(n-8,Math.floor(l/0x20000000));
+ var H=[0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19],w=new Uint32Array(64);
+ for(var o=0;o<n;o+=64){for(var t=0;t<16;t++)w[t]=dv.getUint32(o+t*4);for(t=16;t<64;t++){var x=w[t-15],y=w[t-2];var s0=((x>>>7)|(x<<25))^((x>>>18)|(x<<14))^(x>>>3),s1=((y>>>17)|(y<<15))^((y>>>19)|(y<<13))^(y>>>10);w[t]=(w[t-16]+s0+w[t-7]+s1)>>>0}
+  var a=H[0],c=H[1],d=H[2],e=H[3],f=H[4],g=H[5],h=H[6],k=H[7];
+  for(t=0;t<64;t++){var S1=((f>>>6)|(f<<26))^((f>>>11)|(f<<21))^((f>>>25)|(f<<7)),ch=(f&g)^(~f&h),T1=(k+S1+ch+K[t]+w[t])>>>0,S0=((a>>>2)|(a<<30))^((a>>>13)|(a<<19))^((a>>>22)|(a<<10)),mj=(a&c)^(a&d)^(c&d),T2=(S0+mj)>>>0;k=h;h=g;g=f;f=(e+T1)>>>0;e=d;d=c;c=a;a=(T1+T2)>>>0}
+  H=[(H[0]+a)>>>0,(H[1]+c)>>>0,(H[2]+d)>>>0,(H[3]+e)>>>0,(H[4]+f)>>>0,(H[5]+g)>>>0,(H[6]+h)>>>0,(H[7]+k)>>>0]}
+ return H.map(function(v){return("00000000"+v.toString(16)).slice(-8)}).join("")}
+// Orden determinista: el mismo para las dos personas (depende solo del id).
+function orden(id){var h=2166136261;var s="checa-e4-20261115-"+id;for(var j=0;j<s.length;j++){h^=s.charCodeAt(j);h=Math.imul(h,16777619)>>>0}return h}
+function guardarLocal(){try{localStorage.setItem("checa-e4-"+$("rev").value,JSON.stringify(resp))}catch(e){}}
+function cargarLocal(){try{resp=JSON.parse(localStorage.getItem("checa-e4-"+$("rev").value)||"{}")}catch(e){resp={}}}
+CLASES.forEach(function(c){var l=document.createElement("label");var r=document.createElement("input");r.type="radio";r.name="clase";r.value=c[0];l.appendChild(r);l.appendChild(document.createTextNode(" "+c[1]));$("clases").appendChild(l)});
+async function cargar(files){
+  $("aviso").textContent="";
+  if(!/^[a-z0-9_]{2,32}$/.test($("rev").value)){$("aviso").textContent="Pon primero tu seudónimo (minúsculas, números o _).";return}
+  var fs=Array.prototype.filter.call(files,function(f){return /^\d{1,4}\.webp$/.test(f.name)});
+  if(!fs.length){$("aviso").textContent="No encontré archivos «<id>.webp».";return}
+  fs.sort(function(a,b){return orden(a.name)-orden(b.name)});
+  fs=fs.slice(0,Math.max(1,parseInt($("n").value,10)||120));
+  lista=[];for(var f of fs){var buf=await f.arrayBuffer();lista.push({id:parseInt(f.name,10),nombre:f.name,sha:sha256(buf),url:URL.createObjectURL(f)})}
+  cargarLocal();i=0;$("inicio").hidden=true;$("visor").hidden=false;mostrar()}
+$("carpeta").onchange=function(e){cargar(e.target.files)};$("archivos").onchange=function(e){cargar(e.target.files)};
+function mostrar(){var c=lista[i],r=resp[c.nombre]||{};$("img").src=c.url;$("nombre").textContent=c.nombre+" · sha256 "+c.sha.slice(0,12)+"…";
+  $("avance").textContent="Captura "+(i+1)+" de "+lista.length;document.querySelectorAll("input[name=clase]").forEach(function(x){x.checked=x.value===r.clase});
+  ["app","tarjeta","tarifa","km","min","nota"].forEach(function(k){$(k).value=r[k]||""});$("confianza").value=r.confianza||"media";$("error").textContent="";
+  $("hechas").textContent=Object.keys(resp).filter(function(k){return lista.some(function(x){return x.nombre===k})}).length+" de "+lista.length+" etiquetadas"}
+function num(v){v=(v||"").trim().replace(",",".");if(!v)return"";var x=Number(v);return isFinite(x)&&x>0?String(x):null}
+function leer(){var cl=document.querySelector("input[name=clase]:checked");if(!cl)return"Elige qué es.";if(!$("app").value)return"Elige la app.";
+  var t=num($("tarifa").value),k=num($("km").value),m=num($("min").value);if(t===null||k===null||m===null)return"Tarifa, km y min deben ser números mayores que 0.";
+  if(cl.value==="oferta"&&(!t||!k||!m))return"Una oferta necesita tarifa, km y min.";if(cl.value!=="oferta"&&(t||k||m))return"Solo una oferta lleva tarifa, km y min: déjalos vacíos.";
+  var tj=($("tarjeta").value||"").trim();if(tj&&!/^([1-9]|1\d|20)$/.test(tj))return"Tarjeta: número del 1 al 20.";
+  resp[lista[i].nombre]={clase:cl.value,app:$("app").value,tarjeta:tj,tarifa:t,km:k,min:m,confianza:$("confianza").value,nota:$("nota").value.replace(/[\r\n]/g," ").slice(0,280)};guardarLocal();return""}
+$("sig").onclick=function(){var e=leer();if(e){$("error").textContent=e;return}if(i<lista.length-1){i++;mostrar()}else{$("hechas").textContent="¡Terminaste! Exporta el CSV."}};
+$("ant").onclick=function(){if(i>0){i--;mostrar()}};
+function celda(v){v=String(v==null?"":v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
+$("exportar").onclick=function(){var filas=[["caso","captura","captura_sha256","revisor","guia_version","clase","tarifa","km","min","tarjeta","confianza","nota"]];
+  lista.forEach(function(c){var r=resp[c.nombre];var caso=("0000"+c.id).slice(-4)+"-"+(r?r.app:"");
+    filas.push(r?[caso,c.nombre,c.sha,$("rev").value,GUIA,r.clase,r.tarifa,r.km,r.min,r.tarjeta,r.confianza,r.nota]:[caso,c.nombre,c.sha,$("rev").value,GUIA,"","","","","","",""])});
+  var csv=filas.map(function(f){return f.map(celda).join(",")}).join("\n")+"\n";var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="etiquetas-"+$("rev").value+".csv";a.click()};
+document.addEventListener("keydown",function(e){if(e.key==="Enter"&&!$("visor").hidden&&e.target.tagName!=="TEXTAREA"){e.preventDefault();$("sig").click()}});
+</script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+# sintético: regla de plausibilidad ($/h > 3000 no es oferta)
+$980.00
+1 min (0.4 km)
+9 min (11.0 km)
+---
+nada

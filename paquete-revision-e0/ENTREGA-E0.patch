@@ -1,0 +1,2411 @@
+diff --git a/ENTREGA-E0-REVISION.md b/ENTREGA-E0-REVISION.md
+new file mode 100644
+index 0000000..03503d7
+--- /dev/null
++++ b/ENTREGA-E0-REVISION.md
+@@ -0,0 +1,77 @@
++# ENTREGA E0.1 — Revisión
++
++**Fecha:** 2026-11-15 · **Estado:** preparado y probado localmente con servidor simulado; revisión pendiente. **E0 NO está cerrado** (no existe respaldo real, copias ni restauración).
++
++## 1. Alcance
++Autorizado: auditar scripts existentes, hacer reproducible y seguro el procedimiento de respaldo 10.77, corregir defectos, dar instrucciones al propietario, definir artefactos y preparar la verificación de lo que entregue.
++Fuera de alcance (no hecho): respaldo real, uso de llaves, cualquier acceso a Supabase, push, PR, merge, E1–E7, L1.
++
++## 2. Estado y hallazgo principal
++- **No había scripts existentes que auditar.** Búsqueda en `main`, `docs/seguimiento-maestro` y el contenedor: ninguno. Las ramas `trabajo/e1-e2-esquema`, `trabajo/e5-reproduccion`, `trabajo/l1-uber-est`, `trabajo/e4-veredictos` **no existen** en este entorno ni en GitHub (solo `main`, `docs/seguimiento-maestro` y la rama de sesión). Se escribió el procedimiento desde cero. *(Hecho verificado por ejecución.)*
++- Único método previo documentado: `docs/banco-lector.md` §2 (desplegar una función temporal que usa `SERVICE_ROLE`). Contradice los límites de E0 → **no se usa**. Queda desplegada `tmp-capturas-9f3k` (stub 410 según la doc, **no verificado**); recomendación: que el propietario la quite del panel.
++- La lista de 251 ids requeridos sale de `pruebas/lector/v77/resultados_haiku_v77.json` (251 ids únicos, 947–1380), sha256 `01716729…e679c`. *(Es la lista vigente del repositorio; el propietario debe confirmar que es la lista de «requeridos».)*
++
++## 3. Archivos (todos nuevos salvo `SEGUIMIENTO-MAESTRO.md`)
++`respaldo-e0/`: `README.md`, `comun.py`, `respaldar.py`, `verificar.py`, `evidencia_copias.py`, `verificar_entrega.py`, `referencia.sql`, `ids_requeridos_10.77.txt`, `.gitignore`, `pruebas/servidor_simulado.py`, `pruebas/test_e0.py`. Modificado: `SEGUIMIENTO-MAESTRO.md` (fila E0 y entrada de registro). Eliminados: ninguno. Tampoco se tocó nada de `app/`, `supabase/` ni `.github/`.
++
++## 4. Diff / commits
++Rama **local** `trabajo/e0-respaldo`, base `bedfa2483cdd433cd94d91188865ddf418b21e90` (`origin/docs/seguimiento-maestro`). SHA del commit: se informa en el mensaje de entrega (no puede incluirse en el propio commit). Diff completo: `git diff bedfa24..trabajo/e0-respaldo`; también en `ENTREGA-E0.patch` (sin versionar). **No está en GitHub** hasta que el propietario autorice el push.
++
++## 5. Diseño (qué impone el código)
++| Riesgo | Control | Probado por |
++|---|---|---|
++| Escritura/borrado accidental | Lista blanca de método+ruta; el código no contiene DELETE/PUT/PATCH | `test_solo_lectura_y_rutas_permitidas` |
++| Llave enviada a otro host | URL fija `https://gqsadclvftkzwrihfipz.supabase.co`; sin redirecciones | `test_rechaza_url_ajena…`, `test_redireccion_no_reenvia_la_llave` |
++| Llave equivocada/filtrada | Solo por variable de entorno; exige rol `service_role`/`sb_secret_`; errores y archivos sin la llave | `test_la_llave_no_aparece…`, `test_clave_incorrecta_401` |
++| Respaldo dentro del repo / sobre datos previos | Rechaza carpeta en repo git y carpeta no vacía | `test_salida_dentro_de_un_repo…` |
++| Listado incompleto | Paginación hasta página vacía, recursión en carpetas, duplicados abortan | `test_paginacion_y_carpetas` |
++| Archivo corrupto o HTML con 200 | Tamaño = listado, cabecera WebP, sha256, md5 vs eTag (best-effort) | `test_html_con_200…`, `test_descarga_truncada…`, `test_etag…` |
++| Expiración durante el respaldo (`limpiarCapturas`, 7 días) | Listado T0/T1, desaparecidos registrados; requerido ausente = INCOMPLETO | `test_requerido_que_desaparece…` |
++| Evidencia manipulada | `verificar.py` recalcula todo desde disco; 9 alteraciones de prueba | `TestMutaciones` |
++| Referencia circular | `referencia.sql` calcula huellas con otra vía (SQL) | ver §6 |
++| Restauración no ligada a B | `restaurar` hashea el archivo B y el tar descifrado; `registrar` los cruza | `test_restauracion_etiquetada_B…` |
++| Tar malicioso | Extracción validada (sin `..`, rutas absolutas, enlaces) | `test_tar_malicioso…` |
++
++## 6. Pruebas (comandos y resultados reales)
++- `cd respaldo-e0 && python3 -W ignore -m unittest discover -s pruebas` → **Ran 49 tests … OK** (Python 3.13.18, age 1.1.1, gpg 2.4.4, Linux). ~35 s.
++- Mutaciones sobre copia temporal (cada una debía hacer fallar la suite): seguir redirecciones, no validar WebP, no comparar sha256, `E06b` siempre ok, aceptar llave `anon`, no paginar, no ligar restauración a B. **Resultado inicial: 5 detectadas, 2 sobrevivieron** (`E06b` y ligado a B: las pruebas pasaban por otra comprobación). Se agregaron `test_lista_de_ids_del_repo_con_un_id…` y `test_restauracion_etiquetada_B…`; repetidas esas dos: detectadas.
++- `referencia.sql` ejecutada en PostgreSQL 16 local (tablas simuladas `storage.objects`, `errores_lector`, `capturas_ok`): `huella_listado` `d95e8ecc…`, `huella_ids_errores_lector` `b9bc07e8…`, `…_10_77` `8c03336f…` **idénticas** a `comun.py` con los mismos datos (orden `collate "C"` = orden por bytes).
++- Demostración por CLI (proceso real contra el servidor simulado): `respaldar.py` → `Resultado: COMPLETO. 149 capturas`; `verificar.py` → `APROBADO_CON_ADVERTENCIAS` solo por `R00` (sin referencia). La llave simulada no apareció en stdout/stderr.
++
++## 7. Regresión
++No aplica: no se modificó código existente de Checa. `SEGUIMIENTO-MAESTRO.md` solo recibió texto.
++
++## 8. Seguridad y privacidad
++- El respaldo completo contiene datos personales (UUID de usuario, líneas leídas, direcciones en imágenes); queda en el equipo del propietario, fuera del repo. Se comprobó por prueba que **resumen.json, manifiesto.csv, VERIFICACION.json y EVIDENCIA-COPIAS.json no contienen** llaves, correos ni UUID (patrón en `comun.RE_SECRETOS`); el manifiesto lleva el nombre del objeto (id numérico, color/tarifa/km/min/hora en las normales) y la versión.
++- Búsqueda de secretos en los archivos nuevos: solo aparecen los prefijos literales que el código usa para reconocer llaves; ninguna llave.
++- Workflows: todos los de `.github/workflows` disparan con push a `main`; `play-compilar.yml` también con PR a `main` pero solo por `app/**`. Un push de `trabajo/e0-respaldo` **no activaría ninguno**; un PR a `main` tampoco (solo toca `respaldo-e0/` y `SEGUIMIENTO-MAESTRO.md`). Aun así, push/PR requieren autorización.
++
++## 9. Limitaciones (qué NO se probó)
++1. **Nada contra Supabase real.** Supuestos no verificados: forma exacta del listado (`metadata.size`, `eTag`), que la ausencia de un objeto devuelva 404 o 400 (ambos tratados como «desaparecido»), el límite de 1,000 filas del SQL Editor, `storage.objects.metadata->>'size'`, PostgREST `Range`/`Content-Range`.
++2. PostgreSQL 16 local, no 17 de Supabase; datos simulados.
++3. Windows no probado (rutas, `shred`, variables de entorno): instrucciones escritas, sin ejecutar.
++4. El script no demuestra independencia física de los medios ni conservación: son **declaraciones** del propietario.
++5. No valida que las capturas sean «correctas» para el banco, solo su integridad.
++6. Si hay subidas/borrados entre el respaldo y la consulta SQL se reportan como advertencias, no se reconcilian.
++7. Un solo hilo; con ~740 archivos ≤ 500 KB se estima 5–15 min (estimación, no medida).
++
++## 10. Riesgos y reversión
++Riesgo operativo principal: **tiempo** — expiración desde el 20-11. Reversión: no hay nada que revertir (solo lectura; carpeta nueva). Si el propietario sospecha filtración de llave, rotarla en Supabase (decisión suya). No borrar el respaldo hasta cerrar E0.
++
++## 11. Puerta de aceptación (E0)
++| Criterio | Estado |
++|---|---|
++| Scripts auditados/reproducibles y seguros | Cumplido localmente (simulado) |
++| Instrucciones al propietario + artefactos definidos | Cumplido (`README.md`) |
++| Respaldo íntegro de objetos requeridos | **Pendiente** (lo ejecuta el propietario) |
++| Ids requeridos presentes (lista vigente) | **Pendiente** |
++| Manifiesto/hashes verifican | **Pendiente** |
++| Conteos/huella vs consulta del mismo momento | **Pendiente** |
++| Dos copias cifradas independientes | **Pendiente** |
++| Restauración de prueba desde B | **Pendiente** |
++| Propietario confirma que conserva copias | **Pendiente** |
++
++**Decisiones solicitadas al propietario:** (a) autorizar el push de `trabajo/e0-respaldo` para poder bajar los scripts, o indicar otro canal; (b) autorizar el cuarto artefacto `EVIDENCIA-COPIAS.json` (necesario para verificar copias y restauración; la lista original solo nombra tres); (c) confirmar que los 251 ids de `resultados_haiku_v77.json` son los «requeridos».
++
++## Material para ChatGPT
++Este informe, `git diff bedfa24..trabajo/e0-respaldo` (o `ENTREGA-E0.patch`), `respaldo-e0/` completo y `SEGUIMIENTO-MAESTRO.md`. Pedir revisión de: lógica de `respaldar.py` (§5), supuestos de §9.1, y si el cuarto artefacto es aceptable.
+diff --git a/SEGUIMIENTO-MAESTRO.md b/SEGUIMIENTO-MAESTRO.md
+index b8cf0a2..738ff6d 100644
+--- a/SEGUIMIENTO-MAESTRO.md
++++ b/SEGUIMIENTO-MAESTRO.md
+@@ -1,6 +1,6 @@
+ # Seguimiento maestro de Checa
+ 
+-**Última actualización:** 15 de noviembre de 2026  
++**Última actualización:** 15 de noviembre de 2026 (E0.1 preparado, sin respaldo real)  
+ **Repositorio:** `jeal1498/APK-CHECA`  
+ **Propósito:** mantener el objetivo, el orden de ejecución, las decisiones y la evidencia de cada entrega en un único lugar. Actualizar este archivo cada vez que se revise o cierre una entrega.
+ 
+@@ -24,7 +24,7 @@ El orden de ejecución y aceptación es **E0 → E1 → E2 → E3 → E4 → E5
+ 
+ | Entrega | Resultado que debe quedar | Estado al 15-11-2026 |
+ |---|---|---|
+-| **E0** | Banco histórico 10.77 respaldado y comprobado. | **Pendiente y urgente.** E0.1 aún no se ejecuta; falta respaldo local, verificación, dos copias cifradas y prueba de restauración de la copia B. |
++| **E0** | Banco histórico 10.77 respaldado y comprobado. | **En preparación (probado localmente con servidor simulado; revisión pendiente).** Scripts e instrucciones listos en la rama local `trabajo/e0-respaldo`, sin push. El respaldo real NO se ha ejecutado: faltan respaldo con la llave del propietario, verificación, dos copias cifradas y restauración de prueba desde la copia B. **Urgente:** las capturas de la 10.77 empiezan a expirar el 20-11-2026. |
+ | **E1** | Migraciones y esquema de auditoría preparados. | Preparación reportada en rama local de Claude; pendiente de revisión y aceptación. No está en GitHub ni aplicada. |
+ | **E2** | Servidor compatible con los nuevos registros. | Contrato TypeScript y pruebas preparados en la misma rama local de E1; aún no conectado a `index.ts`, pendiente de revisión. |
+ | **E3** | Android 10.81 con trazabilidad completa. | No iniciado. Requiere definir y aprobar tratamiento de datos, redacción, retención y revisión del aviso de privacidad antes de producción. |
+@@ -108,6 +108,16 @@ Antes de que E3 llegue a producción deben estar aprobados el plan de datos, la
+ 
+ Añadir una entrada nueva al principio de esta sección por cada revisión o cambio. Registrar hechos comprobados y separar claramente lo reportado por Claude de lo verificado de forma independiente.
+ 
++### 2026-11-15 — E0.1: procedimiento de respaldo preparado y probado localmente (sin respaldo real)
++- **Estado anterior:** E0.1 pendiente; se hablaba de «scripts existentes».
++- **Hallazgo:** no existe ningún script de respaldo en `main`, en `docs/seguimiento-maestro` ni en el contenedor de esta sesión; las ramas `trabajo/*` citadas en este archivo tampoco existen aquí. No hubo nada que auditar: se escribió el procedimiento desde cero (`respaldo-e0/`). El único método previo documentado (`docs/banco-lector.md` §2: función temporal desplegada con `SERVICE_ROLE`) contradice los límites de E0 y no se usó.
++- **Trabajo realizado:** `respaldar.py` (solo lectura, host fijo, sin redirecciones, llave solo por variable de entorno), `verificar.py` (offline), `referencia.sql` (huellas independientes del script), `evidencia_copias.py` (tar determinista, restauración desde la copia B, registro), `verificar_entrega.py` (revisión de los artefactos sanitizados), `README.md` (pasos para el propietario) y 49 pruebas contra un servidor simulado.
++- **Evidencia y pruebas:** `python3 -m unittest discover -s pruebas` → 49 OK (Python 3.13, age 1.1.1, gpg 2.4.4). `referencia.sql` ejecutada en PostgreSQL 16 local con tablas simuladas: sus huellas coinciden con las de Python. 7 mutaciones del código (redirecciones, WebP, sha256, ids requeridos, llave anon, paginación, ligado a la copia B): 2 sobrevivieron al principio, se reforzaron esas 2 pruebas y las 7 quedaron detectadas. Detalle en `ENTREGA-E0-REVISION.md`.
++- **Limitaciones / riesgos:** nada se probó contra Supabase real (formato de listado, código HTTP de objeto inexistente, eTag, límites del SQL Editor son supuestos); la independencia física de las copias y su conservación son declaraciones del propietario; el contenido de las capturas no se valida; si hay actividad entre el respaldo y la consulta SQL aparecerán advertencias.
++- **Decisión del propietario:** pendiente (autorizar push de la rama para que pueda bajar los scripts, y el cuarto artefacto `EVIDENCIA-COPIAS.json`).
++- **Siguiente paso autorizado:** ninguno nuevo. El propietario ejecuta el README en su equipo y entrega los artefactos sanitizados. E0 sigue **abierto**.
++- **Cambios en producción / main / Supabase:** ninguno. Rama local `trabajo/e0-respaldo`, sin push.
++
+ ### 2026-11-15 — Revisión cruzada L1.1/L1.2: no aprobado para integración
+ - Sonnet reportó cuatro combinaciones sobre el banco de 316 casos: main/main = 277/316; main/etiquetas L1 = 284/316; parser L1/etiquetas L1 = 284/316; parser L1/etiquetas main = 277/316.
+ - La diferencia de +7 se atribuye a L1.1 (cambios de etiquetas). L1.2 (Parser.kt) no cambió el resultado en esos 316 casos. Esto no demuestra que el parser sea correcto en Android ni que las etiquetas nuevas sean verdad de referencia.
+diff --git a/respaldo-e0/.gitignore b/respaldo-e0/.gitignore
+new file mode 100644
+index 0000000..c18dd8d
+--- /dev/null
++++ b/respaldo-e0/.gitignore
+@@ -0,0 +1 @@
++__pycache__/
+diff --git a/respaldo-e0/README.md b/respaldo-e0/README.md
+new file mode 100644
+index 0000000..bec90d8
+--- /dev/null
++++ b/respaldo-e0/README.md
+@@ -0,0 +1,88 @@
++# E0.1 — Respaldo histórico 10.77: instrucciones para Eduardo
++
++Todo se ejecuta **en tu equipo**, con **tu** llave. Nunca me mandes la llave, ni imágenes, ni la carpeta del respaldo.
++Los scripts solo **leen** Supabase (no hay ningún borrado ni escritura en el código).
++
++**Urgente:** las capturas de la 10.77 empiezan a borrarse solas el **20 nov**. Haz los pasos 1–6 antes.
++
++## Antes de empezar (5 min)
++- Python 3.9+, `age` (https://age-encryption.org) o `gpg`, y ~1 GB libres.
++- Una carpeta de trabajo **fuera del repositorio** y **fuera de Dropbox/OneDrive/iCloud** (guardará capturas con direcciones: es privada). Ejemplo: `~/e0` (en Windows `C:\e0`).
++- Los scripts de `respaldo-e0/` (esta carpeta). Anota sus hashes: `sha256sum respaldo-e0/*.py respaldo-e0/referencia.sql` (en Windows: `Get-FileHash`). El resumen los registra; debo ver que son los auditados.
++- La llave `service_role` del panel de Supabase (Project Settings → API). Solo en tu terminal.
++
++## Paso 1 de 8 — Poner la llave (1 min, solo en esa terminal)
++- Mac/Linux: `read -rs SUPABASE_SERVICE_ROLE_KEY; export SUPABASE_SERVICE_ROLE_KEY` (pega, Enter; no se ve).
++- Windows PowerShell: `$env:SUPABASE_SERVICE_ROLE_KEY = Read-Host "llave"` .
++- No la pongas en un archivo, ni en el comando, ni en el chat.
++
++## Paso 2 de 8 — Prueba sin descargar nada (1 min)
++```
++cd respaldo-e0
++python3 respaldar.py --solo-listar
++```
++Debe imprimir `objetos` (≥ 738), `requeridos: 251` y `requeridos_ausentes: 0`. Si `requeridos_ausentes` > 0, **detente** y avísame con ese número (no la llave).
++
++## Paso 3 de 8 — Respaldo real (5–15 min)
++```
++python3 respaldar.py --salida ~/e0/respaldo-1115
++```
++Termina con `Resultado: COMPLETO` (o `COMPLETO_CON_ADVERTENCIAS`). Si dice `INCOMPLETO`, **no sigas**: avísame. Puedes quitar la llave de la terminal: `unset SUPABASE_SERVICE_ROLE_KEY` (Windows: `Remove-Item Env:SUPABASE_SERVICE_ROLE_KEY`).
++
++## Paso 4 de 8 — Consulta de referencia (3 min, justo después del paso 3)
++1. Supabase → SQL Editor, con tu sesión. Pega **solo la consulta A** de `referencia.sql` → Run → exporta CSV → guárdalo como `~/e0/ref_objetos.csv`.
++2. Igual con la **consulta B** → `~/e0/ref_tablas.csv` (una fila).
++3. El editor limita a 1,000 filas; si el CSV de A tiene ≥ 1,000 filas, avísame antes de seguir.
++
++## Paso 5 de 8 — Verificar (1 min)
++```
++python3 verificar.py --dir ~/e0/respaldo-1115 --ref-objetos ~/e0/ref_objetos.csv --ref-tablas ~/e0/ref_tablas.csv
++```
++Debe decir `APROBADO`. Si dice `FALLO`, no cifres nada todavía: avísame qué comprobación falló (ids `V…`/`R…`). `APROBADO_CON_ADVERTENCIAS` se acepta solo si me explicas cada advertencia.
++
++## Paso 6 de 8 — Dos copias cifradas (10 min)
++1. Empaqueta (tar determinista, queda **sin cifrar**: bórralo en el paso siguiente):
++   `python3 evidencia_copias.py empaquetar --dir ~/e0/respaldo-1115 --salida ~/e0/respaldo.tar`
++2. Cifra **dos veces por separado**, cada vez con frase/clave distinta (guárdalas en tu gestor de contraseñas, no junto a la copia):
++   `age -p -o ~/e0/copiaA.tar.age ~/e0/respaldo.tar` y `age -p -o ~/e0/copiaB.tar.age ~/e0/respaldo.tar`
++   (gpg: `gpg -c -o copiaA.tar.gpg respaldo.tar`, igual para B.)
++3. Copia **A** a un medio (p. ej. disco externo) y **B** a otro **distinto** (p. ej. otra nube o USB en otro lugar). Conserva `respaldo.tar.empaquetado.json`.
++4. Borra el tar en claro: `shred -u ~/e0/respaldo.tar` (Mac: `rm -P`; Windows: `cipher /w` o bórralo y vacía la papelera).
++
++## Paso 7 de 8 — Restauración de prueba desde la copia B (5 min)
++Usa el archivo **tal como está en el medio B** (cópialo de ahí, no del disco de trabajo):
++```
++python3 evidencia_copias.py restaurar --copia RUTA_A_LA_COPIA_B --etiqueta B --destino ~/e0/prueba-B \
++  --empaquetado ~/e0/respaldo.tar.empaquetado.json --ref-objetos ~/e0/ref_objetos.csv --ref-tablas ~/e0/ref_tablas.csv \
++  --salida ~/e0/RESTAURACION-B.json
++```
++Te pedirá la frase de B. Debe decir `Restauración B: OK`. No toca el original (restaura en una carpeta nueva). Recomendado: repetir con la copia A (`--etiqueta A`).
++```
++python3 evidencia_copias.py registrar --copia-a RUTA_COPIA_A --copia-b RUTA_COPIA_B \
++  --medio-a "disco externo casa" --medio-b "nube cuenta aparte" \
++  --restauracion-b ~/e0/RESTAURACION-B.json --confirmo-conservar --salida ~/e0/EVIDENCIA-COPIAS.json
++```
++Los textos de `--medio-*` son libres: **sin** datos sensibles. `--confirmo-conservar` es tu declaración de que conservas ambas copias.
++
++## Paso 8 de 8 — Qué me entregas (y qué NO)
++Entrégame **solo** estos 4 archivos (no tienen llaves, usuarios, correos ni imágenes):
++1. `resumen.json` 2. `manifiesto.csv` 3. `VERIFICACION.json` (los tres están dentro de `~/e0/respaldo-1115/`) 4. `EVIDENCIA-COPIAS.json`.
++
++El cuarto no está en la lista original de tres: lo necesito para comprobar las dos copias y la restauración (criterios de E0). Dime si lo autorizas.
++
++**Nunca** me mandes: la llave, las frases de cifrado, `tablas/*.jsonl`, `capturas/`, los `.age`/`.gpg`, ni los CSV de referencia (si prefieres, puedes mandarlos: solo traen nombres y tamaños).
++
++Yo corro `python3 verificar_entrega.py --dir <entrega>` y te devuelvo el resultado. **E0 no se cierra** hasta que eso dé APROBADO con la evidencia de copias.
++
++## Si algo sale mal
++- `ERROR: …URL` / `rol «anon»`: usaste una llave equivocada; usa la `service_role`.
++- `Sin respuesta tras 4 intentos`: red; vuelve a lanzar con una carpeta **nueva** (el script no sobrescribe ni reanuda).
++- `INCOMPLETO`: faltan capturas requeridas (¿ya expiraron?). No reintentes en bucle: avísame con el conteo.
++- Dudas sobre una llave filtrada: rótala en Supabase y avísame solo que lo hiciste.
++
++## Qué valida y qué no
++- Valida: tamaños y sha256 de cada archivo, formato WebP, filas y huella de ids de las tablas, 251 ids requeridos, coincidencia con la consulta SQL del mismo momento, restauración desde B, que el manifiesto restaurado sea el original.
++- **No** valida: que las capturas sean las «correctas» para el banco; que no hayan cambiado entre el listado y la consulta SQL (si hubo actividad, aparece como advertencia); la independencia física de los medios ni que conserves las copias (son declaraciones tuyas); RLS ni permisos reales de Supabase.
++
++## Pruebas del procedimiento (para el revisor)
++`cd respaldo-e0 && python3 -m unittest discover -s pruebas -v` — 44 pruebas contra un servidor **simulado** (no Supabase real).
+diff --git a/respaldo-e0/comun.py b/respaldo-e0/comun.py
+new file mode 100644
+index 0000000..fdec4cc
+--- /dev/null
++++ b/respaldo-e0/comun.py
+@@ -0,0 +1,142 @@
++"""Funciones comunes del respaldo E0.1 (solo biblioteca estándar de Python 3.9+).
++
++Define los formatos y las huellas para que `respaldar.py`, `verificar.py`,
++`evidencia_copias.py` y `verificar_entrega.py` calculen exactamente lo mismo.
++No hace red. No lee llaves.
++"""
++import csv
++import hashlib
++import io
++import json
++import os
++import re
++
++ESQUEMA = 1
++BUCKET = "capturas"
++PROYECTO_REF = "gqsadclvftkzwrihfipz"
++VERSION_BANCO = "10.77"
++TABLAS = ("errores_lector", "capturas_ok")
++CAMPOS_MANIFIESTO = ["tipo", "nombre", "bytes", "sha256", "origen", "id_enlace", "version", "filas"]
++
++RE_DUDOSA = re.compile(r"^(\d+)\.webp$")
++RE_NORMAL_N = re.compile(r"^ok-(verde|amarillo|rojo)-.*-n(\d+)\.webp$")
++RE_NORMAL = re.compile(r"^ok-(verde|amarillo|rojo)-.*\.webp$")
++RE_SECRETOS = re.compile(
++    r"(eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}|sb_secret_|sb_publishable_|-----BEGIN [A-Z ]*PRIVATE KEY|"
++    r"AGE-SECRET-KEY-|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}|"
++    r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})"
++)
++
++
++def sha256_bytes(b):
++    return hashlib.sha256(b).hexdigest()
++
++
++def sha256_archivo(ruta):
++    h = hashlib.sha256()
++    with open(ruta, "rb") as f:
++        for bloque in iter(lambda: f.read(1 << 20), b""):
++            h.update(bloque)
++    return h.hexdigest()
++
++
++def es_webp(cabecera):
++    return len(cabecera) >= 12 and cabecera[:4] == b"RIFF" and cabecera[8:12] == b"WEBP"
++
++
++def clasificar(nombre):
++    """Devuelve (origen, id_enlace|None). origen: dudosa | normal_n | normal_sin_n | otro."""
++    m = RE_DUDOSA.match(nombre)
++    if m:
++        return "dudosa", int(m.group(1))
++    m = RE_NORMAL_N.match(nombre)
++    if m:
++        return "normal_n", int(m.group(2))
++    if RE_NORMAL.match(nombre):
++        return "normal_sin_n", None
++    return "otro", None
++
++
++def _hash_lineas(lineas):
++    return hashlib.sha256(("".join(l + "\n" for l in lineas)).encode("utf-8")).hexdigest()
++
++
++def huella_listado(pares):
++    """pares = [(nombre, bytes)]. Mismo cálculo que `referencia.sql` (huella_listado)."""
++    return _hash_lineas(f"{n}\t{b}" for n, b in sorted(pares, key=lambda p: p[0].encode("utf-8")))
++
++
++def huella_objetos(trios):
++    """trios = [(nombre, bytes, sha256)]. Huella del contenido real de lo respaldado."""
++    return _hash_lineas(f"{n}\t{b}\t{s}" for n, b, s in sorted(trios, key=lambda t: t[0].encode("utf-8")))
++
++
++def huella_ids(ids):
++    """Mismo cálculo que `referencia.sql`: sha256 de 'id,id,id' en orden numérico; vacío = None."""
++    ids = sorted(int(i) for i in ids)
++    if not ids:
++        return None
++    return sha256_bytes(",".join(str(i) for i in ids).encode("utf-8"))
++
++
++def escribir_manifiesto(filas):
++    """filas: lista de dicts con CAMPOS_MANIFIESTO. Orden estable y saltos de línea \\n."""
++    filas = sorted(filas, key=lambda f: (f["tipo"], f["nombre"].encode("utf-8")))
++    s = io.StringIO(newline="")
++    w = csv.DictWriter(s, fieldnames=CAMPOS_MANIFIESTO, lineterminator="\n")
++    w.writeheader()
++    for f in filas:
++        w.writerow({k: f.get(k, "") for k in CAMPOS_MANIFIESTO})
++    return s.getvalue().encode("utf-8")
++
++
++def leer_manifiesto(ruta):
++    with open(ruta, "r", encoding="utf-8", newline="") as f:
++        r = csv.DictReader(f)
++        if r.fieldnames != CAMPOS_MANIFIESTO:
++            raise ValueError(f"encabezado inesperado: {r.fieldnames}")
++        return list(r)
++
++
++def leer_ids(ruta):
++    ids = []
++    with open(ruta, "r", encoding="utf-8") as f:
++        for n, linea in enumerate(f, 1):
++            t = linea.strip()
++            if not t or t.startswith("#"):
++                continue
++            if not t.isdigit():
++                raise ValueError(f"línea {n} no es un id: {t!r}")
++            ids.append(int(t))
++    if len(ids) != len(set(ids)):
++        raise ValueError("ids repetidos en la lista")
++    return sorted(ids)
++
++
++def contar_lineas_jsonl(ruta):
++    """Devuelve la lista de objetos de un .jsonl (una fila por línea)."""
++    filas = []
++    with open(ruta, "r", encoding="utf-8") as f:
++        for linea in f:
++            if linea.strip():
++                filas.append(json.loads(linea))
++    return filas
++
++
++def json_estable(obj):
++    return (json.dumps(obj, ensure_ascii=False, indent=2, sort_keys=True) + "\n").encode("utf-8")
++
++
++def hash_scripts(carpeta):
++    """sha256 de los scripts del procedimiento (para atar la evidencia a la versión auditada)."""
++    res = {}
++    for n in ("comun.py", "respaldar.py", "verificar.py", "evidencia_copias.py", "verificar_entrega.py", "referencia.sql"):
++        p = os.path.join(carpeta, n)
++        if os.path.exists(p):
++            res[n] = sha256_archivo(p)
++    return res
++
++
++def sin_trazas_de_secretos(texto):
++    """True si el texto no contiene patrones de llaves, correos ni UUID (usuarios)."""
++    return RE_SECRETOS.search(texto) is None
+diff --git a/respaldo-e0/evidencia_copias.py b/respaldo-e0/evidencia_copias.py
+new file mode 100644
+index 0000000..9dd2fb1
+--- /dev/null
++++ b/respaldo-e0/evidencia_copias.py
+@@ -0,0 +1,220 @@
++#!/usr/bin/env python3
++"""Empaquetado, restauración de prueba y registro de evidencia de las dos copias cifradas (sin red, sin llaves de Supabase).
++
++Pasos (ver README.md):
++  1. empaquetar  : carpeta del respaldo → .tar determinista + .empaquetado.json (sha256 del tar en claro).
++  2. (tú) cifras el .tar DOS veces con age o gpg y guardas cada copia en un medio distinto; destruyes el .tar en claro.
++  3. restaurar   : descifra la COPIA B en una carpeta nueva, comprueba que el tar descifrado tiene el sha256
++                   anotado y corre verificar.py sobre lo restaurado → RESTAURACION-B.json.
++  4. registrar   : junta todo en EVIDENCIA-COPIAS.json (sin rutas ni nombres de archivo).
++Lo que NO puede comprobar ningún script: que los dos medios sean físicamente independientes ni que conserves
++las copias. Eso lo declaras tú (--medio-a, --medio-b, --confirmo-conservar) y queda registrado como declaración.
++"""
++import argparse
++import io
++import json
++import os
++import subprocess
++import sys
++import tarfile
++import tempfile
++from datetime import datetime, timezone
++
++import comun
++import verificar
++
++
++def ahora():
++    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
++
++
++def formato_cifrado(ruta):
++    with open(ruta, "rb") as f:
++        cab = f.read(512)
++    if cab.startswith(b"age-encryption.org/"):
++        return "age"
++    if cab.startswith(b"-----BEGIN PGP MESSAGE-----"):
++        return "gpg"
++    if cab and cab[0] & 0x80:
++        tag = (cab[0] & 0x3F) if cab[0] & 0x40 else ((cab[0] >> 2) & 0x0F)
++        if tag in (1, 3, 9, 18):
++            return "gpg"
++    return "desconocido"  # tar, gzip, zip, texto… no se aceptan como «cifrado»
++
++
++def _fuera_de_repo(ruta):
++    import respaldar
++    if respaldar.carpeta_en_repo(ruta):
++        raise SystemExit("ERROR: la ruta está dentro de un repositorio git. Usa una carpeta fuera.")
++
++
++def empaquetar(carpeta, salida):
++    _fuera_de_repo(salida)
++    if os.path.exists(salida):
++        raise SystemExit("ERROR: el archivo de salida ya existe.")
++    man = comun.leer_manifiesto(os.path.join(carpeta, "manifiesto.csv"))
++    res = json.load(open(os.path.join(carpeta, "resumen.json"), encoding="utf-8"))
++    base = os.path.basename(os.path.normpath(carpeta))
++    rutas = ["manifiesto.csv", "resumen.json"] + sorted(f["nombre"] for f in man)
++    if os.path.exists(os.path.join(carpeta, "VERIFICACION.json")):
++        rutas.append("VERIFICACION.json")
++    fd = os.open(salida, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
++    with os.fdopen(fd, "wb") as f, tarfile.open(fileobj=f, mode="w", format=tarfile.PAX_FORMAT) as tar:
++        for rel in sorted(set(rutas)):
++            p = os.path.join(carpeta, *rel.split("/"))
++            ti = tarfile.TarInfo(f"{base}/{rel}")
++            ti.size, ti.mtime, ti.mode, ti.uid, ti.gid, ti.uname, ti.gname = os.path.getsize(p), 0, 0o600, 0, 0, "", ""
++            with open(p, "rb") as g:
++                tar.addfile(ti, g)
++    info = {"esquema": comun.ESQUEMA, "empaquetado_utc": ahora(), "tar_sha256": comun.sha256_archivo(salida),
++            "tar_bytes": os.path.getsize(salida), "archivos": len(set(rutas)), "manifiesto_sha256": res["manifiesto_sha256"]}
++    with open(salida + ".empaquetado.json", "wb") as f:
++        f.write(comun.json_estable(info))
++    print(f"tar sha256 {info['tar_sha256']}  ({info['archivos']} archivos)", file=sys.stderr)
++    return 0
++
++
++def _descifrar(ruta, formato, identidad, frase_archivo, destino_tar):
++    if formato == "age":
++        cmd = ["age", "-d"] + (["-i", identidad] if identidad else []) + [ruta]
++    else:
++        cmd = ["gpg", "--quiet", "--decrypt"] + (["--batch", "--pinentry-mode", "loopback", "--passphrase-file", frase_archivo] if frase_archivo else []) + [ruta]
++    try:
++        p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
++    except FileNotFoundError:
++        raise SystemExit(f"ERROR: no está instalado «{cmd[0]}».")
++    import hashlib
++    h, total = hashlib.sha256(), 0
++    with open(destino_tar, "wb") as f:
++        for bloque in iter(lambda: p.stdout.read(1 << 20), b""):
++            f.write(bloque)
++            h.update(bloque)
++            total += len(bloque)
++    if p.wait() != 0:
++        raise SystemExit("ERROR: el descifrado falló (¿clave o frase incorrecta, o archivo dañado?).")
++    return h.hexdigest(), total
++
++
++def _extraer_seguro(tar_ruta, destino):
++    os.makedirs(destino, mode=0o700)
++    raiz = os.path.realpath(destino)
++    n = 0
++    with tarfile.open(tar_ruta, "r:") as tar:
++        for m in tar.getmembers():
++            objetivo = os.path.realpath(os.path.join(raiz, m.name))
++            if m.name.startswith("/") or ".." in m.name.split("/") or not (objetivo == raiz or objetivo.startswith(raiz + os.sep)):
++                raise SystemExit(f"ERROR: entrada insegura en el tar: {m.name!r}")
++            if m.isdir():
++                os.makedirs(objetivo, exist_ok=True)
++            elif m.isreg():
++                os.makedirs(os.path.dirname(objetivo), exist_ok=True)
++                with tar.extractfile(m) as src, open(objetivo, "wb") as dst:
++                    dst.write(src.read())
++                os.chmod(objetivo, 0o600)
++                n += 1
++            else:
++                raise SystemExit(f"ERROR: tipo de entrada no permitido en el tar: {m.name!r}")
++    return n
++
++
++def restaurar(copia, etiqueta, destino, empaquetado, identidad, frase_archivo, ref_objetos, ref_tablas, salida_json):
++    _fuera_de_repo(destino)
++    if os.path.exists(destino):
++        raise SystemExit("ERROR: la carpeta de restauración ya existe; debe ser nueva (no se toca el original).")
++    formato = formato_cifrado(copia)
++    if formato == "desconocido":
++        raise SystemExit("ERROR: el archivo no parece cifrado con age ni gpg.")
++    info = json.load(open(empaquetado, encoding="utf-8"))
++    copia_sha, copia_bytes = comun.sha256_archivo(copia), os.path.getsize(copia)
++    tmp = tempfile.mkdtemp(prefix="e0-restaurar-")
++    tar_tmp = os.path.join(tmp, "descifrado.tar")
++    try:
++        sha_tar, bytes_tar = _descifrar(copia, formato, identidad, frase_archivo, tar_tmp)
++        n = _extraer_seguro(tar_tmp, destino)
++    finally:
++        try:
++            os.remove(tar_tmp)
++            os.rmdir(tmp)
++        except OSError:
++            pass
++    tops = [d for d in os.listdir(destino) if os.path.isdir(os.path.join(destino, d))]
++    if len(tops) != 1:
++        raise SystemExit("ERROR: el tar debe contener una sola carpeta de respaldo.")
++    v = verificar.verificar(os.path.join(destino, tops[0]), ref_objetos, ref_tablas)
++    r = {"esquema": comun.ESQUEMA, "restaurado_utc": ahora(), "etiqueta_copia": etiqueta, "copia_sha256": copia_sha, "copia_bytes": copia_bytes,
++         "formato_cifrado": formato, "tar_descifrado_sha256": sha_tar, "tar_esperado_sha256": info["tar_sha256"],
++         "tar_coincide": sha_tar == info["tar_sha256"] and bytes_tar == info["tar_bytes"], "archivos_extraidos": n,
++         "verificacion": {k: v[k] for k in ("resultado", "manifiesto_sha256", "resumen_sha256", "conteos", "huellas")},
++         "fallos": [c["id"] for c in v["checks"] if c["estado"] == "fallo"],
++         "manifiesto_original_sha256": info["manifiesto_sha256"],
++         "manifiesto_coincide_con_original": v["manifiesto_sha256"] == info["manifiesto_sha256"],
++         "original_alterado": False, "nota": "La restauración se hizo en carpeta nueva; el original solo se lee para empaquetar."}
++    r["restauracion_ok"] = r["tar_coincide"] and r["manifiesto_coincide_con_original"] and v["resultado"] in ("APROBADO", "APROBADO_CON_ADVERTENCIAS")
++    with open(salida_json, "wb") as f:
++        f.write(comun.json_estable(r))
++    print(f"Restauración {etiqueta}: {'OK' if r['restauracion_ok'] else 'FALLÓ'} (tar_coincide={r['tar_coincide']}, verificación={v['resultado']})", file=sys.stderr)
++    return 0 if r["restauracion_ok"] else 1
++
++
++def registrar(args):
++    ev = {"esquema": comun.ESQUEMA, "registrado_utc": ahora(), "copias": {}, "declaraciones_del_propietario": {}}
++    for et, ruta, medio in (("A", args.copia_a, args.medio_a), ("B", args.copia_b, args.medio_b)):
++        fmt = formato_cifrado(ruta)
++        ev["copias"][et] = {"sha256": comun.sha256_archivo(ruta), "bytes": os.path.getsize(ruta), "formato_cifrado": fmt,
++                            "cifrada_detectada": fmt != "desconocido", "medio_declarado": medio.strip()}
++    a, b = ev["copias"]["A"], ev["copias"]["B"]
++    ev["cifrados_distintos"] = a["sha256"] != b["sha256"]
++    ev["medios_declarados_distintos"] = bool(a["medio_declarado"]) and bool(b["medio_declarado"]) and a["medio_declarado"].lower() != b["medio_declarado"].lower()
++    rb = json.load(open(args.restauracion_b, encoding="utf-8"))
++    ev["restauracion_b"] = rb
++    ev["restauracion_b_corresponde_a_copia_b"] = rb.get("etiqueta_copia") == "B" and rb.get("copia_sha256") == b["sha256"]
++    if args.restauracion_a:
++        ra = json.load(open(args.restauracion_a, encoding="utf-8"))
++        ev["restauracion_a"] = ra
++        ev["restauracion_a_corresponde_a_copia_a"] = ra.get("etiqueta_copia") == "A" and ra.get("copia_sha256") == a["sha256"]
++    ev["declaraciones_del_propietario"] = {"conserva_ambas_copias": bool(args.confirmo_conservar), "texto": "Declaración del propietario; no verificable por script."}
++    ev["scripts_sha256"] = comun.hash_scripts(os.path.dirname(os.path.abspath(__file__)))
++    ev["resultado"] = ("COMPLETA" if all([a["cifrada_detectada"], b["cifrada_detectada"], ev["medios_declarados_distintos"],
++                                          ev["restauracion_b_corresponde_a_copia_b"], rb.get("restauracion_ok") is True,
++                                          args.confirmo_conservar]) else "INCOMPLETA")
++    with open(args.salida, "wb") as f:
++        f.write(comun.json_estable(ev))
++    print("Evidencia de copias:", ev["resultado"], file=sys.stderr)
++    return 0 if ev["resultado"] == "COMPLETA" else 1
++
++
++def main(argv=None):
++    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
++    sub = ap.add_subparsers(dest="cmd", required=True)
++    e = sub.add_parser("empaquetar")
++    e.add_argument("--dir", required=True)
++    e.add_argument("--salida", required=True)
++    r = sub.add_parser("restaurar")
++    r.add_argument("--copia", required=True)
++    r.add_argument("--etiqueta", required=True, choices=["A", "B"])
++    r.add_argument("--destino", required=True)
++    r.add_argument("--empaquetado", required=True)
++    r.add_argument("--identidad", help="age: archivo de identidad (si cifraste con clave en vez de frase)")
++    r.add_argument("--frase-archivo", help="gpg: archivo con la frase (solo automatización/pruebas; normalmente te la pide gpg)")
++    r.add_argument("--ref-objetos")
++    r.add_argument("--ref-tablas")
++    r.add_argument("--salida", required=True)
++    g = sub.add_parser("registrar")
++    g.add_argument("--copia-a", required=True)
++    g.add_argument("--copia-b", required=True)
++    g.add_argument("--medio-a", required=True, help="texto libre sin datos sensibles, p. ej. «disco USB en casa»")
++    g.add_argument("--medio-b", required=True)
++    g.add_argument("--restauracion-b", required=True)
++    g.add_argument("--restauracion-a")
++    g.add_argument("--confirmo-conservar", action="store_true")
++    g.add_argument("--salida", default="EVIDENCIA-COPIAS.json")
++    a = ap.parse_args(argv)
++    if a.cmd == "empaquetar":
++        return empaquetar(a.dir, a.salida)
++    if a.cmd == "restaurar":
++        return restaurar(a.copia, a.etiqueta, a.destino, a.empaquetado, a.identidad, a.frase_archivo, a.ref_objetos, a.ref_tablas, a.salida)
++    return registrar(a)
++
++
++if __name__ == "__main__":
++    sys.exit(main())
+diff --git a/respaldo-e0/ids_requeridos_10.77.txt b/respaldo-e0/ids_requeridos_10.77.txt
+new file mode 100644
+index 0000000..1b895ad
+--- /dev/null
++++ b/respaldo-e0/ids_requeridos_10.77.txt
+@@ -0,0 +1,251 @@
++947
++956
++957
++958
++959
++960
++961
++962
++964
++965
++966
++967
++968
++969
++970
++971
++972
++973
++974
++975
++976
++977
++978
++979
++980
++981
++982
++983
++984
++985
++986
++987
++989
++990
++991
++992
++994
++995
++996
++997
++998
++1002
++1003
++1004
++1005
++1006
++1007
++1009
++1018
++1019
++1020
++1021
++1022
++1023
++1024
++1026
++1027
++1028
++1029
++1030
++1031
++1032
++1033
++1034
++1035
++1036
++1037
++1038
++1039
++1040
++1041
++1042
++1043
++1044
++1045
++1048
++1049
++1050
++1051
++1052
++1053
++1055
++1056
++1057
++1058
++1061
++1077
++1081
++1082
++1091
++1092
++1093
++1096
++1097
++1098
++1099
++1102
++1137
++1170
++1171
++1172
++1173
++1174
++1175
++1176
++1178
++1179
++1181
++1182
++1192
++1193
++1194
++1195
++1196
++1197
++1198
++1199
++1200
++1201
++1202
++1203
++1204
++1205
++1206
++1208
++1210
++1211
++1212
++1213
++1214
++1215
++1216
++1217
++1218
++1219
++1220
++1221
++1222
++1223
++1224
++1225
++1226
++1227
++1230
++1235
++1245
++1247
++1248
++1249
++1250
++1251
++1253
++1254
++1255
++1256
++1257
++1258
++1259
++1260
++1261
++1263
++1264
++1265
++1266
++1267
++1268
++1269
++1270
++1271
++1272
++1273
++1274
++1275
++1276
++1277
++1278
++1279
++1282
++1283
++1284
++1285
++1287
++1288
++1289
++1290
++1291
++1292
++1293
++1294
++1295
++1296
++1297
++1299
++1300
++1301
++1302
++1303
++1304
++1311
++1312
++1313
++1314
++1315
++1316
++1317
++1318
++1319
++1321
++1322
++1324
++1325
++1326
++1327
++1328
++1329
++1330
++1332
++1333
++1334
++1335
++1337
++1341
++1342
++1343
++1344
++1345
++1347
++1348
++1349
++1351
++1353
++1355
++1358
++1359
++1360
++1361
++1363
++1364
++1365
++1367
++1368
++1369
++1370
++1371
++1372
++1373
++1376
++1377
++1378
++1379
++1380
+diff --git a/respaldo-e0/pruebas/servidor_simulado.py b/respaldo-e0/pruebas/servidor_simulado.py
+new file mode 100644
+index 0000000..ea85050
+--- /dev/null
++++ b/respaldo-e0/pruebas/servidor_simulado.py
+@@ -0,0 +1,112 @@
++"""Servidor SIMULADO de Supabase (solo para pruebas locales). No es Supabase: no prueba RLS ni permisos reales."""
++import json
++import threading
++from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
++from urllib.parse import unquote, urlparse
++
++WEBP = b"RIFF\x24\x00\x00\x00WEBPVP8 " 
++
++
++def webp(semilla, extra=0):
++    return WEBP + semilla.encode() * (3 + extra)
++
++
++class Sim:
++    def __init__(self, clave, objetos, tablas, tope_pagina=100):
++        self.clave, self.objetos, self.tablas, self.tope = clave, dict(objetos), tablas, tope_pagina
++        self.log, self.fallar_una_vez, self.no_existen = [], set(), set()
++        self.quitar_tras_listar, self.truncar, self.html, self.redirigir = set(), set(), set(), {}
++        self.listados, self.codigo_no_existe, self.etags = 0, 404, {}
++        self.srv = ThreadingHTTPServer(("127.0.0.1", 0), self._handler())
++        self.url = f"http://127.0.0.1:{self.srv.server_port}"
++        threading.Thread(target=self.srv.serve_forever, daemon=True).start()
++
++    def cerrar(self):
++        self.srv.shutdown()
++        self.srv.server_close()
++
++    def _handler(self):
++        sim = self
++
++        class H(BaseHTTPRequestHandler):
++            def log_message(self, *a):
++                pass
++
++            def _responder(self, codigo, cuerpo=b"", cab=None, largo=None):
++                self.send_response(codigo)
++                for k, v in (cab or {}).items():
++                    self.send_header(k, v)
++                self.send_header("Content-Length", str(len(cuerpo) if largo is None else largo))
++                self.end_headers()
++                self.wfile.write(cuerpo)
++
++            def _auth(self):
++                return self.headers.get("Authorization") == "Bearer " + sim.clave
++
++            def do_POST(self):
++                sim.log.append(("POST", self.path))
++                n = int(self.headers.get("Content-Length", 0))
++                cuerpo = json.loads(self.rfile.read(n) or b"{}")
++                if not self._auth():
++                    return self._responder(401, b"{}")
++                if sim.llamada_fallida(self.path):
++                    return self._responder(500, b"{}")
++                if not self.path.startswith("/storage/v1/object/list/capturas"):
++                    return self._responder(404, b"{}")
++                pref, off, lim = cuerpo.get("prefix", ""), cuerpo.get("offset", 0), min(cuerpo.get("limit", 100), sim.tope)
++                nombres = sorted(k for k in sim.objetos if k.startswith(pref))
++                items, carpetas = [], set()
++                for k in nombres:
++                    resto = k[len(pref):]
++                    if "/" in resto:
++                        carpetas.add(resto.split("/")[0])
++                    else:
++                        items.append({"name": resto, "id": "id-" + k, "created_at": "2026-11-13T10:00:00Z", "metadata": {"size": len(sim.objetos[k]), **({"eTag": '"' + sim.etags[k] + '"'} if k in sim.etags else {})}})
++                items += [{"name": c, "id": None, "metadata": None} for c in sorted(carpetas)]
++                items.sort(key=lambda i: i["name"])
++                sim.listados += 1
++                self._responder(200, json.dumps(items[off:off + lim]).encode())
++                if sim.listados == 1:
++                    for k in sim.quitar_tras_listar:
++                        sim.objetos.pop(k, None)
++
++            def do_GET(self):
++                sim.log.append(("GET", self.path))
++                if not self._auth():
++                    return self._responder(401, b"{}")
++                if sim.llamada_fallida(self.path):
++                    return self._responder(500, b"{}")
++                ruta = urlparse(self.path).path
++                if ruta.startswith("/storage/v1/object/authenticated/capturas/"):
++                    nombre = unquote(ruta[len("/storage/v1/object/authenticated/capturas/"):])
++                    if nombre in sim.redirigir:
++                        return self._responder(302, b"", {"Location": sim.redirigir[nombre]})
++                    if nombre in sim.no_existen or nombre not in sim.objetos:
++                        return self._responder(sim.codigo_no_existe, b'{"statusCode":"404","error":"not_found"}')
++                    datos = sim.objetos[nombre]
++                    if nombre in sim.html:
++                        return self._responder(200, b"<html>error</html>" + b"x" * (len(datos) - 18))
++                    if nombre in sim.truncar:
++                        return self._responder(200, datos[:10], largo=len(datos))
++                    return self._responder(200, datos)
++                if ruta.startswith("/rest/v1/"):
++                    tabla = ruta.split("/")[-1]
++                    filas = sim.tablas.get(tabla)
++                    if filas is None:
++                        return self._responder(404, b"{}")
++                    a, b = self.headers.get("Range", "0-999").split("-")
++                    a, b = int(a), int(b)
++                    if a >= len(filas) and a > 0:
++                        return self._responder(416, b"{}")
++                    trozo = filas[a:min(b + 1, a + 1000)]
++                    rango = f"{a}-{a + len(trozo) - 1}/{len(filas)}" if trozo else f"*/{len(filas)}"
++                    return self._responder(206 if len(trozo) < len(filas) else 200, json.dumps(trozo).encode(), {"Content-Range": rango})
++                self._responder(404, b"{}")
++
++        return H
++
++    def llamada_fallida(self, ruta):
++        if ruta in self.fallar_una_vez:
++            self.fallar_una_vez.discard(ruta)
++            return True
++        return False
+diff --git a/respaldo-e0/pruebas/test_e0.py b/respaldo-e0/pruebas/test_e0.py
+new file mode 100644
+index 0000000..515b5a7
+--- /dev/null
++++ b/respaldo-e0/pruebas/test_e0.py
+@@ -0,0 +1,570 @@
++"""Pruebas del procedimiento E0.1 contra un servidor SIMULADO. Ejecutar: python3 -m unittest discover -s pruebas -v
++(desde respaldo-e0/). No tocan Supabase ni usan llaves reales."""
++import base64
++import contextlib
++import io
++import json
++import os
++import shutil
++import sys
++import tempfile
++import unittest
++
++AQUI = os.path.dirname(os.path.abspath(__file__))
++sys.path.insert(0, os.path.dirname(AQUI))
++sys.path.insert(0, AQUI)
++import comun  # noqa: E402
++import evidencia_copias  # noqa: E402
++import subprocess  # noqa: E402
++import respaldar  # noqa: E402
++import verificar  # noqa: E402
++import verificar_entrega  # noqa: E402
++from servidor_simulado import Sim, webp  # noqa: E402
++
++
++def cargar(f):
++    with f:
++        return json.load(f)
++
++
++def jwt(rol):
++    b = lambda d: base64.urlsafe_b64encode(json.dumps(d).encode()).rstrip(b"=").decode()
++    return f"{b({'alg':'HS256'})}.{b({'role':rol})}.firmaFALSAfirmaFALSA"
++
++
++CLAVE = jwt("service_role")
++REQ = list(range(101, 113))  # 12 ids requeridos de prueba
++
++
++def datos_base():
++    obj, er, ok = {}, [], []
++    for i in REQ:
++        obj[f"{i}.webp"] = webp(str(i)); er.append({"id": i, "version": "10.77", "usuario": "aaaaaaaa-0000-4000-8000-000000000001", "lineas": ["$50.00", "correo@x.com"]})
++    for i in range(1000, 1130):  # 130 más: obliga a paginar (>100)
++        obj[f"{i}.webp"] = webp(str(i), i % 5); er.append({"id": i, "version": "10.79", "usuario": "aaaaaaaa-0000-4000-8000-000000000002", "lineas": []})
++    for i in range(1, 6):
++        obj[f"ok-verde-50.00-5.0-12-1030-n{i}.webp"] = webp("n" + str(i)); ok.append({"id": i, "version": "10.80", "lineas": ["$50.00"]})
++    obj["ok-rojo-20.00-9.0-30-1100.webp"] = webp("sinn")
++    obj["sub/carpeta.webp"] = webp("sub")
++    return obj, {"errores_lector": sorted(er, key=lambda r: r["id"]), "capturas_ok": ok}
++
++
++class Base(unittest.TestCase):
++    def setUp(self):
++        self.tmp = tempfile.mkdtemp(prefix="e0test-")
++        self.ids = os.path.join(self.tmp, "ids.txt")
++        with open(self.ids, "w") as f:
++            f.write("".join(f"{i}\n" for i in REQ))
++        obj, tablas = datos_base()
++        self.sim = Sim(CLAVE, obj, tablas)
++        self.addCleanup(self.sim.cerrar)
++        self.addCleanup(shutil.rmtree, self.tmp, True)
++        os.environ["SUPABASE_SERVICE_ROLE_KEY"] = CLAVE
++
++    def correr(self, *extra, salida="resp", url=None):
++        err = io.StringIO()
++        with contextlib.redirect_stderr(err), contextlib.redirect_stdout(io.StringIO()):
++            cod = respaldar.main(["--url", url or self.sim.url, "--permitir-local", "--espera", "0.01", "--ids-requeridos", self.ids,
++                                  *(["--salida", os.path.join(self.tmp, salida)] if salida else []), *extra])
++        return cod, err.getvalue()
++
++    def _refs(self, tabla_extra=None, quitar=(), tam=None):
++        objs = {k: len(v) for k, v in self.sim.objetos.items() if k not in quitar}
++        if tam:
++            objs[tam] += 1
++        ro = os.path.join(self.tmp, "ref_objetos.csv")
++        open(ro, "w").write("name,bytes\n" + "".join(f"{k},{v}\n" for k, v in sorted(objs.items())))
++        er = self.sim.tablas["errores_lector"]
++        cols = {"objetos": len(objs), "errores_lector": len(er), "errores_lector_10_77": sum(1 for r in er if r["version"] == "10.77"),
++                "capturas_ok": len(self.sim.tablas["capturas_ok"]),
++                "huella_ids_errores_lector": comun.huella_ids(r["id"] for r in er),
++                "huella_ids_errores_lector_10_77": comun.huella_ids(r["id"] for r in er if r["version"] == "10.77"),
++                "huella_ids_capturas_ok": comun.huella_ids(r["id"] for r in self.sim.tablas["capturas_ok"]),
++                "huella_listado": comun.huella_listado(list(objs.items())), "consultado_utc": "2026-11-15T12:00:00Z"}
++        cols.update(tabla_extra or {})
++        rt = os.path.join(self.tmp, "ref_tablas.csv")
++        open(rt, "w").write(",".join(cols) + "\n" + ",".join("" if v is None else str(v) for v in cols.values()) + "\n")
++        return ro, rt
++
++    def dir(self, n="resp"):
++        return os.path.join(self.tmp, n)
++
++    def verif(self, n="resp", **k):
++        return verificar.verificar(self.dir(n), **k)
++
++
++class TestRespaldo(Base):
++    def test_camino_feliz(self):
++        cod, err = self.correr()
++        self.assertEqual(cod, 0, err)
++        res = cargar(open(os.path.join(self.dir(), "resumen.json")))
++        self.assertEqual(res["resultado_respaldo"], "COMPLETO")
++        self.assertEqual(res["capturas"]["descargadas"], 12 + 130 + 5 + 1 + 1)  # incluye la de la subcarpeta
++        self.assertEqual(res["requeridos"]["presentes"], 12)
++        self.assertEqual(res["tablas"]["errores_lector"]["filas"], 142)
++        self.assertTrue(os.path.isfile(os.path.join(self.dir(), "capturas", "sub", "carpeta.webp")))
++        v = self.verif()
++        self.assertEqual(v["resultado"], "APROBADO_CON_ADVERTENCIAS", [c for c in v["checks"] if c["estado"] != "ok"])
++        self.assertEqual({c["id"] for c in v["checks"] if c["estado"] == "advertencia"}, {"R00"})
++
++    def test_solo_lectura_y_rutas_permitidas(self):
++        self.correr()
++        for metodo, ruta in self.sim.log:
++            self.assertIn(metodo, ("GET", "POST"))
++            self.assertTrue(any(ruta.startswith(p) for _, p in respaldar.PERMITIDO), ruta)
++            if metodo == "POST":
++                self.assertTrue(ruta.startswith("/storage/v1/object/list/"))
++        with open(os.path.join(os.path.dirname(AQUI), "respaldar.py")) as f:
++            fuente = f.read()
++        for prohibido in ('"DELETE"', '"PUT"', '"PATCH"', "'DELETE'", "'PUT'"):
++            self.assertNotIn(prohibido, fuente)
++
++    def test_la_llave_no_aparece_en_ninguna_salida(self):
++        _, err = self.correr()
++        self.assertNotIn(CLAVE, err)
++        for raiz, _, archivos in os.walk(self.dir()):
++            for a in archivos:
++                with open(os.path.join(raiz, a), "rb") as f:
++                    self.assertNotIn(CLAVE.encode(), f.read())
++
++    def test_paginacion_y_carpetas(self):
++        self.sim.tope = 7  # el servidor devuelve menos de lo pedido
++        cod, err = self.correr()
++        self.assertEqual(cod, 0, err)
++        self.assertEqual(self.verif()["conteos"]["capturas"], 149)
++
++    def test_reintenta_ante_500(self):
++        self.sim.fallar_una_vez.add("/storage/v1/object/authenticated/capturas/101.webp")
++        cod, err = self.correr()
++        self.assertEqual(cod, 0, err)
++
++    def test_requerido_ausente_es_incompleto(self):
++        del self.sim.objetos["105.webp"]
++        cod, err = self.correr()
++        self.assertEqual(cod, 2)
++        res = cargar(open(os.path.join(self.dir(), "resumen.json")))
++        self.assertEqual(res["resultado_respaldo"], "INCOMPLETO")
++        self.assertEqual(res["requeridos"]["faltantes"], [105])
++        self.assertEqual(self.verif()["resultado"], "FALLO")
++
++    def test_requerido_que_desaparece_durante_la_descarga(self):
++        self.sim.quitar_tras_listar.add("107.webp")
++        cod, _ = self.correr()
++        self.assertEqual(cod, 2)
++        res = cargar(open(os.path.join(self.dir(), "resumen.json")))
++        self.assertIn("107.webp", res["capturas"]["desaparecidas_antes_de_descargar"])
++        self.assertIn("107.webp", res["listado"]["quitados_durante"])
++
++    def test_objeto_inexistente_con_http_400_como_hace_supabase(self):
++        self.sim.codigo_no_existe = 400
++        self.sim.quitar_tras_listar.add("1050.webp")
++        cod, _ = self.correr()
++        self.assertEqual(cod, 0)
++        res = cargar(open(os.path.join(self.dir(), "resumen.json")))
++        self.assertEqual(res["capturas"]["desaparecidas_antes_de_descargar"], ["1050.webp"])
++
++    def test_etag_md5_coincide_o_se_avisa(self):
++        import hashlib
++        for k, v in self.sim.objetos.items():
++            self.sim.etags[k] = hashlib.md5(v).hexdigest()
++        self.sim.etags["104.webp"] = "0" * 32  # el servidor dice otra cosa
++        self.assertEqual(self.correr()[0], 0)
++        res = cargar(open(os.path.join(self.dir(), "resumen.json")))
++        self.assertEqual(res["capturas"]["etag_md5"]["discrepancias"], ["104.webp"])
++        self.assertEqual(res["capturas"]["etag_md5"]["comprobados"], 148)
++        self.assertIn("V10c", {c["id"] for c in self.verif()["checks"] if c["estado"] == "advertencia"})
++
++    def test_no_requerido_que_desaparece_es_advertencia(self):
++        self.sim.quitar_tras_listar.add("1050.webp")
++        cod, _ = self.correr()
++        self.assertEqual(cod, 0)
++        v = self.verif()
++        self.assertEqual(v["resultado"], "APROBADO_CON_ADVERTENCIAS")
++        self.assertIn("V10", {c["id"] for c in v["checks"] if c["estado"] == "advertencia"})
++
++    def test_descarga_truncada_aborta_y_no_deja_resumen_falso(self):
++        self.sim.truncar.add("1001.webp")
++        cod, err = self.correr()
++        self.assertEqual(cod, 1)
++        self.assertIn("Sin respuesta tras 4 intentos", err)
++        self.assertFalse(os.path.exists(os.path.join(self.dir(), "capturas", "1001.webp")))
++        self.assertFalse(os.path.exists(os.path.join(self.dir(), "resumen.json")))  # no hay un resumen que parezca completo
++
++    def test_html_con_200_se_rechaza(self):
++        self.sim.html.add("102.webp")
++        cod, _ = self.correr()
++        self.assertEqual(cod, 2)
++        res = cargar(open(os.path.join(self.dir(), "resumen.json")))
++        self.assertEqual(res["capturas"]["fallidas"][0]["nombre"], "102.webp")
++        self.assertFalse(os.path.exists(os.path.join(self.dir(), "capturas", "102.webp")))
++
++    def test_redireccion_no_reenvia_la_llave(self):
++        otro = Sim("otra", {}, {})
++        self.addCleanup(otro.cerrar)
++        self.sim.redirigir["103.webp"] = otro.url + "/robo"
++        cod, err = self.correr()
++        self.assertEqual(otro.log, [])  # nunca se llamó al otro host
++        self.assertEqual(cod, 1)
++        self.assertIn("HTTP 302", err)
++
++    def test_rechaza_url_ajena_clave_anon_y_sin_clave(self):
++        for url in ("https://ejemplo.supabase.co", "https://evil.com", "http://gqsadclvftkzwrihfipz.supabase.co"):
++            err = io.StringIO()
++            with contextlib.redirect_stderr(err):
++                cod = respaldar.main(["--url", url, "--salida", self.dir("x"), "--ids-requeridos", self.ids])
++            self.assertEqual(cod, 1, url)
++            self.assertFalse(os.path.exists(self.dir("x")))
++        os.environ["SUPABASE_SERVICE_ROLE_KEY"] = jwt("anon")
++        self.assertEqual(self.correr()[0], 1)
++        os.environ["SUPABASE_SERVICE_ROLE_KEY"] = ""
++        self.assertEqual(self.correr()[0], 1)
++        self.assertEqual(self.sim.log, [])
++
++    def test_clave_incorrecta_401(self):
++        os.environ["SUPABASE_SERVICE_ROLE_KEY"] = jwt("service_role") + "x"
++        cod, err = self.correr()
++        self.assertEqual(cod, 1)
++        self.assertNotIn(os.environ["SUPABASE_SERVICE_ROLE_KEY"], err)
++
++    def test_salida_dentro_de_un_repo_o_no_vacia_se_rechaza(self):
++        repo = os.path.join(self.tmp, "repo")
++        os.makedirs(os.path.join(repo, ".git"))
++        e = io.StringIO()
++        with contextlib.redirect_stderr(e):
++            c1 = respaldar.main(["--url", self.sim.url, "--permitir-local", "--salida", os.path.join(repo, "r"), "--ids-requeridos", self.ids])
++        self.assertEqual(c1, 1)
++        self.assertIn("repositorio", e.getvalue())
++        os.makedirs(self.dir("llena"))
++        open(os.path.join(self.dir("llena"), "a"), "w").close()
++        with contextlib.redirect_stderr(io.StringIO()):
++            self.assertEqual(respaldar.main(["--url", self.sim.url, "--permitir-local", "--salida", self.dir("llena"), "--ids-requeridos", self.ids]), 1)
++
++    def test_solo_listar_no_escribe_nada(self):
++        cod, _ = self.correr("--solo-listar", salida=None)
++        self.assertEqual(cod, 0)
++        self.assertEqual(os.listdir(self.tmp).count("resp"), 0)
++
++    def test_nombre_de_objeto_con_ruta_peligrosa(self):
++        self.sim.objetos["../fuera.webp"] = webp("x")
++        cod, err = self.correr()
++        self.assertEqual(cod, 1)
++        self.assertFalse(os.path.exists(os.path.join(self.tmp, "fuera.webp")))
++
++
++class TestMutaciones(Base):
++    """Cada alteración del respaldo debe hacer fallar verificar.py."""
++
++    def setUp(self):
++        super().setUp()
++        self.assertEqual(self.correr()[0], 0)
++
++    def assertFalla(self, id_):
++        v = self.verif()
++        self.assertEqual(v["resultado"], "FALLO")
++        self.assertIn(id_, {c["id"] for c in v["checks"] if c["estado"] == "fallo"})
++
++    def test_byte_alterado(self):
++        p = os.path.join(self.dir(), "capturas", "104.webp")
++        d = bytearray(open(p, "rb").read()); d[-1] ^= 1; open(p, "wb").write(d)
++        self.assertFalla("V03")
++
++    def test_archivo_borrado(self):
++        os.remove(os.path.join(self.dir(), "capturas", "104.webp"))
++        self.assertFalla("V03")
++
++    def test_archivo_extra(self):
++        open(os.path.join(self.dir(), "capturas", "999.webp"), "wb").write(b"RIFFxxxxWEBP")
++        self.assertFalla("V04")
++
++    def test_contenido_reemplazado_por_html(self):
++        p = os.path.join(self.dir(), "capturas", "104.webp")
++        open(p, "wb").write(b"<html>")
++        self.assertFalla("V03")
++
++    def test_manifiesto_editado(self):
++        p = os.path.join(self.dir(), "manifiesto.csv")
++        t = open(p).read()
++        self.assertIn("capturas/104.webp", t)
++        open(p, "w").write(t.replace("capturas/104.webp", "capturas/104.webp ", 1))
++        self.assertFalla("V01")
++
++    def test_tabla_alterada(self):
++        p = os.path.join(self.dir(), "tablas", "errores_lector.jsonl")
++        open(p, "a").write('{"id": 5000, "version": "10.77"}\n')
++        self.assertFalla("V03")
++
++    def test_lista_de_ids_alterada(self):
++        p = os.path.join(self.dir(), "ids_requeridos.txt")
++        open(p, "a").write("113\n")
++        self.assertFalla("V03")
++
++    def test_resumen_con_huella_cambiada(self):
++        p = os.path.join(self.dir(), "resumen.json")
++        r = cargar(open(p)); r["capturas"]["huella_objetos"] = "0" * 64; json.dump(r, open(p, "w"))
++        v = self.verif()
++        self.assertEqual(v["resultado"], "FALLO")
++
++    def test_version_requerida_cambiada_en_la_tabla_y_todo_reajustado(self):
++        """Un atacante coherente (reescribe tabla, manifiesto y resumen) aún falla por la versión 10.77."""
++        d = self.dir()
++        p = os.path.join(d, "tablas", "errores_lector.jsonl")
++        filas = [json.loads(l) for l in open(p)]
++        for f in filas:
++            if f["id"] == 101:
++                f["version"] = "10.99"
++        datos = "".join(json.dumps(f, ensure_ascii=False, sort_keys=True) + "\n" for f in filas).encode()
++        open(p, "wb").write(datos)
++        m = comun.leer_manifiesto(os.path.join(d, "manifiesto.csv"))
++        for r in m:
++            if r["nombre"] == "tablas/errores_lector.jsonl":
++                r["sha256"] = comun.sha256_bytes(datos)
++        open(os.path.join(d, "manifiesto.csv"), "wb").write(comun.escribir_manifiesto(m))
++        res = cargar(open(os.path.join(d, "resumen.json")))
++        res["manifiesto_sha256"] = comun.sha256_archivo(os.path.join(d, "manifiesto.csv"))
++        res["tablas"]["errores_lector"]["sha256_jsonl"] = comun.sha256_bytes(datos)
++        json.dump(res, open(os.path.join(d, "resumen.json"), "w"))
++        self.assertFalla("V08c")
++
++
++class TestReferencia(Base):
++    def test_referencia_coincide(self):
++        self.correr()
++        ro, rt = self._refs()
++        v = self.verif(ref_objetos=ro, ref_tablas=rt)
++        self.assertEqual(v["resultado"], "APROBADO", [c for c in v["checks"] if c["estado"] != "ok"])
++
++    def test_objeto_de_la_referencia_ausente_en_el_respaldo(self):
++        self.correr()
++        ro, rt = self._refs()
++        open(ro, "a").write("999999.webp,100\n")
++        v = self.verif(ref_objetos=ro, ref_tablas=rt)
++        self.assertEqual(v["resultado"], "FALLO")
++        self.assertIn("R01", {c["id"] for c in v["checks"] if c["estado"] == "fallo"})
++
++    def test_tamano_distinto_y_huella_distinta(self):
++        self.correr()
++        ro, rt = self._refs(tam="104.webp")
++        v = self.verif(ref_objetos=ro, ref_tablas=rt)
++        self.assertIn("R02", {c["id"] for c in v["checks"] if c["estado"] == "fallo"})
++
++    def test_mas_filas_en_referencia_que_en_respaldo_falla(self):
++        self.correr()
++        ro, rt = self._refs({"errores_lector": 143})
++        v = self.verif(ref_objetos=ro, ref_tablas=rt)
++        self.assertIn("R05-errores_lector", {c["id"] for c in v["checks"] if c["estado"] == "fallo"})
++
++    def test_huella_de_ids_distinta_con_mismo_conteo_falla(self):
++        self.correr()
++        ro, rt = self._refs({"huella_ids_errores_lector_10_77": "0" * 64})
++        v = self.verif(ref_objetos=ro, ref_tablas=rt)
++        self.assertIn("R08", {c["id"] for c in v["checks"] if c["estado"] == "fallo"})
++
++    def test_actividad_posterior_es_advertencia_no_fallo(self):
++        self.correr()
++        ro, rt = self._refs()
++        self.sim.objetos["nuevo.webp"] = webp("n")
++        ro2, rt2 = self._refs()
++        v = self.verif(ref_objetos=ro2, ref_tablas=rt2)
++        self.assertIn("R01", {c["id"] for c in v["checks"] if c["estado"] == "fallo"})  # existía en la referencia y no en el respaldo
++
++
++class TestEntrega(Base):
++    def test_artefactos_sanitizados_contienen_solo_lo_permitido(self):
++        self.correr()
++        v = self.verif()
++        open(os.path.join(self.dir(), "VERIFICACION.json"), "wb").write(comun.json_estable(v))
++        for n in ("resumen.json", "manifiesto.csv", "VERIFICACION.json"):
++            texto = open(os.path.join(self.dir(), n), encoding="utf-8").read()
++            self.assertTrue(comun.sin_trazas_de_secretos(texto), n)
++        # y el respaldo completo SÍ contiene datos personales (por eso no se comparte)
++        self.assertFalse(comun.sin_trazas_de_secretos(open(os.path.join(self.dir(), "tablas", "errores_lector.jsonl")).read()))
++
++    def test_entrega_sin_referencia_no_cierra(self):
++        self.correr()
++        d = self.dir()
++        open(os.path.join(d, "VERIFICACION.json"), "wb").write(comun.json_estable(self.verif()))
++        entrega = os.path.join(self.tmp, "entrega"); os.makedirs(entrega)
++        for n in ("resumen.json", "manifiesto.csv", "VERIFICACION.json"):
++            shutil.copy(os.path.join(d, n), entrega)
++        r = verificar_entrega.verificar_entrega(entrega, self.ids)
++        self.assertEqual([c["id"] for c in r["checks"] if c["estado"] == "fallo"], ["E10"])
++
++    def test_verificar_entrega_acepta_y_detecta_manipulacion(self):
++        self.correr()
++        d = self.dir()
++        ro, rt = self._refs()
++        v = self.verif(ref_objetos=ro, ref_tablas=rt)
++        open(os.path.join(d, "VERIFICACION.json"), "wb").write(comun.json_estable(v))
++        entrega = os.path.join(self.tmp, "entrega"); os.makedirs(entrega)
++        for n in ("resumen.json", "manifiesto.csv", "VERIFICACION.json"):
++            shutil.copy(os.path.join(d, n), entrega)
++        r = verificar_entrega.verificar_entrega(entrega, self.ids)
++        self.assertFalse([c for c in r["checks"] if c["estado"] == "fallo"], r["checks"])
++        # manipulación: borrar una fila requerida del manifiesto
++        p = os.path.join(entrega, "manifiesto.csv")
++        lineas = open(p).read().split("\n")
++        open(p, "w").write("\n".join(l for l in lineas if "capturas/105.webp" not in l))
++        r2 = verificar_entrega.verificar_entrega(entrega, self.ids)
++        self.assertIn("E02", {c["id"] for c in r2["checks"] if c["estado"] == "fallo"})
++
++    def test_lista_de_ids_del_repo_con_un_id_que_el_respaldo_no_tiene(self):
++        self.correr()
++        d = self.dir()
++        ro, rt = self._refs()
++        with open(os.path.join(d, "VERIFICACION.json"), "wb") as f:
++            f.write(comun.json_estable(self.verif(ref_objetos=ro, ref_tablas=rt)))
++        entrega = os.path.join(self.tmp, "entrega"); os.makedirs(entrega)
++        for n in ("resumen.json", "manifiesto.csv", "VERIFICACION.json"):
++            shutil.copy(os.path.join(d, n), entrega)
++        mas = os.path.join(self.tmp, "ids_mas.txt")
++        with open(mas, "w") as f:
++            f.write("".join(f"{i}\n" for i in REQ + [113]))
++        r = verificar_entrega.verificar_entrega(entrega, mas)
++        self.assertEqual({c["id"] for c in r["checks"] if c["estado"] == "fallo"}, {"E06a", "E06b"})
++
++    def test_minimo_de_objetos(self):
++        self.correr()
++        d = self.dir()
++        ro, rt = self._refs()
++        with open(os.path.join(d, "VERIFICACION.json"), "wb") as f:
++            f.write(comun.json_estable(self.verif(ref_objetos=ro, ref_tablas=rt)))
++        entrega = os.path.join(self.tmp, "entrega"); os.makedirs(entrega)
++        for n in ("resumen.json", "manifiesto.csv", "VERIFICACION.json"):
++            shutil.copy(os.path.join(d, n), entrega)
++        r = verificar_entrega.verificar_entrega(entrega, self.ids, minimo_objetos=738)
++        self.assertEqual({c["id"] for c in r["checks"] if c["estado"] == "fallo"}, {"E05b"})
++
++
++class TestCopias(Base):
++    """Ciclo completo con age (clave) y gpg (frase en archivo); todo con datos simulados."""
++
++    def setUp(self):
++        super().setUp()
++        self.assertEqual(self.correr()[0], 0)
++        self.ro, self.rt = self._refs()
++        with open(os.path.join(self.dir(), "VERIFICACION.json"), "wb") as f:
++            f.write(comun.json_estable(self.verif(ref_objetos=self.ro, ref_tablas=self.rt)))
++        self.tar = os.path.join(self.tmp, "r.tar")
++        self.ev = lambda *a: evidencia_copias.main(list(a))
++        with contextlib.redirect_stderr(io.StringIO()):
++            self.assertEqual(self.ev("empaquetar", "--dir", self.dir(), "--salida", self.tar), 0)
++        self.emp = self.tar + ".empaquetado.json"
++        self.ident = os.path.join(self.tmp, "id.txt")
++        out = subprocess.run(["age-keygen", "-o", self.ident], capture_output=True, text=True).stderr
++        self.pub = [l for l in out.splitlines() if l.startswith("Public key")][0].split(": ")[1]
++
++    def cifrar(self, destino):
++        subprocess.run(["age", "-r", self.pub, "-o", destino, self.tar], check=True)
++        return destino
++
++    def restaurar(self, copia, et="B", destino=None, emp=None):
++        destino = destino or os.path.join(self.tmp, "rest" + et)
++        salida = os.path.join(self.tmp, f"RESTAURACION-{et}.json")
++        with contextlib.redirect_stderr(io.StringIO()):
++            cod = self.ev("restaurar", "--copia", copia, "--etiqueta", et, "--destino", destino, "--empaquetado", emp or self.emp,
++                          "--identidad", self.ident, "--ref-objetos", self.ro, "--ref-tablas", self.rt, "--salida", salida)
++        return cod, salida
++
++    def test_tar_determinista(self):
++        otro = os.path.join(self.tmp, "r2.tar")
++        with contextlib.redirect_stderr(io.StringIO()):
++            self.ev("empaquetar", "--dir", self.dir(), "--salida", otro)
++        self.assertEqual(comun.sha256_archivo(self.tar), comun.sha256_archivo(otro))
++
++    def test_ciclo_completo_y_revision_de_entrega(self):
++        a, b = self.cifrar(os.path.join(self.tmp, "A.age")), self.cifrar(os.path.join(self.tmp, "B.age"))
++        self.assertNotEqual(comun.sha256_archivo(a), comun.sha256_archivo(b))  # cifrados por separado
++        cod, rb = self.restaurar(b)
++        self.assertEqual(cod, 0)
++        ev_json = os.path.join(self.tmp, "entrega", "EVIDENCIA-COPIAS.json")
++        os.makedirs(os.path.dirname(ev_json))
++        with contextlib.redirect_stderr(io.StringIO()):
++            self.assertEqual(self.ev("registrar", "--copia-a", a, "--copia-b", b, "--medio-a", "disco USB casa", "--medio-b", "nube cuenta aparte",
++                                     "--restauracion-b", rb, "--confirmo-conservar", "--salida", ev_json), 0)
++        for n in ("resumen.json", "manifiesto.csv", "VERIFICACION.json"):
++            shutil.copy(os.path.join(self.dir(), n), os.path.dirname(ev_json))
++        r = verificar_entrega.verificar_entrega(os.path.dirname(ev_json), self.ids)
++        self.assertEqual([c for c in r["checks"] if c["estado"] == "fallo"], [])
++        self.assertEqual(r["resultado"], "APROBADO")
++        self.assertIn("C05", {c["id"] for c in r["checks"]})
++
++    def test_sin_evidencia_queda_pendiente(self):
++        entrega = os.path.join(self.tmp, "entrega"); os.makedirs(entrega)
++        for n in ("resumen.json", "manifiesto.csv", "VERIFICACION.json"):
++            shutil.copy(os.path.join(self.dir(), n), entrega)
++        r = verificar_entrega.verificar_entrega(entrega, self.ids)
++        self.assertEqual(r["resultado"], "APROBADO_CON_ADVERTENCIAS")
++        self.assertIn("C00", {c["id"] for c in r["checks"] if c["estado"] == "advertencia"})
++
++    def test_copia_dañada_no_restaura(self):
++        b = self.cifrar(os.path.join(self.tmp, "B.age"))
++        d = bytearray(open(b, "rb").read()); d[len(d) // 2] ^= 0xFF; open(b, "wb").write(d)
++        with self.assertRaises(SystemExit):
++            self.restaurar(b)
++
++    def test_tar_distinto_al_empaquetado_se_detecta(self):
++        b = self.cifrar(os.path.join(self.tmp, "B.age"))
++        info = json.load(open(self.emp)); info["tar_sha256"] = "0" * 64
++        otro = os.path.join(self.tmp, "falso.json"); json.dump(info, open(otro, "w"))
++        cod, rb = self.restaurar(b, emp=otro)
++        self.assertEqual(cod, 1)
++        self.assertFalse(json.load(open(rb))["tar_coincide"])
++
++    def test_archivo_sin_cifrar_se_rechaza(self):
++        with self.assertRaises(SystemExit):
++            self.restaurar(self.tar)
++        self.assertEqual(evidencia_copias.formato_cifrado(self.tar), "desconocido")
++
++    def test_registrar_incompleta_si_medios_iguales_o_sin_confirmar(self):
++        a, b = self.cifrar(os.path.join(self.tmp, "A.age")), self.cifrar(os.path.join(self.tmp, "B.age"))
++        _, rb = self.restaurar(b)
++        for extra, medio_b in (([], "disco USB casa"), (["--confirmo-conservar"], "disco USB casa"), ([], "otro")):
++            with contextlib.redirect_stderr(io.StringIO()):
++                cod = self.ev("registrar", "--copia-a", a, "--copia-b", b, "--medio-a", "disco USB casa", "--medio-b", medio_b,
++                              "--restauracion-b", rb, "--salida", os.path.join(self.tmp, "ev.json"), *extra)
++            self.assertEqual(cod, 1)
++
++    def test_restauracion_de_otra_copia_no_vale_para_b(self):
++        a, b = self.cifrar(os.path.join(self.tmp, "A.age")), self.cifrar(os.path.join(self.tmp, "B.age"))
++        _, ra = self.restaurar(a, "A")
++        with contextlib.redirect_stderr(io.StringIO()):
++            cod = self.ev("registrar", "--copia-a", a, "--copia-b", b, "--medio-a", "x", "--medio-b", "y", "--restauracion-b", ra,
++                          "--confirmo-conservar", "--salida", os.path.join(self.tmp, "ev.json"))
++        self.assertEqual(cod, 1)
++
++    def test_restauracion_etiquetada_B_pero_hecha_con_otro_archivo(self):
++        a, b = self.cifrar(os.path.join(self.tmp, "A.age")), self.cifrar(os.path.join(self.tmp, "B.age"))
++        _, r = self.restaurar(a, "B")  # se restauró el archivo A y se etiquetó como B
++        with contextlib.redirect_stderr(io.StringIO()):
++            cod = self.ev("registrar", "--copia-a", a, "--copia-b", b, "--medio-a", "x", "--medio-b", "y", "--restauracion-b", r,
++                          "--confirmo-conservar", "--salida", os.path.join(self.tmp, "ev.json"))
++        self.assertEqual(cod, 1)
++        self.assertFalse(json.load(open(os.path.join(self.tmp, "ev.json")))["restauracion_b_corresponde_a_copia_b"])
++
++    def test_gpg_con_frase_en_archivo(self):
++        frase = os.path.join(self.tmp, "frase.txt"); open(frase, "w").write("frase-de-prueba\n")
++        gdir = os.path.join(self.tmp, "gnupg"); os.makedirs(gdir, mode=0o700)
++        env = dict(os.environ, GNUPGHOME=gdir)
++        b = os.path.join(self.tmp, "B.gpg")
++        subprocess.run(["gpg", "--batch", "--quiet", "--pinentry-mode", "loopback", "--passphrase-file", frase, "-c", "-o", b, self.tar], check=True, env=env)
++        self.assertEqual(evidencia_copias.formato_cifrado(b), "gpg")
++        os.environ["GNUPGHOME"] = gdir
++        self.addCleanup(os.environ.pop, "GNUPGHOME", None)
++        salida = os.path.join(self.tmp, "RB.json")
++        with contextlib.redirect_stderr(io.StringIO()):
++            cod = self.ev("restaurar", "--copia", b, "--etiqueta", "B", "--destino", os.path.join(self.tmp, "rg"), "--empaquetado", self.emp,
++                          "--frase-archivo", frase, "--salida", salida)
++        self.assertEqual(cod, 0)
++
++    def test_tar_malicioso_no_escribe_fuera(self):
++        import tarfile
++        mal = os.path.join(self.tmp, "mal.tar")
++        with tarfile.open(mal, "w") as t:
++            ti = tarfile.TarInfo("../../escapa.txt"); ti.size = 1; t.addfile(ti, io.BytesIO(b"x"))
++        with self.assertRaises(SystemExit):
++            evidencia_copias._extraer_seguro(mal, os.path.join(self.tmp, "dest"))
++        self.assertFalse(os.path.exists(os.path.join(self.tmp, "escapa.txt")))
++
++
++if __name__ == "__main__":
++    unittest.main()
+diff --git a/respaldo-e0/referencia.sql b/respaldo-e0/referencia.sql
+new file mode 100644
+index 0000000..c28cd67
+--- /dev/null
++++ b/respaldo-e0/referencia.sql
+@@ -0,0 +1,29 @@
++-- Consulta de REFERENCIA de E0.1 (solo lectura). Se pega en el editor SQL de Supabase
++-- (proyecto gqsadclvftkzwrihfipz) con tu propia sesión, justo DESPUÉS de que termine respaldar.py.
++-- Ejecuta cada consulta por separado y exporta el resultado como CSV:
++--   consulta A → ref_objetos.csv        consulta B → ref_tablas.csv
++-- No modifica nada. Las huellas se calculan igual que en comun.py (ver verificar.py).
++
++-- ===== Consulta A: objetos del almacén (nombre y tamaño) =====
++select name, (metadata->>'size')::bigint as bytes
++from storage.objects
++where bucket_id = 'capturas'
++order by name collate "C";
++
++-- ===== Consulta B: conteos y huellas (una sola fila) =====
++select
++  (select count(*) from storage.objects where bucket_id = 'capturas')                           as objetos,
++  (select count(*) from public.errores_lector)                                                  as errores_lector,
++  (select count(*) from public.errores_lector where version = '10.77')                          as errores_lector_10_77,
++  (select count(*) from public.capturas_ok)                                                     as capturas_ok,
++  (select encode(sha256(convert_to(string_agg(id::text, ',' order by id), 'UTF8')), 'hex')
++     from public.errores_lector)                                                                as huella_ids_errores_lector,
++  (select encode(sha256(convert_to(string_agg(id::text, ',' order by id), 'UTF8')), 'hex')
++     from public.errores_lector where version = '10.77')                                        as huella_ids_errores_lector_10_77,
++  (select encode(sha256(convert_to(string_agg(id::text, ',' order by id), 'UTF8')), 'hex')
++     from public.capturas_ok)                                                                   as huella_ids_capturas_ok,
++  (select encode(sha256(convert_to(
++            string_agg(name || E'\t' || (metadata->>'size'), E'\n' order by name collate "C") || E'\n',
++            'UTF8')), 'hex')
++     from storage.objects where bucket_id = 'capturas')                                         as huella_listado,
++  to_char(now() at time zone 'utc', 'YYYY-MM-DD"T"HH24:MI:SS"Z"')                               as consultado_utc;
+diff --git a/respaldo-e0/respaldar.py b/respaldo-e0/respaldar.py
+new file mode 100644
+index 0000000..5f3b207
+--- /dev/null
++++ b/respaldo-e0/respaldar.py
+@@ -0,0 +1,388 @@
++#!/usr/bin/env python3
++"""Respaldo de SOLO LECTURA del almacén `capturas` y de las tablas errores_lector y capturas_ok.
++
++Lo ejecuta el propietario en su equipo, con su llave `service_role` en la variable de entorno
++SUPABASE_SERVICE_ROLE_KEY (nunca como argumento, nunca en un archivo del repo). Garantías que el
++código impone (y que las pruebas comprueban):
++  * Solo hace GET a /storage/v1/object/authenticated/... y /rest/v1/<tabla>, y POST a
++    /storage/v1/object/list/... (listar). No existe ningún DELETE, PUT, PATCH ni POST de escritura.
++  * La llave solo viaja al host del proyecto (https, *.supabase.co); no sigue redirecciones.
++  * No imprime ni escribe la llave; los mensajes de error se limpian de ella.
++  * La carpeta de salida debe ser nueva y quedar fuera de cualquier repositorio git.
++Uso: python3 respaldar.py --salida RUTA            (respaldo)
++     python3 respaldar.py --solo-listar            (prueba sin descargar ni escribir nada)
++"""
++import argparse
++import base64
++import hashlib
++import http.client
++import json
++import os
++import re
++import sys
++import time
++import urllib.error
++import urllib.parse
++import urllib.request
++from datetime import datetime, timezone
++
++import comun
++
++AQUI = os.path.dirname(os.path.abspath(__file__))
++PERMITIDO = (
++    ("POST", "/storage/v1/object/list/"),
++    ("GET", "/storage/v1/object/authenticated/"),
++    ("GET", "/rest/v1/errores_lector"),
++    ("GET", "/rest/v1/capturas_ok"),
++)
++
++
++class ErrorRespaldo(Exception):
++    pass
++
++
++def ahora():
++    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
++
++
++def validar_clave(clave):
++    """Acepta JWT con role=service_role o llaves `sb_secret_`. No devuelve ni imprime la llave."""
++    if not clave:
++        raise ErrorRespaldo("Falta la variable de entorno SUPABASE_SERVICE_ROLE_KEY.")
++    if clave.startswith("sb_secret_"):
++        return
++    partes = clave.split(".")
++    if len(partes) != 3:
++        raise ErrorRespaldo("La llave no tiene formato de service_role (JWT o sb_secret_).")
++    try:
++        carga = partes[1] + "=" * (-len(partes[1]) % 4)
++        rol = json.loads(base64.urlsafe_b64decode(carga)).get("role")
++    except Exception:
++        raise ErrorRespaldo("La llave no se pudo interpretar como JWT.")
++    if rol != "service_role":
++        raise ErrorRespaldo(f"La llave tiene rol «{rol}», no service_role. Usa la llave de servicio.")
++
++
++def validar_url(url, permitir_local):
++    u = urllib.parse.urlparse(url)
++    if permitir_local:
++        if u.scheme == "http" and u.hostname in ("127.0.0.1", "localhost"):
++            return url.rstrip("/")
++        raise ErrorRespaldo("--permitir-local solo acepta http://127.0.0.1 o http://localhost (pruebas).")
++    esperado = f"{comun.PROYECTO_REF}.supabase.co"
++    if u.scheme != "https" or u.hostname != esperado or u.path not in ("", "/") or u.port:
++        raise ErrorRespaldo(f"La URL debe ser https://{esperado} (la llave solo se envía a ese host).")
++    return f"https://{esperado}"
++
++
++class _SinRedireccion(urllib.request.HTTPRedirectHandler):
++    def redirect_request(self, *a, **k):
++        return None  # → HTTPError 3xx: la llave nunca se reenvía a otro host
++
++
++class Cliente:
++    def __init__(self, base, clave, espera=1.0):
++        self.base, self._clave, self.espera = base, clave, espera
++        self.opener = urllib.request.build_opener(_SinRedireccion())
++        self.peticiones = 0
++
++    def _limpiar(self, texto):
++        return str(texto).replace(self._clave, "***")
++
++    def pedir(self, metodo, ruta, cuerpo=None, cabeceras=None, destino=None):
++        """Devuelve (status, cabeceras, bytes|None). Con `destino` guarda el cuerpo en ese archivo
++        y devuelve (status, cabeceras, (bytes_leidos, sha256))."""
++        path = ruta.split("?")[0]
++        if not any(metodo == m and path.startswith(p) for m, p in PERMITIDO):
++            raise ErrorRespaldo(f"Petición no permitida por diseño: {metodo} {path}")
++        ultimo = None
++        for intento in range(4):
++            if intento:
++                time.sleep(self.espera * (2 ** (intento - 1)))
++            req = urllib.request.Request(self.base + ruta, method=metodo)
++            req.add_header("Authorization", "Bearer " + self._clave)
++            req.add_header("apikey", self._clave)
++            req.add_header("User-Agent", "checa-respaldo-e0/1")
++            for k, v in (cabeceras or {}).items():
++                req.add_header(k, v)
++            if cuerpo is not None:
++                req.data = json.dumps(cuerpo).encode("utf-8")
++                req.add_header("Content-Type", "application/json")
++            self.peticiones += 1
++            try:
++                with self.opener.open(req, timeout=60) as r:
++                    if destino is None:
++                        datos = r.read()
++                        largo = r.headers.get("Content-Length")
++                        if largo is not None and int(largo) != len(datos):
++                            raise urllib.error.URLError("cuerpo incompleto")
++                        return r.status, r.headers, datos
++                    h, total, m5 = hashlib.sha256(), 0, hashlib.md5()
++                    with open(destino, "wb") as f:
++                        for bloque in iter(lambda: r.read(1 << 16), b""):
++                            f.write(bloque)
++                            h.update(bloque)
++                            m5.update(bloque)
++                            total += len(bloque)
++                    largo = r.headers.get("Content-Length")
++                    if largo is not None and int(largo) != total:
++                        raise urllib.error.URLError("descarga incompleta")
++                    return r.status, r.headers, (total, h.hexdigest(), m5.hexdigest())
++            except urllib.error.HTTPError as e:
++                if e.code in (429, 500, 502, 503, 504):
++                    ultimo = f"HTTP {e.code}"
++                    continue
++                return e.code, e.headers, None
++            except (urllib.error.URLError, http.client.HTTPException, ConnectionError, TimeoutError, OSError) as e:
++                ultimo = self._limpiar(e)
++                continue
++        raise ErrorRespaldo(f"Sin respuesta tras 4 intentos ({ultimo}) en {metodo} {path}")
++
++
++def listar(cli, bucket, prefijo=""):
++    """Lista recursiva y paginada. Devuelve {nombre: {bytes, creado}}."""
++    objetos, offset, vistos_pagina = {}, 0, 0
++    while True:
++        st, _, datos = cli.pedir("POST", f"/storage/v1/object/list/{bucket}", cuerpo={
++            "prefix": prefijo, "limit": 100, "offset": offset, "sortBy": {"column": "name", "order": "asc"}})
++        if st != 200:
++            raise ErrorRespaldo(f"Listado falló: HTTP {st}")
++        pagina = json.loads(datos)
++        if not isinstance(pagina, list):
++            raise ErrorRespaldo("Listado con formato inesperado.")
++        if not pagina:
++            break
++        nuevos = 0
++        for it in pagina:
++            nombre = prefijo + it["name"]
++            if it.get("id") is None:  # carpeta
++                for k, v in listar(cli, bucket, nombre + "/").items():
++                    if k in objetos:
++                        raise ErrorRespaldo(f"Objeto repetido en el listado: {k}")
++                    objetos[k] = v
++                    nuevos += 1
++                continue
++            tam = (it.get("metadata") or {}).get("size")
++            if not isinstance(tam, int):
++                raise ErrorRespaldo(f"El listado no trae tamaño de {nombre}; no se puede verificar.")
++            if nombre in objetos:
++                raise ErrorRespaldo(f"Objeto repetido en el listado: {nombre}")
++            objetos[nombre] = {"bytes": tam, "creado": it.get("created_at"),
++                               "etag": str((it.get("metadata") or {}).get("eTag") or (it.get("metadata") or {}).get("etag") or "").strip('"').lower()}
++            nuevos += 1
++        if nuevos == 0:
++            raise ErrorRespaldo("La paginación del listado no avanza.")
++        offset += len(pagina)
++    return objetos
++
++
++def leer_tabla(cli, tabla, solo_contar=False):
++    filas, ini, paso, total = [], 0, 1000, None
++    while True:
++        fin = ini if solo_contar else ini + paso - 1
++        st, cab, datos = cli.pedir("GET", f"/rest/v1/{tabla}?select=*&order=id.asc", cabeceras={
++            "Range-Unit": "items", "Range": f"{ini}-{fin}", "Prefer": "count=exact"})
++        if st == 416 and ini == 0:
++            return [] if not solo_contar else 0
++        if st not in (200, 206):
++            raise ErrorRespaldo(f"Lectura de {tabla} falló: HTTP {st}")
++        cr = cab.get("Content-Range", "")
++        try:
++            total = int(cr.split("/")[1])
++        except Exception:
++            raise ErrorRespaldo(f"{tabla}: Content-Range ilegible ({cr!r}).")
++        if solo_contar:
++            return total
++        pagina = json.loads(datos)
++        filas += pagina
++        if not pagina or len(filas) >= total:
++            break
++        ini += len(pagina)
++    if len(filas) != total:
++        raise ErrorRespaldo(f"{tabla}: se leyeron {len(filas)} filas pero el servidor reporta {total}.")
++    ids = [f["id"] for f in filas]
++    if ids != sorted(set(ids)):
++        raise ErrorRespaldo(f"{tabla}: ids repetidos o fuera de orden.")
++    return filas
++
++
++def carpeta_en_repo(ruta):
++    p = os.path.realpath(ruta)
++    while True:
++        if os.path.exists(os.path.join(p, ".git")):
++            return True
++        padre = os.path.dirname(p)
++        if padre == p:
++            return False
++        p = padre
++
++
++def escribir(ruta, datos):
++    with open(ruta, "wb") as f:
++        f.write(datos)
++    os.chmod(ruta, 0o600)
++
++
++def main(argv=None):
++    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
++    ap.add_argument("--salida", help="carpeta NUEVA, fuera de cualquier repositorio git")
++    ap.add_argument("--solo-listar", action="store_true", help="prueba: lista y cuenta, no descarga ni escribe")
++    ap.add_argument("--url", default=f"https://{comun.PROYECTO_REF}.supabase.co")
++    ap.add_argument("--ids-requeridos", default=os.path.join(AQUI, "ids_requeridos_10.77.txt"))
++    ap.add_argument("--permitir-local", action="store_true", help=argparse.SUPPRESS)  # solo pruebas
++    ap.add_argument("--espera", type=float, default=1.0, help=argparse.SUPPRESS)
++    a = ap.parse_args(argv)
++    clave = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
++    try:
++        validar_clave(clave)
++        base = validar_url(a.url, a.permitir_local)
++        requeridos = comun.leer_ids(a.ids_requeridos)
++        if not a.solo_listar:
++            if not a.salida:
++                raise ErrorRespaldo("Falta --salida.")
++            if carpeta_en_repo(a.salida):
++                raise ErrorRespaldo("La salida está dentro de un repositorio git. Elige una carpeta fuera.")
++            if os.path.exists(a.salida) and os.listdir(a.salida):
++                raise ErrorRespaldo("La carpeta de salida ya existe y no está vacía.")
++        cli = Cliente(base, clave, a.espera)
++        return _ejecutar(cli, a, requeridos)
++    except ErrorRespaldo as e:
++        print("ERROR:", str(e).replace(clave, "***") if clave else e, file=sys.stderr)
++        return 1
++
++
++def _ejecutar(cli, a, requeridos):
++    t0 = ahora()
++    lista0 = listar(cli, comun.BUCKET)
++    print(f"Listado: {len(lista0)} objetos.", file=sys.stderr)
++    if a.solo_listar:
++        faltan = [i for i in requeridos if f"{i}.webp" not in lista0]
++        print(json.dumps({
++            "objetos": len(lista0),
++            "errores_lector_filas": leer_tabla(cli, "errores_lector", True),
++            "capturas_ok_filas": leer_tabla(cli, "capturas_ok", True),
++            "requeridos": len(requeridos), "requeridos_ausentes": len(faltan)}, indent=2))
++        return 0 if not faltan else 2
++
++    os.makedirs(os.path.join(a.salida, "capturas"), mode=0o700, exist_ok=True)
++    os.makedirs(os.path.join(a.salida, "tablas"), mode=0o700, exist_ok=True)
++    os.chmod(a.salida, 0o700)
++    manifiesto, tablas_res, filas_por_tabla = [], {}, {}
++
++    for t in comun.TABLAS:
++        filas = leer_tabla(cli, t)
++        filas_por_tabla[t] = filas
++        datos = "".join(json.dumps(f, ensure_ascii=False, sort_keys=True) + "\n" for f in filas).encode("utf-8")
++        escribir(os.path.join(a.salida, "tablas", f"{t}.jsonl"), datos)
++        pv = {}
++        for f in filas:
++            pv[f.get("version") or "(sin versión)"] = pv.get(f.get("version") or "(sin versión)", 0) + 1
++        tablas_res[t] = {"filas": len(filas), "sha256_jsonl": comun.sha256_bytes(datos),
++                         "huella_ids": comun.huella_ids(f["id"] for f in filas), "por_version": dict(sorted(pv.items())),
++                         "huella_ids_10_77": comun.huella_ids(f["id"] for f in filas if f.get("version") == comun.VERSION_BANCO)}
++        manifiesto.append({"tipo": "tabla", "nombre": f"tablas/{t}.jsonl", "bytes": len(datos),
++                           "sha256": tablas_res[t]["sha256_jsonl"], "filas": len(filas)})
++        print(f"Tabla {t}: {len(filas)} filas.", file=sys.stderr)
++
++    version_de = {t: {f["id"]: f.get("version") for f in filas_por_tabla[t]} for t in comun.TABLAS}
++    descargados, fallidos, desaparecidos, etag_ok, etag_mal = {}, [], [], [], []
++    for n, (nombre, meta) in enumerate(sorted(lista0.items()), 1):
++        ruta = os.path.join(a.salida, "capturas", nombre)
++        if os.path.realpath(ruta) != os.path.join(os.path.realpath(os.path.join(a.salida, "capturas")), nombre):
++            raise ErrorRespaldo(f"Nombre de objeto inseguro: {nombre!r}")
++        os.makedirs(os.path.dirname(ruta), exist_ok=True)
++        parcial = ruta + ".part"
++        st, _, res = cli.pedir("GET", f"/storage/v1/object/authenticated/{comun.BUCKET}/" + urllib.parse.quote(nombre),
++                               destino=parcial)
++        if st == 404 or (st in (400,) and res is None):
++            desaparecidos.append(nombre)
++            _quitar(parcial)
++            continue
++        if st != 200:
++            raise ErrorRespaldo(f"Descarga de {nombre} falló: HTTP {st}")
++        total, sha, md5 = res
++        if re.fullmatch(r"[0-9a-f]{32}", meta.get("etag", "")):
++            etag_ok.append(nombre) if md5 == meta["etag"] else etag_mal.append(nombre)
++        with open(parcial, "rb") as f:
++            cab = f.read(12)
++        if total != meta["bytes"] or not comun.es_webp(cab):
++            fallidos.append({"nombre": nombre, "motivo": "tamaño distinto al listado" if total != meta["bytes"] else "no es WebP"})
++            _quitar(parcial)
++            continue
++        os.replace(parcial, ruta)
++        os.chmod(ruta, 0o600)
++        descargados[nombre] = (total, sha)
++        if n % 100 == 0:
++            print(f"  {n}/{len(lista0)}", file=sys.stderr)
++
++    lista1 = listar(cli, comun.BUCKET)
++    t1 = ahora()
++    agregados = sorted(set(lista1) - set(lista0))
++    quitados = sorted(set(lista0) - set(lista1))
++    cambiados = sorted(k for k in set(lista0) & set(lista1) if lista0[k]["bytes"] != lista1[k]["bytes"])
++
++    por_version = {}
++    for nombre, (tam, sha) in descargados.items():
++        origen, idl = comun.clasificar(nombre)
++        tabla = {"dudosa": "errores_lector", "normal_n": "capturas_ok"}.get(origen)
++        ver = version_de[tabla].get(idl) if tabla and idl in version_de[tabla] else None
++        manifiesto.append({"tipo": "captura", "nombre": "capturas/" + nombre, "bytes": tam, "sha256": sha,
++                           "origen": origen, "id_enlace": "" if idl is None else idl,
++                           "version": ver if ver else ("(sin fila)" if tabla else "(sin versión)")})
++        clave_v = ver if ver else ("(sin fila)" if tabla else "(sin versión)")
++        por_version.setdefault(clave_v, {}).setdefault(origen, 0)
++        por_version[clave_v][origen] += 1
++
++    shalista = comun.sha256_archivo(a.ids_requeridos)
++    with open(a.ids_requeridos, "rb") as f:
++        escribir(os.path.join(a.salida, "ids_requeridos.txt"), f.read())
++    manifiesto.append({"tipo": "lista", "nombre": "ids_requeridos.txt", "bytes": os.path.getsize(a.ids_requeridos),
++                       "sha256": shalista, "filas": len(requeridos)})
++
++    faltantes = [i for i in requeridos if f"{i}.webp" not in descargados]
++    el = version_de["errores_lector"]
++    sin_fila = [i for i in requeridos if i not in el]
++    version_distinta = [i for i in requeridos if i in el and el[i] != comun.VERSION_BANCO]
++
++    datos_man = comun.escribir_manifiesto(manifiesto)
++    escribir(os.path.join(a.salida, "manifiesto.csv"), datos_man)
++    if faltantes or fallidos:
++        resultado = "INCOMPLETO"
++    elif desaparecidos:
++        resultado = "COMPLETO_CON_ADVERTENCIAS"
++    else:
++        resultado = "COMPLETO"
++    resumen = {
++        "esquema": comun.ESQUEMA, "generado_utc": ahora(), "proyecto_ref": comun.PROYECTO_REF, "bucket": comun.BUCKET,
++        "solo_lectura": True, "peticiones": cli.peticiones, "scripts_sha256": comun.hash_scripts(AQUI),
++        "listado": {"t0_utc": t0, "t1_utc": t1, "objetos_t0": len(lista0), "objetos_t1": len(lista1),
++                    "agregados_durante": agregados, "quitados_durante": quitados, "tamano_cambiado_durante": cambiados},
++        "capturas": {"descargadas": len(descargados), "bytes_total": sum(v[0] for v in descargados.values()),
++                     "desaparecidas_antes_de_descargar": desaparecidos, "fallidas": fallidos,
++                     "etag_md5": {"comprobados": len(etag_ok), "discrepancias": etag_mal},
++                     "huella_listado": comun.huella_listado([(k, v[0]) for k, v in descargados.items()]),
++                     "huella_objetos": comun.huella_objetos([(k, v[0], v[1]) for k, v in descargados.items()]),
++                     "por_version_y_origen": {k: dict(sorted(v.items())) for k, v in sorted(por_version.items())}},
++        "tablas": tablas_res,
++        "requeridos": {"archivo_sha256": shalista, "esperados": len(requeridos), "presentes": len(requeridos) - len(faltantes),
++                       "faltantes": faltantes, "sin_fila_en_errores_lector": sin_fila, "version_distinta_de_10_77": version_distinta},
++        "manifiesto_sha256": comun.sha256_bytes(datos_man),
++        "resultado_respaldo": resultado,
++    }
++    escribir(os.path.join(a.salida, "resumen.json"), comun.json_estable(resumen))
++    print(f"Resultado: {resultado}. {len(descargados)} capturas, "
++          f"{sum(v['filas'] for v in tablas_res.values())} filas de tablas.", file=sys.stderr)
++    if faltantes:
++        print(f"FALTAN {len(faltantes)} ids requeridos: {faltantes[:20]}", file=sys.stderr)
++    return {"COMPLETO": 0, "COMPLETO_CON_ADVERTENCIAS": 0, "INCOMPLETO": 2}[resultado]
++
++
++def _quitar(ruta):
++    try:
++        os.remove(ruta)
++    except FileNotFoundError:
++        pass
++
++
++if __name__ == "__main__":
++    sys.exit(main())
+diff --git a/respaldo-e0/verificar.py b/respaldo-e0/verificar.py
+new file mode 100644
+index 0000000..3e45e5a
+--- /dev/null
++++ b/respaldo-e0/verificar.py
+@@ -0,0 +1,289 @@
++#!/usr/bin/env python3
++"""Verificación SIN red y SIN llave de un respaldo ya hecho (o de una copia restaurada).
++
++Recalcula desde los archivos: tamaños, sha256, formato WebP, filas de las tablas, huellas e IDs
++requeridos, y los contrasta con manifiesto.csv, resumen.json y (opcional) con la consulta de
++referencia hecha con `referencia.sql`. Escribe VERIFICACION.json (sin rutas, sin datos personales).
++
++Uso: python3 verificar.py --dir RESPALDO [--ref-objetos ref_objetos.csv --ref-tablas ref_tablas.csv]
++                          [--salida VERIFICACION.json]
++Código de salida: 0 = APROBADO (o con advertencias), 1 = FALLO.
++"""
++import argparse
++import csv
++import json
++import os
++import sys
++from datetime import datetime, timezone
++
++import comun
++
++AQUI = os.path.dirname(os.path.abspath(__file__))
++SOLO_RAIZ = ("resumen.json", "manifiesto.csv")
++
++
++class Checks:
++    def __init__(self):
++        self.lista = []
++
++    def add(self, id_, estado, texto, **extra):
++        self.lista.append({"id": id_, "estado": estado, "detalle": texto, **extra})
++
++    def ok(self, id_, texto, **e):
++        self.add(id_, "ok", texto, **e)
++
++    def fallo(self, id_, texto, **e):
++        self.add(id_, "fallo", texto, **e)
++
++    def aviso(self, id_, texto, **e):
++        self.add(id_, "advertencia", texto, **e)
++
++    def cond(self, id_, cond, texto_ok, texto_mal, **e):
++        (self.ok if cond else self.fallo)(id_, texto_ok if cond else texto_mal, **e)
++
++    def resultado(self):
++        if any(c["estado"] == "fallo" for c in self.lista):
++            return "FALLO"
++        if any(c["estado"] == "advertencia" for c in self.lista):
++            return "APROBADO_CON_ADVERTENCIAS"
++        return "APROBADO"
++
++
++def _csv(ruta):
++    with open(ruta, "r", encoding="utf-8", newline="") as f:
++        return list(csv.DictReader(f))
++
++
++def verificar(carpeta, ref_objetos=None, ref_tablas=None):
++    c = Checks()
++    p_man, p_res = os.path.join(carpeta, "manifiesto.csv"), os.path.join(carpeta, "resumen.json")
++    if not (os.path.isfile(p_man) and os.path.isfile(p_res)):
++        c.fallo("V00", "Faltan manifiesto.csv o resumen.json.")
++        return {"resultado": c.resultado(), "checks": c.lista}
++    with open(p_res, "rb") as f:
++        crudo_res = f.read()
++    resumen = json.loads(crudo_res)
++    man_sha = comun.sha256_archivo(p_man)
++    c.cond("V01", man_sha == resumen.get("manifiesto_sha256"), "El sha256 de manifiesto.csv coincide con resumen.json.",
++           "manifiesto.csv no coincide con el sha256 anotado en resumen.json (¿fue modificado?).")
++    try:
++        filas = comun.leer_manifiesto(p_man)
++    except Exception as e:
++        c.fallo("V01b", f"manifiesto.csv ilegible: {e}")
++        return {"resultado": c.resultado(), "checks": c.lista}
++
++    nombres = [f["nombre"] for f in filas]
++    c.cond("V02", len(nombres) == len(set(nombres)), "Sin nombres repetidos en el manifiesto.", "Nombres repetidos en el manifiesto.")
++
++    # V03 archivos del manifiesto: existen, tamaño, sha256
++    malos, sha_real = [], {}
++    for f in filas:
++        ruta = os.path.join(carpeta, *f["nombre"].split("/"))
++        if not os.path.isfile(ruta):
++            malos.append((f["nombre"], "falta"))
++            continue
++        tam, sha = os.path.getsize(ruta), comun.sha256_archivo(ruta)
++        sha_real[f["nombre"]] = (tam, sha)
++        if str(tam) != f["bytes"] or sha != f["sha256"]:
++            malos.append((f["nombre"], "tamaño o sha256 distinto"))
++    c.cond("V03", not malos, f"{len(filas)} archivos del manifiesto: existen, con el tamaño y sha256 anotados.",
++           f"{len(malos)} archivos fallan (primeros: {malos[:5]}).", archivos=len(filas), fallidos=len(malos))
++
++    # V04 archivos de más
++    previstos = set(nombres) | set(SOLO_RAIZ)
++    extra = []
++    for raiz, _, archivos in os.walk(carpeta):
++        for a in archivos:
++            rel = os.path.relpath(os.path.join(raiz, a), carpeta).replace(os.sep, "/")
++            if rel not in previstos and not rel.startswith("VERIFICACION"):
++                extra.append(rel)
++    c.cond("V04", not extra, "No hay archivos fuera del manifiesto.", f"Archivos que no están en el manifiesto: {extra[:5]}.")
++
++    # V05 WebP
++    caps = [f for f in filas if f["tipo"] == "captura"]
++    no_webp = []
++    for f in caps:
++        ruta = os.path.join(carpeta, *f["nombre"].split("/"))
++        if os.path.isfile(ruta):
++            with open(ruta, "rb") as h:
++                if not comun.es_webp(h.read(12)):
++                    no_webp.append(f["nombre"])
++    c.cond("V05", not no_webp, f"Las {len(caps)} capturas tienen cabecera WebP.", f"No son WebP: {no_webp[:5]}.")
++
++    # V06 tablas
++    ids_tabla, versiones = {}, {}
++    for t in comun.TABLAS:
++        ruta = os.path.join(carpeta, "tablas", f"{t}.jsonl")
++        fila_m = next((f for f in filas if f["nombre"] == f"tablas/{t}.jsonl"), None)
++        if not os.path.isfile(ruta) or fila_m is None:
++            c.fallo(f"V06-{t}", "Falta la tabla en disco o en el manifiesto.")
++            continue
++        try:
++            reg = comun.contar_lineas_jsonl(ruta)
++        except Exception as e:
++            c.fallo(f"V06-{t}", f"JSONL ilegible: {e}")
++            continue
++        ids = [r.get("id") for r in reg]
++        res_t = resumen.get("tablas", {}).get(t, {})
++        ok = (len(reg) == int(fila_m["filas"]) == res_t.get("filas") and len(set(ids)) == len(ids)
++              and comun.huella_ids(ids) == res_t.get("huella_ids"))
++        c.cond(f"V06-{t}", ok, f"{t}: {len(reg)} filas, ids únicos, filas y huella de ids coinciden con manifiesto y resumen.",
++               f"{t}: filas ({len(reg)}), ids o huella de ids no coinciden con manifiesto/resumen.", filas=len(reg))
++        ids_tabla[t] = set(ids)
++        versiones[t] = {r["id"]: r.get("version") for r in reg}
++
++    # V07 huellas del conjunto
++    cap_pares = [(f["nombre"][len("capturas/"):], int(f["bytes"])) for f in caps]
++    cap_trios = [(n, b, next(x["sha256"] for x in caps if x["nombre"] == "capturas/" + n)) for n, b in cap_pares]
++    h_lis, h_obj = comun.huella_listado(cap_pares), comun.huella_objetos(cap_trios)
++    rc = resumen.get("capturas", {})
++    c.cond("V07", h_lis == rc.get("huella_listado") and h_obj == rc.get("huella_objetos") and len(caps) == rc.get("descargadas"),
++           "Huellas del conjunto recalculadas desde el manifiesto = resumen.json.",
++           "Las huellas o el conteo recalculados no coinciden con resumen.json.", huella_listado=h_lis, huella_objetos=h_obj, capturas=len(caps))
++
++    # V08 IDs requeridos
++    p_ids = os.path.join(carpeta, "ids_requeridos.txt")
++    req = []
++    if os.path.isfile(p_ids):
++        req = comun.leer_ids(p_ids)
++    rq = resumen.get("requeridos", {})
++    c.cond("V08a", os.path.isfile(p_ids) and comun.sha256_archivo(p_ids) == rq.get("archivo_sha256") and len(req) == rq.get("esperados"),
++           f"Lista de ids requeridos íntegra ({len(req)} ids).", "La lista de ids requeridos falta o no coincide con resumen.json.")
++    nombres_cap = {n for n, _ in cap_pares}
++    faltan = [i for i in req if f"{i}.webp" not in nombres_cap]
++    c.cond("V08b", not faltan and req, f"Los {len(req)} ids requeridos tienen su captura respaldada.", f"Faltan {len(faltan)} capturas requeridas: {faltan[:20]}.")
++    el = versiones.get("errores_lector", {})
++    sin_fila = [i for i in req if i not in el]
++    distinta = [i for i in req if i in el and el[i] != comun.VERSION_BANCO]
++    c.cond("V08c", not sin_fila and not distinta, f"Los {len(req)} ids requeridos tienen fila en errores_lector con versión {comun.VERSION_BANCO}.",
++           f"Ids sin fila: {sin_fila[:10]}; con versión distinta de {comun.VERSION_BANCO}: {distinta[:10]}.")
++
++    # V09 enlaces captura ↔ fila
++    sin_enlace = [f["nombre"] for f in caps if f["origen"] in ("dudosa", "normal_n") and
++                  int(f["id_enlace"]) not in ids_tabla.get("errores_lector" if f["origen"] == "dudosa" else "capturas_ok", set())]
++    if sin_enlace:
++        c.aviso("V09", f"{len(sin_enlace)} capturas sin fila enlazada (¿fila borrada?).", ejemplos=sin_enlace[:5])
++    else:
++        c.ok("V09", "Toda captura con id enlazado tiene su fila.")
++    sin_n = sum(1 for f in caps if f["origen"] == "normal_sin_n")
++    c.ok("V09b", f"{sin_n} capturas normales sin -n<id> (10.78–10.79) no se enlazan a ninguna fila: es lo esperado.")
++
++    # V10 estado declarado por el respaldo
++    est = resumen.get("resultado_respaldo")
++    if est == "COMPLETO":
++        c.ok("V10", "El respaldo se declaró COMPLETO.")
++    elif est == "COMPLETO_CON_ADVERTENCIAS":
++        c.aviso("V10", "El respaldo se declaró COMPLETO_CON_ADVERTENCIAS: objetos que desaparecieron durante la descarga.",
++                desaparecidas=resumen.get("capturas", {}).get("desaparecidas_antes_de_descargar", [])[:20])
++    else:
++        c.fallo("V10", f"El respaldo se declaró {est}.")
++    ld = resumen.get("listado", {})
++    if ld.get("agregados_durante") or ld.get("quitados_durante") or ld.get("tamano_cambiado_durante"):
++        c.aviso("V10b", "El bucket cambió durante el respaldo.", agregados=len(ld.get("agregados_durante", [])),
++                quitados=len(ld.get("quitados_durante", [])), cambiados=len(ld.get("tamano_cambiado_durante", [])))
++
++    em = rc.get("etag_md5", {})
++    if em.get("discrepancias"):
++        c.aviso("V10c", f"{len(em['discrepancias'])} capturas con md5 distinto del eTag del servidor (formato de eTag no confirmado).", ejemplos=em["discrepancias"][:5])
++    else:
++        c.ok("V10c", f"Contraste md5 con el eTag del servidor: {em.get('comprobados', 0)} comprobadas, 0 discrepancias (best-effort).")
++
++    # V11 versión de los scripts
++    actual = comun.hash_scripts(AQUI)
++    reg = resumen.get("scripts_sha256", {})
++    difieren = [k for k in ("comun.py", "respaldar.py") if k in reg and reg[k] != actual.get(k)]
++    if difieren:
++        c.aviso("V11", f"Los scripts actuales difieren de los que hicieron el respaldo: {difieren}.")
++    else:
++        c.ok("V11", "comun.py y respaldar.py coinciden con los usados en el respaldo.")
++
++    ref = _referencia(c, caps, cap_pares, resumen, ref_objetos, ref_tablas, h_lis, ids_tabla, versiones)
++    return {
++        "esquema": comun.ESQUEMA, "verificado_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
++        "resultado": c.resultado(), "manifiesto_sha256": man_sha, "resumen_sha256": comun.sha256_bytes(crudo_res),
++        "conteos": {"capturas": len(caps), "filas_errores_lector": len(ids_tabla.get("errores_lector", ())),
++                    "filas_capturas_ok": len(ids_tabla.get("capturas_ok", ())), "ids_requeridos": len(req),
++                    "ids_requeridos_presentes": len(req) - len(faltan)},
++        "huellas": {"listado": h_lis, "objetos": h_obj},
++        "referencia": ref, "scripts_sha256": actual, "checks": c.lista,
++    }
++
++
++def _referencia(c, caps, cap_pares, resumen, ref_objetos, ref_tablas, h_lis, ids_tabla, versiones):
++    ref = {"objetos_csv_sha256": None, "tablas_csv_sha256": None}
++    if not ref_objetos or not ref_tablas:
++        c.aviso("R00", "Sin consulta de referencia (referencia.sql): no se cumple el criterio de conteos y huella de E0.")
++        return ref
++    ref["objetos_csv_sha256"], ref["tablas_csv_sha256"] = comun.sha256_archivo(ref_objetos), comun.sha256_archivo(ref_tablas)
++    ref["consultado_utc"] = _una(ref_tablas, "consultado_utc")
++    ref["resumen_sql"] = {k: _fila(ref_tablas).get(k) for k in ("objetos", "errores_lector", "errores_lector_10_77", "capturas_ok", "huella_listado")}
++    objs = {r["name"]: int(r["bytes"]) for r in _csv(ref_objetos)}
++    mio = dict(cap_pares)
++    desap = set(resumen.get("capturas", {}).get("desaparecidas_antes_de_descargar", []))
++    faltan = sorted(set(objs) - set(mio))
++    sin_explicar = [n for n in faltan if n not in desap]
++    c.cond("R01", not sin_explicar, f"Los {len(objs)} objetos de la referencia están respaldados (o explicados).",
++           f"{len(sin_explicar)} objetos de la referencia no están en el respaldo: {sin_explicar[:10]}.")
++    if set(faltan) & desap:
++        c.aviso("R01b", f"{len(set(faltan) & desap)} objetos de la referencia expiraron/desaparecieron durante la descarga.")
++    tam_mal = [n for n in objs if n in mio and objs[n] != mio[n]]
++    c.cond("R02", not tam_mal, "Los tamaños coinciden con la referencia.", f"Tamaños distintos de la referencia: {tam_mal[:10]}.")
++    extras = sorted(set(mio) - set(objs))
++    if extras:
++        c.aviso("R03", f"{len(extras)} objetos respaldados no estaban en la referencia (subidos o referencia previa).", ejemplos=extras[:5])
++    if not faltan and not extras and not tam_mal:
++        c.cond("R04", h_lis == _una(ref_tablas, "huella_listado"), "huella_listado del respaldo = huella de la consulta SQL.",
++               "huella_listado del respaldo ≠ huella de la consulta SQL aunque los conjuntos coinciden.")
++    else:
++        c.aviso("R04", "Huella del listado no comparable porque los conjuntos difieren (ver R01–R03).")
++    t = _fila(ref_tablas)
++    for tabla, col, col77 in (("errores_lector", "errores_lector", "huella_ids_errores_lector"), ("capturas_ok", "capturas_ok", "huella_ids_capturas_ok")):
++        n_ref, n_mio = int(t.get(col, -1)), len(ids_tabla.get(tabla, ()))
++        c.cond(f"R05-{tabla}", n_mio >= n_ref, f"{tabla}: {n_mio} filas respaldadas ≥ {n_ref} de la referencia.",
++               f"{tabla}: {n_mio} filas respaldadas < {n_ref} de la referencia.")
++        if n_mio == n_ref:
++            c.cond(f"R06-{tabla}", comun.huella_ids(ids_tabla[tabla]) == (t.get(col77) or None), f"{tabla}: huella de ids = referencia.",
++                   f"{tabla}: huella de ids distinta de la referencia con el mismo conteo.")
++        else:
++            c.aviso(f"R06-{tabla}", f"{tabla}: hay {n_mio - n_ref} filas más que en la referencia (actividad posterior).")
++    v77 = [i for i, v in versiones.get("errores_lector", {}).items() if v == comun.VERSION_BANCO]
++    n77 = int(t.get("errores_lector_10_77", -1))
++    c.cond("R07", len(v77) >= n77, f"errores_lector 10.77: {len(v77)} ≥ {n77} de la referencia.", f"errores_lector 10.77: {len(v77)} < {n77} de la referencia.")
++    if len(v77) == n77:
++        c.cond("R08", comun.huella_ids(v77) == (t.get("huella_ids_errores_lector_10_77") or None), "Huella de ids 10.77 = referencia.", "Huella de ids 10.77 ≠ referencia.")
++    return ref
++
++
++def _fila(ruta):
++    filas = _csv(ruta)
++    if len(filas) != 1:
++        raise ValueError("ref_tablas.csv debe tener una sola fila")
++    return filas[0]
++
++
++def _una(ruta, col):
++    return _fila(ruta).get(col) or None
++
++
++def main(argv=None):
++    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
++    ap.add_argument("--dir", required=True)
++    ap.add_argument("--ref-objetos")
++    ap.add_argument("--ref-tablas")
++    ap.add_argument("--salida", help="por defecto DIR/VERIFICACION.json")
++    a = ap.parse_args(argv)
++    r = verificar(a.dir, a.ref_objetos, a.ref_tablas)
++    datos = comun.json_estable(r)
++    destino = a.salida or os.path.join(a.dir, "VERIFICACION.json")
++    with open(destino, "wb") as f:
++        f.write(datos)
++    for ch in r["checks"]:
++        if ch["estado"] != "ok":
++            print(f"[{ch['estado'].upper()}] {ch['id']}: {ch['detalle']}", file=sys.stderr)
++    print(f"Resultado: {r['resultado']} ({sum(1 for x in r['checks'] if x['estado']=='ok')}/{len(r['checks'])} comprobaciones ok). "
++          f"Escrito {destino}", file=sys.stderr)
++    return 1 if r["resultado"] == "FALLO" else 0
++
++
++if __name__ == "__main__":
++    sys.exit(main())
+diff --git a/respaldo-e0/verificar_entrega.py b/respaldo-e0/verificar_entrega.py
+new file mode 100644
+index 0000000..78d1676
+--- /dev/null
++++ b/respaldo-e0/verificar_entrega.py
+@@ -0,0 +1,134 @@
++#!/usr/bin/env python3
++"""Revisión independiente de los artefactos sanitizados que entrega el propietario
++(resumen.json, manifiesto.csv, VERIFICACION.json). Sin red, sin imágenes, sin llaves.
++
++No repite lo que solo puede comprobar quien tiene las imágenes (hash de cada archivo); comprueba lo que
++SÍ se puede recomputar desde el manifiesto: coherencia entre los tres archivos, huellas, conteos,
++ids requeridos (con la lista del repositorio, no la que traiga el resumen), ausencia de datos personales y
++presencia/resultado de la comparación con la referencia SQL.
++
++Uso: python3 verificar_entrega.py --dir ENTREGA [--ids ids_requeridos_10.77.txt] [--minimo-objetos 738]
++"""
++import argparse
++import json
++import os
++import re
++import sys
++
++import comun
++
++AQUI = os.path.dirname(os.path.abspath(__file__))
++HEX64 = re.compile(r"^[0-9a-f]{64}$")
++
++
++def verificar_entrega(carpeta, ids_path, minimo_objetos=0):
++    chk = []
++
++    def add(id_, estado, txt):
++        chk.append({"id": id_, "estado": estado, "detalle": txt})
++
++    def cond(id_, c, ok, mal):
++        add(id_, "ok" if c else "fallo", ok if c else mal)
++
++    rutas = {n: os.path.join(carpeta, n) for n in ("resumen.json", "manifiesto.csv", "VERIFICACION.json")}
++    falta = [n for n, p in rutas.items() if not os.path.isfile(p)]
++    cond("E01a", not falta, "Están los tres artefactos.", f"Faltan: {falta}")
++    if falta:
++        return {"resultado": "FALLO", "checks": chk}
++    textos = {n: open(p, encoding="utf-8").read() for n, p in rutas.items()}
++    for n, t in textos.items():
++        m = comun.RE_SECRETOS.search(t)
++        cond(f"E01b-{n}", m is None, f"{n}: sin llaves, correos ni UUID de usuario.", f"{n}: contiene un patrón sensible (tipo detectado, no se reproduce).")
++    res, ver = json.loads(textos["resumen.json"]), json.loads(textos["VERIFICACION.json"])
++    man = comun.leer_manifiesto(rutas["manifiesto.csv"])
++    man_sha = comun.sha256_archivo(rutas["manifiesto.csv"])
++    cond("E02", man_sha == res.get("manifiesto_sha256") == ver.get("manifiesto_sha256")
++         and comun.sha256_archivo(rutas["resumen.json"]) == ver.get("resumen_sha256"),
++         "sha256 de manifiesto.csv y resumen.json coinciden en los tres archivos.", "Los sha256 cruzados entre resumen, manifiesto y VERIFICACION no coinciden.")
++
++    nombres = [f["nombre"] for f in man]
++    estructura = len(nombres) == len(set(nombres)) and all(HEX64.match(f["sha256"]) and f["bytes"].isdigit() and int(f["bytes"]) > 0 for f in man)
++    caps = [f for f in man if f["tipo"] == "captura"]
++    estructura = estructura and all(comun.clasificar(f["nombre"][len("capturas/"):])[0] == f["origen"] for f in caps)
++    cond("E03", estructura, f"Manifiesto bien formado: {len(man)} filas, sin repetidos, sha256 válidos, origen coherente con el nombre.", "Manifiesto mal formado, con repetidos o con origen incoherente.")
++
++    pares = [(f["nombre"][len("capturas/"):], int(f["bytes"])) for f in caps]
++    trios = [(f["nombre"][len("capturas/"):], int(f["bytes"]), f["sha256"]) for f in caps]
++    h1, h2 = comun.huella_listado(pares), comun.huella_objetos(trios)
++    rc = res.get("capturas", {})
++    cond("E04", h1 == rc.get("huella_listado") == ver.get("huellas", {}).get("listado") and h2 == rc.get("huella_objetos") == ver.get("huellas", {}).get("objetos"),
++         f"Huellas recalculadas desde el manifiesto = resumen = VERIFICACION (listado {h1[:12]}…, objetos {h2[:12]}…).", "Las huellas recalculadas desde el manifiesto NO coinciden.")
++    cond("E05", len(caps) == rc.get("descargadas") == ver.get("conteos", {}).get("capturas"), f"Conteo de capturas coherente: {len(caps)}.", "El conteo de capturas no coincide entre manifiesto, resumen y VERIFICACION.")
++    cond("E05b", len(caps) >= minimo_objetos, f"{len(caps)} capturas ≥ mínimo esperado ({minimo_objetos}).", f"Solo {len(caps)} capturas; se esperaban ≥ {minimo_objetos} (o el conteo actualizado, justificado).")
++
++    req = comun.leer_ids(ids_path)
++    sha_req = comun.sha256_archivo(ids_path)
++    cond("E06a", res.get("requeridos", {}).get("archivo_sha256") == sha_req, f"La lista de ids usada en el respaldo es la del repositorio ({len(req)} ids).",
++         "La lista de ids usada en el respaldo NO es la del repositorio (¿lista distinta o desactualizada?).")
++    nom = {n for n, _ in pares}
++    faltan = [i for i in req if f"{i}.webp" not in nom]
++    cond("E06b", not faltan, f"Los {len(req)} ids requeridos están en el manifiesto.", f"Faltan {len(faltan)} ids requeridos en el manifiesto: {faltan[:20]}")
++    for t in comun.TABLAS:
++        fm = next((f for f in man if f["nombre"] == f"tablas/{t}.jsonl"), None)
++        cond(f"E07-{t}", fm is not None and int(fm["filas"]) == res.get("tablas", {}).get(t, {}).get("filas"), f"{t}: filas del manifiesto = resumen.", f"{t}: filas del manifiesto ≠ resumen.")
++    pv = {}
++    for f in caps:
++        pv.setdefault(f["version"], {}).setdefault(f["origen"], 0)
++        pv[f["version"]][f["origen"]] += 1
++    cond("E08", {k: dict(sorted(v.items())) for k, v in sorted(pv.items())} == rc.get("por_version_y_origen"), "Conteo por versión y origen recalculado = resumen.", "El conteo por versión/origen no coincide con el manifiesto.")
++    v77 = pv.get(comun.VERSION_BANCO, {})
++    add("E08b", "ok", f"Informativo: capturas 10.77 en el respaldo: {v77}. Compara con el número de la consulta SQL.")
++
++    checks_ver = ver.get("checks", [])
++    mal = [c["id"] for c in checks_ver if c["estado"] == "fallo"]
++    cond("E09a", ver.get("resultado") in ("APROBADO", "APROBADO_CON_ADVERTENCIAS") and not mal, f"VERIFICACION.json: {ver.get('resultado')}, sin comprobaciones fallidas.", f"VERIFICACION.json reporta {ver.get('resultado')}; fallos: {mal}")
++    avisos = [(c["id"], c["detalle"]) for c in checks_ver if c["estado"] == "advertencia"]
++    add("E09b", "ok" if not avisos else "advertencia", "Sin advertencias." if not avisos else f"Advertencias que debe explicar el propietario: {avisos}")
++    refok = all(ver.get("referencia", {}).get(k) for k in ("objetos_csv_sha256", "tablas_csv_sha256")) and not any(c["id"] == "R00" for c in checks_ver)
++    cond("E10", refok, "La verificación incluyó la consulta de referencia SQL.", "No hay referencia SQL en VERIFICACION.json: no se cumple el criterio de conteos/huella del mismo momento.")
++    ts = (res.get("generado_utc"), ver.get("verificado_utc"), ver.get("referencia", {}).get("consultado_utc"))
++    add("E11", "ok", f"Informativo: respaldo generado {ts[0]}, verificado {ts[1]}, referencia SQL consultada {ts[2]}. Revisar que estén separados por minutos, no horas.")
++    actual = comun.hash_scripts(AQUI)
++    dif = [k for k, v in res.get("scripts_sha256", {}).items() if k in ("comun.py", "respaldar.py") and actual.get(k) != v]
++    add("E12", "ok" if not dif else "advertencia", "El respaldo se hizo con los scripts auditados (mismo sha256)." if not dif else f"Scripts distintos de los auditados: {dif}")
++    cond("E13", res.get("solo_lectura") is True and res.get("proyecto_ref") == comun.PROYECTO_REF, "Declara solo lectura y el proyecto esperado.", "No declara solo lectura o el proyecto no es el esperado.")
++    ruta_ev = os.path.join(carpeta, "EVIDENCIA-COPIAS.json")
++    if not os.path.isfile(ruta_ev):
++        add("C00", "advertencia", "PENDIENTE: no hay EVIDENCIA-COPIAS.json. E0 NO puede cerrarse sin dos copias cifradas y restauración de prueba de la copia B.")
++    else:
++        tev = open(ruta_ev, encoding="utf-8").read()
++        ev = json.loads(tev)
++        cond("C01a", comun.sin_trazas_de_secretos(tev), "EVIDENCIA-COPIAS.json sin patrones sensibles.", "EVIDENCIA-COPIAS.json contiene un patrón sensible.")
++        c = ev.get("copias", {})
++        cond("C01", ev.get("resultado") == "COMPLETA", "EVIDENCIA-COPIAS.json declara COMPLETA.", f"EVIDENCIA-COPIAS.json: {ev.get('resultado')}.")
++        cond("C02", all(c.get(k, {}).get("cifrada_detectada") for k in "AB") and len(c) == 2, "Ambas copias tienen cabecera de cifrado (age/gpg).", "Alguna copia no se detecta como cifrada.")
++        cond("C03", ev.get("medios_declarados_distintos") is True, f"Medios declarados distintos (declaración, no verificable): A={c.get('A',{}).get('medio_declarado')!r}, B={c.get('B',{}).get('medio_declarado')!r}.", "Los medios declarados faltan o son iguales.")
++        rb = ev.get("restauracion_b", {})
++        cond("C04", ev.get("restauracion_b_corresponde_a_copia_b") is True and rb.get("etiqueta_copia") == "B" and rb.get("copia_sha256") == c.get("B", {}).get("sha256"),
++             "La restauración se hizo desde el archivo de la copia B (mismo sha256).", "La restauración no está ligada al sha256 de la copia B.")
++        vb = rb.get("verificacion", {})
++        cond("C05", rb.get("restauracion_ok") is True and rb.get("tar_coincide") is True and vb.get("manifiesto_sha256") == res.get("manifiesto_sha256") and vb.get("resultado") in ("APROBADO", "APROBADO_CON_ADVERTENCIAS"),
++             "Lo restaurado desde B verifica y su manifiesto = el del respaldo original.", "Lo restaurado desde B no verifica o su manifiesto difiere del original.")
++        cond("C06", vb.get("huellas", {}).get("listado") == h1 and vb.get("huellas", {}).get("objetos") == h2 and vb.get("conteos", {}).get("capturas") == len(caps),
++             "Huellas y conteo de lo restaurado = los del manifiesto entregado.", "Huellas/conteo de lo restaurado ≠ manifiesto entregado.")
++        cond("C07", ev.get("declaraciones_del_propietario", {}).get("conserva_ambas_copias") is True, "El propietario declara conservar ambas copias (declaración).", "Falta la declaración de conservar las copias.")
++        add("C08", "ok", f"Informativo: copias {'cifradas por separado' if ev.get('cifrados_distintos') else 'idénticas (mismo cifrado copiado)'}; la independencia física es declarada, no comprobable.")
++    estado = "FALLO" if any(c["estado"] == "fallo" for c in chk) else ("APROBADO_CON_ADVERTENCIAS" if any(c["estado"] == "advertencia" for c in chk) else "APROBADO")
++    return {"resultado": estado, "checks": chk}
++
++
++def main(argv=None):
++    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
++    ap.add_argument("--dir", required=True)
++    ap.add_argument("--ids", default=os.path.join(AQUI, "ids_requeridos_10.77.txt"))
++    ap.add_argument("--minimo-objetos", type=int, default=738)
++    a = ap.parse_args(argv)
++    r = verificar_entrega(a.dir, a.ids, a.minimo_objetos)
++    for c in r["checks"]:
++        print(f"[{c['estado'].upper():11}] {c['id']}: {c['detalle']}")
++    print("RESULTADO:", r["resultado"])
++    return 1 if r["resultado"] == "FALLO" else 0
++
++
++if __name__ == "__main__":
++    sys.exit(main())

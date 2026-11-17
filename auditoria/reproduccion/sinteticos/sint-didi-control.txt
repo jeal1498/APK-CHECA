@@ -1,0 +1,6 @@
+# sintético: control positivo de la misma forma (sí es oferta)
+$151.34
+5min (1.7km)
+37min (13.2km)
+---
+tarifa=151.34 km=14.9 min=42

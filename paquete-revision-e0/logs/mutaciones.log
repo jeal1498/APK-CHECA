@@ -1,0 +1,16 @@
+M1 sigue redirecciones (reenviaría la llave)
+  suite final con mutación -> DETECTADA; pruebas que fallan: ['test_redireccion_no_reenvia_la_llave']
+M2 no valida cabecera WebP
+  suite final con mutación -> DETECTADA; pruebas que fallan: ['test_html_con_200_se_rechaza']
+M3 no compara sha256 en verificar
+  suite final con mutación -> DETECTADA; pruebas que fallan: ['test_byte_alterado']
+M4 ids requeridos siempre presentes (verificar_entrega)
+  suite final con mutación -> DETECTADA; pruebas que fallan: ['test_lista_de_ids_del_repo_con_un_id_que_el_respaldo_no_tiene']
+  sin la prueba de refuerzo «test_lista_de_ids_del_repo_con_un_id_que_el_respaldo_no_tiene» -> SOBREVIVE (así sobrevivió antes de reforzar)
+M5 acepta llave anon
+  suite final con mutación -> DETECTADA; pruebas que fallan: ['test_rechaza_url_ajena_clave_anon_y_sin_clave']
+M6 listado sin paginar
+  suite final con mutación -> DETECTADA; pruebas que fallan: ['test_archivo_sin_cifrar_se_rechaza', 'test_ciclo_completo_y_revision_de_entrega', 'test_copia_dañada_no_restaura', 'test_gpg_con_frase_en_archivo']
+M7 restauración no ligada al sha256 de B
+  suite final con mutación -> DETECTADA; pruebas que fallan: ['test_restauracion_etiquetada_B_pero_hecha_con_otro_archivo']
+  sin la prueba de refuerzo «test_restauracion_etiquetada_B_pero_hecha_con_otro_archivo» -> SOBREVIVE (así sobrevivió antes de reforzar)

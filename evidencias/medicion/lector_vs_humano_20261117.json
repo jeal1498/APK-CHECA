@@ -1,0 +1,281 @@
+{
+  "advertencias": [
+    "Muestra de casos DIFÍCILES (errores_lector 10.77), no de producción.",
+    "La predicción sale de las líneas guardadas por el teléfono, no de la imagen.",
+    "Referencia adjudicada no es doble revisión a ciegas.",
+    "n < 30: insuficiente para concluir."
+  ],
+  "con_lineas": 19,
+  "errores_del_lector": [
+    {
+      "app": "didi",
+      "campos": [],
+      "caso": "1300",
+      "categoria": "falso_positivo",
+      "humano": {
+        "clase": "no_oferta",
+        "km": null,
+        "min": null,
+        "tarifa": null
+      },
+      "lector": {
+        "km": 2.9,
+        "min": 7,
+        "resultado": "oferta",
+        "tarifa": 39.68
+      },
+      "origen_ref": "doble_ciego"
+    },
+    {
+      "app": "didi",
+      "campos": [
+        "tarifa",
+        "km",
+        "min"
+      ],
+      "caso": "1324",
+      "categoria": "error_datos",
+      "humano": {
+        "clase": "oferta",
+        "km": 10.3,
+        "min": 22.0,
+        "tarifa": 59.8
+      },
+      "lector": {
+        "km": 6.1,
+        "min": 15,
+        "resultado": "oferta",
+        "tarifa": 48.77
+      },
+      "origen_ref": "adjudicada"
+    },
+    {
+      "app": "didi",
+      "campos": [
+        "km",
+        "min"
+      ],
+      "caso": "1377",
+      "categoria": "error_datos",
+      "humano": {
+        "clase": "oferta",
+        "km": 2.2,
+        "min": 8.0,
+        "tarifa": 35.04
+      },
+      "lector": {
+        "km": 1.1,
+        "min": 4,
+        "resultado": "oferta",
+        "tarifa": 35.04
+      },
+      "origen_ref": "doble_ciego"
+    }
+  ],
+  "lector": {
+    "abstenciones": {
+      "ic95": [
+        0.0,
+        0.1682
+      ],
+      "k": 0,
+      "n": 19,
+      "suficiente": false,
+      "valor": 0.0
+    },
+    "conteos": {
+      "abstencion": 0,
+      "acierto": 16,
+      "error_datos": 2,
+      "falso_negativo": 0,
+      "falso_positivo": 1,
+      "sin_referencia": 0,
+      "verdadero_negativo": 0
+    },
+    "errores_por_campo": {
+      "km": 2,
+      "min": 2,
+      "tarifa": 1
+    },
+    "evaluables": 19,
+    "exactitud": {
+      "ic95": [
+        0.6243,
+        0.9448
+      ],
+      "k": 16,
+      "n": 19,
+      "suficiente": false,
+      "valor": 0.8421
+    },
+    "precision_ofertas": {
+      "ic95": [
+        0.6243,
+        0.9448
+      ],
+      "k": 16,
+      "n": 19,
+      "suficiente": false,
+      "valor": 0.8421
+    },
+    "tasa_fn": {
+      "ic95": [
+        0.0,
+        0.1759
+      ],
+      "k": 0,
+      "n": 18,
+      "suficiente": false,
+      "valor": 0.0
+    },
+    "tasa_fp": {
+      "ic95": [
+        0.2065,
+        1.0
+      ],
+      "k": 1,
+      "n": 1,
+      "suficiente": false,
+      "valor": 1.0
+    }
+  },
+  "n_referencia": 66,
+  "por_app": {
+    "didi": {
+      "abstenciones": {
+        "ic95": [
+          0.0,
+          0.1759
+        ],
+        "k": 0,
+        "n": 18,
+        "suficiente": false,
+        "valor": 0.0
+      },
+      "conteos": {
+        "abstencion": 0,
+        "acierto": 15,
+        "error_datos": 2,
+        "falso_negativo": 0,
+        "falso_positivo": 1,
+        "sin_referencia": 0,
+        "verdadero_negativo": 0
+      },
+      "errores_por_campo": {
+        "km": 2,
+        "min": 2,
+        "tarifa": 1
+      },
+      "evaluables": 18,
+      "exactitud": {
+        "ic95": [
+          0.6078,
+          0.9416
+        ],
+        "k": 15,
+        "n": 18,
+        "suficiente": false,
+        "valor": 0.8333
+      },
+      "precision_ofertas": {
+        "ic95": [
+          0.6078,
+          0.9416
+        ],
+        "k": 15,
+        "n": 18,
+        "suficiente": false,
+        "valor": 0.8333
+      },
+      "tasa_fn": {
+        "ic95": [
+          0.0,
+          0.1843
+        ],
+        "k": 0,
+        "n": 17,
+        "suficiente": false,
+        "valor": 0.0
+      },
+      "tasa_fp": {
+        "ic95": [
+          0.2065,
+          1.0
+        ],
+        "k": 1,
+        "n": 1,
+        "suficiente": false,
+        "valor": 1.0
+      }
+    },
+    "uber": {
+      "abstenciones": {
+        "ic95": [
+          0.0,
+          0.7935
+        ],
+        "k": 0,
+        "n": 1,
+        "suficiente": false,
+        "valor": 0.0
+      },
+      "conteos": {
+        "abstencion": 0,
+        "acierto": 1,
+        "error_datos": 0,
+        "falso_negativo": 0,
+        "falso_positivo": 0,
+        "sin_referencia": 0,
+        "verdadero_negativo": 0
+      },
+      "errores_por_campo": {
+        "km": 0,
+        "min": 0,
+        "tarifa": 0
+      },
+      "evaluables": 1,
+      "exactitud": {
+        "ic95": [
+          0.2065,
+          1.0
+        ],
+        "k": 1,
+        "n": 1,
+        "suficiente": false,
+        "valor": 1.0
+      },
+      "precision_ofertas": {
+        "ic95": [
+          0.2065,
+          1.0
+        ],
+        "k": 1,
+        "n": 1,
+        "suficiente": false,
+        "valor": 1.0
+      },
+      "tasa_fn": {
+        "ic95": [
+          0.0,
+          0.7935
+        ],
+        "k": 0,
+        "n": 1,
+        "suficiente": false,
+        "valor": 0.0
+      },
+      "tasa_fp": {
+        "ic95": null,
+        "k": 0,
+        "n": 0,
+        "suficiente": false,
+        "valor": null
+      }
+    }
+  },
+  "referencia_varias": {
+    "pop_up_sobre_varias": [],
+    "se_abstuvo": []
+  },
+  "sin_lineas": 47
+}

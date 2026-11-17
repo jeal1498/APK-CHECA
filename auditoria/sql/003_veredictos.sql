@@ -1,0 +1,146 @@
+-- E4 · 003 — Veredictos humanos, de IA y heredados (PREPARADO, NO APLICADO). Requiere 001.
+-- Separa tres cosas que antes se mezclaban: lo que leyó el lector (auditoria.lecturas / errores_lector.local),
+-- lo que dijo una IA y lo que verificó una persona contra la captura. Un veredicto nunca se edita: se agrega
+-- otro que lo sustituye (`sustituye`). Las etiquetas heredadas se importan como «heredado» y NO cuentan como verdad.
+
+create table if not exists auditoria.veredictos (
+  id               bigserial primary key,
+  -- Exactamente un objetivo: un evento nuevo, un caso histórico de errores_lector o un caso del banco.
+  lectura_id       uuid references auditoria.lecturas (id) on delete cascade,
+  error_lector_id  bigint,          -- sin FK: errores_lector puede purgarse; se conserva la referencia
+  caso_banco       text check (caso_banco ~ '^[0-9]{4}-(uber|didi|otra)$'),
+  fuente           text not null check (fuente in ('humano', 'ia', 'heredado')),
+  autor            text not null check (length(autor) between 1 and 64),  -- seudónimo del revisor o id del modelo
+  revisor_version  text check (length(revisor_version) <= 64),           -- modelo/prompt o versión de la guía
+  guia_version     text check (length(guia_version) <= 16),
+  clase            text not null check (clase in ('oferta', 'no_oferta', 'varias', 'ilegible', 'cambio_pantalla')),
+  tarifa           numeric(10, 2) check (tarifa > 0),
+  km               numeric(8, 2) check (km > 0),
+  min              numeric(8, 1) check (min > 0),
+  tarjeta          smallint check (tarjeta between 1 and 20),   -- qué tarjeta (1 = la de arriba) es la del botón
+  confianza        text not null default 'media' check (confianza in ('alta', 'media', 'baja')),
+  estado           text not null default 'propuesto' check (estado in ('propuesto', 'validado', 'descartado')),
+  evidencia_sha256 text check (evidencia_sha256 ~ '^[0-9a-f]{64}$'),  -- sha256 de la captura que se miró
+  nota             text check (length(nota) <= 280),
+  origen_migracion text,          -- '003' para los importados de errores_lector.veredicto
+  sustituye        bigint references auditoria.veredictos (id),
+  creado           timestamptz not null default now(),
+  constraint veredicto_un_objetivo check (num_nonnulls(lectura_id, error_lector_id, caso_banco) = 1),
+  constraint veredicto_oferta_con_datos check (clase <> 'oferta' or (tarifa is not null and km is not null and min is not null)),
+  constraint veredicto_sin_datos check (clase = 'oferta' or (tarifa is null and km is null and min is null)),
+  -- Un humano solo VALIDA mirando la captura (queda su huella) y con la guía usada.
+  constraint veredicto_humano_validado check (
+    not (fuente = 'humano' and estado = 'validado') or (evidencia_sha256 is not null and guia_version is not null)),
+  -- La IA y lo heredado nunca quedan «validados»: eso solo lo hace una persona.
+  constraint veredicto_solo_humano_valida check (fuente = 'humano' or estado <> 'validado'),
+  constraint veredicto_heredado_marcado check (fuente <> 'heredado' or origen_migracion is not null)
+);
+create index if not exists veredictos_lectura on auditoria.veredictos (lectura_id) where lectura_id is not null;
+create index if not exists veredictos_error on auditoria.veredictos (error_lector_id) where error_lector_id is not null;
+create index if not exists veredictos_banco on auditoria.veredictos (caso_banco) where caso_banco is not null;
+create unique index if not exists veredictos_migracion_unica
+  on auditoria.veredictos (error_lector_id, origen_migracion) where origen_migracion is not null;
+-- Un mismo revisor no da dos veredictos vigentes al mismo objetivo (para sustituir se usa `sustituye`).
+create unique index if not exists veredictos_autor_unico on auditoria.veredictos
+  (coalesce(lectura_id::text, error_lector_id::text, caso_banco), autor) where sustituye is null and estado <> 'descartado';
+alter table auditoria.veredictos enable row level security;
+revoke all on auditoria.veredictos from public, anon, authenticated;
+
+-- Los veredictos no se editan ni se borran a mano. Sí se van en cascada (al borrar la lectura o la cuenta):
+-- un borrado directo tiene profundidad de disparador 1; el de una cascada, mayor.
+create or replace function auditoria.veredicto_inmutable() returns trigger language plpgsql as $$
+begin
+  if tg_op = 'UPDATE' then
+    raise exception 'los veredictos no se editan: agrega uno nuevo con «sustituye»' using errcode = '42501';
+  end if;
+  if pg_trigger_depth() = 1 then
+    raise exception 'los veredictos no se borran' using errcode = '42501';
+  end if;
+  return old;
+end $$;
+drop trigger if exists veredicto_inmutable on auditoria.veredictos;
+create trigger veredicto_inmutable before update or delete on auditoria.veredictos
+  for each row execute function auditoria.veredicto_inmutable();
+
+-- Veredicto vigente por objetivo, con precedencia explícita:
+--   0. adjudicación humana validada (revisor_version 'adjudicacion…')  → 'referencia_adjudicada': un conflicto entre
+--      revisores resuelto por consenso o por una tercera persona. Cuenta como referencia, pero NO como doble revisión a ciegas.
+--   1. ≥ 2 revisores humanos DISTINTOS validados que coinciden → 'referencia_doble'
+--   2. 1 revisor humano validado                               → 'referencia_humana' (una sola persona: aún no es referencia)
+--   3. humanos validados que NO coinciden                      → 'conflicto_humano' (no se fuerza una clase)
+--   4. sin humano validado, con IA                             → 'solo_ia'
+--   5. solo heredado                                           → 'heredado_no_revisado'
+-- De cada autor cuenta solo su veredicto más reciente no descartado ni sustituido (una persona no puede sumar
+-- dos votos). «Coinciden» = misma clase y tarjeta y, si es oferta, tarifa ±0.01, km ±0.05, min ±0.5: las
+-- tolerancias de la guía de etiquetado (auditoria/etiquetado/metricas.py TOL). Los datos de la referencia son
+-- los del veredicto validado más antiguo. (Auditoría de cierre, A3.)
+create or replace view auditoria.veredicto_vigente with (security_invoker = on) as
+with v0 as (
+  select x.*, coalesce(x.lectura_id::text, 'e' || x.error_lector_id::text, 'b' || x.caso_banco) as objetivo
+  from auditoria.veredictos x
+  where x.estado <> 'descartado' and not exists (select 1 from auditoria.veredictos s where s.sustituye = x.id)
+), v as (
+  select distinct on (objetivo, fuente, autor) * from v0 order by objetivo, fuente, autor, id desc
+), adj as (
+  select distinct on (objetivo) objetivo, clase, tarifa, km, min, tarjeta
+  from v where fuente = 'humano' and estado = 'validado' and revisor_version like 'adjudicacion%'
+  order by objetivo, id desc
+), h as (
+  select objetivo, count(*) as n_humanos,
+         (count(distinct clase) = 1 and count(distinct coalesce(tarjeta, 0)) = 1
+          and coalesce(max(tarifa) - min(tarifa), 0) <= 0.01 and coalesce(max(km) - min(km), 0) <= 0.05
+          and coalesce(max(min) - min(min), 0) <= 0.5) as coinciden,
+         (array_agg(clase order by id))[1] as clase, (array_agg(tarifa order by id))[1] as tarifa,
+         (array_agg(km order by id))[1] as km, (array_agg(min order by id))[1] as min, (array_agg(tarjeta order by id))[1] as tarjeta
+  from v where fuente = 'humano' and estado = 'validado' and coalesce(revisor_version, '') not like 'adjudicacion%' group by objetivo
+), o as (
+  select objetivo, bool_or(fuente = 'ia') as hay_ia, bool_or(fuente = 'heredado') as hay_heredado,
+         min(lectura_id::text)::uuid as lectura_id, min(error_lector_id) as error_lector_id, min(caso_banco) as caso_banco
+  from v group by objetivo
+)
+select o.objetivo, o.lectura_id, o.error_lector_id, o.caso_banco,
+       case when adj.objetivo is not null then 'referencia_adjudicada'
+            when h.n_humanos >= 2 and h.coinciden then 'referencia_doble'
+            when h.n_humanos = 1 then 'referencia_humana'
+            when h.n_humanos > 1 then 'conflicto_humano'
+            when o.hay_ia then 'solo_ia'
+            else 'heredado_no_revisado' end as estado,
+       coalesce(h.n_humanos, 0) as n_humanos,
+       case when adj.objetivo is not null then adj.clase when h.coinciden then h.clase end as clase,
+       case when adj.objetivo is not null then adj.tarifa when h.coinciden then h.tarifa end as tarifa,
+       case when adj.objetivo is not null then adj.km when h.coinciden then h.km end as km,
+       case when adj.objetivo is not null then adj.min when h.coinciden then h.min end as min,
+       case when adj.objetivo is not null then adj.tarjeta when h.coinciden then h.tarjeta end as tarjeta
+from o left join h using (objetivo) left join adj using (objetivo);
+revoke all on auditoria.veredicto_vigente from public, anon, authenticated;
+
+-- Importación de lo heredado (idempotente, reversible). La tabla original NO se toca.
+-- errores_lector.veredicto: ia_bien = «la revisión de IA tenía razón», ia_mal = «tenía razón el lector», dudoso.
+-- Se importa la clase/datos según ese juicio, con fuente 'heredado' y autor 'revision_semanal': no es verdad humana.
+with src as (
+  select e.id, e.veredicto,
+         case when e.veredicto = 'ia_bien' then e.ia when e.veredicto = 'ia_mal' then e.local end as j
+  from public.errores_lector e
+  where e.veredicto is not null
+), dat as (
+  select id, veredicto, j->>'oferta' = 'false' as no_oferta,
+         case when (j->>'tarifa') ~ '^[0-9]+(\.[0-9]+)?$' then (j->>'tarifa')::numeric end as tarifa,
+         case when (j->>'km') ~ '^[0-9]+(\.[0-9]+)?$' then (j->>'km')::numeric end as km,
+         case when (j->>'min') ~ '^[0-9]+(\.[0-9]+)?$' then (j->>'min')::numeric end as min
+  from src
+), cls as (
+  select *, case when veredicto = 'dudoso' or j_nula then 'ilegible'
+                 when no_oferta then 'no_oferta'
+                 when tarifa > 0 and km > 0 and min > 0 then 'oferta'
+                 else 'ilegible' end as clase
+  from (select *, veredicto not in ('ia_bien', 'ia_mal', 'dudoso') as j_nula from dat) d
+)
+insert into auditoria.veredictos (error_lector_id, fuente, autor, revisor_version, clase, tarifa, km, min, confianza, estado, nota, origen_migracion)
+select id, 'heredado', 'revision_semanal', 'errores_lector.veredicto', clase,
+       case when clase = 'oferta' then tarifa end, case when clase = 'oferta' then km end, case when clase = 'oferta' then min end,
+       'baja', 'propuesto', 'importado de errores_lector.veredicto=' || veredicto || ' (no revisado de nuevo)', '003'
+from cls
+on conflict do nothing;
+
+insert into auditoria.version_esquema (version, descripcion)
+values (3, 'veredictos humano/IA/heredado y precedencia (E4)') on conflict (version) do nothing;

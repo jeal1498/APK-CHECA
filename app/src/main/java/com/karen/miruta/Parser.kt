@@ -330,6 +330,10 @@ object Parser {
                 val fiable = boton != null || (ancla != null && (!unaTarjeta || ancla.trim().let { a ->
                     anclaDidi.find(a)?.groupValues?.get(2)?.isNotBlank() == true }))
                 // El botón va primero: su monto manda; la línea del monto aporta el multiplicador.
+                // Tarjeta cortada arriba (su monto no se ve, solo el botón «Aceptar $X») y más abajo hay otra
+                // tarjeta completa con su monto: la completa es la oferta (referencia humana, caso 1324).
+                val cortada = boton != null && ancla == null && !unaTarjeta
+                if (cortada && tarjetaCompletaDespues(textos, tr, i + 2)) { i += 2; continue }
                 if (fiable) return listOfNotNull(boton, ancla, textos[i], textos[i + 1])
                 if (unaTarjeta) return null
                 i += 2
@@ -338,6 +342,14 @@ object Parser {
             i++
         }
         return null
+    }
+
+    /** ¿Hay, después de `desde`, un par de tramos con su monto justo antes (tarjeta completa)? */
+    private fun tarjetaCompletaDespues(textos: List<String>, tr: Set<Int>, desde: Int): Boolean {
+        for (k in desde until textos.size - 1) {
+            if (k in tr && (k + 1) in tr && k > 0 && (k - 1) !in tr && anclaTarjeta(textos[k - 1]) != null) return true
+        }
+        return false
     }
 
     // «$58,41», «$109,47»: el OCR leyó coma en vez de punto en la tarifa (14 nov, capturas 1035 y 1216).
@@ -377,14 +389,20 @@ object Parser {
         val vistos = HashSet<String>()
         // Uber trae su «$/km est.»; el ícono del tramo leído como dígito es cosa de DiDi.
         val esDidi = textos.none { porKmTexto.containsMatchIn(it) && it.contains("est", ignoreCase = true) }
-        for (t in textos) {
+        for ((idx, t) in textos.withIndex()) {
             // "42 min (14.9 km) total" es un resumen (nuestro pop-up u otra app): no sumar.
             if (t.contains("total", ignoreCase = true)) continue
             // Uber nuevo: "50 min • 16.4 km • $6.29/km est." es el resumen del viaje completo.
             val porKm = porKmTexto.find(t)?.groupValues?.get(1)?.replace(",", ".")?.toDoubleOrNull()
             for (m in tramo.findAll(corregirMinutos(t))) {
                 // Evita contar dos veces el mismo tramo si un contenedor repite el texto.
-                if (!vistos.add(m.value.replace(" ", "").lowercase())) continue
+                if (!vistos.add(m.value.replace(" ", "").lowercase())) {
+                    // Recogida y viaje idénticos (p. ej. 4 min (1.1 km) dos veces, líneas seguidas, dos tramos en
+                    // total): son dos tramos de verdad (referencia humana 1377). Con 3+ líneas iguales es contenedor.
+                    val iguales = textos.count { it == t }
+                    val seguida = idx > 0 && textos[idx - 1] == t
+                    if (!(iguales == 2 && seguida && lista.size == 1)) continue
+                }
                 val h = m.groupValues[1].toDoubleOrNull() ?: 0.0
                 val mi = m.groupValues[2].toDoubleOrNull() ?: 0.0
                 val numero = m.groupValues[3].ifEmpty { m.groupValues[5] }

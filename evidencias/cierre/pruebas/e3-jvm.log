@@ -1,0 +1,22 @@
+# E3 núcleo Kotlin en JVM (no Android)
+# $ herramientas/jvm/probar.sh 2>&1 | grep -v '^Picked up'
+# inicio 2026-11-16T09:53:51Z
+ok   TrazaTest.appCorta
+ok   TrazaTest.capturaExactaMarcaVinculo
+ok   TrazaTest.coherenciaComoElServidor
+ok   TrazaTest.colaAcotadaDescartaLosMasViejos
+ok   TrazaTest.colaPersisteYSobreviveReinicio
+ok   TrazaTest.colaRechazaEventoRaro
+ok   TrazaTest.colaToleraArchivoDanado
+ok   TrazaTest.huellaDeLineasEsEstable
+ok   TrazaTest.jsonEscapaTexto
+ok   TrazaTest.loteRespetaTopes
+ok   TrazaTest.multiplicadorFueraDeRangoNoSeManda
+ok   TrazaTest.ofertaValidaSerializa
+ok   TrazaTest.redaccionNoDejaPalabrasNiNumerosSueltos
+ok   TrazaTest.redaccionSoloDatosDeOferta
+ok   TrazaTest.reintentoCreceYTieneTope
+ok   TrazaTest.respuestasDelServidor
+ok   GuardiaParserTest.lectorSinCambios
+17 ok, 0 fallan
+# exit=0 fin 2026-11-16T09:54:04Z

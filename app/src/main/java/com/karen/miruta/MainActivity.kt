@@ -5252,6 +5252,14 @@ class MainActivity : Activity() {
             handler.post { pintarDiag() }
         })
         c.addView(tSw, margenArriba(Tema.ENTRE_TARJETAS))
+        // 10.81 (E3): registro técnico de lecturas, apagado por defecto (prueba; no cambia el pop-up).
+        val tTr = tarjeta()
+        tTr.addView(interruptor(
+            "Registro técnico de lecturas (prueba)",
+            "Anota qué leyó Checa y por qué, sin direcciones ni nombres. Se borra a los 30 días.",
+            prefs.trazabilidad
+        ) { on -> prefs.trazabilidad = on })
+        c.addView(tTr, margenArriba(Tema.ENTRE_TARJETAS))
 
         val items = Guardado.lista(this)
         if (!prefs.diagnostico) {
