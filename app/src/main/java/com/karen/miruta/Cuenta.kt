@@ -300,7 +300,7 @@ object Cuenta {
         if (s.getString("correo", null) != correo) {
             e.remove("lic_firma").remove("lic_vence").remove("lic_f").remove("lic_eq").remove("equipos").remove("quitado")
                 .remove("precio_beta").remove("ajustes_hash").remove("perfil_hash")
-                .remove("vc_subidos").remove("vc_borrar").remove("capt_ok")
+                .remove("vc_subidos").remove("vc_borrar").remove("capt_ok").remove("capt_ok_dia")
             Jornada.borrarPrivados(ctx)
             // Los contactos que se pusieron sin cuenta se quedan y se suben; los de otra cuenta, no.
             if (s.getString("correo", null) != null) { e.remove("sos_pend"); Sos.borrarTodo(ctx) }
@@ -332,32 +332,43 @@ object Cuenta {
         subirImagen(ctx, "$caso.webp", bytes)
     }
 
-    /** Tope de capturas de ofertas normales por conductor, en total (Eduardo, 14 nov). */
-    const val MAX_CAPTURAS_OK = 100
+    /**
+     * Tope de capturas de ofertas normales por conductor **y por día** (Eduardo, 18 nov: unas 500 al día entre todos;
+     * con 3 conductores activos, 150 cada uno). Antes eran 100 por cuenta en total y se acababan en pocos días.
+     */
+    const val MAX_CAPTURAS_OK_DIA = 150
+
+    private fun diaCapturas(): String = java.time.LocalDate.now().toString()
+
+    /** Capturas normales ya subidas hoy; el contador se reinicia solo al cambiar el día. */
+    private fun capturasOkHoy(ctx: Context): Int {
+        val s = sp(ctx)
+        return if (s.getString("capt_ok_dia", null) == diaCapturas()) s.getInt("capt_ok", 0) else 0
+    }
 
     /**
      * 10.78: sube la captura de una oferta normal (el pop-up salió verde, amarillo o rojo y la revisión
      * coincidió), como `ok-<color>-<tarifa>-<km>-<min>-<hora>.webp`. Solo si el conductor vio el aviso y
-     * sin pasar de [MAX_CAPTURAS_OK] por cuenta (el servidor también lo limita). Se borra a los 7 días.
+     * sin pasar de [MAX_CAPTURAS_OK_DIA] por cuenta y por día. Se borra a los 7 días.
      */
     @Synchronized
     fun subirCapturaOk(ctx: Context, nivel: String, o: Oferta, bytes: ByteArray, normal: Long = 0L) {
         try {
             if (!quiereCapturaOk(ctx)) return
             val s = sp(ctx)
-            val subidas = s.getInt("capt_ok", 0)
+            val subidas = capturasOkHoy(ctx)
             val color = if (nivel == "verde" || nivel == "amarillo" || nivel == "rojo") nivel else "sin"
             // 10.80: «-n<id>» enlaza la captura con sus líneas en la tabla capturas_ok.
             val nombre = "ok-$color-" + String.format(Locale.US, "%.2f-%.1f-%.0f", o.tarifa, o.km, o.min) +
                 "-" + System.currentTimeMillis() + (if (normal > 0L) "-n$normal" else "") + ".webp"
-            if (subirImagen(ctx, nombre, bytes)) s.edit().putInt("capt_ok", subidas + 1).apply()
+            if (subirImagen(ctx, nombre, bytes)) s.edit().putString("capt_ok_dia", diaCapturas()).putInt("capt_ok", subidas + 1).apply()
         } catch (_: Exception) { }
     }
 
-    /** true si la próxima oferta normal puede mandar su captura (encendido, aviso visto, bajo el tope). */
+    /** true si la próxima oferta normal puede mandar su captura (encendido, aviso visto, bajo el tope de hoy). */
     fun quiereCapturaOk(ctx: Context): Boolean {
         val p = Prefs(ctx)
-        return p.diagnostico && p.diagEnvioVisto && sp(ctx).getInt("capt_ok", 0) < MAX_CAPTURAS_OK
+        return p.diagnostico && p.diagEnvioVisto && capturasOkHoy(ctx) < MAX_CAPTURAS_OK_DIA
     }
 
     /** POST de una imagen WebP al almacén «capturas»; true si el servidor la aceptó. */
