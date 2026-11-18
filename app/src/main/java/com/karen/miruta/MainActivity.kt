@@ -2515,14 +2515,14 @@ class MainActivity : Activity() {
     }
 
     /** Fila con nombre, descripción e interruptor dentro de un grupo (marca v2). */
-    private fun filaInterruptor(grupo: LinearLayout, titulo: String, sub: String?, valor: Boolean, cambio: (Boolean) -> Unit) {
+    private fun filaInterruptor(grupo: LinearLayout, titulo: String, sub: String?, valor: Boolean, compacto: Boolean = false, cambio: (Boolean) -> Unit) {
         if (grupo.childCount > 0) grupo.addView(View(this).apply { setBackgroundColor(Tema.BORDE) },
             LinearLayout.LayoutParams(-1, dp(1)))
         val f = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
-            minimumHeight = dp(48)
-            setPadding(dp(14), dp(6), dp(10), dp(6))
+            minimumHeight = dp(if (compacto) 38 else 48)
+            setPadding(dp(14), dp(if (compacto) 1 else 6), dp(10), dp(if (compacto) 1 else 6))
             background = ripple(Color.TRANSPARENT, Tema.R_TARJETA)
             isClickable = true
         }
@@ -4319,7 +4319,7 @@ class MainActivity : Activity() {
         // y al volver la pantalla se pinta con el estado real.
         val g = grupoFilas()
         fun permisoInterruptor(titulo: String, activo: Boolean, accion: () -> Unit) =
-            filaInterruptor(g, titulo, null, activo) { accion(); handler.postDelayed({ pintarPermisos() }, 400) }
+            filaInterruptor(g, titulo, null, activo, true) { accion(); handler.postDelayed({ pintarPermisos() }, 400) }
         permisoInterruptor("Leer Uber y DiDi", acc) { abrirAccesibilidad() }
         if (Build.VERSION.SDK_INT >= 33) permisoInterruptor("Notificaciones", permisoNotificaciones()) { pedirNotificaciones() }
         permisoInterruptor("Batería sin restricción", permisoBateria()) { pedirBateria() }
@@ -4331,14 +4331,14 @@ class MainActivity : Activity() {
                 } catch (_: Exception) { abrirInfoApp() }
             }
         }
-        filaInterruptor(g, "Guardar pantallas de ofertas", null, prefs.diagnostico) {
+        filaInterruptor(g, "Guardar pantallas de ofertas", null, prefs.diagnostico, true) {
             prefs.diagnostico = it
         }
         // «Revisión mejorada con IA» sale encendida; su aviso va en la misma fila. Verla aquí cuenta como el aviso
         // (visionAvisoVisto); si la apaga, no sale ninguna imagen.
         if (!prefs.visionRechazada) prefs.visionAvisoVisto = true
         filaInterruptor(g, "Revisión mejorada con IA", "Una IA externa ve una imagen de la oferta (puede mostrar nombre y direcciones).",
-            prefs.visionAvisoVisto && !prefs.visionRechazada) { on ->
+            prefs.visionAvisoVisto && !prefs.visionRechazada, true) { on ->
             if (on) { prefs.visionRechazada = false; prefs.visionAvisoVisto = true } else prefs.visionRechazada = true
         }
         c.addView(g, margenArriba(Tema.S2))
