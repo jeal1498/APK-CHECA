@@ -4169,21 +4169,20 @@ class MainActivity : Activity() {
 
     /** Entrar con Google es obligatorio: esta pantalla tapa la app hasta que haya sesión. */
     private fun pantallaAcceso(): View {
-        // 10.85: login oscuro (marca arriba, semáforo grande, titular, botón de Google y aviso legal). Entrar con Google es obligatorio.
-        val gris = Color.rgb(154, 154, 162)
-        val hueso = Color.rgb(244, 244, 239)  // fijo: el login es oscuro aunque el teléfono esté en modo claro
+        // 10.85: login con los colores del tema del teléfono (oscuro o claro): marca arriba, semáforo grande, titular,
+        // botón de Google y aviso legal con enlaces. Entrar con Google es obligatorio.
         val col = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL
             setPadding(dp(Tema.S3), dp(Tema.S4), dp(Tema.S3), dp(Tema.S3))
         }
-        col.addView(texto("Checa", 30f, hueso, true).apply { gravity = Gravity.CENTER })
+        col.addView(texto("Checa", 30f, cTexto, true).apply { gravity = Gravity.CENTER })
         col.addView(View(this), LinearLayout.LayoutParams(0, 0, 1f))
         val sem = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL
             background = GradientDrawable().apply {
-                setColor(Color.rgb(22, 22, 28)); cornerRadius = dp(28).toFloat(); setStroke(dp(2), Color.rgb(44, 44, 53))
+                setColor(Color.rgb(12, 12, 16)); cornerRadius = dp(28).toFloat(); setStroke(dp(2), Color.rgb(44, 44, 53))
             }
             setPadding(0, dp(14), 0, dp(14))
         }
@@ -4193,18 +4192,32 @@ class MainActivity : Activity() {
         }
         col.addView(sem, LinearLayout.LayoutParams(dp(92), -2).apply { gravity = Gravity.CENTER_HORIZONTAL })
         col.addView(View(this), LinearLayout.LayoutParams(0, 0, 1f))
-        col.addView(texto("Sabe cuánto te deja cada viaje antes de aceptarlo.", 28f, hueso, true).apply {
+        col.addView(texto("Sabe cuánto te deja cada viaje antes de aceptarlo.", 28f, cTexto, true).apply {
             gravity = Gravity.CENTER; setLineSpacing(0f, 1.1f)
         }, margenArriba(Tema.S2))
-        col.addView(boton("Continuar con Google", hueso, Color.BLACK) { entrarConGoogle() }, margenArriba(Tema.S3))
-        // Aviso de la revisión con IA y de los Términos (el interruptor del paso 1 ya no lleva descripción).
-        col.addView(texto(
-            "Al continuar aceptas los Términos y la Política de privacidad. Checa manda una imagen de cada oferta a una IA externa " +
-                "para revisar la lectura; puede mostrar el nombre del pasajero y direcciones. La apagas en «Revisión mejorada con IA».",
-            Tema.T_NOTA, gris, false
-        ).apply { gravity = Gravity.CENTER; setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S2))
+        // Botón invertido respecto al fondo: claro sobre oscuro, oscuro sobre claro.
+        col.addView(boton("Continuar con Google", cTexto, cFondo) { entrarConGoogle() }, margenArriba(Tema.S3))
+        // Aviso de la revisión con IA y de los Términos, con sus enlaces.
+        fun enlace(texto: String, url: String): android.text.SpannableString = android.text.SpannableString(texto).apply {
+            setSpan(object : android.text.style.ClickableSpan() {
+                override fun onClick(w: View) {
+                    try { startActivity(Intent(Intent.ACTION_VIEW, android.net.Uri.parse(url))) } catch (_: Exception) {}
+                }
+                override fun updateDrawState(ds: android.text.TextPaint) { ds.color = cTexto; ds.isUnderlineText = true }
+            }, 0, length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+        val web = "https://jeal1498.github.io/PWA-Checa-Multimedia/"
+        val legal = android.text.SpannableStringBuilder("Al continuar aceptas los ")
+            .append(enlace("Términos", web + "terminos.html")).append(" y la ")
+            .append(enlace("Política de privacidad", web + "privacidad.html"))
+            .append(". Checa manda una imagen de cada oferta a una IA externa para revisar la lectura; puede mostrar el nombre del pasajero y direcciones. La apagas en «Revisión mejorada con IA».")
+        col.addView(texto("", Tema.T_NOTA, cTenue, false).apply {
+            text = legal
+            movementMethod = android.text.method.LinkMovementMethod.getInstance()
+            gravity = Gravity.CENTER; setLineSpacing(0f, 1.2f)
+        }, margenArriba(Tema.S2))
         return ScrollView(this).apply {
-            setBackgroundColor(Color.rgb(12, 12, 16))
+            setBackgroundColor(cFondo)
             isClickable = true
             isFillViewport = true
             addView(FrameLayout(this@MainActivity).apply {
