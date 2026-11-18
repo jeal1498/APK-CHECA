@@ -491,7 +491,7 @@ class RutaService : AccessibilityService() {
     }
 
     /**
-     * 10.81 (E3): deja constancia del resultado de una lectura (apagado por defecto). No cambia nada de lo
+     * 10.81 (E3): deja constancia del resultado de una lectura (encendido por defecto). No cambia nada de lo
      * que se muestra: solo copia datos al hilo de la traza. El fotograma es el que el OCR está procesando
      * en este mismo callback; si no hay (llamada sin fotograma), con el lector de foto no se anota.
      */

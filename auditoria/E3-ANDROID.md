@@ -1,6 +1,6 @@
 # E3 — Android 10.81 con trazabilidad
 
-**Estado:** implementado; núcleo compilado y probado en JVM; pegamento Android **no compilado** (sin SDK aquí) y **sin probar en teléfono**. Apagado por defecto. No publicado.
+**Estado:** implementado; núcleo compilado y probado en JVM; pegamento Android **no compilado** (sin SDK aquí) y **sin probar en teléfono**. Encendido por defecto (decisión del propietario, 17 nov). No publicado.
 
 ## Qué cambia (y qué no)
 | Archivo | Cambio |
@@ -11,7 +11,7 @@
 | `Guardado.kt` | `guardar(…, fotograma)` avisa el sha256 del WebP de ese fotograma (los mismos bytes que se suben) |
 | `RutaService.kt` | `trazar()` en las 4 salidas de `mostrarOferta` (oferta mostrada, y 3 tipos de duplicada) |
 | `Cuenta.kt` | `enviarTrazas()` → `registrar-lectura` con el JWT del conductor |
-| `Prefs.kt` / `MainActivity.kt` | `trazabilidad` (apagado) e interruptor «Registro técnico de lecturas (prueba)» en Guardar pantallas |
+| `Prefs.kt` / `MainActivity.kt` | `trazabilidad` (encendido) e interruptor «Registro técnico de lecturas (prueba)» en Guardar pantallas |
 | `Novedades.kt`, `build.gradle.kts` | 10.81 / versionCode 161 |
 | **`Parser.kt`, `Tarjetas.kt`, `Moneda.kt`** | **sin cambios** (guardia `herramientas/guardia_parser.py` + `GuardiaParserTest`; banco 271/316 antes y después) |
 

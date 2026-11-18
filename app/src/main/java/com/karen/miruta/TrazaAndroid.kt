@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit
  * E3 (10.81) — Trazabilidad en el teléfono: guarda en una cola acotada qué pasó con cada lectura
  * (fotograma, resultado, motivo, tiempos) y la manda a `registrar-lectura` en segundo plano.
  *
- * Reglas: APAGADA por defecto (Prefs.trazabilidad) y solo con cuenta; nunca lanza excepciones al lector;
+ * Reglas: ENCENDIDA por defecto (Prefs.trazabilidad) y solo con cuenta; nunca lanza excepciones al lector;
  * todo el trabajo pesado (huellas, archivo, red) en un hilo aparte; no cambia lo que se muestra ni el
  * lector (Parser/Tarjetas/Moneda: guardia en herramientas/guardia_parser.py).
  *

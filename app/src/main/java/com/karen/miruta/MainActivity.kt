@@ -5252,7 +5252,7 @@ class MainActivity : Activity() {
             handler.post { pintarDiag() }
         })
         c.addView(tSw, margenArriba(Tema.ENTRE_TARJETAS))
-        // 10.81 (E3): registro técnico de lecturas, apagado por defecto (prueba; no cambia el pop-up).
+        // 10.81 (E3): registro técnico de lecturas, encendido por defecto (prueba; no cambia el pop-up).
         val tTr = tarjeta()
         tTr.addView(interruptor(
             "Registro técnico de lecturas (prueba)",

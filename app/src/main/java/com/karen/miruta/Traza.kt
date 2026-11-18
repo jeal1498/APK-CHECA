@@ -8,7 +8,7 @@ import java.util.UUID
  * E3 (10.81) — Núcleo de la trazabilidad de lecturas, en Kotlin puro (sin Android) para probarlo en la JVM.
  * No cambia el lector: solo describe lo que ya pasó (fotograma, resultado, motivo, tiempos) y lo encola.
  * Contrato con el servidor: supabase/functions/registrar-lectura/contrato.ts (v1) y auditoria/README.md.
- * El envío y el almacenamiento en el teléfono están en TrazaAndroid.kt. Apagado por defecto (Prefs.trazabilidad).
+ * El envío y el almacenamiento en el teléfono están en TrazaAndroid.kt. Encendido por defecto (Prefs.trazabilidad).
  */
 object Traza {
     const val CONTRATO = 1
