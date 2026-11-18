@@ -5361,7 +5361,7 @@ class MainActivity : Activity() {
             "Cuando llega una oferta, Checa manda una imagen de la pantalla a una IA de un proveedor externo para comprobar que leyó bien la tarifa, los km y los minutos.",
             "La imagen puede mostrar el nombre del pasajero y direcciones. La IA solo la lee para responder; Checa la guarda 7 días únicamente si la lectura necesita revisión.",
             "Gasta datos móviles: unos 30 KB por oferta.",
-            "Si no aceptas, Checa sigue leyendo las ofertas igual, solo con el lector del teléfono.",
+            "Si la apagas, Checa sigue leyendo las ofertas igual, solo con el lector del teléfono.",
             "Puedes cambiarlo en Ayuda con la lectura › Revisión con imagen."
         ).forEachIndexed { i, s ->
             val f = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
@@ -5376,11 +5376,6 @@ class MainActivity : Activity() {
             dialogoVision?.dismiss()
             pintarDiag()
         }, margenArriba(Tema.S2))
-        cuerpo.addView(boton("No, gracias", cTarjeta2, cTexto) {
-            prefs.visionRechazada = true
-            dialogoVision?.dismiss()
-            pintarDiag()
-        }, margenArriba(Tema.S1))
         dialogoVision = hoja("Revisión con imagen", null, cuerpo).apply { setCancelable(false) }
     }
 
