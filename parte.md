@@ -51,7 +51,9 @@
 - Tope de 150 capturas al día desactivado (`TOPE_CAPTURAS_OK_ACTIVO=false`); el servidor mantiene `TOPE_DIARIO_IA` (1500).
 - IA con imagen en los teléfonos (10.83, PR #13–#15 en `main`; Admin PR #17): el teléfono manda la captura a `confirmar-oferta`, que la lee con DeepSeek y reemplaza a la IA de texto; si no hay créditos, trabaja solo el lector. Interruptores remotos en `public.ia_config` (SQL 011, función los lee cada 30 s) con latencias `ms_ia`/`ms_total` en Admin › Configuración › IA con imagen. SQL 007–011 aplicados en Supabase.
 - Aviso de la app: «Revisión con imagen» (se acepta una vez; sin aceptar, no se envía imagen).
-- Subida de versión 10.83 (versionCode 163) lista en el PR #16 (compila en verde); **no fusionar** hasta que Eduardo lo diga.
+- PR #16 (10.83, versionCode 163) fusionado en `main` (`9be04c5`, 18 nov). AAB 163: Eduardo lo corre a mano en «Preparar AAB Google Play» (la integración no puede lanzar workflows). Nota de Play entregada.
+- **Bloqueo de actualizaciones de la app hasta el 6 dic 2026** (2.5 semanas midiendo la 10.83); escrito en `CLAUDE.md`. Recordatorio programado el 6 dic 9:00 (México). `/parte` siempre va directo a `main`.
+- Costo estimado de IA por conductor (visión): ~$0.75–1.25 USD/mes normal (~12–20 % de la cuota de $119), hasta ~$2.5 muy activo; hoy se mandan **todas** las ofertas con captura, sin filtro. El filtro por confianza/muestra se construye después de medir.
 - Criterio para apagar la IA: correcciones por cada 1000 ofertas cerca de 0 (hoy ~25; noviembre: 440 correcciones, 17 897 ofertas, 0.95 USD), lector con ≥100 veredictos humanos y estable un par de semanas. El lector mejora con veredictos → banco → arreglos de código → versión (no es automático).
 
 ## … Falta
@@ -74,7 +76,8 @@
 - Probar la 10.82 en teléfono (trazabilidad, enlace por fotograma) y subir al repo el resultado.
 - Con ≥ 30 ofertas con captura (10.82): bajar capturas, etiquetar (lalo y pp a ciegas, tercera persona resuelve), medir en el Admin y corregir lo más frecuente. Capturas se borran a los 7 días.
 - Etiquetado a futuro (propuesto, Eduardo dijo «Ok»): primera tanda con 3 personas; luego IA propone y una persona confirma (`revisar.html`); solo casos dudosos; ~30 por versión. Falta su «sí» para el filtro «casos que necesitan revisión humana» en el Admin.
-- **PR #16 (10.83):** fusionar cuando Eduardo diga; luego generar el AAB con «Preparar AAB Google Play» y subirlo a Play (con su autorización).
+- **AAB 163 (10.83):** Eduardo corre «Preparar AAB Google Play» y lo sube a Play (con su autorización); nota entregada.
+- **6 dic:** revisar costo real, latencia, correcciones por 1,000 ofertas y ≥100 veredictos; decidir filtro por confianza/muestra y levantar el bloqueo de `CLAUDE.md`.
 - Probar la 10.83 en el teléfono de Eduardo: aceptar el aviso «Revisión con imagen» y medir cuánto tarda DeepSeek (Admin › Configuración › IA con imagen).
 - Revisar ≥ 30 casos por color en «Revisar ofertas» (solo 10.82+) y comparar IA vs lector con los veredictos.
 - **Privacidad:** las capturas completas (nombres, direcciones) van a DeepSeek: actualizar aviso, política de privacidad y Seguridad de los datos de Play antes de publicar la 10.83.
@@ -89,4 +92,5 @@
 - Subir el PNG de novedades al repo.
 - Secretos y llaves de firma en Git.
 - Fusionar o publicar a Play la 10.82 sin el aviso de privacidad listo.
-- Fusionar el PR #16 (10.83) o publicar su AAB sin orden de Eduardo ni aviso de privacidad actualizado (imágenes a DeepSeek).
+- Publicar el AAB 163 sin orden de Eduardo ni aviso de privacidad actualizado (imágenes a DeepSeek).
+- Actualizar la app (versión, AAB, `app/**`) antes del 6 dic 2026.
