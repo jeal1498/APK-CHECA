@@ -128,3 +128,13 @@ details p { margin:6px 0; color:var(--tenue); font-size:13px; }
 .carril.nd { background:transparent; border-style:dashed; } .carril.nd .punto { background:transparent; border:2px dashed var(--gris); }
 .carril-texto { min-width:0; } .respuesta { color:var(--tenue); }
 @media (max-width: 420px) { .hero { grid-template-columns:1fr; justify-items:start; } .semaforo { flex-direction:row; } .carril { grid-template-columns:14px 1fr; } .carril .insignia { grid-column:2; } }
+
+/* Barra de navegación con íconos (como el boceto): inferior en teléfono, lateral en tableta y escritorio. */
+nav button { display:flex; align-items:center; gap:10px; color:var(--tenue); }
+nav button .ico { width:20px; height:20px; flex:none; }
+nav button[aria-selected="true"] { color:var(--texto); }
+@media (max-width: 760px) {
+  nav button { flex-direction:column; justify-content:center; gap:2px; font-size:10px; }
+  nav button .ico { width:22px; height:22px; }
+  nav button[aria-selected="true"] { background:transparent; }
+}

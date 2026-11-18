@@ -51,6 +51,13 @@
     (hijos || []).forEach(function (h) { e.appendChild(h); });
     return e;
   }
+  // Íconos de línea para la barra (solo formas; sin texto del servidor).
+  var ICONOS = { inicio: "M3 12h4l3-7 4 14 3-7h4", errores: "M12 3 2 21h20L12 3zM12 10v5M12 18v.01", ofertas: "M4 6h16M4 12h16M4 18h10",
+                 versiones: "M7 4v16M17 4v16M3 8l4-4 4 4M13 16l4 4 4-4", dispositivos: "M7 2h10a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zM11 18h2",
+                 ia: "M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z", config: "M4 7h10M18 7h2M4 17h2M10 17h10M14 4v6M8 14v6" };
+  function icono(id) {
+    return sv("svg", { viewBox: "0 0 24 24", "aria-hidden": "true", class: "ico", fill: "none", stroke: "currentColor", "stroke-width": "1.8", "stroke-linecap": "round", "stroke-linejoin": "round" }, [sv("path", { d: ICONOS[id] })]);
+  }
   function aviso(t) { var a = document.getElementById("aviso"); a.textContent = t || ""; a.hidden = !t; }
   function txt(v) { return v === null || v === undefined || v === "" ? "—" : String(v); }
   function pct(v) { return v === null || v === undefined ? "—" : (Number(v) * 100).toFixed(1) + " %"; }
@@ -450,7 +457,7 @@
     raiz.textContent = "";
     var nav = el("nav", { id: "menu", "aria-label": "Módulos" }, MODULOS.map(function (m) {
       return el("button", { id: "t-" + m[0], "aria-selected": String(m[0] === vista), "aria-label": m[1], onclick: function () { ir(m[0]); } },
-        [el("span", { clase: "largo", texto: m[1] }), el("span", { clase: "corto", texto: m[2] })]); }));
+        [icono(m[0]), el("span", { clase: "largo", texto: m[1] }), el("span", { clase: "corto", texto: m[2] })]); }));
     var c = el("section", { id: "vista-" + vista, clase: "contenido" });
     raiz.appendChild(nav); raiz.appendChild(c);
     await VISTAS[vista](c);
