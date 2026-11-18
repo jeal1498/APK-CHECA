@@ -354,7 +354,7 @@ class MainActivity : Activity() {
         }
         // Volvió de Accesibilidad con el permiso activado: la guía pasa sola al paso de metas.
         if (guia?.isShowing == true && guiaPaso == 1) {
-            if (servicioActivo()) handler.postDelayed({ if (guiaPaso == 1) pintarGuia(3) }, 600) else pintarGuia(1)
+            if (servicioActivo()) handler.postDelayed({ if (guiaPaso == 1) pintarGuia(2) }, 600) else pintarGuia(1)
         }
         actualizarResumen()
         handler.post(refresco)
@@ -3895,7 +3895,13 @@ class MainActivity : Activity() {
             guia = null
         }
         guia = d
-        pintarGuia(3)
+        // 10.85: el paso de país se quitó; se toma el del teléfono (se cambia en Ajustes › País).
+        if (prefs.pais.isEmpty()) {
+            val pd = Pais.detectado()
+            prefs.pais = pd.codigo
+            if (pd.moneda.codigo != prefs.moneda.codigo) Cuenta.cambiarMoneda(this, pd.moneda)
+        }
+        pintarGuia(2)
         d.show()
     }
 
@@ -3904,8 +3910,8 @@ class MainActivity : Activity() {
         guiaPaso = paso
         guiaProgreso.removeAllViews()
         // Arranque de 4 pasos: 1 permisos, 2 país, 3 tus números, 4 así se verá.
-        val numPaso = when (paso) { 1 -> 1; 3 -> 2; 2 -> 3; else -> 4 }
-        for (i in 0..3) {
+        val numPaso = when (paso) { 1 -> 1; 2 -> 2; else -> 3 }
+        for (i in 0..2) {
             val lleno = i < numPaso
             guiaProgreso.addView(View(this).apply { background = redondo(if (lleno) Tema.HUESO else cTarjeta2, 2) },
                 LinearLayout.LayoutParams(0, -1, 1f).apply { if (i > 0) leftMargin = dp(6) })
@@ -3920,11 +3926,11 @@ class MainActivity : Activity() {
             minHeight = dp(Tema.ALTO_TOQUE)
             isClickable = true
             // Orden: 1 permisos → 3 país → 2 tus números → 4 así se verá.
-            setOnClickListener { pintarGuia(when (guiaPaso) { 2 -> 3; 3 -> 1; else -> if (guiaPaso >= 4) 2 else guiaPaso - 1 }) }
+            setOnClickListener { pintarGuia(when (guiaPaso) { 2 -> 1; else -> if (guiaPaso >= 4) 2 else guiaPaso - 1 }) }
         }
         fun titulo(s: String) = texto(s, 28f, cTexto, true).apply { setLineSpacing(0f, 1.1f) }
         fun parrafo(s: String) = texto(s, Tema.T_SUB, cTexto2, false).apply { setLineSpacing(0f, 1.3f) }
-        fun pasoDe(n: Int) = etiqueta("PASO $n DE 4").apply { setPadding(0, 0, 0, dp(4)) }
+        fun pasoDe(n: Int) = etiqueta("PASO $n DE 3").apply { setPadding(0, 0, 0, dp(4)) }
         fun principal(s: String, accion: () -> Unit) = guiaPie.addView(boton(s, cVerde, Color.BLACK, accion).apply {
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
         }, LinearLayout.LayoutParams(-1, dp(52)))
@@ -4004,38 +4010,14 @@ class MainActivity : Activity() {
                         t.addView(f, margenArriba(12))
                     }
                 c.addView(t, margenArriba(Tema.ENTRE_TARJETAS))
-                if (listo) principal("Siguiente") { pintarGuia(3) } else principal("Abrir Accesibilidad") { abrirAccesibilidad() }
-                guiaPie.addView(atras, margenArriba(Tema.S1))
-            }
-            3 -> {
-                // País: con el del teléfono ya elegido; un toque abre la lista.
-                c.addView(pasoDe(2))
-                c.addView(titulo("¿En qué país manejas?"), margenArriba(Tema.S1))
-                c.addView(parrafo("Con esto Checa lee los montos de Uber y DiDi en tu moneda y sabe a qué número de emergencias llamar."),
-                    margenArriba(Tema.S2))
-                val elegido = prefs.pais.isNotEmpty()
-                val p = if (elegido) Pais.actual(prefs) else Pais.detectado()
-                val g = grupoFilas()
-                filaMenu(g, Icono.OK, p.nombre + if (elegido) "" else " · detectado",
-                    "${p.moneda.monto(1234.5, 2)} · SOS ${p.sos}", cVerde) {
-                    mostrarPais { pintarGuia(3) }
-                }
-                c.addView(g, margenArriba(Tema.S2))
-                c.addView(texto("¿No es tu país? Tócalo para cambiarlo.", Tema.T_NOTA, cTenue, false), margenArriba(Tema.S1))
-                principal("Siguiente") {
-                    if (!elegido) {
-                        prefs.pais = p.codigo
-                        if (p.moneda.codigo != prefs.moneda.codigo) Cuenta.cambiarMoneda(this, p.moneda)
-                    }
-                    pintarGuia(2)
-                }
+                if (listo) principal("Siguiente") { pintarGuia(2) } else principal("Abrir Accesibilidad") { abrirAccesibilidad() }
                 guiaPie.addView(atras, margenArriba(Tema.S1))
             }
             2 -> {
-                c.addView(pasoDe(3))
+                c.addView(pasoDe(2))
                 c.addView(titulo("Tus números"), margenArriba(Tema.S1))
-                c.addView(parrafo("Con esto Checa pinta cada oferta de verde, amarillo o rojo. Lo cambias cuando quieras en Mis metas."),
-                    margenArriba(Tema.S2))
+                c.addView(parrafo("Con esto Checa pinta cada oferta de verde, amarillo o rojo. Lo cambias en Mis metas."),
+                    margenArriba(Tema.S1))
                 // Oferta de ejemplo: cambia de color al mover tus números.
                 val previaNum = FrameLayout(this)
                 val anchoNum = minOf((resources.displayMetrics.widthPixels * 0.94f).toInt(), Popup.anchoPx(this, prefs))
@@ -4045,48 +4027,48 @@ class MainActivity : Activity() {
                         FrameLayout.LayoutParams(anchoNum, -2, Gravity.CENTER_HORIZONTAL))
                 }
                 pintarPreviaNum()
-                c.addView(previaNum, margenArriba(Tema.S2))
-                c.addView(texto("Oferta de ejemplo con tus números.", Tema.T_NOTA, cTenue, false).apply { gravity = Gravity.CENTER },
-                    margenArriba(4))
-                c.addView(campoGuia("Por kilómetro", { "\$" + num(prefs.minPorKm) + "/km" }) { signo ->
-                    prefs.minPorKm = (prefs.minPorKm + 0.5f * signo).coerceIn(1f, 50f)
-                    if (!guiaHoraTocada) prefs.minPorHora = Math.round(prefs.minPorKm * 20).toFloat()
-                    pintarGuia(2)
-                }, margenArriba(Tema.S2))
-                c.addView(campoGuia("Por hora", { "\$" + num(prefs.minPorHora) + "/h" }) { signo ->
-                    guiaHoraTocada = true
-                    prefs.minPorHora = (prefs.minPorHora + 10f * signo).coerceIn(10f, 1000f)
-                    pintarPreviaNum()
-                }, margenArriba(Tema.ENTRE_TARJETAS))
-                c.addView(texto("Si no sabes, deja \$10/km y ajústalo después de unos días.", Tema.T_NOTA, cTenue, false),
-                    margenArriba(Tema.S1))
-                // Tu auto, en la misma pantalla: para restar la gasolina y mostrar lo que te queda.
-                c.addView(etiqueta("TU AUTO"), margenArriba(Tema.S1))
-                // La gasolina pesa en todas las ofertas: si está mal, todos los colores salen mal.
-                c.addView(texto("Pon los números reales de tu auto: con ellos se pinta cada oferta. Si están mal, el color sale mal en todas.",
-                    Tema.T_NOTA, if (prefs.gasRevisada) cTenue else cAmarillo, false).apply { setLineSpacing(0f, 1.3f) },
-                    margenArriba(Tema.S1))
-                c.addView(texto("Rendimiento: los km que haces con 1 litro en ciudad. Gasolina: lo que pagaste por litro la última vez.",
-                    Tema.T_NOTA, cTenue, false).apply { setLineSpacing(0f, 1.3f) }, margenArriba(4))
-                val costo = texto("", 22f, cTexto, true)
+                c.addView(previaNum, margenArriba(Tema.S1))
+                c.addView(texto("Oferta de ejemplo con tus números", Tema.T_NOTA, cTenue, false).apply { gravity = Gravity.CENTER },
+                    margenArriba(2))
+                val costo = texto("", 17f, cTexto, true)
                 fun pintarCosto() { costo.text = "\$" + num1((prefs.precioLitro / prefs.kmPorLitro).toDouble()) }
-                c.addView(campoGuia("Rendimiento", { num(prefs.kmPorLitro) + " km/l" }) { signo ->
-                    prefs.kmPorLitro = (prefs.kmPorLitro + signo).coerceIn(4f, 40f)
-                    prefs.gasRevisada = true
-                    pintarCosto()
-                }, margenArriba(Tema.S2))
-                c.addView(campoGuia("Precio de la gasolina", { "\$" + num(prefs.precioLitro) + "/l" }) { signo ->
-                    prefs.precioLitro = (prefs.precioLitro + 0.5f * signo).coerceIn(5f, 60f)
-                    prefs.gasRevisada = true
-                    pintarCosto()
-                }, margenArriba(Tema.ENTRE_TARJETAS))
+                fun par(a: View, b: View) = LinearLayout(this).apply {
+                    orientation = LinearLayout.HORIZONTAL
+                    addView(a, LinearLayout.LayoutParams(0, -2, 1f))
+                    addView(b, LinearLayout.LayoutParams(0, -2, 1f).apply { leftMargin = dp(Tema.ENTRE_TARJETAS) })
+                }
+                c.addView(par(
+                    campoGuia("Por km", { "\$" + num(prefs.minPorKm) + "/km" }) { signo ->
+                        prefs.minPorKm = (prefs.minPorKm + 0.5f * signo).coerceIn(1f, 50f)
+                        if (!guiaHoraTocada) prefs.minPorHora = Math.round(prefs.minPorKm * 20).toFloat()
+                        pintarGuia(2)
+                    },
+                    campoGuia("Por hora", { "\$" + num(prefs.minPorHora) + "/h" }) { signo ->
+                        guiaHoraTocada = true
+                        prefs.minPorHora = (prefs.minPorHora + 10f * signo).coerceIn(10f, 1000f)
+                        pintarPreviaNum()
+                    }), margenArriba(Tema.S1))
+                c.addView(etiqueta("TU AUTO"), margenArriba(Tema.S1))
+                c.addView(par(
+                    campoGuia("Rendimiento", { num(prefs.kmPorLitro) + " km/l" }) { signo ->
+                        prefs.kmPorLitro = (prefs.kmPorLitro + signo).coerceIn(4f, 40f)
+                        prefs.gasRevisada = true
+                        pintarCosto()
+                    },
+                    campoGuia("Gasolina", { "\$" + num(prefs.precioLitro) + "/l" }) { signo ->
+                        prefs.precioLitro = (prefs.precioLitro + 0.5f * signo).coerceIn(5f, 60f)
+                        prefs.gasRevisada = true
+                        pintarCosto()
+                    }), margenArriba(4))
                 val t = tarjeta()
                 val f = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
-                f.addView(texto("Te cuesta cada km", Tema.T_SUB, cTexto2, false), LinearLayout.LayoutParams(0, -2, 1f))
+                f.addView(texto("Te cuesta cada km", Tema.T_TEXTO, cTexto2, false), LinearLayout.LayoutParams(0, -2, 1f))
                 f.addView(costo)
                 t.addView(f)
                 pintarCosto()
-                c.addView(t, margenArriba(Tema.ENTRE_TARJETAS))
+                c.addView(t, margenArriba(4))
+                c.addView(texto("Si el rendimiento o la gasolina están mal, el color sale mal en todas las ofertas.",
+                    Tema.T_NOTA, if (prefs.gasRevisada) cTenue else cAmarillo, false).apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S1))
                 principal("Siguiente") {
                     if (prefs.gasRevisada) {
                         pintarGuia(4)
@@ -4110,7 +4092,7 @@ class MainActivity : Activity() {
                     Oferta.AMARILLO -> "Considerar"
                     else -> "Rechazar"
                 }
-                c.addView(pasoDe(4))
+                c.addView(pasoDe(3))
                 c.addView(titulo("Así se verá"), margenArriba(Tema.S1))
                 c.addView(parrafo("Cuando llegue una oferta, este aviso sale encima de Uber o DiDi y te dice «$accion» en voz alta."),
                     margenArriba(Tema.S2))
@@ -4148,10 +4130,10 @@ class MainActivity : Activity() {
     /** Campo con − y + para la guía. [cambio] recibe -1 o +1 y guarda en prefs. */
     private fun campoGuia(etq: String, valor: () -> String, cambio: (Int) -> Unit): View {
         val t = tarjeta()
-        t.addView(texto(etq, Tema.T_TEXTO, cTexto2, false))
+        t.addView(texto(etq, Tema.T_NOTA, cTexto2, false))
         val f = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
-        val v = texto(valor(), 30f, cTexto, true).apply { gravity = Gravity.CENTER }
-        fun tecla(s: String, signo: Int) = texto(s, 22f, cTexto, false).apply {
+        val v = texto(valor(), 17f, cTexto, true).apply { gravity = Gravity.CENTER }
+        fun tecla(s: String, signo: Int) = texto(s, 20f, cTexto, false).apply {
             gravity = Gravity.CENTER
             background = ripple(cTarjeta2, Tema.R_BOTON)
             isClickable = true
@@ -4161,10 +4143,10 @@ class MainActivity : Activity() {
                 v.text = valor()
             }
         }
-        f.addView(tecla("−", -1), LinearLayout.LayoutParams(dp(48), dp(48)))
+        f.addView(tecla("−", -1), LinearLayout.LayoutParams(dp(40), dp(40)))
         f.addView(v, LinearLayout.LayoutParams(0, -2, 1f))
-        f.addView(tecla("+", 1), LinearLayout.LayoutParams(dp(48), dp(48)))
-        t.addView(f, margenArriba(12))
+        f.addView(tecla("+", 1), LinearLayout.LayoutParams(dp(40), dp(40)))
+        t.addView(f, margenArriba(4))
         return t
     }
 
@@ -4291,10 +4273,10 @@ class MainActivity : Activity() {
         val arranque = !prefs.guiaVista
         if (arranque) {
             val avance = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
-            for (i in 0..3) avance.addView(View(this).apply { background = redondo(if (i == 0) Tema.HUESO else cTarjeta2, 2) },
+            for (i in 0..2) avance.addView(View(this).apply { background = redondo(if (i == 0) Tema.HUESO else cTarjeta2, 2) },
                 LinearLayout.LayoutParams(0, dp(4), 1f).apply { if (i > 0) leftMargin = dp(6) })
             c.addView(avance, LinearLayout.LayoutParams(-1, dp(4)).apply { bottomMargin = dp(Tema.S2) })
-            c.addView(etiqueta("PASO 1 DE 4").apply { setPadding(0, 0, 0, dp(4)) })
+            c.addView(etiqueta("PASO 1 DE 3").apply { setPadding(0, 0, 0, dp(4)) })
         }
         // El aviso de «Guardar pantallas» va aquí como una casilla más (no sale aparte).
         prefs.diagAvisoVisto = true
@@ -4333,24 +4315,14 @@ class MainActivity : Activity() {
             c.addView(r, margenArriba(Tema.S2))
         }
 
-        // Tres permisos obligatorios como tarjetas: su porqué en una línea y «Falta» o «Listo» (se toca para activarlo).
-        c.addView(tarjetaPermiso(
-            "Leer Uber y DiDi",
-            "Para ver la oferta en tu pantalla. No toca nada ni acepta viajes por ti." +
-                if (acc) "" else " Búscalo en «Aplicaciones instaladas» (Samsung) o «Aplicaciones descargadas» (OPPO).",
-            acc
-        ) { abrirAccesibilidad() }, margenArriba(Tema.S2))
-        if (Build.VERSION.SDK_INT >= 33) {
-            c.addView(tarjetaPermiso("Notificaciones", "Para avisarte si la lectura se corta.", permisoNotificaciones()) {
-                pedirNotificaciones()
-            }, margenArriba(Tema.S1))
-        }
-        c.addView(tarjetaPermiso("Batería sin restricción", "Para que Android no apague la lectura.", permisoBateria()) {
-            pedirBateria()
-        }, margenArriba(Tema.S1))
-
-        // Opcionales, aparte.
+        // 10.85: todo con interruptor, sin descripciones. Los tres permisos son de Android: tocar el interruptor abre su ajuste
+        // y al volver la pantalla se pinta con el estado real.
         val g = grupoFilas()
+        fun permisoInterruptor(titulo: String, activo: Boolean, accion: () -> Unit) =
+            filaInterruptor(g, titulo, null, activo) { accion(); handler.postDelayed({ pintarPermisos() }, 400) }
+        permisoInterruptor("Leer Uber y DiDi", acc) { abrirAccesibilidad() }
+        if (Build.VERSION.SDK_INT >= 33) permisoInterruptor("Notificaciones", permisoNotificaciones()) { pedirNotificaciones() }
+        permisoInterruptor("Batería sin restricción", permisoBateria()) { pedirBateria() }
         if (esXiaomi()) {
             filaCasilla(g, "Inicio automático", "Recomendado en Xiaomi · toca para abrir", null) {
                 try {
@@ -4359,28 +4331,20 @@ class MainActivity : Activity() {
                 } catch (_: Exception) { abrirInfoApp() }
             }
         }
-        filaInterruptor(g, "Guardar pantallas de ofertas", "Para mejorar la lectura · 7 días", prefs.diagnostico) {
+        filaInterruptor(g, "Guardar pantallas de ofertas", null, prefs.diagnostico) {
             prefs.diagnostico = it
         }
-        // 10.85: «Revisión con imagen» sale encendida desde el paso 1, con su aviso a la vista en esta misma pantalla.
-        // Verla aquí cuenta como el aviso (visionAvisoVisto); si la apaga, no sale ninguna imagen.
+        // «Revisión mejorada con IA» sale encendida; su aviso va en la misma fila. Verla aquí cuenta como el aviso
+        // (visionAvisoVisto); si la apaga, no sale ninguna imagen.
         if (!prefs.visionRechazada) prefs.visionAvisoVisto = true
-        filaInterruptor(g, "Revisión con imagen", "Una IA externa ve una imagen de cada oferta para comprobar la lectura. Gasta unos 30 KB por oferta.",
+        filaInterruptor(g, "Revisión mejorada con IA", "Una IA externa ve una imagen de la oferta (puede mostrar nombre y direcciones).",
             prefs.visionAvisoVisto && !prefs.visionRechazada) { on ->
             if (on) { prefs.visionRechazada = false; prefs.visionAvisoVisto = true } else prefs.visionRechazada = true
         }
         c.addView(g, margenArriba(Tema.S2))
-        c.addView(texto(
-            "La imagen de la revisión puede mostrar el nombre del pasajero y direcciones; la IA solo la lee para responder. Puedes apagarla cuando quieras.",
-            Tema.T_NOTA, cTenue, false
-        ).apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S2))
-        if (prefs.diagnostico || !arranque) {
-            c.addView(texto(
-                (if (arranque) "" else "Al iniciar la lectura, Android pregunta qué compartir: elige «Pantalla completa» y luego Empezar. ") +
-                    (if (prefs.diagnostico) "Las pantallas guardadas se quedan solo en tu teléfono; pueden salir datos del pasajero, " +
-                        "por eso nada se envía sin que tú lo revises." else ""),
-                Tema.T_NOTA, cTenue, false
-            ).apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S2))
+        if (!arranque) {
+            c.addView(texto("Al iniciar la lectura, Android pregunta qué compartir: elige «Pantalla completa» y luego Empezar.",
+                Tema.T_NOTA, cTenue, false).apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S2))
         }
 
         val completo = acc && permisoNotificaciones() && permisoBateria()
@@ -5275,8 +5239,8 @@ class MainActivity : Activity() {
         }, 600)
         val tVis = tarjeta()
         tVis.addView(interruptor(
-            "Revisión con imagen",
-            "Manda una imagen de cada oferta a una IA externa para comprobar la lectura. Gasta unos 30 KB de datos por oferta.",
+            "Revisión mejorada con IA",
+            "Una IA externa ve una imagen de la oferta (puede mostrar nombre y direcciones). Unos 30 KB por oferta.",
             prefs.visionAvisoVisto && !prefs.visionRechazada
         ) { on ->
             if (on) { prefs.visionRechazada = false; if (!prefs.visionAvisoVisto) avisoVision() }

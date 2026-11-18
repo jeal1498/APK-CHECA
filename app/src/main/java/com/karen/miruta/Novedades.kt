@@ -10,7 +10,7 @@ object Novedades {
 
     val LISTA = listOf(
         Version(165, "10.85", listOf(
-            "«Revisión con imagen» ahora aparece desde el primer paso de la guía, junto a «Guardar pantallas de ofertas», y viene encendida. La puedes apagar cuando quieras."
+            "La guía de inicio ahora tiene 3 pasos (se quitó el de país, se toma el de tu teléfono) y los permisos son interruptores. Nueva opción «Revisión mejorada con IA»: ayuda a leer mejor tus ofertas con una imagen y viene encendida; la apagas cuando quieras."
         )),
         Version(164, "10.84", listOf(
             "La revisión con imagen ahora te lo pregunta de inmediato al abrir la app. Con «Entendido» queda encendida y ayuda a mejorar la lectura."
