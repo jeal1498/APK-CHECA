@@ -4,6 +4,7 @@
 // Sin saldo o con cualquier falla responde { ok: false }: la app sigue con su lectura.
 import Anthropic from "npm:@anthropic-ai/sdk@1.2.0";
 import { calcular, ESQUEMA_LECTOR, LECTOR, type Lectura } from "./lector.ts";
+import { decodificar, elegirRuta, esWebp, leerInterruptores, limpiarImagen, nombreCapturaOk, peticionVision, type Interruptores } from "./vision.ts";
 
 const SUPA = Deno.env.get("SUPABASE_URL")!;
 const ANON = Deno.env.get("SUPABASE_ANON_KEY")!;
@@ -14,8 +15,8 @@ const CLAVE_DEEPSEEK = Deno.env.get("DEEPSEEK_API_KEY") ?? "";
 const REVISOR = (Deno.env.get("REVISOR") ?? (CLAVE_DEEPSEEK ? "deepseek" : "anthropic")).toLowerCase();
 const MODELO = REVISOR === "deepseek" ? "deepseek-flash" : "claude-haiku-5-5";
 const CLAVE = REVISOR === "deepseek" ? CLAVE_DEEPSEEK : CLAVE_ANTHROPIC;
-/** Consultas por cuenta al día. */
-const TOPE_DIARIO = 300;
+/** Consultas por cuenta al día (con imagen se revisan todas las ofertas: el tope sube). Secreto TOPE_DIARIO_IA para cambiarlo. */
+const TOPE_DIARIO = Number(Deno.env.get("TOPE_DIARIO_IA") ?? 1500);
 /** Reportes «Leyó mal» por cuenta en 24 horas. */
 const TOPE_REPORTES = 40;
 
@@ -174,6 +175,45 @@ async function preguntarDeepSeek(usuario: string): Promise<Respuesta> {
   return { datos: JSON.parse(texto), tIn, tCache, tOut: Number(u.completion_tokens ?? 0), rechazo: false };
 }
 
+/** Lee la oferta con la IMAGEN (DeepSeek, visión). Mismo contrato que preguntarDeepSeek. */
+async function preguntarDeepSeekImagen(imagenB64: string, app: string, moneda: string): Promise<Respuesta> {
+  const r = await fetch("https://api.deepseek.com/chat/completions", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${CLAVE_DEEPSEEK}`, "Content-Type": "application/json" },
+    signal: AbortSignal.timeout(9000),
+    body: JSON.stringify(peticionVision(imagenB64, app, moneda)),
+  });
+  if (!r.ok) throw new FallaRevisor(r.status, `http_${r.status}`);
+  const j = await r.json();
+  const u = j.usage ?? {};
+  const tIn = Number(u.prompt_tokens ?? 0);
+  const tCache = Number(u.prompt_cache_hit_tokens ?? 0);
+  const texto = String(j.choices?.[0]?.message?.content ?? "");
+  if (!texto.trim()) throw Object.assign(new FallaRevisor(0, "json_vacio"), { tIn, tCache, tOut: Number(u.completion_tokens ?? 0) });
+  return { datos: JSON.parse(texto), tIn, tCache, tOut: Number(u.completion_tokens ?? 0), rechazo: false };
+}
+
+// Interruptores remotos (public.ia_config): se leen cada 30 s. Si no se pueden leer, todo encendido (como antes).
+let interruptores: { al: number; v: Interruptores } = { al: 0, v: { vision: true, texto: true } };
+async function leerInterruptoresRemotos(): Promise<Interruptores> {
+  if (Date.now() - interruptores.al < 30_000) return interruptores.v;
+  try {
+    const r = await fetch(`${SUPA}/rest/v1/ia_config?select=vision,texto&id=eq.1`, { headers: headersServicio, signal: AbortSignal.timeout(2000) });
+    if (r.ok) interruptores = { al: Date.now(), v: leerInterruptores(await r.json()) };
+  } catch { /* se queda con el último valor */ }
+  return interruptores.v;
+}
+
+/** Guarda en el almacén privado la captura que el teléfono mandó para la IA (así no la sube dos veces). true si quedó guardada. */
+async function guardarCaptura(nombre: string, bytes: Uint8Array): Promise<boolean> {
+  try {
+    const r = await fetch(`${SUPA}/storage/v1/object/capturas/${encodeURIComponent(nombre)}`, {
+      method: "POST", headers: { ...headersServicio, "Content-Type": "image/webp", "x-upsert": "false" }, body: bytes as BodyInit, signal: AbortSignal.timeout(6000),
+    });
+    return r.ok;
+  } catch { return false; }
+}
+
 // Conteo del teléfono: { dia: "2026-11-11", ofertas, correcciones }.
 async function anotarConteo(id: string, c: unknown) {
   if (!c || typeof c !== "object") return;
@@ -297,6 +337,8 @@ Deno.serve(async (req) => {
     : leerLocal(cuerpo.local);
   const app = String(cuerpo.app ?? "").slice(0, 10);
   const moneda = String(cuerpo.moneda ?? "MXN").slice(0, 3);
+  // 10.83: la captura que el teléfono manda para que la IA la VEA (solo en revisión y rescate; el desacuerdo sigue con texto).
+  const imagenB64 = cuerpo.modo !== "reporte" && modo !== "desacuerdo" ? limpiarImagen(cuerpo.imagen) : null;
   // De qué lector del teléfono vino (10.55): «ocr» (foto) o «texto» (texto de la app).
   const lector = cuerpo.lector === "texto" || cuerpo.lector === "ocr" ? cuerpo.lector : null;
   if (cuerpo.modo !== "reporte" && (lineas.length === 0 || !local)) return json({ ok: false, error: "sin_datos" }, 400);
@@ -336,6 +378,12 @@ Deno.serve(async (req) => {
     ...equipo, ...pantalla, ...foto,
   };
 
+  // Interruptores remotos (tabla ia_config): con imagen manda «vision»; sin imagen, «texto». Apagado = el teléfono sigue con su lector.
+  const ruta = elegirRuta(imagenB64 !== null, await leerInterruptoresRemotos());
+  if (ruta === "vision_apagada") return json({ ok: false, error: "vision_apagada" });
+  if (ruta === "texto_apagada") return json({ ok: false, error: "ia_texto_apagada" });
+  registro.imagenes = ruta === "vision" ? 1 : 0;
+
   // Tope diario por cuenta (cuenta también las que fallan).
   try {
     const n = Number(await rpc("sumar_uso_confirmar", { u: id }));
@@ -346,7 +394,7 @@ Deno.serve(async (req) => {
   } catch {
     return json({ ok: false, error: "sin_contador" }, 503);
   }
-  if (!CLAVE) {
+  if (!(ruta === "vision" ? CLAVE_DEEPSEEK : CLAVE)) {
     await insertar("revisiones", { ...registro, ok: false, error: "sin_clave" });
     return json({ ok: false, error: "sin_clave" });
   }
@@ -359,7 +407,8 @@ Deno.serve(async (req) => {
       ? `App: ${app || "?"} · moneda: ${moneda}\nDos lecturas de la MISMA pantalla que no coinciden; usa las dos para dar la oferta correcta.\n` +
         `Lectura A, ${nombre(lector)}:\n${lineas.join("\n")}\n\nLectura B, ${nombre(lectorOtro)}:\n${lineasOtro.join("\n")}`
       : `App: ${app || "?"} · moneda: ${moneda}\nLíneas:\n${lineas.join("\n")}`;
-    const r = REVISOR === "deepseek" ? await preguntarDeepSeek(pregunta) : await preguntarAnthropic(pregunta);
+    const r = ruta === "vision" ? await preguntarDeepSeekImagen(imagenB64!, app, moneda)
+      : REVISOR === "deepseek" ? await preguntarDeepSeek(pregunta) : await preguntarAnthropic(pregunta);
     await anotarCosto(registro, r.tIn, r.tCache, r.tOut);
     if (r.rechazo) throw new Error("refusal");
     const d = r.datos;
@@ -406,5 +455,14 @@ Deno.serve(async (req) => {
   if (coincide && caso === null && cuerpo.capturaOk === true) {
     normal = await insertarId("capturas_ok", { usuario: id, app, moneda, version, lector, lineas, local, ia, ...equipo, ...pantalla, ...foto });
   }
-  return json({ ok: true, coincide, ia, caso, normal });
+  // Con imagen, el servidor ya la tiene: la guarda él (caso dudoso o normal) y el teléfono no la sube otra vez.
+  let guardada = false;
+  if (ruta === "vision" && (caso !== null || normal !== null)) {
+    const bytes = decodificar(imagenB64!);
+    if (esWebp(bytes)) {
+      const nombre = caso !== null ? `${caso}.webp` : nombreCapturaOk(pantalla.nivel, local!.tarifa, local!.km, local!.min, Date.now(), normal!);
+      guardada = await guardarCaptura(nombre, bytes);
+    }
+  }
+  return json({ ok: true, coincide, ia, caso, normal, guardada });
 });
