@@ -9,6 +9,9 @@ object Novedades {
     class Version(val codigo: Int, val nombre: String, val puntos: List<String>, val widgets: Boolean = false, val vistaQr: Boolean = false)
 
     val LISTA = listOf(
+        Version(165, "10.85", listOf(
+            "«Revisión con imagen» ahora aparece desde el primer paso de la guía, junto a «Guardar pantallas de ofertas», y viene encendida. La puedes apagar cuando quieras."
+        )),
         Version(164, "10.84", listOf(
             "La revisión con imagen ahora te lo pregunta de inmediato al abrir la app. Con «Entendido» queda encendida y ayuda a mejorar la lectura."
         )),

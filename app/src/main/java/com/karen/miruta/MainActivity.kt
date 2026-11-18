@@ -4362,7 +4362,18 @@ class MainActivity : Activity() {
         filaInterruptor(g, "Guardar pantallas de ofertas", "Para mejorar la lectura · 7 días", prefs.diagnostico) {
             prefs.diagnostico = it
         }
+        // 10.85: «Revisión con imagen» sale encendida desde el paso 1, con su aviso a la vista en esta misma pantalla.
+        // Verla aquí cuenta como el aviso (visionAvisoVisto); si la apaga, no sale ninguna imagen.
+        if (!prefs.visionRechazada) prefs.visionAvisoVisto = true
+        filaInterruptor(g, "Revisión con imagen", "Una IA externa ve una imagen de cada oferta para comprobar la lectura. Gasta unos 30 KB por oferta.",
+            prefs.visionAvisoVisto && !prefs.visionRechazada) { on ->
+            if (on) { prefs.visionRechazada = false; prefs.visionAvisoVisto = true } else prefs.visionRechazada = true
+        }
         c.addView(g, margenArriba(Tema.S2))
+        c.addView(texto(
+            "La imagen de la revisión puede mostrar el nombre del pasajero y direcciones; la IA solo la lee para responder. Puedes apagarla cuando quieras.",
+            Tema.T_NOTA, cTenue, false
+        ).apply { setLineSpacing(0f, 1.3f) }, margenArriba(Tema.S2))
         if (prefs.diagnostico || !arranque) {
             c.addView(texto(
                 (if (arranque) "" else "Al iniciar la lectura, Android pregunta qué compartir: elige «Pantalla completa» y luego Empezar. ") +
