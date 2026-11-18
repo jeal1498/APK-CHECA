@@ -328,6 +328,9 @@ class MainActivity : Activity() {
         else if (Cuenta.puedeUsar(this) && !autoIniciar && faltanPermisos() && !configuracionPermisosPospuestaPlay()) mostrarPermisos()
         else if (Cuenta.puedeUsar(this) && prefs.diagnostico && !prefs.diagEnvioVisto && !hayVentana())
             handler.postDelayed({ if (!isFinishing && !prefs.diagEnvioVisto && !hayVentana()) avisoDiagnostico() }, 1200)
+        // 10.83: aviso de que una IA externa ve una imagen de la oferta (una vez; «No, gracias» no vuelve a salir solo).
+        else if (Cuenta.puedeUsar(this) && prefs.diagnostico && prefs.diagEnvioVisto && !prefs.visionAvisoVisto && !prefs.visionRechazada && !hayVentana())
+            handler.postDelayed({ if (!isFinishing && !prefs.visionAvisoVisto && !prefs.visionRechazada && !hayVentana()) avisoVision() }, 1200)
         Guardado.borrarPendientes(this)
         Guardado.podar(this)
         pintarDiag()
@@ -4649,7 +4652,7 @@ class MainActivity : Activity() {
     /** Una sola ventana a la vez: permisos, guía, cuenta, versión nueva, beta, opinión o aviso de guardar pantallas. */
     private fun hayVentana(): Boolean =
         dialogoPermisos != null || guia?.isShowing == true || dialogoCuenta?.isShowing == true ||
-            dialogoAct?.isShowing == true || dialogoAviso?.isShowing == true || dialogoDiagAviso?.isShowing == true ||
+            dialogoAct?.isShowing == true || dialogoAviso?.isShowing == true || dialogoDiagAviso?.isShowing == true || dialogoVision?.isShowing == true ||
             dialogoFalla?.isShowing == true || dialogoMigra?.isShowing == true
 
     private fun actualizarAcceso() {
@@ -5184,6 +5187,7 @@ class MainActivity : Activity() {
     private var estadoLecturaTxt: TextView? = null
     private var estadoLecturaPunto: View? = null
     private var dialogoDiagAviso: Dialog? = null
+    private var dialogoVision: Dialog? = null
     /** Lo que el conductor escribió en el reporte (se conserva si va a elegir ofertas y regresa). */
     private var reporteMotivo = 0
     private var reporteTexto = ""
@@ -5244,7 +5248,7 @@ class MainActivity : Activity() {
         val tSw = tarjeta()
         tSw.addView(interruptor(
             "Guardar pantallas de ofertas",
-            "En tu teléfono 7 días. Manda capturas de lecturas dudosas y hasta 100 de ofertas normales.",
+            "En tu teléfono 7 días. Manda capturas de lecturas dudosas y de ofertas normales.",
             prefs.diagnostico
         ) { on ->
             prefs.diagnostico = on
@@ -5252,6 +5256,18 @@ class MainActivity : Activity() {
             handler.post { pintarDiag() }
         })
         c.addView(tSw, margenArriba(Tema.ENTRE_TARJETAS))
+        // 10.83: la IA ve una imagen de cada oferta. Solo sale con el aviso aceptado; apagarlo no avisa más.
+        val tVis = tarjeta()
+        tVis.addView(interruptor(
+            "Revisión con imagen",
+            "Manda una imagen de cada oferta a una IA externa para comprobar la lectura. Gasta unos 30 KB de datos por oferta.",
+            prefs.visionAvisoVisto && !prefs.visionRechazada
+        ) { on ->
+            if (on) { prefs.visionRechazada = false; if (!prefs.visionAvisoVisto) avisoVision() }
+            else prefs.visionRechazada = true
+            handler.post { pintarDiag() }
+        })
+        c.addView(tVis, margenArriba(Tema.ENTRE_TARJETAS))
         // 10.81 (E3): registro técnico de lecturas, encendido por defecto (prueba; no cambia el pop-up).
         val tTr = tarjeta()
         tTr.addView(interruptor(
@@ -5316,7 +5332,7 @@ class MainActivity : Activity() {
         listOf(
             "Checa guarda la parte de Uber o DiDi donde ve una oferta, en tu teléfono, por 7 días.",
             "Si Checa no entiende una oferta, manda esa captura para mejorar la lectura.",
-            "También manda hasta 100 capturas de ofertas normales (verde, amarillo o rojo) para medir qué tan bien lee.",
+            "También manda capturas de ofertas normales (verde, amarillo o rojo) para medir qué tan bien lee.",
             "Puede salir el nombre del pasajero o direcciones. Se borra del servidor a los 7 días.",
             "Puedes apagarlo en Ayuda con la lectura › Guardar pantallas de ofertas."
         ).forEachIndexed { i, s ->
@@ -5333,6 +5349,37 @@ class MainActivity : Activity() {
             pintarDiag()
         }, margenArriba(Tema.S2))
         dialogoDiagAviso = hoja("Capturas para mejorar la lectura", null, cuerpo).apply { setCancelable(false) }
+    }
+
+    /** 10.83: explica que una IA externa ve una imagen de la oferta. Sin su «Entendido» la imagen no sale del teléfono. */
+    private fun avisoVision() {
+        if (dialogoVision?.isShowing == true) return
+        val cuerpo = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        listOf(
+            "Cuando llega una oferta, Checa manda una imagen de la pantalla a una IA de un proveedor externo para comprobar que leyó bien la tarifa, los km y los minutos.",
+            "La imagen puede mostrar el nombre del pasajero y direcciones. La IA solo la lee para responder; Checa la guarda 7 días únicamente si la lectura necesita revisión.",
+            "Gasta datos móviles: unos 30 KB por oferta.",
+            "Si no aceptas, Checa sigue leyendo las ofertas igual, solo con el lector del teléfono.",
+            "Puedes cambiarlo en Ayuda con la lectura › Revisión con imagen."
+        ).forEachIndexed { i, s ->
+            val f = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+            f.addView(View(this).apply { background = punto(Tema.HUESO) },
+                LinearLayout.LayoutParams(dp(6), dp(6)).apply { topMargin = dp(8); rightMargin = dp(10) })
+            f.addView(texto(s, Tema.T_TEXTO, cTexto2, false).apply { setLineSpacing(0f, 1.2f) }, LinearLayout.LayoutParams(0, -2, 1f))
+            cuerpo.addView(f, if (i > 0) margenArriba(Tema.S1) else LinearLayout.LayoutParams(-1, -2))
+        }
+        cuerpo.addView(boton("Entendido", cVerde, Color.BLACK) {
+            prefs.visionAvisoVisto = true
+            prefs.visionRechazada = false
+            dialogoVision?.dismiss()
+            pintarDiag()
+        }, margenArriba(Tema.S2))
+        cuerpo.addView(boton("No, gracias", cTarjeta2, cTexto) {
+            prefs.visionRechazada = true
+            dialogoVision?.dismiss()
+            pintarDiag()
+        }, margenArriba(Tema.S1))
+        dialogoVision = hoja("Revisión con imagen", null, cuerpo).apply { setCancelable(false) }
     }
 
     /** Ventana de pantalla completa con encabezado (título + cerrar), cuerpo y pie. */

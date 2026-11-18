@@ -61,7 +61,27 @@ object Guardado {
 
     /** Última captura de cada app, ya en WebP, para mandarla si la revisión encuentra una diferencia (10.72). */
     private val reciente = HashMap<String, Pair<Long, ByteArray>>()
+    /** Fotograma de la captura que hay en [reciente] (por app): así la IA nunca recibe la imagen de la oferta anterior. */
+    private val recienteFoto = HashMap<String, String>()
     private const val VIGENTE_MS = 30_000L
+
+    /**
+     * La captura reciente de [app] SIN olvidarla, solo si es la de este [fotograma] (10.83: se manda a la IA). Como la
+     * imagen se comprime en segundo plano, espera hasta [esperaMs] a que esté lista; null si no llega o no es la misma.
+     */
+    fun verReciente(app: String?, fotograma: String?, esperaMs: Long = 600L): ByteArray? {
+        if (fotograma == null) return null
+        val k = nombreApp(app)
+        val fin = android.os.SystemClock.elapsedRealtime() + esperaMs
+        while (true) {
+            synchronized(reciente) {
+                val p = reciente[k]
+                if (p != null && recienteFoto[k] == fotograma && System.currentTimeMillis() - p.first <= VIGENTE_MS) return p.second
+            }
+            if (android.os.SystemClock.elapsedRealtime() >= fin) return null
+            try { Thread.sleep(25) } catch (_: InterruptedException) { return null }
+        }
+    }
 
     /** Toma (y olvida) la captura reciente de [app]; null si no hay o ya es vieja. */
     fun tomarReciente(app: String?): ByteArray? = synchronized(reciente) {
@@ -105,7 +125,7 @@ object Guardado {
                     "-$app2-" + if (leida) "leida" else "noleida"
                 if (recorte != null) {
                     aWebp(recorte)?.let {
-                        synchronized(reciente) { reciente[app2] = ahora to it }
+                        synchronized(reciente) { reciente[app2] = ahora to it; if (fotograma != null) recienteFoto[app2] = fotograma else recienteFoto.remove(app2) }
                         TrazaAndroid.anotarCaptura(fotograma, it)  // 10.81 (E3): mismos bytes que se subirían
                     }
                     FileOutputStream(File(dir, "$base.jpg")).use { recorte.compress(Bitmap.CompressFormat.JPEG, 70, it) }

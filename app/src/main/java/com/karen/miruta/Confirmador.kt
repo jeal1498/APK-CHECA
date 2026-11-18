@@ -19,6 +19,26 @@ import java.util.concurrent.Executors
  */
 object Confirmador {
     private val hilo = Executors.newSingleThreadExecutor()
+
+    // ---------- 10.83: la IA VE la imagen de la oferta (reemplaza a la IA de texto) ----------
+    /** La imagen (WebP del recorte) que se manda no pasa de esto: el servidor acepta ~150 KB. */
+    private const val IMAGEN_MAX_BYTES = 140_000
+    /** Una corrección que llega después de esto ya no sirve: la oferta dura unos 15 s. */
+    private const val CORRECCION_MAX_MS = 12_000L
+    /** Si el servidor dice «apagada» (interruptor remoto) no se vuelve a preguntar en un rato. */
+    private const val PAUSA_APAGADA_MS = 10 * 60_000L
+    /** Sin saldo o con la IA caída: se espera menos y se vuelve a intentar. */
+    private const val PAUSA_FALLA_MS = 3 * 60_000L
+    @Volatile private var visionPausadaHasta = 0L
+    @Volatile private var textoPausadoHasta = 0L
+    private class Pausado : Exception()
+
+    /** La imagen puede salir del teléfono: diagnóstico encendido, aviso de capturas visto, aviso de la imagen aceptado y sin pausa. */
+    private fun visionLista(ctx: Context): Boolean {
+        val p = Prefs(ctx)
+        return p.diagnostico && p.diagEnvioVisto && p.visionAvisoVisto && !p.visionRechazada &&
+            android.os.SystemClock.elapsedRealtime() >= visionPausadaHasta
+    }
     /** Lo que tardó la revisión anterior (teléfono → servidor → teléfono); -1 = sin dato. */
     @Volatile private var msRevision = -1L
     private val enCurso = HashSet<String>()
@@ -91,6 +111,8 @@ object Confirmador {
 
     /** Si el servidor guardó un caso (`caso`), manda la captura reciente de esa app para revisarlo. */
     private fun subirCaptura(ctx: Context, app: String, r: JSONObject, o: Oferta? = null, pant: JSONObject? = null) {
+        // 10.83: si la imagen viajó con la revisión, el servidor ya la guardó (caso dudoso u oferta normal): no se sube otra vez.
+        if (r.optBoolean("guardada")) { Guardado.tomarReciente(app); return }
         val caso = r.optLong("caso", 0L)
         if (caso <= 0L) {
             // 10.78: oferta normal (sin diferencia): captura con tope por conductor y el color del pop-up en el nombre.
@@ -326,6 +348,17 @@ object Confirmador {
                         .put("local", local(o))
                     // 10.80: si va a subir la captura de esta oferta, el servidor guarda sus líneas.
                     if (otra == null && Cuenta.quiereCapturaOk(app0)) cuerpo.put("capturaOk", true)
+                    // 10.83: con la imagen de ESTA oferta, la IA la lee en vez del texto. Sin imagen, el servidor decide (texto o nada).
+                    var conImagen = false
+                    if (otra == null && visionLista(app0)) {
+                        Guardado.verReciente(app, fot)?.let { bytes ->
+                            if (bytes.size <= IMAGEN_MAX_BYTES) {
+                                cuerpo.put("imagen", android.util.Base64.encodeToString(bytes, android.util.Base64.NO_WRAP))
+                                conImagen = true
+                            }
+                        }
+                    }
+                    if (!conImagen && android.os.SystemClock.elapsedRealtime() < textoPausadoHasta) throw Pausado()
                     if (otra != null) {
                         cuerpo.put("modo", "desacuerdo")
                             .put("lectorOtro", otra.lector)
@@ -343,6 +376,13 @@ object Confirmador {
                     subirCaptura(app0, app, r, o, pant)
                     // Ida y vuelta completa de la revisión, vista desde el teléfono: va en la siguiente.
                     msRevision = android.os.SystemClock.elapsedRealtime() - t0
+                    // Interruptor remoto o falla de la IA: se deja de preguntar un rato y el pop-up sigue con el lector.
+                    when (r.optString("error")) {
+                        "vision_apagada" -> visionPausadaHasta = android.os.SystemClock.elapsedRealtime() + PAUSA_APAGADA_MS
+                        "ia_texto_apagada" -> textoPausadoHasta = android.os.SystemClock.elapsedRealtime() + PAUSA_APAGADA_MS
+                        "ia_no_disponible", "tope_diario", "sin_clave" ->
+                            if (conImagen) visionPausadaHasta = android.os.SystemClock.elapsedRealtime() + PAUSA_FALLA_MS
+                    }
                     val ia = r.optJSONObject("ia")
                     if (r.optBoolean("ok") && !r.optBoolean("coincide", true) && ia != null && ia.optBoolean("oferta")) {
                         val c = Oferta(
@@ -354,7 +394,7 @@ object Confirmador {
                             multiplicador = ia.optDouble("multi", 0.0).let { if (it > 1.0) it else o.multiplicador },
                             dinamica = o.dinamica
                         )
-                        if (Parser.plausible(c, lineas + otra?.lineas.orEmpty(), moneda)) nueva = c
+                        if (Parser.plausible(c, lineas + otra?.lineas.orEmpty(), moneda) && msRevision <= CORRECCION_MAX_MS) nueva = c
                     }
                 } catch (_: Exception) { }
                 synchronized(this) {

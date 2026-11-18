@@ -142,3 +142,12 @@ Pantallas, instalación en teléfonos (Play Protect, ajustes restringidos, Samsu
 | Ver la historia de los videos | `docs/videos-historia.md` y `marketing/plan/` |
 | Atención en TikTok y WhatsApp | `marketing/atencion/asistente.md` y `prompt.md` |
 | Videos: proyectos viejos, calendario publicado y skills quitadas | `docs/videos-calendario-historia.md`, `docs/skills-borradas.md` |
+
+## IA con imagen (10.83, 18-nov-2026)
+- **Qué hace:** cuando el teléfono lee una oferta con OCR, manda la imagen de esa oferta (WebP, ≤140 KB) dentro de la misma petición a `confirmar-oferta`; la IA (`deepseek-flash`, visión) la lee y devuelve lo mismo que antes (`ia`, `coincide`, `caso`, `normal`), así que el pop-up se corrige igual. El servidor guarda la captura (caso dudoso u oferta normal) y responde `guardada: true`: el teléfono no la sube otra vez.
+- **Reemplaza a la IA de texto** (decisión de Eduardo): las ofertas leídas con el texto de la app no tienen imagen y quedan solo con el lector cuando se apaga el interruptor `texto`. «Desacuerdo» sigue con texto.
+- **Aviso y permiso:** la imagen solo sale si el conductor aceptó el aviso «Revisión con imagen» (`visionAvisoVisto`) además del de capturas; «No, gracias» no vuelve a salir solo; se cambia en Ayuda con la lectura.
+- **Interruptores remotos:** tabla `public.ia_config` (`vision`, `texto`), cambiables en Admin › Configuración (solo revisor; SQL 011). La función los lee cada 30 s. Apagado → `vision_apagada` / `ia_texto_apagada` y el teléfono se pausa 10 min. Sin saldo o IA caída → pausa de 3 min. En ambos casos funciona solo el lector.
+- **Tiempos:** `revisiones.ms_ia` (servidor→DeepSeek) y `ms_revision_anterior` (ida y vuelta vista desde el teléfono, llega en la siguiente petición); `imagenes = 1` marca las de visión. Admin › Configuración los muestra (mediana y p90).
+- **Seguridad:** el teléfono nunca llama a DeepSeek; la clave `DEEPSEEK_API_KEY` vive en Supabase. Tope por cuenta: secreto `TOPE_DIARIO_IA` (por defecto 1500 al día).
+- **Corrección tardía:** si la respuesta tarda más de 12 s, no se corrige el pop-up (la oferta ya pasó).

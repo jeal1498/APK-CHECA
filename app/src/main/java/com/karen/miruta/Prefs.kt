@@ -236,6 +236,16 @@ class Prefs(context: Context) {
         get() = sp.getBoolean("diagAviso", false)
         set(v) { sp.edit().putBoolean("diagAviso", v).apply() }
 
+    /** Aceptó el aviso de que una IA externa ve una imagen de la oferta (10.83). Sin esto la imagen no sale del teléfono. */
+    var visionAvisoVisto: Boolean
+        get() = sp.getBoolean("visionAviso", false)
+        set(v) { sp.edit().putBoolean("visionAviso", v).apply() }
+
+    /** Dijo «No» al aviso de la imagen (o apagó «Revisión con imagen»): no se vuelve a preguntar solo. */
+    var visionRechazada: Boolean
+        get() = sp.getBoolean("visionNo", false)
+        set(v) { sp.edit().putBoolean("visionNo", v).apply() }
+
     /** Se pausó el lector desde «Apps de banco» (la pantalla de permisos lo explica al volver). */
     var lectorPausado: Boolean
         get() = sp.getBoolean("lectorPausado", false)
