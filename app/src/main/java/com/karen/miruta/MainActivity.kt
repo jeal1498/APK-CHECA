@@ -2521,8 +2521,8 @@ class MainActivity : Activity() {
         val f = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
-            minimumHeight = dp(if (compacto) 38 else 48)
-            setPadding(dp(14), dp(if (compacto) 1 else 6), dp(10), dp(if (compacto) 1 else 6))
+            minimumHeight = dp(if (compacto) 34 else 48)
+            setPadding(dp(14), dp(if (compacto) 0 else 6), dp(10), dp(if (compacto) 0 else 6))
             background = ripple(Color.TRANSPARENT, Tema.R_TARJETA)
             isClickable = true
         }
@@ -4189,6 +4189,12 @@ class MainActivity : Activity() {
                 "se guardan en ella: si cambias de celular o reinstalas, solo vuelves a entrar.",
             Tema.T_NOTA, cTenue, false
         ).apply { gravity = Gravity.CENTER; setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S2))
+        // 10.85: aviso de la revisión con IA y de los Términos (el interruptor del paso 1 ya no lleva descripción).
+        col.addView(texto(
+            "Al continuar aceptas los Términos y la Política de privacidad. Checa manda una imagen de cada oferta a una IA externa " +
+                "para revisar la lectura; puede mostrar el nombre del pasajero y direcciones. La apagas en «Revisión mejorada con IA».",
+            Tema.T_NOTA, cTenue, false
+        ).apply { gravity = Gravity.CENTER; setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
         return ScrollView(this).apply {
             setBackgroundColor(cFondo)
             isClickable = true
@@ -4337,7 +4343,7 @@ class MainActivity : Activity() {
         // «Revisión mejorada con IA» sale encendida; su aviso va en la misma fila. Verla aquí cuenta como el aviso
         // (visionAvisoVisto); si la apaga, no sale ninguna imagen.
         if (!prefs.visionRechazada) prefs.visionAvisoVisto = true
-        filaInterruptor(g, "Revisión mejorada con IA", "Una IA externa ve una imagen de la oferta (puede mostrar nombre y direcciones).",
+        filaInterruptor(g, "Revisión mejorada con IA", null,
             prefs.visionAvisoVisto && !prefs.visionRechazada, true) { on ->
             if (on) { prefs.visionRechazada = false; prefs.visionAvisoVisto = true } else prefs.visionRechazada = true
         }
