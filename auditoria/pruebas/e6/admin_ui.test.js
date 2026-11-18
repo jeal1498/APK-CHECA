@@ -130,8 +130,11 @@ test("tiene los siete módulos y la navegación se mantiene", async () => {
 test("inicio: estado general, 7 indicadores, componentes honestos y atención requerida", async () => {
   const { p, errores } = await abrir("ok");
   await p.waitForSelector("#estado-general");
-  assert.match(await p.textContent("h1"), /SALUD DE CHECA/);
-  assert.match(await p.textContent("#estado-general"), /Incidente/);
+  assert.match(await p.textContent("h1"), /Hay algo que atender/);
+  assert.match(await p.textContent("#estado-general"), /Hay un problema/);
+  assert.match(await p.textContent("#alertas"), /Recárgalo/);                                  // dice qué hacer en palabras sencillas
+  assert.match(await p.textContent("[data-clave=ocr]"), /Aún no se sabe/);
+  assert.match(await p.textContent("[data-clave=revision_ia]"), /¿El revisor automático funciona\?/);
   assert.equal(await p.locator("#inicio .tarjeta").count(), 7);
   assert.match(await p.textContent("[data-clave=calidad_interpretacion]"), /n = 0/);
   assert.match(await p.textContent("[data-clave=calidad_interpretacion]"), /—/);             // sin referencia: no hay porcentaje
@@ -311,5 +314,8 @@ test("A6: la biblioteca externa va con versión fija, archivo real y huella SRI"
   assert.match(js, /sc\.integrity = "sha384-[A-Za-z0-9+/]{64}"/);
   assert.doesNotMatch(js, /supabase\.min\.js/);
   const codigo = js.split("\n").filter((l) => !l.trim().startsWith("//")).join("\n");   // sin los comentarios
-  assert.doesNotMatch(codigo + fs.readFileSync(path.join(ADMIN, "index.html"), "utf8"), /innerHTML|document\.write|eval\(|localStorage|sessionStorage/);
+  // Único uso permitido del navegador: recordar el tema claro/oscuro (clave «checa-tema»), nunca datos.
+  assert.deepEqual((codigo.match(/localStorage\.\w+\("[^"]*"/g) || []).map((x) => x.replace(/^localStorage\.(get|set)Item/, "")).filter((v, i, a) => a.indexOf(v) === i), ['("checa-tema"']);
+  const sinTema = codigo.replace(/localStorage\.(get|set)Item\("checa-tema"/g, "");
+  assert.doesNotMatch(sinTema + fs.readFileSync(path.join(ADMIN, "index.html"), "utf8"), /innerHTML|document\.write|eval\(|localStorage|sessionStorage/);
 });

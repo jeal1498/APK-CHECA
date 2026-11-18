@@ -10,9 +10,28 @@
                  ["dispositivos", "Conductores y dispositivos", "Equipos"], ["ia", "Auditoría IA", "IA"], ["config", "Configuración", "Ajustes"]];
   var ESTADO = { operativo: "ok", degradado: "aviso", fuera_de_servicio: "mal", sin_comprobar: "nd", sin_datos: "nd", no_aplicable: "nd",
                  verde: "ok", amarillo: "aviso", amarillo_parcial: "aviso", rojo: "mal", gris: "nd" };
-  var TEXTO = { operativo: "Operativo", degradado: "Degradado", fuera_de_servicio: "Fuera de servicio", sin_comprobar: "Sin comprobar",
-                sin_datos: "Sin datos", no_aplicable: "No aplicable", verde: "Saludable", amarillo: "Degradado", amarillo_parcial: "Sin comprobar todo",
-                rojo: "Incidente", gris: "Sin datos" };
+  // Palabras de todos los días: quien lo lee no tiene que ser técnico.
+  var TEXTO = { operativo: "Bien", degradado: "Con problemas", fuera_de_servicio: "No funciona", sin_comprobar: "Sin comprobar",
+                sin_datos: "Aún no se sabe", no_aplicable: "No aplica", verde: "Todo bien", amarillo: "Con avisos", amarillo_parcial: "Faltan datos",
+                rojo: "Hay un problema", gris: "Aún no se sabe" };
+  var RESPUESTA = { operativo: "Sí, funciona.", degradado: "Funciona, pero con problemas.", fuera_de_servicio: "No funciona.", sin_comprobar: "Todavía no se comprueba.",
+                    sin_datos: "Aún no se sabe: faltan datos.", no_aplicable: "No aplica por ahora." };
+  var ORDEN = { fuera_de_servicio: 0, degradado: 1, operativo: 2, sin_comprobar: 3, sin_datos: 4, no_aplicable: 5 };
+  // clave del componente → [pregunta, qué significa]
+  var PREGUNTA = {
+    base_de_datos: ["¿Responde tu base de datos?", "Es donde se guarda todo. Si no responde, no se puede ver nada de lo demás."],
+    api: ["¿Funciona esta página?", "Comprueba que Checa Admin puede pedir datos al servidor."],
+    ingesta: ["¿Llegan datos de la app?", "Los teléfonos mandan sus lecturas a tu base de datos. Si pasa un día sin llegar nada, aquí te avisa."],
+    aplicacion_android: ["¿Alguien usa la app?", "Cuenta los teléfonos que mandaron algo en los últimos días."],
+    ocr: ["¿El teléfono lee el texto de la pantalla?", "Es el primer paso: convertir lo que se ve en texto. Si falla mucho, la app no puede leer ofertas."],
+    interpretacion: ["¿La app entiende tarifa, km y minutos?", "Es el segundo paso: sacar los números del texto. Se mide cuando hay suficientes casos."],
+    revision_ia: ["¿El revisor automático funciona?", "Es la segunda opinión que revisa lo que lee la app. Si se acaba el saldo, aquí lo dirá."],
+    almacenamiento: ["¿Se guardan las capturas?", "Las capturas de pantalla que ayudan a revisar errores. Se borran solas a los 7 días."],
+    mercado_pago: ["¿Funcionan los cobros del canal directo?", "Se comprueba cuando haya cobros reales."],
+    play_billing: ["¿Funcionan los cobros de Google Play?", "Todavía no existen; se activan antes del 1 de febrero de 2027."]
+  };
+  // gravedad del servidor → palabra clara
+  var GRAVEDAD = { alta: "URGENTE", media: "REVISAR", baja: "NO URGENTE" };
 
   function el(tag, attrs, hijos) {
     var e = document.createElement(tag);
@@ -115,57 +134,89 @@
   }
   function skeleton(c) { c.appendChild(el("div", { clase: "skeleton", "aria-busy": "true" })); }
 
-  // ---------- 01 Inicio ----------
+  // ---------- 01 Inicio (Salud) ----------
+  // Qué dice el veredicto, qué luz enciende y qué hacer. Nunca verde si faltan datos: lo decide el servidor (estado_general).
+  var VEREDICTO = {
+    verde:            ["Todo funciona", "No tienes que hacer nada hoy.", "luz-v"],
+    amarillo:         ["Funciona, con avisos", "Revisa los avisos de abajo cuando tengas un momento.", "luz-a"],
+    amarillo_parcial: ["Todo lo medible funciona", "Aún no se puede medir todo: faltan datos en algunas cosas.", "luz-a"],
+    rojo:             ["Hay algo que atender", "Mira primero la sección «Por revisar».", "luz-r"],
+    gris:             ["Aún no se sabe", "Todavía no hay datos suficientes para opinar.", ""]
+  };
+  function aclaracion(a) {
+    if (a.componente === "revision_ia") return /402/.test(a.titulo + " " + a.descripcion) ? "Se acabó el saldo del revisor automático. Recárgalo." : "El revisor automático está fallando. Mira el detalle.";
+    if (a.componente === "revision_humana") return "Nadie ha confirmado si estas lecturas estaban bien o mal. " + (a.gravedad === "baja" ? "No hagas nada ahora." : "Conviene revisarlas.");
+    if (a.componente === "ingesta" || a.componente === "aplicacion_android") return "Dejaron de llegar datos de la app. Revisa que el teléfono tenga la app abierta y con internet.";
+    return null;
+  }
   async function inicio(c) {
     skeleton(c);
     var r = rango(), d = await llamar("admin_salud", { desde: r.desde, hasta: r.hasta });
     c.textContent = "";
     if (!d) return;
     var inc = d.atencion.length, n = d.componentes.length;
-    var ok = d.componentes.filter(function (x) { return x.estado === "operativo"; }).length;
     var comprobados = d.componentes.filter(function (x) { return ["operativo", "degradado", "fuera_de_servicio"].indexOf(x.estado) >= 0; }).length;
-    c.appendChild(el("div", { clase: "encabezado" }, [
-      el("div", {}, [el("h1", { texto: "SALUD DE CHECA" }), el("div", { clase: "detalle", texto: "Centro de control y monitoreo del ecosistema Checa." })]),
-      el("div", { clase: "estado-general", id: "estado-general" }, [insignia(d.estado_general),
-        el("div", { clase: "detalle", texto: "Actualizado: " + (d.generado || "").slice(0, 19).replace("T", " ") + " UTC" }),
-        el("div", { clase: "detalle", texto: "Periodo: " + r.desde.slice(0, 10) + " → " + r.hasta.slice(0, 10) }),
-        el("div", { clase: "detalle", texto: "Componentes operativos: " + ok + " de " + comprobados + " comprobados (de " + n + ")" }),
-        el("div", { clase: "detalle", texto: "Incidentes activos: " + inc })]),
-      selPeriodo(pintar)]));
-    c.appendChild(el("h2", { texto: "Indicadores principales" }));
+    var fallas = d.componentes.filter(function (x) { return x.estado === "fuera_de_servicio" || x.estado === "degradado"; }).length;
+    var v = VEREDICTO[d.estado_general] || VEREDICTO.gris;
+    var luces = ["luz-r", "luz-a", "luz-v"].map(function (l) { return el("i", { clase: v[2] === l ? "on " + l : "" }); });
+    c.appendChild(el("div", { clase: "encabezado" }, [el("div", { clase: "detalle", texto: "Periodo: " + r.desde.slice(0, 10) + " → " + r.hasta.slice(0, 10) }), selPeriodo(pintar)]));
+    c.appendChild(el("section", { clase: "hero", id: "estado-general" }, [
+      el("div", { clase: "semaforo", "aria-hidden": "true" }, luces),
+      el("div", { clase: "hero-texto" }, [
+        el("h1", { texto: v[0] }), el("p", { texto: v[1] }),
+        el("div", { clase: "cifras" }, [
+          el("div", {}, [el("b", { texto: comprobados + " de " + n }), "cosas medidas"]),
+          el("div", {}, [el("b", { texto: String(fallas) }), "con problemas"]),
+          el("div", {}, [el("b", { texto: String(inc) }), inc === 1 ? "aviso" : "avisos"])]),
+        el("div", { clase: "fila" }, [insignia(d.estado_general), el("span", { clase: "detalle", texto: "Actualizado: " + (d.generado || "").slice(0, 16).replace("T", " ") + " UTC" })])])]));
+
+    c.appendChild(el("h2", { texto: "Por revisar" }));
+    c.appendChild(el("div", { id: "alertas", clase: "atencion" }, d.atencion.length ? d.atencion.map(function (a) {
+      var aclara = aclaracion(a);
+      return el("div", { clase: "alerta " + a.gravedad }, [
+        el("div", { clase: "fila" }, [el("span", { clase: "tag " + a.gravedad, texto: GRAVEDAD[a.gravedad] || a.gravedad.toUpperCase() }), el("strong", { texto: a.titulo })]),
+        aclara ? el("div", { clase: "aclara", texto: aclara }) : null,
+        el("details", {}, [el("summary", { texto: "Detalle técnico" }),
+          el("div", { clase: "detalle", texto: a.descripcion + " · componente: " + a.componente }),
+          el("div", { clase: "detalle", texto: "Evidencia: " + a.evidencia + " · " + a.estado })]),
+        enlace("Abrir", a.componente === "revision_ia" ? "ia" : a.componente === "revision_humana" ? "errores" : "ofertas")]);
+    }) : [el("div", { clase: "vacio", texto: "Nada por revisar con los datos de este periodo." })]));
+
+    c.appendChild(el("h2", { texto: "Cada cosa, en una pregunta" }));
+    var ordenados = d.componentes.slice().sort(function (a, b) { return (ORDEN[a.estado] === undefined ? 9 : ORDEN[a.estado]) - (ORDEN[b.estado] === undefined ? 9 : ORDEN[b.estado]); });
+    c.appendChild(el("div", { clase: "carriles", id: "componentes" }, ordenados.map(function (x) {
+      var pq = PREGUNTA[x.clave] || [x.nombre, x.nombre];
+      return el("div", { clase: "carril comp " + (ESTADO[x.estado] || "nd"), "data-clave": x.clave }, [
+        punto(x.estado),
+        el("div", { clase: "carril-texto" }, [
+          el("strong", { texto: pq[0] }),
+          el("div", { clase: "respuesta", texto: RESPUESTA[x.estado] || TEXTO[x.estado] }),
+          el("details", {}, [el("summary", { texto: "¿Qué significa?" }), el("p", { texto: pq[1] }),
+            el("div", { clase: "detalle", texto: x.nombre + " · comprobación: " + txt(x.comprobacion) }),
+            el("div", { clase: "detalle", texto: "Última comprobación: " + (x.ultima_comprobacion ? String(x.ultima_comprobacion).slice(0, 19).replace("T", " ") : "—") }),
+            x.k !== undefined ? el("div", { clase: "detalle", texto: x.k + " / n = " + x.n }) : null,
+            x.ms ? el("div", { clase: "detalle", texto: "Tiempo mediano: " + x.ms + " ms" }) : null,
+            el("div", { clase: "detalle", texto: "Depende de: " + ((x.depende_de || []).join(", ") || "—") })])]),
+        insignia(x.estado)]);
+    })));
+
+    c.appendChild(el("h2", { texto: "Los números" }));
     c.appendChild(el("div", { clase: "tarjetas", id: "inicio" }, d.indicadores.map(function (i) {
       return tarjeta(i, [i.clave === "calidad_interpretacion" ? enlace("Ver detalle", "ia") : i.clave === "veredictos_pendientes" ? enlace("Ver errores", "errores") :
         i.clave === "lecturas" || i.clave === "tasa_errores" ? enlace("Ver ofertas", "ofertas") : null]);
     })));
-    c.appendChild(el("h2", { texto: "ATENCIÓN REQUERIDA" }));
-    c.appendChild(el("div", { id: "alertas", clase: "atencion" }, d.atencion.length ? d.atencion.map(function (a) {
-      return el("div", { clase: "alerta " + a.gravedad }, [el("strong", { texto: a.gravedad.toUpperCase() + " · " + a.titulo }),
-        el("div", { clase: "detalle", texto: a.descripcion + " · componente: " + a.componente }),
-        el("div", { clase: "detalle", texto: "Evidencia: " + a.evidencia + " · " + a.estado }),
-        enlace("Abrir", a.componente === "revision_ia" ? "ia" : a.componente === "revision_humana" ? "errores" : "ofertas")]);
-    }) : [el("div", { clase: "vacio", texto: "Ninguna regla de atención se cumple con los datos del periodo." })]));
-    c.appendChild(el("h2", { texto: "Estado de los componentes" }));
-    c.appendChild(el("div", { clase: "tarjetas", id: "componentes" }, d.componentes.map(function (x) {
-      return el("div", { clase: "tarjeta comp", "data-clave": x.clave }, [
-        el("div", { clase: "fila" }, [punto(x.estado), el("strong", { texto: x.nombre })]), insignia(x.estado),
-        el("div", { clase: "detalle", texto: "Comprobación: " + txt(x.comprobacion) }),
-        el("div", { clase: "detalle", texto: "Última comprobación: " + (x.ultima_comprobacion ? String(x.ultima_comprobacion).slice(0, 19).replace("T", " ") : "—") }),
-        x.k !== undefined ? el("div", { clase: "detalle", texto: x.k + " / n = " + x.n }) : null,
-        x.ms ? el("div", { clase: "detalle", texto: "Tiempo mediano: " + x.ms + " ms" }) : null,
-        el("div", { clase: "detalle", texto: "Depende de: " + ((x.depende_de || []).join(", ") || "—") })]);
-    })));
     var p = d.procesamiento;
-    c.appendChild(el("h2", { texto: "Salud del procesamiento" }));
+    c.appendChild(el("h2", { texto: "Qué tan rápido y completo se procesa" }));
     c.appendChild(el("div", { clase: "tarjetas", id: "procesamiento" }, [["Recibidas", p.recibidas], ["Procesadas", p.procesadas], ["Fallidas", p.fallidas],
       ["Pendientes", p.pendientes === null ? "sin dato" : p.pendientes], ["Tiempo mediano (ms)", p.ms_lectura_p50], ["Tiempo p90 (ms)", p.ms_lectura_p90],
       ["Tiempo máximo (ms)", p.ms_lectura_max], ["Reintentos recibidos", p.reintentos]].map(function (x) {
       return el("div", { clase: "tarjeta" }, [el("div", { clase: "detalle", texto: x[0] }), el("div", { clase: "valor", texto: txt(x[1]) })]); })));
     c.appendChild(el("div", { clase: "detalle", texto: p.pendientes_nota }));
-    c.appendChild(el("h2", { texto: "Calidad de los resultados" }));
-    c.appendChild(el("div", { clase: "tarjetas" }, [["Con referencia humana", d.calidad.con_referencia], ["Sin veredicto", d.calidad.sin_veredicto], ["Conflictos humanos", d.calidad.conflictos]].map(function (x) {
+    c.appendChild(el("h2", { texto: "Calidad de lo que lee la app" }));
+    c.appendChild(el("div", { clase: "tarjetas" }, [["Con respuesta humana", d.calidad.con_referencia], ["Sin confirmar", d.calidad.sin_veredicto], ["Humanos en desacuerdo", d.calidad.conflictos]].map(function (x) {
       return el("div", { clase: "tarjeta" }, [el("div", { clase: "detalle", texto: x[0] }), el("div", { clase: "valor", texto: txt(x[1]) })]); })));
     c.appendChild(el("div", { clase: "detalle", texto: d.calidad.nota }));
-    c.appendChild(el("h2", { texto: "Evolución" }));
+    c.appendChild(el("h2", { texto: "Cómo ha ido en los días" }));
     var h = d.historia || [];
     c.appendChild(el("div", { clase: "graficas", id: "graficas" }, [
       grafica("Lecturas y errores por día", [{ nombre: "Lecturas", clase: "a0", puntos: h.map(function (x) { return { x: x.dia, y: x.lecturas }; }) },
@@ -426,9 +477,16 @@
     await pintar();
   }
 
+  // Tema claro/oscuro: sigue al teléfono; el botón lo cambia a mano y lo recuerda (si el navegador lo permite).
+  function temaActual() { var t = document.documentElement.getAttribute("data-theme"); return t || (window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); }
+  function aplicarTema(t) { document.documentElement.setAttribute("data-theme", t); var b = document.getElementById("tema"); if (b) b.textContent = t === "dark" ? "Modo claro" : "Modo oscuro"; }
+  try { var gt = localStorage.getItem("checa-tema"); if (gt === "dark" || gt === "light") document.documentElement.setAttribute("data-theme", gt); } catch (e) { /* sin almacenamiento */ }
+
   window.Admin = { iniciar: iniciar, aviso: aviso, pintar: pintar };
 
   document.addEventListener("DOMContentLoaded", function () {
+    var bt = document.getElementById("tema");
+    if (bt) { aplicarTema(temaActual()); bt.onclick = function () { var t = temaActual() === "dark" ? "light" : "dark"; aplicarTema(t); try { localStorage.setItem("checa-tema", t); } catch (e) { /* sin almacenamiento */ } }; }
     if (window.CHECA_CLIENTE) { iniciar(window.CHECA_CLIENTE); return; }
     var sc = document.createElement("script");
     // Archivo real del paquete npm con su huella SRI (npm 2.45.4): si el CDN sirviera otra cosa, el navegador no la ejecuta.
