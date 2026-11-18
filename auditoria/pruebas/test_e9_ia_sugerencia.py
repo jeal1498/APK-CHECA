@@ -20,7 +20,7 @@ class E9(unittest.TestCase):
         cls.pg = pg_local.Pg()
         cls.pg.archivo(ESQUEMA)
         cls.pg.sql(LEGADO + f"insert into auth.users (id) values ('{ADM}'), ('{REV}'), ('{NAD}');")
-        for n in ("001_auditoria", "002_registrar", "003_veredictos", "004_admin", "007_revision_ofertas", "008_ia_sugerencia"):
+        for n in ("001_auditoria", "002_registrar", "003_veredictos", "004_admin", "007_revision_ofertas", "008_ia_sugerencia", "009_cola_por_version"):
             cls.pg.archivo(mig(n))
         cls.pg.sql(f"insert into auditoria.administradores (usuario, rol) values ('{ADM}', 'lector'), ('{REV}', 'revisor');")
         cls.pg.sql("delete from public.capturas_ok")
