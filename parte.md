@@ -45,6 +45,14 @@
 - Checa Admin (7 módulos, teléfono y tableta) publicado en `https://jeal1498.github.io/PWA-Checa-Multimedia/admin-checa-7e3a91/`; Eduardo (`lalolopezxd@gmail.com`) dado de alta como revisor; entró desde su celular (17 nov).
 - Confirmado en `main` (18 nov): la 10.82 trae la trazabilidad encendida por defecto (`Prefs.trazabilidad`, `getBoolean("traza", true)`); en teléfonos que ya la tenían apagada puede seguir así.
 - Salud de Checa: el tope diario de la revisión con IA no cuenta como falla (4872 de 4874 «fallas» eran `tope_diario`); aplicado en producción (commit `82b84f5`).
+- Checa Admin rediseñado (18 nov, en `main` del repo web): 7 pestañas en teléfono y tableta, captura en marco 9:16 fijo, bloques Tarifa/Distancia/Tiempo con nombre, «Dar veredicto» (veredictos inmutables, el último sustituye al propio) y Configuración con acordeones. El Admin original vive en PWA-Checa-Multimedia, no en `admin/` de este repo (esa copia está desactualizada).
+- «Revisar ofertas» (SQL 007–009): cola de ofertas normales (aceptar/considerar/rechazar) solo de la 10.82 en adelante; veredictos Correcta / Valores mal / Falso positivo.
+- IA de imagen en el Admin (DeepSeek `deepseek-flash`, función `admin-leer-captura`, solo administradores, a petición): sugerencia con modelo, ms y tokens; precisión medida en Ofertas (SQL 008) y Errores (SQL 010). Eduardo la probó: no se ha equivocado.
+- Tope de 150 capturas al día desactivado (`TOPE_CAPTURAS_OK_ACTIVO=false`); el servidor mantiene `TOPE_DIARIO_IA` (1500).
+- IA con imagen en los teléfonos (10.83, PR #13–#15 en `main`; Admin PR #17): el teléfono manda la captura a `confirmar-oferta`, que la lee con DeepSeek y reemplaza a la IA de texto; si no hay créditos, trabaja solo el lector. Interruptores remotos en `public.ia_config` (SQL 011, función los lee cada 30 s) con latencias `ms_ia`/`ms_total` en Admin › Configuración › IA con imagen. SQL 007–011 aplicados en Supabase.
+- Aviso de la app: «Revisión con imagen» (se acepta una vez; sin aceptar, no se envía imagen).
+- Subida de versión 10.83 (versionCode 163) lista en el PR #16 (compila en verde); **no fusionar** hasta que Eduardo lo diga.
+- Criterio para apagar la IA: correcciones por cada 1000 ofertas cerca de 0 (hoy ~25; noviembre: 440 correcciones, 17 897 ofertas, 0.95 USD), lector con ≥100 veredictos humanos y estable un par de semanas. El lector mejora con veredictos → banco → arreglos de código → versión (no es automático).
 
 ## … Falta
 - **16 nov (lunes):** ejecutar `docs/plan-lunes-16-nov.md`. Arranca con «Estado de la revisión»; luego función `ver-capturas` (enlaces temporales), clasificar las capturas, corregir los 3 patrones más frecuentes (10.73) y medir el lunes 23. Si hay menos de 30 capturas, esperar al miércoles.
@@ -66,6 +74,13 @@
 - Probar la 10.82 en teléfono (trazabilidad, enlace por fotograma) y subir al repo el resultado.
 - Con ≥ 30 ofertas con captura (10.82): bajar capturas, etiquetar (lalo y pp a ciegas, tercera persona resuelve), medir en el Admin y corregir lo más frecuente. Capturas se borran a los 7 días.
 - Etiquetado a futuro (propuesto, Eduardo dijo «Ok»): primera tanda con 3 personas; luego IA propone y una persona confirma (`revisar.html`); solo casos dudosos; ~30 por versión. Falta su «sí» para el filtro «casos que necesitan revisión humana» en el Admin.
+- **PR #16 (10.83):** fusionar cuando Eduardo diga; luego generar el AAB con «Preparar AAB Google Play» y subirlo a Play (con su autorización).
+- Probar la 10.83 en el teléfono de Eduardo: aceptar el aviso «Revisión con imagen» y medir cuánto tarda DeepSeek (Admin › Configuración › IA con imagen).
+- Revisar ≥ 30 casos por color en «Revisar ofertas» (solo 10.82+) y comparar IA vs lector con los veredictos.
+- **Privacidad:** las capturas completas (nombres, direcciones) van a DeepSeek: actualizar aviso, política de privacidad y Seguridad de los datos de Play antes de publicar la 10.83.
+- Cuando la visión funcione: apagar la IA de texto con el interruptor remoto.
+- Opcional: medir cuánto añade Supabase frente a `ms_ia`; optimizar respondiendo antes de guardar.
+- Auditor en servidor (diseño en artifact `auditor.html`) sin construir; decidir tope diario (¿300?), frecuencia, aviso/política y alcance.
 
 ## ✗ No tocar
 - Publicar en Play Console sin su autorización.
@@ -74,3 +89,4 @@
 - Subir el PNG de novedades al repo.
 - Secretos y llaves de firma en Git.
 - Fusionar o publicar a Play la 10.82 sin el aviso de privacidad listo.
+- Fusionar el PR #16 (10.83) o publicar su AAB sin orden de Eduardo ni aviso de privacidad actualizado (imágenes a DeepSeek).
