@@ -338,6 +338,12 @@ object Cuenta {
      */
     const val MAX_CAPTURAS_OK_DIA = 150
 
+    /**
+     * Interruptor del tope diario. APAGADO desde el 18 nov (Eduardo): mientras se mide la IA que lee las imágenes se
+     * suben las capturas de todas las ofertas normales. Para volver al tope, cambiar a `true`.
+     */
+    private val TOPE_CAPTURAS_OK_ACTIVO = false
+
     private fun diaCapturas(): String = java.time.LocalDate.now().toString()
 
     /** Capturas normales ya subidas hoy; el contador se reinicia solo al cambiar el día. */
@@ -349,7 +355,7 @@ object Cuenta {
     /**
      * 10.78: sube la captura de una oferta normal (el pop-up salió verde, amarillo o rojo y la revisión
      * coincidió), como `ok-<color>-<tarifa>-<km>-<min>-<hora>.webp`. Solo si el conductor vio el aviso y
-     * sin pasar de [MAX_CAPTURAS_OK_DIA] por cuenta y por día. Se borra a los 7 días.
+     * sin pasar de [MAX_CAPTURAS_OK_DIA] por cuenta y por día (si [TOPE_CAPTURAS_OK_ACTIVO] está encendido). Se borra a los 7 días.
      */
     @Synchronized
     fun subirCapturaOk(ctx: Context, nivel: String, o: Oferta, bytes: ByteArray, normal: Long = 0L) {
@@ -368,7 +374,7 @@ object Cuenta {
     /** true si la próxima oferta normal puede mandar su captura (encendido, aviso visto, bajo el tope de hoy). */
     fun quiereCapturaOk(ctx: Context): Boolean {
         val p = Prefs(ctx)
-        return p.diagnostico && p.diagEnvioVisto && capturasOkHoy(ctx) < MAX_CAPTURAS_OK_DIA
+        return p.diagnostico && p.diagEnvioVisto && (!TOPE_CAPTURAS_OK_ACTIVO || capturasOkHoy(ctx) < MAX_CAPTURAS_OK_DIA)
     }
 
     /** POST de una imagen WebP al almacén «capturas»; true si el servidor la aceptó. */
