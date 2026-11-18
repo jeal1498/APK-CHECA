@@ -36,7 +36,8 @@ Si una categoría no se puede arreglar sin romper otra, o tres intentos fallan, 
 3. Decide lo del revisor con imagen: si después de los arreglos la precisión en normales sigue bajo 95 % (tarifa, km y minutos juntos), propón mandar la imagen a Haiku solo en los casos dudosos (no lo implementes sin el «adelante» de Eduardo).
 
 ## Reglas
-- Lo que leyó Haiku es la respuesta de referencia, salvo que la imagen muestre otra cosa.
+- **Veredicto humano primero.** Si el caso tiene un veredicto humano del Admin (referencia humana), ese es la respuesta de referencia y pesa más que lo que leyó Haiku. Para traerlos al banco: en Supabase exporta como JSON la consulta que está al inicio de `auditoria/etiquetado/veredictos_a_banco.py` y corre `python3 auditoria/etiquetado/veredictos_a_banco.py veredictos.json` (agrega `--simular` para solo contar). Solo entran `oferta` y `no_oferta`; el script no sobrescribe casos existentes. Después corre `auditoria/etiquetado/origen_banco.py`.
+- Lo que leyó Haiku es la respuesta de referencia cuando no hay veredicto humano, salvo que la imagen muestre otra cosa.
 - No hagas commit en `pruebas/**`. Las imágenes no van al repo: bájalas con la función temporal (`docs/banco-lector.md`, clave nueva), y al terminar déjala en stub 410 y borra las imágenes y los JSON con notas del directorio temporal.
 - No toques la rama `respaldo-main-local`, no publiques en Play Console, ningún secreto en el repo, nada de lenguaje clínico.
 

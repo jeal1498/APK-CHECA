@@ -55,3 +55,6 @@ Se resolvieron las 26 discrepancias (la 1365, oferta tarjeta 2, la decidió el p
 
 ### Cierre de la medición (17-nov-2026)
 Lector contra la referencia humana (solo 19 de 66 casos con líneas locales; n < 30, insuficiente): 16 aciertos, 3 fallas. Arregladas 1377 (tramos idénticos seguidos) y 1324 (tarjeta cortada arriba); banco 272/316. 1300 (tarjeta atenuada con círculo de carga) no se puede detectar desde el texto: limitación conocida. Sin probar en teléfono ni en CI de Android. Los otros 47 casos requieren las líneas de `errores_lector` (producción o rama de pruebas de Supabase, sin crear). Evidencia: `evidencias/medicion/lector_vs_humano_20261117.json`.
+
+## Del Admin al banco (18-nov-2026)
+`etiquetado/veredictos_a_banco.py` convierte los veredictos humanos dados en el Admin (botón «Dar veredicto» en el expediente de un error) en casos del banco, con la cabecera «según veredicto humano». `origen_banco.py` los clasifica como `veredicto_humano` (humano verificado, no circular). Solo `oferta` y `no_oferta`; `varias`, `ilegible` y `cambio_pantalla` no se agregan. Prueba: `pruebas/test_veredictos_a_banco.py` (6, sin Postgres). Los 66 etiquetados del 17-nov siguen en `evidencias/` y **no están cargados en Supabase** (la tabla tiene 0 veredictos humanos al 18-nov).

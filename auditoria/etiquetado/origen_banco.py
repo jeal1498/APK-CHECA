@@ -6,6 +6,7 @@ import csv, os, re, sys
 RAIZ = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 BANCO = os.path.join(RAIZ, "app", "src", "test", "resources", "banco")
 ORIGENES = [
+    ("veredicto_humano", re.compile(r"según veredicto humano")),  # lo escribe veredictos_a_banco.py desde el Admin
     ("revision_ia_ia_bien", re.compile(r"según la revisión \(veredicto ia_bien\)")),
     ("lector_propio_ia_mal", re.compile(r"según el lector del teléfono \(veredicto ia_mal\)")),
     ("captura_haiku_10_77", re.compile(r"confirmada con la captura \(Haiku")),
@@ -25,8 +26,8 @@ def clasificar(carpeta=BANCO):
         origen = next((o for o, rx in ORIGENES if rx.search(coment)), "desconocido")
         esperado = open(os.path.join(carpeta, f), encoding="utf-8").read().split("\n---\n")[-1].strip()
         filas.append({"caso": f[:-4], "app": m.group(2), "version": ver.group(1) if ver else "",
-                      "origen": origen, "fuente_tipo": "heredado", "circular": "si" if origen in CIRCULAR else "no",
-                      "humano_verificado": "no", "esperado_nada": "si" if esperado == "nada" else "no"})
+                      "origen": origen, "fuente_tipo": "humano" if origen == "veredicto_humano" else "heredado", "circular": "si" if origen in CIRCULAR else "no",
+                      "humano_verificado": "si" if origen == "veredicto_humano" else "no", "esperado_nada": "si" if esperado == "nada" else "no"})
     return filas
 
 def main():
