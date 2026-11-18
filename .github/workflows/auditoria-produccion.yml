@@ -24,7 +24,7 @@ jobs:
       - name: Esquema auditoria (001–006, en orden)
         run: |
           set -euo pipefail
-          for n in 001_auditoria 002_registrar 003_veredictos 004_admin 005_metricas 006_centro 007_revision_ofertas 008_ia_sugerencia; do
+          for n in 001_auditoria 002_registrar 003_veredictos 004_admin 005_metricas 006_centro 007_revision_ofertas 008_ia_sugerencia 009_cola_por_version; do
             echo "== $n"
             jq -n --rawfile q "auditoria/sql/$n.sql" '{query: $q}' > consulta.json
             curl -sS --fail-with-body -X POST "https://api.supabase.com/v1/projects/$PROYECTO/database/query" \

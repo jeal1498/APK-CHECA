@@ -17,14 +17,14 @@ class E8(unittest.TestCase):
         cls.pg = pg_local.Pg()
         cls.pg.archivo(ESQUEMA)
         cls.pg.sql(LEGADO + f"insert into auth.users (id) values ('{ADM}'), ('{REV}'), ('{NAD}');")
-        for n in ("001_auditoria", "002_registrar", "003_veredictos", "004_admin", "007_revision_ofertas"):
+        for n in ("001_auditoria", "002_registrar", "003_veredictos", "004_admin", "007_revision_ofertas", "009_cola_por_version"):
             cls.pg.archivo(mig(n))
         cls.pg.sql(f"insert into auditoria.administradores (usuario, rol) values ('{ADM}', 'lector'), ('{REV}', 'revisor');")
         filas = []
-        # id, nivel, creado; el 4 es anterior a la 10.82 y el 5 no tiene archivo en el almacén
-        for i, nivel, creado in ((1, "rojo", "2026-11-18T10:00:00Z"), (2, "rojo", "2026-11-18T11:00:00Z"), (3, "verde", "2026-11-18T12:00:00Z"),
-                                 (4, "amarillo", "2026-11-17T12:00:00Z"), (5, "amarillo", "2026-11-18T13:00:00Z"), (16, "rojo", "2026-11-18T14:00:00Z")):
-            filas.append(f"({i}, '{NAD}', 'didi', 'MXN', '10.80', 'x', '[\"a\"]', '{{\"tarifa\":45.62,\"km\":0.761,\"min\":3}}', '{{}}', '{nivel}', '{creado}')")
+        # id, nivel, creado, versión; el 4 es de la 10.80 (un teléfono sin actualizar), el 5 no tiene archivo en el almacén
+        for i, nivel, creado, ver in ((1, "rojo", "2026-11-18T10:00:00Z", "10.82"), (2, "rojo", "2026-11-18T11:00:00Z", "10.82"), (3, "verde", "2026-11-18T12:00:00Z", "10.83"),
+                                      (4, "amarillo", "2026-11-18T12:30:00Z", "10.80"), (5, "amarillo", "2026-11-18T13:00:00Z", "10.82"), (16, "rojo", "2026-11-18T14:00:00Z", "10.82")):
+            filas.append(f"({i}, '{NAD}', 'didi', 'MXN', '{ver}', 'x', '[\"a\"]', '{{\"tarifa\":45.62,\"km\":0.761,\"min\":3}}', '{{\"tarifa\":45.62,\"km\":0.761,\"min\":3}}', '{nivel}', '{creado}')")
         cls.pg.sql("delete from public.capturas_ok")   # el LEGADO trae filas de ejemplo
         cls.pg.sql("insert into public.capturas_ok (id, usuario, app, moneda, version, lector, lineas, local, ia, nivel, creado) values " + ",".join(filas))
         for nombre in ("ok-rojo-45.62-0.8-3-1-n1.webp", "ok-rojo-45.62-0.8-3-2-n2.webp", "ok-verde-45.62-0.8-3-3-n3.webp",
@@ -76,9 +76,9 @@ class E8(unittest.TestCase):
                 self.como(NAD, f"select * from {t}")
 
     # ---------- cola ----------
-    def test_cola_solo_desde_la_10_82_y_con_archivo(self):
+    def test_cola_solo_de_la_10_82_en_adelante_y_con_archivo(self):
         r = self.rpc(REV, "public.admin_capturas_pendientes()")
-        self.assertEqual(sorted(i["id"] for i in r["items"]), [1, 2, 3, 16])   # 4 es anterior; 5 no tiene archivo
+        self.assertEqual(sorted(i["id"] for i in r["items"]), [1, 2, 3, 16])   # 4 es de la 10.80; 5 no tiene archivo
         self.assertEqual(r["pendientes"], {"rojo": 3, "amarillo": 0, "verde": 1})
         self.assertEqual(r["revisadas"], {"rojo": 0, "amarillo": 0, "verde": 0})
         self.assertEqual(r["items"][0]["id"], 16)                              # la más reciente primero
@@ -88,8 +88,18 @@ class E8(unittest.TestCase):
         r = self.rpc(REV, "public.admin_capturas_pendientes('rojo', 2)")
         self.assertEqual([i["id"] for i in r["items"]], [16, 2])
         self.assertEqual(r["pendientes"]["rojo"], 3)                           # el conteo no depende del límite
-        for malo in ("'azul'", "'rojo', 0", "'rojo', 51"):
+        for malo in ("'azul'", "'rojo', 0", "'rojo', 51", "null, 10, 'x'", "null, 10, null"):
             self.assertEqual(self.rpc(REV, f"public.admin_capturas_pendientes({malo})"), {"error": "filtro_invalido"})
+
+    def test_version_minima_configurable_y_trae_lo_que_leyo_la_app(self):
+        r = self.rpc(REV, "public.admin_capturas_pendientes(null, 10, '10.80')")
+        self.assertEqual(sorted(i["id"] for i in r["items"]), [1, 2, 3, 4, 16])
+        r = self.rpc(REV, "public.admin_capturas_pendientes(null, 10, '10.83')")
+        self.assertEqual([i["id"] for i in r["items"]], [3])
+        it = self.rpc(REV, "public.admin_capturas_pendientes('verde', 5)")["items"][0]
+        self.assertEqual((it["version"], it["local"]["min"], it["ia"]["km"]), ("10.83", 3, 0.761))
+        r = self.rpc(REV, "public.admin_capturas_pendientes(null, 10, '11.0')")
+        self.assertEqual(r["items"], [])
 
     # ---------- revisión ----------
     def test_correcta_sale_de_la_cola_y_cuenta_como_revisada(self):
@@ -138,7 +148,9 @@ class E8(unittest.TestCase):
         self.assertNotIn(REV, self.q("select string_agg(admin, ',') from auditoria.acciones_admin"))
 
     def test_down_es_reversible_y_aditivo(self):
-        self.pg.archivo(mig("007_revision_ofertas"), db=self.db)         # repetir no falla
+        self.pg.archivo(mig("009_cola_por_version"), db=self.db)         # repetir no falla
+        self.pg.archivo(mig("009_cola_por_version", down=True), db=self.db)
+        self.assertEqual(self.rpc(REV, "public.admin_capturas_pendientes(null, 3)")["pendientes"]["rojo"], 0 + 3)   # vuelve la cola por fecha (todas desde el 18-nov)
         self.pg.archivo(mig("007_revision_ofertas", down=True), db=self.db)
         self.assertEqual(self.q("select to_regclass('auditoria.revisiones_ofertas') is null"), "t")
         self.assertEqual(self.q("select count(*) from public.capturas_ok"), "6")     # no toca la tabla original
