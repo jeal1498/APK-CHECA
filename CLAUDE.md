@@ -18,6 +18,9 @@ Lo vigente para trabajar en Checa. La historia con fecha y el detalle largo vive
 - **Excepción:** un fallo grave (la app se cierra, no abre, no lee nada) sí sale de inmediato por `main`; avisa a Eduardo.
 - Cuando termine el trabajo, quita esta sección.
 
+## BLOQUEO DE ACTUALIZACIONES hasta el 6 dic 2026 (IA con imagen, 10.83)
+Eduardo pidió (18 nov): **no hacer ni preparar actualizaciones de la app** (versión nueva, AAB, cambios en `app/**`) hasta el **6 dic 2026**: se mide 2.5 semanas la 10.83 (costo, latencia, correcciones por 1,000 ofertas, ≥100 veredictos). **Cada vez que pida una actualización antes de esa fecha, recuérdale este bloqueo y no la hagas** salvo que él lo levante expresamente. Alcance: solo la app; Admin web, SQL y docs no están bloqueados. Al llegar la fecha: revisar los datos y decidir si se construye el filtro por confianza/muestra.
+
 ## Cómo trabajar con Eduardo
 - **Respuestas cortas, en español.** Él escucha el chat con lectura en voz alta: nada de textos largos.
 - Cambios **directo a `main`** (tiene permiso) en commits pequeños; sube también la rama de la sesión. Ningún secreto en el repo. No publicar en Play Console sin su autorización.
