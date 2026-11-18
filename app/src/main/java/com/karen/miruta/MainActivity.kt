@@ -4169,38 +4169,46 @@ class MainActivity : Activity() {
 
     /** Entrar con Google es obligatorio: esta pantalla tapa la app hasta que haya sesión. */
     private fun pantallaAcceso(): View {
+        // 10.85: login oscuro (marca arriba, semáforo grande, titular, botón de Google y aviso legal). Entrar con Google es obligatorio.
+        val gris = Color.rgb(154, 154, 162)
+        val hueso = Color.rgb(244, 244, 239)  // fijo: el login es oscuro aunque el teléfono esté en modo claro
         val col = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL
-            setPadding(dp(Tema.S3), dp(Tema.S3), dp(Tema.S3), dp(Tema.S3))
+            setPadding(dp(Tema.S3), dp(Tema.S4), dp(Tema.S3), dp(Tema.S3))
         }
-        col.addView(ImageView(this).apply { setImageResource(R.mipmap.ic_launcher) },
-            LinearLayout.LayoutParams(dp(88), dp(88)).apply { gravity = Gravity.CENTER_HORIZONTAL })
-        col.addView(texto("Checa", Tema.T_TITULO, cTexto, true).apply { gravity = Gravity.CENTER }, margenArriba(Tema.S2))
-        col.addView(texto("Lo que de verdad te deja cada viaje.", Tema.T_TEXTO, cTexto2, false).apply {
-            gravity = Gravity.CENTER
-        }, margenArriba(4))
-        col.addView(boton("Continuar con Google", Color.WHITE, Color.BLACK) { entrarConGoogle() }, margenArriba(Tema.S4))
-        if (Licencia.estado(this).beta) {
-            col.addView(boton("Entrar sin cuenta (beta)", cTarjeta2, cTexto) { entrarSinCuenta() }, margenArriba(Tema.S1))
+        col.addView(texto("Checa", 30f, hueso, true).apply { gravity = Gravity.CENTER })
+        col.addView(View(this), LinearLayout.LayoutParams(0, 0, 1f))
+        val sem = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
+            background = GradientDrawable().apply {
+                setColor(Color.rgb(22, 22, 28)); cornerRadius = dp(28).toFloat(); setStroke(dp(2), Color.rgb(44, 44, 53))
+            }
+            setPadding(0, dp(14), 0, dp(14))
         }
-        col.addView(texto(
-            "Entra con tu cuenta para activar Checa. Tu licencia y tus ajustes (filtros, gasolina, pop-up) " +
-                "se guardan en ella: si cambias de celular o reinstalas, solo vuelves a entrar.",
-            Tema.T_NOTA, cTenue, false
-        ).apply { gravity = Gravity.CENTER; setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S2))
-        // 10.85: aviso de la revisión con IA y de los Términos (el interruptor del paso 1 ya no lleva descripción).
+        listOf(Tema.VERDE, Color.rgb(58, 58, 31), Color.rgb(58, 31, 31)).forEachIndexed { i, cl ->
+            sem.addView(View(this).apply { background = redondo(cl, 50) },
+                LinearLayout.LayoutParams(dp(52), dp(52)).apply { if (i > 0) topMargin = dp(10) })
+        }
+        col.addView(sem, LinearLayout.LayoutParams(dp(92), -2).apply { gravity = Gravity.CENTER_HORIZONTAL })
+        col.addView(View(this), LinearLayout.LayoutParams(0, 0, 1f))
+        col.addView(texto("Sabe cuánto te deja cada viaje antes de aceptarlo.", 28f, hueso, true).apply {
+            gravity = Gravity.CENTER; setLineSpacing(0f, 1.1f)
+        }, margenArriba(Tema.S2))
+        col.addView(boton("Continuar con Google", hueso, Color.BLACK) { entrarConGoogle() }, margenArriba(Tema.S3))
+        // Aviso de la revisión con IA y de los Términos (el interruptor del paso 1 ya no lleva descripción).
         col.addView(texto(
             "Al continuar aceptas los Términos y la Política de privacidad. Checa manda una imagen de cada oferta a una IA externa " +
                 "para revisar la lectura; puede mostrar el nombre del pasajero y direcciones. La apagas en «Revisión mejorada con IA».",
-            Tema.T_NOTA, cTenue, false
-        ).apply { gravity = Gravity.CENTER; setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S1))
+            Tema.T_NOTA, gris, false
+        ).apply { gravity = Gravity.CENTER; setLineSpacing(0f, 1.2f) }, margenArriba(Tema.S2))
         return ScrollView(this).apply {
-            setBackgroundColor(cFondo)
+            setBackgroundColor(Color.rgb(12, 12, 16))
             isClickable = true
             isFillViewport = true
             addView(FrameLayout(this@MainActivity).apply {
-                addView(col, FrameLayout.LayoutParams(minOf(resources.displayMetrics.widthPixels, dp(480)), -2, Gravity.CENTER))
+                addView(col, FrameLayout.LayoutParams(minOf(resources.displayMetrics.widthPixels, dp(480)), -1, Gravity.CENTER))
             }, ViewGroup.LayoutParams(-1, -1))
         }
     }
@@ -4713,17 +4721,6 @@ class MainActivity : Activity() {
             }
         }
         handler.postDelayed(tic, 30_000)
-    }
-
-    /** Beta gratis: usar Checa sin cuenta. Después de la beta hay que entrar con Google o usar un código. */
-    private fun entrarSinCuenta() {
-        Cuenta.entrarSinCuenta(this)
-        actualizarAcceso()
-        pintarLicencia()
-        pintarCuenta()
-        // Igual que después de entrar con Google: permisos y, si es la primera vez, la guía.
-        val seguir: () -> Unit = { if (!prefs.guiaVista) mostrarGuia() }
-        if (faltanPermisos() && !configuracionPermisosPospuestaPlay()) mostrarPermisos(seguir) else seguir()
     }
 
     private fun entrarConGoogle() {

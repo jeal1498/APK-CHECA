@@ -65,12 +65,10 @@ object Cuenta {
     private fun sp(ctx: Context) = ctx.applicationContext.getSharedPreferences("cuenta", Context.MODE_PRIVATE)
 
     fun conectada(ctx: Context) = sp(ctx).getString("correo", null) != null
-    /** Entró con «Entrar sin cuenta»: solo vale mientras dure la beta gratis. */
-    fun sinCuenta(ctx: Context) =
-        !conectada(ctx) && sp(ctx).getBoolean("sin_cuenta", false) && Licencia.estado(ctx).beta
-    /** Puede usar Checa: con sesión de Google o sin cuenta durante la beta. Nadie, al vencer [Migracion]. */
+    /** Desde la 10.85 entrar con Google es obligatorio: «Entrar sin cuenta» se quitó (quien ya entró así debe iniciar sesión). */
+    fun sinCuenta(ctx: Context) = false
+    /** Puede usar Checa solo con sesión de Google. Nadie, al vencer [Migracion]. */
     fun puedeUsar(ctx: Context) = !Migracion.vencida() && (conectada(ctx) || sinCuenta(ctx))
-    fun entrarSinCuenta(ctx: Context) = sp(ctx).edit().putBoolean("sin_cuenta", true).apply()
     fun correo(ctx: Context): String = sp(ctx).getString("correo", null) ?: ""
     fun nombre(ctx: Context): String = sp(ctx).getString("nombre", null) ?: ""
     fun equipoQuitado(ctx: Context) = sp(ctx).getBoolean("quitado", false)
