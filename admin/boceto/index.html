@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="es" data-tema="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Checa Admin · Boceto</title>
+<style>
+:root{--fondo:#0C0C10;--tablero:#16161C;--panel:#1d1d25;--texto:#F4F4EF;--tenue:#9a9aa3;--borde:#2a2a33;--verde:#22C55E;--amarillo:#FACC15;--rojo:#EF4444;--gris:#6b6b75}
+[data-tema=claro]{--fondo:#F4F4EF;--tablero:#fff;--panel:#ecece6;--texto:#0C0C10;--tenue:#5d5d66;--borde:#d9d9d1;--verde:#15803d;--amarillo:#a16207;--rojo:#b91c1c;--gris:#8a8a92}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fondo);color:var(--texto);font:15px/1.45 "DM Sans",system-ui,sans-serif;padding-bottom:76px}
+.nota{background:var(--amarillo);color:#0C0C10;text-align:center;font-size:12px;padding:4px 8px;font-weight:700}
+header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--tablero);border-bottom:1px solid var(--borde)}
+.logo{display:flex;flex-direction:column;gap:2px;background:#0C0C10;padding:5px 6px;border-radius:7px}
+.logo i{width:10px;height:10px;border-radius:50%;display:block}
+.logo i:nth-child(1){background:#22C55E}.logo i:nth-child(2){background:#FACC15}.logo i:nth-child(3){background:#EF4444}
+h1{font:800 18px "Bricolage Grotesque",system-ui,sans-serif;margin:0;flex:1}
+button,select{font:inherit;color:var(--texto);background:var(--panel);border:1px solid var(--borde);border-radius:10px;min-height:40px;padding:6px 12px}
+main{max-width:1100px;margin:0 auto;padding:16px}
+.veredicto{display:flex;gap:16px;align-items:center;background:var(--tablero);border:1px solid var(--borde);border-left:8px solid var(--amarillo);border-radius:16px;padding:18px}
+.disco{width:56px;height:56px;border-radius:50%;background:var(--amarillo);flex:none;display:grid;place-items:center;font-size:28px;color:#0C0C10}
+.veredicto b{font:800 22px "Bricolage Grotesque",system-ui,sans-serif;display:block}
+.veredicto span{color:var(--tenue)}
+h2{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--tenue);margin:24px 0 8px}
+.rejilla{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.k{background:var(--tablero);border:1px solid var(--borde);border-radius:14px;padding:14px}
+.k small{color:var(--tenue)}
+.k .n{font:800 34px "Bricolage Grotesque",system-ui,sans-serif;line-height:1.1}
+.est{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:99px;border:1px solid currentColor}
+.v{color:var(--verde)}.a{color:var(--amarillo)}.r{color:var(--rojo)}.g{color:var(--gris)}
+.barra{height:6px;background:var(--panel);border-radius:9px;margin-top:8px;overflow:hidden}.barra i{display:block;height:100%;background:currentColor}
+.accion{display:flex;gap:12px;align-items:center;background:var(--tablero);border:1px solid var(--borde);border-radius:14px;padding:12px 14px}
+.accion div{flex:1}.accion small{color:var(--tenue)}
+details{background:var(--tablero);border:1px solid var(--borde);border-radius:14px;padding:12px 14px;margin-top:8px}
+summary{cursor:pointer;font-weight:700}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--tablero);border-top:1px solid var(--borde);padding-bottom:env(safe-area-inset-bottom)}
+nav a{flex:1 1 0;text-align:center;padding:8px 2px;font-size:11px;color:var(--tenue);text-decoration:none}
+nav a b{display:block;font-size:20px}
+nav a.on{color:var(--texto);box-shadow:inset 0 3px 0 var(--amarillo)}
+@media(min-width:900px){
+ body{padding:0 0 0 200px}
+ nav{top:0;bottom:auto;right:auto;width:200px;height:100vh;flex-direction:column;border-top:0;border-right:1px solid var(--borde);padding:70px 8px 8px}
+ nav a{flex:none;text-align:left;font-size:14px;padding:12px;border-radius:10px}
+ nav a b{display:inline;font-size:16px;margin-right:8px}
+ nav a.on{box-shadow:none;background:var(--panel)}
+ header{margin-left:0}
+}
+</style>
+</head>
+<body>
+<div class="nota">BOCETO DE ESTRUCTURA · los números son de ejemplo, no son datos reales</div>
+<header>
+ <div class="logo"><i></i><i></i><i></i></div>
+ <h1>Salud</h1>
+ <select aria-label="Periodo"><option>7 días</option><option>Hoy</option><option>30 días</option></select>
+ <button id="tema" aria-label="Cambiar tema">◐</button>
+</header>
+<main>
+ <section class="veredicto">
+  <div class="disco">!</div>
+  <div><b>1 cosa por revisar</b><span>4 de 10 componentes con datos · actualizado hace 2 min</span></div>
+ </section>
+
+ <h2>Lo importante</h2>
+ <div class="rejilla">
+  <div class="k"><small>Ingesta</small><div class="n v">OK</div><span class="est v">Operativa</span><div class="barra v"><i style="width:100%"></i></div></div>
+  <div class="k"><small>Lector</small><div class="n g">—</div><span class="est g">Sin datos (n&lt;30)</span><div class="barra g"><i style="width:0"></i></div></div>
+  <div class="k"><small>Revisión IA</small><div class="n v">2 %</div><span class="est v">Fallas bajas</span><div class="barra v"><i style="width:2%"></i></div></div>
+  <div class="k"><small>App</small><div class="n v">10.82</div><span class="est v">Recibiendo</span><div class="barra v"><i style="width:100%"></i></div></div>
+ </div>
+
+ <h2>Por revisar</h2>
+ <div class="accion"><span class="est a">Baja</span><div><b>Errores sin referencia humana</b><br><small>2,089 de 2,092 · revision_humana</small></div><button>Abrir</button></div>
+
+ <h2>Detalle</h2>
+ <details><summary>6 componentes sin datos</summary><p class="g">Ofertas, Equipos, Costos… Se muestran como «sin datos», nunca en verde.</p></details>
+ <details><summary>Gráficas del periodo</summary><p class="g">Aquí van las gráficas y tablas completas, plegadas.</p></details>
+</main>
+<nav>
+ <a class="on" href="#"><b>●</b>Salud</a>
+ <a href="#"><b>⚠</b>Errores</a>
+ <a href="#"><b>⇄</b>Versiones</a>
+ <a href="#"><b>✦</b>IA</a>
+ <a href="#"><b>☰</b>Más</a>
+</nav>
+<script>
+document.getElementById("tema").onclick=function(){var h=document.documentElement;h.dataset.tema=h.dataset.tema==="claro"?"oscuro":"claro"};
+</script>
+</body>
+</html>
