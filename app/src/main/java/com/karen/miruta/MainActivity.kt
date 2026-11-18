@@ -329,8 +329,8 @@ class MainActivity : Activity() {
         else if (Cuenta.puedeUsar(this) && prefs.diagnostico && !prefs.diagEnvioVisto && !hayVentana())
             handler.postDelayed({ if (!isFinishing && !prefs.diagEnvioVisto && !hayVentana()) avisoDiagnostico() }, 1200)
         // 10.83: aviso de que una IA externa ve una imagen de la oferta (una vez; «No, gracias» no vuelve a salir solo).
-        else if (Cuenta.puedeUsar(this) && prefs.diagnostico && !prefs.visionAvisoVisto && !prefs.visionRechazada && !hayVentana())
-            handler.postDelayed({ if (!isFinishing && !prefs.visionAvisoVisto && !prefs.visionRechazada && !hayVentana()) avisoVision() }, 1200)
+        else if (Cuenta.puedeUsar(this) && !prefs.visionAvisoVisto && !prefs.visionRechazada && dialogoPermisos?.isShowing != true && guia?.isShowing != true)
+            handler.postDelayed({ if (!isFinishing && !prefs.visionAvisoVisto && !prefs.visionRechazada && dialogoPermisos?.isShowing != true && guia?.isShowing != true && dialogoDiagAviso?.isShowing != true) avisoVision() }, 1200)
         Guardado.borrarPendientes(this)
         Guardado.podar(this)
         pintarDiag()
@@ -5257,6 +5257,11 @@ class MainActivity : Activity() {
         })
         c.addView(tSw, margenArriba(Tema.ENTRE_TARJETAS))
         // 10.83: la IA ve una imagen de cada oferta. Solo sale con el aviso aceptado; apagarlo no avisa más.
+        // 10.84: si nunca vio ni rechazó el aviso, sale aquí también (la cadena de avisos de onResume no siempre llegaba).
+        if (!prefs.visionAvisoVisto && !prefs.visionRechazada) handler.postDelayed({
+            if (!isFinishing && !prefs.visionAvisoVisto && !prefs.visionRechazada && dialogoPermisos?.isShowing != true &&
+                guia?.isShowing != true && dialogoDiagAviso?.isShowing != true) avisoVision()
+        }, 600)
         val tVis = tarjeta()
         tVis.addView(interruptor(
             "Revisión con imagen",
