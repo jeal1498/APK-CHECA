@@ -1,4 +1,4 @@
-# PARTE · 17 nov 2026
+# PARTE · 18 nov 2026
 
 ## ✓ Decidido
 - Imagen de novedades para testers hecha (7 tarjetas, marca v2) y publicada en el grupo.
@@ -43,6 +43,7 @@
 - Enlace línea ↔ captura ↔ huella por fotograma (`fotograma_id`, solo capturas nuevas) y verificador `herramientas/verificar_enlace_capturas.py`.
 - Referencia humana de 66 capturas (lalo, pp, tercera persona): 40 a ciegas + 26 adjudicadas. El lector arregló 1377 y 1324 (banco 272 de 316); 1300 (tarjeta atenuada con círculo de carga) no se detecta por texto.
 - Checa Admin (7 módulos, teléfono y tableta) publicado en `https://jeal1498.github.io/PWA-Checa-Multimedia/admin-checa-7e3a91/`; Eduardo (`lalolopezxd@gmail.com`) dado de alta como revisor; entró desde su celular (17 nov).
+- Confirmado en `main` (18 nov): la 10.82 trae la trazabilidad encendida por defecto (`Prefs.trazabilidad`, `getBoolean("traza", true)`); en teléfonos que ya la tenían apagada puede seguir así.
 - Salud de Checa: el tope diario de la revisión con IA no cuenta como falla (4872 de 4874 «fallas» eran `tope_diario`); aplicado en producción (commit `82b84f5`).
 
 ## … Falta
@@ -57,6 +58,7 @@
 - Fase 7 (Play Billing) antes del 1 feb 2027: necesita su «adelante» y una cuenta de Google admitida a su nombre.
 - Eduardo: probar la 10.76 yendo por un pasajero en DiDi; si sale pop-up, mandar la **primera** captura guardada (la de antes del pop-up). No se confirmó qué sacó el primero.
 - Tester con 10.72 (pop-up en navegación): que actualice; el arreglo aún no está en Play (falta AAB de la 10.76, con su autorización).
+- Confirmar el interruptor de trazabilidad en Ajustes del teléfono de Eduardo (puede seguir apagado si venía apagado).
 - Instalar la APK 10.82 («Compilar flavor play» en `main`) y usarla ~30 ofertas con «Guardar pantallas»; luego etiquetar esas capturas (lalo, pp, tercera persona) y medir al lector.
 - **Aviso de privacidad y «Seguridad de los datos» de Play** por la trazabilidad (encendida por defecto): sin eso no publicar la 10.82 a otros conductores.
 - Borrar la función `tmp-capturas-9f3k` de Supabase (sin verificación de sesión; no la creó esta sesión).
