@@ -1,4 +1,4 @@
-# PARTE · 18 nov 2026
+# PARTE · 18 nov 2026 (noche)
 
 ## ✓ Decidido
 - Imagen de novedades para testers hecha (7 tarjetas, marca v2) y publicada en el grupo.
@@ -53,6 +53,11 @@
 - Aviso de la app: «Revisión con imagen» (se acepta una vez; sin aceptar, no se envía imagen).
 - PR #16 (10.83, versionCode 163) fusionado en `main` (`9be04c5`, 18 nov). AAB 163: Eduardo lo corre a mano en «Preparar AAB Google Play» (la integración no puede lanzar workflows). Nota de Play entregada.
 - **Bloqueo de actualizaciones de la app hasta el 6 dic 2026** (2.5 semanas midiendo la 10.83); escrito en `CLAUDE.md`. Recordatorio programado el 6 dic 9:00 (México). `/parte` siempre va directo a `main`.
+- **10.84 (versionCode 164)** en `main` y ya en Prueba cerrada «Alpha» (AAB, 18 nov 2:54 p. m.; se armó antes de los últimos arreglos de la 10.84). El aviso «Revisión con imagen» salía solo si antes se había visto el de capturas, y no salía en teléfonos con la guía sin terminar: arreglado (sale al abrir y en Ayuda con la lectura; sin «No, gracias»).
+- **10.85 (versionCode 165)** en `main` (compila, corrida 193+): (1) guía de **3 pasos** (permisos, tus números, así se verá): se quitó el paso de país (se toma `Pais.detectado()`, se cambia en Ajustes); (2) paso 1 con interruptores sin descripción y filas de 34 dp: «Leer Uber y DiDi», «Notificaciones», «Batería sin restricción» (tocar abre el ajuste de Android), «Guardar pantallas de ofertas» y **«Revisión mejorada con IA» encendida de inicio** (verla marca `visionAvisoVisto`; apagarla = `visionRechazada`); (3) «Tus números» compacto (km/hora y rendimiento/gasolina en parejas); (4) **login nuevo** (colores del tema del teléfono, semáforo grande, titular «Sabe cuánto te deja cada viaje antes de aceptarlo.») y **entrar con Google obligatorio** (se quitó «Entrar sin cuenta»; `Cuenta.sinCuenta` siempre falso), con aviso legal con enlaces a Términos y Privacidad y a la IA externa. Sin probar en teléfono. Nota de Play (es-419, ~417 caracteres) entregada para el AAB #23.
+- Bloqueo de actualizaciones: Eduardo lo levantó **solo para la 10.84 y la 10.85** (18 nov); lo demás sigue bloqueado hasta el 6 dic.
+- Web (`main` de PWA-Checa-Multimedia, 18 nov): `privacidad.html` y `terminos.html` actualizados (sección «Revisión mejorada con IA»: imagen de cada oferta a un proveedor externo de IA, puede mostrar nombre y direcciones, encendida y apagable, 7 días en servidor; corregidas las frases de «solo números» y «solo en el teléfono»; cuenta de Google obligatoria). No se nombra al proveedor (DeepSeek).
+- Admin (18 nov, `main` del repo web): filtros de Errores y Ofertas compactos, se aplican solos (sin «Aplicar»), chip activo con total, «Versión» como lista desde la 10.82 (se completa con `admin_versiones`), y textos en lenguaje sencillo (típico/los más lentos en vez de mediana/p90, «No era oferta» en vez de falso positivo, etc.).
 - Costo estimado de IA por conductor (visión): ~$0.75–1.25 USD/mes normal (~12–20 % de la cuota de $119), hasta ~$2.5 muy activo; hoy se mandan **todas** las ofertas con captura, sin filtro. El filtro por confianza/muestra se construye después de medir.
 - Criterio para apagar la IA: correcciones por cada 1000 ofertas cerca de 0 (hoy ~25; noviembre: 440 correcciones, 17 897 ofertas, 0.95 USD), lector con ≥100 veredictos humanos y estable un par de semanas. El lector mejora con veredictos → banco → arreglos de código → versión (no es automático).
 
@@ -76,11 +81,12 @@
 - Probar la 10.82 en teléfono (trazabilidad, enlace por fotograma) y subir al repo el resultado.
 - Con ≥ 30 ofertas con captura (10.82): bajar capturas, etiquetar (lalo y pp a ciegas, tercera persona resuelve), medir en el Admin y corregir lo más frecuente. Capturas se borran a los 7 días.
 - Etiquetado a futuro (propuesto, Eduardo dijo «Ok»): primera tanda con 3 personas; luego IA propone y una persona confirma (`revisar.html`); solo casos dudosos; ~30 por versión. Falta su «sí» para el filtro «casos que necesitan revisión humana» en el Admin.
-- **AAB 163 (10.83):** Eduardo corre «Preparar AAB Google Play» y lo sube a Play (con su autorización); nota entregada.
+- **AAB #23 (10.85, versionCode 165):** Eduardo prueba el APK de «Compilar flavor play» (instalación limpia: guía de 3 pasos, interruptores, login) y, si está bien, corre «Preparar AAB Google Play» y lo sube a «Alpha» (con su autorización); nota entregada. La 164 ya está en Alpha; la 163 quedó atrás.
 - **6 dic:** revisar costo real, latencia, correcciones por 1,000 ofertas y ≥100 veredictos; decidir filtro por confianza/muestra y levantar el bloqueo de `CLAUDE.md`.
-- Probar la 10.83 en el teléfono de Eduardo: aceptar el aviso «Revisión con imagen» y medir cuánto tarda DeepSeek (Admin › Configuración › IA con imagen).
+- Probar la 10.85 en el teléfono de Eduardo (viene con «Revisión mejorada con IA» encendida) y medir cuánto tarda DeepSeek (Admin › Configuración › IA con imagen).
+- Quien ya entró «sin cuenta» (beta) tendrá que iniciar sesión con Google al actualizar: avisar a testers; los revisores de Play pueden pedir credenciales de prueba.
 - Revisar ≥ 30 casos por color en «Revisar ofertas» (solo 10.82+) y comparar IA vs lector con los veredictos.
-- **Privacidad:** las capturas completas (nombres, direcciones) van a DeepSeek: actualizar aviso, política de privacidad y Seguridad de los datos de Play antes de publicar la 10.83.
+- **Privacidad:** web actualizada (18 nov). Falta: **Seguridad de los datos de Play** (imágenes de ofertas enviadas a un tercero de IA), **revisión de un abogado** de Términos y Privacidad, y decidir si se nombra al proveedor (DeepSeek, procesa fuera de México) y la transferencia internacional.
 - Cuando la visión funcione: apagar la IA de texto con el interruptor remoto.
 - Opcional: medir cuánto añade Supabase frente a `ms_ia`; optimizar respondiendo antes de guardar.
 - Auditor en servidor (diseño en artifact `auditor.html`) sin construir; decidir tope diario (¿300?), frecuencia, aviso/política y alcance.
@@ -92,5 +98,5 @@
 - Subir el PNG de novedades al repo.
 - Secretos y llaves de firma en Git.
 - Fusionar o publicar a Play la 10.82 sin el aviso de privacidad listo.
-- Publicar el AAB 163 sin orden de Eduardo ni aviso de privacidad actualizado (imágenes a DeepSeek).
-- Actualizar la app (versión, AAB, `app/**`) antes del 6 dic 2026.
+- Actualizar la app (versión, AAB, `app/**`) antes del 6 dic 2026, salvo la 10.84 y la 10.85 (levantado por Eduardo, 18 nov).
+- Publicar el AAB 165 sin su orden y sin «Seguridad de los datos» de Play actualizada.
