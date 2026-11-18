@@ -329,7 +329,7 @@ class MainActivity : Activity() {
         else if (Cuenta.puedeUsar(this) && prefs.diagnostico && !prefs.diagEnvioVisto && !hayVentana())
             handler.postDelayed({ if (!isFinishing && !prefs.diagEnvioVisto && !hayVentana()) avisoDiagnostico() }, 1200)
         // 10.83: aviso de que una IA externa ve una imagen de la oferta (una vez; «No, gracias» no vuelve a salir solo).
-        else if (Cuenta.puedeUsar(this) && prefs.diagnostico && prefs.diagEnvioVisto && !prefs.visionAvisoVisto && !prefs.visionRechazada && !hayVentana())
+        else if (Cuenta.puedeUsar(this) && prefs.diagnostico && !prefs.visionAvisoVisto && !prefs.visionRechazada && !hayVentana())
             handler.postDelayed({ if (!isFinishing && !prefs.visionAvisoVisto && !prefs.visionRechazada && !hayVentana()) avisoVision() }, 1200)
         Guardado.borrarPendientes(this)
         Guardado.podar(this)
@@ -5347,6 +5347,8 @@ class MainActivity : Activity() {
             prefs.diagEnvioVisto = true
             dialogoDiagAviso?.dismiss()
             pintarDiag()
+            // 10.84: justo después del aviso de capturas sale el de la imagen (una vez).
+            handler.postDelayed({ if (!isFinishing && prefs.diagnostico && !prefs.visionAvisoVisto && !prefs.visionRechazada && !hayVentana()) avisoVision() }, 400)
         }, margenArriba(Tema.S2))
         dialogoDiagAviso = hoja("Capturas para mejorar la lectura", null, cuerpo).apply { setCancelable(false) }
     }

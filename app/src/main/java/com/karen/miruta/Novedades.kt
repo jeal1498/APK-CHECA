@@ -9,6 +9,9 @@ object Novedades {
     class Version(val codigo: Int, val nombre: String, val puntos: List<String>, val widgets: Boolean = false, val vistaQr: Boolean = false)
 
     val LISTA = listOf(
+        Version(164, "10.84", listOf(
+            "La revisión con imagen ahora te lo pregunta de inmediato al abrir la app. Con «Entendido» queda encendida y ayuda a mejorar la lectura."
+        )),
         Version(163, "10.83", listOf(
             "Nuevo: Checa comprueba cada oferta con una imagen y corrige el pop-up si la lectura falló. Te pedimos tu permiso una vez; si no aceptas, Checa sigue con el lector del teléfono. Lo cambias en Ayuda con la lectura › Revisión con imagen.",
             "Las capturas para mejorar la lectura ya no tienen un tope de 100."
