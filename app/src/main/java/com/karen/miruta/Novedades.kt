@@ -9,6 +9,10 @@ object Novedades {
     class Version(val codigo: Int, val nombre: String, val puntos: List<String>, val widgets: Boolean = false, val vistaQr: Boolean = false)
 
     val LISTA = listOf(
+        Version(163, "10.83", listOf(
+            "Nuevo: Checa comprueba cada oferta con una imagen y corrige el pop-up si la lectura falló. Te pedimos tu permiso una vez; si no aceptas, Checa sigue con el lector del teléfono. Lo cambias en Ayuda con la lectura › Revisión con imagen.",
+            "Las capturas para mejorar la lectura ya no tienen un tope de 100."
+        )),
         Version(161, "10.81", listOf(
             "Nuevo interruptor de prueba en Ayuda con la lectura: «Registro técnico de lecturas». Viene apagado y no cambia el pop-up."
         )),
