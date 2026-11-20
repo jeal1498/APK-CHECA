@@ -158,3 +158,4 @@ Pantallas, instalación en teléfonos (Play Protect, ajustes restringidos, Samsu
 - **Tiempos:** `revisiones.ms_ia` (servidor→DeepSeek) y `ms_revision_anterior` (ida y vuelta vista desde el teléfono, llega en la siguiente petición); `imagenes = 1` marca las de visión. Admin › Configuración los muestra (mediana y p90).
 - **Seguridad:** el teléfono nunca llama a DeepSeek; la clave `DEEPSEEK_API_KEY` vive en Supabase. Tope por cuenta: secreto `TOPE_DIARIO_IA` (por defecto 1500 al día).
 - **Corrección tardía:** si la respuesta tarda más de 12 s, no se corrige el pop-up (la oferta ya pasó).
+- **IA de texto apagada (Eduardo, 20 nov, 11:12 CDMX):** `ia_config` quedó en `vision = true`, `texto = false`. Las lecturas por texto de la 10.85 y todas las de la 10.80/10.82 quedan solo con el lector. Se enciende en Admin › Ajustes › IA y alertas si hace falta.

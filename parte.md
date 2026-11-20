@@ -64,7 +64,7 @@
 - **Medición de la 10.85 (20 nov, con las revisiones de Eduardo):** 235 avisos revisados (verdes 51/51, amarillos 70/70, rojos 114/421). Checa acierta **~80 de 100 con IA** (rango 75–86; rojos 78 %, verdes 86 %, amarillos 88 %) y **~6 de 10 sin IA** (lector solo). En errores revisados (71), la IA acertó 36 de 51 con respuesta clara (71 %), el lector 5, ninguno 12, ilegibles 16. Falla principal del lector: **DiDi con varias ofertas en pantalla** (9 de 17 avisos con números mal); 7 de 50 verdes salieron mal.
 - **Plan de revisión (Eduardo, 20 nov): meta de 100 al día**, verdes y amarillos primero, luego rojos y al final errores; ese día hizo 207. Una versión con correcciones cada 2 semanas (1–3 arreglos) es la recomendación; la primera, después del 6 dic.
 - Admin (repo web, `main`, 20 nov): tablet en horizontal en todas las pantallas (ficha en 3 columnas); **Hoy** con «Tu meta de hoy» (100) y «En este orden» (SQL 013 `admin_hechas_hoy`); mosaicos de Revisar en orden verdes, amarillos, rojos, errores; «Empezar por el más viejo» sigue hacia los más nuevos; **Calidad** mide con lo que Eduardo revisa (SQL 012 `admin_calidad`: círculo con margen de error, por versión, lector contra IA) y muestra la espera real del conductor (~3.1 s típico con imagen); tabla **«Dispositivos por versión»** (SQL 014). Hoy: 7 teléfonos en la 10.85, 6 con una anterior (1 activo: moto e20 en 10.80). SQL 012–014 aplicados en Supabase.
-- Decidido: **Eduardo apagará la IA de texto** (Ajustes › IA y alertas) y avisará. Hoy sigue encendida desde el 18 nov y atiende a ~la mitad de las lecturas de la 10.85 y a todas las de la 10.80/10.82.
+- **IA de texto apagada** por Eduardo (20 nov, 11:12 CDMX): `ia_config` en `vision = true`, `texto = false`, verificado en la base; anotado en `CLAUDE.md`.
 - Decidido: **pendiente para la 10.86** (en `CLAUDE.md`): que la app mande las etapas OCR y Parser (`Traza.kt` define `Etapa` pero nada la crea); mientras tanto Admin muestra OCR y Lectura como «Aún no se sabe».
 
 ## … Falta
@@ -94,7 +94,7 @@
 - Quien ya entró «sin cuenta» (beta) tendrá que iniciar sesión con Google al actualizar: avisar a testers; los revisores de Play pueden pedir credenciales de prueba.
 - **Revisión diaria:** 100 al día desde Admin › Hoy (verdes y amarillos nuevos todos, ~25 rojos, ~15 errores; Eduardo propuso 25 de cada uno). Con ~300 revisadas decir «Banco con capturas» para agrupar fallas (DiDi con varias ofertas primero) y armar la lista de arreglos; capturas a 7 días.
 - **Privacidad:** web actualizada (18 nov). Falta: **Seguridad de los datos de Play** (imágenes de ofertas enviadas a un tercero de IA), **revisión de un abogado** de Términos y Privacidad, y decidir si se nombra al proveedor (DeepSeek, procesa fuera de México) y la transferencia internacional.
-- Eduardo apaga la IA de texto (decidido 20 nov); al avisar, comprobar `public.ia_config` (`texto = false`, `vision = true`) y anotarlo en `CLAUDE.md`.
+- Tablet lenta (Eduardo, 20 nov): su tablet Lenovo TB336FU (Android 15, horizontal, 10.85) lee con mediana de **1.1 s** frente a 0.2 s en las Samsung; pendiente saber si es Checa o toda la tablet y, para la 10.86, aligerar el OCR en equipos lentos.
 - Opcional: medir cuánto añade Supabase frente a `ms_ia`; optimizar respondiendo antes de guardar.
 - Auditor en servidor (diseño en artifact `auditor.html`) sin construir; decidir tope diario (¿300?), frecuencia, aviso/política y alcance.
 
