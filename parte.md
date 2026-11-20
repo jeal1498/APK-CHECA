@@ -1,4 +1,4 @@
-# PARTE · 18 nov 2026 (noche)
+# PARTE · 20 nov 2026
 
 ## ✓ Decidido
 - Imagen de novedades para testers hecha (7 tarjetas, marca v2) y publicada en el grupo.
@@ -61,6 +61,12 @@
 - Costo estimado de IA por conductor (visión): ~$0.75–1.25 USD/mes normal (~12–20 % de la cuota de $119), hasta ~$2.5 muy activo; hoy se mandan **todas** las ofertas con captura, sin filtro. El filtro por confianza/muestra se construye después de medir.
 - Criterio para apagar la IA: correcciones por cada 1000 ofertas cerca de 0 (hoy ~25; noviembre: 440 correcciones, 17 897 ofertas, 0.95 USD), lector con ≥100 veredictos humanos y estable un par de semanas. El lector mejora con veredictos → banco → arreglos de código → versión (no es automático).
 
+- **Medición de la 10.85 (20 nov, con las revisiones de Eduardo):** 235 avisos revisados (verdes 51/51, amarillos 70/70, rojos 114/421). Checa acierta **~80 de 100 con IA** (rango 75–86; rojos 78 %, verdes 86 %, amarillos 88 %) y **~6 de 10 sin IA** (lector solo). En errores revisados (71), la IA acertó 36 de 51 con respuesta clara (71 %), el lector 5, ninguno 12, ilegibles 16. Falla principal del lector: **DiDi con varias ofertas en pantalla** (9 de 17 avisos con números mal); 7 de 50 verdes salieron mal.
+- **Plan de revisión (Eduardo, 20 nov): meta de 100 al día**, verdes y amarillos primero, luego rojos y al final errores; ese día hizo 207. Una versión con correcciones cada 2 semanas (1–3 arreglos) es la recomendación; la primera, después del 6 dic.
+- Admin (repo web, `main`, 20 nov): tablet en horizontal en todas las pantallas (ficha en 3 columnas); **Hoy** con «Tu meta de hoy» (100) y «En este orden» (SQL 013 `admin_hechas_hoy`); mosaicos de Revisar en orden verdes, amarillos, rojos, errores; «Empezar por el más viejo» sigue hacia los más nuevos; **Calidad** mide con lo que Eduardo revisa (SQL 012 `admin_calidad`: círculo con margen de error, por versión, lector contra IA) y muestra la espera real del conductor (~3.1 s típico con imagen); tabla **«Dispositivos por versión»** (SQL 014). Hoy: 7 teléfonos en la 10.85, 6 con una anterior (1 activo: moto e20 en 10.80). SQL 012–014 aplicados en Supabase.
+- Decidido: **Eduardo apagará la IA de texto** (Ajustes › IA y alertas) y avisará. Hoy sigue encendida desde el 18 nov y atiende a ~la mitad de las lecturas de la 10.85 y a todas las de la 10.80/10.82.
+- Decidido: **pendiente para la 10.86** (en `CLAUDE.md`): que la app mande las etapas OCR y Parser (`Traza.kt` define `Etapa` pero nada la crea); mientras tanto Admin muestra OCR y Lectura como «Aún no se sabe».
+
 ## … Falta
 - **16 nov (lunes):** ejecutar `docs/plan-lunes-16-nov.md`. Arranca con «Estado de la revisión»; luego función `ver-capturas` (enlaces temporales), clasificar las capturas, corregir los 3 patrones más frecuentes (10.73) y medir el lunes 23. Si hay menos de 30 capturas, esperar al miércoles.
 - Contar cuántos conductores actualizaron a la 10.72 (revisiones con versión 10.72 y archivos en `capturas`); Eduardo publica la imagen en el grupo.
@@ -83,11 +89,12 @@
 - Etiquetado a futuro (propuesto, Eduardo dijo «Ok»): primera tanda con 3 personas; luego IA propone y una persona confirma (`revisar.html`); solo casos dudosos; ~30 por versión. Falta su «sí» para el filtro «casos que necesitan revisión humana» en el Admin.
 - **AAB #23 (10.85, versionCode 165):** Eduardo prueba el APK de «Compilar flavor play» (instalación limpia: guía de 3 pasos, interruptores, login) y, si está bien, corre «Preparar AAB Google Play» y lo sube a «Alpha» (con su autorización); nota entregada. La 164 ya está en Alpha; la 163 quedó atrás.
 - **6 dic:** revisar costo real, latencia, correcciones por 1,000 ofertas y ≥100 veredictos; decidir filtro por confianza/muestra y levantar el bloqueo de `CLAUDE.md`.
-- Probar la 10.85 en el teléfono de Eduardo (viene con «Revisión mejorada con IA» encendida) y medir cuánto tarda DeepSeek (Admin › Configuración › IA con imagen).
+- Eduardo probó/probará la 10.85 trabajando con Uber y DiDi (20 nov) y cuenta cómo le fue. Latencia de la IA ya medida: 1.6 s en servidor, ~3.1 s de espera real con imagen (Calidad › IA).
+- Propuestas sin decisión (después del 6 dic): corregir DiDi con varias ofertas (ignorar los 3 precios de contraoferta, avisar «Varias ofertas» si no hay certeza); mejorar la IA con ejemplos de casos revisados (ajuste en el servidor, versionando la hoja de instrucciones); bajar el tope de rojos de «Hoy» de 40 a 25.
 - Quien ya entró «sin cuenta» (beta) tendrá que iniciar sesión con Google al actualizar: avisar a testers; los revisores de Play pueden pedir credenciales de prueba.
-- Revisar ≥ 30 casos por color en «Revisar ofertas» (solo 10.82+) y comparar IA vs lector con los veredictos.
+- **Revisión diaria:** 100 al día desde Admin › Hoy (verdes y amarillos nuevos todos, ~25 rojos, ~15 errores; Eduardo propuso 25 de cada uno). Con ~300 revisadas decir «Banco con capturas» para agrupar fallas (DiDi con varias ofertas primero) y armar la lista de arreglos; capturas a 7 días.
 - **Privacidad:** web actualizada (18 nov). Falta: **Seguridad de los datos de Play** (imágenes de ofertas enviadas a un tercero de IA), **revisión de un abogado** de Términos y Privacidad, y decidir si se nombra al proveedor (DeepSeek, procesa fuera de México) y la transferencia internacional.
-- Cuando la visión funcione: apagar la IA de texto con el interruptor remoto.
+- Eduardo apaga la IA de texto (decidido 20 nov); al avisar, comprobar `public.ia_config` (`texto = false`, `vision = true`) y anotarlo en `CLAUDE.md`.
 - Opcional: medir cuánto añade Supabase frente a `ms_ia`; optimizar respondiendo antes de guardar.
 - Auditor en servidor (diseño en artifact `auditor.html`) sin construir; decidir tope diario (¿300?), frecuencia, aviso/política y alcance.
 
