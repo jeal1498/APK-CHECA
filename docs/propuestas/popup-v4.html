@@ -1,0 +1,67 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Pop-up C taxímetro</title>
+<style>
+:root{--asf:#0C0C10;--hue:#F4F4EF;--ten:#a9a9b3;--ver:#22C55E;--ama:#FACC15;--roj:#EF4444}
+*{box-sizing:border-box;margin:0}
+body{background:#14141a;color:var(--hue);font:14px "DM Sans",system-ui,sans-serif;padding:28px;display:flex;gap:28px;justify-content:center;align-items:flex-start}
+.col{width:350px}.col h3{font:700 15px system-ui;margin:0 0 4px;text-align:center}.col p.s{color:var(--ten);font-size:12px;text-align:center;margin-bottom:12px;min-height:32px}
+.mapa{border-radius:18px;padding:30px 16px 18px;display:flex;flex-direction:column;gap:34px;align-items:center;min-height:720px;
+ background:linear-gradient(#ffffff66 1px,transparent 1px) 0 0/34px 34px,linear-gradient(90deg,#ffffff66 1px,transparent 1px) 0 0/34px 34px,linear-gradient(135deg,#d7dbe2,#c9ced8)}
+.cab{--c:var(--ama);--t:#1b1500;width:312px;position:relative}
+.cab.v{--c:var(--ver);--t:#06210f}.cab.r{--c:var(--roj);--t:#fff}
+.techo{position:absolute;left:50%;top:-17px;transform:translateX(-50%);background:var(--c);color:var(--t);border-radius:10px 10px 0 0;padding:3px 16px 2px;font:800 11px system-ui;letter-spacing:.12em;box-shadow:0 0 14px var(--c);z-index:2;white-space:nowrap}
+.cuerpo{background:var(--asf);border:2px solid var(--c);border-radius:14px;overflow:hidden;box-shadow:0 8px 22px #0006;position:relative}
+.cab .x{position:absolute;right:9px;top:6px;color:var(--ten);font-size:14px}
+.top{display:flex;justify-content:space-between;align-items:center;padding:9px 30px 0 12px;font:700 10px ui-monospace,monospace;letter-spacing:.1em;color:var(--ten)}
+.din{color:var(--ama);font:700 11px system-ui;letter-spacing:0}
+.led{text-align:center;font:800 56px/1 ui-monospace,"Courier New",monospace;color:var(--c);text-shadow:0 0 12px color-mix(in srgb,var(--c) 70%,transparent);padding:4px 0 6px;letter-spacing:-.02em}
+.vent{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 12px}
+.v1{background:#16161c;border:1px solid #2a2a33;border-radius:9px;padding:5px 8px 6px;text-align:center}
+.v1 small{display:block;font:700 9px ui-monospace,monospace;letter-spacing:.12em;color:var(--ten)}
+.v1 b{font:700 20px ui-monospace,monospace}.ok{color:var(--ver)}.no{color:#ff6b6b}
+.placa{margin:8px 12px 0;background:#1d1d25;border-radius:7px;padding:5px 8px;text-align:center;font:12px ui-monospace,monospace;color:var(--hue);letter-spacing:.04em}
+.luces{display:flex;flex-direction:column;gap:4px;padding:8px 12px 0}
+.luz{display:flex;align-items:center;gap:7px;font:700 12px ui-monospace,monospace;color:#ff8a8a}.luz i{width:9px;height:9px;border-radius:50%;background:var(--roj);box-shadow:0 0 8px var(--roj)}
+.meta{display:flex;justify-content:space-between;align-items:center;padding:8px 12px 8px;font-size:11px;color:var(--ten)}
+.leyo{border:1px solid #ffffff33;border-radius:999px;padding:2px 9px;color:var(--hue);font-weight:600}
+.cuadros{height:12px;background:var(--asf);position:relative}
+.cuadros i{position:absolute;left:0;top:0;bottom:0;background:repeating-conic-gradient(var(--c) 0 25%,#0C0C10 0 50%) 0 0/12px 12px;border-right:2px solid var(--c)}
+.pill{--c:var(--ama);width:292px;background:var(--asf);border:2px solid var(--c);border-radius:12px;box-shadow:0 8px 22px #0006;position:relative;overflow:hidden}
+.pill .fila{display:flex;align-items:center;justify-content:center;gap:9px;padding:8px 10px 7px;white-space:nowrap}
+.pill .luzc{width:11px;height:11px;border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c)}
+.pill .w{font:800 11px system-ui;letter-spacing:.08em;color:var(--c)}
+.pill .m{font:800 26px/1 ui-monospace,"Courier New",monospace;color:var(--c);text-shadow:0 0 10px color-mix(in srgb,var(--c) 60%,transparent)}
+.pill .h{font:700 13px ui-monospace,monospace}
+.nota{background:#ffffffee;color:#222;border-radius:10px;padding:8px 10px;font-size:12px;line-height:1.35;width:312px}.nota b{color:#000}
+</style></head><body>
+
+<div class="col"><h3>Propuesta C · taxímetro</h3><p class="s">Luz de techo con la decisión, monto en pantalla de taxímetro y franja de cuadros que marca el tiempo</p>
+ <div class="mapa">
+  <div class="cab"><span class="techo">CONSIDERAR</span><div class="cuerpo"><span class="x">✕</span>
+    <div class="top"><span>GANANCIA NETA</span><span class="din">⚡ +$10</span></div><div class="led">$65</div>
+    <div class="vent"><div class="v1"><small>POR HORA</small><b class="ok">✓ 216</b></div><div class="v1"><small>POR KM</small><b class="no">✕ 10.0</b></div></div>
+    <div class="placa">18 min (6.5 km) total</div>
+    <div class="meta"><span class="leyo">⚠ Leyó mal</span><span>Uber · $64.90</span></div><div class="cuadros"><i style="width:62%"></i></div></div></div>
+
+  <div class="cab r"><span class="techo">RECHAZAR</span><div class="cuerpo"><span class="x">✕</span>
+    <div class="top"><span>GANANCIA NETA</span><span></span></div><div class="led">$41</div>
+    <div class="vent"><div class="v1"><small>POR HORA</small><b class="no">✕ 98</b></div><div class="v1"><small>POR KM</small><b class="no">✕ 5.4</b></div></div>
+    <div class="placa">18 min (7.9 km) total</div>
+    <div class="luces"><div class="luz"><i></i>Recogida 5.5 km</div><div class="luz"><i></i>Viaje 42 min</div></div>
+    <div class="meta"><span class="leyo">⚠ Leyó mal</span><span>Uber · $42.31</span></div><div class="cuadros"><i style="width:35%"></i></div></div></div>
+
+  <div class="cab v"><span class="techo">ACEPTAR</span><div class="cuerpo"><span class="x">✕</span>
+    <div class="top"><span>GANANCIA NETA</span><span></span></div><div class="led">$112</div>
+    <div class="vent"><div class="v1"><small>POR HORA</small><b class="ok">✓ 240</b></div><div class="v1"><small>POR KM</small><b class="ok">✓ 12.4</b></div></div>
+    <div class="placa">28 min (9.0 km) total</div>
+    <div class="meta"><span class="leyo">⚠ Leyó mal</span><span>DiDi · $118.00</span></div><div class="cuadros"><i style="width:88%"></i></div></div></div>
+ </div></div>
+
+<div class="col"><h3>Compacto C · luz de techo</h3><p class="s">Misma idea en pequeño. Se toca para abrir el taxímetro</p>
+ <div class="mapa" style="gap:20px">
+  <div class="pill" style="--c:var(--ver)"><div class="fila"><span class="luzc"></span><span class="w">ACEPTAR</span><span class="m">$112</span><span class="h ok">✓ $240/h</span></div><div class="cuadros" style="height:8px"><i style="width:88%;background-size:8px 8px"></i></div></div>
+  <div class="pill" style="--c:var(--ama)"><div class="fila"><span class="luzc"></span><span class="w">CONSIDERAR</span><span class="m">$65</span><span class="h ok">✓ $216/h</span></div><div class="cuadros" style="height:8px"><i style="width:62%;background-size:8px 8px"></i></div></div>
+  <div class="pill" style="--c:var(--roj)"><div class="fila"><span class="luzc"></span><span class="w">RECHAZAR</span><span class="m">$41</span><span class="h no">✕ $98/h</span></div><div class="cuadros" style="height:8px"><i style="width:35%;background-size:8px 8px"></i></div></div>
+  <div class="nota"><b>Idea del taxi:</b> la decisión va en una «luz de techo» (como el letrero de un taxi), el monto se ve como en un taxímetro y el tiempo se muestra con cuadros de tablero a cuadros que se van apagando.</div>
+  <div class="nota"><b>Igual que en B:</b> «total» en min y km, tarifa de la app, «Leyó mal» con nombre, avisos de recogida y viaje solo cuando se pasan tus límites.</div>
+ </div></div>
+</body></html>
