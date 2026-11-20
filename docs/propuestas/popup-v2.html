@@ -1,0 +1,60 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Pop-up v2</title>
+<style>
+:root{--asf:#0C0C10;--hue:#F4F4EF;--ten:#a9a9b3;--ver:#22C55E;--ama:#FACC15;--roj:#EF4444}
+*{box-sizing:border-box;margin:0}
+body{background:#14141a;color:var(--hue);font:14px "DM Sans",system-ui,sans-serif;padding:28px;display:flex;gap:26px;justify-content:center;align-items:flex-start}
+.col{width:300px}.col h3{font:700 15px system-ui;margin:0 0 4px;text-align:center}.col p.s{color:var(--ten);font-size:12px;text-align:center;margin-bottom:12px;min-height:30px}
+.mapa{border-radius:18px;padding:18px 16px;display:flex;flex-direction:column;gap:18px;align-items:center;min-height:470px;
+ background:linear-gradient(#ffffff66 1px,transparent 1px) 0 0/34px 34px,linear-gradient(90deg,#ffffff66 1px,transparent 1px) 0 0/34px 34px,linear-gradient(135deg,#d7dbe2,#c9ced8)}
+.pop{width:262px;background:var(--asf);border:3px solid var(--ama);border-radius:18px;position:relative;overflow:hidden;box-shadow:0 8px 22px #0006}
+.pop.r{border-color:var(--roj)}
+.top{display:flex;justify-content:center;align-items:center;gap:8px;padding:10px 30px 0}
+.tit{font:800 17px system-ui;letter-spacing:.04em;color:var(--ama)}.pop.r .tit{color:var(--roj)}
+.bolt{font:700 13px system-ui;color:var(--ama)}
+.x{position:absolute;right:8px;top:6px;color:var(--ten);font-size:15px}
+.warn{position:absolute;left:9px;top:8px;color:var(--ten);font-size:13px}
+.monto{font:800 44px/1.05 "Bricolage Grotesque",system-ui;text-align:center;padding:2px 8px}
+.met{display:flex;align-items:center;padding:3px 10px 0}.met b{flex:1;text-align:center;font:600 16px ui-monospace,monospace}
+.met i{width:1px;height:16px;background:#ffffff33}
+.ok{color:var(--ver)}.no{color:var(--roj)}
+.tot{text-align:center;font:12px ui-monospace,monospace;color:var(--ten);padding:6px 6px 9px}
+.av{color:var(--roj);text-align:center;font:13px system-ui;padding:0 6px 9px}
+.chips{display:flex;gap:4px;justify-content:center;padding:0 8px 9px}
+.chip{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;background:#EF444422;border:1px solid #EF444488;color:#ff7b7b;border-radius:999px;padding:3px 7px;font:700 10.5px ui-monospace,monospace}
+.meta{display:flex;justify-content:space-between;align-items:center;padding:0 10px 8px;font-size:11px;color:var(--ten)}
+.leyo{border:1px solid #ffffff33;border-radius:999px;padding:3px 9px;color:var(--hue);font-weight:600}
+.barra{height:5px;background:#ffffff1a}.barra i{display:block;height:100%;width:62%;background:var(--ama)}.pop.r .barra i{background:var(--roj)}
+.pill{width:268px;justify-content:center;white-space:nowrap;background:var(--asf);border:3px solid var(--ama);border-radius:999px;display:flex;align-items:center;gap:8px;padding:8px 12px;box-shadow:0 8px 22px #0006;position:relative;overflow:hidden}
+.pill .pt{width:12px;height:12px;border-radius:50%;background:var(--ama)}
+.pill .m{font:800 22px "Bricolage Grotesque",system-ui}.pill .h{font:600 13px ui-monospace,monospace}.pill .c{font:800 11px system-ui;color:var(--ama);letter-spacing:.04em}
+.pill .barra{position:absolute;left:0;right:0;bottom:0;height:4px}
+.nota{background:#ffffffee;color:#222;border-radius:10px;padding:8px 10px;font-size:12px;line-height:1.35;width:262px}
+.nota b{color:#000}
+</style></head><body>
+
+<div class="col"><h3>Antes</h3><p class="s">Dos avisos de texto largo que ocupan una línea entera</p>
+ <div class="mapa">
+  <div class="pop r"><span class="warn">⚠</span><span class="x">✕</span><div class="top"><span class="tit">RECHAZAR</span></div><div class="monto">$41</div>
+   <div class="met"><b class="no">✕ $98/h</b><i></i><b class="no">✕ $5.4/km</b></div><div class="tot" style="color:#ff7b7b">18 min (7.9 km) total</div><div class="av">Recogida lejana · 5.5 km total</div></div>
+  <div class="pop r"><span class="warn">⚠</span><span class="x">✕</span><div class="top"><span class="tit">RECHAZAR</span></div><div class="monto">$88</div>
+   <div class="met"><b class="ok">✓ $126/h</b><i></i><b class="ok">✓ $8.1/km</b></div><div class="tot" style="color:#ff7b7b">42 min (10.8 km) total</div><div class="av">Viaje largo · 42 min total</div></div>
+ </div></div>
+
+<div class="col"><h3>Después · completo</h3><p class="s">Aviso corto con el número, tarifa de la app, «Leyó mal» claro y barra de tiempo</p>
+ <div class="mapa">
+  <div class="pop"><span class="x">✕</span><div class="top"><span class="tit">CONSIDERAR</span><span class="bolt">⚡+$10</span></div><div class="monto">$65</div>
+   <div class="met"><b class="ok">✓ $216/h</b><i></i><b class="no">✕ $10.0/km</b></div><div class="tot">18 min (6.5 km) total</div>
+   <div class="meta"><span class="leyo">⚠ Leyó mal</span><span>Uber · $64.90</span></div><div class="barra"><i></i></div></div>
+  <div class="pop r"><span class="x">✕</span><div class="top"><span class="tit">RECHAZAR</span></div><div class="monto">$41</div>
+   <div class="met"><b class="no">✕ $98/h</b><i></i><b class="no">✕ $5.4/km</b></div><div class="tot">18 min (7.9 km) total</div>
+   <div class="chips"><span class="chip">📍 Recogida 5.5 km</span><span class="chip">⏱ Viaje 42 min</span></div>
+   <div class="meta"><span class="leyo">⚠ Leyó mal</span><span>Uber · $42.31</span></div><div class="barra"><i style="width:35%"></i></div></div>
+ </div></div>
+
+<div class="col"><h3>Después · compacto</h3><p class="s">Para pantalla dividida: solo color, monto y $/h. Se toca para ver todo</p>
+ <div class="mapa">
+  <div class="pill"><span class="pt"></span><span class="c">CONSIDERAR</span><span class="m">$65</span><span class="h ok">✓ $216/h</span><div class="barra"><i style="width:62%"></i></div></div>
+  <div class="nota"><b>Toca el pop-up compacto</b> y se abre el completo (km, minutos, tarifa de la app y «Leyó mal»). El color y la barra de tiempo se quedan igual.</div>
+  <div class="nota"><b>Chips de aviso:</b> solo salen si la recogida o el viaje pasan tu límite. Dicen el número, sin frase: «Recogida 5.5 km», «Viaje 42 min».</div>
+ </div></div>
+</body></html>
