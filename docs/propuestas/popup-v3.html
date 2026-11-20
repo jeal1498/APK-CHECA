@@ -1,0 +1,53 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Pop-up v3 horizontal</title>
+<style>
+:root{--asf:#0C0C10;--hue:#F4F4EF;--ten:#a9a9b3;--ver:#22C55E;--ama:#FACC15;--roj:#EF4444}
+*{box-sizing:border-box;margin:0}
+body{background:#14141a;color:var(--hue);font:14px "DM Sans",system-ui,sans-serif;padding:28px;display:flex;gap:28px;justify-content:center;align-items:flex-start}
+.col{width:340px}.col h3{font:700 15px system-ui;margin:0 0 4px;text-align:center}.col p.s{color:var(--ten);font-size:12px;text-align:center;margin-bottom:12px;min-height:32px}
+.mapa{border-radius:18px;padding:18px 16px;display:flex;flex-direction:column;gap:16px;align-items:center;min-height:560px;
+ background:linear-gradient(#ffffff66 1px,transparent 1px) 0 0/34px 34px,linear-gradient(90deg,#ffffff66 1px,transparent 1px) 0 0/34px 34px,linear-gradient(135deg,#d7dbe2,#c9ced8)}
+.pop{width:308px;background:var(--asf);border-radius:16px;position:relative;overflow:hidden;box-shadow:0 8px 22px #0006;border:2px solid var(--c)}
+.pop.v{--c:var(--ver);--t:#06210f}.pop.a{--c:var(--ama);--t:#1b1500}.pop.r{--c:var(--roj);--t:#fff}
+.cuerpo{display:grid;grid-template-columns:118px 1fr}
+.bloque{background:var(--c);color:var(--t);display:flex;flex-direction:column;justify-content:center;align-items:center;padding:10px 6px;gap:0}
+.bloque small{font:800 11px system-ui;letter-spacing:.07em}.bloque b{font:800 40px/1.05 "Bricolage Grotesque",system-ui}.bloque em{font:700 11px system-ui;font-style:normal;margin-top:1px}
+.der{padding:9px 28px 6px 12px;display:flex;flex-direction:column;justify-content:center;gap:3px;min-width:0}
+.der .m{font:700 17px ui-monospace,monospace}.ok{color:var(--ver)}.no{color:#ff6b6b}
+.der .t{font:12px ui-monospace,monospace;color:var(--ten);white-space:nowrap}
+.x{position:absolute;right:8px;top:5px;color:var(--ten);font-size:14px}
+.chips{display:flex;flex-direction:column;gap:3px;margin-top:3px;align-items:flex-start}
+.chip{display:inline-flex;gap:4px;white-space:nowrap;background:#EF444422;border:1px solid #EF444488;color:#ff7b7b;border-radius:999px;padding:2px 8px;font:700 11px ui-monospace,monospace}
+.meta{display:flex;justify-content:space-between;align-items:center;padding:6px 10px 7px;font-size:11px;color:var(--ten);border-top:1px solid #ffffff1a}
+.leyo{border:1px solid #ffffff33;border-radius:999px;padding:2px 9px;color:var(--hue);font-weight:600}
+.barra{height:5px;background:#ffffff1a}.barra i{display:block;height:100%;width:62%;background:var(--c)}
+.pill{width:268px;background:var(--asf);border:3px solid var(--c);border-radius:999px;display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 12px;box-shadow:0 8px 22px #0006;position:relative;overflow:hidden;white-space:nowrap}
+.pill .pt{width:12px;height:12px;border-radius:50%;background:var(--c)}.pill .c{font:800 11px system-ui;color:var(--c);letter-spacing:.04em}
+.pill .m{font:800 22px "Bricolage Grotesque",system-ui}.pill .h{font:600 13px ui-monospace,monospace}.pill .barra{position:absolute;left:0;right:0;bottom:0;height:4px}
+.nota{background:#ffffffee;color:#222;border-radius:10px;padding:8px 10px;font-size:12px;line-height:1.35;width:308px}.nota b{color:#000}
+</style></head><body>
+
+<div class="col"><h3>Propuesta B · horizontal</h3><p class="s">El color es un bloque grande a la izquierda. Más bajo y ancho: estorba menos al mapa</p>
+ <div class="mapa">
+  <div class="pop a"><span class="x">✕</span><div class="cuerpo"><div class="bloque"><small>CONSIDERAR</small><b>$65</b><em><span style="filter:grayscale(1) brightness(0)">⚡</span> +$10</em></div>
+    <div class="der"><span class="m ok">✓ $216/h</span><span class="m no">✕ $10.0/km</span><span class="t">18 min (6.5 km) total</span></div></div>
+    <div class="meta"><span class="leyo">⚠ Leyó mal</span><span>Uber · $64.90</span></div><div class="barra"><i></i></div></div>
+
+  <div class="pop r"><span class="x">✕</span><div class="cuerpo"><div class="bloque"><small>RECHAZAR</small><b>$41</b></div>
+    <div class="der"><span class="m no">✕ $98/h</span><span class="m no">✕ $5.4/km</span><span class="t">18 min (7.9 km) total</span>
+     <div class="chips"><span class="chip">📍 Recogida 5.5 km</span><span class="chip">⏱ Viaje 42 min</span></div></div></div>
+    <div class="meta"><span class="leyo">⚠ Leyó mal</span><span>Uber · $42.31</span></div><div class="barra"><i style="width:35%"></i></div></div>
+
+  <div class="pop v"><span class="x">✕</span><div class="cuerpo"><div class="bloque"><small>ACEPTAR</small><b>$112</b></div>
+    <div class="der"><span class="m ok">✓ $240/h</span><span class="m ok">✓ $12.4/km</span><span class="t">28 min (9.0 km) total</span></div></div>
+    <div class="meta"><span class="leyo">⚠ Leyó mal</span><span>DiDi · $118.00</span></div><div class="barra"><i style="width:88%"></i></div></div>
+ </div></div>
+
+<div class="col"><h3>Compacto (el que te gustó)</h3><p class="s">Igual que antes; se toca para abrir el completo B</p>
+ <div class="mapa">
+  <div class="pill" style="--c:var(--ver)"><span class="pt"></span><span class="c">ACEPTAR</span><span class="m">$112</span><span class="h ok">✓ $240/h</span><div class="barra"><i style="width:88%;background:var(--ver)"></i></div></div>
+  <div class="pill" style="--c:var(--ama)"><span class="pt"></span><span class="c">CONSIDERAR</span><span class="m">$65</span><span class="h ok">✓ $216/h</span><div class="barra"><i style="width:62%;background:var(--ama)"></i></div></div>
+  <div class="pill" style="--c:var(--roj)"><span class="pt"></span><span class="c">RECHAZAR</span><span class="m">$41</span><span class="h no">✕ $98/h</span><div class="barra"><i style="width:35%;background:var(--roj)"></i></div></div>
+  <div class="nota"><b>Qué cambia frente a la propuesta A:</b> el color pasa a ser un bloque sólido (se ve de reojo), el pop-up es más ancho y bajo, y las etiquetas rojas quedan apiladas a la derecha, sin pelear con el $/h.</div>
+  <div class="nota"><b>Se queda igual:</b> «total» en la línea de min y km, tarifa de la app, «Leyó mal» con nombre y barra de tiempo.</div>
+ </div></div>
+</body></html>
