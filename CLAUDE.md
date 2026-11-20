@@ -21,6 +21,10 @@ Lo vigente para trabajar en Checa. La historia con fecha y el detalle largo vive
 ## BLOQUEO DE ACTUALIZACIONES hasta el 6 dic 2026 (IA con imagen, 10.83)
 Eduardo pidió (18 nov): **no hacer ni preparar actualizaciones de la app** (versión nueva, AAB, cambios en `app/**`) hasta el **6 dic 2026**: se mide 2.5 semanas la 10.83 (costo, latencia, correcciones por 1,000 ofertas, ≥100 veredictos). **Cada vez que pida una actualización antes de esa fecha, recuérdale este bloqueo y no la hagas** salvo que él lo levante expresamente. **Excepción (Eduardo, 18 nov): levantó el bloqueo solo para la 10.84 y la 10.85** (que «Revisión con imagen» salga encendida desde el paso 1); para cualquier otra actualización sigue vigente. Alcance: solo la app; Admin web, SQL y docs no están bloqueados. Al llegar la fecha: revisar los datos y decidir si se construye el filtro por confianza/muestra.
 
+## PENDIENTE PARA LA 10.86 (decidido con Eduardo, 20 nov)
+- **Que la app mande los registros por paso (OCR y Parser).** Hoy Admin › Hoy muestra «Aún no se sabe» en OCR y Lectura porque la tabla `auditoria.etapas` tiene 0 filas: `Traza.kt` define `Etapa`, pero nada en `app/` la crea ni la manda (`registrar-lectura` ya la acepta). `admin_salud` necesita ≥30 etapas por paso para medir. **Al preparar la 10.86, incluirlo** (crear `Etapa("ocr", …)` y `Etapa("parser", …)` con estado y ms en cada lectura). Mientras tanto Admin no cambia. Mercado Pago (sin sonda) y Play Billing (Fase 7) también salen en «Aún no se sabe»; es normal.
+- Sujeto al bloqueo de actualizaciones hasta el 6 dic 2026.
+
 ## Cómo trabajar con Eduardo
 - **Respuestas cortas, en español.** Él escucha el chat con lectura en voz alta: nada de textos largos.
 - Cambios **directo a `main`** (tiene permiso) en commits pequeños; sube también la rama de la sesión. Ningún secreto en el repo. No publicar en Play Console sin su autorización.
