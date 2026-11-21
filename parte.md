@@ -1,4 +1,4 @@
-# PARTE · 20 nov 2026
+# PARTE · 21 nov 2026
 
 ## ✓ Decidido
 - Imagen de novedades para testers hecha (7 tarjetas, marca v2) y publicada en el grupo.
@@ -70,6 +70,7 @@
 - **Diseño final del pop-up para la 10.86 (Eduardo, 20 nov; boceto `docs/propuestas/popup-v9.png`, fuente `popup-v9.html`):** (1) **completo horizontal** de 384 de ancho: bloque de color a la izquierda (156) con la decisión y el monto neto grandes, **texto negro en los tres colores**; a la derecha **$/h y $/km grandes con ✓/✕** y, pegados a cada uno, los **minutos** y los **km** (sin la línea «N min (X km) total»; **probar con el banco** que el lector no los tome por un tramo, y si falla volver a poner «total»); (2) **sin rayo ni «+$10»/multiplicador**; (3) **avisos solo en rojo, como píldoras**: recogida y viaje lado a lado en una fila (cada una con su dato: «Recogida 5.5 km», «Viaje 42 min») y, si hay una tercera (tarifa mínima o zona), segunda fila con una píldora a todo el ancho, centrada; (4) abajo, pequeño y gris: botón **«⚠ Leyó mal»**, **tarifa de la app** («Uber · $64.90») y **barra de tiempo** que se vacía; (5) **compacto** de 340×56 con el color, el monto y el $/h, que se toca para abrir el completo (idea opcional: marquita «⚠ 3» en el rojo); (6) alturas: Considerar, Aceptar y Rechazar sin avisos miden igual (133), con una fila de píldoras 175 y con dos 209; (7) los montos de **tres cifras caben** (probado con $888); con cuatro, la letra se achica sola; (8) **duración del pop-up en 8 segundos** (Eduardo ya la cambió en Ajustes). Solo se construye en la 10.86, después del 6 dic.
 
 ## … Falta
+- **Activar Haiku (esperar a Eduardo):** cuando diga «ya metí saldo a Haiku», **recordarle primero confirmar que `ANTHROPIC_API_KEY` está en Supabase (Edge Functions › Secrets)**; luego poner `REVISOR=anthropic` y revisar en Admin que salgan `claude-haiku-5-5` y `ok = true`. Código ya subido (d5624a4). Recomendado cargar $500 MXN. No activar antes de que él avise que DeepSeek se acabó.
 - **16 nov (lunes):** ejecutar `docs/plan-lunes-16-nov.md`. Arranca con «Estado de la revisión»; luego función `ver-capturas` (enlaces temporales), clasificar las capturas, corregir los 3 patrones más frecuentes (10.73) y medir el lunes 23. Si hay menos de 30 capturas, esperar al miércoles.
 - Contar cuántos conductores actualizaron a la 10.72 (revisiones con versión 10.72 y archivos en `capturas`); Eduardo publica la imagen en el grupo.
 - 13 nov: «Estado de la revisión de hoy» para revisar el revisor v26: sin `json`/`json_vacio` en `fallas_ia`, mediana de `ms_ia` < 4 s, % coincidió > 49 %, sin `oferta=true` con km 0.
