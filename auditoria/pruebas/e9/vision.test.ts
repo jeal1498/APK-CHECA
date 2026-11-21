@@ -2,7 +2,7 @@
 //   node --experimental-strip-types --no-warnings --test auditoria/pruebas/e9/vision.test.ts
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { LECTOR_IMAGEN, limpiarImagen, peticionVision, leerInterruptores, elegirRuta, nombreCapturaOk, esWebp, decodificar, MAX_IMAGEN_B64 } from "../../../supabase/functions/confirmar-oferta/vision.ts";
+import { LECTOR_IMAGEN, limpiarImagen, peticionVision, leerInterruptores, elegirRuta, nombreCapturaOk, esWebp, decodificar, MAX_IMAGEN_B64, peticionAnthropicImagen, extraerJson } from "../../../supabase/functions/confirmar-oferta/vision.ts";
 import { calcular } from "../../../supabase/functions/confirmar-oferta/lector.ts";
 
 const B64 = "UklGRg".padEnd(400, "A");   // «RIFF…» en base64, largo razonable
@@ -73,4 +73,20 @@ test("esWebp reconoce el encabezado RIFF/WEBP y decodificar hace el viaje de ida
   assert.equal(esWebp(new Uint8Array([0x89, 0x50, 0x4e, 0x47, 1, 2, 3, 4, 5, 6, 7, 8, 9])), false);   // PNG
   assert.equal(esWebp(new Uint8Array(5)), false);
   assert.deepEqual(decodificar(btoa(String.fromCharCode(...webp))), webp);
+});
+
+test("la petición a Anthropic manda la imagen WebP, el mismo prompt y Haiku", () => {
+  const p = peticionAnthropicImagen(B64, "uber", "MXN") as any;
+  assert.equal(p.model, "claude-haiku-5-5");
+  assert.equal(p.system, LECTOR_IMAGEN);
+  const c = p.messages[0].content;
+  assert.deepEqual(c[0], { type: "image", source: { type: "base64", media_type: "image/webp", data: B64 } });
+  assert.match(c[1].text, /uber/);
+});
+
+test("extraerJson acepta json limpio, con ``` o con texto alrededor, y rechaza lo demás", () => {
+  assert.deepEqual(extraerJson('{"oferta": true, "tarifa": 50}'), { oferta: true, tarifa: 50 });
+  assert.deepEqual(extraerJson('```json\n{"oferta": false}\n```'), { oferta: false });
+  assert.deepEqual(extraerJson('Aquí va: {"a": 1} listo'), { a: 1 });
+  for (const malo of ["", "sin json", "{roto", "[1,2]"]) assert.equal(extraerJson(malo), null, malo);
 });

@@ -43,6 +43,35 @@ export function peticionVision(imagenB64: string, app: string, moneda: string) {
   };
 }
 
+/** Petición a Anthropic (Claude Haiku) con la imagen: mismo prompt que DeepSeek, formato de mensajes de Anthropic. */
+export function peticionAnthropicImagen(imagenB64: string, app: string, moneda: string) {
+  return {
+    model: "claude-haiku-5-5",
+    max_tokens: 400,
+    temperature: 0,
+    system: LECTOR_IMAGEN,
+    messages: [
+      { role: "user", content: [
+        { type: "image", source: { type: "base64", media_type: "image/webp", data: imagenB64 } },
+        { type: "text", text: `App: ${app || "?"} · moneda: ${moneda}. Lee esta captura y responde solo el json.` },
+      ] },
+    ],
+  };
+}
+
+/** Saca el objeto json del texto de Claude (acepta ```json … ``` o texto alrededor). null si no hay json válido. */
+export function extraerJson(texto: string): Record<string, unknown> | null {
+  const a = texto.indexOf("{");
+  const b = texto.lastIndexOf("}");
+  if (a < 0 || b <= a) return null;
+  try {
+    const v = JSON.parse(texto.slice(a, b + 1));
+    return v && typeof v === "object" && !Array.isArray(v) ? v as Record<string, unknown> : null;
+  } catch {
+    return null;
+  }
+}
+
 export type Interruptores = { vision: boolean; texto: boolean };
 
 /** Fila de public.ia_config → interruptores. Sin fila o con datos raros, todo encendido (como hoy). */

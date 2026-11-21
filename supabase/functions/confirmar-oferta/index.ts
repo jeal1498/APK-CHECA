@@ -4,7 +4,7 @@
 // Sin saldo o con cualquier falla responde { ok: false }: la app sigue con su lectura.
 import Anthropic from "npm:@anthropic-ai/sdk@1.2.0";
 import { calcular, ESQUEMA_LECTOR, LECTOR, type Lectura } from "./lector.ts";
-import { decodificar, elegirRuta, esWebp, leerInterruptores, limpiarImagen, nombreCapturaOk, peticionVision, type Interruptores } from "./vision.ts";
+import { decodificar, elegirRuta, esWebp, extraerJson, leerInterruptores, limpiarImagen, nombreCapturaOk, peticionAnthropicImagen, peticionVision, type Interruptores } from "./vision.ts";
 
 const SUPA = Deno.env.get("SUPABASE_URL")!;
 const ANON = Deno.env.get("SUPABASE_ANON_KEY")!;
@@ -191,6 +191,26 @@ async function preguntarDeepSeekImagen(imagenB64: string, app: string, moneda: s
   const texto = String(j.choices?.[0]?.message?.content ?? "");
   if (!texto.trim()) throw Object.assign(new FallaRevisor(0, "json_vacio"), { tIn, tCache, tOut: Number(u.completion_tokens ?? 0) });
   return { datos: JSON.parse(texto), tIn, tCache, tOut: Number(u.completion_tokens ?? 0), rechazo: false };
+}
+
+/** Lee la oferta con la IMAGEN usando Claude Haiku (REVISOR=anthropic). Mismo contrato que preguntarDeepSeekImagen. */
+async function preguntarAnthropicImagen(imagenB64: string, app: string, moneda: string): Promise<Respuesta> {
+  const r = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "x-api-key": CLAVE_ANTHROPIC, "anthropic-version": "2023-06-01", "Content-Type": "application/json" },
+    signal: AbortSignal.timeout(9000),
+    body: JSON.stringify(peticionAnthropicImagen(imagenB64, app, moneda)),
+  });
+  if (!r.ok) throw new FallaRevisor(r.status, `http_${r.status}`);
+  const j = await r.json();
+  const u = j.usage ?? {};
+  const tIn = Number(u.input_tokens ?? 0);
+  const tOut = Number(u.output_tokens ?? 0);
+  if (j.stop_reason === "refusal") return { datos: {}, tIn, tCache: 0, tOut, rechazo: true };
+  const texto = (Array.isArray(j.content) ? j.content : []).filter((b: { type?: string }) => b.type === "text").map((b: { text?: string }) => b.text ?? "").join("");
+  const datos = extraerJson(texto);
+  if (!datos) throw Object.assign(new FallaRevisor(0, "json_vacio"), { tIn, tCache: 0, tOut });
+  return { datos, tIn, tCache: 0, tOut, rechazo: false };
 }
 
 // Interruptores remotos (public.ia_config): se leen cada 30 s. Si no se pueden leer, todo encendido (como antes).
@@ -394,7 +414,7 @@ Deno.serve(async (req) => {
   } catch {
     return json({ ok: false, error: "sin_contador" }, 503);
   }
-  if (!(ruta === "vision" ? CLAVE_DEEPSEEK : CLAVE)) {
+  if (!(ruta === "vision" ? (REVISOR === "anthropic" ? CLAVE_ANTHROPIC : CLAVE_DEEPSEEK) : CLAVE)) {
     await insertar("revisiones", { ...registro, ok: false, error: "sin_clave" });
     return json({ ok: false, error: "sin_clave" });
   }
@@ -407,7 +427,7 @@ Deno.serve(async (req) => {
       ? `App: ${app || "?"} · moneda: ${moneda}\nDos lecturas de la MISMA pantalla que no coinciden; usa las dos para dar la oferta correcta.\n` +
         `Lectura A, ${nombre(lector)}:\n${lineas.join("\n")}\n\nLectura B, ${nombre(lectorOtro)}:\n${lineasOtro.join("\n")}`
       : `App: ${app || "?"} · moneda: ${moneda}\nLíneas:\n${lineas.join("\n")}`;
-    const r = ruta === "vision" ? await preguntarDeepSeekImagen(imagenB64!, app, moneda)
+    const r = ruta === "vision" ? (REVISOR === "anthropic" ? await preguntarAnthropicImagen(imagenB64!, app, moneda) : await preguntarDeepSeekImagen(imagenB64!, app, moneda))
       : REVISOR === "deepseek" ? await preguntarDeepSeek(pregunta) : await preguntarAnthropic(pregunta);
     await anotarCosto(registro, r.tIn, r.tCache, r.tOut);
     if (r.rechazo) throw new Error("refusal");
