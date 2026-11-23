@@ -28,6 +28,7 @@ Detalle en `docs/banco/plan-mejora-semanal.md`. Lo vigente:
 - **Domingo (todo en una sesión, la dispara el recordatorio automático de las 14:23 CDMX; guion paso a paso en `docs/banco/plan-domingo.md`):** primero el corte: Claude mide la semana con la misma tabla de la auditoría (lectura completa, falsos positivos, por color, app y tarjetas, siempre con su denominador; 10.86 contra 10.85), agrupa las causas y propone **1 a 3 arreglos**. Solo se corrige una causa con **al menos 3 casos reproducibles** (líneas reales del diagnóstico o captura alineada); si no, queda «sin evidencia». Eduardo da su «adelante».
 - **Después del «adelante» (el mismo domingo):** versión nueva con esos arreglos: `calificar.sh` antes y después sin regresiones, casos nuevos en `ofertas/`, `parser.sha256`, `versionCode` y `versionName`, Novedades, `docs/historial-versiones.md` y push a `main`; el APK sale de «Compilar flavor play». El AAB a Play solo con su autorización.
 - **Sin evidencia, sin versión:** si el domingo no hay una causa demostrada, ese domingo no sale versión de lector (solo lo que pida Eduardo). Un fallo grave (la app se cierra, no abre, no lee nada) sale de inmediato, sin esperar al domingo.
+- **Recordatorio automático:** rutina «Domingo de versión de Checa» (`trig_01SjoqbeULJAoz4frQpFpy5W`), cada domingo 14:23 CDMX, sesión nueva con el guion de `docs/banco/plan-domingo.md`. **Necesita el conector de Supabase** agregado en la rutina (claude.ai › Rutinas): la creada por herramienta no lo trae y sin él la sesión no puede leer las revisiones.
 - **Metas:** lectura completa de normales de 89.9 % (10.85) a 93 % o más, falsos positivos bajo 1 %, ninguna captura desfasada. La revisión semanal automática de los lunes (7:12 a.m. CDMX) sigue.
 
 ## Pendiente después de la 10.86
@@ -158,7 +159,7 @@ Pantallas, instalación en teléfonos (Play Protect, ajustes restringidos, Samsu
 | Tocar precios, Mercado Pago, invitaciones, la web o el marketing | `docs/web-y-ventas.md` |
 | Saber qué cambió en cada versión | `docs/historial-versiones.md` |
 | Ver la auditoría del lector 10.85 (causas de error, reglas de medición) | `docs/banco/auditoria-10-85.md` |
-| Plan semanal de mejora (revisión diaria, corte del sábado, versión del domingo) | `docs/banco/plan-mejora-semanal.md` |
+| Plan semanal de mejora (revisión diaria, corte y versión del domingo) | `docs/banco/plan-mejora-semanal.md` |
 | Mensajes, tono y posicionamiento | `marketing/plan/identidad-comercial.md` |
 | Ver la historia de los videos | `docs/videos-historia.md` y `marketing/plan/` |
 | Atención en TikTok y WhatsApp | `marketing/atencion/asistente.md` y `prompt.md` |
