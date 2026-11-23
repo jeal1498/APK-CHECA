@@ -94,7 +94,7 @@
 - **6 dic:** revisar costo real, latencia, correcciones por 1,000 ofertas y ≥100 veredictos; decidir filtro por confianza/muestra y levantar el bloqueo de `CLAUDE.md`.
 - Eduardo probó/probará la 10.85 trabajando con Uber y DiDi (20 nov) y cuenta cómo le fue. Latencia de la IA ya medida: 1.6 s en servidor, ~3.1 s de espera real con imagen (Calidad › IA).
 - Propuestas sin decisión (después del 6 dic): corregir DiDi con varias ofertas (ignorar los 3 precios de contraoferta, avisar «Varias ofertas» si no hay certeza); mejorar la IA con ejemplos de casos revisados (ajuste en el servidor, versionando la hoja de instrucciones); bajar el tope de rojos de «Hoy» de 40 a 25.
-- **10.86 (pop-up):** construir el diseño final de arriba y, aparte, quitar el pop-up viejo en cuanto la oferta en pantalla cambie. El diseño hay que revisarlo contra `Popup.kt` (hoy muestra ⚡ y la línea «total»; el lector ignora los textos con «total»).
+- **10.86 (pop-up) — HECHO el 23 nov, falta probarlo en teléfono:** diseño v9 completo y compacto (`Popup.kt`, `Prefs.popupCompacto`) y quitar el pop-up viejo cuando llega otra oferta (`OfertaEnPantalla`, `revisarSalida`). Antes decía: construir el diseño final de arriba y, aparte, quitar el pop-up viejo en cuanto la oferta en pantalla cambie. El diseño hay que revisarlo contra `Popup.kt` (hoy muestra ⚡ y la línea «total»; el lector ignora los textos con «total»).
 - Quien ya entró «sin cuenta» (beta) tendrá que iniciar sesión con Google al actualizar: avisar a testers; los revisores de Play pueden pedir credenciales de prueba.
 - **Revisión diaria:** 100 al día desde Admin › Hoy (verdes y amarillos nuevos todos, ~25 rojos, ~15 errores; Eduardo propuso 25 de cada uno). Con ~300 revisadas decir «Banco con capturas» para agrupar fallas (DiDi con varias ofertas primero) y armar la lista de arreglos; capturas a 7 días.
 - **Privacidad:** web actualizada (18 nov). Falta: **Seguridad de los datos de Play** (imágenes de ofertas enviadas a un tercero de IA), **revisión de un abogado** de Términos y Privacidad, y decidir si se nombra al proveedor (DeepSeek, procesa fuera de México) y la transferencia internacional.
@@ -110,5 +110,5 @@
 - Subir el PNG de novedades al repo.
 - Secretos y llaves de firma en Git.
 - Fusionar o publicar a Play la 10.82 sin el aviso de privacidad listo.
-- Actualizar la app (versión, AAB, `app/**`) antes del 6 dic 2026, salvo la 10.84 y la 10.85 (levantado por Eduardo, 18 nov).
+- Actualizar la app (versión, AAB, `app/**`) antes del 6 dic 2026, salvo la 10.84, la 10.85 y la 10.86 (levantado por Eduardo, 18 y 23 nov).
 - Publicar el AAB 165 sin su orden y sin «Seguridad de los datos» de Play actualizada.
