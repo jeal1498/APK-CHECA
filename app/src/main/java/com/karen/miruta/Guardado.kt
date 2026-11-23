@@ -64,6 +64,11 @@ object Guardado {
     /** Fotograma de la captura que hay en [reciente] (por app): así la IA nunca recibe la imagen de la oferta anterior. */
     private val recienteFoto = HashMap<String, String>()
     private const val VIGENTE_MS = 30_000L
+    /** 10.86: las últimas capturas por fotograma (la que se sube es la de la lectura, no la más reciente). */
+    private val porFoto = CapturasPorFotograma(vigenteMs = VIGENTE_MS)
+
+    /** Toma (y olvida) la captura de ESE fotograma; null si ya no está. Nunca devuelve la de otro momento. */
+    fun tomarDeFotograma(fotograma: String?): ByteArray? = porFoto.tomar(fotograma, System.currentTimeMillis())
 
     /**
      * La captura reciente de [app] SIN olvidarla, solo si es la de este [fotograma] (10.83: se manda a la IA). Como la
@@ -126,6 +131,7 @@ object Guardado {
                 if (recorte != null) {
                     aWebp(recorte)?.let {
                         synchronized(reciente) { reciente[app2] = ahora to it; if (fotograma != null) recienteFoto[app2] = fotograma else recienteFoto.remove(app2) }
+                        if (fotograma != null) porFoto.guardar(fotograma, it, ahora)
                         TrazaAndroid.anotarCaptura(fotograma, it)  // 10.81 (E3): mismos bytes que se subirían
                     }
                     FileOutputStream(File(dir, "$base.jpg")).use { recorte.compress(Bitmap.CompressFormat.JPEG, 70, it) }
@@ -169,6 +175,7 @@ object Guardado {
     fun borrarTodo(ctx: Context) {
         carpeta(ctx).listFiles()?.forEach { it.delete() }
         synchronized(ultimas) { ultimas.clear() }
+        porFoto.vaciar()
         sp(ctx).edit().clear().apply()
     }
 

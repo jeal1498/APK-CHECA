@@ -109,19 +109,26 @@ object Confirmador {
         }
     }
 
-    /** Si el servidor guardó un caso (`caso`), manda la captura reciente de esa app para revisarlo. */
-    private fun subirCaptura(ctx: Context, app: String, r: JSONObject, o: Oferta? = null, pant: JSONObject? = null) {
+    /**
+     * Si el servidor guardó un caso (`caso`) o una oferta normal (`normal`), sube la captura de ESE fotograma ([fot]).
+     * 10.86: antes subía «la más reciente de esa app», que al responder el servidor podía ser de segundos después (otra oferta o
+     * el pop-up nuevo encima): los 18 casos de desfase de la auditoría de la 10.85. Si la de ese fotograma ya no está, no se sube
+     * nada. Con [masReciente] (el «Leyó mal» del conductor, que no tiene fotograma) sigue siendo la más reciente: es lo que ve.
+     */
+    private fun subirCaptura(ctx: Context, app: String, r: JSONObject, o: Oferta? = null, pant: JSONObject? = null,
+                             fot: String? = null, masReciente: Boolean = false) {
         // 10.83: si la imagen viajó con la revisión, el servidor ya la guardó (caso dudoso u oferta normal): no se sube otra vez.
-        if (r.optBoolean("guardada")) { Guardado.tomarReciente(app); return }
+        if (r.optBoolean("guardada")) { Guardado.tomarReciente(app); Guardado.tomarDeFotograma(fot); return }
+        val bytes = { if (fot != null) Guardado.tomarDeFotograma(fot) else if (masReciente) Guardado.tomarReciente(app) else null }
         val caso = r.optLong("caso", 0L)
         if (caso <= 0L) {
             // 10.78: oferta normal (sin diferencia): captura con tope por conductor y el color del pop-up en el nombre.
-            if (o != null && r.optBoolean("ok")) Guardado.tomarReciente(app)?.let {
+            if (o != null && r.optBoolean("ok")) bytes()?.let {
                 Cuenta.subirCapturaOk(ctx, pant?.optString("nivel").orEmpty(), o, it, r.optLong("normal", 0L))
             }
             return
         }
-        Guardado.tomarReciente(app)?.let { Cuenta.subirCaptura(ctx, caso, it) }
+        bytes()?.let { Cuenta.subirCaptura(ctx, caso, it) }
     }
 
     private fun firma(o: Oferta) = "${o.tarifa}|${o.km}|${o.min}"
@@ -184,7 +191,7 @@ object Confirmador {
                     val respuesta = Cuenta.revisarOferta(app0, cuerpo.toString())
                     if (respuesta != null && conteoAnterior != null) anteriorRecibido(app0, conteoAnterior.getString("dia"))
                     val r = JSONObject(respuesta ?: "{}")
-                    subirCaptura(app0, app, r)
+                    subirCaptura(app0, app, r, fot = fot)
                     val ia = r.optJSONObject("ia")
                     if (r.optBoolean("ok") && ia != null) {
                         if (!ia.optBoolean("oferta")) noEraOferta = true
@@ -308,7 +315,7 @@ object Confirmador {
                         .put("fotograma", fot ?: JSONObject.NULL)
                         .put("local", local(o))
                     val r = JSONObject(Cuenta.revisarOferta(app0, cuerpo.toString()) ?: "{}")
-                    subirCaptura(app0, app, r)
+                    subirCaptura(app0, app, r, fot = fot, masReciente = true)
                 } catch (_: Exception) { }
             }
             true
@@ -373,7 +380,7 @@ object Confirmador {
                     // El servidor respondió (aunque sea sin saldo): ya anotó el conteo del día anterior.
                     if (respuesta != null && conteoAnterior != null) anteriorRecibido(app0, conteoAnterior.getString("dia"))
                     val r = JSONObject(respuesta ?: "{}")
-                    subirCaptura(app0, app, r, o, pant)
+                    subirCaptura(app0, app, r, o, pant, fot = fot)
                     // Ida y vuelta completa de la revisión, vista desde el teléfono: va en la siguiente.
                     msRevision = android.os.SystemClock.elapsedRealtime() - t0
                     // Interruptor remoto o falla de la IA: se deja de preguntar un rato y el pop-up sigue con el lector.
