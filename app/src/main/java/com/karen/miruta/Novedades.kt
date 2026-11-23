@@ -9,6 +9,11 @@ object Novedades {
     class Version(val codigo: Int, val nombre: String, val puntos: List<String>, val widgets: Boolean = false, val vistaQr: Boolean = false)
 
     val LISTA = listOf(
+        Version(166, "10.86", listOf(
+            "En las listas de DiDi, el pop-up ahora lee la tarjeta correcta: ya no mezcla la tarifa de una oferta con los kilómetros y minutos de otra, y funciona también con Express y con el carrusel.",
+            "Menos pop-ups falsos: ya no salen en pantallas de navegación (rutas alternativas, un solo tramo) ni cuando el pasajero canceló.",
+            "Kilómetros y minutos más exactos cuando la pantalla de Uber o DiDi se leía con un número de más."
+        )),
         Version(165, "10.85", listOf(
             "La guía de inicio ahora tiene 3 pasos (se quitó el de país, se toma el de tu teléfono) y los permisos son interruptores. Nueva opción «Revisión mejorada con IA»: ayuda a leer mejor tus ofertas con una imagen y viene encendida; la apagas cuando quieras. La pantalla de entrada es nueva y ahora es obligatorio entrar con tu cuenta de Google."
         )),

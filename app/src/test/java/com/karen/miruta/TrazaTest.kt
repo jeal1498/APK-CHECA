@@ -24,6 +24,17 @@ class TrazaTest {
         msLectura = 420, msPopup = 650, lineasSha256 = Traza.huellaLineas(listOf("$120.50")), lineasRedactadas = listOf("$120.50"),
         capturaSha256 = sha, etapas = listOf(Traza.Etapa("captura", "ok", 30), Traza.Etapa("parser", "ok", 2)))
 
+    @Test fun etapasOcrYParserLlevanEstadoMsYMotivo() {
+        val e = Traza.Evento(
+            app = "didi", versionApp = "10.86", lector = "ocr", fotogramaId = Traza.nuevoId(), tsFotogramaMs = 1_763_200_800_000,
+            tsEventoMs = 1_763_200_801_000, resultado = "oferta", oferta = oferta(), nivel = "verde", moneda = "MXN",
+            etapas = listOf(Traza.Etapa("ocr", "ok", 410), Traza.Etapa("parser", "ok", 3, "elegida")))
+        val j = e.aJson()
+        assertTrue(j, j.contains("\"etapas\":[{\"etapa\":\"ocr\",\"estado\":\"ok\",\"ms\":410},{\"etapa\":\"parser\",\"estado\":\"ok\",\"ms\":3,\"motivo\":\"elegida\"}]"))
+        // Los motivos que deja el Parser cumplen la gramática del servidor (a-z, 0-9 y «_»).
+        for (m in listOf("sin_separar", "elegida", "ambigua")) Traza.Etapa("parser", "ok", 1, m)
+    }
+
     @Test fun ofertaValidaSerializa() {
         val j = evento().aJson()
         assertTrue(j, j.startsWith("{\"id\":\"") && j.endsWith("}"))

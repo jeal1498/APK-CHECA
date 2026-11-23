@@ -502,7 +502,7 @@ class RutaService : AccessibilityService() {
             val fot: Pair<String, Long>? = if (lector == LECTOR_OCR) (TrazaAndroid.fotograma ?: return) else null
             val color = when (nivel) { null -> null; Oferta.VERDE -> "verde"; Oferta.AMARILLO -> "amarillo"; else -> "rojo" }
             TrazaAndroid.anotar(this, app, lector, fot, resultado, motivo, oferta, color, prefs.moneda.codigo,
-                lineas.orEmpty(), msLectura, if (horizontal()) "horizontal" else "vertical")
+                lineas.orEmpty(), msLectura, if (horizontal()) "horizontal" else "vertical", TrazaAndroid.etapas)
         } catch (_: Throwable) { }
     }
 

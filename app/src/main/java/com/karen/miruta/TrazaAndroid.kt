@@ -34,6 +34,9 @@ object TrazaAndroid {
     /** Fotograma que está leyendo el OCR ahora mismo (id, hora). Lo pone y lo quita LectorOcr. */
     @Volatile var fotograma: Pair<String, Long>? = null
 
+    /** 10.86: etapas de la lectura que se está informando ahora (OCR y Parser: estado, ms y motivo). Lo pone y lo quita LectorOcr. */
+    @Volatile var etapas: List<Traza.Etapa> = emptyList()
+
     fun activa(ctx: Context): Boolean = try { Prefs(ctx).trazabilidad && Cuenta.conectada(ctx) } catch (_: Throwable) { false }
 
     private fun cola(ctx: Context): ColaTraza = cola ?: synchronized(this) {
@@ -53,10 +56,12 @@ object TrazaAndroid {
     fun anotar(
         ctx: Context, app: String, lector: String, fot: Pair<String, Long>?, resultado: String, motivo: String?,
         oferta: Oferta?, nivel: String?, moneda: String?, lineas: List<String>, msLectura: Long, orientacion: String,
+        etapas: List<Traza.Etapa> = emptyList(),
     ) {
         val appCtx = ctx.applicationContext
         val ahora = System.currentTimeMillis()
         val copia = ArrayList(lineas)
+        val copiaEtapas = ArrayList(etapas)
         try {
             hilo.execute {
                 try {
@@ -69,6 +74,7 @@ object TrazaAndroid {
                         lineasRedactadas = Redaccion.redactar(copia),
                         telefono = "${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}".trim().take(40),
                         android = android.os.Build.VERSION.RELEASE?.take(8), orientacion = orientacion,
+                        etapas = copiaEtapas,
                     )
                     val f = e.fotogramaId
                     if (f != null && resultado == "oferta") {

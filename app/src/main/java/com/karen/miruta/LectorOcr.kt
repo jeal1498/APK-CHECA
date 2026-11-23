@@ -216,7 +216,12 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
             .maxByOrNull { it.boundingBox?.height() ?: 0 }
         val lineas = (listOfNotNull(tarifa) + ordenadas.filter { it !== tarifa }).map { normalizar(it.text, conPeso) }
 
+        val inicioParser = System.nanoTime()
         val oferta = Parser.analizar(lineas, moneda)
+        val msParser = (System.nanoTime() - inicioParser) / 1_000_000
+        // Diagnóstico 10.86: lo que decidió el Parser en ESTE hilo (solo se usa con «Guardar pantallas» encendido).
+        val eleccionTarjeta = Parser.eleccionTarjeta()
+        val motivoRechazo = Parser.motivoRechazo()
         // «Guardar pantallas de ofertas»: texto y foto (solo la zona de la app) de cada oferta distinta.
         if (prefs.diagnostico && lineas.any { tramoTexto.containsMatchIn(it) }) {
             val texto = lineas.take(40).joinToString("\n") + "\n\nCheca entendió: " +
@@ -233,7 +238,19 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
                 val recorte = if (b == null) null else Guardado.recortar(b, zona?.let {
                     Rect((it.left / escX).toInt(), (it.top / escY).toInt(), (it.right / escX).toInt(), (it.bottom / escY).toInt())
                 })
-                Guardado.guardar(ctx, app, oferta != null, texto, recorte, TrazaAndroid.fotograma?.first)
+                // 10.86: junto al texto va el diagnóstico OCR → Parser → resultado (solo en el teléfono, no se manda).
+                val diagnostico = try {
+                    DiagnosticoLectura.armar(
+                        TrazaAndroid.fotograma?.first,
+                        todasOrd.map {
+                            val c = it.boundingBox
+                            DiagnosticoLectura.LineaOcr(normalizar(it.text, conPeso), c?.top ?: 0, c?.bottom ?: 0, c?.left ?: 0, c?.right ?: 0)
+                        },
+                        tarifa?.let { normalizar(it.text, conPeso) }, ordenadas.size, lineas, Confirmador.filtrar(lineas),
+                        oferta, eleccionTarjeta, motivoRechazo, android.os.SystemClock.elapsedRealtime() - inicioCaptura, msParser
+                    )
+                } catch (_: Throwable) { "" }
+                Guardado.guardar(ctx, app, oferta != null, if (diagnostico.isEmpty()) texto else texto + "\n\n" + diagnostico, recorte, TrazaAndroid.fotograma?.first)
             }
         }
         val servicio = RutaService.instancia ?: return
@@ -247,7 +264,11 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
         }
         leyoPasada = true
         val msLectura = android.os.SystemClock.elapsedRealtime() - inicioCaptura
-        servicio.mostrarOferta(oferta, appOferta, zona, lineas, msLectura)
+        // 10.86: etapas de esta lectura para la traza (solo estado, ms y motivo; sin texto).
+        TrazaAndroid.etapas = try {
+            listOf(Traza.Etapa("ocr", "ok", (msLectura - msParser).coerceAtLeast(0)), Traza.Etapa("parser", "ok", msParser, eleccionTarjeta))
+        } catch (_: Throwable) { emptyList() }
+        try { servicio.mostrarOferta(oferta, appOferta, zona, lineas, msLectura) } finally { TrazaAndroid.etapas = emptyList() }
     }
 
     /** Brillo de una rejilla de puntos de la imagen. null si falla. */

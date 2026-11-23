@@ -13,7 +13,7 @@ import java.util.UUID
 object Traza {
     const val CONTRATO = 1
     /** Versión del lector que produjo el resultado (se sube a mano cuando cambie Parser/Tarjetas/Moneda). */
-    const val VERSION_PARSER = "10.79"
+    const val VERSION_PARSER = "10.86"
 
     val RESULTADOS = setOf("oferta", "no_oferta", "duplicada", "abstencion", "varias", "descartada", "timeout", "error")
     val ETAPAS = setOf("captura", "ocr", "texto", "tarjetas", "parser", "dedupe", "popup", "revision", "envio")
