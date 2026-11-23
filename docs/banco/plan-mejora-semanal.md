@@ -6,7 +6,6 @@ Decidido con Eduardo: **100 revisiones diarias**, **versión cada domingo** y **
 | Día | Qué pasa | Quién |
 |---|---|---|
 | Lunes a sábado | 100 revisiones al día en Admin › Hoy: verdes y amarillos primero, luego rojos y errores; ilegibles aparte | Eduardo |
-| Lunes 7:12 a.m. | Revisión semanal automática (rutina existente) | Claude |
 | Sábado | Último día de revisiones de la semana | Eduardo |
 | Domingo 14:23 (CDMX) | Recordatorio automático: corte (medir, agrupar, proponer 1 a 3 arreglos), «adelante» de Eduardo, corregir, medir antes y después, subir versión y mandar el link del APK. Guion: `plan-domingo.md` | Claude, con el «adelante» de Eduardo |
 | Semana siguiente | Eduardo prueba la versión con Uber y DiDi y sigue revisando | Eduardo |
