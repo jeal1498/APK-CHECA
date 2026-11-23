@@ -58,6 +58,8 @@ body.marco #sub,body.marco #g,body.marco #camtxt,body.marco #bajo{display:none}
 const Y='#FACC15',R='#EF4444',V='#22C55E',H='#F4F4EF';
 if(location.search.includes('tercios')){document.getElementById('tercios').style.display='';document.getElementById('camtxt').innerHTML=''}
 if(location.search.includes('llave')){const c=document.getElementById('camtxt');c.innerHTML='';c.style.background='#FF00FF'}
+const SOLA=location.search.includes('sola'); // sin cámara: la mitad de arriba es cielo PS2 con el gancho
+if(SOLA){document.getElementById('camtxt').style.display='none';document.getElementById('cam').insertAdjacentHTML('afterbegin','<svg id="alto" width="1080" height="864" viewBox="0 0 1080 864" style="position:absolute;left:0;top:0"></svg><div id="gancho" style="position:absolute;left:0;top:250px;width:1080px;text-align:center;font:800 120px/0.95 \'Bricolage Grotesque\';letter-spacing:-4px;color:#fff;text-shadow:5px 5px 0 #0B1E47,-4px -4px 0 #0B1E47,4px -4px 0 #0B1E47,-4px 4px 0 #0B1E47,0 9px 0 #0B1E47">¿PERDIENDO<br><span style="color:#FACC15">DINERO?</span></div>')}
 if(location.search.includes('marco'))document.documentElement.className=document.body.className='marco';
 const P=D.palabras,TOTAL=D.total,norm=w=>w.toLowerCase().replace(/[¿?¡!.,:;]/g,'');
 // W('dinero') = segundo en que empieza esa palabra; 'dinero#1' = la segunda vez
@@ -158,6 +160,7 @@ const via=document.getElementById('via');
 const nube=(x,y,k)=>'<g transform="translate('+x+','+y+') scale('+k+')"><path d="M0 60L40 10L95 0L150 22L200 60z" fill="#FFFFFF"/><path d="M0 60L40 10L70 60z" fill="#DCEBFA"/><path d="M95 0L150 22L120 60L70 60z" fill="#EEF5FD"/><path d="M150 22L200 60L120 60z" fill="#CFE1F5"/></g>';
 const EDI=[[-20,150,230,'#E8D9B8','#B9A57C'],[120,120,330,'#C9D3DE','#93A1B1'],[232,160,200,'#E2B58F','#B08460'],[385,130,290,'#D9DEE6','#9FAABA'],[505,170,240,'#EFE3C4','#C2B48C'],[668,125,345,'#C6CFDA','#8E9BAC'],[786,150,215,'#E6C3A0','#B5916F'],[930,140,275,'#DCE2EA','#A3AEBD']];
 const auto=(x,y,c,c2,d)=>'<g transform="translate('+x+','+y+') scale('+d+',1)"><path d="M0 44L6 22L40 18L62 0L118 0L140 20L172 24L178 44z" fill="'+c+'"/><path d="M40 18L62 0L118 0L140 20z" fill="'+c2+'"/><path d="M66 5L88 5L88 19L50 19zM94 5L114 5L130 19L94 19z" fill="#BFE3FF"/><path d="M26 44l8-12h14l8 12l-8 10h-14zM122 44l8-12h14l8 12l-8 10h-14z" fill="#22262E"/></g>';
+function cielo(t){const a=document.getElementById('alto');if(!a)return;a.innerHTML='<defs><linearGradient id="c2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2F7BDB"/><stop offset="1" stop-color="#7FBFF5"/></linearGradient></defs><rect width="1080" height="864" fill="url(#c2)"/>'+nube(((60+t*9)%1400)-200,120,1.3)+nube(((760+t*6)%1400)-200,560,1)+nube(((1150+t*12)%1400)-200,60,.8)+nube(((300+t*7)%1400)-200,640,.7)}
 function fondo(t){let h='<defs><linearGradient id="cielo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3F8FE8"/><stop offset=".75" stop-color="#A9D6FB"/><stop offset="1" stop-color="#D8EEFF"/></linearGradient></defs><rect width="1080" height="1056" fill="url(#cielo)"/>';
  h+=nube(((60+t*9)%1400)-200,505,1.1)+nube(((760+t*6)%1400)-200,470,.8)+nube(((1150+t*12)%1400)-200,540,.6);
  EDI.forEach(([x,w,a,c,c2])=>{const y=930-a,f=w*.68;h+='<path d="M'+x+' '+y+'h'+f+'v'+a+'h'+(-f)+'z" fill="'+c+'"/><path d="M'+(x+f)+' '+y+'l'+(w-f)+' 16v'+(a-16)+'h'+(-(w-f))+'z" fill="'+c2+'"/>';
@@ -171,6 +174,6 @@ function raya(){const p=sub.firstElementChild,r=p&&SUBB?p.getBoundingClientRect(
 window.seek=t=>{for(const{d,ini,fin,o}of IT){const on=t>=ini&&t<fin;d.style.display=on?'':'none';if(!on)continue;if(o.fx){o.fx(t,d);continue}
   const p=o.sinEntrada?1:eo((t-ini)/(o.cae?.42:.3)),q=cl((fin-t)/.12);d.style.opacity=Math.min(cl((t-ini)/.12+(o.sinEntrada?1:0)),q);
   d.style.transform=o.cae?'translateY('+(-70*(1-p))+'px) rotate('+(-4*(1-p))+'deg)':o.pop?'scale('+(.8+.2*p+.06*Math.sin(Math.PI*cl((t-ini)/.3)))+')':'translateY('+(22*(1-p))+'px)'}
- FX.forEach(f=>f(t));subt(t);fondo(t);raya()};
+ FX.forEach(f=>f(t));subt(t);fondo(t);cielo(t);raya()};
 window.TOTAL=TOTAL;seek(+(new URLSearchParams(location.search).get('t')||0));
 </script></body></html>
