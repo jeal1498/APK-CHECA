@@ -668,6 +668,23 @@ object Parser {
     // Uber nuevo (12 nov): «6 min l.9 km», «minl.2 km» (l por 1) y «15.4 kmn», «4.7 krn».
     private val unoKm = Regex("""(?:(?<=min)|(?<![A-Za-z]))[lI|](?=[\d.,lI|]*\s?(?:km|m)\b)""")
     private val kmOcr = Regex("""(?<=\d)(\s?)(?:krn|knm|kmn|kon)\b""", RegexOption.IGNORE_CASE)
+    /**
+     * Kilómetros y minutos del primer tramo «N min (X km)» de [t], o null (10.86). Sirve para saber si un tramo que se ve en
+     * pantalla es el de la oferta de un pop-up (`OfertaEnPantalla`); usa las mismas correcciones del OCR que el lector.
+     */
+    fun tramoDe(t: String): Pair<Double, Double>? {
+        val m = tramo.find(corregirMinutos(t)) ?: return null
+        val h = m.groupValues[1].toDoubleOrNull() ?: 0.0
+        val mi = m.groupValues[2].toDoubleOrNull() ?: return null
+        val numero = m.groupValues[3].ifEmpty { m.groupValues[5] }
+        val unidad = m.groupValues[4].ifEmpty { m.groupValues[6] }
+        val d = numero.replace(",", ".").toDoubleOrNull() ?: return null
+        val esMetros = unidad.equals("m", ignoreCase = true) && !numero.contains('.') && !numero.contains(',') &&
+            (d >= 30 || (d > 0 && h == 0.0 && mi == 0.0))
+        val km = if (esMetros) d / 1000.0 else d
+        return km to (if (h == 0.0) sinIcono(m.groupValues[2], km) ?: mi else h * 60.0 + mi)
+    }
+
     // «5 min (2:1 km)» (el punto leído como dos puntos, D2427) y «7min (2.3 k?s» (unidad ilegible, D2858).
     private val dosPuntosKm = Regex("""(?<=\d):(?=\d{1,3}\s?(?:km|m)\b)""", RegexOption.IGNORE_CASE)
     private val unidadIlegible = Regex("""(?<=\d)(\s?)k[?¿]\s?[sm]\b""", RegexOption.IGNORE_CASE)

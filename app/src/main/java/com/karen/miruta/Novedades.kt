@@ -10,6 +10,9 @@ object Novedades {
 
     val LISTA = listOf(
         Version(166, "10.86", listOf(
+            "Nuevo pop-up, más ancho y fácil de leer: el color y el monto a la izquierda, lo que ganas por hora y por km a la derecha, los avisos en rojo abajo y una barra que se vacía con el tiempo. Ahora dura 8 segundos.",
+            "En Ajustes › Pop-up puedes elegir «Pop-up compacto»: una píldora con el monto que tocas para ver todo.",
+            "Cuando llega una oferta nueva, el pop-up de la anterior se quita.",
             "En las listas de DiDi, el pop-up ahora lee la tarjeta correcta: ya no mezcla la tarifa de una oferta con los kilómetros y minutos de otra, y funciona también con Express y con el carrusel.",
             "Menos pop-ups falsos: ya no salen en pantallas de navegación (rutas alternativas, un solo tramo) ni cuando el pasajero canceló.",
             "Kilómetros y minutos más exactos cuando la pantalla de Uber o DiDi se leía con un número de más."

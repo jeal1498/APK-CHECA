@@ -45,6 +45,9 @@ class RutaService : AccessibilityService() {
     /** Dónde se vieron por última vez los tramos de cada oferta activa, y lecturas seguidas sin verlos. */
     private val tramosVistos = HashMap<String, List<Rect>>()
     private val sinVer = HashMap<String, Int>()
+    /** 10.86: lo que leyó el lector de la oferta de cada pop-up (la revisión pudo corregirla) y lecturas seguidas viendo OTRA oferta. */
+    private val originales = HashMap<String, Oferta>()
+    private val otraOferta = HashMap<String, Int>()
     /** Zona de la última oferta mostrada de cada app y lecturas seguidas sin ver sus tramos (10.75). */
     private val zonaFirma = HashMap<String, Rect?>()
     private val sinVerFirma = HashMap<String, Int>()
@@ -437,6 +440,8 @@ class RutaService : AccessibilityService() {
                     zonasPedidas.remove(clave)
                     tramosVistos.remove(clave)
                     sinVer.remove(clave)
+                    originales.remove(clave)
+                    otraOferta.remove(clave)
                     confirmadasTexto.remove(clave)
                     esperas.remove(clave)?.vencer?.let { handler.removeCallbacks(it) }
                     redibujar(null)
@@ -453,6 +458,8 @@ class RutaService : AccessibilityService() {
             }
         }
         activas[clave] = oferta to zona
+        originales[clave] = leida
+        otraOferta.remove(clave)
         leidas[clave] = Leido(app, lineas.orEmpty(), lector)
         val turno = turnos.nuevo(clave)
         tramosVistos.remove(clave)
@@ -714,14 +721,26 @@ class RutaService : AccessibilityService() {
      * está en dos lecturas seguidas (la tomó otro, se venció o se aceptó), el pop-up se quita.
      * Si el pop-up tapa donde estaba la oferta no se sabe si sigue: lo cierra su tiempo.
      */
-    fun revisarSalida(tramos: List<Rect>) {
+    fun revisarSalida(tramos: List<Rect>, textos: List<Pair<Rect, String>> = emptyList()) {
         olvidarIdas(tramos)
         if (activas.isEmpty()) return
         val tapado = rectsPopups()
         for ((clave, par) in activas.entries.toList()) {
             val zona = par.second
             val suyos = tramos.filter { zona == null || zona.contains(it.centerX(), it.centerY()) }
-            if (suyos.isNotEmpty()) { tramosVistos[clave] = suyos; sinVer[clave] = 0; continue }
+            if (suyos.isNotEmpty()) {
+                tramosVistos[clave] = suyos
+                sinVer[clave] = 0
+                // 10.86: en su zona hay tramos pero son de OTRA oferta (llegó la nueva con el pop-up viejo puesto): se quita.
+                val valores = textos.filter { (r, _) -> zona == null || zona.contains(r.centerX(), r.centerY()) }
+                    .mapNotNull { Parser.tramoDe(it.second) }
+                if (OfertaEnPantalla.coincide(valores, par.first, originales[clave]) == false) {
+                    val n = (otraOferta[clave] ?: 0) + 1
+                    otraOferta[clave] = n
+                    if (n >= LECTURAS_OTRA_OFERTA) popups[clave]?.ocultar()
+                } else otraOferta.remove(clave)
+                continue
+            }
             val antes = tramosVistos[clave] ?: continue
             if (antes.all { r -> tapado.any { it.contains(r.centerX(), r.centerY()) } }) continue
             val n = (sinVer[clave] ?: 0) + 1
@@ -1078,6 +1097,8 @@ class RutaService : AccessibilityService() {
         private const val VIGILANTE_CADA = 5000L
         /** Lecturas seguidas sin ver la oferta para quitar su pop-up. */
         private const val LECTURAS_SIN_OFERTA = 2
+        /** Lecturas seguidas viendo tramos que no son los del pop-up para quitarlo (10.86). */
+        private const val LECTURAS_OTRA_OFERTA = 2
         /** Lecturas seguidas sin la oferta a la vista para olvidar que ya se mostró. */
         private const val LECTURAS_PARA_OLVIDAR = 3
         /** De qué lector vino una oferta (se guarda en la revisión para comparar). */

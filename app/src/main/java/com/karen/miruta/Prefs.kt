@@ -90,6 +90,11 @@ class Prefs(context: Context) {
         get() = sp.getString("tema", Tema.MODO_AUTO) ?: Tema.MODO_AUTO
         set(v) { sp.edit().putString("tema", v).apply() }
 
+    /** 10.86: el pop-up sale como una píldora (color, monto y $/h) y se toca para abrir el completo. */
+    var popupCompacto: Boolean
+        get() = b("popupCompacto", false)
+        set(v) = setB("popupCompacto", v)
+
     // ---------- Gasolina ----------
     var mostrarNeta: Boolean
         get() = sp.getBoolean("neta", true)
@@ -179,7 +184,7 @@ class Prefs(context: Context) {
         set(v) { sp.edit().putInt("escPop", v.coerceIn(ESC_MIN, ESC_MAX)).apply() }
 
     var duracionSeg: Int
-        get() = sp.getInt("dur", 12)
+        get() = sp.getInt("dur", 8)   // 10.86: 8 s (diseño v9); quien ya eligió otro plazo lo conserva
         set(v) { sp.edit().putInt("dur", v).apply() }
 
     /** Posición vertical del pop-up, en % de la altura de pantalla. */

@@ -14,16 +14,10 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewOutlineProvider
 import android.view.WindowManager
-import android.text.SpannableStringBuilder
-import android.text.style.AbsoluteSizeSpan
-import android.text.style.StyleSpan
-import android.text.Spanned
-import android.text.style.ForegroundColorSpan
-import android.text.style.RelativeSizeSpan
-import android.text.style.MetricAffectingSpan
-import android.text.TextPaint
 import android.view.animation.DecelerateInterpolator
+import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -39,6 +33,12 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
     private var lpActual: WindowManager.LayoutParams? = null
     private var areaActual: Rect? = null
     private var temporizador = false
+    private var abierto = false              // 10.86: el compacto de esta oferta ya se abrió
+    private var ultApp: String? = null
+    private var ultZona: Rect? = null
+    private var ultMarca = SIN_MARCA
+    private var barraRelleno: View? = null   // la barra de tiempo que se vacía (solo el pop-up real)
+    private var finPlazo = 0L                // uptimeMillis en que se cierra solo
     private val cerrar = Runnable { temporizador = false; ocultar() }
 
     init { Fuentes.iniciar(ctx) }
@@ -62,16 +62,15 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         o: Oferta, app: String? = null, zona: Rect? = null,
         marca: Int = SIN_MARCA, reiniciar: Boolean = true
     ) {
+        if (ultima != null && ultima != o) abierto = false
         ultima = o
+        ultApp = app; ultZona = zona; ultMarca = marca
+        val compacto = compactoActivo()
         // Misma oferta, misma marca y misma zona: no se vuelve a pintar (evita el parpadeo).
-        val firma = "$o|$app|$marca|$zona|${prefs.posicion}|${prefs.escalaPopup}"
+        val firma = "$o|$app|$marca|$zona|$compacto|${prefs.posicion}|${prefs.escalaPopup}"
         val actual = vista
         if (actual != null && firma == firmaVista) {
-            if (reiniciar || !temporizador) {
-                handler.removeCallbacks(cerrar)
-                handler.postDelayed(cerrar, prefs.duracionSeg * 1000L)
-                temporizador = true
-            }
+            if (reiniciar || !temporizador) arrancarTemporizador()
             return
         }
         firmaVista = firma
@@ -81,7 +80,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         @Suppress("DEPRECATION")
         wm.defaultDisplay.getRealMetrics(real)
         val area = zona ?: Rect(0, 0, real.widthPixels, real.heightPixels)
-        val ancho = minOf((area.width() * 0.94f).toInt(), anchoPx(ctx, prefs))
+        val ancho = minOf((area.width() * 0.94f).toInt(), if (compacto) anchoCompactoPx(ctx, prefs) else anchoPx(ctx, prefs))
         val lp = WindowManager.LayoutParams(
             ancho,
             WindowManager.LayoutParams.WRAP_CONTENT,
@@ -119,11 +118,27 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
                 firmaVista = null
             }
         }
-        if (reiniciar || !temporizador) {
-            handler.removeCallbacks(cerrar)
-            handler.postDelayed(cerrar, prefs.duracionSeg * 1000L)
-            temporizador = true
-        }
+        if (reiniciar || !temporizador) arrancarTemporizador() else animarBarra()
+    }
+
+    /** Plazo del pop-up: se cierra solo a los `duracionSeg`; la barra de abajo se vacía en ese tiempo. */
+    private fun arrancarTemporizador() {
+        handler.removeCallbacks(cerrar)
+        handler.postDelayed(cerrar, prefs.duracionSeg * 1000L)
+        temporizador = true
+        finPlazo = android.os.SystemClock.uptimeMillis() + prefs.duracionSeg * 1000L
+        animarBarra()
+    }
+
+    /** La barra de abajo se vacía desde lo que queda del plazo hasta 0 (si la vista se rehízo, sigue donde iba). */
+    private fun animarBarra() {
+        val b = barraRelleno ?: return
+        val total = (prefs.duracionSeg * 1000L).coerceAtLeast(1L)
+        val resta = (finPlazo - android.os.SystemClock.uptimeMillis()).coerceIn(0L, total)
+        b.animate().cancel()
+        b.pivotX = 0f
+        b.scaleX = resta.toFloat() / total
+        b.animate().scaleX(0f).setDuration(resta).setInterpolator(LinearInterpolator()).start()
     }
 
     /**
@@ -168,9 +183,7 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                     if (arrastrando) guardarPosicion()
                     arrastrando = false
-                    handler.removeCallbacks(cerrar)
-                    handler.postDelayed(cerrar, prefs.duracionSeg * 1000L)
-                    temporizador = true
+                    arrancarTemporizador()
                 }
             }
             return true
@@ -203,6 +216,9 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         // sigue tapando un momento ([rectTapado]) para que el lector no lea nuestros números.
         rectCerrado = rect()
         cerradoEn = android.os.SystemClock.uptimeMillis()
+        barraRelleno?.animate()?.cancel()
+        barraRelleno = null
+        abierto = false
         vista?.let { try { wm.removeView(it) } catch (_: Exception) { } }
         vista = null
         firmaVista = null
@@ -254,191 +270,185 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
         ?: rectCerrado?.takeIf { android.os.SystemClock.uptimeMillis() - cerradoEn < 2000L }
 
     /**
-     * También se usa para la vista previa en Ajustes (sin acción en la ✕).
-     * Pop-up E (10.11), pensado para leerlo de un vistazo manejando: tarjeta oscura con borde del
-     * semáforo; arriba la acción (★/2ª delante) con el ⚡, en medio el monto MUY grande, luego
-     * `$/h | $/km` (verde si cumple la meta, rojo si no, hueso si el filtro está apagado) y abajo,
-     * chico, «24 min (6.0 km) total». La palabra «total» es obligatoria: el lector ignora los
-     * textos con «total», así no toma esta línea por un tramo de la oferta.
-     * Todo se escala con prefs.escalaPopup (70–160 %).
+     * Pop-up 10.86 (diseño v9 de Eduardo, 20 nov, `docs/propuestas/popup-v9.png`). También se usa para la vista previa
+     * en Ajustes (sin acciones). Completo horizontal: a la izquierda un bloque del color del semáforo con la decisión y el
+     * monto grandes (texto oscuro en los tres colores); a la derecha `$/h` y `$/km` grandes con ✓/✕ y, pegados, los
+     * minutos y los km. Los avisos son píldoras rojas (recogida y viaje lado a lado; tarifa mínima o zona, a todo el ancho).
+     * Abajo, chico: «Leyó mal», la app con su tarifa y una barra de tiempo que se vacía. Con «Pop-up compacto» en Ajustes
+     * sale una píldora (color, monto y `$/h`) que se toca para abrir el completo. Todo se escala con prefs.escalaPopup
+     * (70–160 %) y las medidas repartidas en pesos, para que quepa en pantallas angostas.
+     * Sin la línea «N min (X km) total»: los números sueltos «18 min» y «6.5 km» no forman un tramo, y el OCR además ignora
+     * lo que tapa el pop-up (se prueba en `PopupLectorTest`).
      */
     fun construir(o: Oferta, interactivo: Boolean, app: String? = null, marca: Int = SIN_MARCA): View {
-        val esc = prefs.escalaPopup / 100f
-        fun e(v: Float): Int = (v * esc * ctx.resources.displayMetrics.density).toInt()
-        fun sp(v: Float) = v * esc
+        val d = Datos(o, app, marca)
+        return if (compactoActivo()) construirCompacto(d, interactivo) else construirCompleto(d, interactivo)
+    }
+
+    private fun compactoActivo() = prefs.popupCompacto && !abierto
+
+    /** Lo que se muestra de una oferta, ya calculado (lo usan el completo y el compacto). */
+    private inner class Datos(val o: Oferta, val app: String?, val marca: Int) {
         val nivel = o.nivel(prefs)
         val segunda = marca == SEGUNDA
         val acento = Oscuro.colorNivel(nivel)
         // 2ª opción (dos ofertas a la vez): el color apagado para que la mejor resalte.
         val color = if (segunda) mezclar(acento, Oscuro.TABLERO, 0.45f) else acento
-        val linea = Color.argb(110, Color.red(Oscuro.TENUE), Color.green(Oscuro.TENUE), Color.blue(Oscuro.TENUE))
-        val accion = when (nivel) {
-            Oferta.VERDE -> "ACEPTAR"
-            Oferta.AMARILLO -> "CONSIDERAR"
-            else -> "RECHAZAR"
-        }
-        val pre = when {
-            marca == MEJOR -> "★ "
-            segunda -> "2ª "
-            else -> ""
-        }
+        val sobre = when (nivel) { Oferta.VERDE -> COLOR_SOBRE_VERDE; Oferta.AMARILLO -> COLOR_SOBRE_AMARILLO; else -> COLOR_SOBRE_ROJO }
+        val accion = (when { marca == MEJOR -> "★ "; segunda -> "2ª "; else -> "" }) +
+            when (nivel) { Oferta.VERDE -> "ACEPTAR"; Oferta.AMARILLO -> "CONSIDERAR"; else -> "RECHAZAR" }
         val mon = prefs.moneda
+        private val conNeta = prefs.mostrarNeta && (prefs.kmPorLitro > 0 || prefs.desgastePorKm > 0)
+        val monto = mon.monto(if (conNeta) o.neta(prefs) else o.tarifa, 0)
+        val cumpleHora: Boolean? = if (prefs.filtroHora) o.porHora >= prefs.minPorHora else null
+        val cumpleKm: Boolean? = if (prefs.filtroKm) o.porKm >= prefs.minPorKm else null
+        val recFalla = prefs.filtroRecMax && o.recogidaKm > 0 && o.recogidaKm > prefs.recogidaMaxKm
+        val durFalla = prefs.filtroDurMax && o.viajeMin > prefs.duracionMax
+        private val baseMin = o.baseTarifaMinima(prefs)
+        private val tarFalla = prefs.filtroTarMin && prefs.tarifaMinima > 0 && baseMin < prefs.tarifaMinima
+        /** Tercera píldora (a todo el ancho): la zona bloqueada manda sobre la tarifa mínima. */
+        val extra: String? = when {
+            o.bloqueada -> o.motivoZona()
+            tarFalla -> "⚠ Menos de tu mínimo · " + mon.monto(baseMin, 0)
+            else -> null
+        }
+        val nAvisos = (if (recFalla) 1 else 0) + (if (durFalla) 1 else 0) + (if (extra != null) 1 else 0)
+    }
+
+    private fun tono(cumple: Boolean?) = when (cumple) { true -> Tema.VERDE; false -> COLOR_NO; null -> Oscuro.HUESO }
+    private fun marca(cumple: Boolean?) = when (cumple) { true -> "✓ "; false -> "✕ "; null -> "" }
+
+    private fun redondo(relleno: Int, radio: Float, borde: Int = 0, grosor: Int = 0) = GradientDrawable().apply {
+        setColor(relleno)
+        cornerRadius = radio
+        if (grosor > 0) setStroke(grosor, borde)
+    }
+
+    private fun texto(t: String, tam: Float, color: Int, tf: Typeface, gravedad: Int = Gravity.CENTER): TextView = TextView(ctx).apply {
+        text = t
+        setTextSize(TypedValue.COMPLEX_UNIT_SP, tam)
+        setTextColor(color)
+        typeface = tf
+        gravity = gravedad
+        includeFontPadding = false
+        maxLines = 1
+    }
+
+    /** Barra de tiempo (abajo): se vacía mientras corre el plazo del pop-up. La vista previa la deja fija. */
+    private fun barraDeTiempo(color: Int, alto: Int, interactivo: Boolean): View {
+        val caja = FrameLayout(ctx).apply { setBackgroundColor(Color.argb(26, 255, 255, 255)) }
+        val relleno = View(ctx).apply { setBackgroundColor(color) }
+        caja.addView(relleno, FrameLayout.LayoutParams(-1, alto))
+        if (interactivo) {
+            barraRelleno = relleno
+            relleno.pivotX = 0f
+        } else {
+            relleno.pivotX = 0f
+            relleno.scaleX = 0.62f
+        }
+        return caja
+    }
+
+    private fun construirCompleto(d: Datos, interactivo: Boolean): View {
+        val esc = prefs.escalaPopup / 100f
+        fun e(v: Float): Int = (v * esc * ctx.resources.displayMetrics.density).toInt()
+        fun sp(v: Float) = v * esc
+        val o = d.o
 
         val marco = FrameLayout(ctx).apply {
-            background = GradientDrawable().apply {
-                setColor(Oscuro.TABLERO)
-                cornerRadius = e(16f).toFloat()
-                // La mejor de dos lleva el borde más grueso.
-                setStroke(e(if (marca == MEJOR) 4f else 2.5f).coerceAtLeast(2), color)
-            }
+            background = redondo(Oscuro.ASFALTO, e(16f).toFloat(), d.color, e(if (d.marca == MEJOR) 4f else 2f).coerceAtLeast(2))
+            // El bloque de color no se sale de las esquinas redondeadas.
+            clipToOutline = true
+            outlineProvider = ViewOutlineProvider.BACKGROUND
             elevation = dp(8).toFloat()
         }
         val col = LinearLayout(ctx).apply { orientation = LinearLayout.VERTICAL }
         marco.addView(col, FrameLayout.LayoutParams(-1, -2))
 
-        // Arriba: la acción y el ⚡ (un solo texto; los lados iguales dejan lugar a la ✕).
-        val rayo = when {
-            o.multiplicador > 1.0 -> "⚡" + fmtX(o.multiplicador) + "x"
-            o.dinamica > 0 -> "⚡+" + mon.monto(o.dinamica, 0)
-            else -> null
-        }
-        val cab = SpannableStringBuilder()
-        cab.append(pre + accion)
-        cab.setSpan(ForegroundColorSpan(acento), 0, cab.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        if (rayo != null) {
-            cab.append("  ")
-            val r0 = cab.length
-            cab.append(rayo)
-            cab.setSpan(ForegroundColorSpan(Oscuro.AMARILLO), r0, cab.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            cab.setSpan(RelativeSizeSpan(0.8f), r0, cab.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            cab.setSpan(FuenteSpan(Fuentes.numero), r0, cab.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        }
-        val cabeza = TextView(ctx).apply {
-            text = cab
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(17f))
-            typeface = Fuentes.negrita
-            letterSpacing = 0.1f
+        // Cuerpo: bloque de color (decisión y monto) + $/h y $/km con sus minutos y km. Repartido en pesos 156 : 228.
+        val cuerpo = LinearLayout(ctx).apply { orientation = LinearLayout.HORIZONTAL; minimumHeight = e(100f) }
+        val bloque = LinearLayout(ctx).apply {
+            orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER
-            includeFontPadding = false
-            maxLines = 1
-            setHorizontallyScrolling(true)
-            setPadding(e(26f), e(8f), e(26f), 0)
+            setBackgroundColor(d.color)
+            setPadding(e(6f), e(10f), e(6f), e(10f))
         }
-        encogerFila(cabeza, 9f)
-        col.addView(cabeza, LinearLayout.LayoutParams(-1, -2))
+        bloque.addView(texto(d.accion, sp(14f), d.sobre, Fuentes.negrita).apply { letterSpacing = 0.06f }.also { encoger(it, 8f) },
+            LinearLayout.LayoutParams(-1, -2))
+        bloque.addView(texto(d.monto, sp(54f), d.sobre, Fuentes.titulo).apply { letterSpacing = -0.03f }.also { encoger(it, 24f) },
+            LinearLayout.LayoutParams(-1, -2))
+        cuerpo.addView(bloque, LinearLayout.LayoutParams(0, -1, 156f))
 
-        // En medio: el monto (neto si así está en Ajustes), lo más grande de la tarjeta.
-        val conNeta = prefs.mostrarNeta && (prefs.kmPorLitro > 0 || prefs.desgastePorKm > 0)
-        val montoTxt = TextView(ctx).apply {
-            text = mon.monto(if (conNeta) o.neta(prefs) else o.tarifa, 0)
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(46f))
-            setTextColor(Oscuro.HUESO)
-            typeface = Fuentes.titulo
-            gravity = Gravity.CENTER
-            includeFontPadding = false
-            maxLines = 1
-            setPadding(e(8f), e(2f), e(8f), e(2f))
+        val der = LinearLayout(ctx).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(e(10f), e(10f), e(12f), e(8f))
         }
-        encoger(montoTxt, 24f)
-        col.addView(montoTxt, LinearLayout.LayoutParams(-1, -2))
-
-        // $/h | $/km, grandes.
-        fun tono(cumple: Boolean?) = when (cumple) { true -> Tema.VERDE; false -> Tema.ROJO; null -> Oscuro.HUESO }
-        fun metrica(txt: String, c: Int, cumple: Boolean?) = TextView(ctx).apply {
-            // ✓ / ✕ además del color, para quien no distingue rojo de verde.
-            text = (when (cumple) { true -> "✓ "; false -> "✕ "; null -> "" }) + txt
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, sp(16.5f))
-            setTextColor(c)
-            typeface = Fuentes.numero
-            gravity = Gravity.CENTER
-            includeFontPadding = false
-            maxLines = 1
-            setPadding(e(2f), 0, e(2f), 0)
-        }.also { encoger(it, 9f) }
-        val fila = LinearLayout(ctx).apply {
+        fun fila(metrica: String, c: Int, dato: String): LinearLayout = LinearLayout(ctx).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
-            setPadding(e(6f), e(5f), e(6f), 0)
+            addView(texto(metrica, sp(22f), c, Fuentes.numero, Gravity.START or Gravity.CENTER_VERTICAL).also { encoger(it, 11f) },
+                LinearLayout.LayoutParams(0, -2, 1f))
+            addView(texto(dato, sp(13f), Oscuro.HUESO, Fuentes.numero, Gravity.END or Gravity.CENTER_VERTICAL).also { encoger(it, 8f) }
+                .apply { alpha = 0.92f; setPadding(e(6f), 0, 0, 0) }, LinearLayout.LayoutParams(-2, -2))
         }
-        val cumpleHora = if (prefs.filtroHora) o.porHora >= prefs.minPorHora else null
-        val cumpleKm = if (prefs.filtroKm) o.porKm >= prefs.minPorKm else null
-        fila.addView(metrica(mon.monto(o.porHora, 0) + "/h", tono(cumpleHora), cumpleHora),
-            LinearLayout.LayoutParams(0, -2, 1f))
-        fila.addView(View(ctx).apply { setBackgroundColor(linea) },
-            LinearLayout.LayoutParams(maxOf(1, dp(1)), e(16f)).apply { leftMargin = e(4f); rightMargin = e(4f) })
-        fila.addView(metrica(mon.monto(o.porKm, 1) + "/km", tono(cumpleKm), cumpleKm),
-            LinearLayout.LayoutParams(0, -2, 1f))
-        col.addView(fila, LinearLayout.LayoutParams(-1, -2))
+        der.addView(fila(marca(d.cumpleHora) + d.mon.monto(o.porHora, 0) + "/h", tono(d.cumpleHora), fmt(o.min, 0) + " min"),
+            LinearLayout.LayoutParams(-1, -2))
+        der.addView(fila(marca(d.cumpleKm) + d.mon.monto(o.porKm, 1) + "/km", tono(d.cumpleKm), fmt(o.km, 1) + " km"),
+            LinearLayout.LayoutParams(-1, -2).apply { topMargin = e(2f) })
+        cuerpo.addView(der, LinearLayout.LayoutParams(0, -1, 228f))
+        col.addView(cuerpo, LinearLayout.LayoutParams(-1, -2))
 
-        // Si el origen o destino cae en zona bloqueada, o falla recogida, duración o tarifa mínima, una línea roja dice cuál.
-        // Abajo, chico: tiempo y distancia totales. «total» evita que el lector lo tome por un tramo.
-        val recFalla = prefs.filtroRecMax && o.recogidaKm > 0 && o.recogidaKm > prefs.recogidaMaxKm
-        val durFalla = prefs.filtroDurMax && o.viajeMin > prefs.duracionMax
-        val baseMin = o.baseTarifaMinima(prefs)
-        val tarFalla = prefs.filtroTarMin && prefs.tarifaMinima > 0 && baseMin < prefs.tarifaMinima
-        val aviso = when {
-            // La zona bloqueada manda sobre los filtros económicos (rojo con su motivo).
-            o.bloqueada -> o.motivoZona()
-            recFalla -> "Recogida lejana · " + fmt(o.recogidaKm, 1) + " km total"
-            durFalla -> "Viaje largo · " + fmt(o.viajeMin, 0) + " min total"
-            tarFalla -> "Menos de tu mínimo · " + mon.monto(baseMin, 0)
-            else -> null
-        }
-        col.addView(TextView(ctx).apply {
-            text = fmt(o.min, 0) + " min (" + fmt(o.km, 1) + " km) total"
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, maxOf(sp(12f), 9f))
-            setTextColor(if (recFalla || durFalla) Tema.ROJO else Oscuro.TENUE)
-            typeface = Fuentes.numero
-            gravity = Gravity.CENTER
-            includeFontPadding = false
-            maxLines = 1
-            setPadding(e(6f), e(6f), e(6f), if (aviso != null) 0 else e(9f))
-        }.also { encoger(it, 7f) }, LinearLayout.LayoutParams(-1, -2))
-        if (aviso != null) {
-            col.addView(TextView(ctx).apply {
-                text = aviso
-                // El motivo del rojo no baja de 11 sp aunque el pop-up esté al 70 %.
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, maxOf(sp(13f), 11f))
-                setTextColor(Tema.ROJO)
-                typeface = Fuentes.texto
-                gravity = Gravity.CENTER
-                includeFontPadding = false
-                maxLines = 1
-                setPadding(e(6f), e(3f), e(6f), e(9f))
-            }.also { encoger(it, 10f) }, LinearLayout.LayoutParams(-1, -2))
+        // Avisos: píldoras rojas. Recogida y viaje lado a lado; la tercera (tarifa mínima o zona) a todo el ancho.
+        if (d.nAvisos > 0) {
+            val avisos = LinearLayout(ctx).apply {
+                orientation = LinearLayout.VERTICAL
+                setBackgroundColor(Color.argb(24, 239, 68, 68))
+                setPadding(e(10f), e(7f), e(10f), e(7f))
+            }
+            avisos.addView(View(ctx).apply { setBackgroundColor(Color.argb(102, 239, 68, 68)) }, LinearLayout.LayoutParams(-1, 1)
+                .apply { topMargin = -e(7f); bottomMargin = e(6f) })
+            fun pildora(t: String): TextView = texto(t, sp(14f), COLOR_AVISO, Fuentes.numero).apply {
+                background = redondo(Color.argb(51, 239, 68, 68), e(40f).toFloat(), Tema.ROJO, maxOf(1, e(1.5f)))
+                setPadding(e(11f), e(4f), e(11f), e(4f))
+            }.also { encoger(it, 10f) }
+            val unidas = ArrayList<String>()
+            if (d.recFalla) unidas.add("📍 Recogida " + fmt(o.recogidaKm, 1) + " km")
+            if (d.durFalla) unidas.add("⏱ Viaje " + fmt(o.viajeMin, 0) + " min")
+            if (unidas.isNotEmpty()) {
+                val f1 = LinearLayout(ctx).apply { orientation = LinearLayout.HORIZONTAL }
+                unidas.forEachIndexed { i, t ->
+                    f1.addView(pildora(t), LinearLayout.LayoutParams(0, -2, 1f).apply { if (i > 0) leftMargin = e(8f) })
+                }
+                avisos.addView(f1, LinearLayout.LayoutParams(-1, -2))
+            }
+            d.extra?.let { t ->
+                avisos.addView(pildora(t), LinearLayout.LayoutParams(-1, -2).apply { if (unidas.isNotEmpty()) topMargin = e(8f) })
+            }
+            col.addView(avisos, LinearLayout.LayoutParams(-1, -2))
         }
 
-        // ✕ en la esquina, a la altura de la acción (zona de toque de 24 dp escalada).
-        val cerrarBtn = ImageView(ctx).apply {
-            setImageDrawable(Icono(Icono.CERRAR, Oscuro.TENUE))
-            // Dibujo chico, área de toque de 48 dp fija (no se encoge con el tamaño del pop-up).
-            val lado = dp(48)
-            val chico = dp(6)
-            val resto = maxOf(0, lado - e(12f) - chico)
-            setPadding(resto, chico, chico, resto) // el dibujo queda en la esquina
-            if (interactivo) setOnClickListener { ocultar() }
+        // Abajo, chico y gris: «Leyó mal», la app con su tarifa y la barra de tiempo.
+        val meta = LinearLayout(ctx).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setBackgroundColor(Color.argb(18, 255, 255, 255))
+            setPadding(e(10f), e(4f), e(10f), e(5f))
         }
-        marco.addView(cerrarBtn, FrameLayout.LayoutParams(dp(48), dp(48), Gravity.TOP or Gravity.END).apply {
-            topMargin = dp(2); rightMargin = dp(2)
-        })
-
-        // «Leyó mal» en la otra esquina: mismo tamaño de toque que la ✕. Un toque manda la lectura
-        // a revisión y el icono cambia a ✓. Es un dibujo (sin texto): el lector no lo confunde.
         val reportar = alReportar
         if (interactivo && reportar != null && Cuenta.conectada(ctx)) {
-            val malBtn = ImageView(ctx).apply {
-                setImageDrawable(if (reportada == o) Icono(Icono.OK, Tema.VERDE) else Icono(Icono.ALERTA, Oscuro.TENUE))
-                val lado = dp(48)
-                val chico = dp(6)
-                val resto = maxOf(0, lado - e(12f) - chico)
-                setPadding(chico, chico, resto, resto) // el dibujo queda en la esquina
+            val malBtn = texto(if (reportada == o) "✓ Enviado" else "⚠ Leyó mal", maxOf(sp(11f), 9f),
+                if (reportada == o) Tema.VERDE else Color.rgb(185, 185, 194), Fuentes.texto).apply {
+                background = redondo(Color.TRANSPARENT, e(40f).toFloat(), Color.argb(34, 255, 255, 255), maxOf(1, e(1f)))
+                setPadding(e(9f), e(5f), e(9f), e(5f))
                 contentDescription = "Leyó mal: reportar esta lectura"
                 setOnClickListener {
                     if (reportada == o) return@setOnClickListener
                     val enviado = try { reportar() } catch (_: Exception) { false }
                     if (enviado) {
                         reportada = o
-                        setImageDrawable(Icono(Icono.OK, Tema.VERDE))
+                        text = "✓ Enviado"
+                        setTextColor(Tema.VERDE)
                     }
                     try {
                         android.widget.Toast.makeText(
@@ -449,32 +459,70 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
                     } catch (_: Exception) { }
                 }
             }
-            marco.addView(malBtn, FrameLayout.LayoutParams(dp(48), dp(48), Gravity.TOP or Gravity.START).apply {
-                topMargin = dp(2); leftMargin = dp(2)
-            })
+            meta.addView(malBtn, LinearLayout.LayoutParams(-2, -2))
         }
+        val nombreApp = when (d.app?.lowercase(Locale.ROOT)) { "uber" -> "Uber"; "didi" -> "DiDi"; else -> null }
+        meta.addView(texto((if (nombreApp != null) "$nombreApp · " else "") + d.mon.monto(o.tarifa, 2), maxOf(sp(11f), 9f), Oscuro.TENUE,
+            Fuentes.texto, Gravity.END or Gravity.CENTER_VERTICAL), LinearLayout.LayoutParams(0, -2, 1f))
+        col.addView(meta, LinearLayout.LayoutParams(-1, -2))
+        col.addView(barraDeTiempo(d.color, e(5f).coerceAtLeast(3), interactivo), LinearLayout.LayoutParams(-1, e(5f).coerceAtLeast(3)))
 
+        // ✕ en la esquina de arriba a la derecha (zona de toque de 48 dp fija, no se encoge con el tamaño).
+        val cerrarBtn = ImageView(ctx).apply {
+            setImageDrawable(Icono(Icono.CERRAR, Oscuro.TENUE))
+            val lado = dp(48)
+            val chico = dp(6)
+            val resto = maxOf(0, lado - e(12f) - chico)
+            setPadding(resto, chico, chico, resto)
+            if (interactivo) setOnClickListener { ocultar() }
+        }
+        marco.addView(cerrarBtn, FrameLayout.LayoutParams(dp(48), dp(48), Gravity.TOP or Gravity.END).apply {
+            topMargin = dp(2); rightMargin = dp(2)
+        })
         return marco
     }
 
-    /** Fuente propia para un tramo del texto (TypefaceSpan pide Android 9; la app llega a 8). */
-    private class FuenteSpan(private val tf: Typeface) : MetricAffectingSpan() {
-        override fun updateDrawState(p: TextPaint) { p.typeface = tf }
-        override fun updateMeasureState(p: TextPaint) { p.typeface = tf }
+    /** Píldora de 340×56 dp: punto del color, decisión, monto y `$/h`; con «⚠ N» si hay avisos. Se toca para abrir el completo. */
+    private fun construirCompacto(d: Datos, interactivo: Boolean): View {
+        val esc = prefs.escalaPopup / 100f
+        fun e(v: Float): Int = (v * esc * ctx.resources.displayMetrics.density).toInt()
+        fun sp(v: Float) = v * esc
+        val marco = FrameLayout(ctx).apply {
+            background = redondo(Oscuro.ASFALTO, e(40f).toFloat(), d.color, e(3f).coerceAtLeast(2))
+            clipToOutline = true
+            outlineProvider = ViewOutlineProvider.BACKGROUND
+            elevation = dp(8).toFloat()
+            minimumHeight = e(56f)
+        }
+        val fila = LinearLayout(ctx).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER
+            setPadding(e(14f), e(8f), e(14f), e(8f))
+        }
+        fila.addView(View(ctx).apply { background = redondo(d.color, e(8f).toFloat()) }, LinearLayout.LayoutParams(e(13f), e(13f)))
+        fila.addView(texto(d.accion, sp(12f), d.color, Fuentes.negrita).apply { letterSpacing = 0.04f; setPadding(e(9f), 0, e(9f), 0) },
+            LinearLayout.LayoutParams(-2, -2))
+        fila.addView(texto(d.monto, sp(28f), Oscuro.HUESO, Fuentes.titulo), LinearLayout.LayoutParams(-2, -2))
+        fila.addView(texto(marca(d.cumpleHora) + d.mon.monto(d.o.porHora, 0) + "/h", sp(16f), tono(d.cumpleHora), Fuentes.numero)
+            .apply { setPadding(e(9f), 0, 0, 0) }, LinearLayout.LayoutParams(-2, -2))
+        if (d.nAvisos > 0) {
+            fila.addView(texto("⚠ " + d.nAvisos, sp(12f), Color.WHITE, Fuentes.numero).apply {
+                background = redondo(Tema.ROJO, e(40f).toFloat())
+                setPadding(e(8f), e(2f), e(8f), e(2f))
+            }, LinearLayout.LayoutParams(-2, -2).apply { leftMargin = e(8f) })
+        }
+        marco.addView(fila, FrameLayout.LayoutParams(-1, -2, Gravity.CENTER))
+        marco.addView(barraDeTiempo(d.color, e(4f).coerceAtLeast(3), interactivo),
+            FrameLayout.LayoutParams(-1, e(4f).coerceAtLeast(3), Gravity.BOTTOM))
+        if (interactivo) marco.setOnClickListener { abrirCompleto() }
+        return marco
     }
 
-    /** Como [encoger] pero para un texto con tramos de distinto tamaño (mide el renglón ya armado). */
-    private fun encogerFila(t: TextView, minimoSp: Float) {
-        t.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-            val disp = t.width - t.paddingLeft - t.paddingRight
-            val l = t.layout
-            if (disp <= 0 || l == null || l.lineCount == 0) return@addOnLayoutChangeListener
-            val ancho = l.getLineWidth(0)
-            if (ancho <= disp) return@addOnLayoutChangeListener
-            val minimo = minimoSp * escalaFuente()
-            val nuevo = maxOf(minimo, t.textSize * disp / ancho)
-            if (nuevo < t.textSize - 0.5f) t.post { t.setTextSize(TypedValue.COMPLEX_UNIT_PX, nuevo) }
-        }
+    /** Un toque en el compacto: ese pop-up pasa a completo (con su plazo renovado). */
+    private fun abrirCompleto() {
+        val o = ultima ?: return
+        abierto = true
+        mostrar(o, ultApp, ultZona, ultMarca, true)
     }
 
     /** Achica el texto (sin bajar de [minimoSp]) si no cabe en una línea dentro de su espacio. */
@@ -519,8 +567,20 @@ class Popup(private val ctx: Context, private val prefs: Prefs, private val tipo
             (Color.blue(a) * (1 - f) + Color.blue(b) * f).toInt()
         )
 
-        /** Ancho del pop-up al 100 %, en dp; se multiplica por el tamaño elegido en Ajustes. */
-        const val ANCHO_BASE = 218
+        /** Ancho del pop-up completo al 100 %, en dp (diseño v9, 10.86); se multiplica por el tamaño elegido en Ajustes. */
+        const val ANCHO_BASE = 384
+        /** Ancho del pop-up compacto al 100 %, en dp. */
+        const val ANCHO_COMPACTO = 340
+
+        // Texto sobre el bloque de color (el mismo oscuro en los tres colores) y rojos del diseño v9.
+        private val COLOR_SOBRE_VERDE = Color.rgb(6, 33, 15)
+        private val COLOR_SOBRE_AMARILLO = Color.rgb(27, 21, 0)
+        private val COLOR_SOBRE_ROJO = Color.rgb(27, 0, 0)
+        private val COLOR_NO = Color.rgb(255, 107, 107)
+        private val COLOR_AVISO = Color.rgb(255, 208, 208)
+
+        fun anchoCompactoPx(c: Context, p: Prefs): Int =
+            (ANCHO_COMPACTO * p.escalaPopup / 100f * c.resources.displayMetrics.density).toInt()
 
         /** Ancho del pop-up en píxeles según el tamaño elegido (sin el tope de la pantalla). */
         fun anchoPx(c: Context, p: Prefs): Int =

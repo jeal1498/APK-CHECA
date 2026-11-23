@@ -1957,6 +1957,10 @@ class MainActivity : Activity() {
             { prefs.duracionSeg.toFloat() }, { prefs.duracionSeg = it.toInt() }, 3f, 60f), margenArriba(Tema.S1))
         pop.addView(campoMeta("Altura en la pantalla", "", " %", 1f, null, null,
             { prefs.posicion.toFloat() }, { prefs.posicion = it.toInt() }, 0f, 80f), margenArriba(Tema.S1))
+        pop.addView(interruptor("Pop-up compacto", "Sale una píldora con el monto y lo que ganas por hora; tócala para ver todo", prefs.popupCompacto) {
+            prefs.popupCompacto = it
+            refrescarVistaPrevia()
+        }, margenArriba(Tema.S1))
         pop.addView(interruptor("Mostrar lo que te queda", "Descuenta gasolina y desgaste en el pop-up", prefs.mostrarNeta) {
             prefs.mostrarNeta = it
             refrescarVistaPrevia()

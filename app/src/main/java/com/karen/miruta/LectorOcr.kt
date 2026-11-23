@@ -152,11 +152,12 @@ class LectorOcr(private val ctx: Context, private val prefs: Prefs) {
         // ¿Hay una oferta a la vista (tramo «N min (»)? Si sí pero no se entendió, se reintenta rápido.
         val hayTramo = todas.any { esTramo(it.text) }
         // ¿Sigue cada oferta en pantalla? Si no, su pop-up se quita (no queda uno sin oferta).
-        RutaService.instancia?.revisarSalida(todas.filter { esTramo(it.text) }.mapNotNull { l ->
+        val tramosEnPantalla = todas.filter { esTramo(it.text) }.mapNotNull { l ->
             l.boundingBox?.let {
-                Rect((it.left * escalaX).toInt(), (it.top * escalaY).toInt(), (it.right * escalaX).toInt(), (it.bottom * escalaY).toInt())
+                Rect((it.left * escalaX).toInt(), (it.top * escalaY).toInt(), (it.right * escalaX).toInt(), (it.bottom * escalaY).toInt()) to l.text
             }
-        })
+        }
+        RutaService.instancia?.revisarSalida(tramosEnPantalla.map { it.first }, tramosEnPantalla)
         ofertaEnPantalla = hayTramo
         ultimaLeida = hayTramo && leyoPasada
         fallos = if (hayTramo && !leyoPasada) minOf(fallos + 1, 99) else 0
