@@ -1,0 +1,23 @@
+# Arriba una tarjeta cortada que muestra sus dos tramos y su botón pero NO su monto; abajo la tarjeta completa.
+# Se lee la completa (no se usa una parcialmente visible si hay otra completa).
+(8 min 1.5 km) Vallejo FGR, San José de la
+Escalera, Gustavo A. Madero, Ciudad de
+México
+(49 min 12 km) Cerrada Riahuelo del
+Pedregal, Atizapán de Zaragoza, Ciu...
+Aceptar $105.34
+$113.34
+$118.34
+$122.34
+Pon Tu Precio
+$29.71 Ox1.2
+4.81 • 107 viajes
+(10 min 2.1 km) Cacama 25, El Tenayo
+Centro, Tlalnepantla de Baz, Ciudad de
+México
+(11 min 2.7 km) Cacama 27, El Tenayo
+Sur, Tlalnepantla de Baz, Ciudad de
+México
+Aceptar $29.71
+---
+tarifa=29.71 km=4.8 min=21 recKm=2.1 recMin=10

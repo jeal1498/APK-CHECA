@@ -1,0 +1,8 @@
+# Límite de la corrección anterior: un viaje largo de verdad (40 min para 8.0 km, 12 km/h) y una recogida de 8 min NO se
+# tocan: la velocidad no es imposible, así que no se quita ningún dígito.
+$80.00
+$8.00/km est.
+8 min (2.0 km)
+40 min (8.0 km)
+---
+tarifa=80 km=10 min=48 recKm=2 recMin=8

@@ -208,10 +208,15 @@ object Parser {
         return 0.0
     }
 
+    // «1 min más lenta», «2 min más rápida»: rutas alternativas de la navegación de DiDi (no son una oferta).
+    private val rutaAlternativa = Regex("""\d\s?min\s+m[aá]s\s+(?:lenta|r[aá]pida)""", RegexOption.IGNORE_CASE)
+    // El tramo de DiDi lleva el paréntesis ANTES de los minutos: «(12 min 4.3 km)» (el de Uber viejo, «5 min (1.6 km)», no).
+    private val parentesisAntes = Regex("""\(\s*\d+\s?min\s""")
     // Mapa de calor de DiDi («1.1X-1.4X»): con dos o más rangos y un solo tramo es la pantalla de inicio.
     private val rango = Regex("""\d\s?[xX×]\s?[-–]""")
     // «El pasajero canceló»: aviso, no oferta.
-    private val cancelo = Regex("""cancel[oó]\b""", RegexOption.IGNORE_CASE)
+    // Sin «\b»: en Java no cuenta la «ó» como letra y «canceló» al final de la línea no coincidía (prueba didi-pasajero-cancelo).
+    private val cancelo = Regex("""cancel[oó](?![\p{L}\d])""", RegexOption.IGNORE_CASE)
     // Uber «$9.65/km est.» en su propia línea: km totales ≈ tarifa ÷ $/km.
     private val kmEstimado = Regex("""(\d{1,2}[.,]\d{2})\s?/\s?k[rn]?m""", RegexOption.IGNORE_CASE)
 
@@ -299,57 +304,110 @@ object Parser {
         return v
     }
 
-    /**
-     * Pantallas de DiDi con varias tarjetas (Centro de viajes, «Pon tu precio», radar), 14 nov: la
-     * oferta del pop-up es la primera tarjeta completa de arriba abajo: dos tramos seguidos con su
-     * monto justo antes (sin otro tramo en medio) o con «Aceptar $X» justo después (este manda).
-     * Un par sin monto es una tarjeta cortada arriba: se salta. Montos sueltos de arriba (pop-up
-     * propio, tarjeta cortada) y contraofertas no cuentan. Devuelve las líneas de esa tarjeta, o
-     * null si no hace falta elegir (una sola tarjeta) o si es Uber con su resumen «$/km est.».
-     */
-    fun tarjetaElegida(textos: List<String>, moneda: Moneda = Moneda.MXN): List<String>? {
-        if (moneda.codigo != "MXN") return null
-        if (textos.any { porKmTexto.containsMatchIn(it) && it.contains("est", ignoreCase = true) }) return null
-        val r = reglasDe(moneda)
-        // DiDi siempre pone el tramo entre paréntesis; «27 min 12.3 km» sin ellos es el resumen de Uber.
-        val tr = indicesTramos(textos).filter { textos[it].contains('(') || textos[it].contains(')') }.toHashSet()
-        if (tr.size < 2) return null
-        val primero = tr.minOrNull() ?: return null
-        // Con una sola tarjeta (2 tramos) solo se elige si arriba hay más de un monto.
-        val unaTarjeta = tr.size < 3
-        if (unaTarjeta && (0 until primero).count { textos[it].contains('$') } < 2) return null
-        var i = 0
-        while (i + 1 < textos.size) {
-            if (i in tr && (i + 1) in tr) {
-                val boton = textos.getOrNull(i + 2)?.takeIf { r.aceptarMonto.containsMatchIn(it) }
-                var j = i - 1
-                while (j >= 0 && j !in tr && anclaTarjeta(textos[j]) == null) j--
-                val ancla = if (j >= 0 && j !in tr) textos[j] else null
-                // Con 2 tramos, un monto liso junto al par puede ser la ganancia del día de DiDi
-                // («$119.29», 14 nov, capturas 1049/1369/1379): solo manda con multiplicador o extra.
-                val fiable = boton != null || (ancla != null && (!unaTarjeta || ancla.trim().let { a ->
-                    anclaDidi.find(a)?.groupValues?.get(2)?.isNotBlank() == true }))
-                // El botón va primero: su monto manda; la línea del monto aporta el multiplicador.
-                // Tarjeta cortada arriba (su monto no se ve, solo el botón «Aceptar $X») y más abajo hay otra
-                // tarjeta completa con su monto: la completa es la oferta (referencia humana, caso 1324).
-                val cortada = boton != null && ancla == null && !unaTarjeta
-                if (cortada && tarjetaCompletaDespues(textos, tr, i + 2)) { i += 2; continue }
-                if (fiable) return listOfNotNull(boton, ancla, textos[i], textos[i + 1])
-                if (unaTarjeta) return null
-                i += 2
-                continue
-            }
-            i++
-        }
-        return null
+    private sealed class Eleccion {
+        /** No hace falta (o no se puede) separar tarjetas: se lee todo como antes. */
+        object NoAplica : Eleccion()
+        /** Hay varias tarjetas y no se puede saber con seguridad cuál leer: mejor no mostrar nada. */
+        object Ambigua : Eleccion()
+        class Elegida(val lineas: List<String>) : Eleccion()
     }
 
-    /** ¿Hay, después de `desde`, un par de tramos con su monto justo antes (tarjeta completa)? */
-    private fun tarjetaCompletaDespues(textos: List<String>, tr: Set<Int>, desde: Int): Boolean {
-        for (k in desde until textos.size - 1) {
-            if (k in tr && (k + 1) in tr && k > 0 && (k - 1) !in tr && anclaTarjeta(textos[k - 1]) != null) return true
+    // Botones de DiDi sin monto: Express («Tomar viaje») y el carrusel («Aceptar viajes»).
+    private val botonSinMonto = Regex("""^\s*(?:tomar\s+viaje|aceptar\s+viajes?)\s*$""", RegexOption.IGNORE_CASE)
+    // Contraofertas que van bajo el botón: «$113.34», «$104.57 $107.57 $110.57», «→ 139.32 $143.32».
+    private val lineaContraofertas = Regex("""^[^\w$]{0,3}(?:\$?\s?\d{1,5}[.,]\d{2}\s*){1,3}$""")
+    private val montoConCentavos = Regex("""\d{1,5}[.,]\d{2}""")
+
+    /**
+     * Pantallas de DiDi con varias tarjetas (Centro de viajes, «Pon tu precio», carrusel, radar). Una tarjeta es
+     * monto + recogida + viaje + botón; la dirección de cada tramo se parte en 1–3 líneas y entre los dos tramos
+     * puede haber «1 parada(s)», así que los tramos NO van en líneas seguidas. Se agrupan los tramos que no tienen
+     * entre sí un monto de tarjeta ni un botón: un grupo de 2 es una tarjeta, uno de 1 es una tarjeta cortada y uno
+     * de 3 o más trae los tramos de una tarjeta cortada de abajo, salvo con 2 montos juntos arriba (tarjetas lado a
+     * lado, de las que no hay coordenadas horizontales aquí): ahí no se lee nada. Se lee la primera tarjeta completa
+     * (con su monto a la vista); sin monto ni botón con monto no se lee nada. Con una sola tarjeta (2 tramos y casi
+     * nada de monto arriba) no se separa.
+     */
+    private fun elegirTarjeta(textos: List<String>, moneda: Moneda): Eleccion {
+        if (moneda.codigo != "MXN") return Eleccion.NoAplica
+        if (textos.any { porKmTexto.containsMatchIn(it) && it.contains("est", ignoreCase = true) }) return Eleccion.NoAplica
+        val r = reglasDe(moneda)
+        // DiDi siempre pone el tramo entre paréntesis; «27 min 12.3 km» sin ellos es el resumen de Uber.
+        val tr = indicesTramos(textos).filter { textos[it].contains('(') || textos[it].contains(')') }
+        if (tr.size < 2) return Eleccion.NoAplica
+        // Con una sola tarjeta (2 tramos) solo se separa si arriba hay más de un monto.
+        if (tr.size < 3 && (0 until tr.first()).count { textos[it].contains('$') } < 2) return Eleccion.NoAplica
+        val esBoton = { t: String -> r.aceptarMonto.containsMatchIn(t) || botonSinMonto.containsMatchIn(t) }
+        // Las contraofertas bajo un botón (hasta 3) no son el monto de una tarjeta.
+        val contra = BooleanArray(textos.size)
+        for (i in textos.indices) if (esBoton(textos[i])) {
+            var j = i + 1
+            var n = 0
+            while (j < textos.size && n < 3 && lineaContraofertas.matches(textos[j].trim())) {
+                n += montoConCentavos.findAll(textos[j]).count()
+                if (n > 3) break
+                contra[j] = true
+                j++
+            }
         }
-        return false
+        val esMonto = { i: Int -> !contra[i] && anclaTarjeta(textos[i]) != null }
+        val trSet = tr.toHashSet()
+        // Grupos de tramos sin monto ni botón en medio.
+        val grupos = ArrayList<List<Int>>()
+        var actual = ArrayList<Int>()
+        for (t in tr) {
+            if (actual.isNotEmpty() && ((actual.last() + 1) until t).any { esBoton(textos[it]) || esMonto(it) }) {
+                grupos.add(actual)
+                actual = ArrayList()
+            }
+            actual.add(t)
+        }
+        grupos.add(actual)
+        // Monto de arriba de la lista: el OCR pone primero el monto de letra más grande (puede ser de esta tarjeta).
+        val primero = textos.firstOrNull()?.let { anclaTarjeta(it) }
+        var cortada: List<String>? = null
+        for (g in grupos) {
+            if (g.size == 1) continue
+            val t1 = g[0]
+            val t2 = g[1]
+            // Botón: el primero después del 2.º tramo y antes de otra tarjeta.
+            var b = -1
+            for (k in t2 + 1 until textos.size) {
+                if (esBoton(textos[k])) { b = k; break }
+                if (k in trSet || esMonto(k)) break
+            }
+            val deBoton = if (b >= 0) r.aceptarMonto.find(textos[b])?.let { r.valor(it) } else null
+            // Monto de la tarjeta: la línea con monto más cercana arriba del 1.er tramo, sin pasar el botón de otra.
+            var a = -1
+            var montosArriba = 0          // montos de tarjeta sin contar el monto liso de la línea 0 (el que el OCR sube al principio)
+            var k = t1 - 1
+            while (k >= 0 && k !in trSet && !esBoton(textos[k])) {
+                if (esMonto(k)) {
+                    if (a < 0) a = k
+                    if (!(k == 0 && anclaDidi.find(textos[0].trim())?.groupValues?.get(2)?.isBlank() == true)) montosArriba++
+                }
+                k--
+            }
+            // Más de 2 tramos seguidos: sobran los de una tarjeta cortada de abajo (sin monto ni botón a la vista), salvo
+            // que haya 2 montos juntos arriba: son 2 tarjetas lado a lado con las líneas intercaladas y no se pueden separar.
+            if (g.size > 2 && montosArriba >= 2) return Eleccion.Ambigua
+            val monto = if (a >= 0) anclaTarjeta(textos[a]) else null
+            // Con 2 tramos, un monto liso junto al par puede ser la ganancia del día de DiDi
+            // («$119.29», 14 nov, capturas 1049/1369/1379): solo manda con multiplicador o extra, o con el botón.
+            if (tr.size < 3 && deBoton == null && (a < 0 || anclaDidi.find(textos[a].trim())?.groupValues?.get(2)?.isNotBlank() != true)) {
+                return Eleccion.NoAplica
+            }
+            val tarifa = deBoton ?: monto
+            if (tarifa == null) continue                 // sin monto a la vista: no se sabe cuál es su tarifa
+            // El botón manda; el monto de arriba solo si coincide (si no, es de otra tarjeta).
+            val lineaMonto = if (a >= 0 && (deBoton == null || Math.abs(deBoton - (monto ?: 0.0)) < 0.005)) textos[a] else null
+            val lineas = listOfNotNull(if (deBoton != null) textos[b] else null, lineaMonto, textos[t1], textos[t2])
+            // Completa = su monto está a la vista (o es el que el OCR subió al principio y coincide con su botón).
+            val completa = lineaMonto != null || (deBoton != null && primero != null && Math.abs(deBoton - primero) < 0.005)
+            if (completa) return Eleccion.Elegida(lineas)
+            if (cortada == null) cortada = lineas       // tarjeta cortada arriba: solo si no hay otra completa
+        }
+        return cortada?.let { Eleccion.Elegida(it) } ?: Eleccion.Ambigua
     }
 
     // «$58,41», «$109,47»: el OCR leyó coma en vez de punto en la tarifa (14 nov, capturas 1035 y 1216).
@@ -357,37 +415,54 @@ object Parser {
 
     /**
      * DiDi (14 nov, capturas de la 10.77): el ícono verde o naranja del tramo se lee como un dígito
-     * pegado a los minutos («92min (654 m)» = 2 min, «410 min (2.5 km)» = 10 min, «46min (2.4 km)» = 6).
-     * Solo si empieza en 4, 6 o 9 y la velocidad es imposible (menos de 4 km/h) y sin ese dígito no.
+     * pegado a los minutos («92min (654 m)» = 2 min, «410 min (2.5 km)» = 10 min, «46min (2.4 km)» = 6;
+     * 22 nov: también el 7, «74min (780 m)» = 4 min, D2863).
+     * Solo si empieza en 4, 6, 7 o 9 y la velocidad es imposible (menos de 4 km/h) y sin ese dígito no.
+     * En Uber (formato nuevo, con «$/km est.») vale lo mismo con los dígitos 2, 4, 8 y 9 y menos de 3 km/h.
      */
-    private fun sinIcono(minutos: String, km: Double): Double? {
-        if (minutos.length < 2 || minutos[0] !in "469" || km <= 0) return null
+    private fun sinIcono(minutos: String, km: Double, digitos: String = "4679", umbral: Double = 4.0): Double? {
+        if (minutos.length < 2 || minutos[0] !in digitos || km <= 0) return null
         val mi = minutos.toDoubleOrNull() ?: return null
         val m1 = minutos.substring(1).toDoubleOrNull() ?: return null
         if (m1 < 1) return null
         val v0 = km * 60 / mi
         val v1 = km * 60 / m1
-        return if (v0 < 4 && v1 <= 90 && (v1 >= 4 || m1 <= 3)) m1 else null
+        return if (v0 < umbral && v1 <= 90 && (v1 >= 4 || m1 <= 3)) m1 else null
     }
 
+    // Por qué la última lectura de ESTE hilo no dio oferta (para el diagnóstico OCR → Parser; no cambia el resultado).
+    private val ultimoRechazo = ThreadLocal<String?>()
+    /** Motivo (código corto) por el que la última llamada a [analizar] en este hilo devolvió null; null si leyó una oferta. */
+    fun motivoRechazo(): String? = ultimoRechazo.get()
+    private fun rechazo(motivo: String): Oferta? { ultimoRechazo.set(motivo); return null }
+    /** Resultado de la elección de tarjeta de la última lectura de este hilo: «una_tarjeta», «elegida» o «ambigua». */
+    private val ultimaEleccion = ThreadLocal<String?>()
+    fun eleccionTarjeta(): String? = ultimaEleccion.get()
+
     fun analizar(entrada: List<String>, moneda: Moneda = Moneda.MXN): Oferta? {
+        ultimoRechazo.set(null)
+        ultimaEleccion.set(null)
         val textos = if (moneda.codigo == "MXN") entrada.map { comaDecimal.replace(it, "$1.$2") } else entrada
-        val tarjeta = tarjetaElegida(textos, moneda) ?: return analizarLineas(textos, moneda)
+        val tarjeta = when (val e = elegirTarjeta(textos, moneda)) {
+            is Eleccion.NoAplica -> { ultimaEleccion.set("sin_separar"); return analizarLineas(textos, moneda) }
+            is Eleccion.Ambigua -> { ultimaEleccion.set("ambigua"); return rechazo("tarjetas_ambiguas") }
+            is Eleccion.Elegida -> { ultimaEleccion.set("elegida"); e.lineas }
+        }
         // Avisos de toda la pantalla (cancelado, vencido, navegación) mandan sobre la tarjeta.
-        if (textos.any { cancelo.containsMatchIn(it) } || esOfertaCaida(textos)) return null
+        if (textos.any { cancelo.containsMatchIn(it) } || esOfertaCaida(textos)) return rechazo("aviso_en_pantalla")
         return analizarLineas(tarjeta, moneda)
     }
 
     private fun analizarLineas(textos: List<String>, moneda: Moneda): Oferta? {
         val r = reglasDe(moneda)
-        var tarifa = buscarTarifa(textos, r) ?: return null
-        if (textos.any { cancelo.containsMatchIn(it) }) return null
+        var tarifa = buscarTarifa(textos, r) ?: return rechazo("sin_tarifa")
+        if (textos.any { cancelo.containsMatchIn(it) }) return rechazo("aviso_en_pantalla")
 
         // Tramos en orden: (km, min, ¿es resumen?).
         val lista = ArrayList<Triple<Double, Double, Boolean>>()
         var resPorKm = 0.0
         val vistos = HashSet<String>()
-        // Uber trae su «$/km est.»; el ícono del tramo leído como dígito es cosa de DiDi.
+        // Uber trae su «$/km est.» (esDidi = falso): el ícono pegado a los minutos se corrige con otros dígitos y umbral (sinIcono).
         val esDidi = textos.none { porKmTexto.containsMatchIn(it) && it.contains("est", ignoreCase = true) }
         for ((idx, t) in textos.withIndex()) {
             // "42 min (14.9 km) total" es un resumen (nuestro pop-up u otra app): no sumar.
@@ -409,10 +484,14 @@ object Parser {
                 val unidad = m.groupValues[4].ifEmpty { m.groupValues[6] }
                 val d = numero.replace(",", ".").toDoubleOrNull() ?: 0.0
                 // Metros reales siempre son enteros ≥ 30 ("720m"). "2.4m" o "1m" son km mal leídos.
+                // Excepción: «O min (11 m)» (0 minutos) no puede ser 11 km; son 11 metros (N871 y N884, 22 nov).
                 val esMetros = unidad.equals("m", ignoreCase = true) &&
-                    !numero.contains('.') && !numero.contains(',') && d >= 30
+                    !numero.contains('.') && !numero.contains(',') && (d >= 30 || (d > 0 && h == 0.0 && mi == 0.0))
                 val tramoKm = if (esMetros) d / 1000.0 else d
-                val tramoMin = if (h == 0.0 && esDidi) sinIcono(m.groupValues[2], tramoKm) ?: mi else h * 60.0 + mi
+                // Uber nuevo (23 nov, autorizado por Eduardo): el ícono también se pega a los minutos («88 min3.7 knm» = 8 min,
+                // «95 min (1.5 km)» = 5 min; capturas 1251, 1264, 2844…). Solo 2, 4, 8 y 9 (los vistos) y con menos de 3 km/h.
+                val tramoMin = if (h == 0.0) (if (esDidi) sinIcono(m.groupValues[2], tramoKm) else sinIcono(m.groupValues[2], tramoKm, "2489", 3.0)) ?: mi
+                    else h * 60.0 + mi
                 val resumen = porKm != null
                 if (resumen && porKm != null) resPorKm = porKm
                 lista.add(Triple(tramoKm, tramoMin, resumen))
@@ -458,11 +537,17 @@ object Parser {
         }
 
         // Una oferta siempre trae 2 tramos (recogida + viaje); con 1 aceptamos también.
-        if (tramos == 0) return null
-        if (esNavegacion(textos, moneda)) return null
-        if (esOfertaCaida(textos)) return null
+        if (tramos == 0) return rechazo("sin_tramos")
+        if (esNavegacion(textos, moneda)) return rechazo("navegacion")
+        if (esOfertaCaida(textos)) return rechazo("aviso_en_pantalla")
+        // DiDi: «1 min más lenta» / «más rápida» son rutas alternativas de la navegación, no una oferta (D2864, 22 nov).
+        if (textos.any { rutaAlternativa.containsMatchIn(it) }) return rechazo("ruta_alternativa")
+        // DiDi con UN solo tramo «(N min X km)», sin «Aceptar $X» ni resumen: es un pedazo de otra pantalla (navegación,
+        // radar con la ganancia del día; N930, D2429, D2430, 22 nov). Una oferta de DiDi trae recogida y viaje, o su botón.
+        if (esDidi && tramos == 1 && resumen == null && textos.none { r.aceptarMonto.containsMatchIn(it) } &&
+            textos.any { parentesisAntes.containsMatchIn(corregirMinutos(it)) }) return rechazo("un_tramo_sin_boton")
         if (tramos < 2 && textos.count { rango.containsMatchIn(it) } >= 2 &&
-            textos.none { r.aceptarMonto.containsMatchIn(it) }) return null
+            textos.none { r.aceptarMonto.containsMatchIn(it) }) return rechazo("mapa_de_calor")
         // Uber: si los km no dan el «$/km est.», el OCR perdió un punto («70 km» = 7.0): manda el $/km.
         if (resumen == null && tramos >= 2) {
             val linea = textos.firstOrNull { t -> kmEstimado.containsMatchIn(t) && !tramo.containsMatchIn(corregirMinutos(t)) }
@@ -482,16 +567,16 @@ object Parser {
         // Límites en pesos mexicanos; en otra moneda se convierten (aproximado) con más holgura.
         val f = moneda.factor
         val holgura = if (moneda.codigo == "MXN") 1.0 else 2.0
-        if (tarifa <= 0) return null
-        if (f != null && (tarifa * f < 10 / holgura || tarifa * f > 20000 * holgura)) return null
-        if (km < 0.3 || km > 500) return null
-        if (min < 1 || min > 600) return null
+        if (tarifa <= 0) return rechazo("tarifa_fuera_de_limites")
+        if (f != null && (tarifa * f < 10 / holgura || tarifa * f > 20000 * holgura)) return rechazo("tarifa_fuera_de_limites")
+        if (km < 0.3 || km > 500) return rechazo("km_fuera_de_limites")
+        if (min < 1 || min > 600) return rechazo("min_fuera_de_limites")
         // Con un solo tramo no sabemos cuál es la recogida.
         if (tramos < 2) { recKm = 0.0; recMin = 0.0 }
         val dinamica = buscarDinamica(textos, r).let { if (it < tarifa) it else 0.0 }
         val o = Oferta(tarifa, km, min, recKm, recMin, buscarMultiplicador(textos), dinamica)
         // Descarta lecturas imposibles.
-        if (f != null && (o.porKm * f > 80 * holgura || o.porHora * f > 3000 * holgura)) return null
+        if (f != null && (o.porKm * f > 80 * holgura || o.porHora * f > 3000 * holgura)) return rechazo("lectura_imposible")
         return o
     }
 
@@ -583,11 +668,14 @@ object Parser {
     // Uber nuevo (12 nov): «6 min l.9 km», «minl.2 km» (l por 1) y «15.4 kmn», «4.7 krn».
     private val unoKm = Regex("""(?:(?<=min)|(?<![A-Za-z]))[lI|](?=[\d.,lI|]*\s?(?:km|m)\b)""")
     private val kmOcr = Regex("""(?<=\d)(\s?)(?:krn|knm|kmn|kon)\b""", RegexOption.IGNORE_CASE)
+    // «5 min (2:1 km)» (el punto leído como dos puntos, D2427) y «7min (2.3 k?s» (unidad ilegible, D2858).
+    private val dosPuntosKm = Regex("""(?<=\d):(?=\d{1,3}\s?(?:km|m)\b)""", RegexOption.IGNORE_CASE)
+    private val unidadIlegible = Regex("""(?<=\d)(\s?)k[?¿]\s?[sm]\b""", RegexOption.IGNORE_CASE)
     private fun corregirMinutos(t: String): String {
         val c = horasOcr.replace(minutosOcr.replace(t) {
             it.value.replace(Regex("[lI|]"), "1").replace('B', '8').replace(Regex("[Oo]"), "0").replace('S', '5')
         }, "1")
-        return unoKm.replace(kmOcr.replace(c, "\$1km"), "1")
+        return dosPuntosKm.replace(unoKm.replace(kmOcr.replace(unidadIlegible.replace(c, "\$1km"), "\$1km"), "1"), ".")
     }
 
     private fun buscarTarifa(textos: List<String>, r: Reglas): Double? {

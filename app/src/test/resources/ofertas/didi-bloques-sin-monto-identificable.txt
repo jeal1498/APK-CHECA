@@ -1,0 +1,13 @@
+# Express cortado arriba (sus dos tramos y «Tomar viaje», sin monto a la vista) y otra tarjeta cortada abajo:
+# no hay una tarjeta completa con monto identificable → no se lee nada.
+(3 min 702 m) Mercado Zona Postal, Niños
+Héroes, Benito Juárez, Ciudad de México
+(25 min 5.5 km) Suprema Corte de
+Justicia de la Nación, Centro Histórico
+Tomar viaje
+(5 min 1.2 km) Cumbres de Maltrata 468 -
+Cumbres de Maltrata, Niños Héroes
+(25 min 11.3 km) Sinaloa 14, Ampliación
+Venustiano Carranza, Ciudad de México
+---
+nada

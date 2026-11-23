@@ -1,0 +1,7 @@
+# 23 nov 2026 (10.85, errores_lector 2844, 2850 y 2855, revisión humana): el ícono se lee como un 8 («88 min3.7 knm» = 8 min).
+$37.96
+$6.33/km est.
+88 min3.7 knm
+10 min • 2.3 km
+---
+tarifa=37.96 km=6 min=18 recKm=3.7 recMin=8

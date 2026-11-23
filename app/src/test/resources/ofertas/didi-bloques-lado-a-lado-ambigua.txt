@@ -1,0 +1,13 @@
+# Dos tarjetas completas lado a lado (tablet o carrusel): el OCR las ordena por altura y sus líneas quedan
+# intercaladas (monto, monto, recogida, recogida, viaje, viaje). El Parser no tiene coordenadas horizontales,
+# así que no puede saber cuál es cuál: no se lee nada antes que mezclar tarjetas.
+$47.50 Ox1.2
+$62.10 Ox1.4
+(6 min 1.5 km) Calle Allende 12, Centro
+(8 min 2.0 km) Calle Hidalgo 90, Reforma
+(12 min 4.0 km) Avenida Juárez 440,
+(15 min 6.1 km) Calzada del Valle 12,
+Aceptar $47.50
+Aceptar $62.10
+---
+nada

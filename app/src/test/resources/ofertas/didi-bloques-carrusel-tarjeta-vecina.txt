@@ -1,0 +1,21 @@
+# 22 nov 2026 (10.85, errores_lector 2301): mapa con carrusel de ofertas; asoma el final de la tarjeta vecina
+# («Aceptar $46.96» y sus contraofertas) antes que la tarjeta completa de $135.15. Antes: tarifa $46.96 con los
+# tramos de la tarjeta de $135.15. Líneas completas reconstruidas de la captura.
+$47.96
+Aceptar $46.96
+$49.96
+$50.96
+Pon Tu Precio Nuevo
+$135.15 Ox14
+4.82 • 672 viajes • Perfil avanzado
+(10 min 4.1 km) Calle Atlixco 105, Colonia
+Condesa, Cuauhtémoc, Ciudad de México
+(17 min 14.7 km) Avenida Ing. Eduardo
+Molina 1095, San Pedro el Chico,
+Gustavo A. Madero, Ciudad de México
+Aceptar $135.15
+$139.15
+$143.15
+$147.15
+---
+tarifa=135.15 km=18.8 min=27 recKm=4.1 recMin=10

@@ -1,0 +1,8 @@
+# 22 nov 2026 (10.85, errores_lector 2864): navegación de DiDi con rutas alternativas («1 min más lenta»). Los
+# «tramos» son las duraciones de las rutas, no una oferta. Antes salía un pop-up con $42.23, 4.1 km, 20 min.
+$42.23
+1 min más lenta
+65min (1.8 km)
+|5min (2.3 km)
+---
+nada

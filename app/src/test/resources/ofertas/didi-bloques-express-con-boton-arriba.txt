@@ -1,0 +1,25 @@
+# 22 nov 2026 (10.85, capturas_ok 1704): arriba el final de una tarjeta cortada (su monto $135.32 subido al principio
+# y contraofertas); la completa es Express («Tomar viaje») con $85.53 Ox1.6. Antes: tarifa $135.32.
+# Líneas reconstruidas de la captura (las contraofertas salen con basura del OCR).
+$135.32
+→ 139.32 $143.32
+$147.32
+Express Nuevo
+$85.53 Ox1.6
+4.93 • 297 viajes
+(3 min 415 m) Dance Factory, Bosques
+de La Victoria, Guadalajara
+(16 min 5.5 km) 12 de Octubre, 1o .
+de Mayo, Guadalajara
+Tomar viaje
+Pon Tu Precio
+$34.85
+4.92 • 702 viajes •
+Tarjeta bancaria verificada
+(5 min 1.4 km) Bronce 4522 - N°1,
+Lomas de La Victoria, San Pedro
+Tlaquepaque
+(9 min 3.8 km) Calle 9 2625,
+Comercial Abastos, Guadalajara
+---
+tarifa=85.53 km=5.915 min=19 recKm=0.415 recMin=3

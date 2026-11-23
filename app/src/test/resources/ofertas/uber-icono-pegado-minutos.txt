@@ -1,0 +1,8 @@
+# 23 nov 2026 (10.85, capturas_ok 1251 y 1264, revisión humana): Uber nuevo; el ícono del tramo se lee como un 9 pegado
+# a los minutos: «95 min (1.5 km)» = 5 min. Se leían 111 min (21 revisados). Con 1.5 km en 95 min (0.9 km/h) es imposible.
+$46.73
+$7.08/km est.
+95 min (1.5 km)
+d 16 min (5.1 km)
+---
+tarifa=46.73 km=6.6 min=21 recKm=1.5 recMin=5

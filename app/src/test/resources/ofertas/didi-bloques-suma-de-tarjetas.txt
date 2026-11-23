@@ -1,0 +1,22 @@
+# 22 nov 2026 (10.85, errores_lector 2362): dos tarjetas seguidas con sus direcciones partidas en 2 y 3 líneas.
+# Antes: la tarifa era de la 1.ª pero se sumaban 3 tramos (3.97 km, 19 min) porque los tramos no van en líneas
+# seguidas. Líneas completas reconstruidas de la captura.
+$36.99 Ox1.2
+4.71 • 88 viajes • Tarjeta bancaria verificada
+(6 min 869 m) Lago Naur 153, Pensil Nte .,
+Miguel Hidalgo, Ciudad de México
+(7 min 1.8 km) Instituto María Goretti,
+Argentina Antigua, Miguel Hidalgo, Ciudad
+de México
+Aceptar $36.99
+$37.99 $38.99 $39.99
+$37.08 Ox.5
+4.78 • 357 viajes •
+Tarjeta bancaria verificada
+(6 min 869 m) Lago Naur 153 - N°1, Pensil
+Nte ., Miguel Hidalgo, Ciudad de México
+(6 min 1.3 km) Office Depot Miyana,
+Granada, Miguel Hidalgo, Ciudad de
+México
+---
+tarifa=36.99 km=2.669 min=13 recKm=0.869 recMin=6

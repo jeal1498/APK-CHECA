@@ -1,0 +1,24 @@
+# 22 nov 2026 (10.85, capturas_ok 2571): tres tarjetas: la de arriba cortada (solo su botón «Aceptar $132.43»), la
+# completa de $81.30 y la de abajo cortada ($113.44, subido al principio por el OCR). Antes: tarifa $132.43 con los
+# tramos de la tarjeta de $81.30. Líneas completas reconstruidas de la captura.
+$113,44
+Lomas de San Agustin,
+Tlajomulco de Zúñiga
+Aceptar $132.43
+$143.43 $148.43 $153.43
+Pon Tu Precio
+$81.30
+4.88 • 252 viajes
+(9 min 2.3 km) Manuel Azpiroz 1653,
+Mezquitan Country, Guadalajara
+(23 min 7.9 km) Tezontle 2, Balcones
+de la Cantera, Zapopan
+Aceptar $81.30
+$86.30
+$83.30
+$88.30
+Pon Tu Precio
+4.95 • 183 viajes
+(9 min 2 5 km) Pata de elefante Col
+---
+tarifa=81.3 km=10.2 min=32 recKm=2.3 recMin=9

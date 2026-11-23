@@ -1,0 +1,8 @@
+# Límite de la regla anterior: un solo tramo PERO con su botón «Aceptar $X» sí es una oferta (tarjeta cortada abajo
+# o recogida fuera de la vista); se lee como antes.
+$44.90
+(12 min 4.3 km) Centro Comercial Plaza
+Aceptar $44.90
+$48.90 $49.90 $51.90
+---
+tarifa=44.9 km=4.3 min=12

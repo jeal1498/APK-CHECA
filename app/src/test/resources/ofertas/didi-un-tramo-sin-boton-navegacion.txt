@@ -1,0 +1,7 @@
+# 22 nov 2026 (10.85, capturas_ok 930): un solo tramo de DiDi, sin «Aceptar $X» ni segundo tramo (otra pantalla:
+# no era oferta según la revisión humana). Antes salía un pop-up con $33.42, 2.6 km, 8 min.
+$33.42
+-$1.14
+(8 min 2.6 km) Las Hijas de la Tostada Villahermosa, Atasta
+---
+nada

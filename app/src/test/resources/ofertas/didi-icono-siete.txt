@@ -1,0 +1,9 @@
+# 22 nov 2026 (10.85, errores_lector 2863): el ícono del tramo se lee como un 7 pegado a los minutos: «74min
+# (780 m)» = 4 min. El Parser solo corregía el ícono leído como 4, 6 o 9 y sumaba 74 min (86 min en total).
+# Revisión humana: 5.88 km y 16 min.
+$43.96
+74min (780 m)
+12 min (5.1 km)
+$47.96 S48.96 $50.96
+---
+tarifa=43.96 km=5.88 min=16 recKm=0.78 recMin=4

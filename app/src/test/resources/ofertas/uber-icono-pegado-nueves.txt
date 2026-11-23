@@ -1,0 +1,7 @@
+# 23 nov 2026 (10.85, errores_lector 2850, revisión humana): «89 min •3.8 km» = 9 min.
+$43.91
+$5,42/km est.
+89 min •3.8 km
+8 min •4.3 km
+---
+tarifa=43.91 km=8.1 min=17 recKm=3.8 recMin=9

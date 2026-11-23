@@ -1,0 +1,16 @@
+# 22 nov 2026 (10.85, errores_lector 2568): carrusel con botón «Aceptar viajes» (sin monto). La 1.ª contraoferta
+# ($45.39) es el monto más grande suelto y el OCR la sube a la primera línea; la tarifa es $42.39 Ox1.2.
+# Líneas completas reconstruidas de la captura.
+$45.39
+Pon Tu Precio Nuevo
+$42.39 Ox1.2
+5.00 • 44 viajes • Identificación verificada
+(7 min 1.9 km) Super Sanchez Primavera 1, Centro
+Delegacion Cinco, Centro
+(12 min 3.6 km) Nicaragua 227, Gaviotas Sur Sector San
+Jose, Centro
+Aceptar viajes
+$47.39
+$49.39
+---
+tarifa=42.39 km=5.5 min=19 recKm=1.9 recMin=7

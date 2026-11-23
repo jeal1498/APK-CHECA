@@ -1,0 +1,24 @@
+# 22 nov 2026 (10.85, errores_lector 2400): la 1.ª tarjeta es Express («Tomar viaje», sin monto en el botón) y la
+# 2.ª «Pon Tu Precio». Antes se sumaban los 4 tramos (18.7 km, 58 min). Líneas completas reconstruidas de la captura.
+Express Nuevo
+$77.22
+4.91 • 389 viajes •
+Tarjeta bancaria verificada
+(3 min 702 m) Mercado Zona Postal, Niños
+Héroes, Benito Juárez, Ciudad de México
+(25 min 5.5 km) Suprema Corte de
+Justicia de la Nación, Centro Histórico de
+la Cdad. de México, Cuauhtémoc, Ciudad
+Tomar viaje
+Pon Tu Precio Nuevo
+$114.66 Ox1.2
+4.93 • +999 viajes •
+Tarjeta bancaria verificada
+(5 min 1.2 km) Cumbres de Maltrata 468 -
+Cumbres de Maltrata, Niños Héroes, Benito
+Juárez, Ciudad de México
+(25 min 11.3 km) Sinaloa 14, Ampliación
+Venustiano Carranza, Venustiano
+Carranza, Ciudad de México
+---
+tarifa=77.22 km=6.202 min=28 recKm=0.702 recMin=3

@@ -1,0 +1,8 @@
+# 22 nov 2026 (10.85, errores_lector 2858): la unidad del primer tramo sale ilegible, «7min (2.3 k?s», y se perdía el
+# tramo de la recogida. Revisión humana: 4.3 km y 12 min.
+$41.00
+7min (2.3 k?s
+95min (2 km)
+$44.00 S45.00 S47.O0
+---
+tarifa=41 km=4.3 min=12 recKm=2.3 recMin=7

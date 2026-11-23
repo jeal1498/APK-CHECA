@@ -1,0 +1,10 @@
+# 22 nov 2026 (10.85, capturas_ok 884): igual que didi-tramo-fantasma-en-metros.txt, con otra recogida.
+$27.29
+$24.29 1.2x
+2 min (332 m)
+O min (11 m)
+Aceptar $24.29
+$26.29
+$28.29
+---
+tarifa=24.29 km=0.343 min=2 recKm=0.332 recMin=2

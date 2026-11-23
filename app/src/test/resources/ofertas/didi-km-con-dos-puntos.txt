@@ -1,0 +1,12 @@
+# 22 nov 2026 (10.85, errores_lector 2427): el OCR lee el punto decimal como dos puntos: «5 min (2:1 km)». El tramo
+# se perdía y quedaba solo el viaje (4.1 km, 18 min). Revisión humana: 6.2 km y 23 min.
+$39.41
+$36.41 1.2x
+$1.76 de tarifa de gasolina
+5 min (2:1 km)
+18 min (4.1 km)
+Aceptar $36.41
+$42.41
+$40.41
+---
+tarifa=36.41 km=6.2 min=23 recKm=2.1 recMin=5

@@ -2,9 +2,10 @@
 # Respuesta correcta según la revisión (veredicto ia_bien).
 # Nota: km/min: OCR (l por 1, punto perdido, kmn)
 # Recogida: 2 km, 36 min
+# 23 nov 2026: min corregido de 120 a 40, autorizado por Eduardo al aprobar la corrección del ícono de Uber: un tramo leído con el ícono (8) pegado, 84 min por 4 min: 4 + 36 = 40. La respuesta anterior salía de un veredicto de la IA o del lector, no de la captura.
 $123.42
 $5.30/km est.
 84 min 2.0 kmn
 O36 min 21.3 km
 ---
-tarifa=123.42 km=23.3 min=120
+tarifa=123.42 km=23.3 min=40

@@ -1,0 +1,29 @@
+# 22 nov 2026 (10.85, capturas_ok 778): lista «Centro de viajes» de DiDi. Arriba se ve el final de otra tarjeta
+# cortada (botón «Aceptar $105.34» y sus contraofertas); la tarjeta completa es la de $29.71. El Parser leía el
+# primer botón ($105.34) con los tramos de la tarjeta de abajo.
+# LÍNEAS COMPLETAS tal como llegan al Parser, reconstruidas de la captura en el orden del OCR: la dirección de cada
+# tramo se parte en 2 líneas y entre los tramos hay «1 parada(s)». Con las líneas limpias de Confirmador.filtrar
+# el fallo NO se reproduce (esas líneas ocultan el problema). El OCR sube primero el monto más grande ($162.97, de
+# la tarjeta de abajo, cortada).
+$162.97
+Aceptar $105.34
+$113.34
+$118.34
+$122.34
+Pon Tu Precio
+$29.71 +
+4.81 • 107 viajes
+(10 min 2.1 km) Cacama 25, El Tenayo
+Centro, Tlalnepantla de Baz, Ciudad de
+México
+1 parada(s)
+(11 min 2.7 km) Cacama 27, El Tenayo
+Sur, Tlalnepantla de Baz, Ciudad de
+México
+Aceptar $29.71
+$30.71
+$31.71
+$32.71
+Pon Tu Precio
+---
+tarifa=29.71 km=4.8 min=21 recKm=2.1 recMin=10

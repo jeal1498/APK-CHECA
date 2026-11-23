@@ -1,0 +1,23 @@
+# 22 nov 2026 (10.85, capturas_ok 1666): el monto de la tarjeta completa ($58.15) es el de letra más grande y el OCR
+# lo sube a la primera línea; la tarjeta cortada de arriba deja su botón («Aceptar $144.44») antes que los tramos.
+# Antes: tarifa $144.44 con los tramos de la tarjeta de abajo. Líneas completas reconstruidas de la captura.
+$58.15
+Aceptar $144.44
+$156.44
+$161.44
+$167.44
+Pon Tu Precio
+4.87 • 81 viajes •
+Identificación verificada
+(6 min 998 m) Calle Mariano Bárcena
+378, Artesanos, Guadalajara
+(19 min 5.9 km) Pedernal 712A, San
+Marcos, Guadalajara
+Aceptar $58.15
+$60.15
+$61.15
+$63.15
+Express
+$81.82 Ox1.3
+---
+tarifa=58.15 km=6.898 min=25 recKm=0.998 recMin=6

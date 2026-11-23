@@ -1,0 +1,8 @@
+# 22 nov 2026 (10.85, errores_lector 2429): radar de DiDi con la ganancia del día ($467.04), un rango de mapa de calor
+# y un solo tramo; no era oferta según la revisión humana. Antes salía un pop-up con $59.50.
+$59.50
+$467.04
+4 1.1X-1.5X
+o (5 min 1.5 km) Avenida Altos Hornos 201, Progresivo Ciudad
+---
+nada

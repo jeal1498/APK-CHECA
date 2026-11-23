@@ -1,0 +1,12 @@
+# 22 nov 2026 (10.85, capturas_ok 871 y 884): el OCR lee un segundo tramo fantasma «O min (11 m)»: 0 minutos y 11
+# METROS. La regla «metros enteros < 30 son km mal leídos» lo sumaba como 11 km (11.97 km en una oferta de 0.98 km).
+# Con 0 minutos no puede ser km. Tú revisión humana: 0.983 km y 4 min. Líneas guardadas, cortas: reproducen el pop-up.
+$27.29
+$24.29 1.2x
+4 min (972 m)
+O min (11 m)
+Aceptar $24.29
+$28.29
+$26.29
+---
+tarifa=24.29 km=0.983 min=4 recKm=0.972 recMin=4

@@ -1,0 +1,17 @@
+# Una sola tarjeta de DiDi con direcciones partidas y «1 parada(s)»: no se separa nada, se lee como antes.
+Pon Tu Precio Nuevo
+$29.71 Ox1.2
+4.81 • 107 viajes
+(10 min 2.1 km) Cacama 25, El Tenayo
+Centro, Tlalnepantla de Baz, Ciudad de
+México
+1 parada(s)
+(11 min 2.7 km) Cacama 27, El Tenayo
+Sur, Tlalnepantla de Baz, Ciudad de
+México
+Aceptar $29.71
+$30.71
+$31.71
+$32.71
+---
+tarifa=29.71 km=4.8 min=21 recKm=2.1 recMin=10
