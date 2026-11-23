@@ -19,6 +19,9 @@ const CLAVE = REVISOR === "deepseek" ? CLAVE_DEEPSEEK : CLAVE_ANTHROPIC;
 const TOPE_DIARIO = Number(Deno.env.get("TOPE_DIARIO_IA") ?? 1500);
 /** Reportes «Leyó mal» por cuenta en 24 horas. */
 const TOPE_REPORTES = 40;
+/** Si la IA falló por saldo o clave (402/401/403), durante 3 minutos ni se intenta: la oferta se guarda sin IA (igual que la pausa del teléfono). */
+const PAUSA_IA_CAIDA_MS = 180_000;
+let iaCaidaHasta = 0;
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -398,10 +401,32 @@ Deno.serve(async (req) => {
     ...equipo, ...pantalla, ...foto,
   };
 
+  // 23 nov 2026 (10.86): SIN IA (apagada en Admin, sin saldo, sin clave, tope diario o caída) la oferta normal no se pierde para Admin.
+  // Se guarda su fila de capturas_ok y su captura (la imagen si el teléfono la mandó; si no, el teléfono sube la suya con el número
+  // «normal»). Solo si el teléfono pidió guardarla (capturaOk: ya aceptó el aviso de capturas). El pop-up sigue con el lector: la
+  // respuesta es ok y «coincide», sin «ia». Los créditos de IA quedan solo para lo que pida Admin (admin-leer-captura).
+  const guardarSinIA = async (motivo: string): Promise<Response | null> => {
+    if (modo !== "revision" || cuerpo.capturaOk !== true || !local || !(local.tarifa > 0)) return null;
+    try {
+      const normal = await insertarId("capturas_ok", {
+        usuario: id, app, moneda, version, lector, lineas, local, ia: { sin_ia: true }, ...equipo, ...pantalla, ...foto,
+      });
+      if (normal === null) return null;
+      let guardada = false;
+      if (imagenB64) {
+        const bytes = decodificar(imagenB64);
+        if (esWebp(bytes)) guardada = await guardarCaptura(nombreCapturaOk(pantalla.nivel, local.tarifa, local.km, local.min, Date.now(), normal), bytes);
+      }
+      return json({ ok: true, coincide: true, normal, guardada, sin_ia: motivo });
+    } catch {
+      return null;
+    }
+  };
+
   // Interruptores remotos (tabla ia_config): con imagen manda «vision»; sin imagen, «texto». Apagado = el teléfono sigue con su lector.
   const ruta = elegirRuta(imagenB64 !== null, await leerInterruptoresRemotos());
-  if (ruta === "vision_apagada") return json({ ok: false, error: "vision_apagada" });
-  if (ruta === "texto_apagada") return json({ ok: false, error: "ia_texto_apagada" });
+  if (ruta === "vision_apagada") return (await guardarSinIA("vision_apagada")) ?? json({ ok: false, error: "vision_apagada" });
+  if (ruta === "texto_apagada") return (await guardarSinIA("ia_texto_apagada")) ?? json({ ok: false, error: "ia_texto_apagada" });
   registro.imagenes = ruta === "vision" ? 1 : 0;
 
   // Tope diario por cuenta (cuenta también las que fallan).
@@ -409,14 +434,19 @@ Deno.serve(async (req) => {
     const n = Number(await rpc("sumar_uso_confirmar", { u: id }));
     if (n > TOPE_DIARIO) {
       await insertar("revisiones", { ...registro, ok: false, error: "tope_diario" });
-      return json({ ok: false, error: "tope_diario" });
+      return (await guardarSinIA("tope_diario")) ?? json({ ok: false, error: "tope_diario" });
     }
   } catch {
     return json({ ok: false, error: "sin_contador" }, 503);
   }
   if (!(ruta === "vision" ? (REVISOR === "anthropic" ? CLAVE_ANTHROPIC : CLAVE_DEEPSEEK) : CLAVE)) {
     await insertar("revisiones", { ...registro, ok: false, error: "sin_clave" });
-    return json({ ok: false, error: "sin_clave" });
+    return (await guardarSinIA("sin_clave")) ?? json({ ok: false, error: "sin_clave" });
+  }
+  // La IA acaba de fallar por saldo o clave: no se vuelve a intentar durante la pausa (ahorra la llamada que fallaría).
+  if (Date.now() < iaCaidaHasta) {
+    const guardada = await guardarSinIA("ia_no_disponible");
+    if (guardada) return guardada;
   }
 
   let ia: Lectura & { oferta: boolean };
@@ -437,6 +467,7 @@ Deno.serve(async (req) => {
   } catch (e) {
     // Sin saldo, clave mala, caída o tiempo agotado: se anota una vez por día y tipo.
     const status = (e as { status?: number })?.status ?? 0;
+    if (status === 402 || status === 401 || status === 403) iaCaidaHasta = Date.now() + PAUSA_IA_CAIDA_MS;
     const cobrado = e as { tIn?: number; tCache?: number; tOut?: number };
     if (cobrado.tIn) await anotarCosto(registro, cobrado.tIn, cobrado.tCache ?? 0, cobrado.tOut ?? 0);
     try {
@@ -446,7 +477,7 @@ Deno.serve(async (req) => {
       ...registro, ms_ia: Date.now() - t0, ok: false,
       error: status ? `http_${status}` : String((e as Error)?.message ?? "error").slice(0, 40),
     });
-    return json({ ok: false, error: "ia_no_disponible" });
+    return (await guardarSinIA("ia_no_disponible")) ?? json({ ok: false, error: "ia_no_disponible" });
   }
 
   // «coincide» = la IA da lo mismo que el pop-up que ya se ve (lectura A): no hay que corregir.
