@@ -12,7 +12,7 @@ html,body{width:1080px;height:1920px;overflow:hidden;font-family:"DM Sans",sans-
 #st>div{position:absolute;left:0;top:0;width:1080px;height:1920px;will-change:transform,opacity}
 #sub{position:absolute;left:0;top:1120px;width:1080px;height:150px;display:flex;align-items:center;justify-content:center;font:800 82px/1 "Bricolage Grotesque";letter-spacing:-1px;white-space:nowrap;text-transform:uppercase;-webkit-text-stroke:16px #0C0C10;paint-order:stroke fill;text-shadow:7px 0 #0C0C10,-7px 0 #0C0C10,0 6px #0C0C10}
 #sub b{display:inline-block;margin:0 16px}
-</style></head><body><div id="fondo"></div><div id="st"></div><div id="sub"></div>
+</style></head><body><div id="fondo"></div><div id="tinte" style="position:absolute;inset:0"></div><div id="st"></div><div id="flash" style="position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:9"></div><div id="sub"></div>
 <script src="palabras.js"></script><script>
 const G='#22C55E',R='#EF4444',Y='#FACC15',K='#0C0C10';
 const P=D.palabras,TOTAL=D.total,norm=w=>w.toLowerCase().replace(/[¿?¡!.,:;]/g,'');
@@ -82,6 +82,12 @@ function subt(t){let i=-1;GR.forEach((c,k)=>{if(t>=c[0][1]-.04)i=k});
  if(i<0||(i===GR.length-1&&t>GR[i][GR[i].length-1][2]+.6)){sub.innerHTML='';return}
  let act=null;GR[i].forEach(p=>{if(t>=p[1]-.04)act=p});if(act&&t>=act[2]+.05)act=null;
  sub.innerHTML=GR[i].map(p=>{const on=p===act;return '<b style="color:'+(on?(CLAVE[norm(p[0])]||'#6EE7A0'):'#fff')+'">'+p[0].replace(/[.,]/g,'')+'</b>'}).join('')}
-window.seek=t=>{for(const{d,ini,fin,fx}of IT){const on=t>=ini&&t<fin;d.style.display=on?'':'none';if(on&&fx)fx(t,d)}subt(t)};
+const TIN=[[0,'#FFFFFF'],[s2,'#FFF2B8'],[s3,'#FFD9D6'],[s4,'#CDF5DA'],[s5,'#E3E6EE']];
+function ritmo(t){let c='#fff',a=0;for(const[x,col]of TIN)if(t>=x){c=col;a=x}
+ document.getElementById('tinte').style.background=c;document.getElementById('tinte').style.opacity=.75;
+ document.getElementById('flash').style.opacity=a>0?.7*cl(1-(t-a)/.14):0;
+ let ws=-9;for(const q of P)if(q[1]<=t)ws=q[1];const k=cl((t-ws)/.14);
+ st.style.transformOrigin='540px 700px';st.style.transform='scale('+(1+.035*(1-k))+') rotate('+(.6*(1-k)*(Math.floor(ws*10)%2?1:-1))+'deg)'}
+window.seek=t=>{ritmo(t);for(const{d,ini,fin,fx}of IT){const on=t>=ini&&t<fin;d.style.display=on?'':'none';if(on&&fx)fx(t,d)}subt(t)};
 window.TOTAL=TOTAL;seek(+(new URLSearchParams(location.search).get('t')||0));
 </script></body></html>
