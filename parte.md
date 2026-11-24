@@ -83,6 +83,8 @@
 - **Identidades visuales nuevas por cuenta (Eduardo, 24 nov):** reemplazan a Asfalto (CHECA) y PS2 Style (PERSONAL); se empieza por **PERSONAL**.
 - **5 herramientas del video instaladas y persistentes:** Remotion 4.0.547, HyperFrames 0.9.91, FFmpeg 6.1.1, faster-whisper 1.2.1 y yt-dlp 2026.11.23, con script de configuración en el entorno «Lab»; verificado en una sesión nueva.
 
+- Identidad PERSONAL aprobada (24 nov): EA editorial minimalista; tema + 6 componentes Remotion en `video/src/EA/`, muestra de 6 s aprobada.
+
 ## … Falta
 - **Videos PERSONAL (siguiente):** proponer la identidad visual (colores, letras, subtítulos, fondo, movimiento) con la referencia guardada; Eduardo aprueba. Después: plantilla nueva (reemplaza `_plantilla-ps2/`), prueba de punta a punta con un bruto suyo y prueba de la frase «Hook personal: …». Luego lo mismo para CHECA (esperando sus referencias).
 - Eduardo pasa más referencias (mp4 y capturas) a `Editor IA/Referencias/` de cada cuenta; yt-dlp no baja de TikTok/Instagram/YouTube (la red solo permite GitHub, PyPI y npm).
