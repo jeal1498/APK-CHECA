@@ -3,6 +3,7 @@ import { Composition, staticFile } from "remotion";
 import { loadFont } from "@remotion/fonts";
 import { DURACION_MUESTRA, Muestra } from "./Muestra";
 import { DURACION_SHOWCASE, Showcase } from "./Showcase";
+import { DURACION_REFERENCIA, Referencia } from "./Referencia";
 
 const fuentes: [string, string, string][] = [
   ["Montserrat", "ea/montserrat-600.woff2", "600"],
@@ -16,5 +17,6 @@ export const EARoot: React.FC = () => (
   <>
     <Composition id="EA-Muestra" component={Muestra} durationInFrames={DURACION_MUESTRA} fps={30} width={1080} height={1920} />
     <Composition id="EA-Showcase" component={Showcase} durationInFrames={DURACION_SHOWCASE} fps={30} width={1080} height={1920} />
+    <Composition id="EA-Referencia-01" component={Referencia} durationInFrames={DURACION_REFERENCIA} fps={30} width={1080} height={1920} />
   </>
 );
