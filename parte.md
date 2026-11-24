@@ -1,4 +1,4 @@
-# PARTE · 23 nov 2026
+# PARTE · 24 nov 2026
 
 ## ✓ Decidido
 - Imagen de novedades para testers hecha (7 tarjetas, marca v2) y publicada en el grupo.
@@ -76,7 +76,12 @@
 
 - **Diseño final del pop-up para la 10.86 (Eduardo, 20 nov; boceto `docs/propuestas/popup-v9.png`, fuente `popup-v9.html`):** (1) **completo horizontal** de 384 de ancho: bloque de color a la izquierda (156) con la decisión y el monto neto grandes, **texto negro en los tres colores**; a la derecha **$/h y $/km grandes con ✓/✕** y, pegados a cada uno, los **minutos** y los **km** (sin la línea «N min (X km) total»; **probar con el banco** que el lector no los tome por un tramo, y si falla volver a poner «total»); (2) **sin rayo ni «+$10»/multiplicador**; (3) **avisos solo en rojo, como píldoras**: recogida y viaje lado a lado en una fila (cada una con su dato: «Recogida 5.5 km», «Viaje 42 min») y, si hay una tercera (tarifa mínima o zona), segunda fila con una píldora a todo el ancho, centrada; (4) abajo, pequeño y gris: botón **«⚠ Leyó mal»**, **tarifa de la app** («Uber · $64.90») y **barra de tiempo** que se vacía; (5) **compacto** de 340×56 con el color, el monto y el $/h, que se toca para abrir el completo (idea opcional: marquita «⚠ 3» en el rojo); (6) alturas: Considerar, Aceptar y Rechazar sin avisos miden igual (133), con una fila de píldoras 175 y con dos 209; (7) los montos de **tres cifras caben** (probado con $888); con cuatro, la letra se achica sola; (8) **duración del pop-up en 8 segundos** (Eduardo ya la cambió en Ajustes). Solo se construye en la 10.86, después del 6 dic.
 
+- **Limpieza de la web (24 nov, `main` de PWA-Checa-Multimedia, commits `9207246` y siguientes):** Checa ya está en producción en Google Play. Quedan `index.html`, `abrir/`, `privacidad`, `terminos`, `eliminar-cuenta`, `admin-checa-7e3a91/` y `calendario-d4f81c/`. Se borraron `registro/`, `landing/`, `beta/`, `instalar/`, `descargar/`, `propuestas/`, `docs/` y `herramientas/`. Los botones de `index.html` y de privacidad/términos van directo a Play; se quitó la sección «Entra a la beta en 3 pasos».
+- **`abrir/` se conserva** (es el enlace que Eduardo manda por TikTok); ahora apunta a Google Play (`b34c921`): intent a la app de Play, luego `market://`, luego Chrome.
+
 ## … Falta
+- **`abrir/` desde TikTok → app de Play (24 nov, sin confirmar):** el enlace directo de Play y las primeras versiones de `abrir/` abrían Chrome o la ficha web, no la app. Eduardo prueba la versión `b34c921` (`https://jeal1498.github.io/PWA-Checa-Multimedia/abrir/`) y avisa a dónde llega. Si el navegador de TikTok bloquea el intent, no hay forma de abrir la app directo desde ahí.
+- Web: quitar de `PRODUCT.md` y del texto restante lo de la beta/registro si Eduardo lo pide; la tabla `testers` de Supabase sigue guardando datos (la privacidad dice «Registro previo en la beta»).
 - **Cuando Google apruebe el AAB 166: avisar a los testers que actualicen.**
 - **Probar la 10.86 en teléfono y tablet** (APK de «Compilar flavor play»): pop-up completo y compacto (cabe, montos de 3–4 cifras, barra de tiempo, «Leyó mal»), pop-up viejo que se quita, listas de DiDi, `.txt` con diagnóstico, Admin › Hoy con OCR y Lectura.
 - **Verificar capturas sin IA:** filas nuevas en `capturas_ok` con `ia->>'sin_ia'='true'` y su imagen en el almacén `capturas` (cambio sin probar con llamada real); confirmar corrida 198 en verde y mandarte el link del APK.
