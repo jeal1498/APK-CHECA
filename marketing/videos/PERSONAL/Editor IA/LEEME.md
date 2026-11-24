@@ -40,3 +40,17 @@ Código: `video/src/EA/` (tema en `theme.ts`, componentes en `components/`). Cad
 
 Ver todo en movimiento: `cd video && npx remotion render src/EA/index.ts EA-Showcase` (24 s). Muestra de 6 s: `EA-Muestra`. Estudio: `npx remotion studio src/EA/index.ts`.
 Zonas seguras 1080×1920: 200 px arriba, 380 abajo, 60 a los lados.
+
+## Cómo exportar sin interferencia (probado 24 nov)
+No uses el mp4 directo de Remotion (sale `yuvj420p`, ~450 kbps y un fotograma clave cada 8 s: tiembla y se traba). Exporta en PNG y codifica una sola vez:
+
+```bash
+cd video
+npx remotion render src/EA/index.ts <Composicion> /ruta/seq --sequence --image-format=png
+ffmpeg -framerate 30 -i /ruta/seq/element-%03d.png \
+  -vf "scale=in_range=pc:out_range=tv:out_color_matrix=bt709,format=yuv420p" \
+  -c:v libx264 -preset slow -crf 14 -g 30 -keyint_min 30 \
+  -colorspace bt709 -color_primaries bt709 -color_trc bt709 -color_range tv \
+  -movflags +faststart salida.mp4
+```
+Sin el filtro `scale=…bt709` los colores se desplazan (el naranja sale más claro).
