@@ -20,3 +20,6 @@ Descartados: 02 Pixel Art para CHECA (a Eduardo no le gustó; además la letra d
 
 ## Otras ideas guardadas
 `estilos-nuevos-conductores.png`: 8 estilos propuestos por Claude (Road Sign, Dashboard HUD, Paper Cutout, Blueprint, Gas Receipt, GPS Map, Chalkboard, Neon Sign) para videos sueltos.
+
+## Referencias nuevas (24 nov 2026)
+Los Hooks Virales se hacen con las referencias de `referencias/checa/` (001 Checa) y `referencias/personal/` (000 Personal), cada una con su README y tabla.
