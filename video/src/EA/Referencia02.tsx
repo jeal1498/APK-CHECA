@@ -58,28 +58,24 @@ const estadoCelda = (i: number, f: number): EstadoUnidad => {
   const p = progreso(f, 98 + i * 0.99, 6); // escena 2: se cuentan hasta 80
   let opacidad = p;
   let escala = 0.3 + 0.7 * p;
+  let escalaY: number | undefined;
   let color: string = EA.color.negro;
-  let dx = 0;
   let dy = 0;
   if (i < 28) {
     // escena 3: la gasolina se come 28 cuadros (naranja, de columna en columna)
     const ti = 296 + i * 1.86;
     if (f >= ti) color = EA.color.naranja;
-    escala *= 1 + 0.18 * Math.sin(Math.PI * cl((f - ti) / 8, 0, 1));
-    // escena 4: se separan y bajan a la pista para volverse la barra del 35 %
-    const vuelo = progreso(f, 364 + (i % FIL) * 0.8, 18);
-    dy = (TY + (TH - CEL) / 2 - y) * vuelo;
-    opacidad *= 1 - progreso(f, 378, 8);
+    escala *= 1 + 0.08 * Math.sin(Math.PI * cl((f - ti) / 8, 0, 1));
+    // escena 4: se aplastan y bajan a la pista; ahí se vuelven la barra del 35 %
+    const vuelo = progreso(f, 364, 16);
+    dy = (TY + TH / 2 - CEL / 2 - y) * vuelo;
+    escalaY = escala * (1 - 0.85 * vuelo);
+    opacidad *= 1 - progreso(f, 376, 8);
   } else {
-    // escena 5: los 52 que quedan se juntan en la tarjeta de $52
-    const k = i - 28;
-    const g = progreso(f, 432 + k * 0.2, 14);
-    dx = (CX - CEL / 2 - x) * g;
-    dy = (CY - CEL / 2 - y) * g;
-    escala *= 1 - 0.85 * g;
-    opacidad *= 1 - progreso(f, 442 + k * 0.12, 8);
+    // escena 5: los 52 que quedan se funden con la tarjeta de $52 (el bloque se contrae, ver Referencia02)
+    opacidad *= 1 - progreso(f, 444, 10);
   }
-  return { opacidad, escala, color, dx, dy };
+  return { opacidad, escala, escalaY, color, dy };
 };
 
 const Etiq: React.FC<{ x?: number; right?: number; y: number; op: number; plano?: boolean; size?: number; children: React.ReactNode }> = ({ x, right, y, op, plano, size = 56, children }) => (
@@ -136,17 +132,26 @@ const TarjetaPartida: React.FC = () => {
         <div style={{ position: "absolute", inset: 0, boxSizing: "border-box", background: EA.color.blanco, border: EA.borde, borderRadius: EA.radio, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: EA.font.titulo, fontWeight: EA.peso.extra, fontSize: 170, letterSpacing: -5, color: EA.color.negro }}>
           <span style={{ opacity: 1 - reune }}>$80</span>
         </div>
-        <svg style={{ position: "absolute", left: 0, top: 0 }} width={W} height={H}>
+        <svg style={{ position: "absolute", left: 0, top: 0, opacity: cl(sep * 6, 0, 1) }} width={W} height={H}>
           <line x1={W / 2 + 90} y1={0} x2={W / 2 - 90} y2={H} stroke={EA.color.negro} strokeWidth={6} />
         </svg>
       </div>
     );
   };
+  const unida = sep < 0.001;
   return (
     <div style={{ position: "absolute", left: CX - W / 2, top: CY - H / 2, width: W, height: H, opacity: entra * fade, transform: `translateY(${(1 - entra) * 50}px) scale(${0.94 + 0.06 * entra})` }}>
-      <div style={{ position: "absolute", inset: 0, borderRadius: EA.radio, boxShadow: EA.sombra, opacity: 1 - sep }} />
-      {mitad("izq")}
-      {mitad("der")}
+      {unida ? (
+        <div style={{ position: "absolute", inset: 0, boxSizing: "border-box", background: EA.color.blanco, border: EA.borde, borderRadius: EA.radio, boxShadow: EA.sombra, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: EA.font.titulo, fontWeight: EA.peso.extra, fontSize: 170, letterSpacing: -5, color: EA.color.negro }}>
+          <span style={{ opacity: 1 - reune }}>$80</span>
+        </div>
+      ) : (
+        <>
+          <div style={{ position: "absolute", inset: 0, borderRadius: EA.radio, boxShadow: EA.sombra, opacity: 1 - sep }} />
+          {mitad("izq")}
+          {mitad("der")}
+        </>
+      )}
       <svg style={{ position: "absolute", left: 0, top: 0, opacity: 1 - reune }} width={W} height={H}>
         <line x1={W / 2 + 90} y1={-8} x2={W / 2 - 90} y2={H + 8} pathLength={1} stroke={EA.color.naranja} strokeWidth={10} strokeLinecap="round" strokeDasharray={1} strokeDashoffset={1 - corte} />
       </svg>
@@ -159,16 +164,17 @@ export const Referencia02: React.FC = () => {
   const salePista = 1 - progreso(f, 432, 10);
   const blur = 4 * progreso(f, 186, 12) * (1 - progreso(f, 262, 12));
   const salidaTira = 1 - progreso(f, 248, 12);
+  const contrae = progreso(f, 432, 22);
   const cuentaCuadros = cl(Math.floor((f - 98) / 0.99) + 1, 0, 80);
   const opConteo = progreso(f, 104, 10) * (1 - progreso(f, 178, 10));
 
   // Tarjeta de $52 → globo de comentario
-  const entra = progreso(f, 440, 14);
+  const entra = progreso(f, 442, 12);
   const grande = progreso(f, 516, 18);
   const sube = progreso(f, 652, 18);
   const cyTarjeta = CY - 40 * grande - 41 * sube;
   const esc = (0.7 + 0.3 * entra) * (1 + 0.25 * grande);
-  const cuenta52 = Math.round(interpolate(f, [440, 454], [0, 52], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }));
+  const cuenta52 = Math.round(interpolate(f, [442, 456], [0, 52], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }));
 
   // Fantasma de $80 tachado
   const desvanece = 1 - progreso(f, 506, 12);
@@ -185,7 +191,9 @@ export const Referencia02: React.FC = () => {
 
       {/* 1–2 · la tarifa y su cuenta */}
       <TarjetaPartida />
-      <Unidades x={X0} y={Y0} blur={blur} estado={(i) => estadoCelda(i, f)} />
+      <div style={{ position: "absolute", inset: 0, transformOrigin: "690px 1121px", transform: `translateX(${-150 * contrae}px) scale(${1 - 0.333 * contrae}, ${1 - 0.171 * contrae})` }}>
+        <Unidades x={X0} y={Y0} blur={blur} estado={(i) => estadoCelda(i, f)} />
+      </div>
       <Etiq x={X0} y={874} op={opConteo} plano>
         1 cuadro = $1
       </Etiq>
@@ -206,7 +214,7 @@ export const Referencia02: React.FC = () => {
 
       {/* 4 · la barra del 35 % de la tarifa */}
       <div style={{ position: "absolute", left: X0, top: TY, width: GW, height: TH, boxSizing: "border-box", border: EA.borde, borderRadius: 6, opacity: progreso(f, 360, 10) * salePista, transform: `scaleX(${progreso(f, 360, 10)})`, transformOrigin: "left center" }} />
-      <div style={{ position: "absolute", left: X0, top: TY, width: BARRA, height: TH, background: EA.color.naranja, borderRadius: 6, opacity: progreso(f, 376, 10) * salePista, transform: `scaleX(${progreso(f, 376, 10)})`, transformOrigin: "left center" }} />
+      <div style={{ position: "absolute", left: X0, top: TY, width: BARRA, height: TH, background: EA.color.naranja, borderRadius: 6, opacity: progreso(f, 374, 12) * salePista, transform: `scaleY(${0.15 + 0.85 * progreso(f, 374, 12)})` }} />
       <div style={{ position: "absolute", left: X0 + BARRA + 26, top: TY, height: TH, lineHeight: `${TH}px`, fontFamily: EA.font.titulo, fontWeight: EA.peso.extra, fontSize: 50, color: EA.color.negro, opacity: progreso(f, 376, 8) * salePista }}>
         {Math.round(interpolate(f, [376, 386], [0, 35], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }))} %
       </div>

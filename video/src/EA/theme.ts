@@ -20,7 +20,8 @@ export const EA = {
   mov: { corto: 10, medio: 18, largo: 30 },
 } as const;
 
-export const ease = Easing.bezier(0.16, 1, 0.3, 1);
+/** Aceleración suave y frenado largo (evita arranques bruscos y tramos congelados). */
+export const ease = Easing.bezier(0.4, 0, 0.2, 1);
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 

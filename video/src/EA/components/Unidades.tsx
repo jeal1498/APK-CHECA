@@ -1,7 +1,7 @@
 import React from "react";
 import { EA } from "../theme";
 
-export type EstadoUnidad = { opacidad?: number; escala?: number; color?: string; dx?: number; dy?: number };
+export type EstadoUnidad = { opacidad?: number; escala?: number; escalaY?: number; color?: string; dx?: number; dy?: number };
 
 /**
  * Rejilla de unidades (1 cuadro = 1 unidad), en orden de columnas.
@@ -35,7 +35,7 @@ export const Unidades: React.FC<{
             background: e.color ?? EA.color.negro,
             borderRadius: 6,
             opacity: e.opacidad ?? 1,
-            transform: `scale(${e.escala ?? 1})`,
+            transform: `scale(${e.escala ?? 1}, ${e.escalaY ?? e.escala ?? 1})`,
           }}
         />
       );
