@@ -7,7 +7,7 @@
 @font-face{font-family:"JetBrains Mono";font-weight:700;src:url(../../../../../../video/hyperframes/checa-marca-v2/assets/fonts/jetbrains-mono-latin-700-normal.woff2)}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{width:1080px;height:1920px;overflow:hidden;font-family:"DM Sans",sans-serif;background:#FFFDF4}
-#fondo{position:absolute;inset:0;background:radial-gradient(900px 600px at 50% 78%,rgba(34,197,94,.16),transparent 70%),radial-gradient(700px 500px at 85% 100%,rgba(250,204,21,.18),transparent 70%),linear-gradient(#fff,#FBF7E6)}
+#fondo{position:absolute;inset:0;overflow:hidden;}
 #st{position:absolute;left:0;top:0;width:1080px;height:1920px}
 #st>div{position:absolute;left:0;top:0;width:1080px;height:1920px;will-change:transform,opacity}
 #sub{position:absolute;left:0;top:1120px;width:1080px;height:150px;display:flex;align-items:center;justify-content:center;font:800 82px/1 "Bricolage Grotesque";letter-spacing:-1px;white-space:nowrap;text-transform:uppercase;-webkit-text-stroke:16px #0C0C10;paint-order:stroke fill;text-shadow:7px 0 #0C0C10,-7px 0 #0C0C10,0 6px #0C0C10}
@@ -23,7 +23,7 @@ html,body{width:1080px;height:1920px;overflow:hidden;font-family:"DM Sans",sans-
 .pv .meta{display:flex;justify-content:space-between;align-items:center;padding:4px 10px 5px;font-size:11px;color:#8a8a94;border-top:1px solid #ffffff12}.pv .leyo{border:1px solid #ffffff22;border-radius:999px;padding:1px 8px;color:#b9b9c2}
 .pv .barra{height:5px;background:#ffffff1a}.pv .barra i{display:block;height:100%;background:var(--c)}
 
-</style></head><body><div id="fondo"></div><div id="tinte" style="position:absolute;inset:0"></div><div id="st"></div><div id="flash" style="position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:9"></div><div id="sub"></div>
+</style></head><body><div id="fondo"><svg id="ps2" width="1080" height="1920" viewBox="0 0 1080 1920"></svg></div><div id="tinte" style="position:absolute;inset:0"></div><div id="st"></div><div id="flash" style="position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:9"></div><div id="sub"></div>
 <script src="palabras.js"></script><script>
 const G='#22C55E',R='#EF4444',Y='#FACC15',K='#0C0C10';
 const P=D.palabras,TOTAL=D.total,norm=w=>w.toLowerCase().replace(/[¿?¡!.,:;]/g,'');
@@ -52,26 +52,36 @@ function popApp(o){const T0='#A3A3AD',N={hdr:'···',hc:T0,bc:'#3A3A45',amt:'',
  +'<div style="text-align:center;padding:6px 0;font:800 168px/1.1 \'Bricolage Grotesque\';letter-spacing:-3px;color:#F4F4EF">'+o.amt+'</div>'
  +'<div style="display:flex;align-items:center;padding:18px 20px 0">'+met(o.m1)+'<div style="width:4px;height:56px;background:rgba(163,163,173,.43);margin:0 12px"></div>'+met(o.m2)+'</div>'
  +'<div style="text-align:center;padding:22px 0 34px;font:500 43px/1.2 \'JetBrains Mono\';color:'+T0+'">'+o.tot+'</div></div>';}
-const mono=(s,x,y,c='#8A8678',sz=28)=>'<div style="position:absolute;left:'+x+'px;top:'+y+'px;width:1080px;text-align:center;font:700 '+sz+'px/1 \'JetBrains Mono\';letter-spacing:3px;color:'+c+'">'+s+'</div>';
-const cap=(s,c=K,sz=84)=>'<div style="position:absolute;left:0;top:215px;width:1080px;text-align:center;font:800 '+sz+'px/.95 \'Bricolage Grotesque\';letter-spacing:-3px;color:'+c+'">'+s+'</div>';
+const mono=(s,x,y,c='#EAF3FF',sz=28)=>'<div style="position:absolute;left:'+x+'px;top:'+y+'px;width:1080px;text-align:center;font:700 '+sz+'px/1 \'JetBrains Mono\';letter-spacing:3px;color:'+c+';text-shadow:2px 2px 0 #0B1E47">'+s+'</div>';
+const cap=(s,c='#fff',sz=84)=>'<div style="position:absolute;left:0;top:215px;width:1080px;text-align:center;font:800 '+sz+'px/.95 \'Bricolage Grotesque\';letter-spacing:-3px;color:'+c+';text-shadow:3px 3px 0 #0B1E47,-2px -2px 0 #0B1E47,2px -2px 0 #0B1E47,-2px 2px 0 #0B1E47,0 6px 0 #0B1E47">'+s+'</div>';
 const s2=W('cuando')-.12,s3=W('ten')-.12,s4=W('un')-.12,s5=W('qué')-.12,END=1e9;
 
 const hx=c=>typeof c==='string'?[1,3,5].map(i=>parseInt(c.substr(i,2),16)):c,ca=(a,b,p)=>hx(a).map((v,i)=>Math.round(mix(v,hx(b)[i],p))),lc=(a,b,p)=>'rgb('+ca(a,b,p).join(',')+')';
 const svgi=(p,c=K)=>'<svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>';
 const IC={km:svgi('<path d="M12 21s-6-6.1-6-10.5a6 6 0 0112 0C18 14.9 12 21 12 21z"/><circle cx="12" cy="10.5" r="2.2"/>'),t:svgi('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>'),g:svgi('<path d="M4 21V5a2 2 0 012-2h6a2 2 0 012 2v16M3 21h12M6 8h6M14 11h2a2 2 0 012 2v4a1.5 1.5 0 003 0V8l-3-3"/>',R)};
-const coin=s=>'<svg width="'+s+'" height="'+s+'" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#B98206"/><circle cx="50" cy="50" r="40" fill="#F5C518"/><path d="M50 12A38 38 0 0188 50L50 50z" fill="#FFE27A"/><text x="50" y="68" text-anchor="middle" font-family="Bricolage Grotesque" font-weight="800" font-size="52" fill="#8A5E00">$</text></svg>';
+const coin=s=>'<svg width="'+s+'" height="'+s+'" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#FACC15"/><circle cx="50" cy="50" r="40" fill="#F5C518"/><path d="M50 12A38 38 0 0188 50L50 50z" fill="#FFE27A"/><text x="50" y="68" text-anchor="middle" font-family="Bricolage Grotesque" font-weight="800" font-size="52" fill="#8A5E00">$</text></svg>';
 const fade=(t,a,b)=>Math.min(cl((t-a)/.12),cl((b-t)/.15));
-const lab=(s,x,y,w,sz,c,al='center')=>'<div style="position:absolute;left:'+x+'px;top:'+y+'px;width:'+w+'px;text-align:'+al+';font:800 '+sz+'px/1 \'Bricolage Grotesque\';letter-spacing:-3px;color:'+c+';white-space:nowrap">'+s+'</div>';
+const lab=(s,x,y,w,sz,c,al='center')=>'<div style="position:absolute;left:'+x+'px;top:'+y+'px;width:'+w+'px;text-align:'+al+';font:800 '+sz+'px/1 \'Bricolage Grotesque\';letter-spacing:-3px;color:'+c+';white-space:nowrap;text-shadow:3px 3px 0 #0B1E47,-2px -2px 0 #0B1E47,2px -2px 0 #0B1E47,-2px 2px 0 #0B1E47,0 6px 0 #0B1E47">'+s+'</div>';
 
 // Pop-up de la 10.86 (docs/propuestas/popup-v9.html): completo horizontal de 384 dp, ×2.08 en el video; sin nombre de app
 const popV9=on=>on?'<div class="pv r"><span class="x">✕</span><div class="cuerpo"><div class="bloque"><small>RECHAZAR</small><b>$68</b></div><div class="der"><div class="f"><span class="m no">✕ $157/h</span><u>46 min</u></div><div class="f"><span class="m no">✕ $4.6/km</span><u>26 km</u></div></div></div><div class="pills"><span class="pl">Recogida 2 km</span><span class="pl">Viaje 40 min</span></div><div class="meta"><span class="leyo">⚠ Leyó mal</span><span>Tarifa · $120.00</span></div><div class="barra"><i style="width:62%"></i></div></div>'
  :'<div class="pv n"><span class="x">✕</span><div class="cuerpo"><div class="bloque"><small>···</small><b>···</b></div><div class="der"><div class="f"><span class="m nn">···</span><u>···</u></div><div class="f"><span class="m nn">···</span><u>···</u></div></div></div><div class="meta"><span class="leyo">⚠ Leyó mal</span><span>···</span></div><div class="barra"><i style="width:62%"></i></div></div>';
 let HN=300,HF=400;{const m=document.createElement('div');m.style.cssText='position:absolute;left:-2000px;top:0';document.body.appendChild(m);
  m.innerHTML=popV9(0);HN=m.firstChild.getBoundingClientRect().height;m.innerHTML=popV9(1);HF=m.firstChild.getBoundingClientRect().height;m.remove()}
+const nube=(x,y,k)=>'<g transform="translate('+x+','+y+') scale('+k+')"><path d="M0 60L40 10L95 0L150 22L200 60z" fill="#FFFFFF"/><path d="M0 60L40 10L70 60z" fill="#DCEBFA"/><path d="M95 0L150 22L120 60L70 60z" fill="#EEF5FD"/><path d="M150 22L200 60L120 60z" fill="#CFE1F5"/></g>';
+const EDI=[[-20,150,230,'#E8D9B8','#B9A57C'],[120,120,330,'#C9D3DE','#93A1B1'],[232,160,200,'#E2B58F','#B08460'],[385,130,290,'#D9DEE6','#9FAABA'],[505,170,240,'#EFE3C4','#C2B48C'],[668,125,345,'#C6CFDA','#8E9BAC'],[786,150,215,'#E6C3A0','#B5916F'],[930,140,275,'#DCE2EA','#A3AEBD']];
+const auto=(x,y,c,c2,d)=>'<g transform="translate('+x+','+y+') scale('+d+',1)"><path d="M0 44L6 22L40 18L62 0L118 0L140 20L172 24L178 44z" fill="'+c+'"/><path d="M40 18L62 0L118 0L140 20z" fill="'+c2+'"/><path d="M66 5L88 5L88 19L50 19zM94 5L114 5L130 19L94 19z" fill="#BFE3FF"/><path d="M26 44l8-12h14l8 12l-8 10h-14zM122 44l8-12h14l8 12l-8 10h-14z" fill="#22262E"/></g>';
+function ps2(t){const v=document.getElementById('ps2');let h='<defs><linearGradient id="cl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2F7BDB"/><stop offset=".55" stop-color="#7FBFF5"/><stop offset="1" stop-color="#D8EEFF"/></linearGradient></defs><rect width="1080" height="1920" fill="url(#cl)"/>';
+ h+=nube(((60+t*9)%1400)-200,120,1.3)+nube(((760+t*6)%1400)-200,420,1)+nube(((1150+t*12)%1400)-200,720,.8)+nube(((300+t*7)%1400)-200,1000,.9)+nube(((900+t*10)%1400)-200,1260,.7);
+ const B=1790;EDI.forEach(([x,w,a,c,c2])=>{a=a*1.25;const y=B-a,f=w*.68;h+='<path d="M'+x+' '+y+'h'+f+'v'+a+'h'+(-f)+'z" fill="'+c+'"/><path d="M'+(x+f)+' '+y+'l'+(w-f)+' 16v'+(a-16)+'h'+(-(w-f))+'z" fill="'+c2+'"/>';
+  for(let yy=y+22;yy<B-12;yy+=34)for(let xx=x+12;xx<x+f-16;xx+=26)h+='<rect x="'+xx+'" y="'+yy+'" width="12" height="18" fill="#5C7FA8" opacity=".75"/>'});
+ h+='<rect y="'+B+'" width="1080" height="130" fill="#4B5059"/><rect y="'+B+'" width="1080" height="8" fill="#7C838E"/>';
+ for(let k=0;k<9;k++)h+='<rect x="'+(((k*150-t*40)%1350+1350)%1350-140)+'" y="1855" width="80" height="8" fill="#F4F4EF"/>';
+ h+=auto(((t*150)%1500)-250,B+2,'#E5484D','#B4282D',1)+auto(1400-((t*110+500)%1700),B+68,'#F5C518','#C99A06',-1);v.innerHTML=h}
 const w=W,sol=w('solo'),cu=w('cuánto'),pg=w('pago'),n1=w('no#1'),sg=w('significa'),qd=w('quedar'),an=w('antes'),gs=w('gastar');
 
 // ═ B1 «Puede que estés dejando dinero sin darte cuenta»: la oferta pierde monedas por el borde y nadie lo ve
-add(cap('DINERO QUE SE ESCAPA',K,76),0,s2,(t,d)=>{d.style.opacity=cl((s2-t)/.15)});
+add(cap('DINERO QUE SE ESCAPA','#fff',76),0,s2,(t,d)=>{d.style.opacity=cl((s2-t)/.15)});
 add(mono('OFERTA DE EJEMPLO',0,1335),0,END);
 for(let k=0;k<6;k++){const a=w('dejando')+k*.16,x=215+k*110;
  add('<div style="position:absolute;left:'+x+'px;top:0;">'+coin(96)+'</div>',a,s2+.4,(t,d)=>{const p=cl((t-a)/.5),e=d.firstChild;e.style.top=mix(880,1000-(k%2)*16,p*p)+'px';e.style.transform='rotate('+(200*p*(k%2?1:-1))+'deg)';d.style.opacity=Math.min(cl((t-a)/.06),cl((s2+.4-t)/.25))})}
@@ -88,7 +98,7 @@ add('<div style="position:absolute;left:190px;top:0;width:700px;height:589px"><d
  d.style.opacity=Math.min(1,cl((pg+.3-t)/.3))});
 
 // ═ B2 «Cuando te llega una oferta, no te fijes solo en cuánto paga»: zoom al precio, lo demás se desenfoca
-add(cap('NO SOLO EL <span style="color:#B98206">PRECIO</span>'),s2,s3,(t,d)=>{d.style.opacity=Math.min(cl((t-s2)/.12),cl((s3-t)/.15))});
+add(cap('NO SOLO EL <span style="color:#FACC15">PRECIO</span>'),s2,s3,(t,d)=>{d.style.opacity=Math.min(cl((t-s2)/.12),cl((s3-t)/.15))});
 
 // ═ B3 «Ten en cuenta los kilómetros, el tiempo y la gasolina que vas a gastar»: de la oferta salen tres fichas; la gasolina se vacía
 add(cap('LO QUE <span style="color:'+R+'">GASTAS</span>'),s3,s4,(t,d)=>{d.style.opacity=Math.min(cl((t-s3)/.12),cl((s4-t)/.15))});
@@ -105,7 +115,7 @@ const gex='<div style="width:150px;height:30px;border:3px solid '+K+';border-rad
   d.style.transformOrigin='540px 620px';d.style.transform='translate('+(300*f)+'px,'+(40*(1-p)*(1-q)+300*f*f)+'px) rotate('+(24*f)+'deg)';d.style.opacity=Math.min(cl((t-a)/.1),cl(1-(f-.35)/.65))})}
 
 // ═ B4 «Un pago alto no siempre significa que te va a quedar más dinero»: barra a escala (120); la gasolina es el trozo de arriba (52) y cae; queda 68
-add(lab('$120',90,355,900,120,'#B98206'),pg,n1,(t,d)=>{const p=A(t,pg,.3);d.style.transform='scale('+(.8+.2*p)+')';d.style.transformOrigin='50% 50%';d.style.opacity=Math.min(cl((t-pg)/.1),cl((n1-t)/.15))});
+add(lab('$120',90,355,900,120,'#FACC15'),pg,n1,(t,d)=>{const p=A(t,pg,.3);d.style.transform='scale('+(.8+.2*p)+')';d.style.transformOrigin='50% 50%';d.style.opacity=Math.min(cl((t-pg)/.1),cl((n1-t)/.15))});
 add('<div style="position:absolute;left:0;top:0"></div>',pg,END,(t,d)=>{const g=A(t,pg,.4),cut=t>=sg?1:0,h0=560*g-243*cut,q=A(t,s5,.45),e=d.firstChild,col=ca('#FACC15','#22C55E',A(t,qd,.25));
  e.style.left=mix(410,90,q)+'px';e.style.width=mix(260,800,q)+'px';e.style.top=mix(1060-h0,480,q)+'px';e.style.height=mix(h0,HN+(HF-HN)*A(t,an,.2),q)+'px';
  e.style.background=lc(col,'#0C0C10',q);e.style.borderRadius=mix(18,33,q)+'px';e.style.boxShadow='0 20px 50px rgba(0,0,0,.18)';
@@ -129,10 +139,10 @@ function subt(t){let i=-1;GR.forEach((c,k)=>{if(t>=c[0][1]-.04)i=k});
  sub.innerHTML=GR[i].map(p=>{const on=p===act;return '<b style="color:'+(on?(CLAVE[norm(p[0])]||'#6EE7A0'):'#fff')+'">'+p[0].replace(/[.,]/g,'')+'</b>'}).join('')}
 const TIN=[[0,'#FFFFFF'],[s2,'#FFF2B8'],[s3,'#FFD9D6'],[s4,'#CDF5DA'],[s5,'#E3E6EE']];
 function ritmo(t){let c='#fff',a=0;for(const[x,col]of TIN)if(t>=x){c=col;a=x}
- document.getElementById('tinte').style.background=c;document.getElementById('tinte').style.opacity=.75;
+ document.getElementById('tinte').style.background=c;document.getElementById('tinte').style.opacity=.3;
  document.getElementById('flash').style.opacity=a>0?.7*cl(1-(t-a)/.14):0;
  let ws=-9;for(const q of P)if(q[1]<=t)ws=q[1];const k=cl((t-ws)/.14);
  st.style.transformOrigin='540px 700px';st.style.transform='scale('+(1+.035*(1-k))+') rotate('+(.6*(1-k)*(Math.floor(ws*10)%2?1:-1))+'deg)'}
-window.seek=t=>{ritmo(t);for(const{d,ini,fin,fx}of IT){const on=t>=ini&&t<fin;d.style.display=on?'':'none';if(on&&fx)fx(t,d)}subt(t)};
+window.seek=t=>{ritmo(t);ps2(t);for(const{d,ini,fin,fx}of IT){const on=t>=ini&&t<fin;d.style.display=on?'':'none';if(on&&fx)fx(t,d)}subt(t)};
 window.TOTAL=TOTAL;seek(+(new URLSearchParams(location.search).get('t')||0));
 </script></body></html>
