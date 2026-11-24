@@ -21,7 +21,7 @@ A. Experiencia real (incluye ser conductor, si aporta) · B. Educación (edició
 - Montserrat (titulares, 800/900) · Roboto (secundario).
 - Sello **EA.** como recurso secundario.
 - Recursos: contrastes marcados, composiciones limpias, subtítulos destacados, gráficos dinámicos.
-- **Estilo aprobado (24 nov 2026): Familia A, editorial minimalista**, en código en `video/src/EA/` (Remotion): fondo marfil, tarjetas blancas con borde negro y sombra sutil, naranja solo como énfasis (palabra clave, etiquetas, anotaciones), titulares Montserrat 800. Componentes: Subtitles, Headline, StatCard, Arrow/Circle, LowerThird, Logo (faltan Popup, Chart, Comparison, Transition). El boceto de «pegatinas» queda descartado.
+- **Estilo aprobado (24 nov 2026): Familia A, editorial minimalista**, en código en `video/src/EA/` (Remotion): fondo marfil, tarjetas blancas con borde negro y sombra sutil, naranja solo como énfasis (palabra clave, etiquetas, anotaciones), titulares Montserrat 800. Biblioteca completa (10 componentes con variantes) y showcase `EA-Showcase`; lista en `../LEEME.md`. El boceto de «pegatinas» queda descartado.
 - Evitar: saturación, plantillas genéricas, estética corporativa.
 
 ## 5. Formato
