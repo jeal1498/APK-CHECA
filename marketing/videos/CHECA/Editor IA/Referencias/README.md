@@ -2,17 +2,16 @@
 
 Videos (mp4) y capturas de otros creadores que Eduardo elige como **referencia visual** para los Hooks Virales de `001 Checa`. Solo se toman ideas (estructura, ritmo, look); no se republican ni se copian marcas, logos o textos.
 
-- `videos/`: mp4 (nombre corto: `tema-autor.mp4`).
-- `capturas/`: imágenes (`tema-autor.png`).
+- Los mp4 y las capturas van en esta misma carpeta (nombre corto: `tema-autor.mp4`, `tema-autor.png`).
 
 | Archivo | Qué es | Qué tomamos | Hooks hechos con él |
 |---|---|---|---|
 | _(vacío: se agrega una fila por referencia)_ | | | |
 
 ## Al agregar una referencia nueva
-1. Copiar el archivo a `videos/` o `capturas/`.
+1. Copiar el archivo aquí.
 2. Agregar su fila arriba.
 3. Antes de hacer un hook de `001 Checa`: revisar esta carpeta y decir en una línea qué toma el video de ella.
 4. El mp4 se commitea una sola vez.
 
-Estilo base actual: Asfalto (ver `../../estilos/README.md`).
+Estilo base actual: Asfalto (ver `marketing/videos/Hooks Virales/estilos/README.md`).
