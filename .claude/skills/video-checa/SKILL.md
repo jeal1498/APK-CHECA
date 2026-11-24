@@ -12,6 +12,7 @@ Antes de cualquier video nuevo: `git pull origin main` y revisa `video/referenci
 
 ## Elige el modo
 - **Sin la cara de Eduardo** (CHECA y su v2 PERSONAL): lee `references/narrador.md`. Regla de oro de los gráficos (Eduardo, 1 nov): cada gráfico dice **exactamente lo que dice la voz en ese instante**, nunca texto que la voz no pronuncia; detalle en `narrador.md` §8 y «Aprendizajes de la v2 del 32». **Estilo vigente (10 nov): «claro» (mapa de nodos, pop-up y oferta como en la app)**, `narrador.md` §00; lo genera `checa.py claro` (ejemplo y plantilla: `video/hyperframes/sistema-decide-34/` y `_base/claro/`); las referencias de diseño están en `video/referencias/`. El A3 oscuro (§0 y §10) es historia. Los estilos de §8 y §9 son historia (solo para rehacer videos ya aprobados). Muestra primero una imagen de cuadros para su visto bueno. Una v2 con el mismo audio reutiliza `assets/voice` y `tiempos.json`.
+- **Hooks Virales Personal, solo la voz de Eduardo (sin su cara ni ElevenLabs):** lee `references/virales-sin-camara.md` (flujo con su m4a, ritmo rápido, fondo PS2, bloques con morphing, cierre con la pregunta).
 - **Con Eduardo a cámara** (cuenta @Eduardoalv9802, tutoriales): lee `references/camara.md`. Para elegir qué escena acompaña cada frase usa `plantillas/guion-escenas.md`.
 
 ## Flujo: dos aprobaciones por lote (Eduardo, 30 oct 2026)

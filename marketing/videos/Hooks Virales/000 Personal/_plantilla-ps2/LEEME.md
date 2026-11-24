@@ -16,3 +16,6 @@
 - **Subtítulos estilo B:** mayúsculas con contorno negro sobre la frontera, sin caja; solo se destaca la palabra que suena, en el momento exacto; la raya amarilla se abre para dejarlos pasar.
 - **Reglas de animación:** una acción clara por bloque; textos de máx. 4 palabras; analogías literales; escala para proporciones; los elementos se transforman de un bloque al siguiente; cada bloque cierra con una imagen clara; nada vacío esperando su texto; todo cae en su palabra.
 - **Marca:** verde, amarillo y rojo solo para decidir; sin logos ni nombres de apps; sin ciudad ni país; «Oferta de ejemplo» donde haya cifras.
+
+## Variante sin cámara (24 nov, aprobada en el 001)
+Si Eduardo solo manda la voz: `produccion/pagina-bloques.html` + `render-bloques.js` (fondo PS2 a pantalla completa, gráficos por bloques con morphing). Flujo y reglas: `.claude/skills/video-checa/references/virales-sin-camara.md`. Reescribe los bloques `// ═ B1…B5` y las claves `W('palabra')`.
