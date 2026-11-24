@@ -78,8 +78,15 @@
 
 - **Limpieza de la web (24 nov, `main` de PWA-Checa-Multimedia, commits `9207246` y siguientes):** Checa ya está en producción en Google Play. Quedan `index.html`, `abrir/`, `privacidad`, `terminos`, `eliminar-cuenta`, `admin-checa-7e3a91/` y `calendario-d4f81c/`. Se borraron `registro/`, `landing/`, `beta/`, `instalar/`, `descargar/`, `propuestas/`, `docs/` y `herramientas/`. Los botones de `index.html` y de privacidad/términos van directo a Play; se quitó la sección «Entra a la beta en 3 pasos».
 - **`abrir/` se conserva** (es el enlace que Eduardo manda por TikTok); ahora apunta a Google Play (`b34c921`): intent a la app de Play, luego `market://`, luego Chrome.
+- **Videos: carpeta «Editor IA» por cuenta (24 nov):** `marketing/videos/CHECA/Editor IA/` y `marketing/videos/PERSONAL/Editor IA/`, cada una con `Brutos/` (no se sube a Git), `Referencias/` (mp4 y capturas + README con qué tomamos) y `Exportados/` (mp4 aprobado, una sola vez) y su `LEEME.md` con el flujo. Replica el método del video de referencia. Quedó en `main`.
+- **Referencia de PERSONAL:** `PERSONAL/Editor IA/Referencias/editar-con-claude-code.mp4` (crema con cuadrícula, verde lima, palabra resaltada, nodos numerados; método «inspírate, no copies»).
+- **Identidades visuales nuevas por cuenta (Eduardo, 24 nov):** reemplazan a Asfalto (CHECA) y PS2 Style (PERSONAL); se empieza por **PERSONAL**.
+- **5 herramientas del video instaladas y persistentes:** Remotion 4.0.547, HyperFrames 0.9.91, FFmpeg 6.1.1, faster-whisper 1.2.1 y yt-dlp 2026.11.23, con script de configuración en el entorno «Lab»; verificado en una sesión nueva.
 
 ## … Falta
+- **Videos PERSONAL (siguiente):** proponer la identidad visual (colores, letras, subtítulos, fondo, movimiento) con la referencia guardada; Eduardo aprueba. Después: plantilla nueva (reemplaza `_plantilla-ps2/`), prueba de punta a punta con un bruto suyo y prueba de la frase «Hook personal: …». Luego lo mismo para CHECA (esperando sus referencias).
+- Eduardo pasa más referencias (mp4 y capturas) a `Editor IA/Referencias/` de cada cuenta; yt-dlp no baja de TikTok/Instagram/YouTube (la red solo permite GitHub, PyPI y npm).
+- Gmail del conector pide iniciar sesión de nuevo (claude.ai › Conectores); aparte de los videos.
 - **`abrir/` desde TikTok → app de Play (24 nov, sin confirmar):** el enlace directo de Play y las primeras versiones de `abrir/` abrían Chrome o la ficha web, no la app. Eduardo prueba la versión `b34c921` (`https://jeal1498.github.io/PWA-Checa-Multimedia/abrir/`) y avisa a dónde llega. Si el navegador de TikTok bloquea el intent, no hay forma de abrir la app directo desde ahí.
 - Web: quitar de `PRODUCT.md` y del texto restante lo de la beta/registro si Eduardo lo pide; la tabla `testers` de Supabase sigue guardando datos (la privacidad dice «Registro previo en la beta»).
 - **Cuando Google apruebe el AAB 166: avisar a los testers que actualicen.**
@@ -120,6 +127,8 @@
 - Auditor en servidor (diseño en artifact `auditor.html`) sin construir; decidir tope diario (¿300?), frecuencia, aviso/política y alcance.
 
 ## ✗ No tocar
+- Subir brutos (grabaciones sin editar) a Git; el mp4 solo se commitea una vez, ya aprobado.
+- Usar las plantillas Asfalto y PS2 en videos nuevos (quedan como historia).
 - Publicar en Play Console sin su autorización.
 - Decir en público que se usa IA para revisar lecturas.
 - Logos de Uber/DiDi, ciudad o país en el material de marca.
