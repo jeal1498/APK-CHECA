@@ -17,3 +17,7 @@ Flujo de edición de la cuenta PERSONAL (basado en el método del video de refer
 
 Frase de arranque: «Hook personal: …» (con el bruto o el tema).
 Limites: yt-dlp no llega (la red solo permite GitHub, PyPI y npm): las referencias las pasa Eduardo como mp4 o captura.
+
+
+## Identidad
+La identidad de PERSONAL (reemplaza PS2) está en `Identidad/IDENTIDAD.md`. Léela antes de escribir un guion o producir un video.
