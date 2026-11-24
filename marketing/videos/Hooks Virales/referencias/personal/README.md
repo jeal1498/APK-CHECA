@@ -7,7 +7,7 @@ Videos (mp4) y capturas de otros creadores que Eduardo elige como **referencia v
 
 | Archivo | Qué es | Qué tomamos | Hooks hechos con él |
 |---|---|---|---|
-| _(vacío: se agrega una fila por referencia)_ | | | |
+| `videos/editar-con-claude-code.mp4` | Reel de 1:01 (720×1280) «Edita video con Claude Code en 1 minuto»: 6 pasos, cadena de nodos y tarjeta con el contenido | Fondo crema con cuadrícula, verde lima como único acento, negro, palabra que suena resaltada en lima, línea vertical con nodos numerados, mascota, tarjetas blancas, cierre «Comenta EDITOR». Y además el **método** que enseña (ver abajo) | _(ninguno aún)_ |
 
 ## Al agregar una referencia nueva
 1. Copiar el archivo a `videos/` o `capturas/`.
@@ -16,3 +16,6 @@ Videos (mp4) y capturas de otros creadores que Eduardo elige como **referencia v
 4. El mp4 se commitea una sola vez.
 
 Estilo base actual: PS2 Style (ver `../../estilos/README.md`).
+
+## Método del video (lo que queremos replicar)
+Carpeta `Editor IA` con `Brutos`, `Referencias` y `Exportados`; Claude Code en modo local sobre ella; Remotion + HyperFrames (gráficos), FFmpeg (cortes), Whisper (subtítulos) y yt-dlp (bajar referencias). Eduardo graba, suelta el bruto, Claude corta silencios, pone subtítulos y música. Regla clave: **inspírate, no copies**; pegar de 3 a 5 videos que le encanten.
