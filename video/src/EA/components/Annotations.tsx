@@ -43,3 +43,54 @@ export const Circle: React.FC<{
     </svg>
   );
 };
+
+/** Subrayado que se expande en horizontal. */
+export const Underline: React.FC<{ x: number; y: number; w: number; inicio: number; dur?: number; color?: string; grosor?: number }> = ({
+  x, y, w, inicio, dur = 16, color = EA.color.naranja, grosor = 12,
+}) => {
+  const frame = useCurrentFrame();
+  const p = progreso(frame, inicio, dur);
+  return <div style={{ position: "absolute", left: x, top: y, width: w, height: grosor, background: color, transform: `scaleX(${p})`, transformOrigin: "left center", borderRadius: 2 }} />;
+};
+
+/** Recuadro que se dibuja alrededor de algo. */
+export const Box: React.FC<{ x: number; y: number; w: number; h: number; inicio: number; dur?: number; color?: string; grosor?: number }> = ({
+  x, y, w, h, inicio, dur = 22, color = EA.color.negro, grosor = 6,
+}) => {
+  const frame = useCurrentFrame();
+  const p = progreso(frame, inicio, dur);
+  return (
+    <svg style={{ position: "absolute", left: 0, top: 0 }} width={1080} height={1920}>
+      <rect x={x} y={y} width={w} height={h} rx={6} pathLength={1} fill="none" stroke={color} strokeWidth={grosor} style={trazo(p)} />
+    </svg>
+  );
+};
+
+/** Sello o etiqueta inclinada que cae con un pequeño rebote. */
+export const Sello: React.FC<{ texto: string; x: number; y: number; inicio: number; giro?: number; tam?: number }> = ({ texto, x, y, inicio, giro = -6, tam = 38 }) => {
+  const frame = useCurrentFrame();
+  const p = progreso(frame, inicio, EA.mov.corto);
+  const escala = 1.5 - 0.5 * p;
+  return (
+    <div
+      style={{
+        position: "absolute",
+        left: x,
+        top: y,
+        opacity: p,
+        transform: `rotate(${giro}deg) scale(${escala})`,
+        border: `5px solid ${EA.color.naranja}`,
+        color: EA.color.naranja,
+        padding: "6px 22px",
+        fontFamily: EA.font.titulo,
+        fontWeight: EA.peso.extra,
+        fontSize: tam,
+        letterSpacing: 4,
+        textTransform: "uppercase",
+        borderRadius: 6,
+      }}
+    >
+      {texto}
+    </div>
+  );
+};

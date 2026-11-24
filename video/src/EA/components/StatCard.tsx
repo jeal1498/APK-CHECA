@@ -48,7 +48,7 @@ export const StatCard: React.FC<{
       </span>
       <div style={{ fontFamily: EA.font.titulo, fontWeight: EA.peso.extra, fontSize: tamValor, lineHeight: 1.12, letterSpacing: -2, marginTop: 8 }}>
         {prefijo}
-        {cuenta.toFixed(decimales)}
+        {cuenta.toLocaleString("en-US", { minimumFractionDigits: decimales, maximumFractionDigits: decimales })}
         {sufijo}
       </div>
       {indicador ? (
