@@ -19,12 +19,12 @@ import { Transition } from "./components/Transition";
  * Estructura del guion: gancho → contexto → desarrollo → conclusión → interacción.
  * Cuenta: 14 km totales ÷ 12 km/l × $24/l = $28 de gasolina; 80 − 28 = 52; 28 ÷ 80 = 35 %.
  */
-const s = (seg: number) => Math.round(seg * 30);
+export const s = (seg: number) => Math.round(seg * 30);
 export const DURACION_REFERENCIA = s(26);
 
-const B = (de: number, a: number, ...lineas: Parte[][]): Bloque => ({ de: s(de), a: s(a), lineas });
-const t = (x: string): Parte => ({ t: x });
-const n = (x: string): Parte => ({ t: x, naranja: true });
+export const B = (de: number, a: number, ...lineas: Parte[][]): Bloque => ({ de: s(de), a: s(a), lineas });
+export const t = (x: string): Parte => ({ t: x });
+export const n = (x: string): Parte => ({ t: x, naranja: true });
 
 const BLOQUES: Bloque[] = [
   B(0, 2.6, [t("Un viaje de $80")], [n("no siempre"), t(" paga")]),
