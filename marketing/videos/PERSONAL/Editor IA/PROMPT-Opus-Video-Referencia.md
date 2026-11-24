@@ -31,6 +31,14 @@ Un video previo (`video/src/EA/Referencia02.tsx`, 26 s) se vio con interferencia
 - Complejidad en el render: 80 `div` con transform, `filter: blur` sobre un contenedor de 1080×1920 y sombras. **Diseña simple:** pocos elementos en pantalla, rejillas/partículas en un solo `<canvas>` o SVG, desenfoque solo en un elemento pequeño o sustituido por opacidad/escala, sin sombras difusas, bordes de al menos 3 px y texto grueso (el contenido plano de alto contraste se rompe al comprimir).
 - Una sola animación grande a la vez; el resto, quieto.
 
+## Herramientas (ya instaladas en el entorno «Lab»)
+- **Remotion**: todos los gráficos y la composición (carpeta `video/src/EA/`).
+- **FFmpeg**: exportación (receta abajo). Con bruto de Eduardo, también cortar silencios y montar los gráficos sobre su video.
+- **Whisper** (`faster-whisper`, modelo `small`, se descarga en el primer uso): si Eduardo manda su voz (mp4/wav del guion), sácale el tiempo de cada palabra a `palabras.json` y sincroniza los picos de movimiento con eso, no con tiempos estimados. Truco: carga el wav con `wave` + numpy y pásale el arreglo (con la ruta falla por la versión de `av`). Sin voz, estima ~2.8 palabras por segundo y dilo en `guion.md`.
+- **HyperFrames**: no se usa en este video (motor único: Remotion). No lo mezcles.
+- **yt-dlp**: no sirve aquí (la red solo permite GitHub, PyPI y npm); las referencias llegan como mp4 o captura.
+- Si Eduardo manda su voz en el Paso 0, úsala. Si no, pídele una grabación corta antes de cerrar los tiempos.
+
 ## Exportación obligatoria (no uses el mp4 directo de Remotion)
 ```bash
 cd video   # primero: npm i
