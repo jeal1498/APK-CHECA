@@ -63,11 +63,6 @@ const coin=s=>'<svg width="'+s+'" height="'+s+'" viewBox="0 0 100 100"><circle c
 const fade=(t,a,b)=>Math.min(cl((t-a)/.12),cl((b-t)/.15));
 const lab=(s,x,y,w,sz,c,al='center')=>'<div style="position:absolute;left:'+x+'px;top:'+y+'px;width:'+w+'px;text-align:'+al+';font:800 '+sz+'px/1 \'Bricolage Grotesque\';letter-spacing:-3px;color:'+c+';white-space:nowrap;text-shadow:3px 3px 0 #0B1E47,-2px -2px 0 #0B1E47,2px -2px 0 #0B1E47,-2px 2px 0 #0B1E47,0 6px 0 #0B1E47">'+s+'</div>';
 
-// Pop-up de la 10.86 (docs/propuestas/popup-v9.html): completo horizontal de 384 dp, ×2.08 en el video; sin nombre de app
-const popV9=on=>on?'<div class="pv r"><span class="x">✕</span><div class="cuerpo"><div class="bloque"><small>RECHAZAR</small><b>$68</b></div><div class="der"><div class="f"><span class="m no">✕ $157/h</span><u>46 min</u></div><div class="f"><span class="m no">✕ $4.6/km</span><u>26 km</u></div></div></div><div class="pills"><span class="pl">Recogida 2 km</span><span class="pl">Viaje 40 min</span></div><div class="meta"><span class="leyo">⚠ Leyó mal</span><span>Tarifa · $120.00</span></div><div class="barra"><i style="width:62%"></i></div></div>'
- :'<div class="pv n"><span class="x">✕</span><div class="cuerpo"><div class="bloque"><small>···</small><b>···</b></div><div class="der"><div class="f"><span class="m nn">···</span><u>···</u></div><div class="f"><span class="m nn">···</span><u>···</u></div></div></div><div class="meta"><span class="leyo">⚠ Leyó mal</span><span>···</span></div><div class="barra"><i style="width:62%"></i></div></div>';
-let HN=300,HF=400;{const m=document.createElement('div');m.style.cssText='position:absolute;left:-2000px;top:0';document.body.appendChild(m);
- m.innerHTML=popV9(0);HN=m.firstChild.getBoundingClientRect().height;m.innerHTML=popV9(1);HF=m.firstChild.getBoundingClientRect().height;m.remove()}
 const nube=(x,y,k)=>'<g transform="translate('+x+','+y+') scale('+k+')"><path d="M0 60L40 10L95 0L150 22L200 60z" fill="#FFFFFF"/><path d="M0 60L40 10L70 60z" fill="#DCEBFA"/><path d="M95 0L150 22L120 60L70 60z" fill="#EEF5FD"/><path d="M150 22L200 60L120 60z" fill="#CFE1F5"/></g>';
 const EDI=[[-20,150,230,'#E8D9B8','#B9A57C'],[120,120,330,'#C9D3DE','#93A1B1'],[232,160,200,'#E2B58F','#B08460'],[385,130,290,'#D9DEE6','#9FAABA'],[505,170,240,'#EFE3C4','#C2B48C'],[668,125,345,'#C6CFDA','#8E9BAC'],[786,150,215,'#E6C3A0','#B5916F'],[930,140,275,'#DCE2EA','#A3AEBD']];
 const auto=(x,y,c,c2,d)=>'<g transform="translate('+x+','+y+') scale('+d+',1)"><path d="M0 44L6 22L40 18L62 0L118 0L140 20L172 24L178 44z" fill="'+c+'"/><path d="M40 18L62 0L118 0L140 20z" fill="'+c2+'"/><path d="M66 5L88 5L88 19L50 19zM94 5L114 5L130 19L94 19z" fill="#BFE3FF"/><path d="M26 44l8-12h14l8 12l-8 10h-14zM122 44l8-12h14l8 12l-8 10h-14z" fill="#22262E"/></g>';
@@ -117,8 +112,8 @@ const gex='<div style="width:150px;height:30px;border:3px solid '+K+';border-rad
 // ═ B4 «Un pago alto no siempre significa que te va a quedar más dinero»: barra a escala (120); la gasolina es el trozo de arriba (52) y cae; queda 68
 add(lab('$120',90,355,900,120,'#FACC15'),pg,n1,(t,d)=>{const p=A(t,pg,.3);d.style.transform='scale('+(.8+.2*p)+')';d.style.transformOrigin='50% 50%';d.style.opacity=Math.min(cl((t-pg)/.1),cl((n1-t)/.15))});
 add('<div style="position:absolute;left:0;top:0"></div>',pg,END,(t,d)=>{const g=A(t,pg,.4),cut=t>=sg?1:0,h0=560*g-243*cut,q=A(t,s5,.45),e=d.firstChild,col=ca('#FACC15','#22C55E',A(t,qd,.25));
- e.style.left=mix(410,90,q)+'px';e.style.width=mix(260,800,q)+'px';e.style.top=mix(1060-h0,480,q)+'px';e.style.height=mix(h0,HN+(HF-HN)*A(t,an,.2),q)+'px';
- e.style.background=lc(col,'#0C0C10',q);e.style.borderRadius=mix(18,33,q)+'px';e.style.boxShadow='0 20px 50px rgba(0,0,0,.18)';
+ e.style.left=mix(410,190,q)+'px';e.style.width=mix(260,700,q)+'px';e.style.top=mix(1060-h0,520,q)+'px';e.style.height=mix(h0,92,q)+'px';
+ e.style.background=lc(col,'#ffffff',q);e.style.borderRadius=mix(18,22,q)+'px';e.style.boxShadow=hlK(t,0)?'0 0 0 8px '+Y:'0 14px 34px rgba(0,0,0,.2)';
  e.style.transformOrigin='50% 100%';e.style.transform='scaleX('+(1+.06*Math.sin(Math.PI*cl((t-qd)/.4)))+')'});
 add(lab('−$52',700,560,190,78,R),n1,sg+.7,(t,d)=>{const p=A(t,n1,.3),f=A(t,sg,.6);d.style.zIndex=5;d.style.transformOrigin='700px 600px';d.style.transform='translate('+(300*f)+'px,'+(24*(1-p)+300*f*f)+'px) rotate('+(24*f)+'deg)';d.style.opacity=Math.min(cl((t-n1)/.1),cl(1-(f-.35)/.65))});
 add(lab('TE QUEDA',60,830,340,60,G,'right'),qd,s5,(t,d)=>{const p=A(t,qd,.3);d.style.transform='scale('+(.8+.2*p)+')';d.style.transformOrigin='100% 50%';d.style.opacity=Math.min(cl((t-qd)/.1),cl((s5-t)/.12))});
@@ -126,9 +121,13 @@ add(lab('$68',410,850,260,104,'#04210F'),qd,s5,(t,d)=>{const p=A(t,qd,.35);d.sty
 
 // ═ B5 «¿Qué dato tomas en cuenta antes de aceptar?»: la barra verde se estira y es el pop-up de Checa; con «antes» muestra sus datos
 add(cap('¿QUÉ DATO MIRAS?'),s5,END,(t,d)=>{d.style.opacity=cl((t-s5)/.12)});
-add('<div style="position:absolute;left:90px;top:480px;width:800px">'+popV9(0)+'</div>',s5+.25,END,(t,d)=>{const on=t>=an;
- d.style.opacity=cl((t-s5-.25)/.15);d.style.transformOrigin='400px 0';d.style.transform='scale('+(1+(on?.05*Math.sin(Math.PI*cl((t-an)/.35)):0))+')';
- if(d._on!==on){d._on=on;d.firstChild.innerHTML=popV9(on)}});
+const hlK=(t,k)=>t>=an&&t<an+1.0&&Math.floor((t-an)/.25)%4===k;
+const RX=190,RW=700,RH=92,RY=k=>520+k*112;
+const fq=(n,v,ic,red,k)=>'<div style="position:absolute;left:'+RX+'px;top:'+RY(k)+'px;width:'+RW+'px;height:'+RH+'px;border-radius:22px;background:#fff;border:3px solid '+(red?R:K)+';box-shadow:0 14px 34px rgba(0,0,0,.2);display:flex;align-items:center;gap:20px;padding:0 28px;font:800 44px \'Bricolage Grotesque\';color:'+K+'">'+ic+'<span style="flex:1">'+n+'</span><span style="color:'+(red?R:K)+'">'+v+'</span></div>';
+add('<div style="position:absolute;left:'+RX+'px;top:'+RY(0)+'px;width:'+RW+'px;height:'+RH+'px;display:flex;align-items:center;gap:20px;padding:0 28px;font:800 44px \'Bricolage Grotesque\';color:'+K+'">'+coin(54)+'<span style="flex:1">Pago</span><span>$120</span></div>',s5+.25,END,(t,d)=>{d.style.opacity=cl((t-s5-.25)/.15)});
+[['Kilómetros','26 km',IC.km,0,w('dato')],['Tiempo','46 min',IC.t,0,w('tomas')],['Gasolina','−$52',IC.g,1,w('cuenta#2')]].forEach(([n,v,ic,red,a],i)=>{const k=i+1;
+ add(fq(n,v,ic,red,k),a-.05,END,(t,d)=>{const p=A(t,a-.05,.28),e=d.firstChild;e.style.transform='translateY('+(40*(1-p))+'px) scale('+(.92+.08*p)+')';
+  e.style.boxShadow=hlK(t,k)?'0 0 0 8px '+Y:'0 14px 34px rgba(0,0,0,.2)';d.style.opacity=cl((t-a+.05)/.1)})});
 // ── subtítulos (estilo B, palabra que suena de color)
 const GR=[];{let c=[];const cierra=()=>{if(c.length)GR.push(c);c=[]};
  P.forEach(p=>{if(c.length&&(c.length>=3||c.map(q=>q[0]).join(' ').length+p[0].length>16))cierra();c.push(p);if(/[.,?]$/.test(p[0]))cierra()});cierra()}
