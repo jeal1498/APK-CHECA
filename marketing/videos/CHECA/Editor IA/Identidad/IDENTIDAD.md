@@ -24,5 +24,5 @@ Opciones vistas: `propuestas-estilo/estilos-25nov.html` (A Asfalto vivo, B Table
 ## Final con Google Play (25 nov)
 Checa ya está en producción en Google Play. **Final vigente, aprobado (Eduardo, 25 nov; video en `Referencias/final-play-store.mp4`):** cierre de marca a pantalla completa: semáforo rojo → ámbar → verde → ✓ (sonido `logo-semaforo`), «Descarga Checa», el nombre como sale en la tienda **«Checa: Rentabilidad de viajes»** (sin «Beta»), el distintivo negro «YA DISPONIBLE EN **Play Store**» que **sale de la luz verde** (sonido `popup-entra`) y las cuentas @checa.driver · @Eduardoalv9802. Sin link de la web (el canal directo cerró). Después todo regresa: vuelve la cámara y las rayas de la carretera (bucle). Se dice «Play Store». Sin el logo de Google Play (sus reglas de uso); si se quiere el distintivo oficial, se usa tal cual. Código: `video/src/Raya/FinalPlay.tsx` (`Raya-Final-Play`, entrada `src/Raya/index.ts`).
 
-## Pendiente
-Pieza modelo completa con un guion de Checa.
+## Pieza modelo (aprobada 25 nov)
+`Referencias/checa-001-completo.mp4`: guion «001 Checa», 36 s; código `video/src/Raya/Completo.tsx` (`Raya-Completo-001`, entrada `src/Raya/index.ts`). Los videos nuevos de Checa se hacen copiando esta composición y cambiando guion, tiempos (Whisper) y formas de la raya.

@@ -6,6 +6,7 @@ Videos (mp4) y capturas de otros creadores que Eduardo elige como **referencia v
 
 | Archivo | Qué es | Qué tomamos | Hooks hechos con él |
 |---|---|---|---|
+| `checa-001-completo.mp4` | **Pieza modelo de CHECA** (aprobada 25 nov 2026): guion «001 Checa» completo, 36 s, estilo «La raya» con todas las decisiones; composición `Raya-Completo-001`, sonido con `video/herramientas/sonido_raya_001.py` | Todo: plantilla de los Hooks de CHECA (la raya que se transforma, pop-up que sale del semáforo, cámara con acercamiento, subtítulos al centro, sonidos oficiales, final con Play Store en bucle) | _(ninguno aún)_ |
 | `final-play-store.mp4` | **Pieza propia aprobada** (25 nov 2026): final de 6.5 s de los videos de Checa, estilo «La raya» (`Raya-Final-Play`) | Cierre de todos los videos: semáforo → «Descarga Checa» → nombre de la tienda → «Ya disponible en Play Store» que sale de la luz verde → bucle | _(ninguno aún)_ |
 
 ## Al agregar una referencia nueva
