@@ -33,7 +33,7 @@ Detalle en `docs/banco/plan-mejora-semanal.md`. Lo vigente:
 
 ## Pendiente después de la 10.86
 - **Probar la 10.86 en teléfono** (APK de «Compilar flavor play»): **el pop-up nuevo** (completo y compacto, sin ver nunca probado: que quepa en tu teléfono y en la tablet, que los montos de 3 y 4 cifras se vean, la barra de tiempo, «Leyó mal» y que el compacto se abra al tocarlo); que el pop-up viejo se quite cuando llega otra oferta; listas de DiDi con tarjeta cortada, Express y carrusel; que no se pierdan ofertas con un solo tramo; Uber en general; que el `.txt` de «Guardar pantallas» traiga el diagnóstico; Admin › Hoy debe empezar a mostrar OCR y Lectura (las etapas `ocr` y `parser` ya salen en la traza; `admin_salud` necesita ≥30 por paso).
-- Mercado Pago (sin sonda) y Play Billing (Fase 7) siguen en «Aún no se sabe»; es normal.
+- Play Billing (Fase 7) sigue en «Aún no se sabe»; es normal. Mercado Pago ya no existe.
 - Los casos no corregidos están en «Auditoría del lector» (arriba). Para N829/N853/N854 hacen falta imágenes (la función temporal de `docs/banco-lector.md`, solo con autorización de Eduardo).
 
 ## Cómo trabajar con Eduardo
@@ -145,7 +145,7 @@ Pantallas, instalación en teléfonos (Play Protect, ajustes restringidos, Samsu
 ## Licencias y precios (vigente)
 - Beta gratis para todos hasta el **31 ene 2027**. Después: **1 mes $119 · 6 meses $589 · 1 año $1,059** (MXN).
 - **Plan Fundador −40 % de por vida** ($71 / $353 / $635) solo para los **primeros 50 correos de la tabla `testers`** por orden de registro, si entran con Google (`reclamar_fundador` consulta esa posición).
-- Canal `directo`: cobro con Mercado Pago (`supabase/functions/mp-pago` y `mp-webhook`; planes en `_shared/planes.ts`). Canal `play`: Play Billing (Fase 7, pendiente).
+- **Cobros solo con Google Play** (Play Billing, Fase 7, pendiente). Mercado Pago se quitó (Eduardo, 25 nov 2026): `mp-webhook` borrada; `mp-pago` solo responde la consulta del Plan Fundador (`{"consulta": true}`, la usa `Cuenta.sincronizarPrecio`) y lo demás da 410. Planes en `_shared/planes.ts`.
 - **Regalar una licencia:** `pedidos/pedido.txt` con `nombre=`, `correo=` (preferido) o `equipo=`, `tipo=Fundador|Normal` y `dias=` o `plan=`; push a `main` y `licencia.yml` responde en `pedidos/respuesta.txt` (~30 s). Eduardo autorizó este método. La llave privada solo está en los secretos de GitHub y en su Drive.
 - Supabase: proyecto `gqsadclvftkzwrihfipz`; esquema en `supabase/esquema.sql`, que despliega `supabase.yml`.
 - Detalle (paquetes, Mercado Pago, invitaciones, historia de precios): `docs/web-y-ventas.md`.

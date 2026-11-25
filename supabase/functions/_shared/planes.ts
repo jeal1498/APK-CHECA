@@ -1,6 +1,6 @@
 // Paquetes de Checa (precios en MXN). Deben coincidir con las tarjetas de la app y con la web.
 // precioBeta = precio de fundador (40 % menos de por vida), solo para las primeras FUNDADOR_CUPOS
-// cuentas de Google que lo reclaman durante la beta (ver mp-pago y la tabla `fundadores`).
+// cuentas de Google que lo reclaman durante la beta (ver mp-pago, que solo hace la consulta, y la tabla `fundadores`).
 export const PLANES: Record<string, { dias: number; precio: number; precioBeta: number; titulo: string }> = {
   "1m": { dias: 30, precio: 119, precioBeta: 71, titulo: "Checa · 1 mes (Plan Básico)" },
   "6m": { dias: 180, precio: 589, precioBeta: 353, titulo: "Checa · 6 meses (Plan Estratega)" },

@@ -1,7 +1,7 @@
-name: Subir cobros a Supabase
+name: Subir a Supabase
 
-# Instala en Supabase las funciones de Mercado Pago (mp-pago y mp-webhook),
-# sus secretos y las tablas de supabase/esquema.sql.
+# Instala en Supabase las funciones de supabase/functions y las tablas de supabase/esquema.sql.
+# Mercado Pago se quitó el 25 nov 2026 (cobros solo con Google Play).
 on:
   push:
     branches: [main]
@@ -30,27 +30,13 @@ jobs:
           curl -sS --fail-with-body -X POST "https://api.supabase.com/v1/projects/$PROYECTO/database/query" \
             -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" -H "Content-Type: application/json" \
             -d @consulta.json
-      - name: Secretos
-        env:
-          MP_ACCESS_TOKEN: ${{ secrets.MP_ACCESS_TOKEN }}
-          MP_WEBHOOK_SECRET: ${{ secrets.MP_WEBHOOK_SECRET }}
-          LLAVE: ${{ secrets.LICENCIA_PRIVADA }}
-        run: |
-          set -euo pipefail
-          for v in SUPABASE_ACCESS_TOKEN MP_ACCESS_TOKEN MP_WEBHOOK_SECRET LLAVE; do
-            if [ -z "${!v}" ]; then echo "Falta el secreto $v"; exit 1; fi
-          done
-          llave=$(printf '%s\n' "$LLAVE" | base64 -w0)
-          supabase secrets set --yes --project-ref "$PROYECTO" \
-            "MP_ACCESS_TOKEN=$MP_ACCESS_TOKEN" \
-            "MP_WEBHOOK_SECRET=$MP_WEBHOOK_SECRET" \
-            "LICENCIA_PRIVADA_B64=$llave"
       - name: Funciones
         run: |
           set -euo pipefail
-          # Las dos revisan por su cuenta quién llama (mp-pago con la sesión, mp-webhook con Mercado Pago).
+          # mp-pago solo responde la consulta del Plan Fundador (revisa la sesión en el handler).
           supabase functions deploy mp-pago --yes --project-ref "$PROYECTO" --no-verify-jwt --use-api
-          supabase functions deploy mp-webhook --yes --project-ref "$PROYECTO" --no-verify-jwt --use-api
+          # mp-webhook (Mercado Pago) ya no existe: se borra si sigue instalada.
+          supabase functions delete mp-webhook --project-ref "$PROYECTO" || true
           # Esta función conserva la verificación JWT y valida además la sesión en el handler.
           supabase functions deploy eliminar-cuenta --yes --project-ref "$PROYECTO" --use-api
           # Revisión de lecturas: valida la sesión en el handler; la clave de Anthropic la carga Eduardo a mano.

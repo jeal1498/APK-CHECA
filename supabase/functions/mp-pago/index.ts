@@ -1,14 +1,12 @@
-// Crea el pago en Mercado Pago para la cuenta que llama (con su sesión de Supabase)
-// y devuelve el link de pago. La licencia la activa mp-webhook cuando el pago se aprueba.
-// Con {"consulta": true} solo dice si la cuenta tiene precio de fundador (uno de los 50 lugares; si aún
-// hay, la consulta lo reserva) y los precios que le tocan.
-import { BETA_FIN, BETA_GRACIA_DIAS, BETA_PRIMER_PAGO_HASTA, FUNDADOR_CUPOS, MARCA_BETA, PLANES } from "../_shared/planes.ts";
+// Plan Fundador: con {"consulta": true} dice si la cuenta que llama (con su sesión de Supabase) tiene
+// precio de fundador (uno de los 50 lugares; si aún hay, la consulta lo reserva) y los precios que le tocan.
+// El nombre se queda por compatibilidad con la app. Mercado Pago se quitó el 25 nov 2026: los cobros
+// serán solo con Google Play (Fase 7); cualquier otra petición responde 410.
+import { BETA_FIN, BETA_GRACIA_DIAS, BETA_PRIMER_PAGO_HASTA, FUNDADOR_CUPOS, PLANES } from "../_shared/planes.ts";
 
 const SUPA = Deno.env.get("SUPABASE_URL")!;
 const ANON = Deno.env.get("SUPABASE_ANON_KEY")!;
 const SERVICIO = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const MP = Deno.env.get("MP_ACCESS_TOKEN")!;
-const WEB = "https://jeal1498.github.io/PWA-Checa-Multimedia/";
 
 const json = (o: unknown, status = 200) =>
   new Response(JSON.stringify(o), { status, headers: { "Content-Type": "application/json" } });
@@ -76,34 +74,8 @@ Deno.serve(async (req) => {
   if (!correo) return json({ error: "sesion" }, 401);
 
   const cuerpo = await req.json().catch(() => ({}));
+  if (cuerpo.consulta !== true) return json({ error: "sin_cobro", detalle: "Los pagos son solo con Google Play." }, 410);
   const beta = await tienePrecioBeta(correo, String(usuario.created_at ?? ""));
-  if (cuerpo.consulta === true) {
-    const precios = Object.fromEntries(Object.entries(PLANES).map(([k, v]) => [k, beta ? v.precioBeta : v.precio]));
-    return json({ beta, precios });
-  }
-
-  const plan = cuerpo.plan;
-  const p = PLANES[plan];
-  if (!p) return json({ error: "plan" }, 400);
-  const precio = beta ? p.precioBeta : p.precio;
-
-  const r = await fetch("https://api.mercadopago.com/checkout/preferences", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${MP}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      items: [{ id: plan, title: p.titulo + (beta ? " · precio de fundador" : ""), quantity: 1, unit_price: precio, currency_id: "MXN" }],
-      payer: { email: correo },
-      external_reference: `${correo}|${plan}` + (beta ? `|${MARCA_BETA}` : ""),
-      notification_url: `${SUPA}/functions/v1/mp-webhook`,
-      back_urls: { success: WEB, pending: WEB, failure: WEB },
-      auto_return: "approved",
-      statement_descriptor: "CHECA",
-    }),
-  });
-  const pref = await r.json();
-  if (!r.ok || !pref.init_point) {
-    console.error("preferencia", r.status, JSON.stringify(pref));
-    return json({ error: "mercadopago" }, 502);
-  }
-  return json({ url: pref.init_point, beta, precio });
+  const precios = Object.fromEntries(Object.entries(PLANES).map(([k, v]) => [k, beta ? v.precioBeta : v.precio]));
+  return json({ beta, precios });
 });
