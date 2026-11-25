@@ -4210,7 +4210,7 @@ class MainActivity : Activity() {
                 override fun updateDrawState(ds: android.text.TextPaint) { ds.color = cTexto; ds.isUnderlineText = true }
             }, 0, length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
-        val web = "https://jeal1498.github.io/PWA-Checa-Multimedia/"
+        val web = "https://jeal1498.github.io/"
         val legal = android.text.SpannableStringBuilder("Al continuar aceptas los ")
             .append(enlace("Términos", web + "terminos.html")).append(" y la ")
             .append(enlace("Política de privacidad", web + "privacidad.html"))

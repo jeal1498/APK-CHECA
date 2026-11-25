@@ -68,7 +68,7 @@ Excepciones: explica completo si lo piden; confirma antes de acciones destructiv
 - **Guiones:** siempre con la skill **`guion-checa`**. **Producción:** con la pieza modelo de cada cuenta en Remotion (arriba); la skill **`video-checa`** sigue sirviendo para portada, copy, calendarios y control de calidad, no para el estilo visual.
 - **Flujo: dos aprobaciones por lote.** (1) Eduardo aprueba juntos los guiones del lote (cada tema con CHECA y su v2 PERSONAL); (2) Claude produce todo sin preguntar, pasa el control de calidad y le manda el lote completo para una sola revisión; se corrige solo lo que él marque. «Publicado» lo marca él.
 - **CTA vigente (Eduardo, 25 nov 2026, Checa ya en producción):** «Descárgala en Play Store: busca «Checa: Rentabilidad de viajes»» (solo Android). El anterior («Comenta CHECA y te paso el acceso a la prueba en Google Play») es historia; si alguien comenta «CHECA» en un video viejo, se le responde con el mismo CTA nuevo. Cuentas: `@checa.driver` (Checa) y `@Eduardoalv9802` (personal).
-- **Estado:** el real está en el calendario web (`PWA-Checa-Multimedia/calendario-d4f81c/data.json`); `marketing/plan/calendario.md` lo acompaña y `marketing/plan/plan-ponerse-al-dia.md` tiene el plan. Al empezar: `git pull origin main` en los dos repos.
+- **Estado:** el real está en el calendario web (`jeal1498.github.io/calendario-d4f81c/data.json`); `marketing/plan/calendario.md` lo acompaña y `marketing/plan/plan-ponerse-al-dia.md` tiene el plan. Al empezar: `git pull origin main` en los dos repos.
 - **Se sube video todos los días, domingos incluidos** (Eduardo, 31 oct; antes los domingos no se subía).
 - **Énfasis (Eduardo, 31 oct):** lo escribe Gémini en una lista bajo cada línea de voz (`fuerte`, `pausa`, `tono`, `voz`, `pantalla`) sin cambiar el texto; formato y cómo se aplica en `.claude/skills/video-checa/references/narrador.md` §7. Los gráficos de cada énfasis son golpes visuales que caen en la palabra (escena `impacto`, §8). Estilo híbrido teléfono + golpes (oferta real, pop-up de la app, `adelanto` 0.04): `narrador.md` §9.
 - **Siempre que se pida un video nuevo** (lote, tema suelto, rehacer o proponer), antes de escribir o producir: `git pull origin main` y mirar `video/referencias/` por referencias nuevas (`ls` + README). Si hay alguna nueva, decir en una línea qué toma el video de ella.
@@ -120,7 +120,7 @@ Excepciones: explica completo si lo piden; confirma antes de acciones destructiv
 | `Licencia.kt` | Licencia sin internet (código de equipo firmado ECDSA), combinada con la de cuenta y la beta. |
 | `Migracion.kt` | Solo `directo`: aviso con cuenta regresiva y bloqueo el 15 nov 2026 para pasar a Play. |
 | `ActualizacionPlay.kt` | Solo `play`: aviso de versión nueva con In-App Updates de Google Play al abrir la app. |
-| `Actualizacion.kt` | Solo `directo`: busca versión nueva en `PWA-Checa-Multimedia/descargar/version.json`, avisa e instala. |
+| `Actualizacion.kt` | Solo `directo`: busca versión nueva en `jeal1498.github.io/descargar/version.json`, avisa e instala. |
 | `Widgets.kt` / `Manejo.kt` / `QrActivity.kt` | Widgets de inicio (mosaico 4×2, Mi día, Descanso, SOS, Mi QR → `QrActivity` con el QR al WhatsApp del conductor; el encender 1×1 sigue en `WidgetCheca.kt`) y tiempo manejando seguido para Descanso. |
 | `Resumen.kt`, `Soporte.kt`, `Guardado.kt`, `MainActivity.kt` | Imagen del día para compartir, ayuda y soporte, pantallas guardadas para diagnóstico, y la UI (encabezado fijo con marca y botón SOS · Inicio · Mis metas · botón central · Ajustes · Cuenta). |
 
@@ -152,8 +152,9 @@ Pantallas, instalación en teléfonos (Play Protect, ajustes restringidos, Samsu
 
 ## Marca
 - **Posicionamiento (nov 2026):** vendemos «tranquilidad económica a través del control», no funciones. Eslogan: «Tu trabajo vale. Asegúrate de que cada viaje también.» Planes: Básico $119 · **Estratega $589 (el que se impulsa)** · Pro $1,059. Mensajes, tono y regla «transformación, no funciones»: `marketing/plan/identidad-comercial.md`.
-- Vive en el repo **`jeal1498/PWA-Checa-Multimedia`**, carpeta `marca/` (skill `marca-checa`); no guardar copias aquí. Asfalto `#0C0C10`, hueso `#F4F4EF`; el color solo decide (aceptar `#22C55E`, considerar `#FACC15`, rechazar `#EF4444`); Bricolage Grotesque 800, DM Sans, JetBrains Mono.
-- La web es `https://jeal1498.github.io/PWA-Checa-Multimedia/` (repo `PWA-Checa-Multimedia`; cambios directo a `main`). Los legales los debe revisar un abogado.
+- Vive en el repo **`jeal1498/jeal1498.github.io`**, carpeta `marca/` (skill `marca-checa`); no guardar copias aquí. Asfalto `#0C0C10`, hueso `#F4F4EF`; el color solo decide (aceptar `#22C55E`, considerar `#FACC15`, rechazar `#EF4444`); Bricolage Grotesque 800, DM Sans, JetBrains Mono.
+- La web es `https://jeal1498.github.io/` (repo `jeal1498/jeal1498.github.io`, antes `PWA-Checa-Multimedia`; cambios directo a `main`). Los legales los debe revisar un abogado.
+- **Cambio de nombre (25 nov 2026):** el repo de la web pasó de `PWA-Checa-Multimedia` a `jeal1498.github.io` (la web quedó en la raíz). El repo nuevo `PWA-Checa-Multimedia` es solo un **puente**: sus páginas mandan las direcciones viejas a las nuevas; no se borra. El viejo `jeal1498.github.io` (assetlinks de Clientela) quedó como `raiz-vieja`; su `assetlinks.json` vive ahora en `.well-known/` de la web (`_config.yml` lo incluye). Donde la historia diga `PWA-Checa-Multimedia`, es este repo.
 
 ## Índice de `docs/` (léelos solo si la tarea lo pide)
 | Si vas a… | Lee |

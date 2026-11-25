@@ -179,7 +179,7 @@ object Resumen {
         ctx.getDrawable(R.drawable.semaforo)?.apply { setBounds(xm.toInt(), 1090, xm.toInt() + 50, 1173); draw(c) }
         texto("Checa", xm + 72f, 1153f, Fuentes.titulo, 65f, Oscuro.HUESO, -0.02f)
         texto("Mira cuánto te queda de cada viaje.", cx, 1236f, Fuentes.texto, 36f, Oscuro.TEXTO2, 0f, Paint.Align.CENTER)
-        texto("jeal1498.github.io/PWA-Checa-Multimedia", cx, 1283f, Fuentes.numero, 30f, Oscuro.TENUE, 0f, Paint.Align.CENTER)
+        texto("jeal1498.github.io", cx, 1283f, Fuentes.numero, 30f, Oscuro.TENUE, 0f, Paint.Align.CENTER)
         return bmp
     }
 }

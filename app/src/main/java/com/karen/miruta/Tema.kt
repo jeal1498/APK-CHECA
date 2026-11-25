@@ -13,7 +13,7 @@ import android.graphics.drawable.Drawable
 
 /** Paleta, medidas y tamaños de letra de toda la app (múltiplos de 8 dp). */
 object Tema {
-    // ---------- colores: marca v2 (PWA-Checa-Multimedia/marca/tokens.json). El color solo decide. ----------
+    // ---------- colores: marca v2 (jeal1498.github.io/marca/tokens.json). El color solo decide. ----------
     /** Modo claro (10.32): la app usa estos colores; el pop-up y la imagen del día usan [Oscuro]. */
     var claro = false; private set
     const val MODO_OSCURO = "oscuro"
