@@ -99,7 +99,7 @@ export const Final: React.FC = () => {
             ?
           </text>
           {/* ✓ que cae sobre el globo */}
-          <g transform={`translate(${GLOBO.x + GLOBO.w - 10} ${lerp(GLOBO.y - 140, GLOBO.y, cae)}) scale(${1 + 0.18 * Math.sin(Math.PI * p(P.aceptar + 6, 8))})`} opacity={Math.min(1, cae * 4)}>
+          <g transform={`translate(${GLOBO.x + GLOBO.w - 70} ${lerp(GLOBO.y - 140, GLOBO.y, cae)}) scale(${1 + 0.18 * Math.sin(Math.PI * p(P.aceptar + 6, 8))})`} opacity={Math.min(1, cae * 4)}>
             <circle r={46} fill={C.naranja} stroke={C.negro} strokeWidth={6} />
             <path d="M-22 0 l16 16 l30 -32" fill="none" stroke={C.negro} strokeWidth={8} strokeLinecap="round" strokeLinejoin="round" />
           </g>
@@ -128,9 +128,9 @@ export const Final: React.FC = () => {
         </g>
       </svg>
 
-      {/* sello EA. (a la derecha del auto) */}
+      {/* sello EA. (a la izquierda del auto: la derecha la tapan los botones de TikTok, Reels y Shorts) */}
       <div style={{ opacity: 1 - p(REGRESA - 6, 10) }}>
-        <Logo x={835} y={1250} tam={96} inicio={P.aceptar + 16} />
+        <Logo x={70} y={1250} tam={96} inicio={P.aceptar + 16} />
       </div>
 
       <SubtitulosPalabra y={800} bloques={BLOQUES} />
