@@ -6,7 +6,7 @@ Videos (mp4) y capturas de otros creadores que Eduardo elige como **referencia v
 
 | Archivo | Qué es | Qué tomamos | Hooks hechos con él |
 |---|---|---|---|
-| _(vacío: se agrega una fila por referencia)_ | | | |
+| `final-play-store.mp4` | **Pieza propia aprobada** (25 nov 2026): final de 6.5 s de los videos de Checa, estilo «La raya» (`Raya-Final-Play`) | Cierre de todos los videos: semáforo → «Descarga Checa» → nombre de la tienda → «Ya disponible en Play Store» que sale de la luz verde → bucle | _(ninguno aún)_ |
 
 ## Al agregar una referencia nueva
 1. Copiar el archivo aquí.
