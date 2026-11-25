@@ -7,12 +7,12 @@
 /* Propuesta «Una pantalla» animada: hero en composición HyperFrames (GSAP), escenas de Remotion en vivo (@remotion/player). Sin carrusel ni mp4. Marca v2, oscuro primero. */
 :root{
   --fondo:#0C0C10;--tarjeta:#16161C;--texto:#F4F4EF;--texto2:#C9C9D0;--texto3:#9A9AA4;--linea:#2A2A33;
-  --aceptar:#22C55E;--considerar:#FACC15;--rechazar:#EF4444;--sobre-aceptar:#04210F;--verde-texto:#22C55E;
+  --aceptar:#22C55E;--considerar:#FACC15;--rechazar:#EF4444;--sobre-aceptar:#04210F;--verde-texto:#22C55E;--rojo-texto:#F87171;
   --titulos:'Bricolage Grotesque','Arial Black',sans-serif;--texto-f:'DM Sans',Arial,sans-serif;--datos:'JetBrains Mono','Courier New',monospace;
   color-scheme:dark;
 }
-@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--fondo:#F4F4EF;--tarjeta:#FFFFFF;--texto:#0C0C10;--texto2:#3A3A45;--texto3:#5E5E68;--linea:#DCDCD4;--verde-texto:#15803D;color-scheme:light}}
-:root[data-theme="light"]{--fondo:#F4F4EF;--tarjeta:#FFFFFF;--texto:#0C0C10;--texto2:#3A3A45;--texto3:#5E5E68;--linea:#DCDCD4;--verde-texto:#15803D;color-scheme:light}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--fondo:#F4F4EF;--tarjeta:#FFFFFF;--texto:#0C0C10;--texto2:#3A3A45;--texto3:#5E5E68;--linea:#DCDCD4;--verde-texto:#15803D;--rojo-texto:#B91C1C;color-scheme:light}}
+:root[data-theme="light"]{--fondo:#F4F4EF;--tarjeta:#FFFFFF;--texto:#0C0C10;--texto2:#3A3A45;--texto3:#5E5E68;--linea:#DCDCD4;--verde-texto:#15803D;--rojo-texto:#B91C1C;color-scheme:light}
 *,*::before,*::after{box-sizing:border-box}
 body{background:var(--fondo);color:var(--texto);font:400 17px/1.5 var(--texto-f);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));overflow-x:hidden}
 h1,h2{font-family:var(--titulos);font-weight:800;letter-spacing:-.04em;line-height:.98;margin:0;text-wrap:balance}
@@ -31,9 +31,8 @@ p{margin:0}
 .hero h1{font-size:clamp(1.9rem,8.2vw,3rem)}
 
 /* Composición HyperFrames del hero */
-.hf{--c:#EF4444;position:relative;margin-top:14px;height:410px;border-radius:22px;overflow:hidden;background:#101014;border:1px solid var(--linea);cursor:pointer;color:#F4F4EF}
-.hf .mapa{position:absolute;inset:0}.hf .mapa svg{width:100%;height:100%}
-.hf .pop{position:absolute;left:12px;right:12px;top:14px;border-radius:16px;overflow:hidden;border:2px solid var(--pc);background:#0C0C10;box-shadow:0 18px 34px -16px #000}
+.hf{--c:#EF4444;position:relative;margin-top:14px;height:370px;overflow:visible;background:transparent;cursor:pointer;color:#F4F4EF}
+.hf .pop{position:absolute;left:0;right:0;top:14px;border-radius:16px;overflow:hidden;border:2px solid var(--pc);background:#0C0C10;box-shadow:0 18px 34px -16px #000}
 .hf .pop .cu{display:grid;grid-template-columns:42% 1fr}
 .hf .pop .bl{background:var(--pc);display:grid;place-items:center;align-content:center;padding:10px 6px}
 .hf .pop .bl small{font:800 .74rem/1 var(--texto-f);letter-spacing:.06em}
@@ -47,10 +46,10 @@ p{margin:0}
 .hf .br{height:5px;background:#ffffff1a}.hf .br i{display:block;height:100%;background:var(--pc);transform-origin:left}
 .hf-pop-a{--pc:#EF4444}.hf-pop-a .bl{color:#1b0000}
 .hf-pop-b{--pc:#22C55E}.hf-pop-b .bl{color:#06210f}
-.hf .voz{position:absolute;left:50%;top:172px;transform:translateX(-50%);display:flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:#000c;font:800 .95rem/1 var(--titulos);white-space:nowrap}
+.hf .voz{position:absolute;left:50%;top:150px;transform:translateX(-50%);display:flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:var(--tarjeta);border:1px solid var(--linea);font:800 .95rem/1 var(--titulos);white-space:nowrap}
 .hf .voz svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
-.hf-voz-a{color:#ff8a8a}.hf-voz-b{color:#4ADE80}
-.hf .uber{position:absolute;left:12px;right:12px;bottom:12px;background:#000;color:#fff;border-radius:16px;padding:13px 15px 11px;box-shadow:0 10px 24px -14px #000}
+.hf-voz-a{color:var(--rojo-texto)}.hf-voz-b{color:var(--verde-texto)}
+.hf .uber{position:absolute;left:0;right:0;bottom:0;background:#000;color:#fff;border-radius:16px;padding:13px 15px 11px;box-shadow:0 10px 24px -14px #000}
 .hf .uber .tipo{display:flex;justify-content:space-between;font:700 .78rem/1 var(--texto-f)}
 .hf .uber .tipo span:last-child{color:#B5B5B5;font-weight:600}
 .hf .uber .monto{display:block;font:700 2rem/1.05 var(--texto-f);letter-spacing:-.02em;margin:7px 0 5px}
@@ -71,7 +70,7 @@ p{margin:0}
 .blk{padding-block:30px;border-top:1px solid var(--linea);margin-top:30px}
 .blk h2{font-size:clamp(1.6rem,6.6vw,2.2rem)}
 .blk .lead{margin-top:8px;color:var(--texto2)}
-.escena{margin-top:16px;border-radius:22px;overflow:hidden;background:#0C0C10;border:1px solid var(--linea)}
+.escena{margin-top:12px}
 .golpes{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:12px}
 .golpes li{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:start;font-size:1.02rem;color:var(--texto2)}
 .golpes b{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--tarjeta);border:1px solid var(--linea)}
@@ -107,7 +106,6 @@ p{margin:0}
 
     <!-- Composición HyperFrames: hero-oferta (GSAP, ~9.5 s en bucle) -->
     <div class="hf" data-composition-id="hero-oferta" data-width="560" data-height="410" data-duration="9.5" role="img" aria-label="Ejemplo: llega una oferta de Uber de 95 pesos y salta el aviso de Checa, Rechazar, te quedan 57 pesos. Luego llega una de 120 y Checa dice Aceptar, te quedan 97. Toca para repetir.">
-      <div class="mapa" aria-hidden="true"><svg viewBox="0 0 400 420" preserveAspectRatio="xMidYMid slice"><g stroke="#1C1C22" stroke-width="16" fill="none"><path d="M-20 90L420 170"/><path d="M120 -20L200 440"/><path d="M-20 300L420 250"/><path d="M330 -20L300 440"/></g></svg></div>
       <div aria-hidden="true">
         <div class="uber hf-oferta-a"><div class="tipo"><span>UberX</span><span>Exclusivo</span></div><span class="monto">$95.00</span><div class="r"><i></i>A 9 min (4.5 km)</div><div class="r"><i class="d"></i>Viaje: 21 min (14.5 km)</div><div class="acc">Aceptar</div></div>
         <div class="uber hf-oferta-b"><div class="tipo"><span>UberX</span><span>Exclusivo</span></div><span class="monto">$120.00</span><div class="r"><i></i>A 4 min (1.5 km)</div><div class="r"><i class="d"></i>Viaje: 18 min (10.0 km)</div><div class="acc">Aceptar</div></div>
