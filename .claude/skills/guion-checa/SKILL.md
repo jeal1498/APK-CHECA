@@ -3,6 +3,13 @@ name: guion-checa
 description: Escribe los guiones de video vertical de Checa para TikTok, Reels y Shorts, tanto de la cuenta CHECA como de su v2 PERSONAL y de los videos donde Eduardo sale a cámara. Trabaja en bloques de 2.5 a 3 s con una instrucción de animación por bloque, a partir del código real de la app (Parser, Comparador, Popup), con cifras calculadas con sus fórmulas y siguiendo las reglas que Eduardo ya fijó (gancho con golpe, montos sin moneda, CTA vigente). Úsala siempre que Eduardo pida un guion, un gancho, una v2, una versión A/B, cambiar el texto de la voz o «rehacer» un video de Checa, aunque no nombre la skill. La producción (voz, render, portada, copy) va después, con `video-checa`.
 ---
 
+## Identidad visual vigente (25 nov 2026) — manda sobre todo lo de abajo
+- **PERSONAL (@Eduardoalv9802):** identidad **EA, estilo AB**. Documento: `marketing/videos/PERSONAL/Editor IA/Identidad/IDENTIDAD.md`. Pieza modelo: `marketing/videos/PERSONAL/Editor IA/Referencias/referencia-03-conductor/` (composición Remotion `EA-Completo-001`, código en `video/src/EA/`).
+- **CHECA (@checa.driver):** estilo **«La raya»** con los colores de la marca. Documento: `marketing/videos/CHECA/Editor IA/Identidad/IDENTIDAD.md`. Pieza modelo: `marketing/videos/CHECA/Editor IA/Referencias/checa-001-completo.mp4` (composición Remotion `Raya-Completo-001`, código en `video/src/Raya/`; final con Play Store `Raya-Final-Play`).
+- Todo video nuevo de cualquiera de las dos cuentas se hace **copiando su pieza modelo en Remotion**. Los estilos anteriores («claro», «Asfalto», PS2, narrador con HyperFrames/`checa.py`) **ya no se usan en videos nuevos**; quedan como historia.
+- Los guiones siguen esta skill (bloques, cifras con las fórmulas de la app, sin R fuerte en PERSONAL), pero cada bloque se piensa para la identidad de su cuenta (EA estilo AB o «La raya»), no para el estilo «claro».
+
+
 # Guion Checa
 
 Escribe guiones que retienen a un conductor de Uber o DiDi en los primeros segundos y le muestran algo que Checa de verdad hace. El tono es de creador a creador: directo, sin tono de anuncio. Evita «revoluciona», «la solución definitiva», «no te lo pierdas», «descubre» e «increíble», además de emojis, saludos e intros. Esas fórmulas suenan a publicidad y el conductor se va. Esto convive con el vocabulario de barrio de §2b: lo prohibido es el tono de anuncio, no el habla de chofer.

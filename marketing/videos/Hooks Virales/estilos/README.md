@@ -1,5 +1,7 @@
 # Estilos de video · Hooks Virales
 
+> **Vigente desde el 25 nov 2026:** PERSONAL = identidad EA estilo AB (`marketing/videos/PERSONAL/Editor IA/Identidad/IDENTIDAD.md`); CHECA = «La raya» (`marketing/videos/CHECA/Editor IA/Identidad/IDENTIDAD.md`). PS2 y «Asfalto» (abajo) son historia.
+
 Decidido con Eduardo el 13 nov 2026, a partir de `referencia-10-estilos.jpg` (lámina de otro creador; solo referencia, no se republica).
 
 | Cuenta | Estilo | Cómo se ve |

@@ -3,6 +3,13 @@ name: video-checa
 description: Produce los videos de Checa para TikTok, Reels y Shorts con la marca v2, desde un guion ya aprobado hasta el video listo para subir. Cubre voz, escenas, render, portada, primer cuadro, copy, DM y calendarios, en dos modos. Modo narrador de IA (cuenta CHECA y su v2 PERSONAL, sin la cara de Eduardo), con HyperFrames y construir.py. Modo a cámara (videos donde sale Eduardo), con spec.json y componer.py. Úsala siempre que haya que hacer, rehacer, corregir, renderizar o entregar un video de Checa, su portada o su copy, o marcarlo en el calendario, aunque Eduardo no nombre la skill. El guion se escribe antes con `guion-checa`.
 ---
 
+## Identidad visual vigente (25 nov 2026) — manda sobre todo lo de abajo
+- **PERSONAL (@Eduardoalv9802):** identidad **EA, estilo AB**. Documento: `marketing/videos/PERSONAL/Editor IA/Identidad/IDENTIDAD.md`. Pieza modelo: `marketing/videos/PERSONAL/Editor IA/Referencias/referencia-03-conductor/` (composición Remotion `EA-Completo-001`, código en `video/src/EA/`).
+- **CHECA (@checa.driver):** estilo **«La raya»** con los colores de la marca. Documento: `marketing/videos/CHECA/Editor IA/Identidad/IDENTIDAD.md`. Pieza modelo: `marketing/videos/CHECA/Editor IA/Referencias/checa-001-completo.mp4` (composición Remotion `Raya-Completo-001`, código en `video/src/Raya/`; final con Play Store `Raya-Final-Play`).
+- Todo video nuevo de cualquiera de las dos cuentas se hace **copiando su pieza modelo en Remotion**. Los estilos anteriores («claro», «Asfalto», PS2, narrador con HyperFrames/`checa.py`) **ya no se usan en videos nuevos**; quedan como historia.
+- En esta skill, todo lo que hable de HyperFrames, `construir.py`, `checa.py`, estilo «claro», «Asfalto» o PS2 es historia: úsalo solo para portada, copy, calendario y control de calidad.
+
+
 # Video Checa
 
 Lleva un guion aprobado a un video terminado, con una aprobación de Eduardo en cada etapa. Él revisa desde el teléfono y escucha el chat en voz alta. Por eso cada entrega es un archivo o un texto corto, sin explicaciones largas.
