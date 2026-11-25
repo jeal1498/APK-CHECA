@@ -22,7 +22,7 @@ Opciones vistas: `propuestas-estilo/estilos-25nov.html` (A Asfalto vivo, B Table
 5. **Final: cierre de marca + bucle.** Semáforo rojo → ámbar → verde → ✓ (1.2 s, sonido `logo-semaforo`), mensaje y cuentas; después las rayas vuelven a la carretera y el último cuadro empata con el primero.
 
 ## Final con Google Play (25 nov)
-Checa ya está en producción en Google Play. El final dice «YA ESTÁ EN GOOGLE PLAY · BÚSCALA COMO CHECA»: semáforo rojo → ámbar → verde → ✓, la luz verde crece y se abre en la tarjeta (ícono de la app, «Checa: Rentabilidad de viajes», píldora verde «YA EN GOOGLE PLAY»), las cuentas abajo, y todo regresa a la carretera (bucle). Sin el logo de Google Play (sus reglas de uso); si se quiere el distintivo oficial, se usa tal cual. Código: `video/src/Raya/FinalPlay.tsx` (`Raya-Final-Play`, entrada `src/Raya/index.ts`).
+Checa ya está en producción en Google Play. Elegido por Eduardo (propuesta C «Distintivo», 25 nov): subtítulos «YA DISPONIBLE EN **PLAY STORE**» y «BÚSCALA COMO **CHECA**»; semáforo rojo → ámbar → verde → ✓; la luz verde crece y se abre en el distintivo negro «YA DISPONIBLE EN / Play Store»; arriba el ícono de la app y abajo el nombre tal como sale en la tienda, **«Checa: Rentabilidad de viajes»** (sin «Beta»), y las cuentas; después todo regresa a la carretera (bucle). Se dice «Play Store» (como lo conocen los conductores). Sin el logo de Google Play (sus reglas de uso); si se quiere el distintivo oficial, se usa tal cual. Código: `video/src/Raya/FinalPlay.tsx` (`Raya-Final-Play`, entrada `src/Raya/index.ts`).
 
 ## Pendiente
 Pieza modelo completa con un guion de Checa.

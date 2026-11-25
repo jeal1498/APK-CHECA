@@ -6,7 +6,7 @@ import { M, p, lerp } from "./marca";
  * Final de los videos de Checa (estilo «La raya», decidido el 25 nov 2026):
  * semáforo rojo → ámbar → verde → ✓ (1.2 s); el pop-up SALE DEL SEMÁFORO (la luz verde crece y se abre en la tarjeta de Google Play);
  * después todo regresa: la tarjeta vuelve a la luz, el semáforo se va y las rayas vuelven a la carretera (último cuadro = primero).
- * Checa ya está en producción en Google Play (Eduardo, 25 nov).
+ * Checa ya está en producción. Texto elegido por Eduardo (25 nov, propuesta C): «YA DISPONIBLE EN Play Store» + «Checa: Rentabilidad de viajes».
  * Sonidos oficiales: logo-semaforo (f 18) y popup-entra (f 62), mezclados con ffmpeg.
  */
 export const DURACION_FINAL_CHECA = 195; // 6.5 s
@@ -18,7 +18,7 @@ const LUZ_V = { x: SX + (30 - 30) * ESC, y: SY + (74 - 50) * ESC }; // centro de
 
 type Palabra = [string, number, string?];
 const SUBS: { de: number; a: number; lineas: Palabra[][] }[] = [
-  { de: 0.3, a: 2.7, lineas: [[["YA", 0.4], ["ESTÁ", 0.6], ["EN", 0.85]], [["GOOGLE", 1.1, M.verde], ["PLAY", 1.4, M.verde]]] },
+  { de: 0.3, a: 2.7, lineas: [[["YA", 0.4], ["DISPONIBLE", 0.6]], [["EN", 1.05], ["PLAY", 1.25, M.verde], ["STORE", 1.5, M.verde]]] },
   { de: 2.8, a: 5.2, lineas: [[["BÚSCALA", 2.9]], [["COMO", 3.4], ["CHECA", 3.7, M.verde]]] },
 ];
 
@@ -74,13 +74,15 @@ export const FinalChecaPlay: React.FC = () => {
   const l = (a: number, b: number) => (f >= a && f < b ? 1 : 0);
   const rojo = l(18, 27), ambar = l(27, 36), verde = f >= 36 ? 1 : 0, paloma = f >= 42 ? 1 : 0;
 
-  // pop-up que sale de la luz verde
+  // pop-up (distintivo «YA DISPONIBLE EN Play Store») que sale de la luz verde
   const abre = p(f, 56, 16) * (1 - p(f, 152, 14));
-  const W = 700, H = 330;
-  const cx = lerp(LUZ_V.x, 540, abre), cy = lerp(LUZ_V.y, 1180, abre);
+  const W = 620, H = 180;
+  const cx = lerp(LUZ_V.x, 540, abre), cy = lerp(LUZ_V.y, 1235, abre);
   const w = lerp(36 * 2, W, abre), h = lerp(36 * 2, H, abre);
   const contenido = p(f, 68, 10) * (1 - p(f, 146, 6));
-  const cuentas = p(f, 96, 12) * (1 - p(f, 146, 6));
+  const icono = p(f, 74, 12) * (1 - p(f, 146, 6));
+  const nombre = p(f, 86, 12) * (1 - p(f, 146, 6));
+  const cuentas = p(f, 98, 12) * (1 - p(f, 146, 6));
 
   return (
     <AbsoluteFill style={{ background: M.asfalto }}>
@@ -91,7 +93,7 @@ export const FinalChecaPlay: React.FC = () => {
       <svg style={{ position: "absolute", left: 0, top: 0 }} width={1080} height={1920}>
         {/* carretera */}
         {rayas.map((r, i) => (
-          <rect key={i} x={532} y={r.y} width={16} height={44} rx={8} fill={M.amarillo} opacity={1 - 0.75 * quieta} />
+          <rect key={i} x={532} y={r.y} width={16} height={44} rx={8} fill={M.amarillo} opacity={1 - quieta} />
         ))}
         {/* semáforo de la marca */}
         <g opacity={sem * (abre > 0.6 ? 0 : 1)} transform={`translate(${SX - 30 * ESC} ${SY - 50 * ESC + (1 - sem) * 40}) scale(${ESC})`}>
@@ -103,23 +105,21 @@ export const FinalChecaPlay: React.FC = () => {
         </g>
       </svg>
 
-      {/* pop-up de Google Play, sale de la luz verde */}
+      {/* ícono de la app (arriba del distintivo) */}
+      <div style={{ position: "absolute", left: 540 - 65, top: 992, opacity: icono, transform: `translateY(${(1 - icono) * 20}px) scale(${0.85 + 0.15 * icono})` }}>
+        <Icono tam={130} />
+      </div>
+      {/* distintivo: sale de la luz verde */}
       {abre > 0.001 ? (
-        <div style={{ position: "absolute", left: cx - w / 2, top: cy - h / 2, width: w, height: h, boxSizing: "border-box", borderRadius: lerp(36, 28, abre), background: abre < 0.35 ? M.verde : M.tablero, border: `${Math.round(lerp(0, 6, abre))}px solid ${M.verde}`, boxShadow: `0 0 ${40 * abre}px rgba(34,197,94,0.35)`, overflow: "hidden" }}>
-          <div style={{ position: "absolute", inset: 0, padding: "34px 36px", opacity: contenido, display: "flex", flexDirection: "column", gap: 18 }}>
-            <div style={{ display: "flex", gap: 26, alignItems: "center" }}>
-              <Icono tam={128} />
-              <div style={{ fontFamily: M.titulo, fontWeight: 800, fontSize: 44, lineHeight: 1.08, color: M.hueso, whiteSpace: "nowrap" }}>
-                Checa: Rentabilidad
-                <br />
-                de viajes
-              </div>
-            </div>
-            <div style={{ alignSelf: "flex-start", background: M.verde, color: M.sobreVerde, fontFamily: M.datos, fontWeight: 700, fontSize: 30, letterSpacing: 2, padding: "10px 22px", borderRadius: 999 }}>YA EN GOOGLE PLAY</div>
+        <div style={{ position: "absolute", left: cx - w / 2, top: cy - h / 2, width: w, height: h, boxSizing: "border-box", borderRadius: lerp(36, 26, abre), background: abre < 0.35 ? M.verde : "#000", border: `${Math.round(lerp(0, 4, abre))}px solid ${M.gris}`, overflow: "hidden", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ opacity: contenido, textAlign: "center" }}>
+            <div style={{ fontFamily: M.datos, fontWeight: 700, fontSize: 30, letterSpacing: 6, color: M.hueso }}>YA DISPONIBLE EN</div>
+            <div style={{ fontFamily: M.titulo, fontWeight: 800, fontSize: 96, lineHeight: 1, color: M.hueso, marginTop: 6 }}>Play Store</div>
           </div>
         </div>
       ) : null}
-      <div style={{ position: "absolute", left: 0, right: 0, top: 1380, textAlign: "center", fontFamily: M.datos, fontWeight: 700, fontSize: 32, color: M.gris, opacity: cuentas }}>@checa.driver · @Eduardoalv9802</div>
+      <div style={{ position: "absolute", left: 0, right: 0, top: 1352, textAlign: "center", fontFamily: M.titulo, fontWeight: 800, fontSize: 46, color: M.hueso, opacity: nombre }}>Checa: Rentabilidad de viajes</div>
+      <div style={{ position: "absolute", left: 0, right: 0, top: 1422, textAlign: "center", fontFamily: M.datos, fontWeight: 700, fontSize: 30, color: M.gris, opacity: cuentas }}>@checa.driver · @Eduardoalv9802</div>
 
       <Subtitulos f={f} />
     </AbsoluteFill>
