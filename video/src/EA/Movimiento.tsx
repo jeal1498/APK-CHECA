@@ -1,25 +1,25 @@
 import React from "react";
 import { AbsoluteFill, useCurrentFrame } from "remotion";
 import { EA, progreso } from "./theme";
-import { B, n, s, t } from "./Referencia";
-import type { Bloque } from "./components/Subtitles";
-import { SubtitulosCentro } from "./components/SubtitulosCentro";
+import { s } from "./Referencia";
+import { SubtitulosPalabra } from "./components/SubtitulosPalabra";
+import type { BloquePalabras } from "./components/SubtitulosPalabra";
 import { LowerThird } from "./components/LowerThird";
 
 /**
  * Muestra de 6 s (estilo AB) con movimiento continuo: los primeros 6 s del guion 001.
  * Siempre hay algo moviéndose: el camino avanza, las llantas giran y el auto va dejando dinero (gotas naranjas) en el camino.
  * La barra de $100 se pinta de naranja con cada gota (3 % por gota, tope 30 %: la gasolina del ejemplo 15 km ÷ 12 × $24 = $30).
- * Subtítulos al centro, sobre la línea de la cámara (y = 800).
+ * Subtítulos palabra por palabra sin cuadro, al centro, sobre la línea de la cámara (y = 800).
  */
 export const DURACION_MOVIMIENTO = s(6);
 
 const P = { perdiendo: 60, aceptas: 105, viaje: 132, dejando: 165 };
 
-const BLOQUES: Bloque[] = [
-  B(0, 2.6, [t("¿Y si te dijera que estás")], [n("perdiendo"), t(" dinero")]),
-  B(2.6, 4.6, [t("cada vez que aceptas")], [t("un "), n("viaje"), t("?")]),
-  B(4.6, 6.3, [t("Puede que estés")], [n("dejando"), t(" dinero")]),
+const BLOQUES: BloquePalabras[] = [
+  { de: 0, a: 2.6, lineas: [[["¿Y", 0.1], ["si", 0.32], ["te", 0.5], ["dijera", 0.68], ["que", 1.1], ["estás", 1.3]], [["perdiendo", 1.9, true], ["dinero", 2.25]]] },
+  { de: 2.6, a: 4.6, lineas: [[["cada", 2.62], ["vez", 2.85], ["que", 3.05], ["aceptas", 3.4, true]], [["un", 3.95], ["viaje?", 4.3, true]]] },
+  { de: 4.6, a: 6.3, lineas: [[["Puede", 4.62], ["que", 4.88], ["estés", 5.02]], [["dejando", 5.4, true], ["dinero", 5.8]]] },
 ];
 
 const C = EA.color;
@@ -120,7 +120,7 @@ export const Movimiento: React.FC = () => {
       </svg>
       <div style={{ position: "absolute", left: AUTO_X + 200 * ESC + 70, top: 1152 + bote, fontFamily: EA.font.texto, fontWeight: 500, fontSize: 30, letterSpacing: 5, color: C.negro, opacity: p(P.aceptas + 4, 12) }}>ACEPTAR</div>
 
-      <SubtitulosCentro y={800} bloques={BLOQUES} />
+      <SubtitulosPalabra y={800} bloques={BLOQUES} />
     </AbsoluteFill>
   );
 };
