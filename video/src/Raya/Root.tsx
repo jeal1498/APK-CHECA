@@ -2,6 +2,7 @@ import React from "react";
 import { Composition, staticFile } from "remotion";
 import { loadFont } from "@remotion/fonts";
 import { DURACION_FINAL_CHECA, FinalChecaPlay } from "./FinalPlay";
+import { CompletoChecaRaya, DURACION_COMPLETO_CHECA } from "./Completo";
 
 /** Videos de @checa.driver, estilo «La raya» (marketing/videos/CHECA/Editor IA/Identidad/IDENTIDAD.md). */
 const fuentes: [string, string, string][] = [
@@ -14,5 +15,6 @@ fuentes.forEach(([family, archivo, weight]) => loadFont({ family, url: staticFil
 export const RayaRoot: React.FC = () => (
   <>
     <Composition id="Raya-Final-Play" component={FinalChecaPlay} durationInFrames={DURACION_FINAL_CHECA} fps={30} width={1080} height={1920} />
+    <Composition id="Raya-Completo-001" component={CompletoChecaRaya} durationInFrames={DURACION_COMPLETO_CHECA} fps={30} width={1080} height={1920} />
   </>
 );

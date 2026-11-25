@@ -11,6 +11,13 @@ import { M, p, lerp } from "./marca";
  */
 export const DURACION_FINAL_CHECA = 195; // 6.5 s
 
+/** Avance de la carretera dentro del final (lo usa el video completo para que el primer cuadro empate con el último). */
+export const avanceFinal = (f: number) => {
+  let a = 0;
+  for (let i = 1; i <= f; i++) a += 9 * (1 - p(i, 4, 14) + p(i, 172, 16));
+  return a;
+};
+
 const ESC = 5; // semáforo de 60×100 → 300×500
 const SX = 540;
 const STOP = 380; // borde de arriba del semáforo
@@ -23,8 +30,7 @@ export const FinalChecaPlay: React.FC = () => {
   // cámara y carretera (se van al empezar y regresan al final, para el bucle)
   const camara = 1 - p(f, 0, 14) + p(f, 172, 16);
   const quieta = p(f, 4, 14) * (1 - p(f, 172, 16));
-  let avance = 0;
-  for (let i = 1; i <= f; i++) avance += 9 * (1 - p(i, 4, 14) + p(i, 172, 16));
+  const avance = avanceFinal(f);
   const rayas = Array.from({ length: 9 }, (_, i) => 900 + ((i * 74 + avance) % 666));
 
   // semáforo
