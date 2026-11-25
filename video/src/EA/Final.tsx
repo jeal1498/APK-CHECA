@@ -37,7 +37,8 @@ const DIST: number[] = [0];
 for (let i = 1; i <= 200; i++) DIST[i] = DIST[i - 1] + velocidad(i);
 const dist = (f: number) => DIST[Math.max(0, Math.min(200, Math.floor(f)))];
 
-export const Final: React.FC = () => {
+/** `distInicial` y `desfase` vienen de la escena anterior para que el camino, las llantas y el bote sigan sin salto. */
+export const Final: React.FC<{ distInicial?: number; desfase?: number }> = ({ distInicial = 0, desfase = 0 }) => {
   const f = useCurrentFrame();
   const p = (inicio: number, dur = 12) => progreso(f, inicio, dur);
 
@@ -57,8 +58,9 @@ export const Final: React.FC = () => {
   const contenido = 1 - p(REGRESA - 8, 10);
   const pulso = 1 + 0.07 * Math.sin(f / 4.5);
   const cae = p(P.aceptar - 6, 14);
-  const bote = 2.5 * Math.sin(f / 3.2) * (1 - p(0, 22) + p(REGRESA + 8, 20)) + 0;
-  const giro = dist(f) * 1.8;
+  const bote = 2.5 * Math.sin((f + desfase) / 3.2) * (1 - p(0, 22) + p(REGRESA + 8, 20)) + 0;
+  const giro = (distInicial + dist(f)) * 1.8;
+  const zoom = 1 + 0.14 * (Math.sin(Math.PI * p(P.dato - 2, 14)) + Math.sin(Math.PI * p(P.aceptar - 2, 14)));
   const lineasVel = 1 - p(0, 14);
 
   const icono = (i: number) => p(P.cuenta - 12 + i * 7, 14);
@@ -67,7 +69,7 @@ export const Final: React.FC = () => {
   return (
     <AbsoluteFill style={{ background: C.marfil }}>
       <div style={{ position: "absolute", left: 0, top: 0, width: 1080, height: 800, background: C.papel, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: EA.font.texto, fontSize: 34, color: "rgba(21,21,21,0.45)" }}>
-        [ video de Eduardo a cámara ]
+        <div style={{ transform: `scale(${zoom})` }}>[ video de Eduardo a cámara ]</div>
       </div>
       <div style={{ position: "absolute", left: 0, top: 800, width: 1080, height: 4, background: C.negro }} />
 
@@ -107,7 +109,7 @@ export const Final: React.FC = () => {
 
         {/* camino */}
         <line x1={0} y1={SUELO} x2={1080} y2={SUELO} stroke={C.negro} strokeWidth={6} strokeLinecap="round" />
-        <line x1={0} y1={SUELO + 44} x2={1080} y2={SUELO + 44} stroke={C.negro} strokeWidth={6} strokeDasharray="60 50" strokeDashoffset={dist(f) % 110} />
+        <line x1={0} y1={SUELO + 44} x2={1080} y2={SUELO + 44} stroke={C.negro} strokeWidth={6} strokeDasharray="60 50" strokeDashoffset={(distInicial + dist(f)) % 110} />
 
         {/* auto que frena y, al final, vuelve a andar */}
         <g transform={`translate(${AUTO_X} ${SUELO + bote * 0.4}) scale(${ESC}) rotate(${2.5 * Math.sin(Math.PI * p(0, 18))} 200 0)`}>
@@ -122,7 +124,7 @@ export const Final: React.FC = () => {
             </g>
           ))}
           {[0, 1, 2].map((i) => {
-            const fase = ((f * 9 + i * 40) % 120) / 120;
+            const fase = (((f + desfase) * 9 + i * 40) % 120) / 120;
             return <line key={i} x1={-30 - 120 * fase} y1={-110 + i * 26} x2={-30 - 120 * fase - 60} y2={-110 + i * 26} stroke={C.negro} strokeWidth={5} strokeLinecap="round" opacity={lineasVel * (1 - fase)} />;
           })}
         </g>
