@@ -1,4 +1,4 @@
-# PARTE · 24 nov 2026
+# PARTE · 25 nov 2026
 
 ## ✓ Decidido
 - Imagen de novedades para testers hecha (7 tarjetas, marca v2) y publicada en el grupo.
@@ -84,13 +84,23 @@
 - **5 herramientas del video instaladas y persistentes:** Remotion 4.0.547, HyperFrames 0.9.91, FFmpeg 6.1.1, faster-whisper 1.2.1 y yt-dlp 2026.11.23, con script de configuración en el entorno «Lab»; verificado en una sesión nueva.
 
 - Identidad PERSONAL aprobada (24 nov): EA editorial minimalista; biblioteca completa de 10 componentes Remotion en `video/src/EA/` (showcase de 24 s aprobado); guía en `marketing/videos/PERSONAL/Editor IA/LEEME.md`.
+- **Calidad 10.86 vs 10.85 (24 nov):** 87.4 % (n=103) contra 88.2 % (n=465) es ruido (±6 puntos con 103). No se analiza hasta tener **≥300 revisiones** de la 10.86 (Eduardo).
+- **Web: página oficial nueva (25 nov, `main` de PWA-Checa-Multimedia, `1589f14`):** versión completa animada con la información de la anterior. H1 «Antes de aceptar CHECA cuánto te queda.»; hero en composición HyperFrames (GSAP); escenas de Remotion en vivo con reloj propio (`Thumbnail`, se arreglaron las que salían en blanco en su teléfono, `e08323c`); demo con pestañas de 3 ofertas, aviso arriba, oferta abajo y metas; todo aparece al hacer scroll; tema claro y oscuro; sin carrusel ni mp4. Fuentes en `APK-CHECA/video/landing-web/`.
+- **Web sin:** «Gratis hasta el 31 de enero», Plan Fundador (precios $119 / $589 / $1,059), equipos por plan, reembolsos ni garantía, gas LP, «0 datos salen del teléfono». `/propuesta/` borrada.
+- **Sin reembolsos (Eduardo, 25 nov):** `terminos.html` dice «Checa no ofrece reembolsos»; quitados garantía, Plan Fundador, «gratis hasta» y límite de equipos (`d4fd690`).
+- **Términos y privacidad solo con Google Play (`574f7cc`):** sin Mercado Pago ni versión descargable; se conserva la mención de registros de quien pagó antes con Mercado Pago.
+- Copy de landing en `marketing/web/landing-copy-v2.md` y `marketing/web/landing-una-pantalla.md`.
 
 ## … Falta
+- **Abogado:** revisar Términos sin reembolsos (cobro duplicado o erróneo suele ser obligatorio) y que describen pagos en Google Play que aún no existen (Fase 7).
+- **Testimonios reales** para la web (Eduardo manda 2: nombre, app, frase, con permiso).
+- **Calidad 10.86:** cuando llegue a 300 revisiones, «Estado de la revisión» y comparar con la 10.85.
+- Eduardo revisa la página oficial nueva en su teléfono (animaciones de Remotion ya con reloj propio).
 - **Videos PERSONAL (siguiente):** proponer la identidad visual (colores, letras, subtítulos, fondo, movimiento) con la referencia guardada; Eduardo aprueba. Después: plantilla nueva (reemplaza `_plantilla-ps2/`), prueba de punta a punta con un bruto suyo y prueba de la frase «Hook personal: …». Luego lo mismo para CHECA (esperando sus referencias).
 - Eduardo pasa más referencias (mp4 y capturas) a `Editor IA/Referencias/` de cada cuenta; yt-dlp no baja de TikTok/Instagram/YouTube (la red solo permite GitHub, PyPI y npm).
 - Gmail del conector pide iniciar sesión de nuevo (claude.ai › Conectores); aparte de los videos.
 - **`abrir/` desde TikTok → app de Play (24 nov, sin confirmar):** el enlace directo de Play y las primeras versiones de `abrir/` abrían Chrome o la ficha web, no la app. Eduardo prueba la versión `b34c921` (`https://jeal1498.github.io/PWA-Checa-Multimedia/abrir/`) y avisa a dónde llega. Si el navegador de TikTok bloquea el intent, no hay forma de abrir la app directo desde ahí.
-- Web: quitar de `PRODUCT.md` y del texto restante lo de la beta/registro si Eduardo lo pide; la tabla `testers` de Supabase sigue guardando datos (la privacidad dice «Registro previo en la beta»).
+- Web: `PRODUCT.md` aún habla de la beta; la tabla `testers` sigue guardando datos (la privacidad dice «Registro previo en la beta»).
 - **Cuando Google apruebe el AAB 166: avisar a los testers que actualicen.**
 - **Probar la 10.86 en teléfono y tablet** (APK de «Compilar flavor play»): pop-up completo y compacto (cabe, montos de 3–4 cifras, barra de tiempo, «Leyó mal»), pop-up viejo que se quita, listas de DiDi, `.txt` con diagnóstico, Admin › Hoy con OCR y Lectura.
 - **Verificar capturas sin IA:** filas nuevas en `capturas_ok` con `ia->>'sin_ia'='true'` y su imagen en el almacén `capturas` (cambio sin probar con llamada real); confirmar corrida 198 en verde y mandarte el link del APK.
@@ -103,7 +113,6 @@
 - 13 nov: «Estado de la revisión de hoy» para revisar el revisor v26: sin `json`/`json_vacio` en `fallas_ia`, mediana de `ms_ia` < 4 s, % coincidió > 49 %, sin `oferta=true` con km 0.
 - ~20 nov: comparar 10.69 contra 10.58 y decidir si se construyen las reglas remotas (10–14 h).
 - Redes sociales en la app (Ayuda y soporte y Cuenta): esperar de Eduardo qué redes y enlaces.
-- Prueba cerrada: día 9 de 14 seguidos con 12 testers (= verificadores). Faltan 5 días para pedir producción.
 - Crashlytics: Eduardo crea el proyecto en Firebase con dos apps (`com.jeal1498.checa` y `com.karen.miruta`) y manda `google-services.json`; luego actualizar Seguridad de los datos (informes de fallos).
 - Tablero: confirmar si la letra de marca (Bricolage, DM Sans) se ve; página pública solo si la pide (necesita inicio de sesión propio por privacidad).
 - Fase 7 (Play Billing) antes del 1 feb 2027: necesita su «adelante» y una cuenta de Google admitida a su nombre.
@@ -140,3 +149,4 @@
 - Publicar el AAB de una versión sin la orden de Eduardo (el bloqueo de actualizaciones ya no existe; se eliminó el 23 nov).
 - Publicar el AAB 165 sin su orden y sin «Seguridad de los datos» de Play actualizada.
 - Activar la optimización de apps en Play Console.
+- Prometer reembolsos, garantía, «gratis hasta el 31 de enero», Plan Fundador, límite de equipos o gas LP en la web.
