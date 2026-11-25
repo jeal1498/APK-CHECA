@@ -171,6 +171,25 @@ p{margin:0}
 .piefull nav{display:flex;flex-wrap:wrap;gap:4px 18px}
 .piefull a{color:var(--texto2);min-height:40px;display:inline-flex;align-items:center}
 @media(min-width:700px){.franja{grid-template-columns:repeat(4,1fr)}.funcs{grid-template-columns:1fr 1fr}}
+
+/* Demo: pestañas arriba, aviso, oferta y metas */
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:5px;border-radius:16px;background:var(--tarjeta);border:1px solid var(--linea)}
+.tabs button{min-height:48px;border:0;border-radius:12px;background:transparent;color:var(--texto2);font:800 1.15rem/1 var(--titulos);letter-spacing:-.02em;cursor:pointer}
+.tabs button small{display:block;margin-top:4px;font:600 .66rem/1 var(--datos);letter-spacing:.04em;color:var(--texto3)}
+.tabs button[aria-pressed="true"]{background:var(--texto);color:var(--fondo)}
+.tabs button[aria-pressed="true"] small{color:var(--fondo);opacity:.7}
+.dof{position:relative;background:#000;color:#fff;border-radius:16px;padding:13px 15px 11px;box-shadow:0 10px 24px -14px #000}
+.dof .tipo{display:flex;justify-content:space-between;font:700 .78rem/1 var(--texto-f)}
+.dof .tipo span:last-child{color:#B5B5B5;font-weight:600}
+.dof .monto{display:block;font:700 2rem/1.05 var(--texto-f);letter-spacing:-.02em;margin:7px 0 5px}
+.dof .r{display:flex;gap:9px;align-items:center;font-size:.86rem;color:#E5E5E5;margin-top:3px}
+.dof .r i{width:8px;height:8px;border-radius:50%;background:#fff;flex:none}.dof .r i.d{border-radius:1px}
+.dof .acc{margin-top:10px;min-height:42px;border-radius:10px;background:#fff;color:#000;display:grid;place-items:center;font:700 .92rem/1 var(--texto-f)}
+@keyframes cae9{0%{opacity:0;transform:translateY(-22px) scale(.95)}100%{opacity:1;transform:none}}
+@keyframes sube9{0%{opacity:0;transform:translateY(22px)}100%{opacity:1;transform:none}}
+.dpop.cae{animation:cae9 .45s cubic-bezier(.2,.8,.2,1) both .15s}
+.dof.sube{animation:sube9 .4s cubic-bezier(.2,.8,.2,1) both}
+@media (prefers-reduced-motion:reduce){.dpop.cae,.dof.sube{animation:none}}
 </style>
 
 <div class="w">
@@ -237,13 +256,14 @@ p{margin:0}
   <section class="blk" aria-labelledby="t5">
     <h2 id="t5">Elige una oferta y mueve tus metas.</h2>
     <div class="demo">
-      <div class="picks" id="picks"></div>
+      <div class="tabs" id="picks" role="group" aria-label="Elige una oferta de ejemplo"></div>
+      <div class="dpop" id="dpop" aria-live="polite"></div>
+      <div class="uber dof" id="dof" aria-hidden="true"></div>
       <div class="sl">
         <label for="r-h"><span>Meta por hora <output id="o-h"></output></span><input type="range" id="r-h" min="80" max="300" step="10" value="200"></label>
         <label for="r-km"><span>Meta por km <output id="o-km"></output></span><input type="range" id="r-km" min="4" max="15" step="0.5" value="10"></label>
         <label for="r-gas"><span>Precio de la gasolina <output id="o-gas"></output></span><input type="range" id="r-gas" min="18" max="30" step="0.5" value="24"></label>
       </div>
-      <div class="dpop" id="dpop" aria-live="polite"></div>
       <p class="ej">Números de ejemplo · 12 km/l</p>
     </div>
   </section>
@@ -309,13 +329,16 @@ p{margin:0}
   var OF=[{f:120,pk:1.5,pm:4,tk:10,tm:18,app:'Uber'},{f:95,pk:2.5,pm:7,tk:13,tm:20,app:'DiDi'},{f:62,pk:4.5,pm:11,tk:6,tm:19,app:'Uber'}];
   var S={h:200,km:10,gas:24,kml:12,rec:3},cur=0,btns=[];
   var $=function(n){return '$'+Math.round(n).toLocaleString('es-MX');},d=function(n){return (Math.round(n*10)/10).toFixed(1);};
-  var pk=document.getElementById('picks'),dp=document.getElementById('dpop');
+  var pk=document.getElementById('picks'),dp=document.getElementById('dpop'),dof=document.getElementById('dof');
+  function oferta(o){var u=o.app==='Uber';dof.innerHTML='<div class="tipo"><span>'+(u?'UberX':'DiDi Express')+'</span><span>'+(u?'Exclusivo':'Nuevo viaje')+'</span></div><span class="monto">$'+o.f.toFixed(2)+'</span><div class="r"><i></i>'+(u?'A ':'')+o.pm+' min ('+d(o.pk)+' km)</div><div class="r"><i class="d"></i>'+(u?'Viaje: ':'')+o.tm+' min ('+d(o.tk)+' km)</div><div class="acc">Aceptar</div>';}
+  function anima(){[dp,dof].forEach(function(e){e.classList.remove('cae','sube');void e.offsetWidth;});dof.classList.add('sube');dp.classList.add('cae');}
   function pinta(){var o=OF[cur],km=o.pk+o.tk,mn=o.pm+o.tm,pkm=o.f/km,ph=o.f/mn*60,gas=km/S.kml*S.gas,net=o.f-gas,a=pkm>=S.km,b=ph>=S.h,rec=o.pk>S.rec;
     var c=rec?'r':(a&&b?'v':(a||b?'a':'r'));var col={v:'#22C55E',a:'#FACC15',r:'#EF4444'}[c],txt={v:'#06210f',a:'#1b1500',r:'#1b0000'}[c],lb={v:'ACEPTAR',a:'CONSIDERAR',r:'RECHAZAR'}[c];
     dp.style.setProperty('--pc',col);
-    dp.innerHTML='<div class="cu"><div class="bl" style="color:'+txt+'"><small>'+lb+'</small><b>'+$(net)+'</b></div><div class="de"><span class="m '+(b?'ok':'no')+'">'+(b?'✓':'✕')+' '+$(ph)+'/h</span><span class="m '+(a?'ok':'no')+'">'+(a?'✓':'✕')+' $'+d(pkm)+'/km</span><span class="ap">'+o.app+' · $'+o.f.toFixed(2)+' · '+d(km)+' km · '+mn+' min</span></div></div>'+(rec?'<span class="pl">Recogida '+d(o.pk)+' km</span>':'');
+    dp.innerHTML='<div class="cu"><div class="bl" style="color:'+txt+'"><small>'+lb+'</small><b>'+$(net)+'</b></div><div class="de"><span class="m '+(b?'ok':'no')+'">'+(b?'✓':'✕')+' '+$(ph)+'/h</span><span class="m '+(a?'ok':'no')+'">'+(a?'✓':'✕')+' $'+d(pkm)+'/km</span><span class="ap">'+o.app+' · $'+o.f.toFixed(2)+'</span></div></div>'+(rec?'<span class="pl">Recogida '+d(o.pk)+' km</span>':'');
     btns.forEach(function(x,i){x.setAttribute('aria-pressed',i===cur?'true':'false');});}
-  OF.forEach(function(o,i){var x=document.createElement('button');x.type='button';x.className='pick';x.innerHTML='<b>$'+o.f+'</b><span>Recogida '+d(o.pk)+' km · '+o.pm+' min<br>Viaje '+d(o.tk)+' km · '+o.tm+' min</span>';x.addEventListener('click',function(){cur=i;pinta();});pk.appendChild(x);btns.push(x);});
+  OF.forEach(function(o,i){var x=document.createElement('button');x.type='button';x.innerHTML='$'+o.f+'<small>'+o.app.toUpperCase()+'</small>';x.setAttribute('aria-label','Oferta de '+o.app+' de '+o.f+' pesos');x.addEventListener('click',function(){cur=i;oferta(o);pinta();anima();});pk.appendChild(x);btns.push(x);});
+  oferta(OF[cur]);
   [['r-h','h','o-h',function(v){return '$'+v+'/h';}],['r-km','km','o-km',function(v){return '$'+d(v)+'/km';}],['r-gas','gas','o-gas',function(v){return '$'+d(v)+'/l';}]].forEach(function(q){var el=document.getElementById(q[0]),out=document.getElementById(q[2]);function u(){S[q[1]]=parseFloat(el.value);out.textContent=q[3](S[q[1]]);pinta();}el.addEventListener('input',u);u();});
 })();
 </script>
