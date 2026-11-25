@@ -42,8 +42,9 @@ export const Movimiento: React.FC = () => {
   const f = useCurrentFrame();
   const p = (inicio: number, dur = 12) => progreso(f, inicio, dur);
 
-  const entra = p(0, 20);
-  const dibujaAuto = p(4, 24);
+  // Desde el fotograma 0 todo está armado: así el último cuadro del video (EA-Final) empata con el primero y se repite sin corte.
+  const entra = 1;
+  const dibujaAuto = 1;
   const bote = 2.5 * Math.sin(f / 3.2);
   const giro = dist(f) * 1.8; // llantas
   const inclina = -2.5 * Math.sin(Math.PI * p(P.viaje - 6, 16));
@@ -93,7 +94,7 @@ export const Movimiento: React.FC = () => {
         <g transform={`translate(${AUTO_X} ${SUELO + bote * 0.4}) scale(${ESC}) rotate(${inclina} 200 0)`}>
           <g transform={`translate(0 ${bote})`}>
             <path d="M10 -70 L60 -70 L115 -130 L270 -130 L330 -70 L390 -70 Q400 -70 400 -60 L400 -44 L0 -44 L0 -60 Q0 -70 10 -70 Z" {...trazo} pathLength={1} strokeDasharray={1} strokeDashoffset={1 - dibujaAuto} />
-            <path d="M128 -118 L188 -118 L188 -78 L95 -78 Z M204 -118 L262 -118 L304 -78 L204 -78 Z" {...trazo} strokeWidth={5} pathLength={1} strokeDasharray={1} strokeDashoffset={1 - p(16, 16)} />
+            <path d="M128 -118 L188 -118 L188 -78 L95 -78 Z M204 -118 L262 -118 L304 -78 L204 -78 Z" {...trazo} strokeWidth={5} pathLength={1} strokeDasharray={1} strokeDashoffset={0} />
           </g>
           {[90, 310].map((cx) => (
             <g key={cx} transform={`translate(${cx} -34) rotate(${giro})`} opacity={dibujaAuto}>
