@@ -8,6 +8,7 @@ import { DURACION_REFERENCIA_02, Referencia02 } from "./Referencia02";
 import { DURACION_REFERENCIA_03, Referencia03 } from "./Referencia03";
 import { DURACION_ESTILO, EstiloA, EstiloB, EstiloC } from "./Estilos";
 import { DURACION_MEZCLA, MezclaAB, MezclaBA } from "./Mezclas";
+import { DURACION_MOVIMIENTO, Movimiento } from "./Movimiento";
 
 const fuentes: [string, string, string][] = [
   ["Montserrat", "ea/montserrat-600.woff2", "600"],
@@ -29,5 +30,6 @@ export const EARoot: React.FC = () => (
     <Composition id="EA-Estilo-C" component={EstiloC} durationInFrames={DURACION_ESTILO} fps={30} width={1080} height={1920} />
     <Composition id="EA-Mezcla-AB" component={MezclaAB} durationInFrames={DURACION_MEZCLA} fps={30} width={1080} height={1920} />
     <Composition id="EA-Mezcla-BA" component={MezclaBA} durationInFrames={DURACION_MEZCLA} fps={30} width={1080} height={1920} />
+    <Composition id="EA-Movimiento-6s" component={Movimiento} durationInFrames={DURACION_MOVIMIENTO} fps={30} width={1080} height={1920} />
   </>
 );
