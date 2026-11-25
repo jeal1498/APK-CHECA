@@ -7,6 +7,10 @@ Videos (mp4) y capturas de otros creadores que Eduardo elige como **referencia v
 | Archivo | Qué es | Qué tomamos | Hooks hechos con él |
 |---|---|---|---|
 | `editar-con-claude-code.mp4` | Reel de 1:01 (720×1280) «Edita video con Claude Code en 1 minuto»: 6 pasos, cadena de nodos y tarjeta con el contenido | Fondo crema con cuadrícula, verde lima como único acento, negro, palabra que suena resaltada en lima, línea vertical con nodos numerados, mascota, tarjetas blancas, cierre «Comenta EDITOR». Y además el **método** que enseña (ver abajo) | _(ninguno aún)_ |
+| `sistema-lineas-neon.mp4` | Reel de 1:03 (720×1280): fondo negro, dibujos de una sola línea blanca (puerta, engranes, cables) con un solo acento naranja; titular en mayúsculas arriba y rótulo abajo | Metáfora física con trazo fino y un solo color de énfasis; una figura por escena que se transforma (puerta → engranes → columnas); mucho aire alrededor | _(ninguno aún)_ |
+| `mismo-carro-distinto-final.mp4` | Reel de 0:54 (720×1280): ciudad de noche ilustrada, dos choferes iguales con destinos distintos («Mismo carro. Distinto final.») | Comparación lado a lado con el mismo elemento (carro) que cambia de final; palabra clave del subtítulo en color; tarjeta que se vuelve el negocio propio | _(ninguno aún)_ |
+| `tus-clientes-cabina.mp4` | Reel de 0:49 (720×1280): conductor ilustrado en cabina, teléfono con contactos, ruta y tarifa; cierre con tarjeta «TUYO» | El teléfono como elemento que persiste y cambia de pantalla; montos con su rótulo «ejemplo ilustrativo»; cierre con contraste ✕ contra ✓ | _(ninguno aún)_ |
+| `mismo-boiler-personaje.mp4` | Reel de 1:09 (720×1280): personaje 3D con bufanda naranja, escenarios cálidos (casa, mostradores) y precios en etiquetas | Misma situación repetida con un cambio (el mismo boiler, distinto precio); etiquetas de precio como objetos dentro de la escena; subtítulo con palabra clave en color | _(ninguno aún)_ |
 
 ## Al agregar una referencia nueva
 1. Copiar el archivo aquí.
