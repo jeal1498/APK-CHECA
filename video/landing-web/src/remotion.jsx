@@ -76,7 +76,6 @@ const Avisa = () => {
         <div style={{ display: "grid", gridTemplateColumns: "42% 1fr" }}>
           <div style={{ background: e.c, color: e.t, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "26px 10px" }}>
             <div style={{ fontWeight: 800, fontSize: 30, letterSpacing: 2 }}>{e.lbl}</div>
-            <div style={{ fontFamily: M.datos, fontWeight: 700, fontSize: 22, letterSpacing: 3, marginTop: 8, opacity: 0.8 }}>TE QUEDAN</div>
             <div style={{ fontFamily: M.titulo, fontWeight: 800, fontSize: 112, lineHeight: 1, letterSpacing: -4 }}>{dinero(lerp(0, e.neto, p(g, 4, 18)))}</div>
           </div>
           <div style={{ padding: "22px 24px", display: "flex", flexDirection: "column", justifyContent: "center", gap: 8 }}>
