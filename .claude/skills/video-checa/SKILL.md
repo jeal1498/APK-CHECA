@@ -61,7 +61,7 @@ La fuente es `jeal1498/PWA-Checa-Multimedia`, carpeta `marca/`. Para cualquier d
   - La portada de la v2 es distinta a la de la v1.
 
 ## Copy y DM
-- **`copy.txt`:** gancho con cifra, una línea de qué hace Checa con «(números de ejemplo)», una pregunta para comentar, el CTA «Comenta «CHECA» y te mando el acceso a la prueba en Google Play (solo Android).» y 5–6 hashtags.
+- **`copy.txt`:** gancho con cifra, una línea de qué hace Checa con «(números de ejemplo)», una pregunta para comentar, el CTA «Descárgala en Play Store: busca «Checa: Rentabilidad de viajes»» (solo Android) y 5–6 hashtags.
   - En videos **sin su cara** no digas «Soy Eduardo» ni «armé Checa»: quien lo lee espera ver a alguien y no hay nadie.
   - Solo se presenta en los videos donde sale a cámara.
 - **`dm.txt`:** el mensaje de siempre con el link `https://jeal1498.github.io/PWA-Checa-Multimedia/registro/?utm_source=tiktok&utm_campaign=<nombre-sin-acentos>`.

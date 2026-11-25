@@ -2,7 +2,7 @@
 
 - **El estado real está en el calendario web** (`PWA-Checa-Multimedia/calendario-d4f81c/data.json`). Este archivo solo lista lo que falta publicar; `checa.py hecho` y `checa.py publicado` actualizan los dos.
 - Un video por cuenta al día, a las **8 pm**, **todos los días, domingos incluidos** (Eduardo, 31 oct). Al preguntar «qué toca hoy», da el primero sin publicar de CHECA y el de PERSONAL, con su `copy.txt`.
-- **Texto de cada publicación** (`copy.txt`): gancho con cifra en la 1.ª línea, 1–2 frases con palabras que la gente busca, una pregunta para comentar, CTA «Comenta «CHECA» y te mando el acceso a la prueba en Google Play (solo Android).» y 4–6 hashtags. A quien comente «CHECA» se le manda el `dm.txt` del video.
+- **Texto de cada publicación** (`copy.txt`): gancho con cifra en la 1.ª línea, 1–2 frases con palabras que la gente busca, una pregunta para comentar, CTA «Descárgala en Play Store: busca «Checa: Rentabilidad de viajes»» (solo Android) y 4–6 hashtags (desde el 25 nov 2026; antes era «Comenta CHECA» con `dm.txt`).
 - Los videos ya publicados y los descartados (consejos 07, 09, 11 y 13; campaña vieja 20, 24 y 25) están en `docs/videos-calendario-historia.md`.
 
 # CHECA · cuenta de Checa

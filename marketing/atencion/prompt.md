@@ -1,5 +1,7 @@
 # Prompt vigente del asistente (pegar en Claude in Chrome)
 
+**25 nov 2026:** Checa ya está en producción en Google Play. CTA nuevo: «Descárgala en Play Store: busca «Checa: Rentabilidad de viajes»» (solo Android). A quien comente «CHECA» (videos viejos) o pregunte cómo bajarla: respóndele que la descargue en Play Store buscando «Checa: Rentabilidad de viajes»; ya no hace falta registro de prueba.
+
 Actualizado el 30 oct 2026: repo `jeal1498/APK-CHECA`, flujo «Comenta CHECA» → `dm.txt` con el registro de Google Play, sin link de descarga del APK.
 
 ```

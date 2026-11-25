@@ -31,7 +31,7 @@ Las cifras y las funciones tienen que ser reales. Si no, un conductor lo nota y 
 - Cada bloque dura 2.5 a 3 s, con una idea y unas 8 palabras de voz. Siempre algo cambia en pantalla, porque una pantalla quieta es donde se va la gente.
 - **Gancho (0:00 - 0:03):** golpe de realidad con una cifra o una pérdida, con movimiento desde el cuadro 0. A Eduardo le parecieron «muy flojas» las entradas suaves. Le funcionó esto: flash, tarjeta que se estrella con zoom, monto que sube, cámara que sacude la cifra y título grande con sello. Sin `[pause]` en el gancho, porque deja silencio con la pantalla quieta.
 - **Desarrollo:** solo utilidad real del código, con ritmo rápido.
-- **CTA final:** una sola acción. Hoy es «Comenta CHECA y te paso el acceso a la prueba en Google Play».
+- **CTA final:** una sola acción. Hoy (25 nov 2026) es «Descárgala en Play Store: busca «Checa: Rentabilidad de viajes»» (solo Android). El de «Comenta CHECA… acceso a la prueba» ya no se usa.
 - **Duración:** 25 a 40 s.
 
 ## 2b. Rol, tono y vocabulario (reemplaza el prompt de Gémini, 1 nov 2026)
