@@ -21,5 +21,8 @@ Opciones vistas: `propuestas-estilo/estilos-25nov.html` (A Asfalto vivo, B Table
 4. **Transiciones: la raya se transforma.** Las mismas rayas pasan de barra de dinero a reloj, a regla de km, etc. Nunca hay corte.
 5. **Final: cierre de marca + bucle.** Semáforo rojo → ámbar → verde → ✓ (1.2 s, sonido `logo-semaforo`), mensaje y cuentas; después las rayas vuelven a la carretera y el último cuadro empata con el primero.
 
+## Final con Google Play (25 nov)
+Checa ya está en producción en Google Play. El final dice «YA ESTÁ EN GOOGLE PLAY · BÚSCALA COMO CHECA»: semáforo rojo → ámbar → verde → ✓, la luz verde crece y se abre en la tarjeta (ícono de la app, «Checa: Rentabilidad de viajes», píldora verde «YA EN GOOGLE PLAY»), las cuentas abajo, y todo regresa a la carretera (bucle). Sin el logo de Google Play (sus reglas de uso); si se quiere el distintivo oficial, se usa tal cual. Código: `video/src/Raya/FinalPlay.tsx` (`Raya-Final-Play`, entrada `src/Raya/index.ts`).
+
 ## Pendiente
-Mensaje de Google Play en el final (en propuesta) y pieza modelo completa.
+Pieza modelo completa con un guion de Checa.
