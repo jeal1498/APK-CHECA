@@ -14,5 +14,12 @@ Opciones vistas: `propuestas-estilo/estilos-25nov.html` (A Asfalto vivo, B Table
 - **Cifras:** con las fórmulas de la app (gasolina = km ÷ 12 km/l × $24; metas $200/h y $10/km), cuenta en pequeño y «NÚMEROS DE EJEMPLO» a la vista. Sin logos ni nombres de apps de viajes, sin ciudad ni país, sin promesas de ganancia.
 - **Semáforo de Checa:** se enciende en el color del veredicto; cierra cada video con la luz verde y la ✓.
 
-## Pendiente de definir
-Pop-ups, cámara, sonido (usar los oficiales de `marca/sonido/`), transiciones, final y pieza modelo completa.
+## Decisiones del 25 nov (opciones en `propuestas-estilo/pendientes-25nov.html`)
+1. **Pop-up: sale del semáforo.** La luz del veredicto se enciende, crece y se abre en el pop-up de Checa (el de la app: tablero, borde y chip del color; los tres colores miden igual). Al salir, regresa a la luz.
+2. **Cámara: acercamiento en los golpes.** Arriba (45 %); en cada palabra clave se acerca 14 % y regresa. Cortar silencios de más de 0.35 s; color frío de noche.
+3. **Sonido: los 7 efectos oficiales** de `PWA-Checa-Multimedia/marca/sonido/`, sin música (como decidió la marca el 17 oct). Un efecto por evento visual, máx. 3 por escena, al 30–50 % con voz.
+4. **Transiciones: la raya se transforma.** Las mismas rayas pasan de barra de dinero a reloj, a regla de km, etc. Nunca hay corte.
+5. **Final: cierre de marca + bucle.** Semáforo rojo → ámbar → verde → ✓ (1.2 s, sonido `logo-semaforo`), mensaje y cuentas; después las rayas vuelven a la carretera y el último cuadro empata con el primero.
+
+## Pendiente
+Mensaje de Google Play en el final (en propuesta) y pieza modelo completa.
