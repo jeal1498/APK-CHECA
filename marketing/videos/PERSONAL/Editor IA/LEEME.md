@@ -37,6 +37,10 @@ Código: `video/src/EA/` (tema en `theme.ts`, componentes en `components/`). Cad
 | `Arrow`, `Circle`, `Box`, `Underline`, `Sello` | Anotaciones animadas |
 | `Logo` | EA. compacta u horizontal |
 | `Transition` | Barrido negro y naranja |
+| `SubtitulosPalabra` | Subtítulos aprobados: palabra por palabra, sin cuadro, al centro (y = 800) |
+| `OfertaCard`, `SubtitulosCentro` | De pruebas anteriores (subtítulos con cuadro, ya no se usan); solo si hace falta |
+
+Muestras del estilo vigente (AB, 25 nov): `EA-Movimiento-6s` (inicio con movimiento continuo) y `EA-Final` (cierre en bucle).
 
 Ver todo en movimiento: `cd video && npx remotion render src/EA/index.ts EA-Showcase` (24 s). Muestra de 6 s: `EA-Muestra`. Estudio: `npx remotion studio src/EA/index.ts`.
 Zonas seguras 1080×1920: 200 px arriba, 380 abajo, 60 a los lados.

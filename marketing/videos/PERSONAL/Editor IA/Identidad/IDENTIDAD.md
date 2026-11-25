@@ -32,6 +32,8 @@ A. Experiencia real (incluye ser conductor, si aporta) · B. Educación (edició
   - **Sin identificador de nombre** (Eduardo, 25 nov): no se pone «Eduardo Alvarado · Conductor» ni otro cintillo con su nombre en los videos.
   - **Columna de botones** (me gusta, comentarios, compartir): ocupa la orilla derecha (x > 900 px, de y 900 a 1600). Ahí no va el sello EA. ni nada importante.
   - **Movimiento continuo:** siempre hay algo moviéndose en los gráficos (muestra `EA-Movimiento-6s`).
+  - **Final de video (aprobado 25 nov):** en la pregunta final el movimiento frena, el elemento principal (la barra) se vuelve **globo de comentario** con un «?» naranja que late y, dentro, los datos del video en pequeño; en la palabra de acción cae la **✓ naranja** del inicio; sale el **sello EA. a la izquierda** (nunca a la derecha). Después todo **regresa al primer cuadro** del video para que se repita sin corte (bucle). Referencia en código: `video/src/EA/Final.tsx` (`EA-Final`, 5 s).
+  - **Primer cuadro = último cuadro:** el video arranca ya armado (sin dibujarse desde vacío); sirve de portada y cierra el bucle.
   - La variante BA (negro con cuadrícula) queda solo para algún video especial de dinero, con autorización.
 - Evitar: saturación, plantillas genéricas, estética corporativa.
 
