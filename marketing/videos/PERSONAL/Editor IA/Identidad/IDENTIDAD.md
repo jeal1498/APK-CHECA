@@ -34,6 +34,11 @@ A. Experiencia real (incluye ser conductor, si aporta) · B. Educación (edició
   - **Movimiento continuo:** siempre hay algo moviéndose en los gráficos (muestra `EA-Movimiento-6s`).
   - **Final de video (aprobado 25 nov):** en la pregunta final el movimiento frena, el elemento principal (la barra) se vuelve **globo de comentario** con un «?» naranja que late y, dentro, los datos del video en pequeño; en la palabra de acción cae la **✓ naranja** del inicio; sale el **sello EA. a la izquierda** (nunca a la derecha). Después todo **regresa al primer cuadro** del video para que se repita sin corte (bucle). Referencia en código: `video/src/EA/Final.tsx` (`EA-Final`, 5 s).
   - **Primer cuadro = último cuadro:** el video arranca ya armado (sin dibujarse desde vacío); sirve de portada y cierra el bucle.
+  - **Decisiones del 25 nov** (opciones en `propuestas-estilo/pendientes-25nov.html`):
+    1. **Pop-ups: «sale del objeto».** La tarjeta nace del elemento que da el dato (p. ej. el tramo naranja de la barra), crece a tarjeta blanca con borde negro y al salir regresa a su lugar.
+    2. **Cámara: arriba con acercamiento en los golpes.** Tu video va arriba (0–800 px); en cada palabra clave se acerca un 14 % en 0.2 s y regresa. Siempre: cortar silencios de más de 0.35 s e igualar el color a la paleta (cálido, contraste medio).
+    3. **Sonido: «pulso suave»** (golpe grave por tiempo y chasquido fino) a −22 dB debajo de la voz, más 5 efectos, uno por golpe visual y nunca dos a la vez: gota, palabra clave, ✓ que cae, cambio de escena (barrido) y cifra que cuenta.
+    4. **Transiciones: «se transforma».** El mismo objeto cambia de forma de una escena a otra (barra → moneda → globo); nunca hay corte. **Dibujos fijos de una línea** (negro 6 px + un toque naranja): auto, bomba, reloj, camino, aceptar (✓), globo, billete, teléfono, ubicación y gota. Uno nuevo solo si el tema lo pide.
   - La variante BA (negro con cuadrícula) queda solo para algún video especial de dinero, con autorización.
 - Evitar: saturación, plantillas genéricas, estética corporativa.
 
