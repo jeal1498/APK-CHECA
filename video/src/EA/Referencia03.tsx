@@ -1,5 +1,5 @@
 import React from "react";
-import { AbsoluteFill, useCurrentFrame } from "remotion";
+import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
 import { EA, progreso } from "./theme";
 import { B, n, s, t } from "./Referencia";
 import { Subtitles } from "./components/Subtitles";
@@ -7,14 +7,13 @@ import type { Bloque } from "./components/Subtitles";
 import { LowerThird } from "./components/LowerThird";
 import { Logo } from "./components/Logo";
 import { Linea } from "./components/Resaltado";
-import { OfertaCard, Fila } from "./components/OfertaCard";
 
 /**
- * Referencia 03 (PERSONAL): conductor a conductor. Guion de Hooks Virales «000 Personal/001».
- * Elemento que persiste: una tarjeta de oferta (ejemplo) que crece, se compara con otra y termina en globo.
+ * Referencia 03 (PERSONAL), estilo AB: conductor a conductor, guion de Hooks Virales «000 Personal/001».
+ * Elemento que persiste: la barra del viaje ($100). Pierde gotas, se llena con la gasolina, se compara con otra y da paso al globo.
  * Cuentas (gasolina = km totales ÷ 12 km/l × $24/l):
- *   A: $100, 15 km, 30 min → 15 ÷ 12 × 24 = $30 → te quedan $70.
- *   B: $85,   5 km, 15 min →  5 ÷ 12 × 24 = $10 → te quedan $75.
+ *   A: $100, 15 km, 30 min → 15 ÷ 12 × 24 = $30 → te quedan $70 (barra de 960 px, 30 % naranja).
+ *   B: $85,   5 km, 15 min →  5 ÷ 12 × 24 = $10 → te quedan $75 (barra de 816 px = 85 %, 96 px naranja).
  * Tiempos estimados (~2.8 palabras/s). Con la voz de Eduardo se cambian solo los fotogramas de P (Whisper).
  */
 export const DURACION_REFERENCIA_03 = s(26);
@@ -50,117 +49,163 @@ const BLOQUES: Bloque[] = [
   B(23.0, 26, [t("antes de "), n("aceptar"), t("?")]),
 ];
 
+const C = EA.color;
 const lerp = (a: number, b: number, p: number) => a + (b - a) * p;
-const CY = 1060;
+const sube = (p: number, d = 16): React.CSSProperties => ({ opacity: p, transform: `translateY(${(1 - p) * d}px)` });
+const rotulo: React.CSSProperties = { position: "absolute", fontFamily: EA.font.texto, fontWeight: EA.peso.medio, letterSpacing: 5, textTransform: "uppercase", color: C.negro };
+const titulo: React.CSSProperties = { position: "absolute", left: 60, top: 850, fontFamily: EA.font.titulo, fontWeight: 800, fontSize: 104, lineHeight: 1, letterSpacing: -4, color: C.negro };
+const cifra: React.CSSProperties = { display: "flex", alignItems: "center", justifyContent: "center", fontFamily: EA.font.titulo, fontWeight: 800, fontSize: 44 };
+const GOTA = "M0 -40 q34 50 34 78 a34 34 0 0 1-68 0 q0-28 34-78z";
+const trazo = { fill: "none", stroke: C.negro, strokeWidth: 6, strokeLinecap: "round", strokeLinejoin: "round", pathLength: 1, strokeDasharray: 1 } as const;
+
+const W = 960;
+const X = 60;
 
 export const Referencia03: React.FC = () => {
   const f = useCurrentFrame();
 
-  // Tarjeta A (la que persiste)
-  const entra = progreso(f, 8, 20);
-  const oferta = progreso(f, P.kilometros - 14, 20);
-  const etiqueta = progreso(f, P.oferta - 4, 12);
-  const compara = progreso(f, P.alto - 12, 22);
-  const globo = progreso(f, P.dato - 22, 24);
-  const escA = lerp(lerp(lerp(0.94, 1, entra), 0.72, compara), 1, globo);
-  const cxA = lerp(lerp(540, 290, compara), 540, globo);
-  const wA = lerp(lerp(560, 620, oferta), 720, globo);
-  const hA = lerp(lerp(240, 480, oferta), 240, globo);
+  // Titular 1: «UN VIAJE DE $100» (cuenta de 0 a 100)
+  const cien = Math.round(interpolate(f, [10, 32], [0, 100], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }));
+  const t1 = progreso(f, 4, 14) * (1 - progreso(f, P.alto - 12, 10));
+  const subrayaPaga = progreso(f, P.paga - 4, 14) * (1 - progreso(f, P.kilometros - 20, 10));
+  // Titular 2: «$100 O $85»
+  const t2 = progreso(f, P.alto, 12) * (1 - progreso(f, P.dato - 28, 10));
 
-  // Contenido (nunca dos textos encimados)
-  const interroga = progreso(f, P.perdiendo - 2, 12) * (1 - progreso(f, P.dejando - 4, 10));
-  const circulo = progreso(f, P.paga - 4, 14) * (1 - progreso(f, P.kilometros - 30, 10));
-  const sale = progreso(f, P.mas - 26, 10);
-  const queda = progreso(f, P.mas - 14, 12);
-  const opContenido = 1 - progreso(f, P.dato - 34, 10);
-  const pregunta = progreso(f, P.dato - 2, 12);
+  // Barra A: abajo (1190) y luego sube a comparar (1000)
+  const subeA = progreso(f, P.alto - 2, 22);
+  const ay = lerp(1190, 1010, subeA);
+  const ah = lerp(90, 72, subeA);
+  const pistaA = progreso(f, 36, 18);
+  const llenaA = progreso(f, P.gasolina + 22, 16);
+  const fuera = 1 - progreso(f, P.dato - 28, 10);
 
-  // Tarjeta B (solo para comparar)
-  const entraB = progreso(f, P.alto + 8, 16) * (1 - progreso(f, P.dato - 34, 10));
-  const subraya = progreso(f, P.mas, 14);
+  // Iconos de una línea: km, tiempo, gasolina
+  const icon = (p: number) => 1 - p;
+  const fueraIconos = 1 - progreso(f, P.alto - 14, 10);
+  const dCamino = progreso(f, P.kilometros - 6, 18);
+  const dReloj = progreso(f, P.tiempo - 4, 16);
+  const dBomba = progreso(f, P.gasolina - 18, 18);
+  const IY = 985;
+
+  // Gota de gasolina: de la manguera (x 903, y 1110) al tramo naranja de la barra
+  const cae = progreso(f, P.gasolina + 4, 20);
+  const gx = lerp(903, X + W * 0.15, cae);
+  const gy = lerp(1110, 1205, cae) - 70 * Math.sin(Math.PI * cae);
+  const gOp = progreso(f, P.gasolina, 6) * (1 - progreso(f, P.gasolina + 22, 6));
+
+  // Gotas que se pierden (gancho y contexto)
+  const fuga = (k: number, x: number) => {
+    const p = progreso(f, k - 4, 18);
+    const op = Math.min(1, p * 5) * (1 - progreso(f, k + 8, 10));
+    return op > 0.001 ? <path key={k} d={GOTA} fill={C.naranja} opacity={op} transform={`translate(${x} ${1285 + 50 * p}) scale(0.7)`} /> : null;
+  };
+
+  // Barra B ($85)
+  const pistaB = progreso(f, P.alto + 22, 16);
+  const llenaB = progreso(f, P.alto + 38, 12);
+  const BY = 1150;
+  const WB = W * 0.85;
+  const subrayaMas = progreso(f, P.mas - 2, 14);
+
+  // Globo final
+  const globo = progreso(f, P.dato - 16, 24);
+  const pregunta = progreso(f, P.dato + 2, 12);
 
   return (
-    <AbsoluteFill style={{ background: EA.color.marfil }}>
+    <AbsoluteFill style={{ background: C.marfil }}>
       {/* Cámara (aquí va el video de Eduardo) */}
-      <div style={{ position: "absolute", left: 0, top: 0, width: 1080, height: 800, background: EA.color.papel, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: EA.font.texto, fontSize: 34, color: "rgba(21,21,21,0.45)" }}>
+      <div style={{ position: "absolute", left: 0, top: 0, width: 1080, height: 800, background: C.papel, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: EA.font.texto, fontSize: 34, color: "rgba(21,21,21,0.45)" }}>
         [ video de Eduardo a cámara ]
       </div>
-      <div style={{ position: "absolute", left: 0, top: 800, width: 1080, height: 3, background: EA.color.negro }} />
+      <div style={{ position: "absolute", left: 0, top: 800, width: 1080, height: 4, background: C.negro }} />
       <LowerThird nombre="Eduardo Alvarado" rol="Conductor" x={EA.zona.lados} y={660} inicio={9} fin={80} />
 
-      {/* Tarjeta B: $85, 5 km */}
-      {entraB > 0.001 ? (
-        <OfertaCard cx={790} cy={CY + (1 - entraB) * 40} w={620} h={480} escala={0.72} opacidad={entraB}>
-          <Monto viejo="$85" nuevo="$75" sale={sale} queda={queda} centrado={0} subraya={subraya} etiqueta={1} />
-          <Fila y={190} op={1} texto="5 km" />
-          <Fila y={270} op={1} texto="15 min" />
-          <Fila y={350} op={1} texto="Gasolina −$10" cuenta="5 ÷ 12 km/l × $24" />
-        </OfertaCard>
-      ) : null}
+      {/* Rótulo de ejemplo */}
+      <div style={{ ...rotulo, fontSize: 24, left: 60, top: 818, opacity: 0.65 * progreso(f, P.oferta - 4, 12) * (1 - progreso(f, P.dato - 28, 10)) }}>Oferta · ejemplo</div>
 
-      {/* Tarjeta A: $100, 15 km → globo */}
-      <OfertaCard cx={cxA} cy={CY + (1 - entra) * 50} w={wA} h={hA} escala={escA} opacidad={entra} radio={lerp(12, 60, globo)} cola={progreso(f, P.dato + 2, 12)}>
-        <div style={{ position: "absolute", inset: 0, opacity: opContenido }}>
-          <Monto viejo="$100" nuevo="$70" sale={sale} queda={queda} centrado={1 - oferta} interroga={interroga} circulo={circulo} etiqueta={etiqueta} />
-          <Fila y={190} op={progreso(f, P.kilometros + 4, 12)} texto="15 km" />
-          <Fila y={270} op={progreso(f, P.tiempo - 2, 12)} texto="30 min" />
-          <Fila y={350} op={progreso(f, P.gasolina - 4, 12)} texto="Gasolina −$30" cuenta="15 ÷ 12 km/l × $24" />
+      {/* Titulares */}
+      {t1 > 0.001 ? (
+        <div style={{ ...titulo, ...sube(t1, 20) }}>
+          UN VIAJE DE{" "}
+          <span style={{ position: "relative", color: C.naranja }}>
+            ${cien}
+            <span style={{ position: "absolute", left: 0, right: 0, bottom: -12, height: 10, background: C.negro, borderRadius: 4, transform: `scaleX(${subrayaPaga})`, transformOrigin: "left center", opacity: subrayaPaga > 0.001 ? 1 : 0 }} />
+          </span>
         </div>
-        {pregunta > 0 ? (
-          <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 66, letterSpacing: -2, opacity: pregunta }}>
-            <Linea partes={[t("¿Qué "), n("dato"), t(" tomas?")]} frame={f} inicioResalte={P.dato + 4} durResalte={14} />
-          </div>
-        ) : null}
-      </OfertaCard>
-
-      <Logo x={472} y={1236} tam={96} inicio={P.aceptar - 10} />
-
-      <Subtitles y={1370} bloques={BLOQUES} />
-    </AbsoluteFill>
-  );
-};
-
-/** Monto grande de la tarjeta: tarifa → «Te queda». `centrado` 1 = al centro de la tarjeta chica. */
-const Monto: React.FC<{ viejo: string; nuevo: string; sale: number; queda: number; centrado: number; interroga?: number; circulo?: number; subraya?: number; etiqueta?: number }> = ({
-  viejo,
-  nuevo,
-  sale,
-  queda,
-  centrado,
-  interroga = 0,
-  circulo = 0,
-  subraya = 0,
-  etiqueta = 0,
-}) => {
-  const top = lerp(30, 45, centrado);
-  const tam = lerp(124, 150, centrado);
-  const base: React.CSSProperties = { position: "absolute", left: 0, right: 0, top, height: 170, display: "flex", alignItems: "center", justifyContent: "center", fontSize: tam, letterSpacing: -4, lineHeight: 1 };
-  const rotulo: React.CSSProperties = { position: "absolute", left: 0, right: 0, top: 16, textAlign: "center", fontFamily: EA.font.texto, fontWeight: EA.peso.medio, fontSize: 30, letterSpacing: 4, textTransform: "uppercase" };
-  return (
-    <>
-      {etiqueta * (1 - sale) > 0.001 ? <div style={{ ...rotulo, opacity: etiqueta * (1 - sale), color: "rgba(21,21,21,0.7)" }}>Oferta · ejemplo</div> : null}
-      <div style={{ ...base, opacity: 1 - sale }}>
-        <span style={{ position: "relative" }}>
-          {viejo}
-          {interroga > 0 ? <span style={{ position: "absolute", left: "100%", marginLeft: 10, color: EA.color.naranja, opacity: interroga, transform: `scale(${0.6 + 0.4 * interroga})`, display: "inline-block" }}>?</span> : null}
-        </span>
-        {circulo > 0 ? (
-          <svg style={{ position: "absolute", left: "50%", top: "50%", marginLeft: -190, marginTop: -78 }} width={380} height={156}>
-            <ellipse cx={190} cy={78} rx={180} ry={68} fill="none" stroke={EA.color.naranja} strokeWidth={9} pathLength={1} strokeDasharray={1} strokeDashoffset={1 - circulo} opacity={Math.min(1, circulo * 8)} />
-          </svg>
-        ) : null}
-      </div>
-      {queda > 0 ? (
-        <>
-          <div style={{ ...rotulo, opacity: queda }}>Te queda</div>
-          <div style={{ ...base, top: 58, height: 124, opacity: queda, transform: `translateY(${(1 - queda) * 14}px)` }}>
-            <span style={{ position: "relative" }}>
-              {nuevo}
-              <span style={{ position: "absolute", left: -8, right: -8, bottom: -10, height: 14, background: EA.color.naranja, borderRadius: 4, transform: `scaleX(${subraya})`, transformOrigin: "left center" }} />
-            </span>
-          </div>
-        </>
       ) : null}
-    </>
+      {t2 > 0.001 ? (
+        <div style={{ ...titulo, ...sube(t2, 20) }}>
+          $100 <span style={{ color: C.naranja }}>O</span> $85
+        </div>
+      ) : null}
+
+      {/* Iconos de una línea */}
+      <svg style={{ position: "absolute", left: 0, top: 0, opacity: fueraIconos }} width={1080} height={1920}>
+        {/* camino */}
+        <g transform={`translate(150 ${IY})`}>
+          <path d="M60 0 L0 120 M140 0 L200 120" {...trazo} strokeDashoffset={icon(dCamino)} />
+          <path d="M100 10 V30 M100 55 V75 M100 100 V120" {...trazo} stroke={C.naranja} strokeDashoffset={icon(progreso(f, P.kilometros + 6, 10))} />
+        </g>
+        {/* reloj */}
+        <g transform={`translate(480 ${IY})`}>
+          <circle cx={60} cy={60} r={56} {...trazo} strokeDashoffset={icon(dReloj)} />
+          <path d="M60 60 V22 M60 60 L88 74" {...trazo} stroke={C.naranja} strokeDashoffset={icon(progreso(f, P.tiempo + 6, 10))} />
+        </g>
+        {/* bomba */}
+        <g transform={`translate(700 ${IY})`}>
+          <path d="M40 120 V24 q0-20 20-20 h80 q20 0 20 20 V120 M20 120 H180" {...trazo} strokeDashoffset={icon(dBomba)} />
+          <rect x={62} y={28} width={76} height={44} rx={6} {...trazo} strokeDashoffset={icon(progreso(f, P.gasolina - 8, 12))} />
+          <path d="M160 50 h18 q12 0 12 12 v50 q0 13 13 13 q13 0 13-13 V46 l-18-18" {...trazo} strokeDashoffset={icon(progreso(f, P.gasolina - 6, 12))} />
+        </g>
+      </svg>
+      <div style={{ ...rotulo, fontSize: 26, left: 150, width: 200, textAlign: "center", top: IY + 132, opacity: progreso(f, P.kilometros + 4, 12) * fueraIconos }}>15 km</div>
+      <div style={{ ...rotulo, fontSize: 26, left: 440, width: 200, textAlign: "center", top: IY + 132, opacity: progreso(f, P.tiempo + 4, 12) * fueraIconos }}>30 min</div>
+      <div style={{ ...rotulo, fontSize: 26, left: 700, width: 200, textAlign: "center", top: IY + 132, color: C.naranja, opacity: progreso(f, P.gasolina, 12) * fueraIconos }}>Gasolina</div>
+
+      {/* Barra A ($100) */}
+      <div style={{ opacity: fuera }}>
+        <div style={{ ...rotulo, fontSize: 26, left: X, top: ay - 40, opacity: progreso(f, P.alto + 12, 12) }}>$100 · 15 km</div>
+        <div style={{ position: "absolute", left: X, top: ay, width: W, height: ah, boxSizing: "border-box", border: `5px solid ${C.negro}`, borderRadius: 8, transform: `scaleX(${pistaA})`, transformOrigin: "left center", opacity: pistaA }} />
+        <div style={{ ...cifra, position: "absolute", left: X, top: ay, width: W * 0.3, height: ah, background: C.naranja, borderRadius: 8, transform: `scaleY(${llenaA})`, transformOrigin: "bottom center", color: C.negro }}>
+          <span style={{ opacity: progreso(f, P.gasolina + 32, 10) }}>$30</span>
+        </div>
+        <div style={{ ...cifra, position: "absolute", left: X + W * 0.3, width: W * 0.7, top: ay, height: ah, color: C.negro, opacity: progreso(f, P.gasolina + 42, 12) }}>$70</div>
+        <div style={{ ...rotulo, fontSize: 24, left: X, top: ay + ah + 14, color: C.naranja, opacity: progreso(f, P.gasolina + 40, 12) * fueraIconos }}>Gasolina</div>
+        <div style={{ ...rotulo, fontSize: 24, left: X + W * 0.3 + 20, top: ay + ah + 14, opacity: 0.75 * progreso(f, P.gasolina + 46, 12) * fueraIconos }}>Te queda</div>
+        <div style={{ position: "absolute", right: X, top: ay + ah + 10, fontFamily: EA.font.texto, fontSize: 28, color: C.negro, opacity: 0.65 * progreso(f, P.gasolina + 50, 12) * fueraIconos }}>15 km ÷ 12 km/l × $24 = $30</div>
+
+        {/* Barra B ($85) */}
+        <div style={{ ...rotulo, fontSize: 26, left: X, top: BY - 40, opacity: progreso(f, P.alto + 22, 12) }}>$85 · 5 km</div>
+        <div style={{ position: "absolute", left: X, top: BY, width: WB, height: 72, boxSizing: "border-box", border: `5px solid ${C.negro}`, borderRadius: 8, transform: `scaleX(${pistaB})`, transformOrigin: "left center", opacity: pistaB }} />
+        <div style={{ position: "absolute", left: X, top: BY, width: WB * (10 / 85), height: 72, background: C.naranja, borderRadius: 8, transform: `scaleY(${llenaB})`, transformOrigin: "bottom center" }} />
+        <div style={{ ...cifra, position: "absolute", left: X + WB * (10 / 85), width: WB * (75 / 85), top: BY, height: 72, color: C.negro, opacity: progreso(f, P.alto + 48, 12) }}>
+          <span style={{ position: "relative" }}>
+            $75
+            <span style={{ position: "absolute", left: -6, right: -6, bottom: -8, height: 10, background: C.naranja, borderRadius: 4, transform: `scaleX(${subrayaMas})`, transformOrigin: "left center" }} />
+          </span>
+        </div>
+        <div style={{ position: "absolute", left: X, top: BY + 86, fontFamily: EA.font.texto, fontSize: 28, color: C.negro, opacity: 0.65 * progreso(f, P.alto + 54, 12) }}>5 km ÷ 12 km/l × $24 = $10</div>
+      </div>
+
+      {/* Gotas */}
+      <svg style={{ position: "absolute", left: 0, top: 0 }} width={1080} height={1920}>
+        {fuga(P.perdiendo, 330)}
+        {fuga(P.dejando, 720)}
+        {gOp > 0.001 ? <path d={GOTA} fill={C.naranja} opacity={gOp} transform={`translate(${gx} ${gy}) scale(${0.8 - 0.3 * cae})`} /> : null}
+        {/* Globo de una línea */}
+        <g opacity={globo > 0.001 ? 1 : 0}>
+          <path d="M150 930 h780 q30 0 30 30 v180 q0 30-30 30 H300 l-70 60 v-60 H150 q-30 0-30-30 V960 q0-30 30-30z" {...trazo} strokeDashoffset={1 - globo} />
+        </g>
+      </svg>
+      {pregunta > 0.001 ? (
+        <div style={{ position: "absolute", left: 120, width: 840, top: 930, height: 240, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: EA.font.titulo, fontWeight: 800, fontSize: 80, letterSpacing: -2, color: C.negro, ...sube(pregunta, 12) }}>
+          <Linea partes={[t("¿Qué "), n("dato"), t(" tomas?")]} frame={f} inicioResalte={P.dato + 8} durResalte={14} />
+        </div>
+      ) : null}
+
+      <Logo x={472} y={1250} tam={96} inicio={P.aceptar - 10} />
+
+      <Subtitles y={1390} bloques={BLOQUES} />
+    </AbsoluteFill>
   );
 };
