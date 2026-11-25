@@ -34,16 +34,15 @@ export function montarHero(quieto) {
   tl.play(0);
   raiz.addEventListener("click", () => tl.restart());
 
-  // Entradas suaves de los bloques al llegar a ellos
-  const bloques = document.querySelectorAll("[data-entra]");
-  if ("IntersectionObserver" in window) {
-    bloques.forEach((b) => {
-      const hijos = b.querySelectorAll("[data-entra-hijo]");
-      gsap.set(hijos, { autoAlpha: 0, y: 18 });
-      const io = new IntersectionObserver((es) => {
-        if (es[0].isIntersecting) { gsap.to(hijos, { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.12, ease: "expo.out" }); io.disconnect(); }
-      }, { threshold: 0.25 });
-      io.observe(b);
-    });
+  // Textos y bloques aparecen al ir bajando (cada uno cuando entra a la pantalla)
+  const SEL = ".blk h2, .blk .lead, .blk .escena, .golpes li, .pasos li, .func, .picks, .sl, .dpop, .conf li, .plan, .faq details, .blk .play, .blk .disp, .franja div, .chips span, .sellos div";
+  const els = document.querySelectorAll(SEL);
+  if ("IntersectionObserver" in window && els.length) {
+    gsap.set(els, { autoAlpha: 0, y: 24 });
+    const io = new IntersectionObserver((es) => {
+      const visibles = es.filter((x) => x.isIntersecting).map((x) => x.target);
+      visibles.forEach((el, k) => { io.unobserve(el); gsap.to(el, { autoAlpha: 1, y: 0, duration: 0.7, delay: k * 0.08, ease: "expo.out" }); });
+    }, { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
+    els.forEach((el) => io.observe(el));
   }
 }

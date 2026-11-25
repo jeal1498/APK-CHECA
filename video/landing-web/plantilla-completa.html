@@ -70,6 +70,7 @@ p{margin:0}
 .blk{padding-block:30px;border-top:1px solid var(--linea);margin-top:30px}
 .blk h2{font-size:clamp(1.6rem,6.6vw,2.2rem)}
 .blk .lead{margin-top:8px;color:var(--texto2)}
+.blk .lead strong{color:var(--texto)}
 .escena{margin-top:12px}
 .golpes{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:12px}
 .golpes li{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:start;font-size:1.02rem;color:var(--texto2)}
@@ -179,8 +180,8 @@ p{margin:0}
   </header>
 
   <section class="hero" aria-labelledby="t1">
-    <p class="tag"><b>YA EN GOOGLE PLAY</b>Gratis hasta el 31 de enero · sin tarjeta</p>
-    <h1 id="t1">Checa cuánto te queda antes de aceptar.</h1>
+    <p class="tag"><b>YA EN GOOGLE PLAY</b>Sin tarjeta · Android</p>
+    <h1 id="t1">Antes de aceptar CHECA cuánto te queda.</h1>
     <p class="sub">Checa lee cada oferta de Uber y DiDi, descuenta tu gasolina y te dice en voz alta si conviene. Tú solo decides.</p>
     <!-- Composición HyperFrames: hero-oferta (GSAP, ~9.5 s en bucle) -->
     <div class="hf" data-composition-id="hero-oferta" data-width="560" data-height="410" data-duration="9.5" role="img" aria-label="Ejemplo: llega una oferta de Uber de 95 pesos y salta el aviso de Checa, Rechazar, te quedan 57 pesos. Luego llega una de 120 y Checa dice Aceptar, te quedan 97. Toca para repetir.">
@@ -206,7 +207,7 @@ p{margin:0}
 
   <section class="blk" aria-labelledby="t2" data-entra>
     <h2 id="t2">Una oferta de $95 no te deja $95.</h2>
-    <p class="lead">La app te enseña la tarifa. La gasolina y los kilómetros para llegar por el pasajero los pagas tú, y nadie te los resta.</p>
+    <p class="lead">La app te enseña la tarifa. La gasolina y <strong>los kilómetros para llegar por el pasajero los pagas tú</strong>, y nadie te los resta.</p>
     <div class="escena" data-remotion="bruto" role="img" aria-label="Animación: la oferta dice 95 pesos; se van 38 de gasolina de 19 km; te quedan 57, 5 pesos por kilómetro."></div>
   </section>
 
@@ -253,7 +254,6 @@ p{margin:0}
       <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><b>Solo lee, nunca toca</b><span>No acepta, no rechaza y no presiona nada en Uber o DiDi.</span></li>
       <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="3"/><path d="M11 18h2"/></svg><b>Lee en tu teléfono</b><span>La lectura de cada oferta se hace ahí mismo, sin internet.</span></li>
       <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></svg><b>Solo en Uber y DiDi</b><span>Si otra app se queja, pausas el lector con un toque.</span></li>
-      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"/></svg><b>Garantía de 7 días</b><span>Si pagas y no lee las ofertas en tu teléfono, te devolvemos tu dinero.</span></li>
     </ul>
   </section>
 
@@ -264,8 +264,8 @@ p{margin:0}
   </section>
 
   <section class="blk" aria-labelledby="t8">
-    <h2 id="t8">Hoy es gratis. Después, tú eliges.</h2>
-    <p class="lead">Todo incluido hasta el 31 de enero de 2027, sin tarjeta. Después eliges el plan que te convenga.</p>
+    <h2 id="t8">Empiezas gratis. Después, tú eliges.</h2>
+    <p class="lead">Descárgala gratis y sin tarjeta. Cuando quieras seguir, eliges el plan que te convenga.</p>
     <div class="planes">
       <div class="plan"><h3>Básico</h3><span class="n">$119<small>$3.97 al día</small></span><span class="per">1 mes · 1 equipo</span><ul><li>Netos, $/hora y $/km</li><li>Semáforo con voz y vibración</li><li>Filtros y Mi día</li></ul></div>
       <div class="plan hot"><h3>Estratega<span class="tg">RECOMENDADO</span></h3><span class="n">$589<small>$3.27 al día</small></span><span class="per">6 meses · 2 equipos</span><ul><li>Todo lo del Básico</li><li>Uber y DiDi juntos con «Mejor»</li><li>Mejores horas de la semana</li></ul></div>
@@ -281,8 +281,8 @@ p{margin:0}
       <details><summary>¿Cómo la descargo?</summary><p>Checa ya está en Google Play. Toca «Probar gratis en Google Play» e instálala como cualquier app.</p></details>
       <details><summary>¿Necesita internet?</summary><p>Para leer las ofertas no. Usa internet para tu cuenta, tu licencia y, si la aceptas, la revisión con imagen.</p></details>
       <details><summary>¿Funciona en tablet?</summary><p>Sí. Con pantalla dividida ves un aviso por app y la etiqueta «Mejor» marca la mejor oferta (Estratega y Pro).</p></details>
-      <details><summary>¿Hasta cuándo es gratis?</summary><p>Hasta el 31 de enero de 2027, con todo incluido y sin tarjeta. Si después no pagas, Checa deja de mostrar el aviso y no se te cobra nada.</p></details>
-      <details><summary>¿Y si no me funciona?</summary><p>Tienes 7 días de garantía de lectura: si pagas y Checa no lee las ofertas en tu teléfono, te devolvemos tu dinero.</p></details>
+      <details><summary>¿Cuánto cuesta?</summary><p>Empiezas gratis y sin tarjeta. Los planes van desde $119 al mes. Si no pagas, Checa deja de mostrar el aviso y no se te cobra nada.</p></details>
+      <details><summary>¿Y si no me funciona?</summary><p>Pruébala gratis antes de pagar. Si algo falla, escríbenos por WhatsApp y lo revisamos contigo.</p></details>
     </div>
   </section>
 
@@ -291,12 +291,12 @@ p{margin:0}
     <p class="lead">Instálala desde Google Play en 2 minutos y mírala trabajar en tu siguiente viaje.</p>
     <div class="escena" data-remotion="semaforo" role="img" aria-label="Animación: el semáforo pasa de rojo a ámbar a verde con palomita y aparece Descarga Checa."></div>
     <a class="play" id="cta2" href="https://play.google.com/store/apps/details?id=com.jeal1498.checa"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 3.5v17l14-8.5z"/></svg>Probar gratis en Google Play</a>
-    <p class="disp">Gratis hasta el 31 de enero · sin tarjeta</p>
+    <p class="disp">Sin tarjeta · Android 8 o más</p>
   </section>
 
   <footer class="piefull">
     <div><b style="color:var(--texto)">Checa</b> · Checa cuánto te queda. Para conductores de Uber y DiDi en Android.</div>
-    <nav aria-label="Legal"><a href="https://jeal1498.github.io/PWA-Checa-Multimedia/privacidad.html">Privacidad</a><a href="https://jeal1498.github.io/PWA-Checa-Multimedia/terminos.html">Términos y reembolsos</a><a href="https://jeal1498.github.io/PWA-Checa-Multimedia/eliminar-cuenta.html">Eliminar cuenta</a><a href="https://wa.me/529985214490">Soporte por WhatsApp</a></nav>
+    <nav aria-label="Legal"><a href="https://jeal1498.github.io/PWA-Checa-Multimedia/privacidad.html">Privacidad</a><a href="https://jeal1498.github.io/PWA-Checa-Multimedia/terminos.html">Términos</a><a href="https://jeal1498.github.io/PWA-Checa-Multimedia/eliminar-cuenta.html">Eliminar cuenta</a><a href="https://wa.me/529985214490">Soporte por WhatsApp</a></nav>
     <p>© 2026 Checa. Proyecto independiente, no afiliado a Uber ni a DiDi; sus nombres son marcas de sus dueños. Los números de esta página son de ejemplo.</p>
   </footer>
 </div>

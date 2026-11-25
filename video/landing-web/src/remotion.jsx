@@ -127,16 +127,31 @@ const ESCENAS = {
   semaforo: { component: Semaforo, durationInFrames: 180, compositionWidth: 900, compositionHeight: 820 },
 };
 
+// Cada escena arranca desde el inicio cuando aparece en pantalla y se pausa al salir
+const Escena = ({ e, quieto, el }) => {
+  const ref = React.useRef(null);
+  React.useEffect(() => {
+    const pl = ref.current;
+    if (!pl || quieto || !("IntersectionObserver" in window)) return;
+    const io = new IntersectionObserver((es) => {
+      const v = es[0].isIntersecting;
+      if (v) { pl.seekTo(0); pl.play(); } else { pl.pause(); }
+    }, { threshold: 0.45 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  const ultimo = e.durationInFrames - 20;
+  return (
+    <Player ref={ref} {...e} fps={30} autoPlay={false} loop={!quieto} initialFrame={quieto ? Math.min(ultimo, 120) : 0}
+      controls={false} clickToPlay={false} doubleClickToFullscreen={false} spaceKeyToPlayOrPause={false}
+      acknowledgeRemotionLicense style={{ width: "100%", background: "transparent" }} />
+  );
+};
+
 export function montarRemotion(quieto) {
   document.querySelectorAll("[data-remotion]").forEach((el) => {
     const e = ESCENAS[el.getAttribute("data-remotion")];
     if (!e) return;
-    const ultimo = e.durationInFrames - 20;
-    createRoot(el).render(
-      <Player {...e} fps={30} autoPlay={!quieto} loop={!quieto} initialFrame={quieto ? Math.min(ultimo, 120) : 0}
-        controls={false} clickToPlay={false} doubleClickToFullscreen={false} spaceKeyToPlayOrPause={false}
-        acknowledgeRemotionLicense
-        style={{ width: "100%", background: "transparent" }} />
-    );
+    createRoot(el).render(<Escena e={e} quieto={quieto} el={el} />);
   });
 }
