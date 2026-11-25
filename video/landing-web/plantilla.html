@@ -1,0 +1,178 @@
+<title>Checa Animada</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=DM+Sans:wght@400;600;700&family=JetBrains+Mono:wght@600;700;800&display=swap">
+<style>
+/* Propuesta «Una pantalla» animada: hero en composición HyperFrames (GSAP), escenas de Remotion en vivo (@remotion/player). Sin carrusel ni mp4. Marca v2, oscuro primero. */
+:root{
+  --fondo:#0C0C10;--tarjeta:#16161C;--texto:#F4F4EF;--texto2:#C9C9D0;--texto3:#9A9AA4;--linea:#2A2A33;
+  --aceptar:#22C55E;--considerar:#FACC15;--rechazar:#EF4444;--sobre-aceptar:#04210F;--verde-texto:#22C55E;
+  --titulos:'Bricolage Grotesque','Arial Black',sans-serif;--texto-f:'DM Sans',Arial,sans-serif;--datos:'JetBrains Mono','Courier New',monospace;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--fondo:#F4F4EF;--tarjeta:#FFFFFF;--texto:#0C0C10;--texto2:#3A3A45;--texto3:#5E5E68;--linea:#DCDCD4;--verde-texto:#15803D;color-scheme:light}}
+:root[data-theme="light"]{--fondo:#F4F4EF;--tarjeta:#FFFFFF;--texto:#0C0C10;--texto2:#3A3A45;--texto3:#5E5E68;--linea:#DCDCD4;--verde-texto:#15803D;color-scheme:light}
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--fondo);color:var(--texto);font:400 17px/1.5 var(--texto-f);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));overflow-x:hidden}
+h1,h2{font-family:var(--titulos);font-weight:800;letter-spacing:-.04em;line-height:.98;margin:0;text-wrap:balance}
+p{margin:0}
+.w{max-width:560px;margin-inline:auto}
+:focus-visible{outline:3px solid var(--verde-texto);outline-offset:3px;border-radius:8px}
+
+.ficha{display:grid;grid-template-columns:52px 1fr;gap:12px;align-items:center;padding-block:16px 4px}
+.icono{width:52px;height:52px;border-radius:15px;background:#0C0C10;border:1.5px solid #2A2A33;display:grid;place-items:center}
+.icono span{width:18px;height:36px;border-radius:9px;background:#16161C;border:1.5px solid #3A3A45;display:grid;gap:2px;place-items:center;padding:4px 0}
+.icono i{width:8px;height:8px;border-radius:50%;background:#3A3A45}.icono i:last-child{background:var(--aceptar)}
+.ficha b{display:block;font:800 1.25rem/1.05 var(--titulos);letter-spacing:-.03em}
+.ficha small{display:block;margin-top:2px;color:var(--texto3);font-size:.86rem}
+
+.hero{padding-block:12px 6px}
+.hero h1{font-size:clamp(1.9rem,8.2vw,3rem)}
+
+/* Composición HyperFrames del hero */
+.hf{--c:#EF4444;position:relative;margin-top:14px;height:410px;border-radius:22px;overflow:hidden;background:#101014;border:1px solid var(--linea);cursor:pointer;color:#F4F4EF}
+.hf .mapa{position:absolute;inset:0}.hf .mapa svg{width:100%;height:100%}
+.hf .pop{position:absolute;left:12px;right:12px;top:14px;border-radius:16px;overflow:hidden;border:2px solid var(--pc);background:#0C0C10;box-shadow:0 18px 34px -16px #000}
+.hf .pop .cu{display:grid;grid-template-columns:42% 1fr}
+.hf .pop .bl{background:var(--pc);display:grid;place-items:center;align-content:center;padding:10px 6px}
+.hf .pop .bl small{font:800 .74rem/1 var(--texto-f);letter-spacing:.06em}
+.hf .pop .bl em{font:700 .58rem/1 var(--datos);font-style:normal;letter-spacing:.08em;opacity:.8;margin-top:5px}
+.hf .pop .bl b{font:800 2.7rem/1.02 var(--titulos);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.hf .pop .de{padding:10px 12px;display:grid;gap:3px;align-content:center;min-width:0}
+.hf .pop .m{font:800 1.08rem/1.2 var(--datos);white-space:nowrap}
+.hf .ok{color:#22C55E}.hf .no{color:#ff6b6b}
+.hf .pop .ap{font:600 .7rem/1.3 var(--datos);color:#A3A3AD}
+.hf .hf-pill{display:block;text-align:center;padding:6px;border-top:1px solid #EF444466;background:#EF444418;font:800 .8rem/1 var(--datos);color:#ffd0d0}
+.hf .br{height:5px;background:#ffffff1a}.hf .br i{display:block;height:100%;background:var(--pc);transform-origin:left}
+.hf-pop-a{--pc:#EF4444}.hf-pop-a .bl{color:#1b0000}
+.hf-pop-b{--pc:#22C55E}.hf-pop-b .bl{color:#06210f}
+.hf .voz{position:absolute;left:50%;top:172px;transform:translateX(-50%);display:flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:#000c;font:800 .95rem/1 var(--titulos);white-space:nowrap}
+.hf .voz svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+.hf-voz-a{color:#ff8a8a}.hf-voz-b{color:#4ADE80}
+.hf .uber{position:absolute;left:12px;right:12px;bottom:12px;background:#000;color:#fff;border-radius:16px;padding:13px 15px 11px;box-shadow:0 10px 24px -14px #000}
+.hf .uber .tipo{display:flex;justify-content:space-between;font:700 .78rem/1 var(--texto-f)}
+.hf .uber .tipo span:last-child{color:#B5B5B5;font-weight:600}
+.hf .uber .monto{display:block;font:700 2rem/1.05 var(--texto-f);letter-spacing:-.02em;margin:7px 0 5px}
+.hf .uber .r{display:flex;gap:9px;align-items:center;font-size:.86rem;color:#E5E5E5;margin-top:3px}
+.hf .uber .r i{width:8px;height:8px;border-radius:50%;background:#fff;flex:none}.hf .uber .r i.d{border-radius:1px}
+.hf .uber .acc{margin-top:10px;min-height:42px;border-radius:10px;background:#fff;color:#000;display:grid;place-items:center;font:700 .92rem/1 var(--texto-f)}
+.pie-prueba{margin-top:8px;font:500 .74rem/1.4 var(--datos);color:var(--texto3);text-align:center}
+
+.play{display:flex;align-items:center;justify-content:center;gap:10px;min-height:60px;width:100%;border-radius:999px;background:var(--aceptar);color:var(--sobre-aceptar);text-decoration:none;font:700 1.1rem/1.1 var(--texto-f);margin-top:16px}
+.play:active{transform:scale(.98)}
+.play svg{width:20px;height:20px;flex:none}
+.sellos{display:grid;grid-template-columns:repeat(3,1fr);margin-top:12px;border:1px solid var(--linea);border-radius:14px;overflow:hidden}
+.sellos div{padding:10px 6px;text-align:center;border-left:1px solid var(--linea)}
+.sellos div:first-child{border-left:0}
+.sellos b{display:block;font:800 1.05rem/1.1 var(--titulos);letter-spacing:-.02em}
+.sellos span{font-size:.76rem;color:var(--texto3)}
+
+.blk{padding-block:30px;border-top:1px solid var(--linea);margin-top:30px}
+.blk h2{font-size:clamp(1.6rem,6.6vw,2.2rem)}
+.blk .lead{margin-top:8px;color:var(--texto2)}
+.escena{margin-top:16px;border-radius:22px;overflow:hidden;background:#0C0C10;border:1px solid var(--linea)}
+.golpes{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:12px}
+.golpes li{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:start;font-size:1.02rem;color:var(--texto2)}
+.golpes b{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--tarjeta);border:1px solid var(--linea)}
+.golpes svg{width:20px;height:20px;fill:none;stroke:var(--rechazar);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pasos{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:14px}
+.pasos li{display:grid;grid-template-columns:36px 1fr;gap:12px;align-items:start;color:var(--texto2);font-size:.98rem}
+.pasos li>b{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;font:800 .95rem/1 var(--datos);background:var(--aceptar);color:var(--sobre-aceptar)}
+.pasos strong{color:var(--texto)}
+.resp{display:grid;margin-top:14px}
+.resp div{padding-block:14px;border-top:1px solid var(--linea)}
+.resp div:last-child{border-bottom:1px solid var(--linea)}
+.resp b{display:block;font-weight:700}
+.resp span{color:var(--texto2);font-size:.95rem}
+.disp{margin-top:10px;text-align:center;font-size:.86rem;color:var(--texto3)}
+.pie{display:flex;justify-content:center;gap:10px;padding-block:8px 110px;font-size:.88rem;color:var(--texto3)}
+.pie a{color:var(--texto3);min-height:44px;display:inline-flex;align-items:center}
+.pie span{display:inline-flex;align-items:center}
+
+.fijo{position:fixed;left:0;right:0;bottom:0;z-index:10;padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:color-mix(in srgb,var(--fondo) 92%,transparent);border-top:1px solid var(--linea);transform:translateY(110%);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.fijo.on{transform:none}
+.fijo .play{max-width:560px;margin:0 auto;min-height:54px}
+@media (prefers-reduced-motion:reduce){.fijo{transition:none}}
+</style>
+
+<div class="w">
+  <header class="ficha">
+    <div class="icono" aria-hidden="true"><span><i></i><i></i><i></i></span></div>
+    <div><b>Checa</b><small>Para los que ruleteamos diario en Uber y DiDi</small></div>
+  </header>
+
+  <section class="hero" aria-labelledby="t1">
+    <h1 id="t1">¿Te conviene ese viaje o solo vas a quemar combustible?</h1>
+
+    <!-- Composición HyperFrames: hero-oferta (GSAP, ~9.5 s en bucle) -->
+    <div class="hf" data-composition-id="hero-oferta" data-width="560" data-height="410" data-duration="9.5" role="img" aria-label="Ejemplo: llega una oferta de Uber de 95 pesos y salta el aviso de Checa, Rechazar, te quedan 57 pesos. Luego llega una de 120 y Checa dice Aceptar, te quedan 97. Toca para repetir.">
+      <div class="mapa" aria-hidden="true"><svg viewBox="0 0 400 420" preserveAspectRatio="xMidYMid slice"><g stroke="#1C1C22" stroke-width="16" fill="none"><path d="M-20 90L420 170"/><path d="M120 -20L200 440"/><path d="M-20 300L420 250"/><path d="M330 -20L300 440"/></g></svg></div>
+      <div aria-hidden="true">
+        <div class="uber hf-oferta-a"><div class="tipo"><span>UberX</span><span>Exclusivo</span></div><span class="monto">$95.00</span><div class="r"><i></i>A 9 min (4.5 km)</div><div class="r"><i class="d"></i>Viaje: 21 min (14.5 km)</div><div class="acc">Aceptar</div></div>
+        <div class="uber hf-oferta-b"><div class="tipo"><span>UberX</span><span>Exclusivo</span></div><span class="monto">$120.00</span><div class="r"><i></i>A 4 min (1.5 km)</div><div class="r"><i class="d"></i>Viaje: 18 min (10.0 km)</div><div class="acc">Aceptar</div></div>
+        <div class="pop hf-pop-a"><div class="cu"><div class="bl"><small>RECHAZAR</small><em>TE QUEDAN</em><b id="hf-neto">$57</b></div><div class="de"><span class="m no">✕ $190/h</span><span class="m no">✕ $5.0/km</span><span class="ap">Uber · $95.00</span></div></div><span class="hf-pill">Recogida 4.5 km</span><div class="br"><i class="hf-barra-a"></i></div></div>
+        <div class="pop hf-pop-b"><div class="cu"><div class="bl"><small>ACEPTAR</small><em>TE QUEDAN</em><b>$97</b></div><div class="de"><span class="m ok">✓ $327/h</span><span class="m ok">✓ $10.4/km</span><span class="ap">Uber · $120.00</span></div></div><div class="br"><i class="hf-barra-b"></i></div></div>
+        <div class="voz hf-voz-a"><svg viewBox="0 0 24 24"><path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 11v2"/></svg>«Rechazar»</div>
+        <div class="voz hf-voz-b"><svg viewBox="0 0 24 24"><path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 11v2"/></svg>«Aceptar»</div>
+      </div>
+    </div>
+    <p class="pie-prueba">Ejemplo: 12 km/L · $24/L · Toca para repetir</p>
+
+    <a class="play" id="cta1" href="https://play.google.com/store/apps/details?id=com.jeal1498.checa"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 3.5v17l14-8.5z"/></svg>Descargar gratis en Google Play</a>
+    <div class="sellos">
+      <div><b>1 s</b><span>En leer la oferta</span></div>
+      <div><b>0</b><span>Toques a tu app</span></div>
+      <div><b>$0</b><span>Para empezar a probar</span></div>
+    </div>
+  </section>
+
+  <section class="blk" aria-labelledby="t2" data-entra>
+    <h2 id="t2">El monto grande engaña</h2>
+    <!-- Escena de Remotion: bruto → neto -->
+    <div class="escena" data-remotion="bruto" role="img" aria-label="Animación: la oferta dice 95 pesos; se van 38 de gasolina de 19 km; te quedan 57, 5 pesos por kilómetro."></div>
+    <ul class="golpes">
+      <li data-entra-hijo><b><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg></b><span>Tienes unos segundos en pleno tráfico para decidir.</span></li>
+      <li data-entra-hijo><b><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M3 21h12M4 10h10M14 8l3 3v6a1.5 1.5 0 0 0 3 0V9l-3-3"/></svg></b><span>La app te enseña lo bruto, no lo que te queda tras recoger y quemar combustible.</span></li>
+      <li data-entra-hijo><b><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6l6 6 4-4 8 8M21 11v5h-5"/></svg></b><span>Al final del día ves el tanque abajo y sientes que no rindió.</span></li>
+    </ul>
+  </section>
+
+  <section class="blk" aria-labelledby="t3">
+    <h2 id="t3">Así te avisa en plena calle</h2>
+    <!-- Escena de Remotion: el mismo aviso pasa por rojo, amarillo y verde -->
+    <div class="escena" data-remotion="avisa" role="img" aria-label="Animación del aviso de Checa: Rechazar, te quedan 57 por recogida larga; Considerar, te quedan 56 porque paga bien la hora y flojo el kilómetro; Aceptar, te quedan 97 porque cumple tus metas."></div>
+  </section>
+
+  <section class="blk" aria-labelledby="t4" data-entra>
+    <h2 id="t4">Listo en un minuto, sin estorbos</h2>
+    <ol class="pasos">
+      <li data-entra-hijo><b>1</b><div><strong>Pon tu auto y tu meta.</strong> Cuántos km te da el litro, a cuánto la gasolina y lo mínimo que buscas por km y por hora.</div></li>
+      <li data-entra-hijo><b>2</b><div><strong>Conéctate como siempre.</strong> Abre Uber o DiDi y trabaja a tu ritmo, incluso en pantalla dividida.</div></li>
+      <li data-entra-hijo><b>3</b><div><strong>Decide en un vistazo.</strong> Cae la oferta y ves rojo, amarillo o verde al instante.</div></li>
+    </ol>
+  </section>
+
+  <section class="blk" aria-labelledby="t5">
+    <h2 id="t5">Antes de instalar</h2>
+    <div class="resp">
+      <div><b>¿Me bloquean la cuenta?</b><span>Checa solo lee lo que aparece en tu pantalla, como un asistente. No toca botones ni altera Uber o DiDi.</span></div>
+      <div><b>¿Gasta datos o batería?</b><span>El cálculo corre en tu teléfono, sin depender de internet para leer, y solo trabaja con Uber o DiDi abiertos.</span></div>
+      <div><b>¿Cuánto cuesta?</b><span>Empiezas gratis y sin tarjeta. Si te sirve para cuidar tu ganancia, los planes van desde $119 al mes.</span></div>
+    </div>
+  </section>
+
+  <section class="blk" aria-labelledby="t6">
+    <h2 id="t6" class="sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Descarga Checa</h2>
+    <!-- Escena de Remotion: cierre con el semáforo -->
+    <div class="escena" data-remotion="semaforo" role="img" aria-label="Animación: el semáforo pasa de rojo a ámbar a verde con palomita y aparece Descarga Checa."></div>
+    <a class="play" id="cta2" href="https://play.google.com/store/apps/details?id=com.jeal1498.checa"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 3.5v17l14-8.5z"/></svg>Descargar gratis en Google Play</a>
+    <p class="disp">Disponible en Google Play para Android</p>
+  </section>
+
+  <footer class="pie"><a href="https://jeal1498.github.io/PWA-Checa-Multimedia/privacidad.html">Aviso de privacidad</a><span aria-hidden="true">·</span><a href="https://wa.me/529985214490">Soporte por WhatsApp</a></footer>
+</div>
+
+<div class="fijo" id="fijo"><a class="play" href="https://play.google.com/store/apps/details?id=com.jeal1498.checa"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 3.5v17l14-8.5z"/></svg>Descargar gratis en Google Play</a></div>
+
+<script>/*BUNDLE*/</script>
