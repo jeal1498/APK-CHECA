@@ -6,6 +6,7 @@ import { DURACION_SHOWCASE, Showcase } from "./Showcase";
 import { DURACION_REFERENCIA, Referencia } from "./Referencia";
 import { DURACION_REFERENCIA_02, Referencia02 } from "./Referencia02";
 import { DURACION_REFERENCIA_03, Referencia03 } from "./Referencia03";
+import { DURACION_ESTILO, EstiloA, EstiloB, EstiloC } from "./Estilos";
 
 const fuentes: [string, string, string][] = [
   ["Montserrat", "ea/montserrat-600.woff2", "600"],
@@ -22,5 +23,8 @@ export const EARoot: React.FC = () => (
     <Composition id="EA-Referencia-01" component={Referencia} durationInFrames={DURACION_REFERENCIA} fps={30} width={1080} height={1920} />
     <Composition id="EA-Referencia-02" component={Referencia02} durationInFrames={DURACION_REFERENCIA_02} fps={30} width={1080} height={1920} />
     <Composition id="EA-Referencia-03" component={Referencia03} durationInFrames={DURACION_REFERENCIA_03} fps={30} width={1080} height={1920} />
+    <Composition id="EA-Estilo-A" component={EstiloA} durationInFrames={DURACION_ESTILO} fps={30} width={1080} height={1920} />
+    <Composition id="EA-Estilo-B" component={EstiloB} durationInFrames={DURACION_ESTILO} fps={30} width={1080} height={1920} />
+    <Composition id="EA-Estilo-C" component={EstiloC} durationInFrames={DURACION_ESTILO} fps={30} width={1080} height={1920} />
   </>
 );
