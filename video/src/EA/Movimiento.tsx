@@ -4,7 +4,6 @@ import { EA, progreso } from "./theme";
 import { s } from "./Referencia";
 import { SubtitulosPalabra } from "./components/SubtitulosPalabra";
 import type { BloquePalabras } from "./components/SubtitulosPalabra";
-import { LowerThird } from "./components/LowerThird";
 
 /**
  * Muestra de 6 s (estilo AB) con movimiento continuo: los primeros 6 s del guion 001.
@@ -62,7 +61,6 @@ export const Movimiento: React.FC = () => {
         [ video de Eduardo a cámara ]
       </div>
       <div style={{ position: "absolute", left: 0, top: 800, width: 1080, height: 4, background: C.negro }} />
-      <LowerThird nombre="Eduardo Alvarado" rol="Conductor" x={EA.zona.lados} y={220} inicio={6} fin={84} />
 
       {/* Barra del viaje: se pinta de naranja con cada gota */}
       <div style={{ position: "absolute", left: 60, top: 960, width: 960, height: 100, clipPath: `inset(0 ${(1 - entra) * 100}% 0 0)` }}>

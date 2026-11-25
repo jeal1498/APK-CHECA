@@ -4,7 +4,6 @@ import { EA, progreso } from "./theme";
 import { B, n, s, t } from "./Referencia";
 import { Subtitles } from "./components/Subtitles";
 import type { Bloque } from "./components/Subtitles";
-import { LowerThird } from "./components/LowerThird";
 import { Logo } from "./components/Logo";
 import { Linea } from "./components/Resaltado";
 
@@ -121,7 +120,6 @@ export const Referencia03: React.FC = () => {
         [ video de Eduardo a cámara ]
       </div>
       <div style={{ position: "absolute", left: 0, top: 800, width: 1080, height: 4, background: C.negro }} />
-      <LowerThird nombre="Eduardo Alvarado" rol="Conductor" x={EA.zona.lados} y={660} inicio={9} fin={80} />
 
       {/* 1–3 · ✓ de aceptar, ojo, gotas y charco */}
       <svg style={{ position: "absolute", left: 0, top: 0, opacity: fueraInicio }} width={1080} height={1920}>

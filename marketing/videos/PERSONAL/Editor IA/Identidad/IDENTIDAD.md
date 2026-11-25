@@ -29,6 +29,7 @@ A. Experiencia real (incluye ser conductor, si aporta) · B. Educación (edició
   - **Barra que reparte** un monto (borde 5 px, tramo naranja = lo que se va), con rótulos en mayúsculas Roboto 500 y la cuenta en pequeño.
   - El objeto y el dato se unen con una acción física (la gota cae y llena la barra).
   - **Subtítulos (aprobados 25 nov):** palabra por palabra, **sin cuadro**, al centro sobre la línea de la cámara (y = 800): letra negra Montserrat 800 (~70 px) con contorno marfil del 20 % del tamaño; cada palabra brinca cuando suena y la clave se pinta de naranja. Componente `video/src/EA/components/SubtitulosPalabra.tsx` (tiempos por palabra de Whisper).
+  - **Sin identificador de nombre** (Eduardo, 25 nov): no se pone «Eduardo Alvarado · Conductor» ni otro cintillo con su nombre en los videos.
   - **Movimiento continuo:** siempre hay algo moviéndose en los gráficos (muestra `EA-Movimiento-6s`).
   - La variante BA (negro con cuadrícula) queda solo para algún video especial de dinero, con autorización.
 - Evitar: saturación, plantillas genéricas, estética corporativa.
