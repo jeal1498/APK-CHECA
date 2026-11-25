@@ -3,125 +3,79 @@ import { AbsoluteFill, useCurrentFrame } from "remotion";
 import { M, p, lerp } from "./marca";
 
 /**
- * Final de los videos de Checa (estilo «La raya», decidido el 25 nov 2026):
- * semáforo rojo → ámbar → verde → ✓ (1.2 s); el pop-up SALE DEL SEMÁFORO (la luz verde crece y se abre en la tarjeta de Google Play);
- * después todo regresa: la tarjeta vuelve a la luz, el semáforo se va y las rayas vuelven a la carretera (último cuadro = primero).
- * Checa ya está en producción. Texto elegido por Eduardo (25 nov, propuesta C): «YA DISPONIBLE EN Play Store» + «Checa: Rentabilidad de viajes».
- * Sonidos oficiales: logo-semaforo (f 18) y popup-entra (f 62), mezclados con ffmpeg.
+ * Final de los videos de Checa (estilo «La raya»). Elegido por Eduardo el 25 nov 2026:
+ * cierre de marca a pantalla completa (semáforo rojo → ámbar → verde → ✓, «Descarga Checa»), más el nombre como sale en la tienda
+ * («Checa: Rentabilidad de viajes», sin «Beta») y el distintivo «YA DISPONIBLE EN Play Store», que SALE DE LA LUZ VERDE.
+ * Al final todo regresa: el distintivo vuelve a la luz, el semáforo se va, vuelve la cámara y las rayas de la carretera (bucle).
+ * Sin link de la web (el canal directo cerró). Sonidos oficiales: logo-semaforo (f 18) y popup-entra (f 62), mezclados con ffmpeg.
  */
 export const DURACION_FINAL_CHECA = 195; // 6.5 s
 
-const SX = 540; // centro del semáforo
-const SY = 1140;
-const ESC = 3.0; // semáforo de 60×100 → 180×300
-const LUZ_V = { x: SX + (30 - 30) * ESC, y: SY + (74 - 50) * ESC }; // centro de la luz verde
+const ESC = 5; // semáforo de 60×100 → 300×500
+const SX = 540;
+const STOP = 380; // borde de arriba del semáforo
+const LUZ_V = { x: SX, y: STOP + 74 * ESC };
 
-type Palabra = [string, number, string?];
-const SUBS: { de: number; a: number; lineas: Palabra[][] }[] = [
-  { de: 0.3, a: 2.7, lineas: [[["YA", 0.4], ["DISPONIBLE", 0.6]], [["EN", 1.05], ["PLAY", 1.25, M.verde], ["STORE", 1.5, M.verde]]] },
-  { de: 2.8, a: 5.2, lineas: [[["BÚSCALA", 2.9]], [["COMO", 3.4], ["CHECA", 3.7, M.verde]]] },
-];
-
-const Subtitulos: React.FC<{ f: number }> = ({ f }) => {
-  const b = SUBS.find((x) => f >= x.de * 30 && f < x.a * 30 + 5);
-  if (!b) return null;
-  const sale = 1 - p(f, b.a * 30, 5);
-  return (
-    <>
-      {b.lineas.map((ws, fila) => (
-        <div key={fila} style={{ position: "absolute", left: 60, right: 60, top: 864, transform: fila === 0 ? "translateY(calc(-100% - 8px))" : "translateY(8px)", textAlign: "center", whiteSpace: "nowrap", fontFamily: M.titulo, fontWeight: 800, fontSize: 80, lineHeight: 1.1, color: M.hueso, WebkitTextStroke: `16px #000`, paintOrder: "stroke fill", opacity: sale }}>
-          {ws.map(([t, s, c], i) => {
-            const q = p(f, s * 30, 4.5); // 150 ms por palabra (marca)
-            return (
-              <React.Fragment key={i}>
-                <span style={{ display: "inline-block", color: c ?? M.hueso, opacity: q, transform: `translateY(${(1 - q) * 22}px) scale(${0.8 + 0.2 * q})` }}>{t}</span>
-                {i < ws.length - 1 ? " " : null}
-              </React.Fragment>
-            );
-          })}
-        </div>
-      ))}
-    </>
-  );
-};
-
-/** Ícono de la app (icono-app.svg de la marca). */
-const Icono: React.FC<{ tam: number }> = ({ tam }) => (
-  <svg width={tam} height={tam} viewBox="0 0 512 512">
-    <rect width="512" height="512" rx="112" fill={M.asfalto} stroke={M.humo} strokeWidth={8} />
-    <g transform="translate(160 56) scale(3.2)">
-      <rect x="6" y="2" width="48" height="96" rx="20" fill="#222826" stroke="#3A423F" strokeWidth="1.6" />
-      <circle cx="30" cy="26" r="9" fill="#4A2222" />
-      <circle cx="30" cy="50" r="9" fill="#4A3C16" />
-      <circle cx="30" cy="74" r="12" fill={M.verde} />
-      <path d="M24 74.5l4.5 4.5L36.5 69" fill="none" stroke={M.sobreVerde} strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round" />
-    </g>
-  </svg>
-);
 
 export const FinalChecaPlay: React.FC = () => {
   const f = useCurrentFrame();
 
-  // carretera: rayas que avanzan, se detienen mientras está el semáforo y vuelven a avanzar (bucle)
-  const quieta = p(f, 6, 14) * (1 - p(f, 174, 16));
-  const vel = (x: number) => 9 * (1 - p(x, 6, 14) + p(x, 174, 16));
+  // cámara y carretera (se van al empezar y regresan al final, para el bucle)
+  const camara = 1 - p(f, 0, 14) + p(f, 172, 16);
+  const quieta = p(f, 4, 14) * (1 - p(f, 172, 16));
   let avance = 0;
-  for (let i = 1; i <= f; i++) avance += vel(i);
-  const rayas = Array.from({ length: 9 }, (_, i) => ({ y: 900 + ((i * 74 + avance) % 666) }));
+  for (let i = 1; i <= f; i++) avance += 9 * (1 - p(i, 4, 14) + p(i, 172, 16));
+  const rayas = Array.from({ length: 9 }, (_, i) => 900 + ((i * 74 + avance) % 666));
 
   // semáforo
-  const sem = p(f, 8, 12) * (1 - p(f, 166, 12));
+  const sem = p(f, 10, 14) * (1 - p(f, 160, 12));
   const l = (a: number, b: number) => (f >= a && f < b ? 1 : 0);
   const rojo = l(18, 27), ambar = l(27, 36), verde = f >= 36 ? 1 : 0, paloma = f >= 42 ? 1 : 0;
 
-  // pop-up (distintivo «YA DISPONIBLE EN Play Store») que sale de la luz verde
-  const abre = p(f, 56, 16) * (1 - p(f, 152, 14));
-  const W = 620, H = 180;
-  const cx = lerp(LUZ_V.x, 540, abre), cy = lerp(LUZ_V.y, 1235, abre);
-  const w = lerp(36 * 2, W, abre), h = lerp(36 * 2, H, abre);
-  const contenido = p(f, 68, 10) * (1 - p(f, 146, 6));
-  const icono = p(f, 74, 12) * (1 - p(f, 146, 6));
-  const nombre = p(f, 86, 12) * (1 - p(f, 146, 6));
-  const cuentas = p(f, 98, 12) * (1 - p(f, 146, 6));
+  // textos
+  const titulo = p(f, 46, 12) * (1 - p(f, 148, 8));
+  const nombre = p(f, 54, 12) * (1 - p(f, 148, 8));
+  const cuentas = p(f, 100, 12) * (1 - p(f, 148, 8));
+
+  // distintivo de Play Store: sale de la luz verde y regresa a ella
+  const abre = p(f, 62, 16) * (1 - p(f, 150, 12));
+  const W = 560, H = 170;
+  const cx = lerp(LUZ_V.x, 540, abre), cy = lerp(LUZ_V.y, 1330, abre);
+  const w = lerp(120, W, abre), h = lerp(120, H, abre);
+  const dentro = p(f, 74, 10) * (1 - p(f, 146, 6));
 
   return (
     <AbsoluteFill style={{ background: M.asfalto }}>
-      {/* cámara */}
-      <div style={{ position: "absolute", left: 0, top: 0, width: 1080, height: 864, background: "#1c1c22", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: M.texto, fontSize: 34, color: M.gris }}>[ Eduardo a cámara ]</div>
-      <div style={{ position: "absolute", left: 0, top: 862, width: 1080, height: 4, background: M.humo }} />
+      {/* cámara (aquí va el video de Eduardo) */}
+      <div style={{ position: "absolute", left: 0, top: 0, width: 1080, height: 864, background: "#1c1c22", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: M.texto, fontSize: 34, color: M.gris, opacity: camara }}>[ Eduardo a cámara ]</div>
+      <div style={{ position: "absolute", left: 0, top: 862, width: 1080, height: 4, background: M.humo, opacity: camara }} />
 
       <svg style={{ position: "absolute", left: 0, top: 0 }} width={1080} height={1920}>
-        {/* carretera */}
-        {rayas.map((r, i) => (
-          <rect key={i} x={532} y={r.y} width={16} height={44} rx={8} fill={M.amarillo} opacity={1 - quieta} />
+        {rayas.map((y, i) => (
+          <rect key={i} x={532} y={y} width={16} height={44} rx={8} fill={M.amarillo} opacity={1 - quieta} />
         ))}
-        {/* semáforo de la marca */}
-        <g opacity={sem * (abre > 0.6 ? 0 : 1)} transform={`translate(${SX - 30 * ESC} ${SY - 50 * ESC + (1 - sem) * 40}) scale(${ESC})`}>
+        <g opacity={sem} transform={`translate(${SX - 30 * ESC} ${STOP + (1 - sem) * 40}) scale(${ESC})`}>
           <rect x="6" y="2" width="48" height="96" rx="20" fill="#222826" stroke="#3A423F" strokeWidth="1.6" />
           <circle cx="30" cy="26" r="9" fill={rojo ? M.rojo : "#4A2222"} />
           <circle cx="30" cy="50" r="9" fill={ambar ? M.amarillo : "#4A3C16"} />
           <circle cx="30" cy="74" r="12" fill={verde ? M.verde : "#1d3a28"} />
-          <path d="M24 74.5l4.5 4.5L36.5 69" fill="none" stroke={M.sobreVerde} strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round" opacity={paloma * (1 - abre)} />
+          <path d="M24 74.5l4.5 4.5L36.5 69" fill="none" stroke={M.sobreVerde} strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round" opacity={paloma} />
         </g>
       </svg>
 
-      {/* ícono de la app (arriba del distintivo) */}
-      <div style={{ position: "absolute", left: 540 - 65, top: 992, opacity: icono, transform: `translateY(${(1 - icono) * 20}px) scale(${0.85 + 0.15 * icono})` }}>
-        <Icono tam={130} />
-      </div>
-      {/* distintivo: sale de la luz verde */}
+      <div style={{ position: "absolute", left: 0, right: 0, top: 960, textAlign: "center", fontFamily: M.titulo, fontWeight: 800, fontSize: 120, letterSpacing: -2, color: M.hueso, opacity: titulo, transform: `translateY(${(1 - titulo) * 24}px)` }}>Descarga Checa</div>
+      <div style={{ position: "absolute", left: 0, right: 0, top: 1110, textAlign: "center", fontFamily: M.texto, fontWeight: 500, fontSize: 46, color: M.gris, opacity: nombre, transform: `translateY(${(1 - nombre) * 18}px)` }}>Checa: Rentabilidad de viajes</div>
+
       {abre > 0.001 ? (
-        <div style={{ position: "absolute", left: cx - w / 2, top: cy - h / 2, width: w, height: h, boxSizing: "border-box", borderRadius: lerp(36, 26, abre), background: abre < 0.35 ? M.verde : "#000", border: `${Math.round(lerp(0, 4, abre))}px solid ${M.gris}`, overflow: "hidden", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-          <div style={{ opacity: contenido, textAlign: "center" }}>
-            <div style={{ fontFamily: M.datos, fontWeight: 700, fontSize: 30, letterSpacing: 6, color: M.hueso }}>YA DISPONIBLE EN</div>
-            <div style={{ fontFamily: M.titulo, fontWeight: 800, fontSize: 96, lineHeight: 1, color: M.hueso, marginTop: 6 }}>Play Store</div>
+        <div style={{ position: "absolute", left: cx - w / 2, top: cy - h / 2, width: w, height: h, boxSizing: "border-box", borderRadius: lerp(60, 24, abre), background: abre < 0.4 ? M.verde : "#000", border: `${Math.round(lerp(0, 4, abre))}px solid ${M.gris}`, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+          <div style={{ opacity: dentro, textAlign: "center" }}>
+            <div style={{ fontFamily: M.datos, fontWeight: 700, fontSize: 28, letterSpacing: 6, color: M.hueso }}>YA DISPONIBLE EN</div>
+            <div style={{ fontFamily: M.titulo, fontWeight: 800, fontSize: 84, lineHeight: 1, color: M.hueso, marginTop: 4 }}>Play Store</div>
           </div>
         </div>
       ) : null}
-      <div style={{ position: "absolute", left: 0, right: 0, top: 1352, textAlign: "center", fontFamily: M.titulo, fontWeight: 800, fontSize: 46, color: M.hueso, opacity: nombre }}>Checa: Rentabilidad de viajes</div>
-      <div style={{ position: "absolute", left: 0, right: 0, top: 1422, textAlign: "center", fontFamily: M.datos, fontWeight: 700, fontSize: 30, color: M.gris, opacity: cuentas }}>@checa.driver · @Eduardoalv9802</div>
 
-      <Subtitulos f={f} />
+      <div style={{ position: "absolute", left: 0, right: 0, top: 1470, textAlign: "center", fontFamily: M.datos, fontWeight: 700, fontSize: 34, color: M.gris, opacity: cuentas }}>@checa.driver · @Eduardoalv9802</div>
     </AbsoluteFill>
   );
 };
