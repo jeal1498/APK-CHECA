@@ -1,0 +1,266 @@
+<title>Checa en video</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: tres teléfonos 9:16 (una columna en celular). Cada teléfono es un SVG de 1080×1920, las mismas medidas del video. */
+:root{
+  /* marca Checa v2 (PWA-Checa-Multimedia/marca/tokens.json) */
+  --asfalto:#0C0C10; --tablero:#16161C; --humo:#3A3A45; --hueso:#F4F4EF; --gris:#A3A3AD;
+  --aceptar:#22C55E; --considerar:#FACC15; --rechazar:#EF4444;
+  --titulo:"Bricolage Grotesque","Arial Black",system-ui,sans-serif; --texto:"DM Sans",Arial,system-ui,sans-serif; --datos:"JetBrains Mono","Courier New",monospace;
+  /* página */
+  --bg:#0C0C10; --fg:#F4F4EF; --muted:#A3A3AD; --card:#16161C; --line:#3A3A45;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--bg:#F4F4EF;--fg:#0C0C10;--muted:#55555f;--card:#ffffff;--line:#d9d9d2;color-scheme:light}}
+:root[data-theme="light"]{--bg:#F4F4EF;--fg:#0C0C10;--muted:#55555f;--card:#ffffff;--line:#d9d9d2;color-scheme:light}
+body{background:var(--bg);color:var(--fg);font-family:var(--texto);font-size:15px;line-height:1.5}
+.wrap{max-width:1040px;margin:0 auto;padding-block:32px 56px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+.top{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:end;justify-content:space-between}
+h1{font:800 clamp(30px,5.5vw,48px)/1 var(--titulo);letter-spacing:-1px;margin:0;display:flex;align-items:center;gap:14px}
+h1 svg{height:1.1em;width:auto}
+.lead{color:var(--muted);max-width:62ch;margin:10px 0 0}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-top:26px}
+@media (max-width:820px){.grid{grid-template-columns:1fr;max-width:340px;margin-inline:auto}}
+.op{display:flex;flex-direction:column;gap:10px;min-width:0}
+.tel{width:100%;aspect-ratio:9/16;border-radius:24px;overflow:hidden;border:6px solid #000;background:#0C0C10}
+.tel svg{display:block;width:100%;height:100%}
+.tag{font:500 12px var(--datos);letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.rec .tag{color:var(--aceptar)}
+h2{font:800 24px/1.1 var(--titulo);margin:0}
+.op p{margin:0;font-size:14px;color:var(--muted)}
+.ficha{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px 16px;display:grid;gap:6px}
+.rec .ficha{border-color:var(--aceptar)}
+.ficha dl{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;margin:0;font-size:14px}
+.ficha dt{color:var(--muted);font-family:var(--datos);font-size:12px;letter-spacing:1px;text-transform:uppercase;padding-top:2px}
+.ficha dd{margin:0}
+button{font:700 12px var(--datos);letter-spacing:2px;text-transform:uppercase;background:var(--fg);color:var(--bg);border:0;border-radius:999px;padding:12px 18px;cursor:pointer}
+button:focus-visible{outline:3px solid var(--aceptar);outline-offset:3px}
+.nota{margin-top:28px;color:var(--muted);font-size:13px;max-width:70ch}
+</style>
+
+<div class="wrap">
+  <div class="top">
+    <div>
+      <h1><svg viewBox="0 0 60 100" aria-hidden="true"><rect x="6" y="2" width="48" height="96" rx="20" fill="#222826" stroke="#3A423F" stroke-width="1.6"/><circle cx="30" cy="26" r="9" fill="#4A2222"/><circle cx="30" cy="50" r="9" fill="#4A3C16"/><circle cx="30" cy="74" r="12" fill="#22C55E"/><path d="M24 74.5l4.5 4.5L36.5 69" fill="none" stroke="#04210F" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Checa en video</h1>
+      <p class="lead">Tres estilos para los videos de @checa.driver, con los colores de la marca: asfalto y hueso de base, y verde, amarillo y rojo solo para decidir. Los tres usan lo que ya funcionó en PERSONAL: subtítulos palabra por palabra al centro, movimiento continuo y un elemento que se transforma. Mismo ejemplo en los tres: un viaje de $100, 15 km y 30 min. La gasolina se lleva $30 (15 ÷ 12 km/l × $24), te quedan $70: $140 por hora y $4.67 por km, abajo de las metas ($200/h y $10/km), así que no conviene.</p>
+    </div>
+    <button id="todas" type="button">Repetir los tres</button>
+  </div>
+
+  <div class="grid">
+    <section class="op">
+      <div class="tel"><svg id="A" viewBox="0 0 1080 1920" role="img" aria-label="Propuesta A, Asfalto vivo"></svg></div>
+      <div class="tag">Propuesta A</div><h2>Asfalto vivo</h2>
+      <div class="ficha"><p>La calle de noche: luces de semáforo desenfocadas que flotan y la raya amarilla que avanza. La oferta llega en tarjeta y el pop-up de Checa sale de ella con su color.</p>
+        <dl><dt>Toma de</dt><dd>el estilo Asfalto de hoy</dd><dt>Fuerte</dt><dd>ambiente, se reconoce al instante</dd></dl></div>
+    </section>
+    <section class="op">
+      <div class="tel"><svg id="B" viewBox="0 0 1080 1920" role="img" aria-label="Propuesta B, Tablero"></svg></div>
+      <div class="tag">Propuesta B</div><h2>Tablero</h2>
+      <div class="ficha"><p>El tablero del auto: un medidor de pesos por hora con la meta marcada. La aguja sube con la tarifa y cae a lo que de verdad te queda.</p>
+        <dl><dt>Toma de</dt><dd>los sonidos del tablero de la marca</dd><dt>Fuerte</dt><dd>se entiende la meta de un vistazo</dd></dl></div>
+    </section>
+    <section class="op rec">
+      <div class="tel"><svg id="C" viewBox="0 0 1080 1920" role="img" aria-label="Propuesta C, La raya"></svg></div>
+      <div class="tag">Propuesta C · recomendada</div><h2>La raya</h2>
+      <div class="ficha"><p>La raya amarilla de la carretera es el personaje: viene avanzando, se detiene y se acomoda en una barra de $100 (cada raya = $10). La gasolina se lleva 3 en rojo; quedan 7 en verde.</p>
+        <dl><dt>Toma de</dt><dd>el recurso propio de la marca (raya + luz verde)</dd><dt>Fuerte</dt><dd>literal, propio de Checa, cuenta con escala</dd></dl></div>
+    </section>
+  </div>
+  <p class="nota">Las tres respetan: la cámara arriba (45 %), nada importante en la orilla derecha (botones de las redes), «Números de ejemplo» a la vista, sin logos ni nombres de apps de viajes, y cierre con el semáforo de Checa.</p>
+</div>
+
+<script>
+const NS = 'http://www.w3.org/2000/svg';
+const K = { asfalto:'#0C0C10', tablero:'#16161C', humo:'#3A3A45', hueso:'#F4F4EF', gris:'#A3A3AD', verde:'#22C55E', amarillo:'#FACC15', rojo:'#EF4444' };
+const F = { titulo:'"Bricolage Grotesque","Arial Black",sans-serif', texto:'"DM Sans",Arial,sans-serif', datos:'"JetBrains Mono","Courier New",monospace' };
+const CICLO = 6;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+// curva de la marca: cubic-bezier(.2,.8,.2,1) ≈ salida rápida y frenado largo
+const ease = (x) => { x = Math.min(1, Math.max(0, x)); return 1 - Math.pow(1 - x, 3); };
+const lerp = (a, b, x) => a + (b - a) * x;
+function el(tag, attrs, padre){ const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (padre) padre.appendChild(e); return e; }
+function set(e, attrs){ for (const k in attrs) e.setAttribute(k, attrs[k]); }
+
+// Subtítulos: palabra por palabra, al centro (sobre la línea de la cámara, y = 864); clave en el color que decide.
+const SUBS = [
+  { de: .15, a: 3.0, lineas: [[['UN',.3],['VIAJE',.48],['DE',.7],['$100',.88,K.amarillo]], [['TE',1.6],['DEJA',1.78],['$70',2.0,K.verde]]] },
+  { de: 3.1, a: 5.5, lineas: [[['Y',3.2]], [['NO',3.35,K.rojo],['CONVIENE',3.6,K.rojo]]] },
+];
+function subtitulos(svg){
+  const g = el('g', {}, svg);
+  const bloques = SUBS.map((b) => {
+    const bg = el('g', {}, g);
+    const lineas = b.lineas.map((ws, fila) => {
+      const lg = el('g', {}, bg);
+      const items = ws.map(([txt, s, col]) => {
+        const wg = el('g', {}, lg);
+        const tx = el('text', { 'font-family': F.titulo, 'font-weight': 800, 'font-size': 76, fill: col || K.hueso, stroke: '#000', 'stroke-width': 16, 'paint-order': 'stroke', 'stroke-linejoin': 'round' }, wg);
+        tx.textContent = txt;
+        return { wg, tx, s };
+      });
+      return { lg, items, fila };
+    });
+    return { bg, lineas, b };
+  });
+  const maquetar = () => bloques.forEach(({ lineas }) => lineas.forEach(({ items, fila }) => {
+    const anchos = items.map((i) => i.tx.getComputedTextLength());
+    const total = anchos.reduce((a, w) => a + w, 0) + 22 * (items.length - 1);
+    let x = 540 - total / 2;
+    items.forEach((i, k) => { i.x = x + anchos[k] / 2; set(i.tx, { 'text-anchor': 'middle', x: 0, y: 0 }); x += anchos[k] + 22; i.y = fila === 0 ? 864 - 18 : 864 + 70; });
+  }));
+  maquetar(); (document.fonts && document.fonts.ready.then(maquetar));
+  return (t) => bloques.forEach(({ bg, lineas, b }) => {
+    const on = t >= b.de && t < b.a + .15;
+    const sale = 1 - ease((t - b.a) / .15);
+    bg.setAttribute('opacity', on ? sale : 0);
+    lineas.forEach(({ items }) => items.forEach((i) => {
+      const q = ease((t - i.s) / .15); // 150 ms por palabra (marca)
+      set(i.wg, { transform: `translate(${i.x} ${i.y + (1 - q) * 26}) scale(${.8 + .2 * q})`, opacity: q });
+    }));
+  });
+}
+
+function camara(svg){
+  el('rect', { x: 0, y: 0, width: 1080, height: 864, fill: '#1c1c22' }, svg);
+  const t = el('text', { x: 540, y: 432, 'text-anchor': 'middle', 'font-family': F.texto, 'font-size': 34, fill: K.gris }, svg); t.textContent = '[ Eduardo a cámara ]';
+  el('rect', { x: 0, y: 862, width: 1080, height: 4, fill: K.humo }, svg);
+}
+function ejemplo(svg){ const t = el('text', { x: 60, y: 1530, 'font-family': F.datos, 'font-weight': 700, 'font-size': 26, 'letter-spacing': 3, fill: K.gris }, svg); t.textContent = 'NÚMEROS DE EJEMPLO'; return t; }
+function semaforo(svg, x, y, s){ // semáforo de la marca (las luces se pintan por fuera)
+  const g = el('g', { transform: `translate(${x} ${y}) scale(${s})` }, svg);
+  el('rect', { x: 6, y: 2, width: 48, height: 96, rx: 20, fill: '#222826', stroke: '#3A423F', 'stroke-width': 1.6 }, g);
+  const r = el('circle', { cx: 30, cy: 26, r: 9, fill: '#4A2222' }, g);
+  const a = el('circle', { cx: 30, cy: 50, r: 9, fill: '#4A3C16' }, g);
+  const v = el('circle', { cx: 30, cy: 74, r: 12, fill: '#1d3a28' }, g);
+  return { g, r, a, v };
+}
+
+/* ── A · Asfalto vivo ── */
+function crearA(svg){
+  el('rect', { x: 0, y: 0, width: 1080, height: 1920, fill: K.asfalto }, svg);
+  const defs = el('defs', {}, svg);
+  [['br', K.rojo], ['ba', K.amarillo], ['bv', K.verde], ['bh', K.hueso]].forEach(([id, c]) => { const g = el('radialGradient', { id: 'A' + id }, defs); el('stop', { offset: 0, 'stop-color': c, 'stop-opacity': .55 }, g); el('stop', { offset: 1, 'stop-color': c, 'stop-opacity': 0 }, g); });
+  const luces = [[160,1080,120,'br'],[930,1010,90,'ba'],[820,1450,140,'bv'],[260,1500,100,'bh'],[560,1180,70,'ba'],[90,1300,60,'bv']].map(([x,y,r,c], i) => ({ c: el('circle', { cx: x, cy: y, r, fill: `url(#A${c})` }, svg), x, y, i }));
+  // carretera
+  el('path', { d: 'M380 1920 L520 1560 M700 1920 L560 1560', stroke: K.humo, 'stroke-width': 6, fill: 'none' }, svg);
+  const raya = el('line', { x1: 540, y1: 1920, x2: 540, y2: 1560, stroke: K.amarillo, 'stroke-width': 10, 'stroke-dasharray': '46 40' }, svg);
+  camara(svg); ejemplo(svg);
+  // tarjeta de la oferta
+  const of = el('g', {}, svg);
+  el('rect', { x: -260, y: -130, width: 520, height: 260, rx: 28, fill: K.hueso }, of);
+  const o1 = el('text', { x: -220, y: -70, 'font-family': F.datos, 'font-weight': 700, 'font-size': 24, 'letter-spacing': 3, fill: '#55555f' }, of); o1.textContent = 'OFERTA';
+  const o2 = el('text', { x: -220, y: 40, 'font-family': F.titulo, 'font-weight': 800, 'font-size': 120, fill: K.asfalto }, of); o2.textContent = '$100';
+  const o3 = el('text', { x: -220, y: 100, 'font-family': F.texto, 'font-weight': 500, 'font-size': 34, fill: '#3A3A45' }, of); o3.textContent = '15 km · 30 min';
+  // pop-up de Checa (sale de la tarjeta)
+  const pop = el('g', {}, svg);
+  const brillo = el('rect', { x: -300, y: -170, width: 600, height: 340, rx: 32, fill: 'none', stroke: K.rojo, 'stroke-width': 18, opacity: .25 }, pop);
+  el('rect', { x: -290, y: -160, width: 580, height: 320, rx: 28, fill: K.tablero, stroke: K.rojo, 'stroke-width': 6 }, pop);
+  el('rect', { x: -250, y: -125, width: 260, height: 52, rx: 26, fill: K.rojo }, pop);
+  const c1 = el('text', { x: -120, y: -88, 'text-anchor': 'middle', 'font-family': F.datos, 'font-weight': 700, 'font-size': 26, fill: '#1F0000' }, pop); c1.textContent = 'NO CONVIENE';
+  const c2 = el('text', { x: -250, y: 20, 'font-family': F.titulo, 'font-weight': 800, 'font-size': 110, fill: K.hueso }, pop); c2.textContent = '$70';
+  const c3 = el('text', { x: -40, y: 18, 'font-family': F.texto, 'font-weight': 500, 'font-size': 32, fill: K.gris }, pop); c3.textContent = 'netos';
+  const c4 = el('text', { x: -250, y: 110, 'font-family': F.datos, 'font-weight': 700, 'font-size': 34, fill: K.hueso }, pop); c4.textContent = '$140/h ✕   $4.67/km ✕';
+  const subs = subtitulos(svg);
+  return (t) => {
+    luces.forEach((l) => set(l.c, { cx: l.x + 30 * Math.sin(t * .9 + l.i), cy: l.y + 20 * Math.cos(t * .7 + l.i * 2) }));
+    set(raya, { 'stroke-dashoffset': -t * 260 });
+    const entra = ease((t - .2) / .3), sube = ease((t - 1.45) / .35), fuera = ease((t - 5.5) / .4);
+    set(of, { transform: `translate(${lerp(480, 300, sube)} ${lerp(1140, 1040, sube) + (1 - entra) * 40}) scale(${lerp(lerp(.92, 1, entra), .55, sube)})`, opacity: entra * (1 - fuera) });
+    const sale = ease((t - 1.5) / .35);
+    const late = 1 + .04 * Math.max(0, Math.sin(Math.PI * ease((t - 3.35) / .3))) + .04 * Math.max(0, Math.sin(Math.PI * ease((t - 3.6) / .3)));
+    set(pop, { transform: `translate(${lerp(300, 470, sale)} ${lerp(1040, 1220, sale)}) scale(${lerp(.3, 1, sale) * late})`, opacity: Math.min(1, sale * 3) * (1 - fuera) });
+    set(brillo, { opacity: .2 + .25 * Math.max(0, Math.sin(t * 5)) });
+    subs(t);
+  };
+}
+
+/* ── B · Tablero ── */
+function crearB(svg){
+  el('rect', { x: 0, y: 0, width: 1080, height: 1920, fill: K.asfalto }, svg);
+  camara(svg); ejemplo(svg);
+  const CX = 480, CY = 1470, R = 300;
+  const ang = (v) => Math.PI * (1 - v / 400); // 0..400 $/h → 180°..0°
+  const pt = (v, r) => [CX + r * Math.cos(ang(v)), CY - r * Math.sin(ang(v))];
+  const arco = (a, b, r) => { const [x1, y1] = pt(a, r), [x2, y2] = pt(b, r); return `M${x1} ${y1} A${r} ${r} 0 0 1 ${x2} ${y2}`; };
+  el('path', { d: arco(0, 200, R), stroke: K.rojo, 'stroke-width': 26, fill: 'none', opacity: .9 }, svg);
+  el('path', { d: arco(200, 400, R), stroke: K.verde, 'stroke-width': 26, fill: 'none', opacity: .9 }, svg);
+  const marcas = [];
+  for (let v = 0; v <= 400; v += 25) { const [x1, y1] = pt(v, R - 30), [x2, y2] = pt(v, R - (v % 100 ? 50 : 70)); marcas.push(el('line', { x1, y1, x2, y2, stroke: K.humo, 'stroke-width': v % 100 ? 4 : 7, 'stroke-linecap': 'round' }, svg)); }
+  const [mx1, my1] = pt(200, R + 30), [mx2, my2] = pt(200, R - 80);
+  el('line', { x1: mx1, y1: my1, x2: mx2, y2: my2, stroke: K.hueso, 'stroke-width': 8, 'stroke-linecap': 'round' }, svg);
+  const meta = el('text', { x: mx1, y: my1 - 18, 'text-anchor': 'middle', 'font-family': F.datos, 'font-weight': 700, 'font-size': 26, fill: K.hueso }, svg); meta.textContent = 'META $200/h';
+  const aguja = el('line', { x1: CX, y1: CY, x2: CX, y2: CY - R + 60, stroke: K.hueso, 'stroke-width': 12, 'stroke-linecap': 'round' }, svg);
+  el('circle', { cx: CX, cy: CY, r: 26, fill: K.hueso }, svg);
+  const lect = el('text', { x: CX, y: CY - 110, 'text-anchor': 'middle', 'font-family': F.titulo, 'font-weight': 800, 'font-size': 110, fill: K.hueso }, svg);
+  const unidad = el('text', { x: CX, y: CY - 60, 'text-anchor': 'middle', 'font-family': F.datos, 'font-weight': 700, 'font-size': 28, fill: K.gris }, svg); unidad.textContent = 'POR HORA';
+  // fichas
+  const fichas = [['TARIFA', '$100', K.hueso], ['NETOS', '$70', K.verde], ['POR KM', '$4.67', K.rojo]].map(([k, v, c], i) => {
+    const g = el('g', { transform: `translate(${60 + i * 270} 960)` }, svg);
+    el('rect', { x: 0, y: 0, width: 250, height: 130, rx: 20, fill: K.tablero, stroke: K.humo, 'stroke-width': 3 }, g);
+    const a = el('text', { x: 22, y: 40, 'font-family': F.datos, 'font-weight': 700, 'font-size': 22, 'letter-spacing': 2, fill: K.gris }, g); a.textContent = k;
+    const b = el('text', { x: 22, y: 104, 'font-family': F.titulo, 'font-weight': 800, 'font-size': 62, fill: c }, g); b.textContent = v;
+    return g;
+  });
+  const sem = semaforo(svg, 820, 1170, 1.1);
+  const subs = subtitulos(svg);
+  return (t) => {
+    const sube = ease((t - .8) / .4), cae = ease((t - 1.9) / .5), vuelve = ease((t - 5.5) / .45);
+    const v = lerp(lerp(lerp(40, 280, sube), 140, cae), 40, vuelve) + 6 * Math.sin(t * 9) * (1 - .6 * cae);
+    const [x, y] = pt(v, R - 60); set(aguja, { x2: x, y2: y });
+    lect.textContent = '$' + Math.round(lerp(lerp(lerp(0, 280, sube), 140, cae), 0, vuelve));
+    set(lect, { fill: cae > .5 && vuelve < .5 ? K.rojo : K.hueso });
+    fichas.forEach((g, i) => { const q = ease((t - (i === 0 ? .85 : i === 1 ? 2.0 : 3.6)) / .3) * (1 - vuelve); g.setAttribute('opacity', q); g.setAttribute('transform', `translate(${60 + i * 270} ${960 + (1 - q) * 30})`); });
+    const rojo = ease((t - 3.35) / .2) * (1 - vuelve);
+    set(sem.r, { fill: rojo > .5 ? K.rojo : '#4A2222' });
+    marcas.forEach((m, i) => m.setAttribute('opacity', .6 + .4 * Math.max(0, Math.sin(t * 4 - i * .4))));
+    subs(t);
+  };
+}
+
+/* ── C · La raya ── */
+function crearC(svg){
+  el('rect', { x: 0, y: 0, width: 1080, height: 1920, fill: K.asfalto }, svg);
+  camara(svg); ejemplo(svg);
+  const bordes = el('path', { d: 'M380 1480 L380 980 M700 1480 L700 980', stroke: K.humo, 'stroke-width': 6, fill: 'none', opacity: .6 }, svg);
+  const rayas = Array.from({ length: 10 }, (_, i) => ({ i, r: el('rect', { rx: 8, fill: K.amarillo }, svg) }));
+  const lab100 = el('text', { x: 540, y: 1100, 'text-anchor': 'middle', 'font-family': F.titulo, 'font-weight': 800, 'font-size': 64, fill: K.hueso }, svg); lab100.textContent = '$100';
+  const labGas = el('text', { x: 60, y: 1420, 'text-anchor': 'start', 'font-family': F.datos, 'font-weight': 700, 'font-size': 30, fill: K.rojo }, svg); labGas.textContent = '−$30 GASOLINA';
+  const lab70 = el('text', { x: 580, y: 1260, 'text-anchor': 'middle', 'font-family': F.titulo, 'font-weight': 800, 'font-size': 64, fill: K.verde }, svg); lab70.textContent = '$70';
+  const cuenta = el('text', { x: 60, y: 1465, 'font-family': F.datos, 'font-weight': 500, 'font-size': 26, fill: K.gris }, svg); cuenta.textContent = '15 km ÷ 12 km/l × $24 = $30';
+  const sem = semaforo(svg, 740, 1260, 1.5);
+  const subs = subtitulos(svg);
+  return (t) => {
+    const junta = ease((t - .8) / .5), suelta = ease((t - 5.3) / .5);
+    const m = junta * (1 - suelta);
+    const avance = 300 * Math.min(t, .8) + 300 * Math.max(0, t - 5.3);
+    const pinta = ease((t - 1.6) / .25), cae = ease((t - 2.2) / .4), verde = ease((t - 1.95) / .25);
+    rayas.forEach(({ i, r }) => {
+      const ry = 980 + ((i * 70 + avance) % 700); // en la carretera (vertical)
+      const bx = 135 + i * 82, by = 1150;          // en la barra (horizontal)
+      const esGas = i < 3;
+      const x = lerp(540 - 8, bx, m), y = lerp(ry, by, m) + (esGas ? 160 * cae * (1 - suelta) : 0);
+      const w = lerp(16, 70, m), h = lerp(44, 40, m);
+      const col = esGas ? (pinta > .5 && suelta < .5 ? K.rojo : K.amarillo) : (verde > .5 && suelta < .5 ? K.verde : K.amarillo);
+      set(r, { x, y, width: w, height: h, fill: col, opacity: esGas ? 1 - .6 * cae * (1 - suelta) : 1 });
+    });
+    set(bordes, { opacity: .6 * (1 - m) });
+    set(lab100, { opacity: ease((t - 1.0) / .2) * (1 - pinta) });
+    set(labGas, { opacity: cae * (1 - suelta) });
+    set(lab70, { opacity: ease((t - 2.05) / .25) * (1 - suelta) });
+    set(cuenta, { opacity: ease((t - 2.4) / .3) * (1 - suelta) });
+    const rojo = ease((t - 3.35) / .2) * (1 - suelta);
+    set(sem.r, { fill: rojo > .5 ? K.rojo : '#4A2222' });
+    set(sem.g, { opacity: ease((t - 3.2) / .2) * (1 - suelta), transform: `translate(740 1260) scale(1.5) scale(${1 + .08 * Math.max(0, Math.sin(Math.PI * ease((t - 3.35) / .3)))})` });
+    subs(t);
+  };
+}
+
+const escenas = { A: crearA(document.getElementById('A')), B: crearB(document.getElementById('B')), C: crearC(document.getElementById('C')) };
+let t0 = performance.now();
+function cuadro(now){ const t = reduce ? 2.6 : ((now - t0) / 1000) % CICLO; for (const k in escenas) escenas[k](t); if (!reduce) requestAnimationFrame(cuadro); }
+requestAnimationFrame(cuadro);
+document.getElementById('todas').addEventListener('click', () => { t0 = performance.now(); });
+</script>
