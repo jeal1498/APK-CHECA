@@ -1,6 +1,6 @@
 # Propuestas de estilo visual · PERSONAL (25 nov 2026)
 
-Tres direcciones basadas en `Referencias/`. Mismo ejemplo en las tres (oferta de $100, 15 km: gasolina 15 ÷ 12 km/l × $24 = $30, te quedan $70). Cámara arriba (0–800 px), gráficos abajo. Las tres conservan la paleta EA (negro, marfil, naranja) y Montserrat/Roboto. **Pendiente de que Eduardo elija.**
+Tres direcciones basadas en `Referencias/`. Mismo ejemplo en las tres (oferta de $100, 15 km: gasolina 15 ÷ 12 km/l × $24 = $30, te quedan $70). Cámara arriba (0–800 px), gráficos abajo. Las tres conservan la paleta EA (negro, marfil, naranja) y Montserrat/Roboto. **Elegida (25 nov): AB** (mezcla de A + B, `EA-Mezcla-AB`). Detalle en `../IDENTIDAD.md` §4.
 
 | Propuesta | Toma de | Cómo se ve | Para qué temas |
 |---|---|---|---|

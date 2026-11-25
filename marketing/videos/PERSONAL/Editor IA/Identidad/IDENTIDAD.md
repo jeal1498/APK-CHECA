@@ -22,6 +22,13 @@ A. Experiencia real (incluye ser conductor, si aporta) · B. Educación (edició
 - Sello **EA.** como recurso secundario.
 - Recursos: contrastes marcados, composiciones limpias, subtítulos destacados, gráficos dinámicos.
 - **Estilo aprobado (24 nov 2026): Familia A, editorial minimalista**, en código en `video/src/EA/` (Remotion): fondo marfil, tarjetas blancas con borde negro y sombra sutil, naranja solo como énfasis (palabra clave, etiquetas, anotaciones), titulares Montserrat 800. Biblioteca completa (10 componentes con variantes) y showcase `EA-Showcase`; lista en `../LEEME.md`. El boceto de «pegatinas» queda descartado.
+- **Estilo vigente (25 nov 2026): «AB», mezcla de Línea + Tablero** (elegida por Eduardo entre A, B, C, AB y BA; muestras en `propuestas-estilo/`, código `video/src/EA/Mezclas.tsx`, composición `EA-Mezcla-AB`). Sobre la Familia A de arriba:
+  - Fondo marfil liso (sin cuadrícula), cámara arriba (0–800 px) con línea negra de 4 px.
+  - **Titular grande** Montserrat 800 (~104 px) con la cifra en naranja que cuenta desde 0.
+  - **Objeto de una sola línea** negra de 6 px que se dibuja (trazo), con **una sola mancha naranja** que actúa (gota, punto, marca).
+  - **Barra que reparte** un monto (borde 5 px, tramo naranja = lo que se va), con rótulos en mayúsculas Roboto 500 y la cuenta en pequeño.
+  - El objeto y el dato se unen con una acción física (la gota cae y llena la barra).
+  - La variante BA (negro con cuadrícula) queda solo para algún video especial de dinero, con autorización.
 - Evitar: saturación, plantillas genéricas, estética corporativa.
 
 ## 5. Formato
