@@ -2,7 +2,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { AbsoluteFill, useCurrentFrame, interpolate, Easing } from "remotion";
-import { Player } from "@remotion/player";
+import { Thumbnail } from "@remotion/player";
 
 const M = {
   asfalto: "#0C0C10", tablero: "#16161C", humo: "#3A3A45", hueso: "#F4F4EF", gris: "#A3A3AD",
@@ -127,24 +127,30 @@ const ESCENAS = {
   semaforo: { component: Semaforo, durationInFrames: 180, compositionWidth: 900, compositionHeight: 820 },
 };
 
-// Cada escena arranca desde el inicio cuando aparece en pantalla y se pausa al salir
+// Cada escena se dibuja cuadro por cuadro con nuestro propio reloj (Thumbnail de Remotion):
+// arranca desde el inicio cuando aparece en pantalla, se repite y se pausa al salir.
 const Escena = ({ e, quieto, el }) => {
-  const ref = React.useRef(null);
+  const ultimo = Math.min(e.durationInFrames - 20, 120);
+  const [f, setF] = React.useState(quieto ? ultimo : 0);
   React.useEffect(() => {
-    const pl = ref.current;
-    if (!pl || quieto || !("IntersectionObserver" in window)) return;
-    const io = new IntersectionObserver((es) => {
-      const v = es[0].isIntersecting;
-      if (v) { pl.seekTo(0); pl.play(); } else { pl.pause(); }
-    }, { threshold: 0.45 });
+    if (quieto) return;
+    let raf = 0, t0 = 0, corre = false;
+    const paso = (t) => {
+      if (!corre) return;
+      if (!t0) t0 = t;
+      setF(Math.floor(((t - t0) / 1000) * 30) % e.durationInFrames);
+      raf = requestAnimationFrame(paso);
+    };
+    const arranca = () => { if (corre) return; corre = true; t0 = 0; raf = requestAnimationFrame(paso); };
+    const para = () => { corre = false; cancelAnimationFrame(raf); };
+    if (!("IntersectionObserver" in window)) { arranca(); return para; }
+    const io = new IntersectionObserver((es) => { es[0].isIntersecting ? arranca() : para(); }, { threshold: 0.3 });
     io.observe(el);
-    return () => io.disconnect();
+    return () => { io.disconnect(); para(); };
   }, []);
-  const ultimo = e.durationInFrames - 20;
   return (
-    <Player ref={ref} {...e} fps={30} autoPlay={false} loop={!quieto} initialFrame={quieto ? Math.min(ultimo, 120) : 0}
-      controls={false} clickToPlay={false} doubleClickToFullscreen={false} spaceKeyToPlayOrPause={false}
-      acknowledgeRemotionLicense style={{ width: "100%", background: "transparent" }} />
+    <Thumbnail component={e.component} compositionWidth={e.compositionWidth} compositionHeight={e.compositionHeight}
+      durationInFrames={e.durationInFrames} fps={30} frameToDisplay={f} style={{ width: "100%", background: "transparent" }} />
   );
 };
 
