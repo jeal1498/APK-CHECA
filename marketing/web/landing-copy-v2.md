@@ -5,6 +5,8 @@ Tráfico: TikTok y WhatsApp, en el celular. Una sola acción: descargar en Googl
 Reglas: solo gasolina (la app no tiene gas LP), sin «más plataformas», sin prometer que no bloquean cuentas, cifras de ejemplo rotuladas y calculadas como la app (12 km/l, $24 el litro, metas $200/h y $10/km, recogida máx. 3 km).
 Aplicada en `PWA-Checa-Multimedia/propuesta/`.
 
+**Versión corta (25 nov, la que está aplicada):** Eduardo pidió menos texto y tema claro/oscuro. Quedan 6 bloques: hero con la demo de 12 s dentro del teléfono · «Ruletear a ciegas sale caro» (5 s / $95≠$95 / 12 h, una línea cada uno) · «Así funciona» (3 pasos de una línea + semáforo) · testimonios (pendientes) · 3 preguntas cortas · cierre. Se quitaron la sección de beneficios, la demo aparte, la pregunta de iPhone (va «Android» bajo el botón) y la franja de urgencia (va bajo cada botón). El tema sigue al teléfono; el teléfono y el pop-up de muestra siempre van oscuros, como en la app. Lo de abajo es el copy largo de referencia.
+
 ---
 
 ## 1. Hero
