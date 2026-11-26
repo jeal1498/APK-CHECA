@@ -39,6 +39,8 @@ jobs:
           supabase functions delete mp-webhook --project-ref "$PROYECTO" || true
           # Esta función conserva la verificación JWT y valida además la sesión en el handler.
           supabase functions deploy eliminar-cuenta --yes --project-ref "$PROYECTO" --use-api
+          # Compras de Google Play (Fase 7): valida la sesión en el handler; usa los secretos GOOGLE_PLAY_SA_B64 y LICENCIA_PRIVADA_B64.
+          supabase functions deploy play-verificar --yes --project-ref "$PROYECTO" --use-api
           # Revisión de lecturas: valida la sesión en el handler; la clave de Anthropic la carga Eduardo a mano.
           supabase functions deploy confirmar-oferta --yes --project-ref "$PROYECTO" --use-api
           # Lee con DeepSeek (visión) la captura de una oferta, solo a petición de un administrador (valida sesión y rol en el handler).

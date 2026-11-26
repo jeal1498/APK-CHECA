@@ -181,6 +181,18 @@ grant execute on function public.mi_invitacion() to authenticated;
 -- (mp-pago decide quién califica; ver supabase/functions/_shared/planes.ts).
 alter table public.pagos add column if not exists precio_beta boolean not null default false;
 
+-- Compras de Google Play (Fase 7): la escribe solo play-verificar. Una compra (token) pertenece a una sola cuenta.
+create table if not exists public.compras_play (
+  token   text primary key,               -- purchaseToken de la suscripción checa_acceso
+  correo  text not null,
+  plan    text not null,                  -- 1m, 6m, 12m
+  estado  text,                           -- subscriptionState de Google al verificar
+  expira  timestamptz,
+  creado  timestamptz not null default now()
+);
+alter table public.compras_play enable row level security;
+revoke all on public.compras_play from anon, authenticated;
+
 
 -- Ajustes de cada cuenta (filtros, gasolina, pop-up, avisos): viajan con el inicio de sesión.
 create table if not exists public.ajustes (

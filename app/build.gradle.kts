@@ -17,8 +17,8 @@ android {
     defaultConfig {
         minSdk = 26
         targetSdk = 36
-        versionCode = 166
-        versionName = "10.86"
+        versionCode = 167
+        versionName = "10.87"
     }
 
     buildFeatures { buildConfig = true }
@@ -110,6 +110,8 @@ dependencies {
     implementation("com.google.android.play:app-update:2.1.0")
     // Reseña nativa de Google Play (solo se usa en el canal play).
     implementation("com.google.android.play:review:2.0.2")
+    // Compras y suscripciones de Google Play (Fase 7, solo se usa en el canal play).
+    implementation("com.android.billingclient:billing:7.1.1")
     if (conFirebase) {
         "playImplementation"(platform("com.google.firebase:firebase-bom:33.7.0"))
         "playImplementation"("com.google.firebase:firebase-crashlytics")

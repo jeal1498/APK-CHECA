@@ -273,6 +273,36 @@ object Cuenta {
         }.start()
     }
 
+    /**
+     * Manda a Supabase (función play-verificar) la compra de Google Play. Si Google la confirma,
+     * la licencia de la cuenta se extiende y aquí se descarga. [listo] recibe (ok, mensaje).
+     */
+    fun verificarCompra(ctx: Context, compra: String, listo: (Boolean, String) -> Unit) {
+        val app = ctx.applicationContext
+        Thread {
+            var ok = false
+            var mensaje: String
+            try {
+                val r = JSONObject(pedir("POST", "/functions/v1/play-verificar", token(app),
+                    JSONObject().put("token", compra).toString()))
+                ok = r.optBoolean("ok")
+                mensaje = if (ok) "¡Listo! Tu licencia está activa hasta el ${Licencia.fechaBonita(r.optInt("vence"))}."
+                    else "Tu suscripción ya no está vigente."
+                if (ok) sincronizar(app)
+            } catch (e: HttpError) {
+                mensaje = when (e.codigo) {
+                    401 -> "Vuelve a entrar con tu cuenta de Google."
+                    409 -> "Esta suscripción ya está ligada a otra cuenta de Checa."
+                    else -> "No se pudo activar tu licencia (${e.codigo}). Se reintenta al abrir Checa; si ya pagaste, no se cobra dos veces."
+                }
+            } catch (_: Exception) {
+                mensaje = "Sin conexión. Tu licencia se activa al abrir Checa con internet."
+            }
+            Licencia.limpiarCache()
+            principal.post { listo(ok, mensaje) }
+        }.start()
+    }
+
     // ------------------------------------------------------------------
     // Supabase
     // ------------------------------------------------------------------

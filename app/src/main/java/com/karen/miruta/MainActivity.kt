@@ -375,6 +375,7 @@ class MainActivity : Activity() {
         } else {
             ActualizacionPlay.revisar(this)
             Resena.pedir(this)
+            iniciarCompras()
         }
         if (esperandoPago && Cuenta.conectada(this)) {
             Cuenta.revisarAhora(this) { r ->
@@ -2070,7 +2071,10 @@ class MainActivity : Activity() {
         val paq = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         paq.addView(etiqueta("PAQUETES"))
         paq.addView(texto(
-            "Paga con tarjeta, OXXO o saldo de Mercado Pago. Tu licencia se activa sola en tu cuenta; " +
+            if (BuildConfig.ES_PLAY)
+                "Se paga con Google Play y se renueva sola. Cancela cuando quieras desde Google Play. " +
+                    "Tu licencia se activa sola en tu cuenta."
+            else "Paga con tarjeta, OXXO o saldo de Mercado Pago. Tu licencia se activa sola en tu cuenta; " +
                 "si ya tienes una, los días se suman.",
             Tema.T_NOTA, cTenue, false
         ).apply { setLineSpacing(0f, 1.2f) }, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(Tema.S1) })
@@ -2103,6 +2107,7 @@ class MainActivity : Activity() {
             ), false
         ), margenTarjeta())
         paquetesVista = paq
+        // En Play los paquetes salen solo cuando Google Play tiene planes activos (ver pintarLicencia).
         if (BuildConfig.ES_PLAY) paq.visibility = View.GONE
         col.addView(paq)
 
@@ -3642,10 +3647,20 @@ class MainActivity : Activity() {
         }
     }
 
+    /** Canal play: conecta con Google Play, busca los planes y vuelve a verificar compras ya hechas. */
+    private fun iniciarCompras() {
+        Compras.iniciar(this, { mensaje ->
+            if (mensaje.isNotEmpty()) Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show()
+            Licencia.limpiarCache()
+            pintarLicencia()
+        }, { pintarLicencia() })
+        if (Cuenta.conectada(this)) Compras.restaurar()
+    }
+
     /** Lleva a la pestaña Cuenta, a la parte de los paquetes. */
     private fun irAPaquetes() {
-        if (BuildConfig.ES_PLAY) {
-            Toast.makeText(this, "Las compras integradas de Google Play aún no están disponibles en esta versión.", Toast.LENGTH_LONG).show()
+        if (BuildConfig.ES_PLAY && !Compras.disponible) {
+            Toast.makeText(this, "Las suscripciones de Google Play estarán disponibles pronto.", Toast.LENGTH_LONG).show()
             return
         }
         dialogoCuenta?.dismiss()
@@ -3713,7 +3728,7 @@ class MainActivity : Activity() {
             }
             t.addView(ver)
         }
-        t.addView(boton("Pagar con Mercado Pago", if (destacado) cVerde else cTarjeta2, if (destacado) Color.BLACK else cTexto) {
+        t.addView(boton(if (BuildConfig.ES_PLAY) "Suscribirme con Google Play" else "Pagar con Mercado Pago", if (destacado) cVerde else cTarjeta2, if (destacado) Color.BLACK else cTexto) {
             pagarPaquete(plan)
         }, margenArriba(Tema.S1))
         return t
@@ -3721,13 +3736,13 @@ class MainActivity : Activity() {
 
     /** Abre Mercado Pago con el paquete; la licencia se activa sola en la cuenta Google. */
     private fun pagarPaquete(plan: String) {
-        if (BuildConfig.ES_PLAY) {
-            Toast.makeText(this, "Las compras integradas de Google Play aún no están disponibles en esta versión.", Toast.LENGTH_LONG).show()
-            return
-        }
         if (!Cuenta.conectada(this)) {
             Toast.makeText(this, "Primero entra con tu cuenta de Google: ahí se guarda tu licencia", Toast.LENGTH_LONG).show()
             entrarConGoogle()
+            return
+        }
+        if (BuildConfig.ES_PLAY) {
+            Compras.comprar(this, plan)
             return
         }
         Toast.makeText(this, "Abriendo Mercado Pago…", Toast.LENGTH_SHORT).show()
@@ -3760,9 +3775,7 @@ class MainActivity : Activity() {
         if (finBeta) {
             licTitulo.text = "La beta gratis termina en ${e.diasRestantes} ${if (e.diasRestantes == 1) "día" else "días"}"
             licTitulo.setTextColor(cAmarillo)
-            licTexto.text = if (BuildConfig.ES_PLAY)
-                "Las compras integradas de Google Play aún no están disponibles en esta versión."
-            else "El ${Licencia.fechaBonita(Licencia.BETA_HASTA)} Checa empieza a cobrar. " +
+            licTexto.text = "El ${Licencia.fechaBonita(Licencia.BETA_HASTA)} Checa empieza a cobrar. " +
                 (if (Cuenta.precioBeta(this)) "Tienes precio de fundador: 40 % menos de por vida."
                 else "El precio de fundador (40 % menos de por vida) es solo para los primeros 50 que se registran con Google, mientras haya lugares." +
                     (if (Cuenta.conectada(this)) "" else " Entra con tu cuenta de Google para apartar el tuyo."))
@@ -3773,8 +3786,7 @@ class MainActivity : Activity() {
         } else if (e.activa && !e.pagada) {
             licTitulo.text = "Prueba gratis: ${e.diasRestantes} ${if (e.diasRestantes == 1) "día" else "días"}"
             licTitulo.setTextColor(cTexto)
-            licTexto.text = if (BuildConfig.ES_PLAY)
-                "Las compras integradas de Google Play aún no están disponibles en esta versión."
+            licTexto.text = if (BuildConfig.ES_PLAY) "Úsala en tu turno. Para seguir después de la prueba, suscríbete en Cuenta."
             else "Úsala en tu turno. Para seguir después de la prueba, activa tu licencia."
         } else if (!e.activa && Cuenta.necesitaRevision(this)) {
             licTitulo.text = "Revisa tu licencia"
@@ -3783,8 +3795,7 @@ class MainActivity : Activity() {
         } else if (!e.activa) {
             licTitulo.text = "Tu licencia terminó"
             licTitulo.setTextColor(cAmarillo)
-            licTexto.text = if (BuildConfig.ES_PLAY)
-                "Las compras integradas de Google Play aún no están disponibles en esta versión."
+            licTexto.text = if (BuildConfig.ES_PLAY) "Renueva tu suscripción en Cuenta para volver a ver los pop-ups."
             else "Renueva tu paquete para volver a ver los pop-ups."
         }
         insignias.forEach { it.visibility = if (e.fundador) View.VISIBLE else View.GONE }
@@ -3792,12 +3803,16 @@ class MainActivity : Activity() {
         notaComparador?.visibility = if (!BuildConfig.ES_PLAY && e.basico) View.VISIBLE else View.GONE
         // Con licencia sin vencimiento (fundadores) no hay nada que comprar.
         if (::paquetesVista.isInitialized) {
-            paquetesVista.visibility = if (BuildConfig.ES_PLAY || e.beta ||
-                (e.pagada && e.vence >= Licencia.PERMANENTE)) View.GONE else View.VISIBLE
+            // En Play, solo cuando hay planes activos en Google Play (Compras.disponible).
+            val oculto = (BuildConfig.ES_PLAY && !Compras.disponible) || (!BuildConfig.ES_PLAY && e.beta) ||
+                (e.pagada && e.vence >= Licencia.PERMANENTE)
+            paquetesVista.visibility = if (oculto) View.GONE else View.VISIBLE
         }
-        // En Play no se ofrecen paquetes externos; el cobro se integrará mediante Google Play en otra fase.
+        // En Play los cobros son solo con Google Play Billing.
         if (BuildConfig.ES_PLAY) {
-            botonPaquetesInicio.visibility = View.GONE
+            botonPaquetesInicio.text = if (Cuenta.conectada(this)) "Ver planes" else "Entrar con Google"
+            botonPaquetesInicio.setOnClickListener { if (Cuenta.conectada(this)) irAPaquetes() else entrarConGoogle() }
+            botonPaquetesInicio.visibility = if (Compras.disponible && !e.beta) View.VISIBLE else View.GONE
         } else if (e.beta) {
             botonPaquetesInicio.text = "Entrar con Google"
             botonPaquetesInicio.setOnClickListener { entrarConGoogle() }
