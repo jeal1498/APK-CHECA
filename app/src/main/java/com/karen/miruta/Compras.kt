@@ -57,6 +57,7 @@ object Compras {
         val ctx = contexto ?: return listo(null)
         val nuevo = BillingClient.newBuilder(ctx)
             .setListener(escuchar)
+            .enableAutoServiceReconnection()
             .enablePendingPurchases(PendingPurchasesParams.newBuilder().enableOneTimeProducts().build())
             .build()
         cliente = nuevo
@@ -80,8 +81,8 @@ object Compras {
             if (c == null) { disponible = false; return@conectar listo(false) }
             val producto = QueryProductDetailsParams.Product.newBuilder()
                 .setProductId(PRODUCTO).setProductType(BillingClient.ProductType.SUBS).build()
-            c.queryProductDetailsAsync(QueryProductDetailsParams.newBuilder().setProductList(listOf(producto)).build()) { r, lista ->
-                detalles = if (r.responseCode == BillingClient.BillingResponseCode.OK) lista.firstOrNull() else null
+            c.queryProductDetailsAsync(QueryProductDetailsParams.newBuilder().setProductList(listOf(producto)).build()) { r, resultado ->
+                detalles = if (r.responseCode == BillingClient.BillingResponseCode.OK) resultado.productDetailsList.firstOrNull() else null
                 // Solo se ofrece si hay al menos un plan básico activo.
                 disponible = BASES.values.any { base -> oferta(base) != null }
                 principal.post { listo(disponible) }
