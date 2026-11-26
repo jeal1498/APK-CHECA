@@ -1,7 +1,7 @@
 // Compra de Google Play (Fase 7). La app manda el token de la suscripción `checa_acceso`; aquí se
 // consulta directo a Google (así no se puede falsificar), se confirma la compra (acknowledge) y se
 // extiende y firma la licencia de la cuenta en la tabla `licencias`.
-// Secretos: GOOGLE_PLAY_SA_B64 (JSON de la cuenta de servicio en base64) y LICENCIA_PRIVADA_B64.
+// Secretos: GOOGLE_PLAY_SA_B64 (JSON de la cuenta de servicio, pegado tal cual o en base64) y LICENCIA_PRIVADA_B64.
 import { createSign } from "node:crypto";
 
 const SUPA = Deno.env.get("SUPABASE_URL")!;
@@ -67,7 +67,9 @@ function sumarDias(aaaammdd: number, dias: number): number {
 
 /** Token de acceso de la cuenta de servicio de Google (permiso androidpublisher). */
 async function tokenGoogle(): Promise<string> {
-  const sa = JSON.parse(atob(Deno.env.get("GOOGLE_PLAY_SA_B64") ?? ""));
+  const crudo = (Deno.env.get("GOOGLE_PLAY_SA_B64") ?? "").trim();
+  // Acepta el JSON pegado tal cual o convertido a base64.
+  const sa = JSON.parse(crudo.startsWith("{") ? crudo : atob(crudo));
   const ahora = Math.floor(Date.now() / 1000);
   const cab = b64url(JSON.stringify({ alg: "RS256", typ: "JWT" }));
   const cuerpo = b64url(JSON.stringify({
