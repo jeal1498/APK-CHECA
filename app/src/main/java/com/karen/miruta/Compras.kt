@@ -94,10 +94,13 @@ object Compras {
     private fun oferta(base: String): ProductDetails.SubscriptionOfferDetails? =
         detalles?.subscriptionOfferDetails?.firstOrNull { it.basePlanId == base && it.offerId == null }
 
-    /** Abre la hoja de pago de Google Play para el paquete [plan] (1m, 6m o 12m). */
-    fun comprar(act: Activity, plan: String) {
+    /**
+     * Abre la hoja de pago de Google Play para el paquete [plan] (1m, 6m o 12m). Con [fundador] usa el
+     * plan básico `-fundador` (−40 %); si no existe, no se cobra el normal sin avisar.
+     */
+    fun comprar(act: Activity, plan: String, fundador: Boolean = false) {
         val pd = detalles
-        val of = BASES[plan]?.let { oferta(it) }
+        val of = BASES[plan]?.let { oferta(it + if (fundador) "-fundador" else "") }
         if (pd == null || of == null) return avisar("Este plan aún no está disponible. Inténtalo más tarde.")
         conectar { c ->
             if (c == null) return@conectar avisar("Google Play no responde. Inténtalo más tarde.")

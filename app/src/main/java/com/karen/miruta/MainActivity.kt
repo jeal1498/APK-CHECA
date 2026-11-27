@@ -3742,7 +3742,7 @@ class MainActivity : Activity() {
             return
         }
         if (BuildConfig.ES_PLAY) {
-            Compras.comprar(this, plan)
+            Compras.comprar(this, plan, Cuenta.precioBeta(this))
             return
         }
         Toast.makeText(this, "Abriendo Mercado Pago…", Toast.LENGTH_SHORT).show()

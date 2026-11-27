@@ -293,6 +293,7 @@ object Cuenta {
                 mensaje = when (e.codigo) {
                     401 -> "Vuelve a entrar con tu cuenta de Google."
                     409 -> "Esta suscripción ya está ligada a otra cuenta de Checa."
+                    403 -> "Ese precio es solo para el Plan Fundador. Escríbenos por WhatsApp para resolverlo."
                     else -> "No se pudo activar tu licencia (${e.codigo}). Se reintenta al abrir Checa; si ya pagaste, no se cobra dos veces."
                 }
             } catch (_: Exception) {

@@ -35,12 +35,14 @@ jobs:
           set -euo pipefail
           # mp-pago solo responde la consulta del Plan Fundador (revisa la sesión en el handler).
           supabase functions deploy mp-pago --yes --project-ref "$PROYECTO" --no-verify-jwt --use-api
-          # mp-webhook (Mercado Pago) ya no existe: se borra si sigue instalada.
-          supabase functions delete mp-webhook --project-ref "$PROYECTO" || true
+          # mp-webhook (Mercado Pago) ya no existe: se borra si sigue instalada (--yes: sin pregunta en CI).
+          supabase functions delete mp-webhook --yes --project-ref "$PROYECTO" || echo "mp-webhook: no se pudo borrar o ya no existe"
           # Esta función conserva la verificación JWT y valida además la sesión en el handler.
           supabase functions deploy eliminar-cuenta --yes --project-ref "$PROYECTO" --use-api
           # Compras de Google Play (Fase 7): valida la sesión en el handler; usa los secretos GOOGLE_PLAY_SA_B64 y LICENCIA_PRIVADA_B64.
           supabase functions deploy play-verificar --yes --project-ref "$PROYECTO" --use-api
+          # Avisos en tiempo real de Google Play (Pub/Sub push): sin JWT, se protege con ?k=PLAY_RTDN_SECRETO.
+          supabase functions deploy play-notificaciones --yes --project-ref "$PROYECTO" --no-verify-jwt --use-api
           # Revisión de lecturas: valida la sesión en el handler; la clave de Anthropic la carga Eduardo a mano.
           supabase functions deploy confirmar-oferta --yes --project-ref "$PROYECTO" --use-api
           # Lee con DeepSeek (visión) la captura de una oferta, solo a petición de un administrador (valida sesión y rol en el handler).
